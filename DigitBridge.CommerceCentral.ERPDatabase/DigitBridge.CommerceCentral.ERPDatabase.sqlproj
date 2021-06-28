@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>DigitBridge.CommerceCentral.ERPDatabase</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{a2c75254-6bd6-442f-9a29-ae72d67989a4}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>DigitBridge.CommerceCentral.CommerceCentralDatabase</RootNamespace>
+    <AssemblyName>DigitBridge.CommerceCentral.CommerceCentralDatabase</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="po" />
+    <Folder Include="ar" />
+    <Folder Include="ap" />
+    <Folder Include="inventory" />
+    <Folder Include="customer" />
+    <Folder Include="vendor" />
+    <Folder Include="CustomDefineCodes" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="po\PoHeader.sql" />
+    <None Include="po\PoItems.sql" />
+    <None Include="po\PoItemsRef.sql" />
+    <None Include="po\PoHeaderAttributes.sql" />
+    <None Include="po\PoItemsAttributes.sql" />
+    <None Include="ar\InvoiceHeader.sql" />
+    <None Include="ar\InvoiceItems.sql" />
+    <None Include="ar\InvoiceHeaderInfo.sql" />
+    <None Include="ar\InvoiceReturnItems.sql" />
+    <None Include="ar\InvoiceHeaderAttributes.sql" />
+    <None Include="ar\InvoiceItemsAttributes.sql" />
+    <None Include="ap\ApInvoiceHeader.sql" />
+    <None Include="ap\ApInvoiceHeaderAttributes.sql" />
+    <None Include="ap\ApInvoiceHeaderInfo.sql" />
+    <None Include="ap\ApInvoiceItems.sql" />
+    <None Include="ap\ApInvoiceTransaction.sql" />
+    <None Include="po\PoHeaderInfo.sql" />
+    <None Include="po\PoTransactionItems.sql" />
+    <None Include="inventory\Inventory.sql" />
+    <None Include="customer\Customer.sql" />
+    <None Include="customer\CustomerAddress.sql" />
+    <None Include="customer\CustomerAttributes.sql" />
+    <None Include="customer\CustomerSku.sql" />
+    <None Include="vendor\Vendor.sql" />
+    <None Include="vendor\VendorAddress.sql" />
+    <None Include="vendor\VendorAttributes.sql" />
+    <None Include="vendor\VendorSku.sql" />
+    <None Include="ar\InvoiceTransaction.sql" />
+    <None Include="CustomDefineCodes\CustomDefineCodes.sql" />
+    <None Include="po\PoTransaction.sql" />
+    <None Include="inventory\Warehouse.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
+  </ItemGroup>
+</Project>

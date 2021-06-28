@@ -1,0 +1,170 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+<#@ include file="ParseSqlFile.ttinclude" #>
+
+<#
+	// Settings
+    var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\ar";
+    //only read tables,mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
+    var Files = "InvoiceHeader,InvoiceHeaderInfo,InvoiceHeaderAttributes,InvoiceItems,InvoiceItemsAttributes";
+	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
+    var project= Path.Combine(path,DatabaseProjectName);
+
+    // generate repository class for each table
+    var generateModel = true;
+    var Namespace = "DigitBridge.CommerceCentral.ERPDb";
+    var ModelFolder = "DigitBridge.CommerceCentral.ERPDb\\ar";
+    var DtoFolder = "DigitBridge.CommerceCentral.ERPDb\\ar";
+
+    // generate tester class for each table repository
+    var generateTester = true;
+    var NamespaceTest = "DigitBridge.CommerceCentral.ERPDb.Tests.Integration";
+    var TesterFolder = "DigitBridge.CommerceCentral.ERPDb.Tests.Integration";
+
+    // generate structure repository class contain multiple table
+    var generateStructureRepository = true;
+    var generateStructureTester = true;
+    var NamespaceStructure = "DigitBridge.CommerceCentral.ERPDb";
+    var StructureFolder = "DigitBridge.CommerceCentral.ERPDb\\ar";
+    var StructureClass = new StructureInfo("InvoiceData",
+            new StructureTable() { Name = "InvoiceHeader", MainTable = true, OneToOne = true },
+            new StructureTable() { Name = "InvoiceHeaderInfo", ParentName = "InvoiceHeader", OneToOne = true, LoadByColumn = "InvoiceId" },
+            new StructureTable() { Name = "InvoiceHeaderAttributes", ParentName = "InvoiceHeader", OneToOne = true, LoadByColumn = "InvoiceId" },
+            new StructureTable() { Name = "InvoiceItems", ParentName = "InvoiceHeader", DetailTable = true, OneToOne = false, LoadByColumn = "InvoiceId", oneToOneChildrenName = "InvoiceItemsAttributes" },
+            new StructureTable() { Name = "InvoiceItemsAttributes", ParentName = "InvoiceItems", OneToOne = false, LoadByColumn = "InvoiceId" }
+        );
+
+    var indent = 2;
+    var dir = string.Empty;
+
+    // Read schema
+
+    //var manager = new Manager(Host, GenerationEnvironment, true) { OutputPath = path};
+    var parser = new SQLFileParser(project, Files, StructureClass);
+
+    parser.Parse();
+    var tables = parser.Tables;
+#>    
+
+<#      
+    // Generate model output
+	if (tables.Count>0)
+	{
+        foreach(var table in tables.Values)
+        {
+#>              
+
+<#          // Generate model output
+	        if (generateModel)
+	        {
+#>              
+<#@ include file="GenerateRepository.ttinclude" #>
+<# 
+                dir = Path.Combine(path,ModelFolder);
+                SaveOutput(dir, $"{table.Name}.Designer.cs");
+            }
+#>
+
+<#          // Generate model output
+	        if (generateModel)
+	        {
+#>              
+<#@ include file="GenerateRepositoryPartialClass.ttinclude" #>
+<# 
+                dir = Path.Combine(path,ModelFolder);
+                SaveOutputNotExists(dir, $"{table.Name}.cs");
+            }
+#>
+
+<#          // Generate tester class
+	        if (generateTester)
+	        {
+#>              
+<#@ include file="GenerateRepositoryTest.ttinclude" #>
+<# 
+                dir = Path.Combine(path,TesterFolder);
+                SaveOutput(dir, $"{table.Name}Tests.Designer.cs");
+            }
+#>
+
+<#          // Generate tester class
+	        if (generateTester)
+	        {
+#>              
+<#@ include file="GenerateRepositoryTestPartial.ttinclude" #>
+<# 
+                dir = Path.Combine(path,TesterFolder);
+                SaveOutputNotExists(dir, $"{table.Name}Tests.cs");
+            }
+#>
+
+<# 
+        }
+    }
+#>
+
+<#      
+    // Generate structure repository class
+	if (generateStructureRepository && StructureClass != null)
+	{
+#>              
+<#@ include file="GenerateStructure.ttinclude" #>
+<# 
+        dir = Path.Combine(path,StructureFolder);
+        SaveOutput(dir, $"{StructureClass.ClassName}.Designer.cs");
+#>
+
+<#@ include file="GenerateStructurePartial.ttinclude" #>
+<# 
+        dir = Path.Combine(path,StructureFolder);
+        SaveOutputNotExists(dir, $"{StructureClass.ClassName}.cs");
+#>
+<# } #>
+
+<#      
+    // Generate structure repository class
+	if (generateStructureTester && StructureClass != null)
+	{
+#>              
+<#@ include file="GenerateStructureTest.ttinclude" #>
+<# 
+        dir = Path.Combine(path,TesterFolder);
+        SaveOutput(dir, $"{StructureClass.ClassName}Tests.Designer.cs");
+#>
+
+<#@ include file="GenerateStructureTestPartial.ttinclude" #>
+<# 
+        dir = Path.Combine(path,TesterFolder);
+        SaveOutputNotExists(dir, $"{StructureClass.ClassName}Tests.cs");
+#>
+<# } #>
+
+<#+
+    public void SaveOutput(string destinationFolder, string outputFileName)
+    {
+        // Write to destination folder
+        //string templateDirectory = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), destinationFolder);
+        string outputFilePath = Path.Combine(destinationFolder, outputFileName);
+        File.Delete(outputFilePath);
+        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+ 
+        // Flush generation
+        this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+    }
+
+    public void SaveOutputNotExists(string destinationFolder, string outputFileName)
+    {
+        // Write to destination folder
+        //string templateDirectory = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), destinationFolder);
+        string outputFilePath = Path.Combine(destinationFolder, outputFileName);
+        if (!File.Exists(outputFilePath)) 
+            File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+        // Flush generation
+        this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+    }
+#>
