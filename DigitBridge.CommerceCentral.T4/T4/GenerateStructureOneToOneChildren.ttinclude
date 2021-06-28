@@ -1,0 +1,56 @@
+﻿<#
+#>    
+
+        // one to one children
+        protected <#= child.Table.Name #> _<#= child.Table.Name #>;
+
+        public virtual <#= child.Table.Name #> <#= child.Table.Name #> 
+        { 
+            get => _<#= child.Table.Name #>;
+            set => _<#= child.Table.Name #> = value?.SetParent(this); 
+        }
+
+        public virtual void Copy<#= child.Table.Name #>From(<#= StructureClass.ClassName #> data) => 
+            <#= child.Table.Name #>.CopyFrom(data.<#= child.Table.Name #>, new string[] {"<#= StructureClass.MainTable.UniqueKey #>"});
+
+        public virtual <#= child.Table.Name #> New<#= child.Table.Name #>() => new <#= child.Table.Name #>(dbFactory).SetParent(this);
+
+        public virtual <#= child.Table.Name #> Get<#= child.Table.Name #>(long RowNum) =>
+            (RowNum <= 0) ? null : dbFactory.Get<<#= child.Table.Name #>>(RowNum);
+
+        public virtual <#= child.Table.Name #> Get<#= child.Table.Name #>By<#= StructureClass.MainTable.UniqueKey #>(string <#= StructureClass.MainTable.UniqueKey #>) =>
+            (string.IsNullOrEmpty(<#= StructureClass.MainTable.UniqueKey #>)) ? null : dbFactory.GetById<<#= child.Table.Name #>>(<#= StructureClass.MainTable.UniqueKey #>);
+
+        public virtual bool Save<#= child.Table.Name #>(<#= child.Table.Name #> data) =>
+            (data is null) ? false : data.Save();
+
+        public virtual int Delete<#= child.Table.Name #>(<#= child.Table.Name #> data) =>
+            (data is null) ? 0 : data.Delete();
+
+        public virtual async Task<<#= child.Table.Name #>> Get<#= child.Table.Name #>Async(long RowNum) =>
+            (RowNum <= 0) ? null : await dbFactory.GetAsync<<#= child.Table.Name #>>(RowNum);
+
+        public virtual async Task<<#= child.Table.Name #>> Get<#= child.Table.Name #>By<#= StructureClass.MainTable.UniqueKey #>Async(string <#= StructureClass.MainTable.UniqueKey #>) =>
+            (string.IsNullOrEmpty(<#= StructureClass.MainTable.UniqueKey #>)) ? null : await dbFactory.GetByIdAsync<<#= child.Table.Name #>>(<#= StructureClass.MainTable.UniqueKey #>);
+
+        public virtual async Task<bool> Save<#= child.Table.Name #>Async(<#= child.Table.Name #> data) =>
+            (data is null) ? false : await data.SaveAsync();
+
+        public virtual async Task<int> Delete<#= child.Table.Name #>Async(<#= child.Table.Name #> data) =>
+            (data is null) ? 0 : await data.DeleteAsync();
+
+<#
+    if (child.Table.Name != StructureClass.MainTable.Name)
+    {
+#>
+        public virtual <#= child.Table.Name #> CheckIntegrity<#= child.Table.Name #>()
+        {
+            if (<#= child.Table.Name #> is null || <#= StructureClass.MainTable.Name #> is null) 
+                return <#= child.Table.Name #>;
+            <#= child.Table.Name #>.SetParent(this);
+            if (<#= child.Table.Name #>.<#= StructureClass.MainTable.UniqueKey #> != <#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>)
+                <#= child.Table.Name #>.<#= StructureClass.MainTable.UniqueKey #> = <#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>;
+            return <#= child.Table.Name #>;
+        }
+<# } #>
+

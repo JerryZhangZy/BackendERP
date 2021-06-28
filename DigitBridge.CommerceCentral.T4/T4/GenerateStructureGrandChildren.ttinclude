@@ -1,0 +1,68 @@
+﻿        // grand children
+        protected IEnumerable<<#= child.Table.Name #>> _<#= child.Table.Name #>;
+
+        protected IEnumerable<<#= child.Table.Name #>> <#= child.Table.Name #> 
+        { 
+            get 
+            {
+                _<#= child.Table.Name #> = InvoiceItems is null ? null : <#= child.ParentTable.Name #>.SelectMany(x => x.GetChildren<#= child.Table.Name #>());
+                return _<#= child.Table.Name #>;
+            } 
+            set
+            {
+                _<#= child.Table.Name #> = value;
+                if (<#= child.ParentTable.Name #> != null)
+                    foreach (var par in <#= child.ParentTable.Name #>)
+                        par.SetChildren<#= child.Table.Name #>(_<#= child.Table.Name #>);
+            } 
+        }
+
+        public virtual IEnumerable<<#= child.Table.Name #>> Get<#= child.Table.Name #>By<#= StructureClass.MainTable.UniqueKey #>(string <#= StructureClass.MainTable.UniqueKey #>) =>
+            (string.IsNullOrEmpty(<#= StructureClass.MainTable.UniqueKey #>)) 
+                ? null 
+                : dbFactory.Find<<#= child.Table.Name #>>("WHERE <#= StructureClass.MainTable.UniqueKey #> = @0 ORDER BY <#= child.Table.CheckColumnNameOrRowNum("Seq") #> ", <#= StructureClass.MainTable.UniqueKey #>);
+
+        public virtual bool Save<#= child.Table.Name #>(IEnumerable<<#= child.Table.Name #>> data) =>
+            (data is null) ? false : data.Save();
+
+        public virtual int Delete<#= child.Table.Name #>(IEnumerable<<#= child.Table.Name #>> data) =>
+            (data is null) ? 0 : data.Delete();
+
+        public virtual async Task<IEnumerable<<#= child.Table.Name #>>> Get<#= child.Table.Name #>By<#= StructureClass.MainTable.UniqueKey #>Async(string <#= StructureClass.MainTable.UniqueKey #>) =>
+            (string.IsNullOrEmpty(<#= StructureClass.MainTable.UniqueKey #>)) 
+                ? null
+                : await dbFactory.FindAsync<<#= child.Table.Name #>>("WHERE <#= StructureClass.MainTable.UniqueKey #> = @0 ORDER BY <#= child.Table.CheckColumnNameOrRowNum("Seq") #> ", <#= StructureClass.MainTable.UniqueKey #>);
+
+        public virtual async Task<bool> Save<#= child.Table.Name #>Async(IEnumerable<<#= child.Table.Name #>> data) =>
+            (data is null) ? false : await data.SaveAsync();
+
+        public virtual async Task<int> Delete<#= child.Table.Name #>Async(IEnumerable<<#= child.Table.Name #>> data) =>
+            (data is null) ? 0 : await data.DeleteAsync();
+
+<#
+    if (child.Table.Name != StructureClass.MainTable.Name)
+    {
+#>
+        public virtual IEnumerable<<#= child.Table.Name #>> CheckIntegrity<#= child.Table.Name #>()
+        {
+            if (<#= child.Table.Name #> is null || <#= StructureClass.MainTable.Name #> is null) 
+                return <#= child.Table.Name #>;
+            var seq = 0;
+            <#= child.Table.Name #>.RemoveEmpty();
+            var children = <#= child.Table.Name #>.ToList();
+            foreach (var child in children.Where(x => x != null))
+            {
+                child.SetParent(this);
+                if (child.<#= StructureClass.MainTable.UniqueKey #> != <#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>)
+                    child.<#= StructureClass.MainTable.UniqueKey #> = <#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>;
+<#
+    if (child.Table.ExistColumn("Seq"))
+    {
+#>
+                seq += 1;
+                child.Seq = seq;
+<#  } #>
+            }
+            return children;
+        }
+<# } #>

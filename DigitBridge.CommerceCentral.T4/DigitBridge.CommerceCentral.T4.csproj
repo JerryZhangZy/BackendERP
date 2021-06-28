@@ -1,0 +1,123 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="T4\GenerateStructure - Copy.ttinclude">
+      <LastGenOutput>GenerateStructure - Copy.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureOneToManyChildren.ttinclude">
+      <LastGenOutput>GenerateStructureOneToManyChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureGrandChildren.ttinclude">
+      <LastGenOutput>GenerateStructureGrandChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureOneToOneChildren.ttinclude">
+      <LastGenOutput>GenerateStructureOneToOneChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureTest.ttinclude">
+      <LastGenOutput>GenerateStructureTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureTestPartial.ttinclude">
+      <LastGenOutput>GenerateStructureTestPartial.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateRepositoryTestPartial.ttinclude">
+      <LastGenOutput>GenerateRepositoryTestPartial.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructurePartial.ttinclude">
+      <LastGenOutput>GenerateStructurePartial.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructure.ttinclude">
+      <LastGenOutput>GenerateStructure.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateRepositoryPartialClass.ttinclude">
+      <LastGenOutput>GenerateRepositoryPartialClass.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateRepository.ttinclude">
+      <LastGenOutput>GenerateRepository.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateRepositoryTest.ttinclude">
+      <LastGenOutput>GenerateRepositoryTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\DataAccess.tt">
+      <LastGenOutput>DataAccess.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="T4\DataAccess.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataAccess.tt</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateRepository.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateRepositoryPartialClass.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepositoryPartialClass.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateRepositoryTest.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepositoryTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateRepositoryTestPartial.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepositoryTestPartial.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructure - Copy.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructure - Copy.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructure.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructurePartial.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructurePartial.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructureTest.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructureTestPartial.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureTestPartial.ttinclude</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

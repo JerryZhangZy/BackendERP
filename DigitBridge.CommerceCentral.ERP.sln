@@ -1,0 +1,85 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31410.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.YoPoco", "DigitBridge.CommerceCentral.YoPoco\DigitBridge.CommerceCentral.YoPoco.csproj", "{8224C40B-B0A3-4EDC-9B2B-D21324299266}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.Base.Utility", "DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj", "{6687A115-D20F-4AEB-BDAD-E7CA71BBAC7E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A03E33A1-43E2-4C83-8BD3-1BA7B77ACFFC}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.YoPoco.Tests.Integration", "DigitBridge.CommerceCentral.YoPoco.Tests.Integration\DigitBridge.CommerceCentral.YoPoco.Tests.Integration.csproj", "{D1765F75-7A4E-4F10-812E-08699A8B70CB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.XUnit.Common", "DigitBridge.CommerceCentral.XUnit.Common\DigitBridge.CommerceCentral.XUnit.Common.csproj", "{CAFC009B-06C1-4C9B-A2DE-7BEB41CE8909}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "DigitBridge.CommerceCentral.ERPDatabase", "DigitBridge.CommerceCentral.ERPDatabase\DigitBridge.CommerceCentral.ERPDatabase.sqlproj", "{A2C75254-6BD6-442F-9A29-AE72D67989A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPDb", "DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj", "{9936282B-E657-4583-9A03-C246254734CA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPDb.Tests.Integration", "DigitBridge.CommerceCentral.ERPDb.Tests.Integration\DigitBridge.CommerceCentral.ERPDb.Tests.Integration.csproj", "{640FA5A7-7A58-4A54-A653-A3BE768F8EF4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.T4", "DigitBridge.CommerceCentral.T4\DigitBridge.CommerceCentral.T4.csproj", "{C270E5E0-342E-4C27-A34C-A75178733A08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPMdl", "DigitBridge.CommerceCentral.ERPMdl\DigitBridge.CommerceCentral.ERPMdl.csproj", "{669B992A-8FA8-4E6B-AB33-8FE0D364CAB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration", "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration\DigitBridge.CommerceCentral.ERPMdl.Tests.Integration.csproj", "{10B4A916-1962-4354-BEB4-A9ACE92E111D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8224C40B-B0A3-4EDC-9B2B-D21324299266}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8224C40B-B0A3-4EDC-9B2B-D21324299266}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8224C40B-B0A3-4EDC-9B2B-D21324299266}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8224C40B-B0A3-4EDC-9B2B-D21324299266}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6687A115-D20F-4AEB-BDAD-E7CA71BBAC7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6687A115-D20F-4AEB-BDAD-E7CA71BBAC7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6687A115-D20F-4AEB-BDAD-E7CA71BBAC7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6687A115-D20F-4AEB-BDAD-E7CA71BBAC7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1765F75-7A4E-4F10-812E-08699A8B70CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1765F75-7A4E-4F10-812E-08699A8B70CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1765F75-7A4E-4F10-812E-08699A8B70CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1765F75-7A4E-4F10-812E-08699A8B70CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAFC009B-06C1-4C9B-A2DE-7BEB41CE8909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAFC009B-06C1-4C9B-A2DE-7BEB41CE8909}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAFC009B-06C1-4C9B-A2DE-7BEB41CE8909}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAFC009B-06C1-4C9B-A2DE-7BEB41CE8909}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2C75254-6BD6-442F-9A29-AE72D67989A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2C75254-6BD6-442F-9A29-AE72D67989A4}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A2C75254-6BD6-442F-9A29-AE72D67989A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2C75254-6BD6-442F-9A29-AE72D67989A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2C75254-6BD6-442F-9A29-AE72D67989A4}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{9936282B-E657-4583-9A03-C246254734CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9936282B-E657-4583-9A03-C246254734CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9936282B-E657-4583-9A03-C246254734CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9936282B-E657-4583-9A03-C246254734CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{640FA5A7-7A58-4A54-A653-A3BE768F8EF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{640FA5A7-7A58-4A54-A653-A3BE768F8EF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{640FA5A7-7A58-4A54-A653-A3BE768F8EF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{640FA5A7-7A58-4A54-A653-A3BE768F8EF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C270E5E0-342E-4C27-A34C-A75178733A08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C270E5E0-342E-4C27-A34C-A75178733A08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C270E5E0-342E-4C27-A34C-A75178733A08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C270E5E0-342E-4C27-A34C-A75178733A08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{669B992A-8FA8-4E6B-AB33-8FE0D364CAB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{669B992A-8FA8-4E6B-AB33-8FE0D364CAB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{669B992A-8FA8-4E6B-AB33-8FE0D364CAB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{669B992A-8FA8-4E6B-AB33-8FE0D364CAB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10B4A916-1962-4354-BEB4-A9ACE92E111D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10B4A916-1962-4354-BEB4-A9ACE92E111D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10B4A916-1962-4354-BEB4-A9ACE92E111D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10B4A916-1962-4354-BEB4-A9ACE92E111D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9341E990-605F-49D2-86E7-EEDD882E9D82}
+	EndGlobalSection
+EndGlobal
