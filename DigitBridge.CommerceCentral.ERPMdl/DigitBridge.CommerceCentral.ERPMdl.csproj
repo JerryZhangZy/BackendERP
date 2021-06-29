@@ -11,7 +11,10 @@
 
   <ItemGroup>
     <Folder Include="ar\" />
-    <Folder Include="Base\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
 </Project>

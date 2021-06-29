@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
-    public interface ITableRepository<TEntity, TId> where TEntity : TableRepository<TEntity, TId>, new()
+    public interface ITableRepository<TEntity, TId> : IEquatable<TEntity>
+        where TEntity : TableRepository<TEntity, TId>, new()
     {
         void Register();
         PocoData GetPocoData();
@@ -14,6 +16,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         bool IsNew { get; }
         bool IsEmpty { get; }
 
+        void ClearMetaData();
         TEntity SetAllowNull(bool allowNull);
         TEntity SetDataBaseFactory(IDataBaseFactory dbFactory);
         ITransaction GetTransaction();

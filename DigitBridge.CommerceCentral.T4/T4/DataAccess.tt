@@ -8,10 +8,60 @@
 <#@ include file="ParseSqlFile.ttinclude" #>
 
 <#
-	// Settings
+/*
+    T4 template to generate service, repository, data structure and tester for specify aspect 
+    This template load database define file (*.sql) and parse database table create sql script to get data table define and relationship.
+    Data table create script:
+        1. column must start with [
+        2. comment of column must not include [ or ] 
+            for example: 
+            	[TotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Sum of all items OrderItems[Quantity] x OrderItems[UnitPrice] ) + TotalTaxPrice + Total ShippingPrice + TotalInsurancePrice + TotalGiftOptionPrice + AdditionalCostOrDiscount +PromotionAmount + (Sum of all items OrderItems[Promotions[Amount]] + OrderItems[Promotions[ShippingAmount]] + OrderItems[RecyclingFee])
+            this will not get correct table and columns info. must remove [ or ]
+
+        3. Primary key - reqired, PK must be BIGINT
+            PK_ and PRIMARY KEY define the PRIMARY KEY
+            for example: CONSTRAINT [PK_PoHeader] PRIMARY KEY ([RowNum])
+            this will generate PK in repository
+
+        4. Unique key - reqired, UK must be VARCHAR(50), this is a GUID string
+            UK_ and UNIQUE define the Unique KEY
+            for example: CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceHeader] ON [dbo].[InvoiceHeader]
+            this will generate Unique Id in repository
+
+        5. Foreign key - optional, FK must include unique key of other table, this is a GUID string
+            FK_ and INDEX define the Foreign KEY
+            for example: CREATE NONCLUSTERED INDEX [FK_InvoiceItems_InvoiceId_Seq] ON [dbo].[InvoiceItems]
+            this will generate code to load multiple records for one to many relationship.
+            for example: InvoiceHeader has multiple InvoiceItems, this will load all InvoiceItems by one InvoiceId
+
+        6. Empty key - optional
+            BLK_ and INDEX define the Empty KEY
+            for example: CREATE NONCLUSTERED INDEX [BLK_InvoiceItems_InvoiceId_Seq] ON [dbo].[InvoiceItems]
+            Empty key use to check current record is empty.
+            this will generate code to check record is empty. 
+            If all key fields is empty then current record will treat as empty.
+
+        7. TINYINT 
+            If column define as TINYINT type.
+            this column will generate a bool property. 
+            1 = true, 0 = false
+
+    Generated code module:
+        1. Generated file will name as *.Designer.cs, this will overwrie each time generate.
+        2. Partial class file will generate when file not exist. will not overwrite.
+        3. table repository - will generate repository class for each table.
+        4. table repository tester - will generate tester class for each table repository.
+        5. structure repository - will generate structure repository class which include all children table repository.
+        6. structure repository Tester - will generate structure repository tester class.
+        6. Service Class - will generate srevice class.
+        7. Service Class Tester - will generate srevice class tester.
+*/
+
+	// Database table define file path
     var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\ar";
-    //only read tables,mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
+    // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
     var Files = "InvoiceHeader,InvoiceHeaderInfo,InvoiceHeaderAttributes,InvoiceItems,InvoiceItemsAttributes";
+    // current solution path
 	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
     var project= Path.Combine(path,DatabaseProjectName);
 
@@ -38,6 +88,16 @@
             new StructureTable() { Name = "InvoiceItems", ParentName = "InvoiceHeader", DetailTable = true, OneToOne = false, LoadByColumn = "InvoiceId", oneToOneChildrenName = "InvoiceItemsAttributes" },
             new StructureTable() { Name = "InvoiceItemsAttributes", ParentName = "InvoiceItems", OneToOne = false, LoadByColumn = "InvoiceId" }
         );
+
+    // generate service class
+    var generateService = true;
+    var NamespaceService = "DigitBridge.CommerceCentral.ERPMdl";
+    var ServiceFolder = "DigitBridge.CommerceCentral.ERPMdl\\ar";
+    var ServiceName = "InvoiceService";
+
+    var generateServiceTester = true;
+    var NamespaceServiceTest = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
+    var ServiceTesterFolder = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
 
     var indent = 2;
     var dir = string.Empty;
@@ -143,6 +203,50 @@
         SaveOutputNotExists(dir, $"{StructureClass.ClassName}Tests.cs");
 #>
 <# } #>
+
+<#      
+    // Generate structure repository class
+	if (generateService && ServiceName != null)
+	{
+#>              
+<#@ include file="GenerateService.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceFolder);
+        SaveOutput(dir, $"{ServiceName}.Designer.cs");
+#>
+
+<#@ include file="GenerateServicePartial.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceFolder);
+        SaveOutputNotExists(dir, $"{ServiceName}.cs");
+#>
+
+<#@ include file="GenerateServiceInterface.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceFolder);
+        SaveOutputNotExists(dir, $"I{ServiceName}.cs");
+#>
+<# } #>
+
+<#      
+    // Generate service tester class
+	if (generateServiceTester && ServiceName != null)
+	{
+#>              
+<#@ include file="GenerateServiceTest.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceTesterFolder);
+        SaveOutput(dir, $"{ServiceName}Tests.Designer.cs");
+#>
+
+<#@ include file="GenerateServiceTestPartial.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceTesterFolder);
+        SaveOutputNotExists(dir, $"{ServiceName}Tests.cs");
+#>
+<# } #>
+
+
 
 <#+
     public void SaveOutput(string destinationFolder, string outputFileName)
