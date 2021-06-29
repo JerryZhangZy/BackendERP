@@ -10,7 +10,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 {
     [ExplicitColumns]
     [Serializable]
-    public class TableRepository<TEntity, TId> : ITableRepository<TEntity, TId>, IEquatable<TEntity>
+    public class TableRepository<TEntity, TId> : ITableRepository<TEntity, TId>
         where TEntity : TableRepository<TEntity, TId>, new()
     {
         #region Public Static Methods
@@ -208,6 +208,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 //return (cachedData._UpdatedObjects.Count > 0) || (cachedData._InsertedObjects.Count > 0);
                 return true;
             }
+        }
+
+        public virtual void ClearMetaData()
+        {
+            _rowNum = 0;
+            _enterDateUtc = null;
+            _digitBridgeGuid = Guid.NewGuid();
+            return;
         }
 
         #endregion Properties
@@ -489,6 +497,18 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
     public static class TableRepositoryExtensions
     {
+        public static IEnumerable<TEntity> ClearMetaData<TEntity>(this IEnumerable<TEntity> lst)
+            where TEntity : TableRepository<TEntity, long>, new()
+            => lst.ClearMetaData<TEntity, long>();
+
+        public static IEnumerable<TEntity> ClearMetaData<TEntity, TId>(this IEnumerable<TEntity> lst) 
+            where TEntity : TableRepository<TEntity, TId>, new()
+        {
+            var tableRepositories = lst.ToList();
+            tableRepositories?.ForEach(i => i?.ClearMetaData());
+            return tableRepositories;
+        }
+
         public static IEnumerable<TEntity> SetAllowNull<TEntity>(this IEnumerable<TEntity> lst, bool allowNull)
             where TEntity : TableRepository<TEntity, long>, new()
             => lst.SetAllowNull<TEntity, long>(allowNull);

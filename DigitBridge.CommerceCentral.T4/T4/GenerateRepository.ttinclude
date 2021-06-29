@@ -363,6 +363,15 @@ if(table.HasOneToManyChildren)
 #>
 
         #region Methods - Generated 
+        public override void ClearMetaData()
+        {
+<# 
+            indent = 3;
+            WriteLine($"{new String('\t',indent)}base.ClearMetaData(); ");
+            WriteLine($"{new String('\t',indent)}{table.UniqueKey} = Guid.NewGuid().ToString(); ");
+#>
+            return;
+        }
 
         public override <#= table.Name #> Clear()
         {

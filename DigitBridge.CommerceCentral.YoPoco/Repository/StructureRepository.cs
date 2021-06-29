@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
@@ -84,6 +85,30 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public void OnException(Func<Exception, bool> onException) => _OnException = onException;
 
         #endregion CallBack function delegate
+
+        public virtual bool Equals(TEntity other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        #region CRUD Methods
+
+        public virtual void New() { }
+        public virtual void Clear() { }
+        public virtual TEntity Clone() => (TEntity)null;
+        public virtual bool Get(long RowNum) => false;
+        public virtual bool GetById(string InvoiceId) => false;
+        public virtual bool Save() => false;
+        public virtual bool Delete() => false;
+
+        public virtual async Task<bool> GetAsync(long RowNum) => false;
+        public virtual async Task<bool> GetByIdAsync(string id) => false;
+        public virtual async Task<bool> SaveAsync() => false;
+        public virtual async Task<bool> DeleteAsync() => false;
+
+        #endregion CRUD Methods
 
     }
 }

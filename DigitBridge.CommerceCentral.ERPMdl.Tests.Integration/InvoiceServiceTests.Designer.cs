@@ -20,34 +20,25 @@ using Xunit;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
-using Bogus;
+using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
+using DigitBridge.CommerceCentral.ERPDb;
 
-namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
+namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
     /// <summary>
-    /// Represents a Tester for InvoiceData.
+    /// Represents a Tester for InvoiceService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class InvoiceDataTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class InvoiceServiceTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        public static InvoiceData GetFakerData()
+        protected InvoiceData GetFakerData()
         {
-			var InvoiceData = new InvoiceData(); 
-			InvoiceData.InvoiceHeader = InvoiceHeaderTests.GetFakerData().Generate(); 
-			InvoiceData.InvoiceHeaderInfo = InvoiceHeaderInfoTests.GetFakerData().Generate(); 
-			InvoiceData.InvoiceHeaderAttributes = InvoiceHeaderAttributesTests.GetFakerData().Generate(); 
-			InvoiceData.InvoiceItems = InvoiceItemsTests.GetFakerData().Generate(10); 
-			foreach (var ln in InvoiceData.InvoiceItems) 
-				ln.InvoiceItemsAttributes = InvoiceItemsAttributesTests.GetFakerData().Generate(); 
-			return InvoiceData; 
+            return InvoiceDataTests.GetFakerData();
         }
 
-        public static List<InvoiceData> GetFakerData(int count)
+        protected List<InvoiceData> GetFakerData(int count)
         {
-			var InvoiceDatas = new List<InvoiceData>(); 
-			for (int i = 0; i < count; i++) 
-				InvoiceDatas.Add(GetFakerData()); 
-			return InvoiceDatas; 
+            return InvoiceDataTests.GetFakerData(count);
         }
 
         protected const string SkipReason = "Debug Helper Function";
@@ -56,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public IConfiguration Configuration { get; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public InvoiceDataTests(TestFixture<StartupTest> fixture) 
+        public InvoiceServiceTests(TestFixture<StartupTest> fixture) 
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -72,40 +63,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
         }
 
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public void Clone_Test()
-		{
-            var id = DataBaseFactory.GetValue<InvoiceHeader, string>(@"
-SELECT TOP 1 ins.InvoiceId 
-FROM InvoiceHeader ins 
-INNER JOIN (
-    SELECT it.InvoiceId, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceId
-) itm ON (itm.InvoiceId = ins.InvoiceId)
-WHERE itm.cnt > 1
-");
-            var data = new InvoiceData(DataBaseFactory);
-            data.GetById(id);
-
-            var dataClone = data.Clone();
-            var result = !data.Equals(dataClone);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
-
         #region sync methods
 
         [Fact()]
 		//[Fact(Skip = SkipReason)]
 		public void Save_Test()
 		{
-			var data = GetFakerData();
-            data.SetDataBaseFactory(DataBaseFactory);
-			data.Save();
+            var srv = new InvoiceService(DataBaseFactory);
+            srv.AttachData(GetFakerData());
+			srv.Save();
 
-            var dataGet = new InvoiceData(DataBaseFactory);
-            dataGet.GetById(data.UniqueId);
-            var result = data.Equals(dataGet);
+            var srvGet = new InvoiceService(DataBaseFactory);
+            srvGet.GetById(srv.Data.UniqueId);
+            var result = srv.Data.Equals(srvGet.Data);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}
@@ -122,22 +92,21 @@ INNER JOIN (
 ) itm ON (itm.InvoiceId = ins.InvoiceId)
 WHERE itm.cnt > 1
 ");
-            var data = new InvoiceData(DataBaseFactory);
-            data.GetById(id);
-            var rowNum = data.InvoiceHeader.RowNum;
+            var srv = new InvoiceService(DataBaseFactory);
+            srv.GetById(id);
+            var rowNum = srv.Data.InvoiceHeader.RowNum;
 
             var dataUpdate = GetFakerData();
-            dataUpdate.SetDataBaseFactory(DataBaseFactory);
-            data.CopyFrom(dataUpdate);
-            data.Save();
+            srv.Data.CopyFrom(dataUpdate);
+            srv.Save();
 
-            var dataGetById = new InvoiceData(DataBaseFactory);
-            dataGetById.GetById(id);
+            var srvGetById = new InvoiceService(DataBaseFactory);
+            srvGetById.GetById(id);
 
-            var dataGet = new InvoiceData(DataBaseFactory);
-            dataGet.Get(rowNum);
+            var srvGet = new InvoiceService(DataBaseFactory);
+            srvGet.Get(rowNum);
 
-            var result = data.Equals(dataGet) && dataGet.Equals(dataGetById);
+            var result = srv.Data.Equals(srvGet.Data) && srvGet.Data.Equals(srvGetById.Data);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -155,21 +124,16 @@ INNER JOIN (
 WHERE itm.cnt > 1
 ");
 
-            var data = new InvoiceData(DataBaseFactory);
-            data.GetById(id);
+            var srv = new InvoiceService(DataBaseFactory);
+            srv.GetById(id);
+            srv.Delete();
 
-            DataBaseFactory.Begin();
-            data.SetDataBaseFactory(DataBaseFactory);
-            data.Delete();
-            DataBaseFactory.Commit();
-
-            var result = DataBaseFactory.ExistUniqueId<InvoiceHeader>(data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<InvoiceHeader>(srv.Data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
         #endregion sync methods
-
 
         #region async methods
 
@@ -177,13 +141,13 @@ WHERE itm.cnt > 1
 		//[Fact(Skip = SkipReason)]
 		public async Task SaveAsync_Test()
 		{
-			var data = GetFakerData();
-            data.SetDataBaseFactory(DataBaseFactory);
-			await data.SaveAsync();
+            var srv = new InvoiceService(DataBaseFactory);
+            srv.AttachData(GetFakerData());
+			await srv.SaveAsync();
 
-            var dataGet = new InvoiceData(DataBaseFactory);
-            await dataGet.GetByIdAsync(data.UniqueId);
-            var result = data.Equals(dataGet);
+            var srvGet = new InvoiceService(DataBaseFactory);
+            await srvGet.GetByIdAsync(srv.Data.UniqueId);
+            var result = srv.Data.Equals(srvGet.Data);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}
@@ -200,22 +164,21 @@ INNER JOIN (
 ) itm ON (itm.InvoiceId = ins.InvoiceId)
 WHERE itm.cnt > 1
 ");
-            var data = new InvoiceData(DataBaseFactory);
-            await data.GetByIdAsync(id);
-            var rowNum = data.InvoiceHeader.RowNum;
+            var srv = new InvoiceService(DataBaseFactory);
+            await srv.GetByIdAsync(id);
+            var rowNum = srv.Data.InvoiceHeader.RowNum;
 
             var dataUpdate = GetFakerData();
-            dataUpdate.SetDataBaseFactory(DataBaseFactory);
-            data.CopyFrom(dataUpdate);
-            await data.SaveAsync();
+            srv.Data.CopyFrom(dataUpdate);
+            await srv.SaveAsync();
 
-            var dataGetById = new InvoiceData(DataBaseFactory);
-            await dataGetById.GetByIdAsync(id);
+            var srvGetById = new InvoiceService(DataBaseFactory);
+            await srvGetById.GetByIdAsync(id);
 
-            var dataGet = new InvoiceData(DataBaseFactory);
-            await dataGet.GetAsync(rowNum);
+            var srvGet = new InvoiceService(DataBaseFactory);
+            await srvGet.GetAsync(rowNum);
 
-            var result = data.Equals(dataGet) && dataGet.Equals(dataGetById);
+            var result = srv.Data.Equals(srvGet.Data) && srvGet.Data.Equals(srvGetById.Data);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -233,20 +196,16 @@ INNER JOIN (
 WHERE itm.cnt > 1
 ");
 
-            var data = new InvoiceData(DataBaseFactory);
-            await data.GetByIdAsync(id);
+            var srv = new InvoiceService(DataBaseFactory);
+            await srv.GetByIdAsync(id);
+            await srv.DeleteAsync();
 
-            DataBaseFactory.Begin();
-            data.SetDataBaseFactory(DataBaseFactory);
-            await data.DeleteAsync();
-            DataBaseFactory.Commit();
-
-            var result = DataBaseFactory.ExistUniqueId<InvoiceHeader>(data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<InvoiceHeader>(srv.Data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
-        #endregion sync methods
+        #endregion async methods
 
     }
 }

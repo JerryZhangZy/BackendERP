@@ -41,11 +41,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region CRUD Methods
 
-        public bool Equals(InvoiceData other)
+        public override bool Equals(InvoiceData other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            if (!UniqueId.Equals(other.UniqueId)) return false;
+            if (!string.IsNullOrWhiteSpace(UniqueId) && !string.IsNullOrWhiteSpace(other.UniqueId) && !UniqueId.Equals(other.UniqueId)) return false;
             return ChildrenEquals(other);
         }
         public virtual bool ChildrenEquals(InvoiceData other)
@@ -86,7 +86,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         partial void ClearOthers();
-        public virtual InvoiceData Clear()
+        public override void Clear()
         {
 			InvoiceHeader?.Clear(); 
 			InvoiceHeaderInfo?.Clear(); 
@@ -97,10 +97,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			ClearOthers(); 
 			if (_OnClear != null)
 				_OnClear(this);
-            return this;
+            return;
         }
 
-        public virtual void New()
+        public override void New()
         {
             Clear();
 			InvoiceHeader = NewInvoiceHeader(); 
@@ -123,7 +123,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return;
         }
 
-        public virtual bool Get(long RowNum)
+        public override InvoiceData Clone()
+        {
+			var newData = new InvoiceData(); 
+			newData.New(); 
+			newData.CopyFrom(this); 
+			newData.InvoiceHeader.ClearMetaData(); 
+			newData.InvoiceHeaderInfo.ClearMetaData(); 
+			newData.InvoiceHeaderAttributes.ClearMetaData(); 
+			newData.InvoiceItems.ClearMetaData(); 
+			newData.InvoiceItemsAttributes.ClearMetaData(); 
+            newData.CheckIntegrity();
+            return newData;
+        }
+
+        public override bool Get(long RowNum)
         {
 			var obj = GetInvoiceHeader(RowNum); 
 			if (obj is null) return false; 
@@ -134,7 +148,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        public virtual bool GetById(string InvoiceId)
+        public override bool GetById(string InvoiceId)
         {
 			var obj = GetInvoiceHeaderByInvoiceId(InvoiceId); 
 			if (obj is null) return false; 
@@ -155,7 +169,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			InvoiceItemsAttributes = GetInvoiceItemsAttributesByInvoiceId(InvoiceHeader.InvoiceId); 
         }
 
-        public virtual bool Save()
+        public override bool Save()
         {
 			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceId)) return false; 
 			CheckIntegrity(); 
@@ -182,7 +196,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        public virtual bool Delete()
+        public override bool Delete()
         {
 			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceId)) return false; 
 			if (_OnBeforeDelete != null)
@@ -194,6 +208,92 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).Delete(); 
 			InvoiceItems.SetDataBaseFactory(dbFactory).Delete(); 
 			InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).Delete(); 
+			if (_OnDelete != null)
+			{
+				if (!_OnDelete(dbFactory, this))
+				{
+					dbFactory.Abort();
+					return false;
+				}
+			}
+			dbFactory.Commit(); 
+			if (_OnAfterDelete != null)
+				_OnAfterDelete(this);
+            return true;
+        }
+
+
+        public override async Task<bool> GetAsync(long RowNum)
+        {
+			var obj = await GetInvoiceHeaderAsync(RowNum); 
+			if (obj is null) return false; 
+			InvoiceHeader = obj; 
+			await GetOthersAsync(); 
+			if (_OnAfterLoad != null)
+				_OnAfterLoad(this);
+            return true;
+        }
+
+        public override async Task<bool> GetByIdAsync(string InvoiceId)
+        {
+			var obj = await GetInvoiceHeaderByInvoiceIdAsync(InvoiceId); 
+			if (obj is null) return false; 
+			InvoiceHeader = obj; 
+			await GetOthersAsync(); 
+			if (_OnAfterLoad != null)
+				_OnAfterLoad(this);
+            return true;
+        }
+
+        protected virtual async Task GetOthersAsync()
+        {
+            
+			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceId)) return; 
+			InvoiceHeaderInfo = await GetInvoiceHeaderInfoByInvoiceIdAsync(InvoiceHeader.InvoiceId); 
+			InvoiceHeaderAttributes = await GetInvoiceHeaderAttributesByInvoiceIdAsync(InvoiceHeader.InvoiceId); 
+			InvoiceItems = await GetInvoiceItemsByInvoiceIdAsync(InvoiceHeader.InvoiceId); 
+			InvoiceItemsAttributes = await GetInvoiceItemsAttributesByInvoiceIdAsync(InvoiceHeader.InvoiceId); 
+        }
+
+        public override async Task<bool> SaveAsync()
+        {
+			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceId)) return false; 
+			CheckIntegrity(); 
+			if (_OnBeforeSave != null)
+				if (!_OnBeforeSave(this)) return false;
+			dbFactory.Begin(); 
+			InvoiceHeader.SetDataBaseFactory(dbFactory); 
+			if (!(await InvoiceHeader.SaveAsync())) return false; 
+			await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync(); 
+			await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
+			await InvoiceItems.SetDataBaseFactory(dbFactory).SaveAsync(); 
+			await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
+			if (_OnSave != null)
+			{
+				if (!_OnSave(dbFactory, this))
+				{
+					dbFactory.Abort();
+					return false;
+				}
+			}
+			dbFactory.Commit(); 
+			if (_OnAfterSave != null)
+				_OnAfterSave(this);
+            return true;
+        }
+
+        public override async Task<bool> DeleteAsync()
+        {
+			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceId)) return false; 
+			if (_OnBeforeDelete != null)
+				if (!_OnBeforeDelete(this)) return false;
+			dbFactory.Begin(); 
+			InvoiceHeader.SetDataBaseFactory(dbFactory); 
+			if ((await InvoiceHeader.DeleteAsync()) <= 0) return false; 
+			await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			await InvoiceItems.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))

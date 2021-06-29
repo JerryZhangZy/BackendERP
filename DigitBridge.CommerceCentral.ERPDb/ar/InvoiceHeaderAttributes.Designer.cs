@@ -99,6 +99,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 
         #region Methods - Generated 
+        public override void ClearMetaData()
+        {
+			base.ClearMetaData(); 
+			InvoiceId = Guid.NewGuid().ToString(); 
+            return;
+        }
 
         public override InvoiceHeaderAttributes Clear()
         {

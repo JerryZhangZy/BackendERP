@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb.Tests.Integration\DigitBridge.CommerceCentral.ERPDb.Tests.Integration.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPMdl\DigitBridge.CommerceCentral.ERPMdl.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.XUnit.Common\DigitBridge.CommerceCentral.XUnit.Common.csproj" />

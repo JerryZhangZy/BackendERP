@@ -29,10 +29,10 @@ namespace <#= NamespaceTest #>
     /// </summary>
     public partial class <#= StructureClass.ClassName #>Tests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        protected <#= StructureClass.ClassName #> GetFakerData()
+        public static <#= StructureClass.ClassName #> GetFakerData()
         {
 <# // generate test data
-            WriteLine($"{new String('\t',indent)}var {StructureClass.ClassName} = new {StructureClass.ClassName}(DataBaseFactory); ");
+            WriteLine($"{new String('\t',indent)}var {StructureClass.ClassName} = new {StructureClass.ClassName}(); ");
             foreach(var item in StructureClass.StructureTables)
             { 
                 var child = item.Value;
@@ -70,7 +70,7 @@ namespace <#= NamespaceTest #>
 #>
         }
 
-        protected List<<#= StructureClass.ClassName #>> GetFakerData(int count)
+        public static List<<#= StructureClass.ClassName #>> GetFakerData(int count)
         {
 <# // generate test data list
             WriteLine($"{new String('\t',indent)}var {StructureClass.ClassName}s = new List<{StructureClass.ClassName}>(); ");
@@ -101,6 +101,27 @@ namespace <#= NamespaceTest #>
         public void Dispose()
         {
         }
+
+        [Fact()]
+		//[Fact(Skip = SkipReason)]
+		public void Clone_Test()
+		{
+            var id = DataBaseFactory.GetValue<<#= StructureClass.MainTable.Name #>, string>(@"
+SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
+FROM <#= StructureClass.MainTable.Name #> ins 
+INNER JOIN (
+    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
+) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
+WHERE itm.cnt > 1
+");
+            var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
+            data.GetById(id);
+
+            var dataClone = data.Clone();
+            var result = !data.Equals(dataClone);
+
+			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+		}
 
         #region sync methods
 
@@ -133,16 +154,126 @@ WHERE itm.cnt > 1
 ");
             var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
             data.GetById(id);
+            var rowNum = data.<#= StructureClass.MainTable.Name #>.RowNum;
 
             var dataUpdate = GetFakerData();
+            dataUpdate.SetDataBaseFactory(DataBaseFactory);
             data.CopyFrom(dataUpdate);
             data.Save();
 
+            var dataGetById = new <#= StructureClass.ClassName #>(DataBaseFactory);
+            dataGetById.GetById(id);
+
             var dataGet = new <#= StructureClass.ClassName #>(DataBaseFactory);
-            dataGet.GetById(id);
-            var result = data.Equals(dataGet);
+            dataGet.Get(rowNum);
+
+            var result = data.Equals(dataGet) && dataGet.Equals(dataGetById);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void Delete_Test()
+        {
+            var id = DataBaseFactory.GetValue<<#= StructureClass.MainTable.Name #>, string>(@"
+SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
+FROM <#= StructureClass.MainTable.Name #> ins 
+INNER JOIN (
+    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
+) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
+WHERE itm.cnt > 1
+");
+
+            var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
+            data.GetById(id);
+
+            DataBaseFactory.Begin();
+            data.SetDataBaseFactory(DataBaseFactory);
+            data.Delete();
+            DataBaseFactory.Commit();
+
+            var result = DataBaseFactory.ExistUniqueId<<#= StructureClass.MainTable.Name #>>(data.UniqueId);
+
+            Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        #endregion sync methods
+
+
+        #region async methods
+
+        [Fact()]
+		//[Fact(Skip = SkipReason)]
+		public async Task SaveAsync_Test()
+		{
+			var data = GetFakerData();
+            data.SetDataBaseFactory(DataBaseFactory);
+			await data.SaveAsync();
+
+            var dataGet = new <#= StructureClass.ClassName #>(DataBaseFactory);
+            await dataGet.GetByIdAsync(data.UniqueId);
+            var result = data.Equals(dataGet);
+
+			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+		}
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetAsync_Test()
+        {
+            var id = await DataBaseFactory.GetValueAsync<<#= StructureClass.MainTable.Name #>, string>(@"
+SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
+FROM <#= StructureClass.MainTable.Name #> ins 
+INNER JOIN (
+    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
+) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
+WHERE itm.cnt > 1
+");
+            var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
+            await data.GetByIdAsync(id);
+            var rowNum = data.<#= StructureClass.MainTable.Name #>.RowNum;
+
+            var dataUpdate = GetFakerData();
+            dataUpdate.SetDataBaseFactory(DataBaseFactory);
+            data.CopyFrom(dataUpdate);
+            await data.SaveAsync();
+
+            var dataGetById = new <#= StructureClass.ClassName #>(DataBaseFactory);
+            await dataGetById.GetByIdAsync(id);
+
+            var dataGet = new <#= StructureClass.ClassName #>(DataBaseFactory);
+            await dataGet.GetAsync(rowNum);
+
+            var result = data.Equals(dataGet) && dataGet.Equals(dataGetById);
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task DeleteAsync_Test()
+        {
+            var id = await DataBaseFactory.GetValueAsync<<#= StructureClass.MainTable.Name #>, string>(@"
+SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
+FROM <#= StructureClass.MainTable.Name #> ins 
+INNER JOIN (
+    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
+) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
+WHERE itm.cnt > 1
+");
+
+            var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
+            await data.GetByIdAsync(id);
+
+            DataBaseFactory.Begin();
+            data.SetDataBaseFactory(DataBaseFactory);
+            await data.DeleteAsync();
+            DataBaseFactory.Commit();
+
+            var result = DataBaseFactory.ExistUniqueId<<#= StructureClass.MainTable.Name #>>(data.UniqueId);
+
+            Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
         #endregion sync methods
