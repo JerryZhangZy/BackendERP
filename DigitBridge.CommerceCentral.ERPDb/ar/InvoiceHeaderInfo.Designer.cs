@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [ExplicitColumns]
     [TableName("InvoiceHeaderInfo")]
     [PrimaryKey("RowNum", AutoIncrement = true)]
-    [UniqueId("InvoiceId")]
+    [UniqueId("InvoiceUuid")]
     [DtoName("InvoiceHeaderInfoDto")]
     public partial class InvoiceHeaderInfo : TableRepository<InvoiceHeaderInfo, long>
     {
@@ -41,8 +41,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public InvoiceHeaderInfo(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         #region Fields - Generated 
-        [Column("InvoiceId",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _invoiceId;
+        [Column("InvoiceUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _invoiceUuid;
 
         [Column("CentralFulfillmentNum",SqlDbType.BigInt)]
         private long? _centralFulfillmentNum;
@@ -74,8 +74,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ShippingAccount",SqlDbType.VarChar)]
         private string _shippingAccount;
 
-        [Column("WarehouseID",SqlDbType.VarChar)]
-        private string _warehouseID;
+        [Column("WarehouseUuid",SqlDbType.VarChar)]
+        private string _warehouseUuid;
 
         [Column("RefNum",SqlDbType.VarChar)]
         private string _refNum;
@@ -83,8 +83,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CustomerPoNum",SqlDbType.VarChar)]
         private string _customerPoNum;
 
-        [Column("EndBuyerUserID",SqlDbType.VarChar)]
-        private string _endBuyerUserID;
+        [Column("EndBuyerUserId",SqlDbType.VarChar)]
+        private string _endBuyerUserId;
 
         [Column("EndBuyerName",SqlDbType.NVarChar)]
         private string _endBuyerName;
@@ -224,21 +224,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Fields - Generated 
 
         #region Properties - Generated 
-		public override string UniqueId => InvoiceId; 
+		public override string UniqueId => InvoiceUuid; 
 		public void CheckUniqueId() 
 		{
-			if (string.IsNullOrEmpty(InvoiceId)) 
-				InvoiceId = Guid.NewGuid().ToString(); 
+			if (string.IsNullOrEmpty(InvoiceUuid)) 
+				InvoiceUuid = Guid.NewGuid().ToString(); 
 		}
-        public virtual string InvoiceId
+        public virtual string InvoiceUuid
         {
             get
             {
-				return _invoiceId?.TrimEnd(); 
+				return _invoiceUuid?.TrimEnd(); 
             }
             set
             {
-				_invoiceId = value.TruncateTo(50); 
+				_invoiceUuid = value.TruncateTo(50); 
             }
         }
 
@@ -383,18 +383,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        public virtual string WarehouseID
+        public virtual string WarehouseUuid
         {
             get
             {
-				if (!AllowNull && _warehouseID is null) 
-					_warehouseID = String.Empty; 
-				return _warehouseID?.TrimEnd(); 
+				if (!AllowNull && _warehouseUuid is null) 
+					_warehouseUuid = String.Empty; 
+				return _warehouseUuid?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
-					_warehouseID = value.TruncateTo(50); 
+					_warehouseUuid = value.TruncateTo(50); 
             }
         }
 
@@ -428,18 +428,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        public virtual string EndBuyerUserID
+        public virtual string EndBuyerUserId
         {
             get
             {
-				if (!AllowNull && _endBuyerUserID is null) 
-					_endBuyerUserID = String.Empty; 
-				return _endBuyerUserID?.TrimEnd(); 
+				if (!AllowNull && _endBuyerUserId is null) 
+					_endBuyerUserId = String.Empty; 
+				return _endBuyerUserId?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
-					_endBuyerUserID = value.TruncateTo(255); 
+					_endBuyerUserId = value.TruncateTo(255); 
             }
         }
 
@@ -1131,13 +1131,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void ClearMetaData()
         {
 			base.ClearMetaData(); 
-			InvoiceId = Guid.NewGuid().ToString(); 
+			InvoiceUuid = Guid.NewGuid().ToString(); 
             return;
         }
 
         public override InvoiceHeaderInfo Clear()
         {
-			_invoiceId = String.Empty; 
+			_invoiceUuid = String.Empty; 
 			_centralFulfillmentNum = AllowNull ? (long?)null : default(long); 
 			_shippingCarrier = AllowNull ? (string)null : String.Empty; 
 			_shippingClass = AllowNull ? (string)null : String.Empty; 
@@ -1148,10 +1148,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_channelOrderID = String.Empty; 
 			_secondaryChannelOrderID = AllowNull ? (string)null : String.Empty; 
 			_shippingAccount = AllowNull ? (string)null : String.Empty; 
-			_warehouseID = AllowNull ? (string)null : String.Empty; 
+			_warehouseUuid = AllowNull ? (string)null : String.Empty; 
 			_refNum = AllowNull ? (string)null : String.Empty; 
 			_customerPoNum = AllowNull ? (string)null : String.Empty; 
-			_endBuyerUserID = AllowNull ? (string)null : String.Empty; 
+			_endBuyerUserId = AllowNull ? (string)null : String.Empty; 
 			_endBuyerName = AllowNull ? (string)null : String.Empty; 
 			_endBuyerEmail = AllowNull ? (string)null : String.Empty; 
 			_shipToName = AllowNull ? (string)null : String.Empty; 

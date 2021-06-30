@@ -5,11 +5,29 @@
 	[MasterAccountNum] INT NOT NULL,
 	[ProfileNum] INT NOT NULL,
 
-    [InventoryId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Inventory Item Line
+    [ProductUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for product SKU
+    [InventoryUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Inventory Item Line
+
+	[StyleCode] Varchar(100) NOT NULL,--Product SKU Item No 
+	[Color] Varchar(50) NOT NULL,--Product SKU Color Code 
+	[SizeType] Varchar(50) NOT NULL,--Product SKU. Ex: Regular, Plus 
+	[SizeSystem] Varchar(50) NOT NULL,--Product SKU size code
+	[Size] Varchar(50) NOT NULL,--Product SKU size code
+	[Width] Varchar(50) NOT NULL,--Product SKU width code
+	[Length] Varchar(50) NOT NULL,--Product SKU Length code
+
+	[ClassCode] Varchar(50) NOT NULL,--Product SKU Class  
+	[Department] Varchar(50) NOT NULL,--Product SKU department
+	[Division] Varchar(50) NOT NULL,--Product SKU department
+	[Year] Varchar(20) NOT NULL,
+
+	[PriceRule] Varchar(50) NOT NULL,--Product SKU 
+	[Stockable] Varchar(100) NOT NULL,--Product SKU 
+	[LeadDay] Int NOT NULL,--Product SKU processing days before ship
 
 	[SKU] Varchar(100) NOT NULL,--Product SKU 
 	[Description] NVARCHAR(200) NULL, --Warehouse Guid
-	[WarehouseID] VARCHAR(50) NULL, --Warehouse Guid
+	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
 	[WhsDescription] NVarchar(200) NOT NULL,--Invoice item description 
 	[LotNum] Varchar(100) NOT NULL,--Product SKU Lot Number 
 	[LotInDate] DATE NULL, --Lot receive Date
@@ -67,9 +85,17 @@
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'UI_Inventory_InventoryId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_Inventory_InventoryId] ON [dbo].[Inventory]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_Inventory_InventoryUuid] ON [dbo].[Inventory]
 (
-	[InventoryId] ASC
+	[InventoryUuid] ASC
+) ON [PRIMARY]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'UI_Inventory_InventoryId')
+CREATE UNIQUE NONCLUSTERED INDEX [FK_Inventory_ProductUuid] ON [dbo].[Inventory]
+(
+	[ProductUuid] ASC,
+	[WarehouseUuid] ASC
 ) ON [PRIMARY]
 GO
 
@@ -84,7 +110,7 @@ IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[In
 CREATE NONCLUSTERED INDEX [IX_Inventory_S_W_L_L] ON [dbo].[Inventory]
 (
 	[SKU],
-	[WarehouseID],
+	[WarehouseUuid],
 	[LotNum],
 	[LpnNum]
 ) ON [PRIMARY]
@@ -93,7 +119,7 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_WarehouseID')
 CREATE NONCLUSTERED INDEX [IX_Inventory_WarehouseID] ON [dbo].[Inventory]
 (
-	[WarehouseID] ASC
+	[WarehouseUuid] ASC
 ) ON [PRIMARY]
 GO
 

@@ -148,9 +148,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        public override bool GetById(string InvoiceId)
+        public override bool GetById(string InvoiceUuid)
         {
-			var obj = GetInvoiceHeaderByInvoiceId(InvoiceId); 
+			var obj = GetInvoiceHeaderByInvoiceUuid(InvoiceUuid); 
 			if (obj is null) return false; 
 			InvoiceHeader = obj; 
 			GetOthers(); 
@@ -162,16 +162,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         protected virtual void GetOthers()
         {
             
-			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceId)) return; 
-			InvoiceHeaderInfo = GetInvoiceHeaderInfoByInvoiceId(InvoiceHeader.InvoiceId); 
-			InvoiceHeaderAttributes = GetInvoiceHeaderAttributesByInvoiceId(InvoiceHeader.InvoiceId); 
-			InvoiceItems = GetInvoiceItemsByInvoiceId(InvoiceHeader.InvoiceId); 
-			InvoiceItemsAttributes = GetInvoiceItemsAttributesByInvoiceId(InvoiceHeader.InvoiceId); 
+			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return; 
+			InvoiceHeaderInfo = GetInvoiceHeaderInfoByInvoiceUuid(InvoiceHeader.InvoiceUuid); 
+			InvoiceHeaderAttributes = GetInvoiceHeaderAttributesByInvoiceUuid(InvoiceHeader.InvoiceUuid); 
+			InvoiceItems = GetInvoiceItemsByInvoiceUuid(InvoiceHeader.InvoiceUuid); 
+			InvoiceItemsAttributes = GetInvoiceItemsAttributesByInvoiceUuid(InvoiceHeader.InvoiceUuid); 
         }
 
         public override bool Save()
         {
-			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceId)) return false; 
+			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return false; 
 			CheckIntegrity(); 
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
@@ -198,7 +198,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override bool Delete()
         {
-			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceId)) return false; 
+			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return false; 
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
@@ -234,9 +234,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        public override async Task<bool> GetByIdAsync(string InvoiceId)
+        public override async Task<bool> GetByIdAsync(string InvoiceUuid)
         {
-			var obj = await GetInvoiceHeaderByInvoiceIdAsync(InvoiceId); 
+			var obj = await GetInvoiceHeaderByInvoiceUuidAsync(InvoiceUuid); 
 			if (obj is null) return false; 
 			InvoiceHeader = obj; 
 			await GetOthersAsync(); 
@@ -248,16 +248,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         protected virtual async Task GetOthersAsync()
         {
             
-			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceId)) return; 
-			InvoiceHeaderInfo = await GetInvoiceHeaderInfoByInvoiceIdAsync(InvoiceHeader.InvoiceId); 
-			InvoiceHeaderAttributes = await GetInvoiceHeaderAttributesByInvoiceIdAsync(InvoiceHeader.InvoiceId); 
-			InvoiceItems = await GetInvoiceItemsByInvoiceIdAsync(InvoiceHeader.InvoiceId); 
-			InvoiceItemsAttributes = await GetInvoiceItemsAttributesByInvoiceIdAsync(InvoiceHeader.InvoiceId); 
+			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return; 
+			InvoiceHeaderInfo = await GetInvoiceHeaderInfoByInvoiceUuidAsync(InvoiceHeader.InvoiceUuid); 
+			InvoiceHeaderAttributes = await GetInvoiceHeaderAttributesByInvoiceUuidAsync(InvoiceHeader.InvoiceUuid); 
+			InvoiceItems = await GetInvoiceItemsByInvoiceUuidAsync(InvoiceHeader.InvoiceUuid); 
+			InvoiceItemsAttributes = await GetInvoiceItemsAttributesByInvoiceUuidAsync(InvoiceHeader.InvoiceUuid); 
         }
 
         public override async Task<bool> SaveAsync()
         {
-			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceId)) return false; 
+			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return false; 
 			CheckIntegrity(); 
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
@@ -284,7 +284,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override async Task<bool> DeleteAsync()
         {
-			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceId)) return false; 
+			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return false; 
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
@@ -324,15 +324,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         public virtual void CopyInvoiceHeaderFrom(InvoiceData data) => 
-            InvoiceHeader.CopyFrom(data.InvoiceHeader, new string[] {"InvoiceId"});
+            InvoiceHeader.CopyFrom(data.InvoiceHeader, new string[] {"InvoiceUuid"});
 
         public virtual InvoiceHeader NewInvoiceHeader() => new InvoiceHeader(dbFactory).SetParent(this);
 
         public virtual InvoiceHeader GetInvoiceHeader(long RowNum) =>
             (RowNum <= 0) ? null : dbFactory.Get<InvoiceHeader>(RowNum);
 
-        public virtual InvoiceHeader GetInvoiceHeaderByInvoiceId(string InvoiceId) =>
-            (string.IsNullOrEmpty(InvoiceId)) ? null : dbFactory.GetById<InvoiceHeader>(InvoiceId);
+        public virtual InvoiceHeader GetInvoiceHeaderByInvoiceUuid(string InvoiceUuid) =>
+            (string.IsNullOrEmpty(InvoiceUuid)) ? null : dbFactory.GetById<InvoiceHeader>(InvoiceUuid);
 
         public virtual bool SaveInvoiceHeader(InvoiceHeader data) =>
             (data is null) ? false : data.Save();
@@ -343,8 +343,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual async Task<InvoiceHeader> GetInvoiceHeaderAsync(long RowNum) =>
             (RowNum <= 0) ? null : await dbFactory.GetAsync<InvoiceHeader>(RowNum);
 
-        public virtual async Task<InvoiceHeader> GetInvoiceHeaderByInvoiceIdAsync(string InvoiceId) =>
-            (string.IsNullOrEmpty(InvoiceId)) ? null : await dbFactory.GetByIdAsync<InvoiceHeader>(InvoiceId);
+        public virtual async Task<InvoiceHeader> GetInvoiceHeaderByInvoiceUuidAsync(string InvoiceUuid) =>
+            (string.IsNullOrEmpty(InvoiceUuid)) ? null : await dbFactory.GetByIdAsync<InvoiceHeader>(InvoiceUuid);
 
         public virtual async Task<bool> SaveInvoiceHeaderAsync(InvoiceHeader data) =>
             (data is null) ? false : await data.SaveAsync();
@@ -370,15 +370,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         public virtual void CopyInvoiceHeaderInfoFrom(InvoiceData data) => 
-            InvoiceHeaderInfo.CopyFrom(data.InvoiceHeaderInfo, new string[] {"InvoiceId"});
+            InvoiceHeaderInfo.CopyFrom(data.InvoiceHeaderInfo, new string[] {"InvoiceUuid"});
 
         public virtual InvoiceHeaderInfo NewInvoiceHeaderInfo() => new InvoiceHeaderInfo(dbFactory).SetParent(this);
 
         public virtual InvoiceHeaderInfo GetInvoiceHeaderInfo(long RowNum) =>
             (RowNum <= 0) ? null : dbFactory.Get<InvoiceHeaderInfo>(RowNum);
 
-        public virtual InvoiceHeaderInfo GetInvoiceHeaderInfoByInvoiceId(string InvoiceId) =>
-            (string.IsNullOrEmpty(InvoiceId)) ? null : dbFactory.GetById<InvoiceHeaderInfo>(InvoiceId);
+        public virtual InvoiceHeaderInfo GetInvoiceHeaderInfoByInvoiceUuid(string InvoiceUuid) =>
+            (string.IsNullOrEmpty(InvoiceUuid)) ? null : dbFactory.GetById<InvoiceHeaderInfo>(InvoiceUuid);
 
         public virtual bool SaveInvoiceHeaderInfo(InvoiceHeaderInfo data) =>
             (data is null) ? false : data.Save();
@@ -389,8 +389,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual async Task<InvoiceHeaderInfo> GetInvoiceHeaderInfoAsync(long RowNum) =>
             (RowNum <= 0) ? null : await dbFactory.GetAsync<InvoiceHeaderInfo>(RowNum);
 
-        public virtual async Task<InvoiceHeaderInfo> GetInvoiceHeaderInfoByInvoiceIdAsync(string InvoiceId) =>
-            (string.IsNullOrEmpty(InvoiceId)) ? null : await dbFactory.GetByIdAsync<InvoiceHeaderInfo>(InvoiceId);
+        public virtual async Task<InvoiceHeaderInfo> GetInvoiceHeaderInfoByInvoiceUuidAsync(string InvoiceUuid) =>
+            (string.IsNullOrEmpty(InvoiceUuid)) ? null : await dbFactory.GetByIdAsync<InvoiceHeaderInfo>(InvoiceUuid);
 
         public virtual async Task<bool> SaveInvoiceHeaderInfoAsync(InvoiceHeaderInfo data) =>
             (data is null) ? false : await data.SaveAsync();
@@ -403,8 +403,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (InvoiceHeaderInfo is null || InvoiceHeader is null) 
                 return InvoiceHeaderInfo;
             InvoiceHeaderInfo.SetParent(this);
-            if (InvoiceHeaderInfo.InvoiceId != InvoiceHeader.InvoiceId)
-                InvoiceHeaderInfo.InvoiceId = InvoiceHeader.InvoiceId;
+            if (InvoiceHeaderInfo.InvoiceUuid != InvoiceHeader.InvoiceUuid)
+                InvoiceHeaderInfo.InvoiceUuid = InvoiceHeader.InvoiceUuid;
             return InvoiceHeaderInfo;
         }
 
@@ -425,15 +425,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         public virtual void CopyInvoiceHeaderAttributesFrom(InvoiceData data) => 
-            InvoiceHeaderAttributes.CopyFrom(data.InvoiceHeaderAttributes, new string[] {"InvoiceId"});
+            InvoiceHeaderAttributes.CopyFrom(data.InvoiceHeaderAttributes, new string[] {"InvoiceUuid"});
 
         public virtual InvoiceHeaderAttributes NewInvoiceHeaderAttributes() => new InvoiceHeaderAttributes(dbFactory).SetParent(this);
 
         public virtual InvoiceHeaderAttributes GetInvoiceHeaderAttributes(long RowNum) =>
             (RowNum <= 0) ? null : dbFactory.Get<InvoiceHeaderAttributes>(RowNum);
 
-        public virtual InvoiceHeaderAttributes GetInvoiceHeaderAttributesByInvoiceId(string InvoiceId) =>
-            (string.IsNullOrEmpty(InvoiceId)) ? null : dbFactory.GetById<InvoiceHeaderAttributes>(InvoiceId);
+        public virtual InvoiceHeaderAttributes GetInvoiceHeaderAttributesByInvoiceUuid(string InvoiceUuid) =>
+            (string.IsNullOrEmpty(InvoiceUuid)) ? null : dbFactory.GetById<InvoiceHeaderAttributes>(InvoiceUuid);
 
         public virtual bool SaveInvoiceHeaderAttributes(InvoiceHeaderAttributes data) =>
             (data is null) ? false : data.Save();
@@ -444,8 +444,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual async Task<InvoiceHeaderAttributes> GetInvoiceHeaderAttributesAsync(long RowNum) =>
             (RowNum <= 0) ? null : await dbFactory.GetAsync<InvoiceHeaderAttributes>(RowNum);
 
-        public virtual async Task<InvoiceHeaderAttributes> GetInvoiceHeaderAttributesByInvoiceIdAsync(string InvoiceId) =>
-            (string.IsNullOrEmpty(InvoiceId)) ? null : await dbFactory.GetByIdAsync<InvoiceHeaderAttributes>(InvoiceId);
+        public virtual async Task<InvoiceHeaderAttributes> GetInvoiceHeaderAttributesByInvoiceUuidAsync(string InvoiceUuid) =>
+            (string.IsNullOrEmpty(InvoiceUuid)) ? null : await dbFactory.GetByIdAsync<InvoiceHeaderAttributes>(InvoiceUuid);
 
         public virtual async Task<bool> SaveInvoiceHeaderAttributesAsync(InvoiceHeaderAttributes data) =>
             (data is null) ? false : await data.SaveAsync();
@@ -458,8 +458,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (InvoiceHeaderAttributes is null || InvoiceHeader is null) 
                 return InvoiceHeaderAttributes;
             InvoiceHeaderAttributes.SetParent(this);
-            if (InvoiceHeaderAttributes.InvoiceId != InvoiceHeader.InvoiceId)
-                InvoiceHeaderAttributes.InvoiceId = InvoiceHeader.InvoiceId;
+            if (InvoiceHeaderAttributes.InvoiceUuid != InvoiceHeader.InvoiceUuid)
+                InvoiceHeaderAttributes.InvoiceUuid = InvoiceHeader.InvoiceUuid;
             return InvoiceHeaderAttributes;
         }
 
@@ -522,7 +522,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual void CopyInvoiceItemsFrom(InvoiceData data) 
         {
-            InvoiceItems.CopyFrom(data.InvoiceItems, new string[] {"InvoiceId"});
+            InvoiceItems.CopyFrom(data.InvoiceItems, new string[] {"InvoiceUuid"});
             var lst = InvoiceItems.ToList(); 
             var lstDeleted = lst.FindNotExistsByRowNum(data.InvoiceItems);
             SetInvoiceItemsDeleted(lstDeleted);
@@ -540,10 +540,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual InvoiceItems RemoveInvoiceItems(InvoiceItems obj) => 
             AddInvoiceItemsDeleted(InvoiceItems.Remove(obj.SetParent(this)));
 
-        public virtual IEnumerable<InvoiceItems> GetInvoiceItemsByInvoiceId(string InvoiceId) =>
-            (string.IsNullOrEmpty(InvoiceId)) 
+        public virtual IEnumerable<InvoiceItems> GetInvoiceItemsByInvoiceUuid(string InvoiceUuid) =>
+            (string.IsNullOrEmpty(InvoiceUuid)) 
                 ? null 
-                : dbFactory.Find<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq ", InvoiceId).ToList();
+                : dbFactory.Find<InvoiceItems>("WHERE InvoiceUuid = @0 ORDER BY Seq ", InvoiceUuid).ToList();
 
         public virtual bool SaveInvoiceItems(IEnumerable<InvoiceItems> data) =>
             (data is null) ? false : data.Save();
@@ -551,10 +551,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual int DeleteInvoiceItems(IEnumerable<InvoiceItems> data) =>
             (data is null) ? 0 : data.Delete();
 
-        public virtual async Task<IEnumerable<InvoiceItems>> GetInvoiceItemsByInvoiceIdAsync(string InvoiceId) =>
-            (string.IsNullOrEmpty(InvoiceId)) 
+        public virtual async Task<IEnumerable<InvoiceItems>> GetInvoiceItemsByInvoiceUuidAsync(string InvoiceUuid) =>
+            (string.IsNullOrEmpty(InvoiceUuid)) 
                 ? null
-                : await dbFactory.FindAsync<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq ", InvoiceId);
+                : await dbFactory.FindAsync<InvoiceItems>("WHERE InvoiceUuid = @0 ORDER BY Seq ", InvoiceUuid);
 
         public virtual async Task<bool> SaveInvoiceItemsAsync(IEnumerable<InvoiceItems> data) =>
             (data is null) ? false : await data.SaveAsync();
@@ -572,8 +572,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             foreach (var child in children.Where(x => x != null))
             {
                 child.SetParent(this);
-                if (child.InvoiceId != InvoiceHeader.InvoiceId)
-                    child.InvoiceId = InvoiceHeader.InvoiceId;
+                if (child.InvoiceUuid != InvoiceHeader.InvoiceUuid)
+                    child.InvoiceUuid = InvoiceHeader.InvoiceUuid;
                 seq += 1;
                 child.Seq = seq;
             }
@@ -604,10 +604,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             } 
         }
 
-        public virtual IEnumerable<InvoiceItemsAttributes> GetInvoiceItemsAttributesByInvoiceId(string InvoiceId) =>
-            (string.IsNullOrEmpty(InvoiceId)) 
+        public virtual IEnumerable<InvoiceItemsAttributes> GetInvoiceItemsAttributesByInvoiceUuid(string InvoiceUuid) =>
+            (string.IsNullOrEmpty(InvoiceUuid)) 
                 ? null 
-                : dbFactory.Find<InvoiceItemsAttributes>("WHERE InvoiceId = @0 ORDER BY RowNum ", InvoiceId);
+                : dbFactory.Find<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ORDER BY RowNum ", InvoiceUuid);
 
         public virtual bool SaveInvoiceItemsAttributes(IEnumerable<InvoiceItemsAttributes> data) =>
             (data is null) ? false : data.Save();
@@ -615,10 +615,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual int DeleteInvoiceItemsAttributes(IEnumerable<InvoiceItemsAttributes> data) =>
             (data is null) ? 0 : data.Delete();
 
-        public virtual async Task<IEnumerable<InvoiceItemsAttributes>> GetInvoiceItemsAttributesByInvoiceIdAsync(string InvoiceId) =>
-            (string.IsNullOrEmpty(InvoiceId)) 
+        public virtual async Task<IEnumerable<InvoiceItemsAttributes>> GetInvoiceItemsAttributesByInvoiceUuidAsync(string InvoiceUuid) =>
+            (string.IsNullOrEmpty(InvoiceUuid)) 
                 ? null
-                : await dbFactory.FindAsync<InvoiceItemsAttributes>("WHERE InvoiceId = @0 ORDER BY RowNum ", InvoiceId);
+                : await dbFactory.FindAsync<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ORDER BY RowNum ", InvoiceUuid);
 
         public virtual async Task<bool> SaveInvoiceItemsAttributesAsync(IEnumerable<InvoiceItemsAttributes> data) =>
             (data is null) ? false : await data.SaveAsync();
@@ -636,8 +636,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             foreach (var child in children.Where(x => x != null))
             {
                 child.SetParent(this);
-                if (child.InvoiceId != InvoiceHeader.InvoiceId)
-                    child.InvoiceId = InvoiceHeader.InvoiceId;
+                if (child.InvoiceUuid != InvoiceHeader.InvoiceUuid)
+                    child.InvoiceUuid = InvoiceHeader.InvoiceUuid;
             }
             return children;
         }

@@ -69,7 +69,8 @@
     var generateModel = true;
     var Namespace = "DigitBridge.CommerceCentral.ERPDb";
     var ModelFolder = "DigitBridge.CommerceCentral.ERPDb\\ar";
-    var DtoFolder = "DigitBridge.CommerceCentral.ERPDb\\ar";
+    var generateDto = true;
+    var DtoFolder = "DigitBridge.CommerceCentral.ERPDb\\ar\\dto";
 
     // generate tester class for each table repository
     var generateTester = true;
@@ -88,6 +89,13 @@
             new StructureTable() { Name = "InvoiceItems", ParentName = "InvoiceHeader", DetailTable = true, OneToOne = false, LoadByColumn = "InvoiceId", oneToOneChildrenName = "InvoiceItemsAttributes" },
             new StructureTable() { Name = "InvoiceItemsAttributes", ParentName = "InvoiceItems", OneToOne = false, LoadByColumn = "InvoiceId" }
         );
+
+    // generate structure Dto class
+    var generateStructureDto = true;
+    var generateStructureDtoTester = true;
+    var NamespaceStructureDto = "DigitBridge.CommerceCentral.ERPDb";
+    var StructureDtoFolder = "DigitBridge.CommerceCentral.ERPDb\\ar\\dto";
+    var StructureDtoName = "InvoiceDataDto";
 
     // generate service class
     var generateService = true;
@@ -163,6 +171,17 @@
             }
 #>
 
+<#          // Generate tester class
+	        if (generateDto)
+	        {
+#>              
+<#@ include file="GenerateRepositoryDto.ttinclude" #>
+<# 
+                dir = Path.Combine(path, DtoFolder);
+                SaveOutputNotExists(dir, $"{table.DtoName}.cs");
+            }
+#>
+
 <# 
         }
     }
@@ -201,6 +220,17 @@
 <# 
         dir = Path.Combine(path,TesterFolder);
         SaveOutputNotExists(dir, $"{StructureClass.ClassName}Tests.cs");
+#>
+<# } #>
+
+<#  // Generate StructureDto class
+	if (generateStructureDto && StructureClass != null)
+	{
+#>              
+<#@ include file="GenerateStructureDto.ttinclude" #>
+<# 
+        dir = Path.Combine(path, StructureDtoFolder);
+        SaveOutputNotExists(dir, $"{StructureDtoName}.cs");
 #>
 <# } #>
 

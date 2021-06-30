@@ -1,9 +1,9 @@
 ﻿CREATE TABLE [dbo].[InvoiceItems]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [InvoiceItemsId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice Item Line
+    [InvoiceItemsUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice Item Line
 
-    [InvoiceId] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Invoice
+    [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Invoice
     [Seq] INT NOT NULL DEFAULT 0, --Invoice Item Line sort sequence
     [InvoiceItemType] INT NULL DEFAULT 0, --Invoice item type
     [InvoiceItemStatus] INT NULL DEFAULT 0, --Invoice item status
@@ -13,8 +13,9 @@
 	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer 
 
 	[SKU] Varchar(100) NOT NULL,--Product SKU 
-	[InventoryId] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Inventory Item Line
-	[WarehouseID] VARCHAR(50) NULL, --Warehouse Guid
+	[ProductUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Inventory SKU
+	[InventoryUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Inventory Item Line
+	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
 	[LotNum] Varchar(100) NOT NULL,--Product SKU Lot Number 
 	[Description] NVarchar(200) NOT NULL,--Invoice item description 
 	[Notes] NVarchar(500) NOT NULL,--Invoice item notes 
@@ -66,38 +67,38 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'UK_InvoiceItems_InvoiceItemsId')
-CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceItems_InvoiceItemsId] ON [dbo].[InvoiceItems]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceItems_InvoiceItemsUuid] ON [dbo].[InvoiceItems]
 (
-	[InvoiceItemsId] ASC
+	[InvoiceItemsUuid] ASC
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'FK_InvoiceItems_InvoiceId_Seq')
-CREATE NONCLUSTERED INDEX [FK_InvoiceItems_InvoiceId_Seq] ON [dbo].[InvoiceItems]
+CREATE NONCLUSTERED INDEX [FK_InvoiceItems_InvoiceUuid_Seq] ON [dbo].[InvoiceItems]
 (
-	[InvoiceId] ASC,
+	[InvoiceUuid] ASC,
 	[Seq] ASC
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'BLK_InvoiceItems_InvoiceId_Seq')
-CREATE NONCLUSTERED INDEX [BLK_InvoiceItems_InvoiceId_Seq] ON [dbo].[InvoiceItems]
+CREATE NONCLUSTERED INDEX [BLK_InvoiceItems_InvoiceUuid_Seq] ON [dbo].[InvoiceItems]
 (
 	[SKU] ASC
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'IX_InvoiceItems_InvoiceId')
-CREATE NONCLUSTERED INDEX [IX_InvoiceItems_InvoiceId] ON [dbo].[InvoiceItems]
+CREATE NONCLUSTERED INDEX [IX_InvoiceItems_InvoiceUuid] ON [dbo].[InvoiceItems]
 (
-	[InvoiceId] ASC
+	[InvoiceUuid] ASC
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceItems]') AND name = N'IX_InvoiceItems_InventoryId')
-CREATE NONCLUSTERED INDEX [IX_InvoiceItems_InventoryId] ON [dbo].[InvoiceItems]
+CREATE NONCLUSTERED INDEX [IX_InvoiceItems_InventoryUuid] ON [dbo].[InvoiceItems]
 (
-	[InventoryId] ASC
+	[InventoryUuid] ASC
 ) ON [PRIMARY]
 GO
 

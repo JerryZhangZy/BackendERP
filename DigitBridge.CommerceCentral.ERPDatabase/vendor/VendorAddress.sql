@@ -1,9 +1,9 @@
 ﻿CREATE TABLE [dbo].[VendorAddress]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [AddressId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Address
+    [AddressUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Address
 
-    [VendorId] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Vendor
+    [VendorUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Vendor
     [AddressCode] VARCHAR(50) NOT NULL DEFAULT '', --Address code, human readable
     [AddressType] INT NOT NULL DEFAULT '0', --Address type, billing, shipping, store
     [Description] NVARCHAR(200) NOT NULL DEFAULT '', --Address description
@@ -39,24 +39,24 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorAddress]') AND name = N'UI_VendorAddress_AddressId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_VendorAddress_AddressId] ON [dbo].[VendorAddress]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_VendorAddress_AddressUuid] ON [dbo].[VendorAddress]
 (
-	[AddressId] ASC
+	[AddressUuid] ASC
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorAddress]') AND name = N'UI_VendorAddress_VendorId_AddressCode')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_VendorAddress_VendorId_AddressCode] ON [dbo].[VendorAddress]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_VendorAddress_VendorUuid_AddressCode] ON [dbo].[VendorAddress]
 (
-	[VendorId] ASC,
+	[VendorUuid] ASC,
 	[AddressCode] ASC
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorAddress]') AND name = N'UI_VendorAddress_VendorId')
-CREATE NONCLUSTERED INDEX [UI_VendorAddress_VendorId] ON [dbo].[VendorAddress]
+CREATE NONCLUSTERED INDEX [UI_VendorAddress_VendorUuid] ON [dbo].[VendorAddress]
 (
-	[VendorId] ASC
+	[VendorUuid] ASC
 ) ON [PRIMARY]
 GO
 

@@ -1,11 +1,11 @@
 ﻿CREATE TABLE [dbo].[PoItemsRef]
 (
-	[Id] BIGINT IDENTITY(1,1) NOT NULL,
+	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
     [DatabaseNum] INT NOT NULL, --Each database has its own default value.
 	[MasterAccountNum] INT NOT NULL,
 	[ProfileNum] INT NOT NULL,
-    [PoId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O
-    [PoItemId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O Item Line
+    [PoUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O
+    [PoItemUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O Item Line
 
 	-- drop ship S/O info 
 	[CentralFulfillmentNum] BIGINT NULL, --CentralFulfillmentNum of dropship S/O
@@ -19,8 +19,8 @@
 	[SecondaryChannelOrderID] VARCHAR(200) NULL, --Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time.
 	[ShippingAccount] VARCHAR(100) NULL, --requested Vendor use Account to ship
 
-	[WarehouseID] VARCHAR(50) NULL, --Warehouse Guid
-	[CustomerID] VARCHAR(50) NULL, --Customer Guid
+	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
+	[CustomerUuid] VARCHAR(50) NULL, --Customer Guid
 	[EndBuyerUserID] VARCHAR(255) NULL, --The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
 	[EndBuyerName] VARCHAR(255) NULL, --The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
 	[EndBuyerEmail] VARCHAR(255) NULL, --The email of the end customer
@@ -71,21 +71,21 @@
     [EnterBy] Varchar(100) NOT NULL,
     [UpdateBy] Varchar(100) NOT NULL,
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
-    CONSTRAINT [PK_PoItemsRef] PRIMARY KEY ([Id]), 
+    CONSTRAINT [PK_PoItemsRef] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItemsRef]') AND name = N'UI_PoItemsRef_PoItemId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoItemsRef_PoItemId] ON [dbo].[PoItemsRef]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_PoItemsRef_PoItemUuid] ON [dbo].[PoItemsRef]
 (
-	[PoItemId] ASC
+	[PoItemUuid] ASC
 ) ON [PRIMARY]
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItemsRef]') AND name = N'UI_PoItemsRef_PoId')
-CREATE NONCLUSTERED INDEX [UI_PoItemsRef_PoId] ON [dbo].[PoItemsRef]
+CREATE NONCLUSTERED INDEX [FK_PoItemsRef_PoUuid] ON [dbo].[PoItemsRef]
 (
-	[PoId] ASC
+	[PoUuid] ASC
 ) ON [PRIMARY]
 GO
 

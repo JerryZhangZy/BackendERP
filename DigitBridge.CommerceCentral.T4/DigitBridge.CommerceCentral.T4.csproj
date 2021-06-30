@@ -5,12 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Update="T4\GenerateRepositoryDto.ttinclude">
+      <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\GenerateServiceInterface.ttinclude">
       <LastGenOutput>GenerateService.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateService.ttinclude">
-      <LastGenOutput>GenerateService.cs</LastGenOutput>
+      <LastGenOutput>GenerateStructureDto.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureDto.ttinclude">
+      <LastGenOutput>GenerateStructureDto.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateStructureOneToManyChildren.ttinclude">
@@ -62,7 +70,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepository.ttinclude">
-      <LastGenOutput>GenerateRepository.cs</LastGenOutput>
+      <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepositoryTest.ttinclude">
@@ -89,10 +97,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateRepository.cs">
+    <Compile Update="T4\GenerateRepository - Copy.cs">
+      <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateRepositoryDto.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateRepositoryPartialClass.cs">
       <DesignTime>True</DesignTime>
@@ -114,15 +127,20 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="T4\GenerateStructure - Copy - Copy.cs">
+      <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="T4\GenerateStructure - Copy.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateService.cs">
+    <Compile Update="T4\GenerateStructureDto.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateService.ttinclude</DependentUpon>
+      <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateStructurePartial - Copy.cs">
       <DependentUpon>GenerateStructurePartial.ttinclude</DependentUpon>

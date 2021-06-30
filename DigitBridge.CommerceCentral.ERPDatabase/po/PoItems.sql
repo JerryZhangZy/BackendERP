@@ -1,9 +1,9 @@
 ﻿CREATE TABLE [dbo].[PoItems]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [PoItemId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O Item Line
+    [PoItemUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O Item Line
 
-    [PoId] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for P/O
+    [PoUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for P/O
     [Seq] INT NOT NULL DEFAULT 0, --P/O Item Line sort sequence
 
     [PoItemType] INT NULL DEFAULT 0, --P/O item type
@@ -14,6 +14,8 @@
 	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer 
 	[CancelDate] DATE NULL, --Usually it is related to shipping instruction
 
+	[ProductUuid] Varchar(50) NOT NULL,--Product product uuid 
+	[InventoryUuid] Varchar(50) NOT NULL,--Product Inventory uuid 
 	[SKU] Varchar(100) NOT NULL,--Product SKU 
 	[Description] NVarchar(200) NOT NULL,--P/O item description 
 	[Notes] NVarchar(500) NOT NULL,--P/O item notes 
@@ -50,24 +52,24 @@
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItems]') AND name = N'UI_PoItems_PoItemId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoItems_PoItemId] ON [dbo].[PoItems]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_PoItems_PoItemUuid] ON [dbo].[PoItems]
 (
-	[PoItemId] ASC
+	[PoItemUuid] ASC
 ) ON [PRIMARY]
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItems]') AND name = N'UI_PoItems_PoId_Seq')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoItems_PoId_Seq] ON [dbo].[PoItems]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_PoItems_PoUuid_Seq] ON [dbo].[PoItems]
 (
-	[PoId] ASC,
+	[PoUuid] ASC,
 	[Seq] ASC
 ) ON [PRIMARY]
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItems]') AND name = N'UI_PoItems_PoId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoItems_PoId] ON [dbo].[PoItems]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_PoItems_PoUuid] ON [dbo].[PoItems]
 (
-	[PoId] ASC
+	[PoUuid] ASC
 ) ON [PRIMARY]
 GO
 

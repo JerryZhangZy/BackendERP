@@ -1,21 +1,23 @@
 ﻿CREATE TABLE [dbo].[PoTransactionItems]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [TransItemId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice Return Item Line
+    [TransItemUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice Return Item Line
 
-    [TransId] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice Transaction
+    [TransUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice Transaction
     [Seq] INT NOT NULL DEFAULT 0, --Invoice Item Line sort sequence
 
-    [PoId] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice
-    [PoItemId] VARCHAR(50) NULL, --Global Unique Guid for Invoice
+    [PoUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice
+    [PoItemUuid] VARCHAR(50) NULL, --Global Unique Guid for Invoice
 
     [ItemType] INT NULL DEFAULT 0, --Invoice item type
     [ItemStatus] INT NULL DEFAULT 0, --Invoice item status
 	[ItemDate] DATE NOT NULL, --Invoice date
 	[ItemTime] TIME NOT NULL, --Invoice time
 
+    [ProductUuid] VARCHAR(50) NULL DEFAULT '',
+    [InventoryUuid] VARCHAR(50) NULL DEFAULT '',
 	[SKU] Varchar(100) NOT NULL,--Product SKU 
-	[WarehouseID] VARCHAR(50) NULL, --Warehouse Guid
+	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
 	[LotNum] Varchar(100) NOT NULL,--Product SKU Lot Number 
 	[LotDescription] NVarchar(200) NOT NULL,--Invoice item description 
 	[LotInDate] DATE NULL, --Lot receive Date
@@ -54,39 +56,39 @@
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'UI_PoTransactionItems_PoTransactionItemsId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoTransactionItems_PoTransactionItemsId] ON [dbo].[PoTransactionItems]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_PoTransactionItems_PoTransactionItemsUuid] ON [dbo].[PoTransactionItems]
 (
-	[TransItemId] ASC
+	[TransItemUuid] ASC
 ) ON [PRIMARY]
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'IX_PoTransactionItems_PoId')
-CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_PoId] ON [dbo].[PoTransactionItems]
+CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_PoUuid] ON [dbo].[PoTransactionItems]
 (
-	[PoId] ASC
+	[PoUuid] ASC
 ) ON [PRIMARY]
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'IX_PoTransactionItems_TransId_Seq')
-CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_TransId_Seq] ON [dbo].[PoTransactionItems]
+CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_TransUuid_Seq] ON [dbo].[PoTransactionItems]
 (
-	[TransId] ASC,
+	[TransUuid] ASC,
 	[Seq] ASC
 ) ON [PRIMARY]
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'IX_PoTransactionItems_TransId')
-CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_TransId] ON [dbo].[PoTransactionItems]
+CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_TransUuid] ON [dbo].[PoTransactionItems]
 (
-	[TransId] ASC
+	[TransUuid] ASC
 ) ON [PRIMARY]
 GO
 
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'IX_PoTransactionItems_PoItemId')
-CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_PoItemId] ON [dbo].[PoTransactionItems]
+CREATE NONCLUSTERED INDEX [IX_PoTransactionItems_PoItemUuid] ON [dbo].[PoTransactionItems]
 (
-	[PoItemId] ASC
+	[PoItemUuid] ASC
 ) ON [PRIMARY]
 GO
 

@@ -4,7 +4,7 @@
     [DatabaseNum] INT NOT NULL, --Each database has its own default value.
 	[MasterAccountNum] INT NOT NULL,
 	[ProfileNum] INT NOT NULL,
-	[WarehouseID] VARCHAR(50) NULL, --Warehouse Guid
+	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
 
 	[DistributionCenterNum] [int] NULL,
 	[DistributionCenterName] [nvarchar](200) NULL,
@@ -16,8 +16,8 @@
     [Priority] INT NULL DEFAULT 0, --Warehouse Priority
 
 	[WarehouseName] VARCHAR(200) NULL, --Warehouse Name
-	[CustomerID] VARCHAR(50) NULL, --Customer Guid
-	[VendorID] VARCHAR(50) NULL, --Vendor Guid
+	[CustomerUuid] VARCHAR(50) NULL, --Customer Guid
+	[VendorUuid] VARCHAR(50) NULL, --Vendor Guid
 
 	[ShippingCarrier] VARCHAR(50) NULL,
 	[ShippingClass] VARCHAR(50) NULL,
@@ -74,9 +74,9 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Warehouse]') AND name = N'UK_Warehouse_WarehouseID')
-CREATE UNIQUE NONCLUSTERED INDEX [UK_Warehouse_WarehouseID] ON [dbo].[Warehouse]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_Warehouse_WarehouseUuid] ON [dbo].[Warehouse]
 (
-	[WarehouseID] ASC
+	[WarehouseUuid] ASC
 ) ON [PRIMARY]
 GO
 

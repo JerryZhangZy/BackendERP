@@ -1,17 +1,17 @@
 ﻿CREATE TABLE [dbo].[CustomerAttributes]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [CustomerId] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O
-	[Fields] VARCHAR(max) NULL, --JSON string, store any document fields
+    [CustomerUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O
+	[JsonFields] VARCHAR(max) NULL, --JSON string, store any document fields
 
     CONSTRAINT [PK_CustomerAttributes] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomerAttributes]') AND name = N'UI_CustomerAttributes_CustomerId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_CustomerAttributes_CustomerId] ON [dbo].[CustomerAttributes]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_CustomerAttributes_CustomerUuid] ON [dbo].[CustomerAttributes]
 (
-	[CustomerId] ASC
+	[CustomerUuid] ASC
 ) ON [PRIMARY]
 GO
 

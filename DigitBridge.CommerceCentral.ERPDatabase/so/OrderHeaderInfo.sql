@@ -1,7 +1,7 @@
-﻿CREATE TABLE [dbo].[PoHeaderInfo]
+﻿CREATE TABLE [dbo].[OrderHeaderInfo]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [PoId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O
+    [OrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Order
 
 	-- drop ship S/O info
 	[CentralFulfillmentNum] BIGINT NULL, --CentralFulfillmentNum of dropship S/O
@@ -14,11 +14,9 @@
 	[ChannelOrderID] VARCHAR(130) NOT NULL, --This usually is the marketplace order ID, or merchant PO Number
 	[SecondaryChannelOrderID] VARCHAR(200) NULL, --Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time.
 	[ShippingAccount] VARCHAR(100) NULL, --requested Vendor use Account to ship
+	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
 	[RefNum] VARCHAR(100) NULL, --Reference Number
 	[CustomerPoNum] VARCHAR(100) NULL, --Customer P/O Number
-
-	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
-	[CustomerUuid] VARCHAR(50) NULL, --Customer Guid
 
 	[EndBuyerUserID] VARCHAR(255) NULL, --The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
 	[EndBuyerName] NVARCHAR(255) NULL, --The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
@@ -65,19 +63,19 @@
 	[BillToDaytimePhone] VARCHAR(50) NULL,
 	[BillToNightPhone] VARCHAR(50) NULL,
 
-    [EnterDateUtc] DATETIME NULL,
     [UpdateDateUtc] DATETIME NULL,
     [EnterBy] Varchar(100) NOT NULL,
     [UpdateBy] Varchar(100) NOT NULL,
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
-    CONSTRAINT [PK_PoHeaderInfo] PRIMARY KEY ([RowNum]), 
+    CONSTRAINT [PK_OrderHeaderInfo] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
 GO
 
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeaderInfo]') AND name = N'UI_PoHeaderInfo_PoId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoHeaderInfo_PoUuid] ON [dbo].[PoHeaderInfo]
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderHeaderInfo]') AND name = N'UK_OrderHeaderInfo_OrderId')
+CREATE UNIQUE NONCLUSTERED INDEX [UK_OrderHeaderInfo_OrderUuid] ON [dbo].[OrderHeaderInfo]
 (
-	[PoUuid] ASC
+	[OrderUuid] ASC
 ) ON [PRIMARY]
 GO
 

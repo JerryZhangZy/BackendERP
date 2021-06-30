@@ -7,7 +7,7 @@
 
     [Digit_supplier_id] VARCHAR(50) NULL DEFAULT '', --Digit bridge supplier_id
 
-    [VendorId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Vendor
+    [VendorUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Vendor
 	[VendorNum] VARCHAR(50) NULL, --Vendor readable number, DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique
 	[VendorName] NVARCHAR(200) NULL, --Vendor name
 	[Contact] NVARCHAR(200) NULL, --Vendor contact person
@@ -49,9 +49,9 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Vendor]') AND name = N'UI_Vendor_VendorId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_Vendor_VendorId] ON [dbo].[Vendor]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_Vendor_VendorUuid] ON [dbo].[Vendor]
 (
-	[VendorId] ASC
+	[VendorUuid] ASC
 ) ON [PRIMARY]
 GO
 

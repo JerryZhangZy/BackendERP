@@ -9,8 +9,7 @@
     <ProjectGuid>{a2c75254-6bd6-442f-9a29-ae72d67989a4}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
-    <RootPath>
-    </RootPath>
+    <RootPath />
     <RootNamespace>DigitBridge.CommerceCentral.CommerceCentralDatabase</RootNamespace>
     <AssemblyName>DigitBridge.CommerceCentral.CommerceCentralDatabase</AssemblyName>
     <ModelCollation>1033, CI</ModelCollation>
@@ -48,7 +47,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
     <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
     <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
   </PropertyGroup>
@@ -63,6 +61,7 @@
     <Folder Include="customer" />
     <Folder Include="vendor" />
     <Folder Include="CustomDefineCodes" />
+    <Folder Include="so" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -106,5 +105,26 @@
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="so\OrderHeader.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="so\OrderHeaderAttributes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="so\OrderHeaderInfo.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="so\OrderItems.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="so\OrderItemsAttributes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\InventoryLog.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\ProductBasic.sql" />
   </ItemGroup>
 </Project>

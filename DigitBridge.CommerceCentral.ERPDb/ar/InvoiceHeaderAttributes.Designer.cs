@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [ExplicitColumns]
     [TableName("InvoiceHeaderAttributes")]
     [PrimaryKey("RowNum", AutoIncrement = true)]
-    [UniqueId("InvoiceId")]
+    [UniqueId("InvoiceUuid")]
     [DtoName("InvoiceHeaderAttributesDto")]
     public partial class InvoiceHeaderAttributes : TableRepository<InvoiceHeaderAttributes, long>
     {
@@ -41,45 +41,45 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public InvoiceHeaderAttributes(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         #region Fields - Generated 
-        [Column("InvoiceId",SqlDbType.VarChar,NotNull=true)]
-        private string _invoiceId;
+        [Column("InvoiceUuid",SqlDbType.VarChar,NotNull=true)]
+        private string _invoiceUuid;
 
-        [Column("Fields",SqlDbType.VarChar)]
-        private string _fields;
+        [Column("JsonFields",SqlDbType.VarChar)]
+        private string _jsonFields;
 
         #endregion Fields - Generated 
 
         #region Properties - Generated 
-		public override string UniqueId => InvoiceId; 
+		public override string UniqueId => InvoiceUuid; 
 		public void CheckUniqueId() 
 		{
-			if (string.IsNullOrEmpty(InvoiceId)) 
-				InvoiceId = Guid.NewGuid().ToString(); 
+			if (string.IsNullOrEmpty(InvoiceUuid)) 
+				InvoiceUuid = Guid.NewGuid().ToString(); 
 		}
-        public virtual string InvoiceId
+        public virtual string InvoiceUuid
         {
             get
             {
-				return _invoiceId?.TrimEnd(); 
+				return _invoiceUuid?.TrimEnd(); 
             }
             set
             {
-				_invoiceId = value.TruncateTo(50); 
+				_invoiceUuid = value.TruncateTo(50); 
             }
         }
 
-        public virtual string Fields
+        public virtual string JsonFields
         {
             get
             {
-				if (!AllowNull && _fields is null) 
-					_fields = String.Empty; 
-				return _fields?.TrimEnd(); 
+				if (!AllowNull && _jsonFields is null) 
+					_jsonFields = String.Empty; 
+				return _jsonFields?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
-					_fields = value.TrimEnd(); 
+					_jsonFields = value.TrimEnd(); 
             }
         }
 
@@ -102,14 +102,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void ClearMetaData()
         {
 			base.ClearMetaData(); 
-			InvoiceId = Guid.NewGuid().ToString(); 
+			InvoiceUuid = Guid.NewGuid().ToString(); 
             return;
         }
 
         public override InvoiceHeaderAttributes Clear()
         {
-			_invoiceId = String.Empty; 
-			_fields = AllowNull ? (string)null : String.Empty; 
+			_invoiceUuid = String.Empty; 
+			_jsonFields = AllowNull ? (string)null : String.Empty; 
             ClearChildren();
             return this;
         }

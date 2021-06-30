@@ -7,7 +7,7 @@
 
     [Digit_seller_id] VARCHAR(50) NULL DEFAULT '', --Digit bridge seller_id
 
-    [CustomerId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Customer
+    [CustomerUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Customer
 	[CustomerNum] VARCHAR(50) NULL, --Customer readable number, DatabaseNum + CustomerNum is DigitBridgeCustomerNum, which is global unique
 	[CustomerName] NVARCHAR(200) NULL, --Customer name
 	[Contact] NVARCHAR(200) NULL, --Customer contact person
@@ -47,9 +47,9 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'UI_Customer_CustomerId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_Customer_CustomerId] ON [dbo].[Customer]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_Customer_CustomerUuid] ON [dbo].[Customer]
 (
-	[CustomerId] ASC
+	[CustomerUuid] ASC
 ) ON [PRIMARY]
 GO
 

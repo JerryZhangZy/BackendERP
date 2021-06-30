@@ -5,7 +5,7 @@
 	[MasterAccountNum] INT NOT NULL,
 	[ProfileNum] INT NOT NULL,
 
-    [ApInvoiceId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for ApInvoice
+    [ApInvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for ApInvoice
 	[ApInvoiceNum] VARCHAR(50) NOT NULL, --Unique in this database, ProfileNum + ApInvoiceNum is DigitBridgeApInvoiceNum, which is global unique
 
     [ApInvoiceType] INT NULL DEFAULT 0, -- A/P Invoice type
@@ -13,7 +13,7 @@
 	[ApInvoiceDate] DATE NOT NULL, --A/P Invoice date
 	[ApInvoiceTime] TIME NOT NULL, --A/P Invoice time
 
-    [VendorId] VARCHAR(50) NULL DEFAULT '', --reference Vendor Unique Guid
+    [VendorUuid] VARCHAR(50) NULL DEFAULT '', --reference Vendor Unique Guid
 	[VendorNum] VARCHAR(50) NULL, --Vendor readable number, DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique
 	[VendorName] NVARCHAR(100) NULL, --Vendor name
 	[VendorInvoiceNum] VARCHAR(50) NOT NULL DEFAULT '', --Vendor Invoice number
@@ -40,9 +40,9 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceHeader]') AND name = N'UI_ApInvoiceHeader_ApInvoiceId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_ApInvoiceHeader_ApInvoiceId] ON [dbo].[ApInvoiceHeader]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_ApInvoiceHeader_ApInvoiceUuid] ON [dbo].[ApInvoiceHeader]
 (
-	[ApInvoiceId] ASC
+	[ApInvoiceUuid] ASC
 ) ON [PRIMARY]
 GO
 
@@ -54,9 +54,9 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_ApInvoiceHeader_ApInvoiceNum] ON [dbo].[ApI
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[UI_ApInvoiceHeader]') AND name = N'UI_ApInvoiceHeader_ApInvoiceNum')
-CREATE NONCLUSTERED INDEX [UI_ApInvoiceHeader_VendorID] ON [dbo].[ApInvoiceHeader]
+CREATE NONCLUSTERED INDEX [UI_ApInvoiceHeader_VendorUuid] ON [dbo].[ApInvoiceHeader]
 (
-	[VendorID] ASC
+	[VendorUuid] ASC
 ) ON [PRIMARY]
 GO
 
