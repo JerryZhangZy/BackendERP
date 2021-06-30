@@ -11,6 +11,7 @@
     <PackageReference Include="DigitBridge.Orchestration.DataType" Version="1.0.0.4" />
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ar\" />
+    <Folder Include="ar\dto\" />
     <Folder Include="Attribute\" />
     <Folder Include="Base\" />
     <Folder Include="DTO\" />

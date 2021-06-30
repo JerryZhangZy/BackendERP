@@ -85,11 +85,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public void Get_Test()
         {
             var id = DataBaseFactory.GetValue<InvoiceHeader, string>(@"
-SELECT TOP 1 ins.InvoiceId 
+SELECT TOP 1 ins.InvoiceUuid 
 FROM InvoiceHeader ins 
 INNER JOIN (
-    SELECT it.InvoiceId, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceId
-) itm ON (itm.InvoiceId = ins.InvoiceId)
+    SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
+) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
 WHERE itm.cnt > 1
 ");
             var srv = new InvoiceService(DataBaseFactory);
@@ -116,11 +116,11 @@ WHERE itm.cnt > 1
         public void Delete_Test()
         {
             var id = DataBaseFactory.GetValue<InvoiceHeader, string>(@"
-SELECT TOP 1 ins.InvoiceId 
+SELECT TOP 1 ins.InvoiceUuid 
 FROM InvoiceHeader ins 
 INNER JOIN (
-    SELECT it.InvoiceId, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceId
-) itm ON (itm.InvoiceId = ins.InvoiceId)
+    SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
+) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
 WHERE itm.cnt > 1
 ");
 
@@ -157,11 +157,11 @@ WHERE itm.cnt > 1
         public async Task GetAsync_Test()
         {
             var id = await DataBaseFactory.GetValueAsync<InvoiceHeader, string>(@"
-SELECT TOP 1 ins.InvoiceId 
+SELECT TOP 1 ins.InvoiceUuid 
 FROM InvoiceHeader ins 
 INNER JOIN (
-    SELECT it.InvoiceId, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceId
-) itm ON (itm.InvoiceId = ins.InvoiceId)
+    SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
+) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
 WHERE itm.cnt > 1
 ");
             var srv = new InvoiceService(DataBaseFactory);
@@ -188,11 +188,11 @@ WHERE itm.cnt > 1
         public async Task DeleteAsync_Test()
         {
             var id = await DataBaseFactory.GetValueAsync<InvoiceHeader, string>(@"
-SELECT TOP 1 ins.InvoiceId 
+SELECT TOP 1 ins.InvoiceUuid 
 FROM InvoiceHeader ins 
 INNER JOIN (
-    SELECT it.InvoiceId, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceId
-) itm ON (itm.InvoiceId = ins.InvoiceId)
+    SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
+) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
 WHERE itm.cnt > 1
 ");
 

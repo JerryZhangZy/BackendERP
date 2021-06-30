@@ -1,9 +1,9 @@
 ﻿CREATE TABLE [dbo].[ApInvoiceItems]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [ApInvoiceItemsId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for ApInvoice Item Line
+    [ApInvoiceItemsUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for ApInvoice Item Line
 
-    [ApInvoiceId] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for ApInvoice
+    [ApInvoiceUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for ApInvoice
     [Seq] INT NOT NULL DEFAULT 0, --ApInvoice Item Line sort sequence
     [ApInvoiceItemType] INT NULL DEFAULT 0, --ApInvoice item type
     [ApInvoiceItemStatus] INT NULL DEFAULT 0, --ApInvoice item status
@@ -31,16 +31,16 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceItems]') AND name = N'UI_ApInvoiceItems_ApInvoiceItemsId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_ApInvoiceItems_ApInvoiceItemsId] ON [dbo].[ApInvoiceItems]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_ApInvoiceItems_ApInvoiceItemsUuid] ON [dbo].[ApInvoiceItems]
 (
-	[ApInvoiceItemsId] ASC
+	[ApInvoiceItemsUuid] ASC
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceItems]') AND name = N'IX_ApInvoiceItems_ApInvoiceId_Seq')
-CREATE NONCLUSTERED INDEX [IX_ApInvoiceItems_ApInvoiceId_Seq] ON [dbo].[ApInvoiceItems]
+CREATE NONCLUSTERED INDEX [IX_ApInvoiceItems_ApInvoiceUuid_Seq] ON [dbo].[ApInvoiceItems]
 (
-	[ApInvoiceId] ASC,
+	[ApInvoiceUuid] ASC,
 	[Seq] ASC
 ) ON [PRIMARY]
 GO

@@ -1,10 +1,10 @@
 ﻿CREATE TABLE [dbo].[InvoiceTransaction]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [TransId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice Transaction
+    [TransUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice Transaction
     [TransNum] INT NOT NULL DEFAULT 1, --Transaction number
 
-    [InvoiceId] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice
+    [InvoiceUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice
     [TransType] INT NULL DEFAULT 0, --Transaction type, payment, return
     [TransStatus] INT NULL DEFAULT 0, --Transaction status
 	[TransDate] DATE NOT NULL, --Invoice date
@@ -13,7 +13,7 @@
     [Notes] NVARCHAR(500) NULL DEFAULT '', --Notes of Invoice Transaction
 
 	[PaidBy] INT NOT NULL DEFAULT 1, --Payment method number
-	[BankAccountId] VARCHAR(50) NULL, --Global Unique Guid for Bank account
+	[BankAccountUuid] VARCHAR(50) NULL, --Global Unique Guid for Bank account
 	[CheckNum] VARCHAR(100) NULL, --Check number
 	[AuthCode] VARCHAR(100) NULL, --Auth code from merchant bank
 
@@ -44,23 +44,23 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'UK_InvoiceTransaction_TransId')
-CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceTransaction_TransId] ON [dbo].[InvoiceTransaction]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceTransaction_TransUuid] ON [dbo].[InvoiceTransaction]
 (
-	[TransId] ASC
+	[TransUuid] ASC
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'FK_InvoiceTransaction_InvoiceId')
-CREATE NONCLUSTERED INDEX [FK_InvoiceTransaction_InvoiceId] ON [dbo].[InvoiceTransaction]
+CREATE NONCLUSTERED INDEX [FK_InvoiceTransaction_InvoiceUuid] ON [dbo].[InvoiceTransaction]
 (
-	[InvoiceId] ASC
+	[InvoiceUuid] ASC
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'IX_InvoiceTransaction_InvoiceNum')
 CREATE NONCLUSTERED INDEX [IX_InvoiceTransaction_TransNum] ON [dbo].[InvoiceTransaction]
 (
-	[InvoiceId] ASC,
+	[InvoiceUuid] ASC,
 	[TransNum] ASC
 ) ON [PRIMARY]
 GO

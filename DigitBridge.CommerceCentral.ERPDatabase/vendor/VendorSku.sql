@@ -1,9 +1,10 @@
 ﻿CREATE TABLE [dbo].[VendorSku]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [VendorSkuId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Vendor Sku
+    [VendorSkuUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Vendor Sku
 
-    [VendorId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Vendor
+    [VendorUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Vendor
+	[ProductUuid] Varchar(50) NOT NULL DEFAULT '',--Our Product SKU 
 	[SKU] Varchar(100) NOT NULL,--Our Product SKU 
 	[VendorSKU] Varchar(100) NULL,--Vendor Product SKU 
 
@@ -29,17 +30,17 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorSku]') AND name = N'UI_Vendor_VendorId')
-CREATE NONCLUSTERED INDEX [UI_Vendor_VendorId_SKU] ON [dbo].[VendorSku]
+CREATE NONCLUSTERED INDEX [UI_Vendor_VendorUuid_SKU] ON [dbo].[VendorSku]
 (
-	[VendorId] ASC,
+	[VendorUuid] ASC,
 	[SKU] ASC
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorSku]') AND name = N'UI_Vendor_VendorId')
-CREATE NONCLUSTERED INDEX [UI_Vendor_VendorId_VendorSKU] ON [dbo].[VendorSku]
+CREATE NONCLUSTERED INDEX [UI_Vendor_VendorUuid_VendorSKU] ON [dbo].[VendorSku]
 (
-	[VendorId] ASC,
+	[VendorUuid] ASC,
 	[VendorSKU] ASC
 ) ON [PRIMARY]
 GO

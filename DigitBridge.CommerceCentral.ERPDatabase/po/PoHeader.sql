@@ -5,7 +5,7 @@
 	[MasterAccountNum] INT NOT NULL,
 	[ProfileNum] INT NOT NULL,
 
-    [PoId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O
+    [PoUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O
 	[PoNum] VARCHAR(50) NOT NULL, --Unique in this database, ProfileNum + PoNum is DigitBridgePoNum, which is global unique
     [PoType] INT NULL DEFAULT 0, --P/O type
     [PoStatus] INT NULL DEFAULT 0, --P/O status
@@ -15,7 +15,7 @@
 	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer 
 	[CancelDate] DATE NULL, --Usually it is related to shipping instruction
 
-    [VendorId] VARCHAR(50) NULL DEFAULT '', --reference Vendor Unique Guid
+    [VendorUuid] VARCHAR(50) NULL DEFAULT '', --reference Vendor Unique Guid
 	[VendorNum] VARCHAR(50) NULL, --Vendor readable number, DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique
 	[VendorName] NVARCHAR(100) NULL, --Vendor name
 
@@ -43,9 +43,9 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeader]') AND name = N'UI_PoHeader_PoId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoHeader_PoId] ON [dbo].[PoHeader]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_PoHeader_PoUuid] ON [dbo].[PoHeader]
 (
-	[PoId] ASC
+	[PoUuid] ASC
 ) ON [PRIMARY]
 GO
 
@@ -57,9 +57,9 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_PoHeader_PoNum] ON [dbo].[PoHeader]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[UI_PoHeader]') AND name = N'UI_PoHeader_VendorID')
-CREATE NONCLUSTERED INDEX [UI_PoHeader_VendorID] ON [dbo].[PoHeader]
+CREATE NONCLUSTERED INDEX [UI_PoHeader_VendorUuid] ON [dbo].[PoHeader]
 (
-	[VendorID] ASC
+	[VendorUuid] ASC
 ) ON [PRIMARY]
 GO
 

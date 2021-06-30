@@ -1,9 +1,9 @@
 ﻿CREATE TABLE [dbo].[ApInvoiceHeaderInfo]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [ApInvoiceId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for ApInvoice
-    [PoId] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for P/O
-    [ReceiveId] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for P/O Receive
+    [ApInvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for ApInvoice
+    [PoUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for P/O
+    [ReceiveUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for P/O Receive
 
 	-- drop ship S/O info
 	[CentralFulfillmentNum] BIGINT NULL, --CentralFulfillmentNum of dropship S/O
@@ -50,9 +50,9 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceHeaderInfo]') AND name = N'UI_ApInvoiceHeaderInfo_ApInvoiceId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_ApInvoiceHeaderInfo_ApInvoiceId] ON [dbo].[ApInvoiceHeaderInfo]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_ApInvoiceHeaderInfo_ApInvoiceUuid] ON [dbo].[ApInvoiceHeaderInfo]
 (
-	[ApInvoiceId] ASC
+	[ApInvoiceUuid] ASC
 ) ON [PRIMARY]
 GO
 

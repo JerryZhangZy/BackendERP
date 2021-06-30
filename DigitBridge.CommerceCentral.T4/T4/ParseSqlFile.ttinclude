@@ -146,6 +146,7 @@
 
         public List<string> FieldAtrributes { get; set; }
         public List<string> PropertyAtrributes { get; set; }
+        public List<string> DtoAtrributes { get; set; }
 
         public string PropertyType
         {
@@ -170,6 +171,25 @@
                 : $"{Type}?";
             }
         }
+
+        public string DtoPropertyType
+        {
+            get 
+            { 
+                var t = PropertyType;
+                if (isDateTimeLikely)
+                    t = "DateTime";
+
+                return t.EndsWith("?") 
+                    ? t 
+                    : (t.ToLower() == "byte[]" || 
+                       t.ToLower() == "string" ||
+                       t.ToLower() == "object")
+                        ? t
+                        : $"{t}?";
+            }
+        }
+
         public string propertyName
         {
             get { return $"{Name}"; }
@@ -195,7 +215,10 @@
             get { return (Type == "string"); }
         }
         public bool isMaxLength {
-            get { return (Type == "string" && Length == "max"); }
+            get { return (Type.ToLower() == "string" && Length.ToLower() == "max"); }
+        }
+        public bool hasLength {
+            get { return (Type.ToLower() == "string" && !string.IsNullOrEmpty(Length) && Length.ToLower() != "max"); }
         }
         public bool isNumber { get { return (isDecimal || isInt || isDouble); } }
         public bool isDecimal { get { return (Type == "decimal" || Type == "decimal?"); } }
@@ -224,9 +247,11 @@
         public bool isDate {
             get { return isDateTime && DataType.ToLower().Contains("sqldbtype.date"); }
         }
-
         public bool isTime {
             get { return Type.ToLower().Contains("timespan"); }
+        }
+        public bool isDateTimeLikely {
+            get { return isDateTime || isDate || isTime; }
         }
 
         public string GetDefaultValue()
@@ -540,6 +565,7 @@
                         col.IsUniqueKey = !string.IsNullOrEmpty(table.UniqueKey) && table.UniqueKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
                         GetFieldAtrribute(col);
                         GetPropertyAtrribute(col);
+                        GetDtoAtrribute(col);
                         columns.Add(col);
                     }
                 }
@@ -708,6 +734,22 @@
             var strDefault = col.IsDefault ? ",IsDefault=true" : "";
             col.FieldAtrributes.Add(string.Format(strAtrribute, col.Name, col.DataType, strIdendity, strKey, strNotNull, strDefault));
 
+            return col;
+        }
+
+        protected SqlColumnInfo GetDtoAtrribute(SqlColumnInfo col)
+        {
+            if (col == null) return col;
+            col.DtoAtrributes = new List<string>();
+
+            // String length
+            if (col.hasLength)
+                col.DtoAtrributes.Add($"[StringLength({col.Length}, ErrorMessage = \"The {col.Name} value cannot exceed {col.Length} characters. \")]");
+
+            // Datetime
+            if (col.isDateTimeLikely)
+                col.DtoAtrributes.Add($"[DataType(DataType.DateTime)]");
+            
             return col;
         }
 

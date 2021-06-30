@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[InvoiceHeaderInfo]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [InvoiceId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice
+    [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice
 
 	-- drop ship S/O info
 	[CentralFulfillmentNum] BIGINT NULL, --CentralFulfillmentNum of dropship S/O
@@ -14,11 +14,11 @@
 	[ChannelOrderID] VARCHAR(130) NOT NULL, --This usually is the marketplace order ID, or merchant PO Number
 	[SecondaryChannelOrderID] VARCHAR(200) NULL, --Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time.
 	[ShippingAccount] VARCHAR(100) NULL, --requested Vendor use Account to ship
-	[WarehouseID] VARCHAR(50) NULL, --Warehouse Guid
+	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
 	[RefNum] VARCHAR(100) NULL, --Reference Number
 	[CustomerPoNum] VARCHAR(100) NULL, --Customer P/O Number
 
-	[EndBuyerUserID] VARCHAR(255) NULL, --The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
+	[EndBuyerUserId] VARCHAR(255) NULL, --The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
 	[EndBuyerName] NVARCHAR(255) NULL, --The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
 	[EndBuyerEmail] VARCHAR(255) NULL, --The email of the end customer
 	[ShipToName] NVARCHAR(100) NULL,
@@ -73,9 +73,9 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'UK_InvoiceHeaderInfo_InvoiceId')
-CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceHeaderInfo_InvoiceId] ON [dbo].[InvoiceHeaderInfo]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceHeaderInfo_InvoiceUuid] ON [dbo].[InvoiceHeaderInfo]
 (
-	[InvoiceId] ASC
+	[InvoiceUuid] ASC
 ) ON [PRIMARY]
 GO
 

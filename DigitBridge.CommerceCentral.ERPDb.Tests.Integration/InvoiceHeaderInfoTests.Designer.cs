@@ -34,7 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
             #region faker data rules
             return new Faker<InvoiceHeaderInfo>()
-					.RuleFor(u => u.InvoiceId, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.InvoiceUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.CentralFulfillmentNum, f => default(long))
 					.RuleFor(u => u.ShippingCarrier, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.ShippingClass, f => f.Random.AlphaNumeric(50))
@@ -45,10 +45,10 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ChannelOrderID, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.SecondaryChannelOrderID, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.ShippingAccount, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.WarehouseID, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.WarehouseUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.RefNum, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.CustomerPoNum, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.EndBuyerUserID, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.EndBuyerUserId, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.EndBuyerName, f => f.Lorem.Sentence().TruncateTo(255))
 					.RuleFor(u => u.EndBuyerEmail, f => f.Lorem.Sentence().TruncateTo(255))
 					.RuleFor(u => u.ShipToName, f => f.Lorem.Sentence().TruncateTo(100))
@@ -223,7 +223,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataUpdate = DataBaseFactory.GetById<InvoiceHeaderInfo>(dataNew.UniqueId);
 			var dataChanged = FakerData.Generate();
-            dataUpdate.CopyFrom(dataChanged, new[] {"InvoiceId"});
+            dataUpdate.CopyFrom(dataChanged, new[] {"InvoiceUuid"});
 
             DataBaseFactory.Begin();
             dataUpdate.Save();
@@ -430,7 +430,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataUpdate = await DataBaseFactory.GetByIdAsync<InvoiceHeaderInfo>(dataNew.UniqueId);
             var dataChanged = FakerData.Generate();
-            dataUpdate.CopyFrom(dataChanged, new[] { "InvoiceId" });
+            dataUpdate.CopyFrom(dataChanged, new[] { "InvoiceUuid" });
 
             DataBaseFactory.Begin();
             await dataUpdate.SaveAsync();

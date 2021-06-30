@@ -5,14 +5,14 @@
 	[MasterAccountNum] INT NOT NULL,
 	[ProfileNum] INT NOT NULL,
 
-    [CustomDefineCodesId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Code
+    [CustomDefineCodesUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Code
     [CodeType] VARCHAR(50) NOT NULL DEFAULT '', --Code type, for example: class, department, style
 	[Code] VARCHAR(50) NOT NULL, --Code readable code, 
 	[Description] NVARCHAR(200) NOT NULL, --Code description, 
     [InActive] TINYINT NOT NULL DEFAULT 0, --Disable this Code
 	[EffectiveStart] DATE NULL,
 	[EffectiveEnd] DATE NULL,
-	[Fields] VARCHAR(max) NULL, --JSON string, store any Code fields
+	[JsonFields] VARCHAR(max) NULL, --JSON string, store any Code fields
 
     [EnterDateUtc] DATETIME NULL,
     [UpdateDateUtc] DATETIME NULL,
@@ -24,9 +24,9 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomDefineCodes]') AND name = N'UI_CustomDefineCodesId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_CustomDefineCodesId] ON [dbo].[CustomDefineCodes]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_CustomDefineCodesUuid] ON [dbo].[CustomDefineCodes]
 (
-	[CustomDefineCodesId] ASC
+	[CustomDefineCodesUuid] ASC
 ) ON [PRIMARY]
 GO
 

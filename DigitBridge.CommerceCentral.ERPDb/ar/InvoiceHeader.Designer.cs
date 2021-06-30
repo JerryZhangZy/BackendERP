@@ -48,7 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [ExplicitColumns]
     [TableName("InvoiceHeader")]
     [PrimaryKey("RowNum", AutoIncrement = true)]
-    [UniqueId("InvoiceId")]
+    [UniqueId("InvoiceUuid")]
     [DtoName("InvoiceHeaderDto")]
     public partial class InvoiceHeader : TableRepository<InvoiceHeader, long>
     {
@@ -66,8 +66,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ProfileNum",SqlDbType.Int,NotNull=true)]
         private int _profileNum;
 
-        [Column("InvoiceId",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _invoiceId;
+        [Column("InvoiceUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _invoiceUuid;
 
         [Column("InvoiceNumber",SqlDbType.VarChar,NotNull=true)]
         private string _invoiceNumber;
@@ -90,8 +90,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("BillDate",SqlDbType.Date)]
         private DateTime? _billDate;
 
-        [Column("CustomerID",SqlDbType.VarChar)]
-        private string _customerID;
+        [Column("CustomerUuid",SqlDbType.VarChar)]
+        private string _customerUuid;
 
         [Column("CustomerNum",SqlDbType.VarChar)]
         private string _customerNum;
@@ -165,11 +165,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Fields - Generated 
 
         #region Properties - Generated 
-		public override string UniqueId => InvoiceId; 
+		public override string UniqueId => InvoiceUuid; 
 		public void CheckUniqueId() 
 		{
-			if (string.IsNullOrEmpty(InvoiceId)) 
-				InvoiceId = Guid.NewGuid().ToString(); 
+			if (string.IsNullOrEmpty(InvoiceUuid)) 
+				InvoiceUuid = Guid.NewGuid().ToString(); 
 		}
         public virtual int DatabaseNum
         {
@@ -207,15 +207,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        public virtual string InvoiceId
+        public virtual string InvoiceUuid
         {
             get
             {
-				return _invoiceId?.TrimEnd(); 
+				return _invoiceUuid?.TrimEnd(); 
             }
             set
             {
-				_invoiceId = value.TruncateTo(50); 
+				_invoiceUuid = value.TruncateTo(50); 
             }
         }
 
@@ -315,18 +315,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        public virtual string CustomerID
+        public virtual string CustomerUuid
         {
             get
             {
-				if (!AllowNull && _customerID is null) 
-					_customerID = String.Empty; 
-				return _customerID?.TrimEnd(); 
+				if (!AllowNull && _customerUuid is null) 
+					_customerUuid = String.Empty; 
+				return _customerUuid?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
-					_customerID = value.TruncateTo(50); 
+					_customerUuid = value.TruncateTo(50); 
             }
         }
 
@@ -673,7 +673,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void ClearMetaData()
         {
 			base.ClearMetaData(); 
-			InvoiceId = Guid.NewGuid().ToString(); 
+			InvoiceUuid = Guid.NewGuid().ToString(); 
             return;
         }
 
@@ -682,7 +682,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_databaseNum = default(int); 
 			_masterAccountNum = default(int); 
 			_profileNum = default(int); 
-			_invoiceId = String.Empty; 
+			_invoiceUuid = String.Empty; 
 			_invoiceNumber = String.Empty; 
 			_invoiceType = AllowNull ? (int?)null : default(int); 
 			_invoiceStatus = AllowNull ? (int?)null : default(int); 
@@ -690,7 +690,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_invoiceTime = new TimeSpan().MinValueSql(); 
 			_dueDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_billDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
-			_customerID = AllowNull ? (string)null : String.Empty; 
+			_customerUuid = AllowNull ? (string)null : String.Empty; 
 			_customerNum = AllowNull ? (string)null : String.Empty; 
 			_customerName = AllowNull ? (string)null : String.Empty; 
 			_currency = AllowNull ? (string)null : String.Empty; 

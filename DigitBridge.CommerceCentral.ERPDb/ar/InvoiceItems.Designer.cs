@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [ExplicitColumns]
     [TableName("InvoiceItems")]
     [PrimaryKey("RowNum", AutoIncrement = true)]
-    [UniqueId("InvoiceItemsId")]
+    [UniqueId("InvoiceItemsUuid")]
     [DtoName("InvoiceItemsDto")]
     public partial class InvoiceItems : TableRepository<InvoiceItems, long>
     {
@@ -41,11 +41,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public InvoiceItems(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         #region Fields - Generated 
-        [Column("InvoiceItemsId",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _invoiceItemsId;
+        [Column("InvoiceItemsUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _invoiceItemsUuid;
 
-        [Column("InvoiceId",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _invoiceId;
+        [Column("InvoiceUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _invoiceUuid;
 
         [Column("Seq",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _seq;
@@ -71,11 +71,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("SKU",SqlDbType.VarChar,NotNull=true)]
         private string _sKU;
 
-        [Column("InventoryId",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _inventoryId;
+        [Column("ProductUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _productUuid;
 
-        [Column("WarehouseID",SqlDbType.VarChar)]
-        private string _warehouseID;
+        [Column("InventoryUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _inventoryUuid;
+
+        [Column("WarehouseUuid",SqlDbType.VarChar)]
+        private string _warehouseUuid;
 
         [Column("LotNum",SqlDbType.VarChar,NotNull=true)]
         private string _lotNum;
@@ -197,34 +200,34 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Fields - Generated 
 
         #region Properties - Generated 
-		public override string UniqueId => InvoiceItemsId; 
+		public override string UniqueId => InvoiceItemsUuid; 
 		public void CheckUniqueId() 
 		{
-			if (string.IsNullOrEmpty(InvoiceItemsId)) 
-				InvoiceItemsId = Guid.NewGuid().ToString(); 
+			if (string.IsNullOrEmpty(InvoiceItemsUuid)) 
+				InvoiceItemsUuid = Guid.NewGuid().ToString(); 
 		}
 		public override bool IsEmpty => ( string.IsNullOrWhiteSpace(SKU) );
-        public virtual string InvoiceItemsId
+        public virtual string InvoiceItemsUuid
         {
             get
             {
-				return _invoiceItemsId?.TrimEnd(); 
+				return _invoiceItemsUuid?.TrimEnd(); 
             }
             set
             {
-				_invoiceItemsId = value.TruncateTo(50); 
+				_invoiceItemsUuid = value.TruncateTo(50); 
             }
         }
 
-        public virtual string InvoiceId
+        public virtual string InvoiceUuid
         {
             get
             {
-				return _invoiceId?.TrimEnd(); 
+				return _invoiceUuid?.TrimEnd(); 
             }
             set
             {
-				_invoiceId = value.TruncateTo(50); 
+				_invoiceUuid = value.TruncateTo(50); 
             }
         }
 
@@ -336,30 +339,42 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        public virtual string InventoryId
+        public virtual string ProductUuid
         {
             get
             {
-				return _inventoryId?.TrimEnd(); 
+				return _productUuid?.TrimEnd(); 
             }
             set
             {
-				_inventoryId = value.TruncateTo(50); 
+				_productUuid = value.TruncateTo(50); 
             }
         }
 
-        public virtual string WarehouseID
+        public virtual string InventoryUuid
         {
             get
             {
-				if (!AllowNull && _warehouseID is null) 
-					_warehouseID = String.Empty; 
-				return _warehouseID?.TrimEnd(); 
+				return _inventoryUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_inventoryUuid = value.TruncateTo(50); 
+            }
+        }
+
+        public virtual string WarehouseUuid
+        {
+            get
+            {
+				if (!AllowNull && _warehouseUuid is null) 
+					_warehouseUuid = String.Empty; 
+				return _warehouseUuid?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
-					_warehouseID = value.TruncateTo(50); 
+					_warehouseUuid = value.TruncateTo(50); 
             }
         }
 
@@ -908,7 +923,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		public InvoiceItemsAttributes SetChildrenInvoiceItemsAttributes(IEnumerable<InvoiceItemsAttributes> children)
 		{
 			var childrenList = children.ToList();
-			InvoiceItemsAttributes = childrenList.FirstOrDefault(x => !string.IsNullOrEmpty(InvoiceItemsId) && x.InvoiceItemsId == InvoiceItemsId);
+			InvoiceItemsAttributes = childrenList.FirstOrDefault(x => !string.IsNullOrEmpty(InvoiceItemsUuid) && x.InvoiceItemsUuid == InvoiceItemsUuid);
 			return InvoiceItemsAttributes;
 		}
 		public IEnumerable<InvoiceItemsAttributes> GetChildrenInvoiceItemsAttributes()
@@ -921,17 +936,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				return InvoiceItemsAttributes;
 			CheckUniqueId();
 			InvoiceItemsAttributes.SetParent(Parent);
-			if (InvoiceItemsAttributes.InvoiceItemsId != InvoiceItemsId) InvoiceItemsAttributes.InvoiceItemsId = InvoiceItemsId;
+			if (InvoiceItemsAttributes.InvoiceItemsUuid != InvoiceItemsUuid) InvoiceItemsAttributes.InvoiceItemsUuid = InvoiceItemsUuid;
 			return InvoiceItemsAttributes;
 		}
 		public InvoiceItemsAttributes LoadInvoiceItemsAttributes()
 		{
-			InvoiceItemsAttributes = dbFactory.GetById<InvoiceItemsAttributes>(InvoiceItemsId);
+			InvoiceItemsAttributes = dbFactory.GetById<InvoiceItemsAttributes>(InvoiceItemsUuid);
 			return InvoiceItemsAttributes;
 		}
 		public async Task<InvoiceItemsAttributes> LoadInvoiceItemsAttributesAsync()
 		{
-			InvoiceItemsAttributes = await dbFactory.GetByIdAsync<InvoiceItemsAttributes>(InvoiceItemsId);
+			InvoiceItemsAttributes = await dbFactory.GetByIdAsync<InvoiceItemsAttributes>(InvoiceItemsUuid);
 			return InvoiceItemsAttributes;
 		}
 		public InvoiceItemsAttributes NewInvoiceItemsAttributes()
@@ -939,7 +954,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckUniqueId();
 			var child = new InvoiceItemsAttributes(dbFactory);
 			child.SetParent(Parent);
-			child.InvoiceItemsId = InvoiceItemsId;
+			child.InvoiceItemsUuid = InvoiceItemsUuid;
 			return child;
 		}
 		public InvoiceItemsAttributes AddInvoiceItemsAttributes(InvoiceItemsAttributes child)
@@ -955,14 +970,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void ClearMetaData()
         {
 			base.ClearMetaData(); 
-			InvoiceItemsId = Guid.NewGuid().ToString(); 
+			InvoiceItemsUuid = Guid.NewGuid().ToString(); 
             return;
         }
 
         public override InvoiceItems Clear()
         {
-			_invoiceItemsId = String.Empty; 
-			_invoiceId = String.Empty; 
+			_invoiceItemsUuid = String.Empty; 
+			_invoiceUuid = String.Empty; 
 			_seq = default(int); 
 			_invoiceItemType = AllowNull ? (int?)null : default(int); 
 			_invoiceItemStatus = AllowNull ? (int?)null : default(int); 
@@ -971,8 +986,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_shipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_sKU = String.Empty; 
-			_inventoryId = String.Empty; 
-			_warehouseID = AllowNull ? (string)null : String.Empty; 
+			_productUuid = String.Empty; 
+			_inventoryUuid = String.Empty; 
+			_warehouseUuid = AllowNull ? (string)null : String.Empty; 
 			_lotNum = String.Empty; 
 			_description = String.Empty; 
 			_notes = String.Empty; 
@@ -1035,21 +1051,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return;
         }
 
-		public IEnumerable<InvoiceItems> FindByInvoiceId(string invoiceId)
+		public IEnumerable<InvoiceItems> FindByInvoiceUuid(string invoiceUuid)
 		{
-			return dbFactory.Find<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq ", invoiceId);
+			return dbFactory.Find<InvoiceItems>("WHERE InvoiceUuid = @0 ORDER BY Seq ", invoiceUuid);
 		}
-		public long CountByInvoiceId(string invoiceId)
+		public long CountByInvoiceUuid(string invoiceUuid)
 		{
-			return dbFactory.Count<InvoiceItems>("WHERE InvoiceId = @0 ", invoiceId);
+			return dbFactory.Count<InvoiceItems>("WHERE InvoiceUuid = @0 ", invoiceUuid);
 		}
-		public async Task<IEnumerable<InvoiceItems>> FindByAsyncInvoiceId(string invoiceId)
+		public async Task<IEnumerable<InvoiceItems>> FindByAsyncInvoiceUuid(string invoiceUuid)
 		{
-			return await dbFactory.FindAsync<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq ", invoiceId);
+			return await dbFactory.FindAsync<InvoiceItems>("WHERE InvoiceUuid = @0 ORDER BY Seq ", invoiceUuid);
 		}
-		public async Task<long> CountByAsyncInvoiceId(string invoiceId)
+		public async Task<long> CountByAsyncInvoiceUuid(string invoiceUuid)
 		{
-			return await dbFactory.CountAsync<InvoiceItems>("WHERE InvoiceId = @0 ", invoiceId);
+			return await dbFactory.CountAsync<InvoiceItems>("WHERE InvoiceUuid = @0 ", invoiceUuid);
 		}
         #endregion Methods - Generated 
     }
