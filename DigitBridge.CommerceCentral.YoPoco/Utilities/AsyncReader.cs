@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             Poco = default(T);
 
-            var hasRecords = _isAsync ? await Reader.ReadAsync() : _reader.Read();
+            var hasRecords = _isAsync ? await Reader.ReadAsync().ConfigureAwait(false) : _reader.Read();
 
             if (hasRecords)
                 Poco = _pocoFactory(_reader);

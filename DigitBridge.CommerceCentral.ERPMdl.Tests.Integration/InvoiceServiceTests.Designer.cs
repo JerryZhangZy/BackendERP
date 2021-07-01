@@ -90,8 +90,10 @@ FROM InvoiceHeader ins
 INNER JOIN (
     SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
 ) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 1
+WHERE itm.cnt > 0
 ");
+
+
             var srv = new InvoiceService(DataBaseFactory);
             srv.GetById(id);
             var rowNum = srv.Data.InvoiceHeader.RowNum;
@@ -121,8 +123,9 @@ FROM InvoiceHeader ins
 INNER JOIN (
     SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
 ) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 1
+WHERE itm.cnt > 0
 ");
+
 
             var srv = new InvoiceService(DataBaseFactory);
             srv.GetById(id);
@@ -162,8 +165,10 @@ FROM InvoiceHeader ins
 INNER JOIN (
     SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
 ) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 1
+WHERE itm.cnt > 0
 ");
+
+
             var srv = new InvoiceService(DataBaseFactory);
             await srv.GetByIdAsync(id);
             var rowNum = srv.Data.InvoiceHeader.RowNum;
@@ -187,14 +192,16 @@ WHERE itm.cnt > 1
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
+
             var id = await DataBaseFactory.GetValueAsync<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 
 FROM InvoiceHeader ins 
 INNER JOIN (
     SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
 ) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 1
+WHERE itm.cnt > 0
 ");
+
 
             var srv = new InvoiceService(DataBaseFactory);
             await srv.GetByIdAsync(id);

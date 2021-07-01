@@ -230,6 +230,11 @@
         dir = Path.Combine(path, StructureDtoFolder);
         SaveOutputNotExists(dir, $"{StructureDtoName}.cs");
 #>
+<#@ include file="GenerateStructureDtoMapper.ttinclude" #>
+<# 
+        dir = Path.Combine(path, StructureDtoFolder);
+        SaveOutputNotExists(dir, $"{StructureDtoName}MapperDefault.cs");
+#>
 <# } #>
 
 <#      

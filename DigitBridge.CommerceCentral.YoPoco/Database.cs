@@ -2923,7 +2923,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public async Task<List<T>> FetchProcAsync<T>(CancellationToken cancellationToken, string storedProcedureName, params object[] args)
         {
             var pocos = new List<T>();
-            await ExecuteReaderAsync<T>(p => pocos.Add(p), cancellationToken, CommandType.StoredProcedure, storedProcedureName, args);
+            await ExecuteReaderAsync<T>(p => pocos.Add(p), cancellationToken, CommandType.StoredProcedure, storedProcedureName, args).ConfigureAwait(false);
             return pocos;
         }
 

@@ -83,11 +83,8 @@ namespace <#= NamespaceServiceTest #>
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            var id = DataBaseFactory.GetValue<<#= StructureClass.MainTable.Name #>, string>(@"
-SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
-FROM <#= StructureClass.MainTable.Name #> ins 
- 
-");
+<#@ include file="SelectFirstUniqueId.ttinclude" #>
+
             var srv = new <#= ServiceName #>(DataBaseFactory);
             srv.GetById(id);
             var rowNum = srv.Data.<#= StructureClass.MainTable.Name #>.RowNum;
@@ -111,11 +108,7 @@ FROM <#= StructureClass.MainTable.Name #> ins
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
         {
-            var id = DataBaseFactory.GetValue<<#= StructureClass.MainTable.Name #>, string>(@"
-SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
-FROM <#= StructureClass.MainTable.Name #> ins 
- 
-");
+<#@ include file="SelectFirstUniqueId.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
             srv.GetById(id);
@@ -149,11 +142,8 @@ FROM <#= StructureClass.MainTable.Name #> ins
         //[Fact(Skip = SkipReason)]
         public async Task GetAsync_Test()
         {
-            var id = await DataBaseFactory.GetValueAsync<<#= StructureClass.MainTable.Name #>, string>(@"
-SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
-FROM <#= StructureClass.MainTable.Name #> ins 
- 
-");
+<#@ include file="SelectFirstUniqueIdAsync.ttinclude" #>
+
             var srv = new <#= ServiceName #>(DataBaseFactory);
             await srv.GetByIdAsync(id);
             var rowNum = srv.Data.<#= StructureClass.MainTable.Name #>.RowNum;
@@ -177,11 +167,8 @@ FROM <#= StructureClass.MainTable.Name #> ins
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
-            var id = await DataBaseFactory.GetValueAsync<<#= StructureClass.MainTable.Name #>, string>(@"
-SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
-FROM <#= StructureClass.MainTable.Name #> ins 
- 
-");
+
+<#@ include file="SelectFirstUniqueIdAsync.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
             await srv.GetByIdAsync(id);
