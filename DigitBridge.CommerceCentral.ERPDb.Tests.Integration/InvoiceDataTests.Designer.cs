@@ -82,8 +82,10 @@ FROM InvoiceHeader ins
 INNER JOIN (
     SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
 ) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 1
+WHERE itm.cnt > 0
 ");
+
+
             var data = new InvoiceData(DataBaseFactory);
             data.GetById(id);
 
@@ -120,8 +122,10 @@ FROM InvoiceHeader ins
 INNER JOIN (
     SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
 ) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 1
+WHERE itm.cnt > 0
 ");
+
+
             var data = new InvoiceData(DataBaseFactory);
             data.GetById(id);
             var rowNum = data.InvoiceHeader.RowNum;
@@ -152,8 +156,9 @@ FROM InvoiceHeader ins
 INNER JOIN (
     SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
 ) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 1
+WHERE itm.cnt > 0
 ");
+
 
             var data = new InvoiceData(DataBaseFactory);
             data.GetById(id);
@@ -198,8 +203,10 @@ FROM InvoiceHeader ins
 INNER JOIN (
     SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
 ) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 1
+WHERE itm.cnt > 0
 ");
+
+
             var data = new InvoiceData(DataBaseFactory);
             await data.GetByIdAsync(id);
             var rowNum = data.InvoiceHeader.RowNum;
@@ -230,8 +237,9 @@ FROM InvoiceHeader ins
 INNER JOIN (
     SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
 ) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 1
+WHERE itm.cnt > 0
 ");
+
 
             var data = new InvoiceData(DataBaseFactory);
             await data.GetByIdAsync(id);

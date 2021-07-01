@@ -465,5 +465,16 @@ namespace DigitBridge.Base.Utility
         /// <returns></returns>
         public static TimeSpan MaxValueSql(this TimeSpan netDateTime) => ObjectConvert.MaxTime;
 
+
+        public static DateTime ToDateTime(this DateTime? input) => (input is null) ? ObjectConvert.MinDatatime : (DateTime)input;
+        public static TimeSpan ToTimeSpan(this DateTime? input) => (input is null) ? ObjectConvert.MinTime : ((DateTime)input).TimeOfDay;
+        public static DateTime ToDateTime(this TimeSpan? input) => (input is null) ? DateTime.Today : DateTime.Today + (TimeSpan)input;
+        public static DateTime ToDateTime(this TimeSpan input) => DateTime.Today + input;
+
+        public static int ToInt(this int? input) => (input is null) ? default(int) : (int)input;
+        public static long ToLong(this long? input) => (input is null) ? default(long) : (long)input;
+        public static decimal ToDecimal(this decimal? input) => (input is null) ? default(decimal) : (decimal)input;
+        public static byte ToByte(this byte? input) => (input is null) ? default(byte) : (byte)input;
+        
     }
 }
