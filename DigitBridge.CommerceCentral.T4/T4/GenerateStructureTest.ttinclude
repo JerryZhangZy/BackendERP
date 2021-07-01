@@ -109,10 +109,7 @@ namespace <#= NamespaceTest #>
             var id = DataBaseFactory.GetValue<<#= StructureClass.MainTable.Name #>, string>(@"
 SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
 FROM <#= StructureClass.MainTable.Name #> ins 
-INNER JOIN (
-    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
-) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
-WHERE itm.cnt > 1
+ 
 ");
             var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
             data.GetById(id);
@@ -147,10 +144,7 @@ WHERE itm.cnt > 1
             var id = DataBaseFactory.GetValue<<#= StructureClass.MainTable.Name #>, string>(@"
 SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
 FROM <#= StructureClass.MainTable.Name #> ins 
-INNER JOIN (
-    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
-) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
-WHERE itm.cnt > 1
+
 ");
             var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
             data.GetById(id);
@@ -179,10 +173,7 @@ WHERE itm.cnt > 1
             var id = DataBaseFactory.GetValue<<#= StructureClass.MainTable.Name #>, string>(@"
 SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
 FROM <#= StructureClass.MainTable.Name #> ins 
-INNER JOIN (
-    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
-) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
-WHERE itm.cnt > 1
+ 
 ");
 
             var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
@@ -225,10 +216,7 @@ WHERE itm.cnt > 1
             var id = await DataBaseFactory.GetValueAsync<<#= StructureClass.MainTable.Name #>, string>(@"
 SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
 FROM <#= StructureClass.MainTable.Name #> ins 
-INNER JOIN (
-    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
-) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
-WHERE itm.cnt > 1
+ 
 ");
             var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
             await data.GetByIdAsync(id);
@@ -257,10 +245,7 @@ WHERE itm.cnt > 1
             var id = await DataBaseFactory.GetValueAsync<<#= StructureClass.MainTable.Name #>, string>(@"
 SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
 FROM <#= StructureClass.MainTable.Name #> ins 
-INNER JOIN (
-    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
-) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
-WHERE itm.cnt > 1
+
 ");
 
             var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
