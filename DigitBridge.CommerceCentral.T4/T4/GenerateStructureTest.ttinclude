@@ -106,14 +106,8 @@ namespace <#= NamespaceTest #>
 		//[Fact(Skip = SkipReason)]
 		public void Clone_Test()
 		{
-            var id = DataBaseFactory.GetValue<<#= StructureClass.MainTable.Name #>, string>(@"
-SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
-FROM <#= StructureClass.MainTable.Name #> ins 
-INNER JOIN (
-    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
-) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
-WHERE itm.cnt > 1
-");
+<#@ include file="SelectFirstUniqueId.ttinclude" #>
+
             var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
             data.GetById(id);
 
@@ -144,14 +138,8 @@ WHERE itm.cnt > 1
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            var id = DataBaseFactory.GetValue<<#= StructureClass.MainTable.Name #>, string>(@"
-SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
-FROM <#= StructureClass.MainTable.Name #> ins 
-INNER JOIN (
-    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
-) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
-WHERE itm.cnt > 1
-");
+<#@ include file="SelectFirstUniqueId.ttinclude" #>
+
             var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
             data.GetById(id);
             var rowNum = data.<#= StructureClass.MainTable.Name #>.RowNum;
@@ -176,14 +164,7 @@ WHERE itm.cnt > 1
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
         {
-            var id = DataBaseFactory.GetValue<<#= StructureClass.MainTable.Name #>, string>(@"
-SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
-FROM <#= StructureClass.MainTable.Name #> ins 
-INNER JOIN (
-    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
-) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
-WHERE itm.cnt > 1
-");
+<#@ include file="SelectFirstUniqueId.ttinclude" #>
 
             var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
             data.GetById(id);
@@ -222,14 +203,8 @@ WHERE itm.cnt > 1
         //[Fact(Skip = SkipReason)]
         public async Task GetAsync_Test()
         {
-            var id = await DataBaseFactory.GetValueAsync<<#= StructureClass.MainTable.Name #>, string>(@"
-SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
-FROM <#= StructureClass.MainTable.Name #> ins 
-INNER JOIN (
-    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
-) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
-WHERE itm.cnt > 1
-");
+<#@ include file="SelectFirstUniqueIdAsync.ttinclude" #>
+
             var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
             await data.GetByIdAsync(id);
             var rowNum = data.<#= StructureClass.MainTable.Name #>.RowNum;
@@ -254,14 +229,7 @@ WHERE itm.cnt > 1
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
-            var id = await DataBaseFactory.GetValueAsync<<#= StructureClass.MainTable.Name #>, string>(@"
-SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
-FROM <#= StructureClass.MainTable.Name #> ins 
-INNER JOIN (
-    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt FROM <#= StructureClass.DetailTable.Name #> it GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
-) itm ON (itm.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
-WHERE itm.cnt > 1
-");
+<#@ include file="SelectFirstUniqueIdAsync.ttinclude" #>
 
             var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
             await data.GetByIdAsync(id);

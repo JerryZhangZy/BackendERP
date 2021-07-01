@@ -190,6 +190,30 @@
             }
         }
 
+        public string ConvertPropertyTypeDtoToData
+        {
+            get 
+            { 
+                var t = PropertyType;
+                var td = DtoPropertyType;
+                return (t == td)
+                    ? string.Empty
+                    : $".To{RemoveNullable(ToCapital(PropertyType))}()";
+            }
+        }
+
+        public string ConvertPropertyTypeDataToDto
+        {
+            get 
+            { 
+                var t = PropertyType;
+                var td = DtoPropertyType;
+                return (t == td || $"{t}?" == td)
+                    ? string.Empty
+                    : $".To{RemoveNullable(ToCapital(td))}()";
+            }
+        }
+
         public string propertyName
         {
             get { return $"{Name}"; }
@@ -340,6 +364,21 @@
             }
 
             return $".RuleFor(u => u.{Name}, {gen})";
+        }
+
+        public string ToCamel(string s)
+        {
+            return $"{s.First().ToString().ToLower()}{s.Substring(1)}";
+        }
+        public string ToCapital(string s)
+        {
+            return $"{s.First().ToString().ToUpper()}{s.Substring(1)}";
+        }
+        public string RemoveNullable(string s)
+        {
+            return s.EndsWith("?")
+                ? $"{s.Substring(0,s.Length-1)}"
+                : s;
         }
     }
 

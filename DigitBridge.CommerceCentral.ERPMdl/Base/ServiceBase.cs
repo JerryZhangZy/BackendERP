@@ -128,28 +128,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (_data is null)
                 NewData();
-            return await _data.GetAsync(RowNum);
+            return await _data.GetAsync(RowNum).ConfigureAwait(false);
         }
 
         public virtual async Task<bool> GetByIdAsync(string id)
         {
             if (_data is null)
                 NewData();
-            return await _data.GetByIdAsync(id);
+            return await _data.GetByIdAsync(id).ConfigureAwait(false);
         }
 
         public virtual async Task<bool> SaveAsync()
         {
             if (_data is null)
                 return false;
-            return await _data.SaveAsync();
+            return await _data.SaveAsync().ConfigureAwait(false);
         }
 
         public virtual async Task<bool> DeleteAsync()
         {
             if (_data is null)
                 return false;
-            return await _data.DeleteAsync();
+            return await _data.DeleteAsync().ConfigureAwait(false);
         }
 
         #endregion CRUD Methods

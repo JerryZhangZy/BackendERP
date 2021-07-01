@@ -50,7 +50,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return await ExecuteScalarHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
             }
 
-            await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd);
+            await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
             return -1;
         }
 #endif

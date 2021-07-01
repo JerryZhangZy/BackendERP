@@ -334,10 +334,10 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
             var data = FakerData.Generate();
             data.SetDataBaseFactory(DataBaseFactory);
             DataBaseFactory.Begin();
-            await data.AddAsync();
+            await data.AddAsync().ConfigureAwait(false);
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItems>(data.UniqueId);
+            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItems>(data.UniqueId).ConfigureAwait(false);
             var result = data.Equals(dataGet);
 
             Assert.True(result, "This test is a debug helper");
@@ -347,17 +347,17 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task PutAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceItems>();
+            var list = await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false);
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data.CopyFrom(newData);
-            await data.PutAsync();
+            await data.PutAsync().ConfigureAwait(false);
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItems>(data.UniqueId);
+            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItems>(data.UniqueId).ConfigureAwait(false);
             var result = data.Equals(dataGet);
 
             Assert.True(result, "This test is a debug helper");
@@ -367,7 +367,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task PatchAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceItems>();
+            var list = await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false);
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -377,10 +377,10 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data.CopyFrom(newData);
-            await data.PatchAsync(new[] { "OrderPack", "ShipPack" });
+            await data.PatchAsync(new[] { "OrderPack", "ShipPack" }).ConfigureAwait(false);
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheAsync<InvoiceItems>(data.RowNum);
+            var dataGet = await DataBaseFactory.GetFromCacheAsync<InvoiceItems>(data.RowNum).ConfigureAwait(false);
             var result = dataGet.OrderPack != dataOrig.OrderPack &&
                             dataGet.ShipPack != dataOrig.ShipPack &&
                             dataGet.OrderPack == newData.OrderPack &&
@@ -396,18 +396,18 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
             var dataNew = FakerData.Generate();
             dataNew.SetDataBaseFactory(DataBaseFactory);
             DataBaseFactory.Begin();
-            await dataNew.SaveAsync();
+            await dataNew.SaveAsync().ConfigureAwait(false);
             DataBaseFactory.Commit();
 
-            var dataUpdate = await DataBaseFactory.GetByIdAsync<InvoiceItems>(dataNew.UniqueId);
+            var dataUpdate = await DataBaseFactory.GetByIdAsync<InvoiceItems>(dataNew.UniqueId).ConfigureAwait(false);
             var dataChanged = FakerData.Generate();
             dataUpdate.CopyFrom(dataChanged, new[] { "InvoiceItemsId" });
 
             DataBaseFactory.Begin();
-            await dataUpdate.SaveAsync();
+            await dataUpdate.SaveAsync().ConfigureAwait(false);
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItems>(dataUpdate.UniqueId);
+            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItems>(dataUpdate.UniqueId).ConfigureAwait(false);
             var result = dataUpdate.Equals(dataGet);
 
             Assert.True(result, "This test is a debug helper");
@@ -417,15 +417,15 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceItems>();
+            var list = await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false);
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
             data.SetDataBaseFactory(DataBaseFactory);
-            await data.DeleteAsync();
+            await data.DeleteAsync().ConfigureAwait(false);
             DataBaseFactory.Commit();
 
-            var result = await DataBaseFactory.ExistUniqueIdAsync<InvoiceItems>(data.UniqueId);
+            var result = await DataBaseFactory.ExistUniqueIdAsync<InvoiceItems>(data.UniqueId).ConfigureAwait(false);
 
             Assert.True(!result, "This test is a debug helper");
         }
@@ -434,9 +434,9 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceItems>();
+            var list = await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false);
             var listData = list.FirstOrDefault();
-            var data = await DataBaseFactory.GetAsync<InvoiceItems>(listData.RowNum);
+            var data = await DataBaseFactory.GetAsync<InvoiceItems>(listData.RowNum).ConfigureAwait(false);
             var result = data.Equals(listData);
 
             Assert.True(result, "This test is a debug helper");
@@ -446,9 +446,9 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetByIdAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceItems>();
+            var list = await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false);
             var listData = list.FirstOrDefault();
-            var data = await DataBaseFactory.GetByIdAsync<InvoiceItems>(listData.UniqueId);
+            var data = await DataBaseFactory.GetByIdAsync<InvoiceItems>(listData.UniqueId).ConfigureAwait(false);
             var result = data.Equals(listData);
 
             Assert.True(result, "This test is a debug helper");
@@ -464,9 +464,10 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
             list.ForEach(x => x.InvoiceId = invoiceId);
             await list.AsEnumerable()
                 .SetDataBaseFactory<InvoiceItems>(DataBaseFactory)
-                .SaveAsync<InvoiceItems>();
+                .SaveAsync<InvoiceItems>()
+                .ConfigureAwait(false);
 
-            var cnt = await DataBaseFactory.CountAsync<InvoiceItems>("WHERE InvoiceId = @0", invoiceId);
+            var cnt = await DataBaseFactory.CountAsync<InvoiceItems>("WHERE InvoiceId = @0", invoiceId).ConfigureAwait(false);
             var result = cnt.Equals(list.Count());
 
             Assert.True(result, "This test is a debug helper");
@@ -482,11 +483,12 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
             list.ForEach(x => x.InvoiceId = invoiceId);
             await list.AsEnumerable()
                 .SetDataBaseFactory<InvoiceItems>(DataBaseFactory)
-                .SaveAsync<InvoiceItems>();
+                .SaveAsync<InvoiceItems>()
+                .ConfigureAwait(false);
 
-            var listFind = await DataBaseFactory.FindAsync<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId);
+            var listFind = await DataBaseFactory.FindAsync<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId).ConfigureAwait(false);
             listFind.ToList().ForEach(x => x.ItemTotalAmount = 999);
-            await listFind.SaveAsync<InvoiceItems>();
+            await listFind.SaveAsync<InvoiceItems>().ConfigureAwait(false);
 
             list = DataBaseFactory.Find<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId).ToList();
             var result = list.Where(x => x.ItemTotalAmount == 999).Count() == listFind.Count();
@@ -504,12 +506,13 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
             list.ForEach(x => x.InvoiceId = invoiceId);
             await list.AsEnumerable()
                 .SetDataBaseFactory<InvoiceItems>(DataBaseFactory)
-                .SaveAsync();
+                .SaveAsync()
+                .ConfigureAwait(false);
 
-            var listFind = await DataBaseFactory.FindAsync<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId);
-            await listFind.DeleteAsync();
+            var listFind = await DataBaseFactory.FindAsync<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId).ConfigureAwait(false);
+            await listFind.DeleteAsync().ConfigureAwait(false);
 
-            var cnt = await DataBaseFactory.CountAsync<InvoiceItems>("WHERE InvoiceId = @0", invoiceId);
+            var cnt = await DataBaseFactory.CountAsync<InvoiceItems>("WHERE InvoiceId = @0", invoiceId).ConfigureAwait(false);
             var result = cnt == 0;
 
             Assert.True(result, "This test is a debug helper");
@@ -519,10 +522,10 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetFromCacheByIdAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceItems>("SELECT TOP 1 * FROM InvoiceItems");
+            var list = await DataBaseFactory.FindAsync<InvoiceItems>("SELECT TOP 1 * FROM InvoiceItems").ConfigureAwait(false);
             var data = list.FirstOrDefault();
-            var data1 = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItems>(data.UniqueId);
-            var data2 = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItems>(data.UniqueId);
+            var data1 = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItems>(data.UniqueId).ConfigureAwait(false);
+            var data2 = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItems>(data.UniqueId).ConfigureAwait(false);
 
             var result = data1 == data2;
 
