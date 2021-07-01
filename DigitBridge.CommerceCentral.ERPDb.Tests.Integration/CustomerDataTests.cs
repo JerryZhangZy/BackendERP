@@ -25,6 +25,34 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     public partial class CustomerDataTests
     {
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void Get_Test_Manual()
+        {
+            var id = DataBaseFactory.GetValue<Customer, string>(@"
+SELECT TOP 1 ins.CustomerUuid 
+FROM Customer ins 
+
+");
+            var data = new CustomerData(DataBaseFactory);
+            data.GetById(id);
+            var rowNum = data.Customer.RowNum;
+
+            var dataUpdate = GetFakerData();
+            dataUpdate.SetDataBaseFactory(DataBaseFactory);
+            data.CopyFrom(dataUpdate);
+            data.Save();
+
+            var dataGetById = new CustomerData(DataBaseFactory);
+            dataGetById.GetById(id);
+
+            var dataGet = new CustomerData(DataBaseFactory);
+            dataGet.Get(rowNum);
+
+            var result = data.Equals(dataGet) && dataGet.Equals(dataGetById);
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
     }
 }

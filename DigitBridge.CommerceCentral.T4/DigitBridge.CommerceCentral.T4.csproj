@@ -38,11 +38,11 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateServiceTest.ttinclude">
-      <LastGenOutput>GenerateServiceTest.cs</LastGenOutput>
+      <LastGenOutput>GenerateStructureTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateStructureTest.ttinclude">
-      <LastGenOutput>GenerateServiceTest.cs</LastGenOutput>
+      <LastGenOutput>GenerateStructureTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateServiceTestPartial.ttinclude">
@@ -157,10 +157,10 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="T4\GenerateServiceTest.cs">
+    <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateServiceTest.ttinclude</DependentUpon>
+      <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateStructureTestPartial - Copy.cs">
       <DependentUpon>GenerateStructureTestPartial.ttinclude</DependentUpon>

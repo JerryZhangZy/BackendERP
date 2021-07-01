@@ -56,11 +56,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				return false; 
 			if (CustomerAddress == null && other.CustomerAddress != null || CustomerAddress != null && other.CustomerAddress == null) 
 				return false; 
-			if (CustomerAddress != null && other.CustomerAddress != null && !CustomerAddress.Equals(other.CustomerAddress)) 
+			if (CustomerAddress != null && other.CustomerAddress != null && !CustomerAddress.EqualsList(other.CustomerAddress)) 
 				return false; 
 			if (CustomerAttributes == null && other.CustomerAttributes != null || CustomerAttributes != null && other.CustomerAttributes == null) 
 				return false; 
-			if (CustomerAttributes != null && other.CustomerAttributes != null && !CustomerAttributes.EqualsList(other.CustomerAttributes)) 
+			if (CustomerAttributes != null && other.CustomerAttributes != null && !CustomerAttributes.Equals(other.CustomerAttributes)) 
 				return false; 
             return true;
         }
@@ -79,9 +79,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void Clear()
         {
 			Customer?.Clear(); 
-			CustomerAddress?.Clear(); 
-			CustomerAttributes = Enumerable.Empty<CustomerAttributes>(); 
-			ClearCustomerAttributesDeleted(); 
+			CustomerAddress = Enumerable.Empty<CustomerAddress>(); 
+			ClearCustomerAddressDeleted(); 
+			CustomerAttributes?.Clear(); 
 			ClearOthers(); 
 			if (_OnClear != null)
 				_OnClear(this);
@@ -92,10 +92,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             Clear();
 			Customer = NewCustomer(); 
-			CustomerAddress = NewCustomerAddress(); 
-			CustomerAttributes = new List<CustomerAttributes>(); 
-			AddCustomerAttributes(NewCustomerAttributes()); 
-			ClearCustomerAttributesDeleted(); 
+			CustomerAddress = new List<CustomerAddress>(); 
+			AddCustomerAddress(NewCustomerAddress()); 
+			ClearCustomerAddressDeleted(); 
+			CustomerAttributes = NewCustomerAttributes(); 
             return;
         }
 
@@ -329,99 +329,44 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Customer - Generated 
 
         #region CustomerAddress - Generated 
-    
-
-        // one to one children
-        protected CustomerAddress _CustomerAddress;
-
-        public virtual CustomerAddress CustomerAddress 
-        { 
-            get => _CustomerAddress;
-            set => _CustomerAddress = value?.SetParent(this); 
-        }
-
-        public virtual void CopyCustomerAddressFrom(CustomerData data) => 
-            CustomerAddress.CopyFrom(data.CustomerAddress, new string[] {"CustomerUuid"});
-
-        public virtual CustomerAddress NewCustomerAddress() => new CustomerAddress(dbFactory).SetParent(this);
-
-        public virtual CustomerAddress GetCustomerAddress(long RowNum) =>
-            (RowNum <= 0) ? null : dbFactory.Get<CustomerAddress>(RowNum);
-
-        public virtual CustomerAddress GetCustomerAddressByCustomerUuid(string CustomerUuid) =>
-            (string.IsNullOrEmpty(CustomerUuid)) ? null : dbFactory.GetById<CustomerAddress>(CustomerUuid);
-
-        public virtual bool SaveCustomerAddress(CustomerAddress data) =>
-            (data is null) ? false : data.Save();
-
-        public virtual int DeleteCustomerAddress(CustomerAddress data) =>
-            (data is null) ? 0 : data.Delete();
-
-        public virtual async Task<CustomerAddress> GetCustomerAddressAsync(long RowNum) =>
-            (RowNum <= 0) ? null : await dbFactory.GetAsync<CustomerAddress>(RowNum);
-
-        public virtual async Task<CustomerAddress> GetCustomerAddressByCustomerUuidAsync(string CustomerUuid) =>
-            (string.IsNullOrEmpty(CustomerUuid)) ? null : await dbFactory.GetByIdAsync<CustomerAddress>(CustomerUuid);
-
-        public virtual async Task<bool> SaveCustomerAddressAsync(CustomerAddress data) =>
-            (data is null) ? false : await data.SaveAsync();
-
-        public virtual async Task<int> DeleteCustomerAddressAsync(CustomerAddress data) =>
-            (data is null) ? 0 : await data.DeleteAsync();
-
-        public virtual CustomerAddress CheckIntegrityCustomerAddress()
-        {
-            if (CustomerAddress is null || Customer is null) 
-                return CustomerAddress;
-            CustomerAddress.SetParent(this);
-            if (CustomerAddress.CustomerUuid != Customer.CustomerUuid)
-                CustomerAddress.CustomerUuid = Customer.CustomerUuid;
-            return CustomerAddress;
-        }
-
-
-
-        #endregion CustomerAddress - Generated 
-
-        #region CustomerAttributes - Generated 
         // One to many children
-        protected IEnumerable<CustomerAttributes> _CustomerAttributesDeleted;
-        public virtual CustomerAttributes AddCustomerAttributesDeleted(CustomerAttributes del) 
+        protected IEnumerable<CustomerAddress> _CustomerAddressDeleted;
+        public virtual CustomerAddress AddCustomerAddressDeleted(CustomerAddress del) 
         {
-            if (_CustomerAttributesDeleted is null)
-                _CustomerAttributesDeleted = new List<CustomerAttributes>();
-            var lst = _CustomerAttributesDeleted.ToList();
+            if (_CustomerAddressDeleted is null)
+                _CustomerAddressDeleted = new List<CustomerAddress>();
+            var lst = _CustomerAddressDeleted.ToList();
             lst.Add(del);
-            _CustomerAttributesDeleted = lst;
+            _CustomerAddressDeleted = lst;
             return del;
         } 
 
-        public virtual IEnumerable<CustomerAttributes> AddCustomerAttributesDeleted(IEnumerable<CustomerAttributes> del) 
+        public virtual IEnumerable<CustomerAddress> AddCustomerAddressDeleted(IEnumerable<CustomerAddress> del) 
         {
-            if (_CustomerAttributesDeleted is null)
-                _CustomerAttributesDeleted = new List<CustomerAttributes>();
-            var lst = _CustomerAttributesDeleted.ToList();
+            if (_CustomerAddressDeleted is null)
+                _CustomerAddressDeleted = new List<CustomerAddress>();
+            var lst = _CustomerAddressDeleted.ToList();
             lst.AddRange(del);
-            _CustomerAttributesDeleted = lst;
+            _CustomerAddressDeleted = lst;
             return del;
         } 
 
-        public virtual void SetCustomerAttributesDeleted(IEnumerable<CustomerAttributes> del) =>
-            _CustomerAttributesDeleted = del;
+        public virtual void SetCustomerAddressDeleted(IEnumerable<CustomerAddress> del) =>
+            _CustomerAddressDeleted = del;
 
-        public virtual void ClearCustomerAttributesDeleted() =>
-            _CustomerAttributesDeleted = null;
+        public virtual void ClearCustomerAddressDeleted() =>
+            _CustomerAddressDeleted = null;
 
 
-        protected IEnumerable<CustomerAttributes> _CustomerAttributes;
+        protected IEnumerable<CustomerAddress> _CustomerAddress;
 
-        public virtual IEnumerable<CustomerAttributes> CustomerAttributes 
+        public virtual IEnumerable<CustomerAddress> CustomerAddress 
         { 
             get 
             {
-                if (_CustomerAttributes is null)
-                    _CustomerAttributes = new List<CustomerAttributes>();
-                return _CustomerAttributes;
+                if (_CustomerAddress is null)
+                    _CustomerAddress = new List<CustomerAddress>();
+                return _CustomerAddress;
             } 
             set
             {
@@ -429,62 +374,62 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 {
                     var valueList = value.ToList();
                     valueList.ForEach(i => i?.SetParent(this));
-                    _CustomerAttributes = valueList;
+                    _CustomerAddress = valueList;
                 }
                 else
-                    _CustomerAttributes = null;
+                    _CustomerAddress = null;
             } 
         }
 
-        public virtual void CopyCustomerAttributesFrom(CustomerData data) 
+        public virtual void CopyCustomerAddressFrom(CustomerData data) 
         {
-            CustomerAttributes.CopyFrom(data.CustomerAttributes, new string[] {"CustomerUuid"});
-            var lst = CustomerAttributes.ToList(); 
-            var lstDeleted = lst.FindNotExistsByRowNum(data.CustomerAttributes);
-            SetCustomerAttributesDeleted(lstDeleted);
+            CustomerAddress.CopyFrom(data.CustomerAddress, new string[] {"CustomerUuid"});
+            var lst = CustomerAddress.ToList(); 
+            var lstDeleted = lst.FindNotExistsByRowNum(data.CustomerAddress);
+            SetCustomerAddressDeleted(lstDeleted);
             foreach (var remove in lstDeleted)
                 lst.Remove(remove);
             foreach (var c in lst)
-                c.CopyChildrenFrom(data.CustomerAttributes.FindByRowNum(c.RowNum));
+                c.CopyChildrenFrom(data.CustomerAddress.FindByRowNum(c.RowNum));
         } 
 
-        public virtual CustomerAttributes NewCustomerAttributes() => new CustomerAttributes(dbFactory);
+        public virtual CustomerAddress NewCustomerAddress() => new CustomerAddress(dbFactory);
 
-        public virtual CustomerAttributes AddCustomerAttributes(CustomerAttributes obj) => 
-            CustomerAttributes.AddOrReplace(obj.SetParent(this));
+        public virtual CustomerAddress AddCustomerAddress(CustomerAddress obj) => 
+            CustomerAddress.AddOrReplace(obj.SetParent(this));
 
-        public virtual CustomerAttributes RemoveCustomerAttributes(CustomerAttributes obj) => 
-            AddCustomerAttributesDeleted(CustomerAttributes.Remove(obj.SetParent(this)));
+        public virtual CustomerAddress RemoveCustomerAddress(CustomerAddress obj) => 
+            AddCustomerAddressDeleted(CustomerAddress.Remove(obj.SetParent(this)));
 
-        public virtual IEnumerable<CustomerAttributes> GetCustomerAttributesByCustomerUuid(string CustomerUuid) =>
+        public virtual IEnumerable<CustomerAddress> GetCustomerAddressByCustomerUuid(string CustomerUuid) =>
             (string.IsNullOrEmpty(CustomerUuid)) 
                 ? null 
-                : dbFactory.Find<CustomerAttributes>("WHERE CustomerUuid = @0 ORDER BY RowNum ", CustomerUuid).ToList();
+                : dbFactory.Find<CustomerAddress>("WHERE CustomerUuid = @0 ORDER BY RowNum ", CustomerUuid).ToList();
 
-        public virtual bool SaveCustomerAttributes(IEnumerable<CustomerAttributes> data) =>
+        public virtual bool SaveCustomerAddress(IEnumerable<CustomerAddress> data) =>
             (data is null) ? false : data.Save();
 
-        public virtual int DeleteCustomerAttributes(IEnumerable<CustomerAttributes> data) =>
+        public virtual int DeleteCustomerAddress(IEnumerable<CustomerAddress> data) =>
             (data is null) ? 0 : data.Delete();
 
-        public virtual async Task<IEnumerable<CustomerAttributes>> GetCustomerAttributesByCustomerUuidAsync(string CustomerUuid) =>
+        public virtual async Task<IEnumerable<CustomerAddress>> GetCustomerAddressByCustomerUuidAsync(string CustomerUuid) =>
             (string.IsNullOrEmpty(CustomerUuid)) 
                 ? null
-                : await dbFactory.FindAsync<CustomerAttributes>("WHERE CustomerUuid = @0 ORDER BY RowNum ", CustomerUuid);
+                : await dbFactory.FindAsync<CustomerAddress>("WHERE CustomerUuid = @0 ORDER BY RowNum ", CustomerUuid);
 
-        public virtual async Task<bool> SaveCustomerAttributesAsync(IEnumerable<CustomerAttributes> data) =>
+        public virtual async Task<bool> SaveCustomerAddressAsync(IEnumerable<CustomerAddress> data) =>
             (data is null) ? false : await data.SaveAsync();
 
-        public virtual async Task<int> DeleteCustomerAttributesAsync(IEnumerable<CustomerAttributes> data) =>
+        public virtual async Task<int> DeleteCustomerAddressAsync(IEnumerable<CustomerAddress> data) =>
             (data is null) ? 0 : await data.DeleteAsync();
 
-        public virtual IEnumerable<CustomerAttributes> CheckIntegrityCustomerAttributes()
+        public virtual IEnumerable<CustomerAddress> CheckIntegrityCustomerAddress()
         {
-            if (CustomerAttributes is null || Customer is null) 
-                return CustomerAttributes;
+            if (CustomerAddress is null || Customer is null) 
+                return CustomerAddress;
             var seq = 0;
-            CustomerAttributes.RemoveEmpty();
-            var children = CustomerAttributes.ToList();
+            CustomerAddress.RemoveEmpty();
+            var children = CustomerAddress.ToList();
             foreach (var child in children.Where(x => x != null))
             {
                 child.SetParent(this);
@@ -492,6 +437,61 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     child.CustomerUuid = Customer.CustomerUuid;
             }
             return children;
+        }
+
+
+
+        #endregion CustomerAddress - Generated 
+
+        #region CustomerAttributes - Generated 
+    
+
+        // one to one children
+        protected CustomerAttributes _CustomerAttributes;
+
+        public virtual CustomerAttributes CustomerAttributes 
+        { 
+            get => _CustomerAttributes;
+            set => _CustomerAttributes = value?.SetParent(this); 
+        }
+
+        public virtual void CopyCustomerAttributesFrom(CustomerData data) => 
+            CustomerAttributes.CopyFrom(data.CustomerAttributes, new string[] {"CustomerUuid"});
+
+        public virtual CustomerAttributes NewCustomerAttributes() => new CustomerAttributes(dbFactory).SetParent(this);
+
+        public virtual CustomerAttributes GetCustomerAttributes(long RowNum) =>
+            (RowNum <= 0) ? null : dbFactory.Get<CustomerAttributes>(RowNum);
+
+        public virtual CustomerAttributes GetCustomerAttributesByCustomerUuid(string CustomerUuid) =>
+            (string.IsNullOrEmpty(CustomerUuid)) ? null : dbFactory.GetById<CustomerAttributes>(CustomerUuid);
+
+        public virtual bool SaveCustomerAttributes(CustomerAttributes data) =>
+            (data is null) ? false : data.Save();
+
+        public virtual int DeleteCustomerAttributes(CustomerAttributes data) =>
+            (data is null) ? 0 : data.Delete();
+
+        public virtual async Task<CustomerAttributes> GetCustomerAttributesAsync(long RowNum) =>
+            (RowNum <= 0) ? null : await dbFactory.GetAsync<CustomerAttributes>(RowNum);
+
+        public virtual async Task<CustomerAttributes> GetCustomerAttributesByCustomerUuidAsync(string CustomerUuid) =>
+            (string.IsNullOrEmpty(CustomerUuid)) ? null : await dbFactory.GetByIdAsync<CustomerAttributes>(CustomerUuid);
+
+        public virtual async Task<bool> SaveCustomerAttributesAsync(CustomerAttributes data) =>
+            (data is null) ? false : await data.SaveAsync();
+
+        public virtual async Task<int> DeleteCustomerAttributesAsync(CustomerAttributes data) =>
+            (data is null) ? 0 : await data.DeleteAsync();
+
+        public virtual CustomerAttributes CheckIntegrityCustomerAttributes()
+        {
+            if (CustomerAttributes is null || Customer is null) 
+                return CustomerAttributes;
+            CustomerAttributes.SetParent(this);
+            if (CustomerAttributes.CustomerUuid != Customer.CustomerUuid)
+                CustomerAttributes.CustomerUuid = Customer.CustomerUuid;
+            return CustomerAttributes;
         }
 
 

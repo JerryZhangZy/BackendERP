@@ -14,6 +14,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public string ClassName { get; set; }
         public SqlTableInfo MainTable { get; set; }
         public Dictionary<string, StructureTable> StructureTables { get; set; }
+        public string NonMainTableNames
+        {
+            get
+            {
+                if (StructureTables != null)
+                {
+                    return string.Join(",", StructureTables.Keys.Where(i => i != MainTable.Name));
+                }
+                return string.Empty;
+            }
+        }
         public StructureInfo(string className, params StructureTable[] tables)
         {
             ClassName = className;
@@ -28,13 +39,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public string Name { get; set; }
         public string ParentName { get; set; }
         public string oneToOneChildrenName { get; set; }
-        public bool MainTable { get; set; } 
-        public bool OneToOne { get; set; } 
+        public bool MainTable { get; set; }
+        public bool OneToOne { get; set; }
         public string LoadByColumn { get; set; }
         public SqlTableInfo Table { get; set; }
         public SqlTableInfo ParentTable { get; set; }
     }
-	
+
     public class SqlTableInfo
     {
         public string Name { get; set; }
@@ -51,8 +62,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public List<string> Atrributes { get; set; }
         public string LoadByColumnName { get; set; }
 
-        public bool HasStringProperties { get {return StringProperties != null && StringProperties.Count > 1; } }
-        public bool HasIdProperties { get {return IdProperties != null && IdProperties.Count > 0; } }
+        public bool HasStringProperties { get { return StringProperties != null && StringProperties.Count > 1; } }
+        public bool HasIdProperties { get { return IdProperties != null && IdProperties.Count > 0; } }
         public List<string> StringProperties { get; set; }
         public List<string> IdProperties { get; set; }
         public void GetRandomProperties()
@@ -61,16 +72,16 @@ namespace DigitBridge.CommerceCentral.YoPoco
             IdProperties = new List<string>();
             foreach (var col in Columns)
             {
-                if (!col.Name.Equals(PrimaryKey, StringComparison.CurrentCultureIgnoreCase) && 
-                    !col.Name.Equals(UniqueKey, StringComparison.CurrentCultureIgnoreCase) &&  
+                if (!col.Name.Equals(PrimaryKey, StringComparison.CurrentCultureIgnoreCase) &&
+                    !col.Name.Equals(UniqueKey, StringComparison.CurrentCultureIgnoreCase) &&
                     col.Type.Equals("string", StringComparison.CurrentCultureIgnoreCase))
                 {
                     StringProperties.Add(col.Name);
                 }
 
-                if (!col.Name.Equals(PrimaryKey, StringComparison.CurrentCultureIgnoreCase) && 
-                    !col.Name.Equals(UniqueKey, StringComparison.CurrentCultureIgnoreCase) &&  
-                    col.Type.Equals("string", StringComparison.CurrentCultureIgnoreCase) && 
+                if (!col.Name.Equals(PrimaryKey, StringComparison.CurrentCultureIgnoreCase) &&
+                    !col.Name.Equals(UniqueKey, StringComparison.CurrentCultureIgnoreCase) &&
+                    col.Type.Equals("string", StringComparison.CurrentCultureIgnoreCase) &&
                     col.Name.EndsWith("Id", StringComparison.CurrentCultureIgnoreCase))
                 {
                     IdProperties.Add(col.Name);
@@ -105,23 +116,23 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public string PropertyType
         {
-            get 
-            { 
+            get
+            {
                 var t = FieldType;
-                return t.ToLower().Contains("byte") ? "bool" : t; 
+                return t.ToLower().Contains("byte") ? "bool" : t;
             }
         }
 
         public string FieldType
         {
-            get 
-            { 
+            get
+            {
                 return (
-                    !Null || 
-                    Type =="byte[]" || 
-                    Type =="string" ||
-                    Type =="Guid" ||
-                    Type =="object")
+                    !Null ||
+                    Type == "byte[]" ||
+                    Type == "string" ||
+                    Type == "Guid" ||
+                    Type == "object")
                 ? Type
                 : $"{Type}?";
             }
@@ -138,16 +149,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             get { return $"{Name.First().ToString().ToLower()}{Name.Substring(1)}"; }
         }
-        public bool ignoreGenerate {
-            get { 
+        public bool ignoreGenerate
+        {
+            get
+            {
                 return (
-                    Name.Equals("RowNum", StringComparison.CurrentCultureIgnoreCase) || 
+                    Name.Equals("RowNum", StringComparison.CurrentCultureIgnoreCase) ||
                     Name.Equals("EnterDateUtc", StringComparison.CurrentCultureIgnoreCase) ||
                     Name.Equals("DigitBridgeGuid", StringComparison.CurrentCultureIgnoreCase)
-                ); 
+                );
             }
         }
-        public bool isString {
+        public bool isString
+        {
             get { return (Type == "string"); }
         }
 
@@ -162,29 +176,37 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public bool isDouble { get { return (Type == "double" || Type == "double?"); } }
         public bool isByte { get { return (Type == "byte" || Type == "byte?"); } }
 
-        public bool isQty {
+        public bool isQty
+        {
             get { return isNumber && Name.ToLower().EndsWith("qty"); }
         }
-        public bool isAmount {
+        public bool isAmount
+        {
             get { return isNumber && Name.ToLower().EndsWith("amount"); }
         }
-        public bool isPrice {
+        public bool isPrice
+        {
             get { return isNumber && Name.ToLower().EndsWith("price"); }
         }
-        public bool isRate {
+        public bool isRate
+        {
             get { return isNumber && Name.ToLower().EndsWith("rate"); }
         }
-        public bool isCost {
+        public bool isCost
+        {
             get { return isNumber && Name.ToLower().EndsWith("cost"); }
         }
-        public bool isDateTime {
+        public bool isDateTime
+        {
             get { return Type.ToLower().Contains("datetime"); }
         }
-        public bool isDate {
+        public bool isDate
+        {
             get { return isDateTime && DataType.ToLower().Contains("sqldbtype.date"); }
         }
 
-        public bool isTime {
+        public bool isTime
+        {
             get { return Type.ToLower().Contains("timespan"); }
         }
 
@@ -209,9 +231,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 case "timespan":
                     defaultExp = "new TimeSpan().MinValueSql()";
                     break;
-                
+
                 default:
-                    defaultExp = string.Format("default({0})",Type.TrimEnd());
+                    defaultExp = string.Format("default({0})", Type.TrimEnd());
                     break;
             }
 
@@ -241,9 +263,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     break;
 
                 case "string":
-                    gen = (IsUniqueKey || Name.ToLower().EndsWith("id")) 
+                    gen = (IsUniqueKey || Name.ToLower().EndsWith("id"))
                         ? $"f => f.Random.Guid().ToString()"
-                        : (Length == "50") 
+                        : (Length == "50")
                             ? $"f => f.Random.Chars(count: {this.Length}).ToString()"
                             : (Length == "max")
                                 ? $"f => f.Lorem.Sentence()"
@@ -267,7 +289,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 case "int":
                     gen = $"f => f.Random.Int(1, 100)";
                     break;
-                
+
                 default:
                     gen = $"f => default{t}";
                     break;
@@ -296,7 +318,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             _databaseProjectPath = projectPath;
             _files = new List<string>();
-            if(!string.IsNullOrEmpty(files))
+            if (!string.IsNullOrEmpty(files))
                 _files.AddRange(files.ToLower().Trim().Split(','));
             Structure = structure;
         }
@@ -309,7 +331,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public StructureInfo GetStructure()
         {
-            if (Structure is null || !Structure.StructureTables.Any() || !Tables.Any()) 
+            if (Structure is null || !Structure.StructureTables.Any() || !Tables.Any())
                 return null;
             foreach (var stu in Structure.StructureTables)
             {
@@ -358,7 +380,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 var folder = new DirectoryInfo(path);
                 foreach (var file in folder.GetFiles())
                 {
-                    if (!file.Extension.Equals(".sql", StringComparison.CurrentCultureIgnoreCase)) 
+                    if (!file.Extension.Equals(".sql", StringComparison.CurrentCultureIgnoreCase))
                         continue;
                     if (IsFileSkip(Path.GetFileNameWithoutExtension(file.Name)))
                         continue;

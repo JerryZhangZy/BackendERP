@@ -17,6 +17,18 @@
         public SqlTableInfo MainTable { get; set; }
         public SqlTableInfo DetailTable { get; set; }
         public Dictionary<string, StructureTable> StructureTables { get; set; }
+        public string NonMainTableNames
+        {
+            get
+            {
+                if (StructureTables != null)
+                {
+                    return string.Join(",", StructureTables.Keys.Where(i => i != MainTable.Name));
+                }
+                return string.Empty;
+            }
+        }
+
         public StructureInfo(string className, params StructureTable[] tables)
         {
             ClassName = className;

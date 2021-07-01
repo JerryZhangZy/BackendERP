@@ -141,11 +141,30 @@ FROM <#= StructureClass.MainTable.Name #> ins
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            var id = DataBaseFactory.GetValue<<#= StructureClass.MainTable.Name #>, string>(@"
+            var sql=@"
 SELECT TOP 1 ins.<#= StructureClass.MainTable.UniqueKey #> 
-FROM <#= StructureClass.MainTable.Name #> ins 
+FROM <#= StructureClass.MainTable.Name #> ins ";
+var orderbys=new List<string>(); 
 
-");
+var tableNams= "<#= StructureClass.NonMainTableNames #>".Split(",");
+
+ foreach(var tableNam in tableNams)
+ {  
+  sql+=string.Format(@" 
+    left JOIN (
+    SELECT it.<#= StructureClass.MainTable.UniqueKey #>, COUNT(1) AS cnt 
+    FROM {0} it 
+    GROUP BY it.<#= StructureClass.MainTable.UniqueKey #>
+   ) {0} ON ({0}.<#= StructureClass.MainTable.UniqueKey #> = ins.<#= StructureClass.MainTable.UniqueKey #>)
+  ",tableNam); 
+  orderbys.Add(string.Format(" {0}.cnt desc ",tableNam));
+ }
+ if (orderbys.Count > 0)  
+ {
+    sql+="order by " + string.Join(',', orderbys);
+ }
+            var id = DataBaseFactory.GetValue<<#= StructureClass.MainTable.Name #>, string>(sql);
+             
             var data = new <#= StructureClass.ClassName #>(DataBaseFactory);
             data.GetById(id);
             var rowNum = data.<#= StructureClass.MainTable.Name #>.RowNum;

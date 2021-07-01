@@ -84,8 +84,8 @@
     var StructureFolder = "DigitBridge.CommerceCentral.ERPDb\\customer";
     var StructureClass =  new StructureInfo("CustomerData",
             new StructureTable() { Name = "Customer", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "CustomerAddress", ParentName = "Customer", OneToOne = true, LoadByColumn = "CustomerId" },
-            new StructureTable() { Name = "CustomerAttributes", ParentName = "Customer", OneToOne = false, LoadByColumn = "CustomerId"}
+            new StructureTable() { Name = "CustomerAddress", ParentName = "Customer", OneToOne = false, LoadByColumn = "CustomerId" },
+            new StructureTable() { Name = "CustomerAttributes", ParentName = "Customer", OneToOne = true, LoadByColumn = "CustomerId"}
         );
 
     // generate structure Dto class
