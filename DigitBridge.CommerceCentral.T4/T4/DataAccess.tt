@@ -58,9 +58,10 @@
 */
 
 	// Database table define file path
-    var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\ar";
+    var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\customer";
     // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
-    var Files = "InvoiceHeader,InvoiceHeaderInfo,InvoiceHeaderAttributes,InvoiceItems,InvoiceItemsAttributes";
+    //var Files = "InvoiceHeader,InvoiceHeaderInfo,InvoiceHeaderAttributes,InvoiceItems,InvoiceItemsAttributes";
+    var Files = "Customer,CustomerAddress,CustomerAttributes";
     // current solution path
 	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
     var project= Path.Combine(path,DatabaseProjectName);
@@ -68,9 +69,9 @@
     // generate repository class for each table
     var generateModel = true;
     var Namespace = "DigitBridge.CommerceCentral.ERPDb";
-    var ModelFolder = "DigitBridge.CommerceCentral.ERPDb\\ar";
+    var ModelFolder = "DigitBridge.CommerceCentral.ERPDb\\customer";
     var generateDto = true;
-    var DtoFolder = "DigitBridge.CommerceCentral.ERPDb\\ar\\dto";
+    var DtoFolder = "DigitBridge.CommerceCentral.ERPDb\\customer\\dto";
 
     // generate tester class for each table repository
     var generateTester = true;
@@ -81,27 +82,25 @@
     var generateStructureRepository = true;
     var generateStructureTester = true;
     var NamespaceStructure = "DigitBridge.CommerceCentral.ERPDb";
-    var StructureFolder = "DigitBridge.CommerceCentral.ERPDb\\ar";
-    var StructureClass = new StructureInfo("InvoiceData",
-            new StructureTable() { Name = "InvoiceHeader", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "InvoiceHeaderInfo", ParentName = "InvoiceHeader", OneToOne = true, LoadByColumn = "InvoiceId" },
-            new StructureTable() { Name = "InvoiceHeaderAttributes", ParentName = "InvoiceHeader", OneToOne = true, LoadByColumn = "InvoiceId" },
-            new StructureTable() { Name = "InvoiceItems", ParentName = "InvoiceHeader", DetailTable = true, OneToOne = false, LoadByColumn = "InvoiceId", oneToOneChildrenName = "InvoiceItemsAttributes" },
-            new StructureTable() { Name = "InvoiceItemsAttributes", ParentName = "InvoiceItems", OneToOne = false, LoadByColumn = "InvoiceId" }
+    var StructureFolder = "DigitBridge.CommerceCentral.ERPDb\\customer";
+    var StructureClass =  new StructureInfo("CustomerData",
+            new StructureTable() { Name = "Customer", MainTable = true, OneToOne = true },
+            new StructureTable() { Name = "CustomerAddress", ParentName = "Customer", OneToOne = false,DetailTable = true, LoadByColumn = "CustomerId" },
+            new StructureTable() { Name = "CustomerAttributes", ParentName = "Customer", OneToOne = true, LoadByColumn = "CustomerId"}
         );
 
     // generate structure Dto class
     var generateStructureDto = true;
     var generateStructureDtoTester = true;
     var NamespaceStructureDto = "DigitBridge.CommerceCentral.ERPDb";
-    var StructureDtoFolder = "DigitBridge.CommerceCentral.ERPDb\\ar\\dto";
-    var StructureDtoName = "InvoiceDataDto";
+    var StructureDtoFolder = "DigitBridge.CommerceCentral.ERPDb\\customer\\dto";
+    var StructureDtoName = "CustomerDataDto";
 
     // generate service class
     var generateService = true;
     var NamespaceService = "DigitBridge.CommerceCentral.ERPMdl";
-    var ServiceFolder = "DigitBridge.CommerceCentral.ERPMdl\\ar";
-    var ServiceName = "InvoiceService";
+    var ServiceFolder = "DigitBridge.CommerceCentral.ERPMdl\\customer";
+    var ServiceName = "CustomerService";
 
     var generateServiceTester = true;
     var NamespaceServiceTest = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
