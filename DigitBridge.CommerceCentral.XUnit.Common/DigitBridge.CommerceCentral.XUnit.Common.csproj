@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="appsettings - Copy.test.json" />
     <None Remove="appsettings.test.json" />
   </ItemGroup>
 

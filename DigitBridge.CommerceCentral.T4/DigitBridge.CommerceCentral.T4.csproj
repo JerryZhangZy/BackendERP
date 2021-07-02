@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="T4\DataAccess - Copy.tt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="T4\GenerateRepositoryDto.ttinclude">
       <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -104,10 +108,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="T4\DataAccess.cs">
+    <Compile Update="T4\DataAccess - Copy.cs">
+      <DependentUpon>DataAccess.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>DataAccess.tt</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateRepositoryDto.cs">
       <DesignTime>True</DesignTime>
