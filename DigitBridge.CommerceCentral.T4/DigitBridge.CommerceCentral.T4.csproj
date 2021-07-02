@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Update="T4\DataAccess.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\DataAccess_Order.tt">
+      <LastGenOutput>DataAccess_Order.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\GenerateRepositoryDto.ttinclude">
       <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -89,10 +96,6 @@
       <LastGenOutput>GenerateRepositoryTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="T4\DataAccess.tt">
-      <LastGenOutput>DataAccess.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -104,6 +107,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="T4\DataAccess_Order.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataAccess_Order.tt</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateRepositoryDto.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

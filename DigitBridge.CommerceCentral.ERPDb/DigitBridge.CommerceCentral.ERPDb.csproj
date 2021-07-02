@@ -29,6 +29,7 @@
     <Folder Include="Model\" />
     <Folder Include="po\dto\" />
     <Folder Include="so\dto\" />
+    <Folder Include="so\dto\" />
     <Folder Include="vendor\dto\" />
   </ItemGroup>
 
