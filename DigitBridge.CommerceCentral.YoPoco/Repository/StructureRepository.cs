@@ -45,6 +45,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #endregion DataBase
 
+        #region Cache
+        protected RepositoryCache _Cache = new RepositoryCache();
+        [XmlIgnore, JsonIgnore]
+        public virtual RepositoryCache Cache => _Cache;
+
+        #endregion Cache
+
         #region Properties
 
         [XmlIgnore, JsonIgnore]

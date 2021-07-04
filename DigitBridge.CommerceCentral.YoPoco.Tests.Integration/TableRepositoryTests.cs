@@ -141,7 +141,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Put_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItems>();
+            var list = DataBaseFactory.Find<InvoiceItems>().ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -161,7 +161,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Patch_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItems>();
+            var list = DataBaseFactory.Find<InvoiceItems>().ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -211,7 +211,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItems>();
+            var list = DataBaseFactory.Find<InvoiceItems>().ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -228,7 +228,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItems>();
+            var list = DataBaseFactory.Find<InvoiceItems>().ToList();
             var listData = list.FirstOrDefault();
             var data = DataBaseFactory.Get<InvoiceItems>(listData.RowNum);
             var result = data.Equals(listData);
@@ -240,7 +240,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetById_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItems>();
+            var list = DataBaseFactory.Find<InvoiceItems>().ToList();
             var listData = list.FirstOrDefault();
             var data = DataBaseFactory.GetById<InvoiceItems>(listData.UniqueId);
             var result = data.Equals(listData);
@@ -256,7 +256,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
             var invoiceId = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.InvoiceId = invoiceId);
-            list.AsEnumerable()
+            list
                 .SetDataBaseFactory<InvoiceItems>(DataBaseFactory)
                 .Save<InvoiceItems>();
 
@@ -274,11 +274,11 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
             var invoiceId = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.InvoiceId = invoiceId);
-            list.AsEnumerable()
+            list
                 .SetDataBaseFactory<InvoiceItems>(DataBaseFactory)
                 .Save<InvoiceItems>();
 
-            var listFind = DataBaseFactory.Find<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId);
+            var listFind = DataBaseFactory.Find<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId).ToList();
             listFind.ToList().ForEach(x => x.ItemTotalAmount = 999);
             listFind.Save<InvoiceItems>();
 
@@ -296,11 +296,11 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
             var invoiceId = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.InvoiceId = invoiceId);
-            list.AsEnumerable()
+            list
                 .SetDataBaseFactory<InvoiceItems>(DataBaseFactory)
                 .Save();
 
-            var listFind = DataBaseFactory.Find<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId);
+            var listFind = DataBaseFactory.Find<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId).ToList();
             listFind.Delete();
 
             var cnt = DataBaseFactory.Count<InvoiceItems>("WHERE InvoiceId = @0", invoiceId);
@@ -313,7 +313,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetFromCacheById_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItems>("SELECT TOP 1 * FROM InvoiceItems");
+            var list = DataBaseFactory.Find<InvoiceItems>("SELECT TOP 1 * FROM InvoiceItems").ToList();
             var data = list.FirstOrDefault();
             var data1 = DataBaseFactory.GetFromCacheById<InvoiceItems>(data.UniqueId);
             var data2 = DataBaseFactory.GetFromCacheById<InvoiceItems>(data.UniqueId);
@@ -347,7 +347,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task PutAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false);
+            var list = (await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false)).ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -367,7 +367,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task PatchAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false);
+            var list = (await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false)).ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -417,7 +417,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false);
+            var list = (await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false)).ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -434,7 +434,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false);
+            var list = (await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false)).ToList();
             var listData = list.FirstOrDefault();
             var data = await DataBaseFactory.GetAsync<InvoiceItems>(listData.RowNum).ConfigureAwait(false);
             var result = data.Equals(listData);
@@ -446,7 +446,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetByIdAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false);
+            var list = (await DataBaseFactory.FindAsync<InvoiceItems>().ConfigureAwait(false)).ToList();
             var listData = list.FirstOrDefault();
             var data = await DataBaseFactory.GetByIdAsync<InvoiceItems>(listData.UniqueId).ConfigureAwait(false);
             var result = data.Equals(listData);
@@ -462,7 +462,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
             var invoiceId = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.InvoiceId = invoiceId);
-            await list.AsEnumerable()
+            await list
                 .SetDataBaseFactory<InvoiceItems>(DataBaseFactory)
                 .SaveAsync<InvoiceItems>()
                 .ConfigureAwait(false);
@@ -481,12 +481,12 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
             var invoiceId = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.InvoiceId = invoiceId);
-            await list.AsEnumerable()
+            await list
                 .SetDataBaseFactory<InvoiceItems>(DataBaseFactory)
                 .SaveAsync<InvoiceItems>()
                 .ConfigureAwait(false);
 
-            var listFind = await DataBaseFactory.FindAsync<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId).ConfigureAwait(false);
+            var listFind = (await DataBaseFactory.FindAsync<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId).ConfigureAwait(false)).ToList();
             listFind.ToList().ForEach(x => x.ItemTotalAmount = 999);
             await listFind.SaveAsync<InvoiceItems>().ConfigureAwait(false);
 
@@ -504,12 +504,12 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
             var invoiceId = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.InvoiceId = invoiceId);
-            await list.AsEnumerable()
+            await list
                 .SetDataBaseFactory<InvoiceItems>(DataBaseFactory)
                 .SaveAsync()
                 .ConfigureAwait(false);
 
-            var listFind = await DataBaseFactory.FindAsync<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId).ConfigureAwait(false);
+            var listFind = (await DataBaseFactory.FindAsync<InvoiceItems>("WHERE InvoiceId = @0 ORDER BY Seq", invoiceId).ConfigureAwait(false)).ToList();
             await listFind.DeleteAsync().ConfigureAwait(false);
 
             var cnt = await DataBaseFactory.CountAsync<InvoiceItems>("WHERE InvoiceId = @0", invoiceId).ConfigureAwait(false);
@@ -522,7 +522,7 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetFromCacheByIdAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceItems>("SELECT TOP 1 * FROM InvoiceItems").ConfigureAwait(false);
+            var list = (await DataBaseFactory.FindAsync<InvoiceItems>("SELECT TOP 1 * FROM InvoiceItems").ConfigureAwait(false)).ToList();
             var data = list.FirstOrDefault();
             var data1 = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItems>(data.UniqueId).ConfigureAwait(false);
             var data2 = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItems>(data.UniqueId).ConfigureAwait(false);

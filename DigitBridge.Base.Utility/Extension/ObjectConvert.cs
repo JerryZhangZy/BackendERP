@@ -475,6 +475,7 @@ namespace DigitBridge.Base.Utility
         public static long ToLong(this long? input) => (input is null) ? default(long) : (long)input;
         public static decimal ToDecimal(this decimal? input) => (input is null) ? default(decimal) : (decimal)input;
         public static byte ToByte(this byte? input) => (input is null) ? default(byte) : (byte)input;
-        
+        public static bool ToBool(this bool? input) => (input is null) ? false : (bool)input;
+
     }
 }

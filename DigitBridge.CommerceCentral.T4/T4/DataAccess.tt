@@ -240,6 +240,19 @@
 <# } #>
 
 <#      
+    // Generate service tester class
+	if (generateStructureDtoTester)
+	{
+#>              
+<#@ include file="GenerateStructureDtoTest.ttinclude" #>
+<# 
+        dir = Path.Combine(path,TesterFolder);
+        SaveOutputNotExists(dir, $"{StructureDtoName}Tests.cs");
+#>
+<# } #>
+
+
+<#      
     // Generate structure repository class
 	if (generateService && ServiceName != null)
 	{
@@ -260,6 +273,16 @@
 <# 
         dir = Path.Combine(path,ServiceFolder);
         SaveOutputNotExists(dir, $"I{ServiceName}.cs");
+#>
+<#@ include file="GenerateServiceCalculator.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceFolder);
+        SaveOutputNotExists(dir, $"{ServiceName}CalculatorDefault.cs");
+#>
+<#@ include file="GenerateServiceValidator.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceFolder);
+        SaveOutputNotExists(dir, $"{ServiceName}ValidatorDefault.cs");
 #>
 <# } #>
 

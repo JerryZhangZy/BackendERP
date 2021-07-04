@@ -9,12 +9,60 @@
       <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\GenerateServiceValidator.ttinclude">
+      <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServiceCalculator.ttinclude">
+      <LastGenOutput>GenerateServiceCalculator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\GenerateServiceInterface.ttinclude">
       <LastGenOutput>GenerateService.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateService.ttinclude">
-      <LastGenOutput>GenerateStructureDto.cs</LastGenOutput>
+      <LastGenOutput>GenerateServiceCalculator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\ReadDtoGrandChildren.ttinclude">
+      <LastGenOutput>ReadDtoGrandChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\ReadDtoGrandChildrenMethod.ttinclude">
+      <LastGenOutput>ReadDtoGrandChildrenMethod.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\ReadDtoListChildren.ttinclude">
+      <LastGenOutput>ReadDtoListChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\ReadDtoObjectChildren.ttinclude">
+      <LastGenOutput>ReadDtoListChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureDtoMapper-Bak.ttinclude">
+      <LastGenOutput>GenerateStructureDtoMapper.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\WriteDtoGrandChildren.ttinclude">
+      <LastGenOutput>WriteDtoGrandChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\WriteDtoGrandChildrenMethod.ttinclude">
+      <LastGenOutput>WriteDtoGrandChildrenMethod.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\WriteDtoListChildren.ttinclude">
+      <LastGenOutput>WriteDtoGrandChildrenMethod.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\WriteDtoObjectChildren.ttinclude">
+      <LastGenOutput>WriteDtoObjectChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureDtoTest.ttinclude">
+      <LastGenOutput>GenerateStructureDtoTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateStructureDtoMapper.ttinclude">
@@ -74,7 +122,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateStructure.ttinclude">
-      <LastGenOutput>GenerateService.cs</LastGenOutput>
+      <LastGenOutput>GenerateStructure.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepositoryPartialClass.ttinclude">
@@ -82,7 +130,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepository.ttinclude">
-      <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
+      <LastGenOutput>GenerateRepository.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepositoryTest.ttinclude">
@@ -104,6 +152,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="T4\DataAccess.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataAccess.tt</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateRepositoryDto.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

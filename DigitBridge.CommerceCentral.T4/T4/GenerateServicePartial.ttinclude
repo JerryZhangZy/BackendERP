@@ -16,6 +16,14 @@ namespace <#= NamespaceService #>
     public partial class <#= ServiceName #>
     {
 
+        public override <#= ServiceName #> Init()
+        {
+            base.Init();
+            SetDtoMapper(new <#= StructureClass.ClassName #>DtoMapperDefault());
+            SetCalculator(new <#= ServiceName #>CalculatorDefault());
+            AddValidator(new <#= ServiceName #>ValidatorDefault());
+            return this;
+        }
     }
 }
 

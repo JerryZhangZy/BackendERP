@@ -1,0 +1,28 @@
+﻿<# 
+    WriteLine($"{new String('\t',indent)}protected virtual IList<{child.Table.Name}> Read{child.Table.Name}(IList<{child.Table.Name}> data, IList<{child.Table.DtoName}> dto)");
+    WriteLine($"{new String('\t',indent)}{{");
+    WriteLine($"{new String('\t',indent+1)}if (data is null || dto is null)");
+    WriteLine($"{new String('\t',indent+2)}return null;");
+
+    WriteLine($"{new String('\t',indent+1)}var lstOrig = new List<{child.Table.Name}>(data.Where(x => x != null).ToList());");
+    WriteLine($"{new String('\t',indent+1)}data.Clear();");
+    WriteLine($"{new String('\t',indent+1)}foreach (var itemDto in dto)");
+    WriteLine($"{new String('\t',indent+1)}{{");
+    WriteLine($"{new String('\t',indent+2)}if (itemDto == null) continue;");
+    WriteLine($"");
+    WriteLine($"{new String('\t',indent+2)}var obj = itemDto.RowNum > 0");
+    WriteLine($"{new String('\t',indent+3)}? lstOrig.Find(x => x.RowNum == itemDto.RowNum)");
+    WriteLine($"{new String('\t',indent+3)}: lstOrig.Find(x => x.{child.Table.UniqueKey} == itemDto.{child.Table.UniqueKey});");
+    WriteLine($"{new String('\t',indent+2)}if (obj is null)");
+    WriteLine($"{new String('\t',indent+3)}obj = new {child.Table.Name}().SetAllowNull(false);");
+    WriteLine($"{new String('\t',indent+2)}else");
+    WriteLine($"{new String('\t',indent+3)}lstOrig.Remove(obj);");
+    WriteLine($"");
+    WriteLine($"{new String('\t',indent+2)}data.Add(obj);");
+    WriteLine($"");
+    WriteLine($"{new String('\t',indent+2)}Read{child.Table.Name}(obj, itemDto);");
+    WriteLine($"");
+    WriteLine($"{new String('\t',indent+1)}}}");
+    WriteLine($"{new String('\t',indent+1)}return lstOrig;");
+    WriteLine($"{new String('\t',indent)}}}");
+#>

@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
+using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -24,11 +25,23 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace <#= NamespaceService #>
 {
     /// <summary>
-    /// Represents a I<#= ServiceName #>.
-    /// NOTE: This interface is generated from a T4 template once only - if you want re-generate it, you should delete this file first.
+    /// Represents a default <#= ServiceName #> Validator class.
     /// </summary>
-    public interface I<#= ServiceName #> : IService<<#= ServiceName #>, <#= StructureClass.ClassName #>, <#= StructureDtoName #>>
+    public partial class <#= ServiceName #>ValidatorDefault : IValidator<<#= StructureClass.ClassName #>>
     {
+        public virtual bool IsValid { get; set; }
+        public virtual IList<string> Messages { get; set; }
+
+        public virtual void Clear()
+        {
+            IsValid = true;
+            Messages = new List<string>();
+        }
+        public virtual bool Validate(<#= StructureClass.ClassName #> data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            Clear();
+            return IsValid;
+        }
     }
 }
 

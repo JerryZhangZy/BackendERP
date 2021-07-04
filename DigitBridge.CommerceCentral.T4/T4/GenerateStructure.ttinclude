@@ -103,7 +103,7 @@ namespace <#= NamespaceStructure #>
                 }
                 else
                 {
-                    WriteLine($"{new String('\t',indent)}{child.Table.Name} = Enumerable.Empty<{child.Table.Name}>(); ");
+                    WriteLine($"{new String('\t',indent)}{child.Table.Name} = new List<{child.Table.Name}>(); ");
                     if (!child.Table.IsChildrenOfChildren)
                         WriteLine($"{new String('\t',indent)}Clear{child.Table.Name}Deleted(); ");
                 }
@@ -165,7 +165,7 @@ namespace <#= NamespaceStructure #>
             indent = 3;
             WriteLine($"{new String('\t',indent)}var newData = new {StructureClass.ClassName}(); ");
             WriteLine($"{new String('\t',indent)}newData.New(); ");
-            WriteLine($"{new String('\t',indent)}newData.CopyFrom(this); ");
+            WriteLine($"{new String('\t',indent)}newData?.CopyFrom(this); ");
             foreach(var item in StructureClass.StructureTables)
             { 
                 var child = item.Value;
@@ -226,20 +226,36 @@ namespace <#= NamespaceStructure #>
         {
 <# 
             indent = 3;
-            WriteLine($"{new String('\t',indent)}if (string.IsNullOrEmpty({StructureClass.MainTable.Name}.{StructureClass.MainTable.UniqueKey})) return false; ");
-            WriteLine($"{new String('\t',indent)}CheckIntegrity(); ");
+            WriteLine($"{new String('\t',indent)}if ({StructureClass.MainTable.Name} is null || string.IsNullOrEmpty({StructureClass.MainTable.Name}.{StructureClass.MainTable.UniqueKey})) return false; ");
+            WriteLine($"{new String('\t',indent)}CheckIntegrity();");
             WriteLine($"{new String('\t',indent)}if (_OnBeforeSave != null)");
             WriteLine($"{new String('\t',indent+1)}if (!_OnBeforeSave(this)) return false;");
-            WriteLine($"{new String('\t',indent)}dbFactory.Begin(); ");
-            WriteLine($"{new String('\t',indent)}{StructureClass.MainTable.Name}.SetDataBaseFactory(dbFactory); ");
-            WriteLine($"{new String('\t',indent)}if (!{StructureClass.MainTable.Name}.Save()) return false; ");
+            WriteLine($"{new String('\t',indent)}dbFactory.Begin();");
+            WriteLine($"{new String('\t',indent)}{StructureClass.MainTable.Name}.SetDataBaseFactory(dbFactory);");
+            WriteLine($"{new String('\t',indent)}if (!{StructureClass.MainTable.Name}.Save()) return false;");
+            WriteLine($"");
+
             foreach(var item in StructureClass.StructureTables)
             { 
                 var child = item.Value;
                 if (child == null) continue;
                 if (child.Table.Name.Equals(StructureClass.MainTable.Name, StringComparison.CurrentCultureIgnoreCase)) continue;
 
-                WriteLine($"{new String('\t',indent)}{child.Table.Name}.SetDataBaseFactory(dbFactory).Save(); ");
+                WriteLine($"{new String('\t',indent)}if ({child.Table.Name} != null) ");
+                WriteLine($"{new String('\t',indent+1)}{child.Table.Name}.SetDataBaseFactory(dbFactory)?.Save();");
+                if (!child.OneToOne && !child.Table.IsChildrenOfChildren)
+                {
+                    WriteLine($"{new String('\t',indent)}var del{child.Table.Name} = _{child.Table.Name}Deleted;");
+                    WriteLine($"{new String('\t',indent)}if (del{child.Table.Name} != null)");
+                    WriteLine($"{new String('\t',indent+1)}del{child.Table.Name}.SetDataBaseFactory(dbFactory)?.Delete();");
+                }
+                else if (child.Table.IsChildrenOfChildren)
+                {
+                    WriteLine($"{new String('\t',indent)}var delChildren{child.Table.Name} = {child.Table.Name}Deleted;");
+                    WriteLine($"{new String('\t',indent)}if (delChildren{child.Table.Name} != null)");
+                    WriteLine($"{new String('\t',indent+1)}delChildren{child.Table.Name}.SetDataBaseFactory(dbFactory)?.Delete();");
+                }
+                WriteLine($"");
             }
             WriteLine($"{new String('\t',indent)}if (_OnSave != null)");
             WriteLine($"{new String('\t',indent)}{{");
@@ -262,7 +278,7 @@ namespace <#= NamespaceStructure #>
         {
 <# 
             indent = 3;
-            WriteLine($"{new String('\t',indent)}if (string.IsNullOrEmpty({StructureClass.MainTable.Name}.{StructureClass.MainTable.UniqueKey})) return false; ");
+            WriteLine($"{new String('\t',indent)}if ({StructureClass.MainTable.Name} is null || string.IsNullOrEmpty({StructureClass.MainTable.Name}.{StructureClass.MainTable.UniqueKey})) return false; ");
             WriteLine($"{new String('\t',indent)}if (_OnBeforeDelete != null)");
             WriteLine($"{new String('\t',indent+1)}if (!_OnBeforeDelete(this)) return false;");
             WriteLine($"{new String('\t',indent)}dbFactory.Begin(); ");
@@ -274,7 +290,8 @@ namespace <#= NamespaceStructure #>
                 if (child == null) continue;
                 if (child.Table.Name.Equals(StructureClass.MainTable.Name, StringComparison.CurrentCultureIgnoreCase)) continue;
 
-                WriteLine($"{new String('\t',indent)}{child.Table.Name}.SetDataBaseFactory(dbFactory).Delete(); ");
+                WriteLine($"{new String('\t',indent)}if ({child.Table.Name} != null) ");
+                WriteLine($"{new String('\t',indent+1)}{child.Table.Name}?.SetDataBaseFactory(dbFactory)?.Delete(); ");
             }
             WriteLine($"{new String('\t',indent)}if (_OnDelete != null)");
             WriteLine($"{new String('\t',indent)}{{");
@@ -342,20 +359,34 @@ namespace <#= NamespaceStructure #>
         {
 <# 
             indent = 3;
-            WriteLine($"{new String('\t',indent)}if (string.IsNullOrEmpty({StructureClass.MainTable.Name}.{StructureClass.MainTable.UniqueKey})) return false; ");
+            WriteLine($"{new String('\t',indent)}if ({StructureClass.MainTable.Name} is null || string.IsNullOrEmpty({StructureClass.MainTable.Name}.{StructureClass.MainTable.UniqueKey})) return false; ");
             WriteLine($"{new String('\t',indent)}CheckIntegrity(); ");
             WriteLine($"{new String('\t',indent)}if (_OnBeforeSave != null)");
             WriteLine($"{new String('\t',indent+1)}if (!_OnBeforeSave(this)) return false;");
             WriteLine($"{new String('\t',indent)}dbFactory.Begin(); ");
             WriteLine($"{new String('\t',indent)}{StructureClass.MainTable.Name}.SetDataBaseFactory(dbFactory); ");
-            WriteLine($"{new String('\t',indent)}if (!(await {StructureClass.MainTable.Name}.SaveAsync())) return false; ");
+            WriteLine($"{new String('\t',indent)}if (!(await {StructureClass.MainTable.Name}.SaveAsync().ConfigureAwait(false))) return false; ");
             foreach(var item in StructureClass.StructureTables)
             { 
                 var child = item.Value;
                 if (child == null) continue;
                 if (child.Table.Name.Equals(StructureClass.MainTable.Name, StringComparison.CurrentCultureIgnoreCase)) continue;
 
-                WriteLine($"{new String('\t',indent)}await {child.Table.Name}.SetDataBaseFactory(dbFactory).SaveAsync(); ");
+                WriteLine($"{new String('\t',indent)}if ({child.Table.Name} != null) ");
+                WriteLine($"{new String('\t',indent+1)}await {child.Table.Name}.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); ");
+                if (!child.OneToOne && !child.Table.IsChildrenOfChildren)
+                {
+                    WriteLine($"{new String('\t',indent)}var del{child.Table.Name} = _{child.Table.Name}Deleted;");
+                    WriteLine($"{new String('\t',indent)}if (del{child.Table.Name} != null)");
+                    WriteLine($"{new String('\t',indent+1)}await del{child.Table.Name}.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);");
+                }
+                else if (child.Table.IsChildrenOfChildren)
+                {
+                    WriteLine($"{new String('\t',indent)}var del{child.Table.Name} = {child.Table.Name}Deleted;");
+                    WriteLine($"{new String('\t',indent)}if (del{child.Table.Name} != null)");
+                    WriteLine($"{new String('\t',indent+1)}await del{child.Table.Name}.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);");
+                }
+                WriteLine($"");
             }
             WriteLine($"{new String('\t',indent)}if (_OnSave != null)");
             WriteLine($"{new String('\t',indent)}{{");
@@ -378,19 +409,20 @@ namespace <#= NamespaceStructure #>
         {
 <# 
             indent = 3;
-            WriteLine($"{new String('\t',indent)}if (string.IsNullOrEmpty({StructureClass.MainTable.Name}.{StructureClass.MainTable.UniqueKey})) return false; ");
+            WriteLine($"{new String('\t',indent)}if ({StructureClass.MainTable.Name} is null || string.IsNullOrEmpty({StructureClass.MainTable.Name}.{StructureClass.MainTable.UniqueKey})) return false; ");
             WriteLine($"{new String('\t',indent)}if (_OnBeforeDelete != null)");
             WriteLine($"{new String('\t',indent+1)}if (!_OnBeforeDelete(this)) return false;");
             WriteLine($"{new String('\t',indent)}dbFactory.Begin(); ");
             WriteLine($"{new String('\t',indent)}{StructureClass.MainTable.Name}.SetDataBaseFactory(dbFactory); ");
-            WriteLine($"{new String('\t',indent)}if ((await {StructureClass.MainTable.Name}.DeleteAsync()) <= 0) return false; ");
+            WriteLine($"{new String('\t',indent)}if ((await {StructureClass.MainTable.Name}.DeleteAsync().ConfigureAwait(false)) <= 0) return false; ");
             foreach(var item in StructureClass.StructureTables)
             { 
                 var child = item.Value;
                 if (child == null) continue;
                 if (child.Table.Name.Equals(StructureClass.MainTable.Name, StringComparison.CurrentCultureIgnoreCase)) continue;
 
-                WriteLine($"{new String('\t',indent)}await {child.Table.Name}.SetDataBaseFactory(dbFactory).DeleteAsync(); ");
+                WriteLine($"{new String('\t',indent)}if ({child.Table.Name} != null) ");
+                WriteLine($"{new String('\t',indent+1)}await {child.Table.Name}.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); ");
             }
             WriteLine($"{new String('\t',indent)}if (_OnDelete != null)");
             WriteLine($"{new String('\t',indent)}{{");

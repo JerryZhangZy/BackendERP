@@ -84,6 +84,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
+            Save_Test();
+
             var id = DataBaseFactory.GetValue<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 
 FROM InvoiceHeader ins 
@@ -99,7 +101,7 @@ WHERE itm.cnt > 0
             var rowNum = srv.Data.InvoiceHeader.RowNum;
 
             var dataUpdate = GetFakerData();
-            srv.Data.CopyFrom(dataUpdate);
+            srv.Data?.CopyFrom(dataUpdate);
             srv.Save();
 
             var srvGetById = new InvoiceService(DataBaseFactory);
@@ -117,6 +119,8 @@ WHERE itm.cnt > 0
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
         {
+            Save_Test();
+
             var id = DataBaseFactory.GetValue<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 
 FROM InvoiceHeader ins 
@@ -159,6 +163,8 @@ WHERE itm.cnt > 0
         //[Fact(Skip = SkipReason)]
         public async Task GetAsync_Test()
         {
+            await SaveAsync_Test();
+
             var id = await DataBaseFactory.GetValueAsync<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 
 FROM InvoiceHeader ins 
@@ -174,7 +180,7 @@ WHERE itm.cnt > 0
             var rowNum = srv.Data.InvoiceHeader.RowNum;
 
             var dataUpdate = GetFakerData();
-            srv.Data.CopyFrom(dataUpdate);
+            srv.Data?.CopyFrom(dataUpdate);
             await srv.SaveAsync();
 
             var srvGetById = new InvoiceService(DataBaseFactory);
@@ -192,6 +198,7 @@ WHERE itm.cnt > 0
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
+            await SaveAsync_Test();
 
             var id = await DataBaseFactory.GetValueAsync<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 

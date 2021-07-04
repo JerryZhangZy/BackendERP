@@ -141,7 +141,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             var dataJson = data.ObjectToString();
             var newData = FakerData.Generate();
             var newDataJson = newData.ObjectToString();
-            data.CopyFrom(newData);
+            data?.CopyFrom(newData);
             var result = !data.Equals(newData);
 
 			Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
@@ -169,13 +169,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Put_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeaderInfo>();
+            var list = DataBaseFactory.Find<InvoiceHeaderInfo>().ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
-            data.CopyFrom(newData);
+            data?.CopyFrom(newData);
             data.Put();
             DataBaseFactory.Commit();
 
@@ -189,16 +189,16 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Patch_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeaderInfo>();
+            var list = DataBaseFactory.Find<InvoiceHeaderInfo>().ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
             var dataOrig = new InvoiceHeaderInfo();
-            dataOrig.CopyFrom(data);
+            dataOrig?.CopyFrom(data);
 
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
-            data.CopyFrom(newData);
+            data?.CopyFrom(newData);
             data.Patch(new[] { "ShippingCarrier", "ShippingClass" });
             DataBaseFactory.Commit();
 
@@ -223,7 +223,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataUpdate = DataBaseFactory.GetById<InvoiceHeaderInfo>(dataNew.UniqueId);
 			var dataChanged = FakerData.Generate();
-            dataUpdate.CopyFrom(dataChanged, new[] {"InvoiceUuid"});
+            dataUpdate?.CopyFrom(dataChanged, new[] {"InvoiceUuid"});
 
             DataBaseFactory.Begin();
             dataUpdate.Save();
@@ -239,7 +239,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeaderInfo>();
+            var list = DataBaseFactory.Find<InvoiceHeaderInfo>().ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -256,7 +256,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeaderInfo>();
+            var list = DataBaseFactory.Find<InvoiceHeaderInfo>().ToList();
             var listData = list.FirstOrDefault();
             var data = DataBaseFactory.Get<InvoiceHeaderInfo>(listData.RowNum);
             var result = data.Equals(listData);
@@ -268,7 +268,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetById_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeaderInfo>();
+            var list = DataBaseFactory.Find<InvoiceHeaderInfo>().ToList();
             var listData = list.FirstOrDefault();
             var data = DataBaseFactory.GetById<InvoiceHeaderInfo>(listData.UniqueId);
             var result = data.Equals(listData);
@@ -284,8 +284,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             var ChannelOrderID = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
-            list.AsEnumerable()
-                .SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
+            list.SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
                 .Save<InvoiceHeaderInfo>();
 
             var cnt = DataBaseFactory.Count<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0", ChannelOrderID);
@@ -302,12 +301,11 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             var ChannelOrderID = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
-            list.AsEnumerable()
-                .SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
+            list.SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
                 .Save<InvoiceHeaderInfo>();
 
             var NewShippingClass = Guid.NewGuid().ToString();
-            var listFind = DataBaseFactory.Find<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID);
+            var listFind = DataBaseFactory.Find<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
             listFind.ToList().ForEach(x => x.ShippingClass = NewShippingClass);
             listFind.Save<InvoiceHeaderInfo>();
 
@@ -325,11 +323,10 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             var ChannelOrderID = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
-            list.AsEnumerable()
-                .SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
+            list.SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
                 .Save();
 
-            var listFind = DataBaseFactory.Find<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID);
+            var listFind = DataBaseFactory.Find<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
             listFind.Delete();
 
             var cnt = DataBaseFactory.Count<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0", ChannelOrderID);
@@ -342,7 +339,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetFromCacheById_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeaderInfo>("SELECT TOP 1 * FROM InvoiceHeaderInfo");
+            var list = DataBaseFactory.Find<InvoiceHeaderInfo>("SELECT TOP 1 * FROM InvoiceHeaderInfo").ToList();
             var data = list.FirstOrDefault();
             var data1 = DataBaseFactory.GetFromCacheById<InvoiceHeaderInfo>(data.UniqueId);
             var data2 = DataBaseFactory.GetFromCacheById<InvoiceHeaderInfo>(data.UniqueId);
@@ -376,13 +373,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task PutAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceHeaderInfo>();
+            var list = (await DataBaseFactory.FindAsync<InvoiceHeaderInfo>()).ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
-            data.CopyFrom(newData);
+            data?.CopyFrom(newData);
             await data.PutAsync();
             DataBaseFactory.Commit();
 
@@ -396,16 +393,16 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task PatchAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceHeaderInfo>();
+            var list = (await DataBaseFactory.FindAsync<InvoiceHeaderInfo>()).ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
             var dataOrig = new InvoiceHeaderInfo();
-            dataOrig.CopyFrom(data);
+            dataOrig?.CopyFrom(data);
 
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
-            data.CopyFrom(newData);
+            data?.CopyFrom(newData);
             await data.PatchAsync(new[] { "ShippingCarrier", "ShippingClass" });
             DataBaseFactory.Commit();
 
@@ -430,7 +427,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataUpdate = await DataBaseFactory.GetByIdAsync<InvoiceHeaderInfo>(dataNew.UniqueId);
             var dataChanged = FakerData.Generate();
-            dataUpdate.CopyFrom(dataChanged, new[] { "InvoiceUuid" });
+            dataUpdate?.CopyFrom(dataChanged, new[] { "InvoiceUuid" });
 
             DataBaseFactory.Begin();
             await dataUpdate.SaveAsync();
@@ -446,7 +443,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceHeaderInfo>();
+            var list = (await DataBaseFactory.FindAsync<InvoiceHeaderInfo>()).ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -463,7 +460,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceHeaderInfo>();
+            var list = (await DataBaseFactory.FindAsync<InvoiceHeaderInfo>()).ToList();
             var listData = list.FirstOrDefault();
             var data = await DataBaseFactory.GetAsync<InvoiceHeaderInfo>(listData.RowNum);
             var result = data.Equals(listData);
@@ -475,7 +472,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetByIdAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceHeaderInfo>();
+            var list = (await DataBaseFactory.FindAsync<InvoiceHeaderInfo>()).ToList();
             var listData = list.FirstOrDefault();
             var data = await DataBaseFactory.GetByIdAsync<InvoiceHeaderInfo>(listData.UniqueId);
             var result = data.Equals(listData);
@@ -491,7 +488,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             var ChannelOrderID = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
-            await list.AsEnumerable()
+            await list
                 .SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
                 .SaveAsync<InvoiceHeaderInfo>();
 
@@ -509,12 +506,12 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             var ChannelOrderID = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
-            await list.AsEnumerable()
+            await list
                 .SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
                 .SaveAsync<InvoiceHeaderInfo>();
 
             var NewShippingClass = Guid.NewGuid().ToString();
-            var listFind = await DataBaseFactory.FindAsync<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID);
+            var listFind = (await DataBaseFactory.FindAsync<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID)).ToList();
             listFind.ToList().ForEach(x => x.ShippingClass = NewShippingClass);
             await listFind.SaveAsync<InvoiceHeaderInfo>();
 
@@ -532,11 +529,11 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             var ChannelOrderID = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
-            await list.AsEnumerable()
+            await list
                 .SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
                 .SaveAsync();
 
-            var listFind = await DataBaseFactory.FindAsync<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID);
+            var listFind = (await DataBaseFactory.FindAsync<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID)).ToList();
             await listFind.DeleteAsync();
 
             var cnt = await DataBaseFactory.CountAsync<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0", ChannelOrderID);
@@ -549,7 +546,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetFromCacheByIdAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<InvoiceHeaderInfo>("SELECT TOP 1 * FROM InvoiceHeaderInfo");
+            var list = (await DataBaseFactory.FindAsync<InvoiceHeaderInfo>("SELECT TOP 1 * FROM InvoiceHeaderInfo")).ToList();
             var data = list.FirstOrDefault();
             var data1 = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceHeaderInfo>(data.UniqueId);
             var data2 = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceHeaderInfo>(data.UniqueId);

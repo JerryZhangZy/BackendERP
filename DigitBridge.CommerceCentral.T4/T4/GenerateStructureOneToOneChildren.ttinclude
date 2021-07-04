@@ -11,7 +11,7 @@
         }
 
         public virtual void Copy<#= child.Table.Name #>From(<#= StructureClass.ClassName #> data) => 
-            <#= child.Table.Name #>.CopyFrom(data.<#= child.Table.Name #>, new string[] {"<#= StructureClass.MainTable.UniqueKey #>"});
+            <#= child.Table.Name #>?.CopyFrom(data.<#= child.Table.Name #>, new string[] {"<#= StructureClass.MainTable.UniqueKey #>"});
 
         public virtual <#= child.Table.Name #> New<#= child.Table.Name #>() => new <#= child.Table.Name #>(dbFactory).SetParent(this);
 

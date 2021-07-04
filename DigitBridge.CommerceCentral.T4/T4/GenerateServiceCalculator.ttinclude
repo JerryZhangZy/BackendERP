@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
+using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -24,11 +25,26 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace <#= NamespaceService #>
 {
     /// <summary>
-    /// Represents a I<#= ServiceName #>.
-    /// NOTE: This interface is generated from a T4 template once only - if you want re-generate it, you should delete this file first.
+    /// Represents a default <#= ServiceName #> Calculator class.
     /// </summary>
-    public interface I<#= ServiceName #> : IService<<#= ServiceName #>, <#= StructureClass.ClassName #>, <#= StructureDtoName #>>
+    public partial class <#= ServiceName #>CalculatorDefault : ICalculator<<#= StructureClass.ClassName #>>
     {
+
+        public virtual bool Calculate(<#= StructureClass.ClassName #> data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            return true;
+        }
+
+        public virtual bool CalculateSummary(<#= StructureClass.ClassName #> data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            return true;
+        }
+
+        public virtual bool CalculateDetail(<#= StructureClass.ClassName #> data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            return true;
+        }
+
     }
 }
 

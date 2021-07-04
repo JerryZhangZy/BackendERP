@@ -87,7 +87,7 @@ namespace <#= NamespaceTest #>
             var dataJson = data.ObjectToString();
             var newData = FakerData.Generate();
             var newDataJson = newData.ObjectToString();
-            data.CopyFrom(newData);
+            data?.CopyFrom(newData);
             var result = !data.Equals(newData);
 
 			Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
@@ -115,13 +115,13 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public void Put_Test()
         {
-            var list = DataBaseFactory.Find<<#= table.Name #>>();
+            var list = DataBaseFactory.Find<<#= table.Name #>>().ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
-            data.CopyFrom(newData);
+            data?.CopyFrom(newData);
             data.Put();
             DataBaseFactory.Commit();
 
@@ -139,16 +139,16 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public void Patch_Test()
         {
-            var list = DataBaseFactory.Find<<#= table.Name #>>();
+            var list = DataBaseFactory.Find<<#= table.Name #>>().ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
             var dataOrig = new <#= table.Name #>();
-            dataOrig.CopyFrom(data);
+            dataOrig?.CopyFrom(data);
 
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
-            data.CopyFrom(newData);
+            data?.CopyFrom(newData);
             data.Patch(new[] { "<#= table.StringProperties[0] #>", "<#= table.StringProperties[1] #>" });
             DataBaseFactory.Commit();
 
@@ -174,7 +174,7 @@ namespace <#= NamespaceTest #>
 
             var dataUpdate = DataBaseFactory.GetById<<#= table.Name #>>(dataNew.UniqueId);
 			var dataChanged = FakerData.Generate();
-            dataUpdate.CopyFrom(dataChanged, new[] {"<#= table.UniqueKey #>"});
+            dataUpdate?.CopyFrom(dataChanged, new[] {"<#= table.UniqueKey #>"});
 
             DataBaseFactory.Begin();
             dataUpdate.Save();
@@ -190,7 +190,7 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
         {
-            var list = DataBaseFactory.Find<<#= table.Name #>>();
+            var list = DataBaseFactory.Find<<#= table.Name #>>().ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -207,7 +207,7 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            var list = DataBaseFactory.Find<<#= table.Name #>>();
+            var list = DataBaseFactory.Find<<#= table.Name #>>().ToList();
             var listData = list.FirstOrDefault();
             var data = DataBaseFactory.Get<<#= table.Name #>>(listData.RowNum);
             var result = data.Equals(listData);
@@ -219,7 +219,7 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public void GetById_Test()
         {
-            var list = DataBaseFactory.Find<<#= table.Name #>>();
+            var list = DataBaseFactory.Find<<#= table.Name #>>().ToList();
             var listData = list.FirstOrDefault();
             var data = DataBaseFactory.GetById<<#= table.Name #>>(listData.UniqueId);
             var result = data.Equals(listData);
@@ -239,8 +239,7 @@ namespace <#= NamespaceTest #>
             var <#= table.IdProperties[0] #> = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.<#= table.IdProperties[0] #> = <#= table.IdProperties[0] #>);
-            list.AsEnumerable()
-                .SetDataBaseFactory<<#= table.Name #>>(DataBaseFactory)
+            list.SetDataBaseFactory<<#= table.Name #>>(DataBaseFactory)
                 .Save<<#= table.Name #>>();
 
             var cnt = DataBaseFactory.Count<<#= table.Name #>>("WHERE <#= table.IdProperties[0] #> = @0", <#= table.IdProperties[0] #>);
@@ -257,12 +256,11 @@ namespace <#= NamespaceTest #>
             var <#= table.IdProperties[0] #> = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.<#= table.IdProperties[0] #> = <#= table.IdProperties[0] #>);
-            list.AsEnumerable()
-                .SetDataBaseFactory<<#= table.Name #>>(DataBaseFactory)
+            list.SetDataBaseFactory<<#= table.Name #>>(DataBaseFactory)
                 .Save<<#= table.Name #>>();
 
             var New<#= table.StringProperties[1] #> = Guid.NewGuid().ToString();
-            var listFind = DataBaseFactory.Find<<#= table.Name #>>("WHERE <#= table.IdProperties[0] #> = @0 ORDER BY RowNum", <#= table.IdProperties[0] #>);
+            var listFind = DataBaseFactory.Find<<#= table.Name #>>("WHERE <#= table.IdProperties[0] #> = @0 ORDER BY RowNum", <#= table.IdProperties[0] #>).ToList();
             listFind.ToList().ForEach(x => x.<#= table.StringProperties[1] #> = New<#= table.StringProperties[1] #>);
             listFind.Save<<#= table.Name #>>();
 
@@ -280,11 +278,10 @@ namespace <#= NamespaceTest #>
             var <#= table.IdProperties[0] #> = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.<#= table.IdProperties[0] #> = <#= table.IdProperties[0] #>);
-            list.AsEnumerable()
-                .SetDataBaseFactory<<#= table.Name #>>(DataBaseFactory)
+            list.SetDataBaseFactory<<#= table.Name #>>(DataBaseFactory)
                 .Save();
 
-            var listFind = DataBaseFactory.Find<<#= table.Name #>>("WHERE <#= table.IdProperties[0] #> = @0 ORDER BY RowNum", <#= table.IdProperties[0] #>);
+            var listFind = DataBaseFactory.Find<<#= table.Name #>>("WHERE <#= table.IdProperties[0] #> = @0 ORDER BY RowNum", <#= table.IdProperties[0] #>).ToList();
             listFind.Delete();
 
             var cnt = DataBaseFactory.Count<<#= table.Name #>>("WHERE <#= table.IdProperties[0] #> = @0", <#= table.IdProperties[0] #>);
@@ -298,7 +295,7 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public void GetFromCacheById_Test()
         {
-            var list = DataBaseFactory.Find<<#= table.Name #>>("SELECT TOP 1 * FROM <#= table.Name #>");
+            var list = DataBaseFactory.Find<<#= table.Name #>>("SELECT TOP 1 * FROM <#= table.Name #>").ToList();
             var data = list.FirstOrDefault();
             var data1 = DataBaseFactory.GetFromCacheById<<#= table.Name #>>(data.UniqueId);
             var data2 = DataBaseFactory.GetFromCacheById<<#= table.Name #>>(data.UniqueId);
@@ -332,13 +329,13 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public async Task PutAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<<#= table.Name #>>();
+            var list = (await DataBaseFactory.FindAsync<<#= table.Name #>>()).ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
-            data.CopyFrom(newData);
+            data?.CopyFrom(newData);
             await data.PutAsync();
             DataBaseFactory.Commit();
 
@@ -356,16 +353,16 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public async Task PatchAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<<#= table.Name #>>();
+            var list = (await DataBaseFactory.FindAsync<<#= table.Name #>>()).ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
             var dataOrig = new <#= table.Name #>();
-            dataOrig.CopyFrom(data);
+            dataOrig?.CopyFrom(data);
 
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
-            data.CopyFrom(newData);
+            data?.CopyFrom(newData);
             await data.PatchAsync(new[] { "<#= table.StringProperties[0] #>", "<#= table.StringProperties[1] #>" });
             DataBaseFactory.Commit();
 
@@ -391,7 +388,7 @@ namespace <#= NamespaceTest #>
 
             var dataUpdate = await DataBaseFactory.GetByIdAsync<<#= table.Name #>>(dataNew.UniqueId);
             var dataChanged = FakerData.Generate();
-            dataUpdate.CopyFrom(dataChanged, new[] { "<#= table.UniqueKey #>" });
+            dataUpdate?.CopyFrom(dataChanged, new[] { "<#= table.UniqueKey #>" });
 
             DataBaseFactory.Begin();
             await dataUpdate.SaveAsync();
@@ -407,7 +404,7 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<<#= table.Name #>>();
+            var list = (await DataBaseFactory.FindAsync<<#= table.Name #>>()).ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -424,7 +421,7 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public async Task GetAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<<#= table.Name #>>();
+            var list = (await DataBaseFactory.FindAsync<<#= table.Name #>>()).ToList();
             var listData = list.FirstOrDefault();
             var data = await DataBaseFactory.GetAsync<<#= table.Name #>>(listData.RowNum);
             var result = data.Equals(listData);
@@ -436,7 +433,7 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public async Task GetByIdAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<<#= table.Name #>>();
+            var list = (await DataBaseFactory.FindAsync<<#= table.Name #>>()).ToList();
             var listData = list.FirstOrDefault();
             var data = await DataBaseFactory.GetByIdAsync<<#= table.Name #>>(listData.UniqueId);
             var result = data.Equals(listData);
@@ -456,7 +453,7 @@ namespace <#= NamespaceTest #>
             var <#= table.IdProperties[0] #> = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.<#= table.IdProperties[0] #> = <#= table.IdProperties[0] #>);
-            await list.AsEnumerable()
+            await list
                 .SetDataBaseFactory<<#= table.Name #>>(DataBaseFactory)
                 .SaveAsync<<#= table.Name #>>();
 
@@ -474,12 +471,12 @@ namespace <#= NamespaceTest #>
             var <#= table.IdProperties[0] #> = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.<#= table.IdProperties[0] #> = <#= table.IdProperties[0] #>);
-            await list.AsEnumerable()
+            await list
                 .SetDataBaseFactory<<#= table.Name #>>(DataBaseFactory)
                 .SaveAsync<<#= table.Name #>>();
 
             var New<#= table.StringProperties[1] #> = Guid.NewGuid().ToString();
-            var listFind = await DataBaseFactory.FindAsync<<#= table.Name #>>("WHERE <#= table.IdProperties[0] #> = @0 ORDER BY RowNum", <#= table.IdProperties[0] #>);
+            var listFind = (await DataBaseFactory.FindAsync<<#= table.Name #>>("WHERE <#= table.IdProperties[0] #> = @0 ORDER BY RowNum", <#= table.IdProperties[0] #>)).ToList();
             listFind.ToList().ForEach(x => x.<#= table.StringProperties[1] #> = New<#= table.StringProperties[1] #>);
             await listFind.SaveAsync<<#= table.Name #>>();
 
@@ -497,11 +494,11 @@ namespace <#= NamespaceTest #>
             var <#= table.IdProperties[0] #> = Guid.NewGuid().ToString();
 
             list.ForEach(x => x.<#= table.IdProperties[0] #> = <#= table.IdProperties[0] #>);
-            await list.AsEnumerable()
+            await list
                 .SetDataBaseFactory<<#= table.Name #>>(DataBaseFactory)
                 .SaveAsync();
 
-            var listFind = await DataBaseFactory.FindAsync<<#= table.Name #>>("WHERE <#= table.IdProperties[0] #> = @0 ORDER BY RowNum", <#= table.IdProperties[0] #>);
+            var listFind = (await DataBaseFactory.FindAsync<<#= table.Name #>>("WHERE <#= table.IdProperties[0] #> = @0 ORDER BY RowNum", <#= table.IdProperties[0] #>)).ToList();
             await listFind.DeleteAsync();
 
             var cnt = await DataBaseFactory.CountAsync<<#= table.Name #>>("WHERE <#= table.IdProperties[0] #> = @0", <#= table.IdProperties[0] #>);
@@ -515,7 +512,7 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public async Task GetFromCacheByIdAsync_Test()
         {
-            var list = await DataBaseFactory.FindAsync<<#= table.Name #>>("SELECT TOP 1 * FROM <#= table.Name #>");
+            var list = (await DataBaseFactory.FindAsync<<#= table.Name #>>("SELECT TOP 1 * FROM <#= table.Name #>")).ToList();
             var data = list.FirstOrDefault();
             var data1 = await DataBaseFactory.GetFromCacheByIdAsync<<#= table.Name #>>(data.UniqueId);
             var data2 = await DataBaseFactory.GetFromCacheByIdAsync<<#= table.Name #>>(data.UniqueId);

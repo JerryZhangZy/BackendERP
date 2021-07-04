@@ -920,15 +920,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				CheckIntegrityInvoiceItemsAttributes();
 			}
 		}
-		public InvoiceItemsAttributes SetChildrenInvoiceItemsAttributes(IEnumerable<InvoiceItemsAttributes> children)
+		public InvoiceItemsAttributes SetChildrenInvoiceItemsAttributes(IList<InvoiceItemsAttributes> children)
 		{
 			var childrenList = children.ToList();
 			InvoiceItemsAttributes = childrenList.FirstOrDefault(x => !string.IsNullOrEmpty(InvoiceItemsUuid) && x.InvoiceItemsUuid == InvoiceItemsUuid);
 			return InvoiceItemsAttributes;
 		}
-		public IEnumerable<InvoiceItemsAttributes> GetChildrenInvoiceItemsAttributes()
+		public IList<InvoiceItemsAttributes> GetChildrenInvoiceItemsAttributes()
 		{
 			return new List<InvoiceItemsAttributes>() { InvoiceItemsAttributes };
+		}
+		public IList<InvoiceItemsAttributes> GetChildrenDeletedInvoiceItemsAttributes()
+		{
+			return null;
 		}
 		public InvoiceItemsAttributes CheckIntegrityInvoiceItemsAttributes()
 		{
@@ -1046,22 +1050,23 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual void CopyChildrenFrom(InvoiceItems data)
         {
-			InvoiceItemsAttributes.CopyFrom(data.InvoiceItemsAttributes);
+            if (data is null) return;
+			InvoiceItemsAttributes?.CopyFrom(data.InvoiceItemsAttributes);
 			CheckIntegrityInvoiceItemsAttributes(); 
             return;
         }
 
-		public IEnumerable<InvoiceItems> FindByInvoiceUuid(string invoiceUuid)
+		public IList<InvoiceItems> FindByInvoiceUuid(string invoiceUuid)
 		{
-			return dbFactory.Find<InvoiceItems>("WHERE InvoiceUuid = @0 ORDER BY Seq ", invoiceUuid);
+			return dbFactory.Find<InvoiceItems>("WHERE InvoiceUuid = @0 ORDER BY Seq ", invoiceUuid).ToList();
 		}
 		public long CountByInvoiceUuid(string invoiceUuid)
 		{
 			return dbFactory.Count<InvoiceItems>("WHERE InvoiceUuid = @0 ", invoiceUuid);
 		}
-		public async Task<IEnumerable<InvoiceItems>> FindByAsyncInvoiceUuid(string invoiceUuid)
+		public async Task<IList<InvoiceItems>> FindByAsyncInvoiceUuid(string invoiceUuid)
 		{
-			return await dbFactory.FindAsync<InvoiceItems>("WHERE InvoiceUuid = @0 ORDER BY Seq ", invoiceUuid);
+			return (await dbFactory.FindAsync<InvoiceItems>("WHERE InvoiceUuid = @0 ORDER BY Seq ", invoiceUuid)).ToList();
 		}
 		public async Task<long> CountByAsyncInvoiceUuid(string invoiceUuid)
 		{

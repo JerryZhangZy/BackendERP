@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasInvoiceHeaderAttributes => InvoiceHeaderAttributes != null;
 
-        public IEnumerable<InvoiceItemsDto> InvoiceItems { get; set; }
+        public IList<InvoiceItemsDto> InvoiceItems { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasInvoiceItems => InvoiceItems != null;
 

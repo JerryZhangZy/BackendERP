@@ -103,7 +103,7 @@ namespace <#= NamespaceStructure #>
                 }
                 else
                 {
-                    WriteLine($"{new String('\t',indent)}{child.Table.Name} = Enumerable.Empty<{child.Table.Name}>(); ");
+                    WriteLine($"{new String('\t',indent)}{child.Table.Name} = new List<{child.Table.Name}>(); ");
                     if (!child.Table.IsChildrenOfChildren)
                         WriteLine($"{new String('\t',indent)}Clear{child.Table.Name}Deleted(); ");
                 }

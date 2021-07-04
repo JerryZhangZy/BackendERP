@@ -83,6 +83,8 @@ namespace <#= NamespaceServiceTest #>
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
+            Save_Test();
+
 <#@ include file="SelectFirstUniqueId.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
@@ -90,7 +92,7 @@ namespace <#= NamespaceServiceTest #>
             var rowNum = srv.Data.<#= StructureClass.MainTable.Name #>.RowNum;
 
             var dataUpdate = GetFakerData();
-            srv.Data.CopyFrom(dataUpdate);
+            srv.Data?.CopyFrom(dataUpdate);
             srv.Save();
 
             var srvGetById = new <#= ServiceName #>(DataBaseFactory);
@@ -108,6 +110,8 @@ namespace <#= NamespaceServiceTest #>
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
         {
+            Save_Test();
+
 <#@ include file="SelectFirstUniqueId.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
@@ -142,6 +146,8 @@ namespace <#= NamespaceServiceTest #>
         //[Fact(Skip = SkipReason)]
         public async Task GetAsync_Test()
         {
+            await SaveAsync_Test();
+
 <#@ include file="SelectFirstUniqueIdAsync.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
@@ -149,7 +155,7 @@ namespace <#= NamespaceServiceTest #>
             var rowNum = srv.Data.<#= StructureClass.MainTable.Name #>.RowNum;
 
             var dataUpdate = GetFakerData();
-            srv.Data.CopyFrom(dataUpdate);
+            srv.Data?.CopyFrom(dataUpdate);
             await srv.SaveAsync();
 
             var srvGetById = new <#= ServiceName #>(DataBaseFactory);
@@ -167,6 +173,7 @@ namespace <#= NamespaceServiceTest #>
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
+            await SaveAsync_Test();
 
 <#@ include file="SelectFirstUniqueIdAsync.ttinclude" #>
 
