@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             IDataBaseFactory dbFactory) : this()
         {
             SetDataBaseFactory(dbFactory);
-       }
+        }
 
         public ServiceBase(
             IDataBaseFactory dbFactory,

@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A03E33A1-43E2-4C83-8BD3-1BA7B77ACFFC}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.YoPoco.Tests.Integration", "DigitBridge.CommerceCentral.YoPoco.Tests.Integration\DigitBridge.CommerceCentral.YoPoco.Tests.Integration.csproj", "{D1765F75-7A4E-4F10-812E-08699A8B70CB}"
@@ -24,9 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.T4", "DigitBridge.CommerceCentral.T4\DigitBridge.CommerceCentral.T4.csproj", "{C270E5E0-342E-4C27-A34C-A75178733A08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPMdl", "DigitBridge.CommerceCentral.ERPMdl\DigitBridge.CommerceCentral.ERPMdl.csproj", "{669B992A-8FA8-4E6B-AB33-8FE0D364CAB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPMdl", "DigitBridge.CommerceCentral.ERPMdl\DigitBridge.CommerceCentral.ERPMdl.csproj", "{669B992A-8FA8-4E6B-AB33-8FE0D364CAB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration", "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration\DigitBridge.CommerceCentral.ERPMdl.Tests.Integration.csproj", "{10B4A916-1962-4354-BEB4-A9ACE92E111D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration", "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration\DigitBridge.CommerceCentral.ERPMdl.Tests.Integration.csproj", "{10B4A916-1962-4354-BEB4-A9ACE92E111D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
