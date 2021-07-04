@@ -70,7 +70,7 @@ else if(table.HasOneToManyChildren)
     { 
         if (childTable == null) continue;
 
-        WriteLine($"{new String('\t',indent)}public IEnumerable<{childTable.DtoName}> {childTable.Name} {{ get; set; }}");
+        WriteLine($"{new String('\t',indent)}public IList<{childTable.DtoName}> {childTable.Name} {{ get; set; }}");
         WriteLine($"{new String('\t',indent)}[XmlIgnore, JsonIgnore, IgnoreCompare]");
         WriteLine($"{new String('\t',indent)}public bool Has{childTable.Name} => {childTable.Name} != null;");
         WriteLine($"{new String('\t',indent)}");

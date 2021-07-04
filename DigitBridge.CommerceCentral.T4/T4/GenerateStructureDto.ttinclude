@@ -44,7 +44,7 @@ foreach(var item in StructureClass.StructureTables)
     else
     {
 #>
-        public IEnumerable<<#= child.Table.DtoName #>> <#= child.Table.Name #> { get; set; }
+        public IList<<#= child.Table.DtoName #>> <#= child.Table.Name #> { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool Has<#= child.Table.Name #> => <#= child.Table.Name #> != null;
 

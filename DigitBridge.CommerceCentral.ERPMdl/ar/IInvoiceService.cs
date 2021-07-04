@@ -27,7 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a IInvoiceService.
     /// NOTE: This interface is generated from a T4 template once only - if you want re-generate it, you should delete this file first.
     /// </summary>
-    public interface IInvoiceService : IService<InvoiceService, InvoiceData>
+    public interface IInvoiceService : IService<InvoiceService, InvoiceData, InvoiceDataDto>
     {
     }
 }

@@ -1,4 +1,5 @@
 
+
               
     
 
@@ -28,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a InvoiceService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class InvoiceService : ServiceBase<InvoiceService, InvoiceData>, IInvoiceService
+    public partial class InvoiceService : ServiceBase<InvoiceService, InvoiceData, InvoiceDataDto>, IInvoiceService
     {
         public InvoiceService() : base() {}
         public InvoiceService(IDataBaseFactory dbFactory): base(dbFactory) {}

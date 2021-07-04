@@ -1,0 +1,24 @@
+﻿<#
+    // generate single object write method for all tables
+    WriteLine($"{new String('\t',indent)}protected virtual void Write{child.Table.Name}({child.Table.Name} data, {child.Table.DtoName} dto)");
+    WriteLine($"{new String('\t',indent)}{{");
+    WriteLine($"{new String('\t',indent+1)}if (data is null || dto is null)");
+    WriteLine($"{new String('\t',indent+2)}return;");
+
+    // generate all properties
+    WriteLine($"");
+    WriteLine($"{new String('\t',indent+1)}#region write all properties with null");
+    WriteLine($"");
+    foreach(var col in child.Table.Columns)
+    { 
+        WriteLine($"{new String('\t',indent+1)}dto.{col.propertyName} = data.{col.propertyName}{col.ConvertPropertyTypeDataToDto};");
+    }
+    WriteLine($"");
+    WriteLine($"{new String('\t',indent+1)}#endregion read properties");
+    WriteLine($"");
+#>
+<#@ include file="WriteDtoGrandChildren.ttinclude" #>
+<#
+    WriteLine($"{new String('\t',indent+1)}return;");
+    WriteLine($"{new String('\t',indent)}}}");
+#>

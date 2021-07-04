@@ -190,7 +190,7 @@ if(table.HasOneToOneChildren)
         WriteLine($"{new String('\t',indent)}}}");
 
         // Set Children table from list
-        WriteLine($"{new String('\t',indent)}public {childTable.Name} SetChildren{childTable.Name}(IEnumerable<{childTable.Name}> children)");
+        WriteLine($"{new String('\t',indent)}public {childTable.Name} SetChildren{childTable.Name}(IList<{childTable.Name}> children)");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}var childrenList = children.ToList();");
         WriteLine($"{new String('\t',indent+1)}{childTable.Name} = childrenList.FirstOrDefault(x => !string.IsNullOrEmpty({table.UniqueKey}) && x.{table.UniqueKey} == {table.UniqueKey});");
@@ -198,9 +198,15 @@ if(table.HasOneToOneChildren)
         WriteLine($"{new String('\t',indent)}}}");
 
         // Get Children list
-        WriteLine($"{new String('\t',indent)}public IEnumerable<{childTable.Name}> GetChildren{childTable.Name}()");
+        WriteLine($"{new String('\t',indent)}public IList<{childTable.Name}> GetChildren{childTable.Name}()");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}return new List<{childTable.Name}>() {{ {childTable.Name} }};");
+        WriteLine($"{new String('\t',indent)}}}");
+
+        // Get Children deleted list
+        WriteLine($"{new String('\t',indent)}public IList<{childTable.Name}> GetChildrenDeleted{childTable.Name}()");
+        WriteLine($"{new String('\t',indent)}{{");
+        WriteLine($"{new String('\t',indent+1)}return null;");
         WriteLine($"{new String('\t',indent)}}}");
 
         // Check Children table Integrity
@@ -260,10 +266,38 @@ if(table.HasOneToManyChildren)
 
         WriteLine($"{new String('\t',indent)}#region Methods - Children {childTable.Name}");
 
+        WriteLine($"{new String('\t',indent)}protected IList<{childTable.Name}> _{childTable.Name}Deleted;");
+
+        // Add more deleted list
+        WriteLine($"{new String('\t',indent)}public {childTable.Name} Add{childTable.Name}Deleted(IList<{childTable.Name}> del)");
+        WriteLine($"{new String('\t',indent)}{{");
+        WriteLine($"{new String('\t',indent+1)}if (_{childTable.Name}Deleted is null)");
+        WriteLine($"{new String('\t',indent+2)}_{childTable.Name}Deleted = new List<{childTable.Name}>();");
+        WriteLine($"{new String('\t',indent+1)}_{childTable.Name}Deleted.AddRange(del);");
+        WriteLine($"{new String('\t',indent+1)}return del;");
+        WriteLine($"{new String('\t',indent)}}}");
+
+        // Add one to deleted list
+        WriteLine($"{new String('\t',indent)}public {childTable.Name} Add{childTable.Name}Deleted({childTable.Name} del)");
+        WriteLine($"{new String('\t',indent)}{{");
+        WriteLine($"{new String('\t',indent+1)}if (_{childTable.Name}Deleted is null)");
+        WriteLine($"{new String('\t',indent+2)}_{childTable.Name}Deleted = new List<{childTable.Name}>();");
+        WriteLine($"{new String('\t',indent+1)}_{childTable.Name}Deleted.Add(del);");
+        WriteLine($"{new String('\t',indent+1)}return del;");
+        WriteLine($"{new String('\t',indent)}}}");
+        
+        // reset deleted list
+        WriteLine($"{new String('\t',indent)}public void Set{childTable.Name}Deleted(IList<{childTable.Name}> del) =>");
+        WriteLine($"{new String('\t',indent+1)}_{childTable.Name}Deleted = del;");
+
+        // clear deleted list
+        WriteLine($"{new String('\t',indent)}public void Clear{childTable.Name}Deleted() =>");
+        WriteLine($"{new String('\t',indent+1)}_{childTable.Name}Deleted.Clear();");
+
         // Children reference
-        WriteLine($"{new String('\t',indent)}protected IEnumerable<{childTable.Name}> _{childTable.Name};");
+        WriteLine($"{new String('\t',indent)}protected IList<{childTable.Name}> _{childTable.Name};");
         WriteLine($"{new String('\t',indent)}[IgnoreCompare]");
-        WriteLine($"{new String('\t',indent)}public IEnumerable<{childTable.Name}> {childTable.Name}");
+        WriteLine($"{new String('\t',indent)}public IList<{childTable.Name}> {childTable.Name}");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}get");
         WriteLine($"{new String('\t',indent+1)}{{");
@@ -279,7 +313,7 @@ if(table.HasOneToManyChildren)
         WriteLine($"{new String('\t',indent)}}}");
 
         // Set Children table from list
-        WriteLine($"{new String('\t',indent)}public {childTable.Name} Set{childTable.Name}(IEnumerable<{childTable.Name}> children)");
+        WriteLine($"{new String('\t',indent)}public {childTable.Name} Set{childTable.Name}(IList<{childTable.Name}> children)");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}var childrenList = children.ToList();");
         WriteLine($"{new String('\t',indent+1)}{childTable.Name} = childrenList.Where(x => !string.IsNullOrEmpty({table.UniqueKey}) && x.{table.UniqueKey} == {table.UniqueKey});");
@@ -287,13 +321,19 @@ if(table.HasOneToManyChildren)
         WriteLine($"{new String('\t',indent)}}}");
 
         // Get Children list
-        WriteLine($"{new String('\t',indent)}public IEnumerable<{childTable.Name}> GetChildren{childTable.Name}()");
+        WriteLine($"{new String('\t',indent)}public IList<{childTable.Name}> GetChildren{childTable.Name}()");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}return {childTable.Name};");
         WriteLine($"{new String('\t',indent)}}}");
 
+        // Get Children deleted list
+        WriteLine($"{new String('\t',indent)}public IList<{childTable.Name}> GetChildrenDeleted{childTable.Name}()");
+        WriteLine($"{new String('\t',indent)}{{");
+        WriteLine($"{new String('\t',indent+1)}return _{childTable.Name}Deleted;");
+        WriteLine($"{new String('\t',indent)}}}");
+
         // Check Children table Integrity
-        WriteLine($"{new String('\t',indent)}public IEnumerable<{childTable.Name}> CheckIntegrity{childTable.Name}()");
+        WriteLine($"{new String('\t',indent)}public IList<{childTable.Name}> CheckIntegrity{childTable.Name}()");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}if ({childTable.Name} == null)");
         WriteLine($"{new String('\t',indent+2)}return {childTable.Name};");
@@ -313,7 +353,7 @@ if(table.HasOneToManyChildren)
         WriteLine($"{new String('\t',indent)}}}");
 
         // Load Children table
-        WriteLine($"{new String('\t',indent)}public IEnumerable<{childTable.Name}> Load{childTable.Name}()");
+        WriteLine($"{new String('\t',indent)}public IList<{childTable.Name}> Load{childTable.Name}()");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}if (string.IsNullOrEmpty({table.UniqueKey})) return null;");
         var sortCol = childTable.CheckColumnNameOrRowNum("Seq");
@@ -321,7 +361,7 @@ if(table.HasOneToManyChildren)
         WriteLine($"{new String('\t',indent+1)}return {childTable.Name};");
         WriteLine($"{new String('\t',indent)}}}");
 
-        WriteLine($"{new String('\t',indent)}public async Task<IEnumerable<{childTable.Name}>> Load{childTable.Name}Async()");
+        WriteLine($"{new String('\t',indent)}public async Task<IList<{childTable.Name}>> Load{childTable.Name}Async()");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}if (string.IsNullOrEmpty({table.UniqueKey})) return null;");
         WriteLine($"{new String('\t',indent+1)}{childTable.Name} = await dbFactory.FindAsync<{childTable.Name}>(\"WHERE {table.UniqueKey} = @0 ORDER BY {sortCol} \", {table.UniqueKey});");
@@ -339,7 +379,7 @@ if(table.HasOneToManyChildren)
         WriteLine($"{new String('\t',indent)}}}");
 
         // Add Children table to list
-        WriteLine($"{new String('\t',indent)}public IEnumerable<{childTable.Name}> Add{childTable.Name}({childTable.Name} child)");
+        WriteLine($"{new String('\t',indent)}public IList<{childTable.Name}> Add{childTable.Name}({childTable.Name} child)");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}if (child == null)");
         WriteLine($"{new String('\t',indent+2)}child = New{childTable.Name}();");
@@ -349,7 +389,7 @@ if(table.HasOneToManyChildren)
         WriteLine($"{new String('\t',indent)}}}");
 
         // Remove Children table to list
-        WriteLine($"{new String('\t',indent)}public IEnumerable<{childTable.Name}> Remove{childTable.Name}({childTable.Name} child)");
+        WriteLine($"{new String('\t',indent)}public IList<{childTable.Name}> Remove{childTable.Name}({childTable.Name} child)");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}if (child == null) return null;" );
         WriteLine($"{new String('\t',indent+1)}{childTable.Name}.Remove(child);");
@@ -446,6 +486,7 @@ if(table.HasOneToManyChildren)
 
         public virtual void CopyChildrenFrom(<#= table.Name #> data)
         {
+            if (data is null) return;
 <# // generate all children CopyFrom
             indent = 3;
             if(table.HasOneToOneChildren)
@@ -454,7 +495,7 @@ if(table.HasOneToManyChildren)
                 foreach(var childTable in table.oneToOneChildren)
                 { 
                     if (childTable == null) continue;
-                    WriteLine($"{new String('\t',indent)}{childTable.Name}.CopyFrom(data.{childTable.Name});");
+                    WriteLine($"{new String('\t',indent)}{childTable.Name}?.CopyFrom(data.{childTable.Name});");
                     WriteLine($"{new String('\t',indent)}CheckIntegrity{childTable.Name}(); ");
                 }
             } 
@@ -464,7 +505,8 @@ if(table.HasOneToManyChildren)
                 foreach(var childTable in table.oneToManyChildren)
                 { 
                     if (childTable == null) continue;
-                    WriteLine($"{new String('\t',indent)}{childTable.Name}.CopyFrom(data.{childTable.Name}); ");
+                    WriteLine($"{new String('\t',indent)}var lstDeleted = {childTable.Name}?.CopyFrom(data.{childTable.Name}); ");
+                    WriteLine($"{new String('\t',indent)}Set{childTable.Name}Deleted(lstDeleted); ");
                     WriteLine($"{new String('\t',indent)}CheckIntegrity{childTable.Name}(); ");
                 }
             } 
@@ -486,12 +528,12 @@ if(table.HasForeignKey)
 
         indent = 2;
         // load by ForeignKey
-        WriteLine($"{new String('\t',indent)}public IEnumerable<{table.Name}> FindBy{colKey.Name}({colKey.PropertyType} {colKey.parameterName})");
+        WriteLine($"{new String('\t',indent)}public IList<{table.Name}> FindBy{colKey.Name}({colKey.PropertyType} {colKey.parameterName})");
         WriteLine($"{new String('\t',indent)}{{");
         if (colSort == null) 
-            WriteLine($"{new String('\t',indent+1)}return dbFactory.Find<{table.Name}>(\"WHERE {colKey.Name} = @0 \", {colKey.parameterName});");
+            WriteLine($"{new String('\t',indent+1)}return dbFactory.Find<{table.Name}>(\"WHERE {colKey.Name} = @0 \", {colKey.parameterName}).ToList();");
         else
-            WriteLine($"{new String('\t',indent+1)}return dbFactory.Find<{table.Name}>(\"WHERE {colKey.Name} = @0 ORDER BY {colSort.Name} \", {colKey.parameterName});");
+            WriteLine($"{new String('\t',indent+1)}return dbFactory.Find<{table.Name}>(\"WHERE {colKey.Name} = @0 ORDER BY {colSort.Name} \", {colKey.parameterName}).ToList();");
         WriteLine($"{new String('\t',indent)}}}");
 
         // count by ForeignKey
@@ -501,12 +543,12 @@ if(table.HasForeignKey)
         WriteLine($"{new String('\t',indent)}}}");
 
         // load by ForeignKey async
-        WriteLine($"{new String('\t',indent)}public async Task<IEnumerable<{table.Name}>> FindByAsync{colKey.Name}({colKey.PropertyType} {colKey.parameterName})");
+        WriteLine($"{new String('\t',indent)}public async Task<IList<{table.Name}>> FindByAsync{colKey.Name}({colKey.PropertyType} {colKey.parameterName})");
         WriteLine($"{new String('\t',indent)}{{");
         if (colSort == null) 
-            WriteLine($"{new String('\t',indent+1)}return await dbFactory.FindAsync<{table.Name}>(\"WHERE {colKey.Name} = @0 \", {colKey.parameterName});");
+            WriteLine($"{new String('\t',indent+1)}return (await dbFactory.FindAsync<{table.Name}>(\"WHERE {colKey.Name} = @0 \", {colKey.parameterName})).ToList();");
         else
-            WriteLine($"{new String('\t',indent+1)}return await dbFactory.FindAsync<{table.Name}>(\"WHERE {colKey.Name} = @0 ORDER BY {colSort.Name} \", {colKey.parameterName});");
+            WriteLine($"{new String('\t',indent+1)}return (await dbFactory.FindAsync<{table.Name}>(\"WHERE {colKey.Name} = @0 ORDER BY {colSort.Name} \", {colKey.parameterName})).ToList();");
         WriteLine($"{new String('\t',indent)}}}");
 
         // count by ForeignKey async

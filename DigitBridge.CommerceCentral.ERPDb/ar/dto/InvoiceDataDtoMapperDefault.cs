@@ -56,7 +56,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			{
 				if (data.InvoiceItems is null)
 					data.InvoiceItems = new List<InvoiceItems>();
-				ReadInvoiceItems(data.InvoiceItems, dto.InvoiceItems);
+				var deleted = ReadInvoiceItems(data.InvoiceItems, dto.InvoiceItems);
+				data.SetInvoiceItemsDeleted(deleted);
 			}
 
             data.CheckIntegrity();
@@ -75,8 +76,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
 			if (dto.HasInvoiceNumber) data.InvoiceNumber = dto.InvoiceNumber;
-			if (dto.HasInvoiceType) data.InvoiceType = dto.InvoiceType;
-			if (dto.HasInvoiceStatus) data.InvoiceStatus = dto.InvoiceStatus;
+			if (dto.HasInvoiceType) data.InvoiceType = dto.InvoiceType.ToInt();
+			if (dto.HasInvoiceStatus) data.InvoiceStatus = dto.InvoiceStatus.ToInt();
 			if (dto.HasInvoiceDate) data.InvoiceDate = dto.InvoiceDate.ToDateTime();
 			if (dto.HasInvoiceTime) data.InvoiceTime = dto.InvoiceTime.ToTimeSpan();
 			if (dto.HasDueDate) data.DueDate = dto.DueDate;
@@ -87,18 +88,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasCurrency) data.Currency = dto.Currency;
 			if (dto.HasSubTotalAmount) data.SubTotalAmount = dto.SubTotalAmount.ToDecimal();
 			if (dto.HasTotalAmount) data.TotalAmount = dto.TotalAmount.ToDecimal();
-			if (dto.HasTaxRate) data.TaxRate = dto.TaxRate;
-			if (dto.HasTaxAmount) data.TaxAmount = dto.TaxAmount;
-			if (dto.HasDiscountRate) data.DiscountRate = dto.DiscountRate;
-			if (dto.HasDiscountAmount) data.DiscountAmount = dto.DiscountAmount;
-			if (dto.HasShippingAmount) data.ShippingAmount = dto.ShippingAmount;
-			if (dto.HasShippingTaxAmount) data.ShippingTaxAmount = dto.ShippingTaxAmount;
-			if (dto.HasMiscAmount) data.MiscAmount = dto.MiscAmount;
-			if (dto.HasMiscTaxAmount) data.MiscTaxAmount = dto.MiscTaxAmount;
-			if (dto.HasChargeAndAllowanceAmount) data.ChargeAndAllowanceAmount = dto.ChargeAndAllowanceAmount;
-			if (dto.HasPaidAmount) data.PaidAmount = dto.PaidAmount;
-			if (dto.HasCreditAmount) data.CreditAmount = dto.CreditAmount;
-			if (dto.HasBalance) data.Balance = dto.Balance;
+			if (dto.HasTaxRate) data.TaxRate = dto.TaxRate.ToDecimal();
+			if (dto.HasTaxAmount) data.TaxAmount = dto.TaxAmount.ToDecimal();
+			if (dto.HasDiscountRate) data.DiscountRate = dto.DiscountRate.ToDecimal();
+			if (dto.HasDiscountAmount) data.DiscountAmount = dto.DiscountAmount.ToDecimal();
+			if (dto.HasShippingAmount) data.ShippingAmount = dto.ShippingAmount.ToDecimal();
+			if (dto.HasShippingTaxAmount) data.ShippingTaxAmount = dto.ShippingTaxAmount.ToDecimal();
+			if (dto.HasMiscAmount) data.MiscAmount = dto.MiscAmount.ToDecimal();
+			if (dto.HasMiscTaxAmount) data.MiscTaxAmount = dto.MiscTaxAmount.ToDecimal();
+			if (dto.HasChargeAndAllowanceAmount) data.ChargeAndAllowanceAmount = dto.ChargeAndAllowanceAmount.ToDecimal();
+			if (dto.HasPaidAmount) data.PaidAmount = dto.PaidAmount.ToDecimal();
+			if (dto.HasCreditAmount) data.CreditAmount = dto.CreditAmount.ToDecimal();
+			if (dto.HasBalance) data.Balance = dto.Balance.ToDecimal();
 			if (dto.HasUnitCost) data.UnitCost = dto.UnitCost.ToDecimal();
 			if (dto.HasAvgCost) data.AvgCost = dto.AvgCost.ToDecimal();
 			if (dto.HasLotCost) data.LotCost = dto.LotCost.ToDecimal();
@@ -110,6 +111,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			return;
 		}
+
+
 		protected virtual void ReadInvoiceHeaderInfo(InvoiceHeaderInfo data, InvoiceHeaderInfoDto dto)
 		{
 			if (data is null || dto is null)
@@ -182,6 +185,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			return;
 		}
+
+
 		protected virtual void ReadInvoiceHeaderAttributes(InvoiceHeaderAttributes data, InvoiceHeaderAttributesDto dto)
 		{
 			if (data is null || dto is null)
@@ -196,12 +201,126 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			return;
 		}
-		protected virtual void ReadInvoiceItems(IEnumerable<InvoiceItems> data, IEnumerable<InvoiceItemsDto> dto)
+
+
+		protected virtual void ReadInvoiceItems(InvoiceItems data, InvoiceItemsDto dto)
 		{
 			if (data is null || dto is null)
 				return;
+
+			#region read all not null properties
+
+			if (dto.HasInvoiceItemsUuid) data.InvoiceItemsUuid = dto.InvoiceItemsUuid;
+			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
+			if (dto.HasSeq) data.Seq = dto.Seq.ToInt();
+			if (dto.HasInvoiceItemType) data.InvoiceItemType = dto.InvoiceItemType;
+			if (dto.HasInvoiceItemStatus) data.InvoiceItemStatus = dto.InvoiceItemStatus;
+			if (dto.HasItemDate) data.ItemDate = dto.ItemDate.ToDateTime();
+			if (dto.HasItemTime) data.ItemTime = dto.ItemTime.ToTimeSpan();
+			if (dto.HasShipDate) data.ShipDate = dto.ShipDate;
+			if (dto.HasEtaArrivalDate) data.EtaArrivalDate = dto.EtaArrivalDate;
+			if (dto.HasSKU) data.SKU = dto.SKU;
+			if (dto.HasProductUuid) data.ProductUuid = dto.ProductUuid;
+			if (dto.HasInventoryUuid) data.InventoryUuid = dto.InventoryUuid;
+			if (dto.HasWarehouseUuid) data.WarehouseUuid = dto.WarehouseUuid;
+			if (dto.HasLotNum) data.LotNum = dto.LotNum;
+			if (dto.HasDescription) data.Description = dto.Description;
+			if (dto.HasNotes) data.Notes = dto.Notes;
+			if (dto.HasCurrency) data.Currency = dto.Currency;
+			if (dto.HasUOM) data.UOM = dto.UOM;
+			if (dto.HasPackType) data.PackType = dto.PackType;
+			if (dto.HasPackQty) data.PackQty = dto.PackQty.ToDecimal();
+			if (dto.HasOrderPack) data.OrderPack = dto.OrderPack.ToDecimal();
+			if (dto.HasShipPack) data.ShipPack = dto.ShipPack.ToDecimal();
+			if (dto.HasCancelledPack) data.CancelledPack = dto.CancelledPack.ToDecimal();
+			if (dto.HasOrderQty) data.OrderQty = dto.OrderQty.ToDecimal();
+			if (dto.HasShipQty) data.ShipQty = dto.ShipQty.ToDecimal();
+			if (dto.HasCancelledQty) data.CancelledQty = dto.CancelledQty.ToDecimal();
+			if (dto.HasPriceRule) data.PriceRule = dto.PriceRule;
+			if (dto.HasPrice) data.Price = dto.Price.ToDecimal();
+			if (dto.HasDiscountRate) data.DiscountRate = dto.DiscountRate;
+			if (dto.HasDiscountAmount) data.DiscountAmount = dto.DiscountAmount;
+			if (dto.HasDiscountPrice) data.DiscountPrice = dto.DiscountPrice.ToDecimal();
+			if (dto.HasExtAmount) data.ExtAmount = dto.ExtAmount.ToDecimal();
+			if (dto.HasTaxRate) data.TaxRate = dto.TaxRate;
+			if (dto.HasTaxAmount) data.TaxAmount = dto.TaxAmount;
+			if (dto.HasShippingAmount) data.ShippingAmount = dto.ShippingAmount;
+			if (dto.HasShippingTaxAmount) data.ShippingTaxAmount = dto.ShippingTaxAmount;
+			if (dto.HasMiscAmount) data.MiscAmount = dto.MiscAmount;
+			if (dto.HasMiscTaxAmount) data.MiscTaxAmount = dto.MiscTaxAmount;
+			if (dto.HasChargeAndAllowanceAmount) data.ChargeAndAllowanceAmount = dto.ChargeAndAllowanceAmount;
+			if (dto.HasItemTotalAmount) data.ItemTotalAmount = dto.ItemTotalAmount.ToDecimal();
+			if (dto.HasStockable) data.Stockable = dto.Stockable.ToBool();
+			if (dto.HasIsAr) data.IsAr = dto.IsAr.ToBool();
+			if (dto.HasTaxable) data.Taxable = dto.Taxable.ToBool();
+			if (dto.HasCostable) data.Costable = dto.Costable.ToBool();
+			if (dto.HasUnitCost) data.UnitCost = dto.UnitCost.ToDecimal();
+			if (dto.HasAvgCost) data.AvgCost = dto.AvgCost.ToDecimal();
+			if (dto.HasLotCost) data.LotCost = dto.LotCost.ToDecimal();
+			if (dto.HasLotInDate) data.LotInDate = dto.LotInDate;
+			if (dto.HasLotExpDate) data.LotExpDate = dto.LotExpDate;
+			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
+			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
+			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
+
+			#endregion read properties
+
+			#region read all grand children object
+
+			if (dto.InvoiceItemsAttributes != null)
+			{
+				if (data.InvoiceItemsAttributes is null)
+					data.InvoiceItemsAttributes = new InvoiceItemsAttributes();
+				ReadInvoiceItemsAttributes(data.InvoiceItemsAttributes, dto.InvoiceItemsAttributes);
+			}
+
+			#endregion read all grand children object
+
 			return;
 		}
+
+		protected virtual IList<InvoiceItems> ReadInvoiceItems(IList<InvoiceItems> data, IList<InvoiceItemsDto> dto)
+		{
+			if (data is null || dto is null)
+				return null;
+			var lstOrig = new List<InvoiceItems>(data.Where(x => x != null).ToList());
+			data.Clear();
+			foreach (var itemDto in dto)
+			{
+				if (itemDto == null) continue;
+
+				var obj = itemDto.RowNum > 0
+					? lstOrig.Find(x => x.RowNum == itemDto.RowNum)
+					: lstOrig.Find(x => x.InvoiceItemsUuid == itemDto.InvoiceItemsUuid);
+				if (obj is null)
+					obj = new InvoiceItems().SetAllowNull(false);
+				else
+					lstOrig.Remove(obj);
+
+				data.Add(obj);
+
+				ReadInvoiceItems(obj, itemDto);
+
+			}
+			return lstOrig;
+		}
+
+		protected virtual void ReadInvoiceItemsAttributes(InvoiceItemsAttributes data, InvoiceItemsAttributesDto dto)
+		{
+			if (data is null || dto is null)
+				return;
+
+			#region read all not null properties
+
+			if (dto.HasInvoiceItemsUuid) data.InvoiceItemsUuid = dto.InvoiceItemsUuid;
+			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
+			if (dto.HasJsonFields) data.JsonFields = dto.JsonFields;
+
+			#endregion read properties
+
+			return;
+		}
+
 
         #endregion read from dto to data
 
@@ -289,6 +408,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			return;
 		}
+
 		protected virtual void WriteInvoiceHeaderInfo(InvoiceHeaderInfo data, InvoiceHeaderInfoDto dto)
 		{
 			if (data is null || dto is null)
@@ -364,6 +484,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			return;
 		}
+
 		protected virtual void WriteInvoiceHeaderAttributes(InvoiceHeaderAttributes data, InvoiceHeaderAttributesDto dto)
 		{
 			if (data is null || dto is null)
@@ -381,94 +502,106 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			return;
 		}
-		protected virtual void WriteInvoiceItems(IEnumerable<InvoiceItems> data, IEnumerable<InvoiceItemsDto> dto)
+
+		protected virtual void WriteInvoiceItems(InvoiceItems data, InvoiceItemsDto dto)
 		{
 			if (data is null || dto is null)
 				return;
 
-			var dataList = data.ToList();
-			var dtoList = dto.ToList();
-			dtoList.Clear();
+			#region write all properties with null
+
+			dto.RowNum = data.RowNum;
+			dto.InvoiceItemsUuid = data.InvoiceItemsUuid;
+			dto.InvoiceUuid = data.InvoiceUuid;
+			dto.Seq = data.Seq;
+			dto.InvoiceItemType = data.InvoiceItemType;
+			dto.InvoiceItemStatus = data.InvoiceItemStatus;
+			dto.ItemDate = data.ItemDate;
+			dto.ItemTime = data.ItemTime.ToDateTime();
+			dto.ShipDate = data.ShipDate;
+			dto.EtaArrivalDate = data.EtaArrivalDate;
+			dto.SKU = data.SKU;
+			dto.ProductUuid = data.ProductUuid;
+			dto.InventoryUuid = data.InventoryUuid;
+			dto.WarehouseUuid = data.WarehouseUuid;
+			dto.LotNum = data.LotNum;
+			dto.Description = data.Description;
+			dto.Notes = data.Notes;
+			dto.Currency = data.Currency;
+			dto.UOM = data.UOM;
+			dto.PackType = data.PackType;
+			dto.PackQty = data.PackQty;
+			dto.OrderPack = data.OrderPack;
+			dto.ShipPack = data.ShipPack;
+			dto.CancelledPack = data.CancelledPack;
+			dto.OrderQty = data.OrderQty;
+			dto.ShipQty = data.ShipQty;
+			dto.CancelledQty = data.CancelledQty;
+			dto.PriceRule = data.PriceRule;
+			dto.Price = data.Price;
+			dto.DiscountRate = data.DiscountRate;
+			dto.DiscountAmount = data.DiscountAmount;
+			dto.DiscountPrice = data.DiscountPrice;
+			dto.ExtAmount = data.ExtAmount;
+			dto.TaxRate = data.TaxRate;
+			dto.TaxAmount = data.TaxAmount;
+			dto.ShippingAmount = data.ShippingAmount;
+			dto.ShippingTaxAmount = data.ShippingTaxAmount;
+			dto.MiscAmount = data.MiscAmount;
+			dto.MiscTaxAmount = data.MiscTaxAmount;
+			dto.ChargeAndAllowanceAmount = data.ChargeAndAllowanceAmount;
+			dto.ItemTotalAmount = data.ItemTotalAmount;
+			dto.Stockable = data.Stockable;
+			dto.IsAr = data.IsAr;
+			dto.Taxable = data.Taxable;
+			dto.Costable = data.Costable;
+			dto.UnitCost = data.UnitCost;
+			dto.AvgCost = data.AvgCost;
+			dto.LotCost = data.LotCost;
+			dto.LotInDate = data.LotInDate;
+			dto.LotExpDate = data.LotExpDate;
+			dto.UpdateDateUtc = data.UpdateDateUtc;
+			dto.EnterBy = data.EnterBy;
+			dto.UpdateBy = data.UpdateBy;
+			dto.EnterDateUtc = data.EnterDateUtc;
+			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+
+			#endregion read properties
+
+			#region write all grand children object
+
+			if (data.InvoiceItemsAttributes != null)
+			{
+				dto.InvoiceItemsAttributes = new InvoiceItemsAttributesDto();
+				WriteInvoiceItemsAttributes(data.InvoiceItemsAttributes, dto.InvoiceItemsAttributes);
+			}
+
+			#endregion write all grand children object
+
+			return;
+		}
+		protected virtual void WriteInvoiceItems(IList<InvoiceItems> data, IList<InvoiceItemsDto> dto)
+		{
+			if (data is null || dto is null)
+				return;
+
+			dto.Clear();
 
 			#region write all list items and properties with null
 
-			foreach (var itemData in dataList)
+			foreach (var itemData in data)
 			{
 				if (itemData is null) continue;
-				var obj = new InvoiceItemsDto()
-				{
-					RowNum = itemData.RowNum,
-					InvoiceItemsUuid = itemData.InvoiceItemsUuid,
-					InvoiceUuid = itemData.InvoiceUuid,
-					Seq = itemData.Seq,
-					InvoiceItemType = itemData.InvoiceItemType,
-					InvoiceItemStatus = itemData.InvoiceItemStatus,
-					ItemDate = itemData.ItemDate,
-					ItemTime = itemData.ItemTime.ToDateTime(),
-					ShipDate = itemData.ShipDate,
-					EtaArrivalDate = itemData.EtaArrivalDate,
-					SKU = itemData.SKU,
-					ProductUuid = itemData.ProductUuid,
-					InventoryUuid = itemData.InventoryUuid,
-					WarehouseUuid = itemData.WarehouseUuid,
-					LotNum = itemData.LotNum,
-					Description = itemData.Description,
-					Notes = itemData.Notes,
-					Currency = itemData.Currency,
-					UOM = itemData.UOM,
-					PackType = itemData.PackType,
-					PackQty = itemData.PackQty,
-					OrderPack = itemData.OrderPack,
-					ShipPack = itemData.ShipPack,
-					CancelledPack = itemData.CancelledPack,
-					OrderQty = itemData.OrderQty,
-					ShipQty = itemData.ShipQty,
-					CancelledQty = itemData.CancelledQty,
-					PriceRule = itemData.PriceRule,
-					Price = itemData.Price,
-					DiscountRate = itemData.DiscountRate,
-					DiscountAmount = itemData.DiscountAmount,
-					DiscountPrice = itemData.DiscountPrice,
-					ExtAmount = itemData.ExtAmount,
-					TaxRate = itemData.TaxRate,
-					TaxAmount = itemData.TaxAmount,
-					ShippingAmount = itemData.ShippingAmount,
-					ShippingTaxAmount = itemData.ShippingTaxAmount,
-					MiscAmount = itemData.MiscAmount,
-					MiscTaxAmount = itemData.MiscTaxAmount,
-					ChargeAndAllowanceAmount = itemData.ChargeAndAllowanceAmount,
-					ItemTotalAmount = itemData.ItemTotalAmount,
-					Stockable = itemData.Stockable,
-					IsAr = itemData.IsAr,
-					Taxable = itemData.Taxable,
-					Costable = itemData.Costable,
-					UnitCost = itemData.UnitCost,
-					AvgCost = itemData.AvgCost,
-					LotCost = itemData.LotCost,
-					LotInDate = itemData.LotInDate,
-					LotExpDate = itemData.LotExpDate,
-					UpdateDateUtc = itemData.UpdateDateUtc,
-					EnterBy = itemData.EnterBy,
-					UpdateBy = itemData.UpdateBy,
-					EnterDateUtc = itemData.EnterDateUtc,
-					DigitBridgeGuid = itemData.DigitBridgeGuid,
-				};
-				dtoList.Add(obj);
-				#region write all grand children object
-
-				if (itemData.InvoiceItemsAttributes != null)
-				{
-					obj.InvoiceItemsAttributes = new InvoiceItemsAttributesDto();
-					WriteInvoiceItemsAttributes(itemData.InvoiceItemsAttributes, obj.InvoiceItemsAttributes);
-				}
-
-				#endregion write all grand children object
-
+				var obj = new InvoiceItemsDto();
+				dto.Add(obj);
+				WriteInvoiceItems(itemData, obj);
 			}
 
 			#endregion write all list items and properties with null
 			return;
 		}
+
+
 		protected virtual void WriteInvoiceItemsAttributes(InvoiceItemsAttributes data, InvoiceItemsAttributesDto dto)
 		{
 			if (data is null || dto is null)

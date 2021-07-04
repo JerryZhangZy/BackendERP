@@ -90,18 +90,18 @@ namespace DigitBridge.CommerceCentral.YoPoco
         #region Query - Static Methods for find multiple records
 
         public static IEnumerable<TEntity> Find(IDataBaseFactory dbFactory)
-            => dbFactory.Db.Query<TEntity>().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => dbFactory.Db.Query<TEntity>().ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
 
         public static IEnumerable<TEntity> FindByOrder(IDataBaseFactory dbFactory, params string[] orderBy)
-            => dbFactory.Db.Query<TEntity>($"ORDER BY {orderBy.JoinToString(",")}").SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => dbFactory.Db.Query<TEntity>($"ORDER BY {orderBy.JoinToString(",")}").ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
         public static IEnumerable<TEntity> Find(IDataBaseFactory dbFactory, IEnumerable<string> columns, params string[] orderBy)
-            => dbFactory.Db.Query<TEntity>(columns, $"ORDER BY {orderBy.JoinToString(",")}").SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => dbFactory.Db.Query<TEntity>(columns, $"ORDER BY {orderBy.JoinToString(",")}").ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
 
         public static IEnumerable<TEntity> Find(IDataBaseFactory dbFactory, string sql, params object[] args)
-            => dbFactory.Db.Query<TEntity>(sql, args).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => dbFactory.Db.Query<TEntity>(sql, args).ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
 
         public static IEnumerable<TEntity> Find(IDataBaseFactory dbFactory, string sql, IEnumerable<string> columns, params object[] args)
-            => dbFactory.Db.Query<TEntity>(columns, sql, args).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => dbFactory.Db.Query<TEntity>(columns, sql, args).ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
 
 
         public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory)
@@ -123,7 +123,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #endregion Public Static Methods
 
-        public TableRepository() {}
+        public TableRepository() { }
 
         public TableRepository(IDataBaseFactory dbFactory)
         {
@@ -131,10 +131,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
 
         #region DataBase
-        [XmlIgnore, JsonIgnore]
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
         protected IDataBaseFactory _dbFactory;
 
-        [XmlIgnore, JsonIgnore]
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
         protected IDataBaseFactory dbFactory
         {
             get
@@ -144,14 +144,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return _dbFactory;
             }
         }
-            
+
         public TEntity SetDataBaseFactory(IDataBaseFactory dbFactory)
         {
             _dbFactory = dbFactory;
             return (TEntity)this;
         }
 
-        [XmlIgnore, JsonIgnore]
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
         public IDatabase db => dbFactory?.Db;
 
         public virtual ITransaction GetTransaction()
@@ -162,7 +162,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         #region Fields Variables
 
         [ResultColumn(Name = "RowNum", IncludeInAutoSelect = IncludeInAutoSelect.Yes)]
-        [XmlIgnore] 
+        [XmlIgnore]
         protected long _rowNum;
 
         [ResultColumn(Name = "EnterDateUtc", IncludeInAutoSelect = IncludeInAutoSelect.Yes)]
@@ -196,7 +196,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public TEntity SetAllowNull(bool allowNull)
         {
             AllowNull = allowNull;
-            return (TEntity) this;
+            return (TEntity)this;
         }
 
         //TODO Add method to identify entity changed
@@ -494,334 +494,4 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
     }
 
-
-    public static class TableRepositoryExtensions
-    {
-        public static IEnumerable<TEntity> ClearMetaData<TEntity>(this IEnumerable<TEntity> lst)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.ClearMetaData<TEntity, long>();
-
-        public static IEnumerable<TEntity> ClearMetaData<TEntity, TId>(this IEnumerable<TEntity> lst) 
-            where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            var tableRepositories = lst.ToList();
-            tableRepositories?.ForEach(i => i?.ClearMetaData());
-            return tableRepositories;
-        }
-
-        public static IEnumerable<TEntity> SetAllowNull<TEntity>(this IEnumerable<TEntity> lst, bool allowNull)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.SetAllowNull<TEntity, long>(allowNull);
-
-        public static IEnumerable<TEntity> SetAllowNull<TEntity, TId>(this IEnumerable<TEntity> lst, bool allowNull) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            var tableRepositories = lst.ToList();
-            tableRepositories?.ForEach(i => i?.SetAllowNull(allowNull));
-            return tableRepositories;
-        }
-
-        public static IEnumerable<TEntity> SetDataBaseFactory<TEntity>(this IEnumerable<TEntity> lst, IDataBaseFactory dbFactory)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.SetDataBaseFactory<TEntity, long>(dbFactory);
-
-        public static IEnumerable<TEntity> SetDataBaseFactory<TEntity, TId>(this IEnumerable<TEntity> lst, IDataBaseFactory dbFactory) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            var tableRepositories = lst.ToList();
-            tableRepositories?.ForEach(i => i?.SetDataBaseFactory(dbFactory));
-            return tableRepositories;
-        }
-
-        public static bool Save<TEntity>(this IEnumerable<TEntity> lst)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.Save<TEntity, long>();
-
-        public static bool Save<TEntity, TId>(this IEnumerable<TEntity> lst) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            var rtn = true;
-            var tableRepositories = lst.ToList();
-            foreach (var tableRepository in tableRepositories.Where(x => x != null))
-            {
-                var rtn1 = tableRepository.Save();
-                rtn = (rtn1) && rtn;
-            }
-            return rtn;
-        }
-
-        public static int Delete<TEntity>(this IEnumerable<TEntity> lst)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.Delete<TEntity, long>();
-
-        public static int Delete<TEntity, TId>(this IEnumerable<TEntity> lst) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            var rtn = 0;
-            var tableRepositories = lst.ToList();
-            foreach (var tableRepository in tableRepositories.Where(x => x != null))
-                rtn += tableRepository.Delete();
-            return rtn;
-        }
-
-        public static async Task<bool> SaveAsync<TEntity>(this IEnumerable<TEntity> lst)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => await lst.SaveAsync<TEntity, long>().ConfigureAwait(false);
-
-        public static async Task<bool> SaveAsync<TEntity, TId>(this IEnumerable<TEntity> lst) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            var rtn = true;
-            var tableRepositories = lst.ToList();
-            foreach (var tableRepository in tableRepositories.Where(x => x != null))
-            {
-                var rtn1 = await tableRepository.SaveAsync().ConfigureAwait(false);
-                rtn = (rtn1) && rtn;
-            }
-            return rtn;
-        }
-
-        public static async Task<int> DeleteAsync<TEntity>(this IEnumerable<TEntity> lst)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => await lst.DeleteAsync<TEntity, long>().ConfigureAwait(false);
-
-        public static async Task<int> DeleteAsync<TEntity, TId>(this IEnumerable<TEntity> lst) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            var rtn = 0;
-            var tableRepositories = lst.ToList();
-            foreach (var tableRepository in tableRepositories.Where(x => x != null))
-                rtn += await tableRepository.DeleteAsync().ConfigureAwait(false);
-            return rtn;
-        }
-
-        public static TEntity FindByRowNum<TEntity>(this IEnumerable<TEntity> lst, long rowNum)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.FindByRowNum<TEntity, long>(rowNum);
-
-        public static TEntity FindByRowNum<TEntity, TId>(this IEnumerable<TEntity> lst, long rowNum) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            return (lst == null || rowNum <= 0) ? null : (TEntity)lst.FirstOrDefault(item => item.RowNum == rowNum);
-        }
-
-        public static TEntity FindById<TEntity>(this IEnumerable<TEntity> lst, string uniqueId)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.FindById<TEntity, long>(uniqueId);
-
-        public static TEntity FindById<TEntity, TId>(this IEnumerable<TEntity> lst, string uniqueId) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            return (lst == null || string.IsNullOrEmpty(uniqueId)) ? null : (TEntity)lst.FirstOrDefault(item => item.UniqueId == uniqueId);
-        }
-
-        public static TEntity FindByObject<TEntity>(this IEnumerable<TEntity> lst, TEntity obj)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.FindByObject<TEntity, long>(obj);
-
-        public static TEntity FindByObject<TEntity, TId>(this IEnumerable<TEntity> lst, TEntity obj) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            if (obj.RowNum <= 0 && string.IsNullOrEmpty(obj.UniqueId)) return null;
-
-            var tableRepositories = lst.ToList();
-            if (!tableRepositories.Any()) return null;
-
-            var index = tableRepositories.IndexOf(obj);
-            if (index >= 0)
-                return tableRepositories[index];
-
-            return tableRepositories.FirstOrDefault(item => 
-                (obj.RowNum > 0 && item.RowNum == obj.RowNum) || 
-                (!string.IsNullOrEmpty(obj.UniqueId) && item.UniqueId == obj.UniqueId));
-        }
-
-        public static IEnumerable<TEntity> CopyFrom<TEntity>(this IEnumerable<TEntity> lst, IEnumerable<TEntity> lstFrom, IEnumerable<string> ignoreColumns)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.CopyFrom<TEntity, long>(lstFrom, ignoreColumns);
-
-        public static IEnumerable<TEntity> CopyFrom<TEntity, TId>(this IEnumerable<TEntity> lst, IEnumerable<TEntity> lstFrom, IEnumerable<string> ignoreColumns) 
-            where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            var repositories = lst.ToList();
-            var fromRepositories = lstFrom.ToList();
-            if (!fromRepositories.Any()) return repositories;
-
-            if (fromRepositories.Count == 1)
-            {
-                repositories.CopyFrom<TEntity, TId>(fromRepositories[0], ignoreColumns);
-                return repositories;
-            }
-            // if copy multiple items, need copy by same order of from list
-            var lstOrig = new List<TEntity>(repositories);
-            repositories.Clear();
-            foreach (TEntity l in fromRepositories)
-            {
-                if (l == null) continue;
-                var o = l.RowNum > 0
-                    ? lstOrig.FindByRowNum<TEntity, TId>(l.RowNum)
-                    : lstOrig.FindByObject<TEntity, TId>(l);
-                if (o is null) 
-                    o = l;
-
-                o.SetAllowNull(false);
-                repositories.Add(o);
-                o.CopyFrom(l, ignoreColumns);
-            }
-            return repositories;
-        }
-
-        public static IEnumerable<TEntity> CopyFrom<TEntity, TId>(this IEnumerable<TEntity> lst, TEntity obj, IEnumerable<string> ignoreColumns) 
-            where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            if (obj == null) return lst;
-            var repositories = lst.ToList();
-            var o = obj.RowNum > 0
-                ? repositories.FindByRowNum<TEntity, TId>(obj.RowNum)
-                : repositories.FindByObject<TEntity, TId>(obj);
-            if (o == null)
-            {
-                o = new TEntity().SetAllowNull(false);
-                repositories.Add(o);
-            }
-            o.CopyFrom(obj, ignoreColumns);
-            return repositories;
-        }
-
-        public static IEnumerable<TEntity> CopyFrom<TEntity>(this IEnumerable<TEntity> lst, IEnumerable<TEntity> lstFrom)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.CopyFrom<TEntity, long>(lstFrom);
-
-        public static IEnumerable<TEntity> CopyFrom<TEntity, TId>(this IEnumerable<TEntity> lst, IEnumerable<TEntity> lstFrom) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            var repositories = lst.ToList();
-            var fromRepositories = lstFrom.ToList();
-            if (!fromRepositories.Any()) return repositories;
-
-            if (fromRepositories.Count == 1)
-            {
-                repositories.CopyFrom<TEntity, TId>(fromRepositories[0]);
-                return repositories;
-            }
-            // if copy multiple items, need copy by same order of from list
-            var lstOrig = new List<TEntity>(repositories);
-            repositories.Clear();
-            foreach (TEntity l in fromRepositories)
-            {
-                if (l == null) continue;
-                var o = l.RowNum > 0
-                    ? lstOrig.FindByRowNum<TEntity, TId>(l.RowNum)
-                    : lstOrig.FindByObject<TEntity, TId>(l);
-                if (o is null)
-                    o = l;
-
-                o.SetAllowNull(false);
-                repositories.Add(o);
-                o.CopyFrom(l);
-            }
-            return repositories;
-        }
-
-        public static IEnumerable<TEntity> CopyFrom<TEntity, TId>(this IEnumerable<TEntity> lst, TEntity obj) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            if (obj == null) return lst;
-            var repositories = lst.ToList();
-            var o = obj.RowNum > 0
-                ? repositories.FindByRowNum<TEntity, TId>(obj.RowNum)
-                : repositories.FindByObject<TEntity, TId>(obj);
-            if (o == null)
-            {
-                o = new TEntity().SetAllowNull(false);
-                repositories.Add(o);
-            }
-            o.CopyFrom(obj);
-            return repositories;
-        }
-
-        public static TEntity AddOrReplace<TEntity>(this IEnumerable<TEntity> lst, TEntity obj)
-            where TEntity : TableRepository<TEntity, long>, new()
-        {
-            var tableRepositories = lst.ToList();
-            var exist = tableRepositories.FindByObject(obj);
-            if (exist is null)
-                tableRepositories.Add(obj);
-            else
-            {
-                var index = tableRepositories.IndexOf(exist);
-                if (index >= 0)
-                    tableRepositories[index] = obj;
-            }
-            return obj;
-        }
-
-        public static IEnumerable<TEntity> FindNotExistsByRowNum<TEntity>(this IEnumerable<TEntity> lst,
-            IEnumerable<TEntity> lstMatch)
-            where TEntity : TableRepository<TEntity, long>, new()
-        {
-            var tableRepositories = lst.ToList();
-            return tableRepositories.Where(x => x.RowNum > 0 && lstMatch.FirstOrDefault(m => m.RowNum == x.RowNum) is null);
-        }
-
-        public static TEntity FindBy<TEntity>(this IEnumerable<TEntity> lst, Func<TEntity, bool> predicate)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.FindBy<TEntity, long>(predicate);
-
-        public static TEntity FindBy<TEntity, TId>(this IEnumerable<TEntity> lst, Func<TEntity, bool> predicate) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            return (lst == null) ? null : (TEntity)lst.FirstOrDefault(predicate);
-        }
-
-        public static TEntity AddOrReplaceBy<TEntity>(this IEnumerable<TEntity> lst, TEntity obj, Func<TEntity, bool> predicate)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.AddOrReplaceBy<TEntity, long>(obj, predicate);
-
-        public static TEntity AddOrReplaceBy<TEntity, TId>(this IEnumerable<TEntity> lst, TEntity obj, Func<TEntity, bool> predicate) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            var tableRepositories = lst.ToList();
-            var exist = tableRepositories.FindBy<TEntity, TId>(predicate);
-            if (exist is null)
-                tableRepositories.Add(obj);
-            else
-            {
-                var index = tableRepositories.IndexOf(exist);
-                if (index >= 0)
-                    tableRepositories[index] = obj;
-            }
-            return obj;
-        }
-
-        public static TEntity Remove<TEntity>(this IEnumerable<TEntity> lst, TEntity obj)
-            where TEntity : TableRepository<TEntity, long>, new()
-        {
-            var tableRepositories = lst.ToList();
-            var exist = tableRepositories.FindByObject(obj);
-            if (exist != null)
-                tableRepositories.Remove(exist);
-            return exist;
-        }
-        public static IEnumerable<TEntity> RemoveBy<TEntity>(this IEnumerable<TEntity> lst, Func<TEntity, bool> predicate)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.RemoveBy<TEntity, long>(predicate);
-
-        public static IEnumerable<TEntity> RemoveBy<TEntity, TId>(this IEnumerable<TEntity> lst, Func<TEntity, bool> predicate) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            var tableRepositories = lst.ToList();
-            var removeList = tableRepositories.Where(predicate).ToList();
-            foreach (var remove in removeList)
-                tableRepositories.Remove(remove);
-            return removeList;
-        }
-        public static IEnumerable<TEntity> RemoveEmpty<TEntity>(this IEnumerable<TEntity> lst)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.RemoveBy<TEntity, long>(x => x.IsEmpty);
-
-        public static bool EqualsList<TEntity>(this IEnumerable<TEntity> lst, IEnumerable<TEntity> listOther)
-            where TEntity : TableRepository<TEntity, long>, new()
-            => lst.EqualsList<TEntity, long>(listOther);
-
-        public static bool EqualsList<TEntity, TId>(this IEnumerable<TEntity> lst, IEnumerable<TEntity> listOther) where TEntity : TableRepository<TEntity, TId>, new()
-        {
-            var tableRepositories = lst.ToList();
-            var tableRepositoriesOther = listOther.ToList();
-            if (tableRepositories.Count != tableRepositoriesOther.Count) return false;
-            for (var i = 0; i < tableRepositories.Count; i++)
-            {
-                if (!tableRepositories[i].Equals(tableRepositoriesOther[i]))
-                    return false;
-            }
-            return true;
-        }
-
-    }
-}
+} 

@@ -1,0 +1,25 @@
+﻿<#
+    WriteLine($"{new String('\t',indent)}protected virtual void Write{child.Table.Name}(IList<{child.Table.Name}> data, IList<{child.Table.DtoName}> dto)");
+    WriteLine($"{new String('\t',indent)}{{");
+    WriteLine($"{new String('\t',indent+1)}if (data is null || dto is null)");
+    WriteLine($"{new String('\t',indent+2)}return;");
+    WriteLine($"");
+    WriteLine($"{new String('\t',indent+1)}dto.Clear();");
+
+    WriteLine($"");
+    WriteLine($"{new String('\t',indent+1)}#region write all list items and properties with null");
+    WriteLine($"");
+    WriteLine($"{new String('\t',indent+1)}foreach (var itemData in data)");
+    WriteLine($"{new String('\t',indent+1)}{{");
+    WriteLine($"{new String('\t',indent+2)}if (itemData is null) continue;");
+    WriteLine($"{new String('\t',indent+2)}var obj = new {child.Table.DtoName}();");
+    WriteLine($"{new String('\t',indent+2)}dto.Add(obj);");
+    WriteLine($"{new String('\t',indent+2)}Write{child.Table.Name}(itemData, obj);");
+
+    WriteLine($"{new String('\t',indent+1)}}}");
+    WriteLine($"");
+    WriteLine($"{new String('\t',indent+1)}#endregion write all list items and properties with null");
+
+    WriteLine($"{new String('\t',indent+1)}return;");
+    WriteLine($"{new String('\t',indent)}}}");
+#>

@@ -15,6 +15,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class InvoiceService
     {
 
+        public override InvoiceService Init()
+        {
+            base.Init();
+            SetDtoMapper(new InvoiceDataDtoMapperDefault());
+            SetCalculator(new InvoiceServiceCalculatorDefault());
+            AddValidator(new InvoiceServiceValidatorDefault());
+            return this;
+        }
     }
 }
 

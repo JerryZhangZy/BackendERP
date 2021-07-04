@@ -142,20 +142,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual void CopyChildrenFrom(InvoiceItemsAttributes data)
         {
+            if (data is null) return;
             return;
         }
 
-		public IEnumerable<InvoiceItemsAttributes> FindByInvoiceUuid(string invoiceUuid)
+		public IList<InvoiceItemsAttributes> FindByInvoiceUuid(string invoiceUuid)
 		{
-			return dbFactory.Find<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ", invoiceUuid);
+			return dbFactory.Find<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ", invoiceUuid).ToList();
 		}
 		public long CountByInvoiceUuid(string invoiceUuid)
 		{
 			return dbFactory.Count<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ", invoiceUuid);
 		}
-		public async Task<IEnumerable<InvoiceItemsAttributes>> FindByAsyncInvoiceUuid(string invoiceUuid)
+		public async Task<IList<InvoiceItemsAttributes>> FindByAsyncInvoiceUuid(string invoiceUuid)
 		{
-			return await dbFactory.FindAsync<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ", invoiceUuid);
+			return (await dbFactory.FindAsync<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ", invoiceUuid)).ToList();
 		}
 		public async Task<long> CountByAsyncInvoiceUuid(string invoiceUuid)
 		{

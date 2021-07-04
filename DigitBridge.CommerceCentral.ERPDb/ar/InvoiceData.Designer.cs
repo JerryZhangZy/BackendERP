@@ -91,9 +91,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			InvoiceHeader?.Clear(); 
 			InvoiceHeaderInfo?.Clear(); 
 			InvoiceHeaderAttributes?.Clear(); 
-			InvoiceItems = Enumerable.Empty<InvoiceItems>(); 
+			InvoiceItems = new List<InvoiceItems>(); 
 			ClearInvoiceItemsDeleted(); 
-			InvoiceItemsAttributes = Enumerable.Empty<InvoiceItemsAttributes>(); 
+			InvoiceItemsAttributes = new List<InvoiceItemsAttributes>(); 
 			ClearOthers(); 
 			if (_OnClear != null)
 				_OnClear(this);
@@ -127,7 +127,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
 			var newData = new InvoiceData(); 
 			newData.New(); 
-			newData.CopyFrom(this); 
+			newData?.CopyFrom(this); 
 			newData.InvoiceHeader.ClearMetaData(); 
 			newData.InvoiceHeaderInfo.ClearMetaData(); 
 			newData.InvoiceHeaderAttributes.ClearMetaData(); 
@@ -171,17 +171,32 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override bool Save()
         {
-			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return false; 
-			CheckIntegrity(); 
+			if (InvoiceHeader is null || string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return false; 
+			CheckIntegrity();
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
-			dbFactory.Begin(); 
-			InvoiceHeader.SetDataBaseFactory(dbFactory); 
-			if (!InvoiceHeader.Save()) return false; 
-			InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).Save(); 
-			InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).Save(); 
-			InvoiceItems.SetDataBaseFactory(dbFactory).Save(); 
-			InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).Save(); 
+			dbFactory.Begin();
+			InvoiceHeader.SetDataBaseFactory(dbFactory);
+			if (!InvoiceHeader.Save()) return false;
+
+			if (InvoiceHeaderInfo != null) 
+				InvoiceHeaderInfo.SetDataBaseFactory(dbFactory)?.Save();
+
+			if (InvoiceHeaderAttributes != null) 
+				InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory)?.Save();
+
+			if (InvoiceItems != null) 
+				InvoiceItems.SetDataBaseFactory(dbFactory)?.Save();
+			var delInvoiceItems = _InvoiceItemsDeleted;
+			if (delInvoiceItems != null)
+				delInvoiceItems.SetDataBaseFactory(dbFactory)?.Delete();
+
+			if (InvoiceItemsAttributes != null) 
+				InvoiceItemsAttributes.SetDataBaseFactory(dbFactory)?.Save();
+			var delChildrenInvoiceItemsAttributes = InvoiceItemsAttributesDeleted;
+			if (delChildrenInvoiceItemsAttributes != null)
+				delChildrenInvoiceItemsAttributes.SetDataBaseFactory(dbFactory)?.Delete();
+
 			if (_OnSave != null)
 			{
 				if (!_OnSave(dbFactory, this))
@@ -198,16 +213,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override bool Delete()
         {
-			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return false; 
+			if (InvoiceHeader is null || string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return false; 
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
 			InvoiceHeader.SetDataBaseFactory(dbFactory); 
 			if (InvoiceHeader.Delete() <= 0) return false; 
-			InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).Delete(); 
-			InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).Delete(); 
-			InvoiceItems.SetDataBaseFactory(dbFactory).Delete(); 
-			InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).Delete(); 
+			if (InvoiceHeaderInfo != null) 
+				InvoiceHeaderInfo?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			if (InvoiceHeaderAttributes != null) 
+				InvoiceHeaderAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			if (InvoiceItems != null) 
+				InvoiceItems?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			if (InvoiceItemsAttributes != null) 
+				InvoiceItemsAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -257,17 +276,31 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override async Task<bool> SaveAsync()
         {
-			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return false; 
+			if (InvoiceHeader is null || string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return false; 
 			CheckIntegrity(); 
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin(); 
 			InvoiceHeader.SetDataBaseFactory(dbFactory); 
-			if (!(await InvoiceHeader.SaveAsync())) return false; 
-			await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync(); 
-			await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
-			await InvoiceItems.SetDataBaseFactory(dbFactory).SaveAsync(); 
-			await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
+			if (!(await InvoiceHeader.SaveAsync().ConfigureAwait(false))) return false; 
+			if (InvoiceHeaderInfo != null) 
+				await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+
+			if (InvoiceHeaderAttributes != null) 
+				await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+
+			if (InvoiceItems != null) 
+				await InvoiceItems.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+			var delInvoiceItems = _InvoiceItemsDeleted;
+			if (delInvoiceItems != null)
+				await delInvoiceItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+
+			if (InvoiceItemsAttributes != null) 
+				await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+			var delInvoiceItemsAttributes = InvoiceItemsAttributesDeleted;
+			if (delInvoiceItemsAttributes != null)
+				await delInvoiceItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+
 			if (_OnSave != null)
 			{
 				if (!_OnSave(dbFactory, this))
@@ -284,16 +317,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override async Task<bool> DeleteAsync()
         {
-			if (string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return false; 
+			if (InvoiceHeader is null || string.IsNullOrEmpty(InvoiceHeader.InvoiceUuid)) return false; 
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
 			InvoiceHeader.SetDataBaseFactory(dbFactory); 
-			if ((await InvoiceHeader.DeleteAsync()) <= 0) return false; 
-			await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync(); 
-			await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
-			await InvoiceItems.SetDataBaseFactory(dbFactory).DeleteAsync(); 
-			await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			if ((await InvoiceHeader.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			if (InvoiceHeaderInfo != null) 
+				await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			if (InvoiceHeaderAttributes != null) 
+				await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			if (InvoiceItems != null) 
+				await InvoiceItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			if (InvoiceItemsAttributes != null) 
+				await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -324,7 +361,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         public virtual void CopyInvoiceHeaderFrom(InvoiceData data) => 
-            InvoiceHeader.CopyFrom(data.InvoiceHeader, new string[] {"InvoiceUuid"});
+            InvoiceHeader?.CopyFrom(data.InvoiceHeader, new string[] {"InvoiceUuid"});
 
         public virtual InvoiceHeader NewInvoiceHeader() => new InvoiceHeader(dbFactory).SetParent(this);
 
@@ -370,7 +407,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         public virtual void CopyInvoiceHeaderInfoFrom(InvoiceData data) => 
-            InvoiceHeaderInfo.CopyFrom(data.InvoiceHeaderInfo, new string[] {"InvoiceUuid"});
+            InvoiceHeaderInfo?.CopyFrom(data.InvoiceHeaderInfo, new string[] {"InvoiceUuid"});
 
         public virtual InvoiceHeaderInfo NewInvoiceHeaderInfo() => new InvoiceHeaderInfo(dbFactory).SetParent(this);
 
@@ -425,7 +462,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         public virtual void CopyInvoiceHeaderAttributesFrom(InvoiceData data) => 
-            InvoiceHeaderAttributes.CopyFrom(data.InvoiceHeaderAttributes, new string[] {"InvoiceUuid"});
+            InvoiceHeaderAttributes?.CopyFrom(data.InvoiceHeaderAttributes, new string[] {"InvoiceUuid"});
 
         public virtual InvoiceHeaderAttributes NewInvoiceHeaderAttributes() => new InvoiceHeaderAttributes(dbFactory).SetParent(this);
 
@@ -469,7 +506,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region InvoiceItems - Generated 
         // One to many children
-        protected IEnumerable<InvoiceItems> _InvoiceItemsDeleted;
+        protected IList<InvoiceItems> _InvoiceItemsDeleted;
         public virtual InvoiceItems AddInvoiceItemsDeleted(InvoiceItems del) 
         {
             if (_InvoiceItemsDeleted is null)
@@ -480,7 +517,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return del;
         } 
 
-        public virtual IEnumerable<InvoiceItems> AddInvoiceItemsDeleted(IEnumerable<InvoiceItems> del) 
+        public virtual IList<InvoiceItems> AddInvoiceItemsDeleted(IList<InvoiceItems> del) 
         {
             if (_InvoiceItemsDeleted is null)
                 _InvoiceItemsDeleted = new List<InvoiceItems>();
@@ -490,16 +527,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return del;
         } 
 
-        public virtual void SetInvoiceItemsDeleted(IEnumerable<InvoiceItems> del) =>
+        public virtual void SetInvoiceItemsDeleted(IList<InvoiceItems> del) =>
             _InvoiceItemsDeleted = del;
 
         public virtual void ClearInvoiceItemsDeleted() =>
             _InvoiceItemsDeleted = null;
 
 
-        protected IEnumerable<InvoiceItems> _InvoiceItems;
+        protected IList<InvoiceItems> _InvoiceItems;
 
-        public virtual IEnumerable<InvoiceItems> InvoiceItems 
+        public virtual IList<InvoiceItems> InvoiceItems 
         { 
             get 
             {
@@ -522,14 +559,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual void CopyInvoiceItemsFrom(InvoiceData data) 
         {
-            InvoiceItems.CopyFrom(data.InvoiceItems, new string[] {"InvoiceUuid"});
-            var lst = InvoiceItems.ToList(); 
-            var lstDeleted = lst.FindNotExistsByRowNum(data.InvoiceItems);
+            if  (data is null) return;
+            var lstDeleted = InvoiceItems?.CopyFrom(data.InvoiceItems, new string[] {"InvoiceUuid"});
             SetInvoiceItemsDeleted(lstDeleted);
-            foreach (var remove in lstDeleted)
-                lst.Remove(remove);
-            foreach (var c in lst)
-                c.CopyChildrenFrom(data.InvoiceItems.FindByRowNum(c.RowNum));
+            foreach (var c in InvoiceItems)
+                c?.CopyChildrenFrom(data.InvoiceItems?.FindByRowNum(c.RowNum));
         } 
 
         public virtual InvoiceItems NewInvoiceItems() => new InvoiceItems(dbFactory);
@@ -538,31 +572,31 @@ namespace DigitBridge.CommerceCentral.ERPDb
             InvoiceItems.AddOrReplace(obj.SetParent(this));
 
         public virtual InvoiceItems RemoveInvoiceItems(InvoiceItems obj) => 
-            AddInvoiceItemsDeleted(InvoiceItems.Remove(obj.SetParent(this)));
+            AddInvoiceItemsDeleted(InvoiceItems.RemoveObject(obj.SetParent(this)));
 
-        public virtual IEnumerable<InvoiceItems> GetInvoiceItemsByInvoiceUuid(string InvoiceUuid) =>
+        public virtual IList<InvoiceItems> GetInvoiceItemsByInvoiceUuid(string InvoiceUuid) =>
             (string.IsNullOrEmpty(InvoiceUuid)) 
                 ? null 
                 : dbFactory.Find<InvoiceItems>("WHERE InvoiceUuid = @0 ORDER BY Seq ", InvoiceUuid).ToList();
 
-        public virtual bool SaveInvoiceItems(IEnumerable<InvoiceItems> data) =>
+        public virtual bool SaveInvoiceItems(IList<InvoiceItems> data) =>
             (data is null) ? false : data.Save();
 
-        public virtual int DeleteInvoiceItems(IEnumerable<InvoiceItems> data) =>
+        public virtual int DeleteInvoiceItems(IList<InvoiceItems> data) =>
             (data is null) ? 0 : data.Delete();
 
-        public virtual async Task<IEnumerable<InvoiceItems>> GetInvoiceItemsByInvoiceUuidAsync(string InvoiceUuid) =>
+        public virtual async Task<IList<InvoiceItems>> GetInvoiceItemsByInvoiceUuidAsync(string InvoiceUuid) =>
             (string.IsNullOrEmpty(InvoiceUuid)) 
                 ? null
-                : await dbFactory.FindAsync<InvoiceItems>("WHERE InvoiceUuid = @0 ORDER BY Seq ", InvoiceUuid);
+                : (await dbFactory.FindAsync<InvoiceItems>("WHERE InvoiceUuid = @0 ORDER BY Seq ", InvoiceUuid)).ToList();
 
-        public virtual async Task<bool> SaveInvoiceItemsAsync(IEnumerable<InvoiceItems> data) =>
+        public virtual async Task<bool> SaveInvoiceItemsAsync(IList<InvoiceItems> data) =>
             (data is null) ? false : await data.SaveAsync();
 
-        public virtual async Task<int> DeleteInvoiceItemsAsync(IEnumerable<InvoiceItems> data) =>
+        public virtual async Task<int> DeleteInvoiceItemsAsync(IList<InvoiceItems> data) =>
             (data is null) ? 0 : await data.DeleteAsync();
 
-        public virtual IEnumerable<InvoiceItems> CheckIntegrityInvoiceItems()
+        public virtual IList<InvoiceItems> CheckIntegrityInvoiceItems()
         {
             if (InvoiceItems is null || InvoiceHeader is null) 
                 return InvoiceItems;
@@ -586,13 +620,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region InvoiceItemsAttributes - Generated 
         // grand children
-        protected IEnumerable<InvoiceItemsAttributes> _InvoiceItemsAttributes;
+        protected IList<InvoiceItemsAttributes> _InvoiceItemsAttributes;
 
-        protected IEnumerable<InvoiceItemsAttributes> InvoiceItemsAttributes 
+        protected IList<InvoiceItemsAttributes> InvoiceItemsAttributes 
         { 
             get 
             {
-                _InvoiceItemsAttributes = InvoiceItems is null ? null : InvoiceItems.SelectMany(x => x.GetChildrenInvoiceItemsAttributes());
+                _InvoiceItemsAttributes = InvoiceItems is null ? null : InvoiceItems.SelectMany(x => x.GetChildrenInvoiceItemsAttributes()).ToList();
                 return _InvoiceItemsAttributes;
             } 
             set
@@ -604,29 +638,54 @@ namespace DigitBridge.CommerceCentral.ERPDb
             } 
         }
 
-        public virtual IEnumerable<InvoiceItemsAttributes> GetInvoiceItemsAttributesByInvoiceUuid(string InvoiceUuid) =>
+        protected IList<InvoiceItemsAttributes> InvoiceItemsAttributesDeleted 
+        { 
+            get 
+            {
+                var deleted = new List<InvoiceItemsAttributes>();
+                if (_InvoiceItemsDeleted != null)
+                {
+                    var del = _InvoiceItemsDeleted
+                            .Where(x => x?.GetChildrenInvoiceItemsAttributes() != null)
+                            .SelectMany(x => x?.GetChildrenInvoiceItemsAttributes());
+                    if (del.Any())
+                        deleted.AddRange(del.ToList());
+                }
+                if (InvoiceItems != null)
+                {
+                    var delChildren = InvoiceItems
+                                    .Where(x => x?.GetChildrenDeletedInvoiceItemsAttributes() != null)
+                                    .SelectMany(x => x?.GetChildrenDeletedInvoiceItemsAttributes());
+                    if (delChildren.Any())
+                        deleted.AddRange(delChildren.ToList());
+                }
+                return deleted;
+            } 
+        }
+
+        public virtual IList<InvoiceItemsAttributes> GetInvoiceItemsAttributesByInvoiceUuid(string InvoiceUuid) =>
             (string.IsNullOrEmpty(InvoiceUuid)) 
                 ? null 
-                : dbFactory.Find<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ORDER BY RowNum ", InvoiceUuid);
+                : dbFactory.Find<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ORDER BY RowNum ", InvoiceUuid).ToList();
 
-        public virtual bool SaveInvoiceItemsAttributes(IEnumerable<InvoiceItemsAttributes> data) =>
+        public virtual bool SaveInvoiceItemsAttributes(IList<InvoiceItemsAttributes> data) =>
             (data is null) ? false : data.Save();
 
-        public virtual int DeleteInvoiceItemsAttributes(IEnumerable<InvoiceItemsAttributes> data) =>
+        public virtual int DeleteInvoiceItemsAttributes(IList<InvoiceItemsAttributes> data) =>
             (data is null) ? 0 : data.Delete();
 
-        public virtual async Task<IEnumerable<InvoiceItemsAttributes>> GetInvoiceItemsAttributesByInvoiceUuidAsync(string InvoiceUuid) =>
+        public virtual async Task<IList<InvoiceItemsAttributes>> GetInvoiceItemsAttributesByInvoiceUuidAsync(string InvoiceUuid) =>
             (string.IsNullOrEmpty(InvoiceUuid)) 
                 ? null
-                : await dbFactory.FindAsync<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ORDER BY RowNum ", InvoiceUuid);
+                : (await dbFactory.FindAsync<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ORDER BY RowNum ", InvoiceUuid)).ToList();
 
-        public virtual async Task<bool> SaveInvoiceItemsAttributesAsync(IEnumerable<InvoiceItemsAttributes> data) =>
+        public virtual async Task<bool> SaveInvoiceItemsAttributesAsync(IList<InvoiceItemsAttributes> data) =>
             (data is null) ? false : await data.SaveAsync();
 
-        public virtual async Task<int> DeleteInvoiceItemsAttributesAsync(IEnumerable<InvoiceItemsAttributes> data) =>
+        public virtual async Task<int> DeleteInvoiceItemsAttributesAsync(IList<InvoiceItemsAttributes> data) =>
             (data is null) ? 0 : await data.DeleteAsync();
 
-        public virtual IEnumerable<InvoiceItemsAttributes> CheckIntegrityInvoiceItemsAttributes()
+        public virtual IList<InvoiceItemsAttributes> CheckIntegrityInvoiceItemsAttributes()
         {
             if (InvoiceItemsAttributes is null || InvoiceHeader is null) 
                 return InvoiceItemsAttributes;

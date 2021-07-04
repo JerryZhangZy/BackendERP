@@ -1,4 +1,5 @@
 ﻿using DigitBridge.Base.Common;
+using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using System;
 using System.Collections.Generic;
@@ -7,16 +8,28 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public interface IService<TService, TEntity>
-        where TService : ServiceBase<TService, TEntity>
+    public interface IService<TService, TEntity, TDto>
+        where TService : ServiceBase<TService, TEntity, TDto>
         where TEntity : StructureRepository<TEntity>, new()
-
+        where TDto : class, new()
     {
+
+        TService Init();
         IDataBaseFactory dbFactory { get; }
         TService SetDataBaseFactory(IDataBaseFactory dbFactory);
 
         TEntity Data { get; }
         ProcessingMode ProcessMode { get; set; }
+
+        IDtoMapper<TEntity, TDto> DtoMapper { get; }
+        void SetDtoMapper(IDtoMapper<TEntity, TDto> mapper);
+
+        ICalculator<TEntity> Calculator { get; }
+        void SetCalculator(ICalculator<TEntity> calculator);
+
+        IList<IValidator<TEntity>> Validators { get; }
+        void AddValidator(IValidator<TEntity> validator);
+
 
         TService Clear();
         TService AttachData(TEntity data);
@@ -25,15 +38,40 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         TService ClearData();
         TEntity CloneData();
 
-        bool Get(long RowNum);
+        TDto ToDto();
+        TDto ToDto(TEntity data);
+        TEntity FromDto(TDto dto);
+        TEntity FromDto(TEntity data, TDto dto);
 
-        bool GetById(string id);
-        bool Save();
+
+        bool Calculate();
+        bool Validate();
+
+        bool GetData(long RowNum);
+        bool GetDataById(string id);
+        bool SaveData();
+        bool DeleteData();
+        Task<bool> GetDataAsync(long RowNum);
+        Task<bool> GetDataByIdAsync(string id);
+        Task<bool> SaveDataAsync();
+        Task<bool> DeleteDataAsync();
+
+
+        bool Add();
+        bool Edit();
+        bool Edit(long RowNum);
+        bool Edit(string id);
+        Task<bool> EditAsync(long RowNum);
+        Task<bool> EditAsync(string id);
+        bool List();
+        bool List(string id);
+        Task<bool> ListAsync(long RowNum);
+        Task<bool> ListAsync(string id);
         bool Delete();
-        Task<bool> GetAsync(long RowNum);
-        Task<bool> GetByIdAsync(string id);
-        Task<bool> SaveAsync();
-        Task<bool> DeleteAsync();
+        bool Delete(long RowNum);
+        bool Delete(string id);
+        Task<bool> DeleteAsync(long RowNum);
+        Task<bool> DeleteAsync(string id);
 
     }
 }

@@ -126,6 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual void CopyChildrenFrom(InvoiceHeaderAttributes data)
         {
+            if (data is null) return;
             return;
         }
 

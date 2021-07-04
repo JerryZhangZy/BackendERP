@@ -1213,6 +1213,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual void CopyChildrenFrom(InvoiceHeaderInfo data)
         {
+            if (data is null) return;
             return;
         }
 

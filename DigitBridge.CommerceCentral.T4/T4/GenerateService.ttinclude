@@ -27,7 +27,7 @@ namespace <#= NamespaceService #>
     /// Represents a <#= ServiceName #>.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class <#= ServiceName #> : ServiceBase<<#= ServiceName #>, <#= StructureClass.ClassName #>>, I<#= ServiceName #>
+    public partial class <#= ServiceName #> : ServiceBase<<#= ServiceName #>, <#= StructureClass.ClassName #>, <#= StructureDtoName #>>, I<#= ServiceName #>
     {
         public <#= ServiceName #>() : base() {}
         public <#= ServiceName #>(IDataBaseFactory dbFactory): base(dbFactory) {}

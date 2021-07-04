@@ -32,9 +32,9 @@
     [NetWeight]          DECIMAL (10, 2) CONSTRAINT [DF_ProductBasic_NetWeight] DEFAULT ((0.00)) NOT NULL,
     [GrossWeight]        DECIMAL (6, 2)  CONSTRAINT [DF_ProductBasic_GrossWeight] DEFAULT ((0.00)) NOT NULL,
     [WeightUnit]         TINYINT         CONSTRAINT [DF_ProductBasic_WeightUnit] DEFAULT ((0)) NULL,
-    [ProductHeight]      DECIMAL (10, 2) CONSTRAINT [DF_ProductBasic_ProductHeight] DEFAULT ((0.00)) NOT NULL,
-    [ProductLength]      DECIMAL (10, 2) CONSTRAINT [DF_ProductBasic_ProductLength] DEFAULT ((0.00)) NOT NULL,
-    [ProductWidth]       DECIMAL (10, 2) CONSTRAINT [DF_ProductBasic_ProductWidth] DEFAULT ((0.00)) NOT NULL,
+    [ProductHeight]    DECIMAL (10, 2) CONSTRAINT [DF_ProductBasic_ProductHeight] DEFAULT ((0.00)) NOT NULL, -- Change column name
+    [ProductLength]    DECIMAL (10, 2) CONSTRAINT [DF_ProductBasic_ProductLength] DEFAULT ((0.00)) NOT NULL, -- Change column name
+    [ProductWidth]     DECIMAL (10, 2) CONSTRAINT [DF_ProductBasic_ProductWidth] DEFAULT ((0.00)) NOT NULL,  -- Change column name
     [BoxHeight]          DECIMAL (6, 2)  CONSTRAINT [DF_ProductBasic_BoxHeight] DEFAULT ((0.00)) NOT NULL,
     [BoxLength]          DECIMAL (6, 2)  CONSTRAINT [DF_ProductBasic_BoxLength] DEFAULT ((0.00)) NOT NULL,
     [BoxWidth]           DECIMAL (6, 2)  CONSTRAINT [DF_ProductBasic_BoxWidth] DEFAULT ((0.00)) NOT NULL,
@@ -49,25 +49,24 @@
     [UpdateDate]         DATETIME        CONSTRAINT [DF_ProductBasic_UpdateDate] DEFAULT (getutcdate()) NULL,
     [ClassificationNum]  BIGINT          CONSTRAINT [DF_ProductBasic_ClassificationNum] DEFAULT ((0)) NULL,
 
+    -- Add new Columns
+
+	[StyleCode] Varchar(100) NOT NULL DEFAULT '', --Product SKU Item No 
+	[ColorPatternCode] Varchar(50) NOT NULL DEFAULT '',--Product SKU Color Code 
+	[SizeType] Varchar(50) NOT NULL DEFAULT '',--Product SKU. Ex: Regular, Plus 
+	[SizeCode] Varchar(50) NOT NULL DEFAULT '',--Product SKU size code
+	[WidthCode] Varchar(30) NOT NULL DEFAULT '',--Product SKU width code
+	[LengthCode] Varchar(30) NOT NULL DEFAULT '',--Product SKU Length code
+
+	[ClassCode] Varchar(50) NOT NULL DEFAULT '',--Product SKU Class  
+	[DepartmentCode] Varchar(50) NOT NULL DEFAULT '',--Product SKU department
+	[DivisionCode] Varchar(50) NOT NULL DEFAULT '',--Product SKU department
+
+	[PriceRule] Varchar(50) NOT NULL DEFAULT '',--Product SKU 
+	[Stockable] TINYINT NOT NULL DEFAULT 0,--Product Handel Stock 
+    [OriginalUPC] VARCHAR (20) NOT NULL DEFAULT '',
+
     [ProductUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for product SKU
-
-	[StyleCode] Varchar(100) NOT NULL,--Product SKU Item No 
-	[Color] Varchar(50) NOT NULL,--Product SKU Color Code 
-	[SizeType] Varchar(50) NOT NULL,--Product SKU. Ex: Regular, Plus 
-	[SizeSystem] Varchar(50) NOT NULL,--Product SKU size code
-	[Size] Varchar(50) NOT NULL,--Product SKU size code
-	[Width] Varchar(50) NOT NULL,--Product SKU width code
-	[Length] Varchar(50) NOT NULL,--Product SKU Length code
-
-	[ClassCode] Varchar(50) NOT NULL,--Product SKU Class  
-	[Department] Varchar(50) NOT NULL,--Product SKU department
-	[Division] Varchar(50) NOT NULL,--Product SKU department
-	[Year] Varchar(20) NOT NULL,
-
-	[PriceRule] Varchar(50) NOT NULL,--Product SKU 
-	[Stockable] Varchar(100) NOT NULL,--Product SKU 
-	[LeadDay] Int NOT NULL,--Product SKU processing days before ship
-
     CONSTRAINT [PK_ProductBasic] PRIMARY KEY CLUSTERED ([CentralProductNum] ASC)
 );
 GO
@@ -90,4 +89,34 @@ EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'None =0 ; B
 GO
 
 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'Item=0 ; Child =1 ; Parent =2', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProductBasic', @level2type = N'COLUMN', @level2name = N'ProductType';
+GO
+
+
+
+ALTER TABLE ProductBasic ADD [StyleCode] Varchar(100) NOT NULL DEFAULT '' 
+GO
+ALTER TABLE ProductBasic ADD [ColorPatternCode] Varchar(50) NOT NULL DEFAULT ''
+GO
+ALTER TABLE ProductBasic ADD [SizeType] Varchar(50) NOT NULL DEFAULT ''
+GO
+ALTER TABLE ProductBasic ADD [SizeCode] Varchar(50) NOT NULL DEFAULT ''
+GO
+ALTER TABLE ProductBasic ADD [WidthCode] Varchar(30) NOT NULL DEFAULT ''
+GO
+ALTER TABLE ProductBasic ADD [LengthCode] Varchar(30) NOT NULL DEFAULT ''
+GO
+ALTER TABLE ProductBasic ADD [ClassCode] Varchar(50) NOT NULL DEFAULT ''
+GO
+ALTER TABLE ProductBasic ADD [DepartmentCode] Varchar(50) NOT NULL DEFAULT ''
+GO
+ALTER TABLE ProductBasic ADD [DivisionCode] Varchar(50) NOT NULL DEFAULT ''
+GO
+ALTER TABLE ProductBasic ADD [PriceRule] Varchar(50) NOT NULL DEFAULT ''
+GO
+ALTER TABLE ProductBasic ADD [Stockable] TINYINT NOT NULL DEFAULT 0
+GO
+ALTER TABLE ProductBasic ADD [OriginalUPC] VARCHAR (20) NOT NULL DEFAULT ''
+GO
+
+ALTER TABLE ProductBasic ADD [ProductUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50)))
 GO

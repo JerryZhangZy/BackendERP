@@ -9,12 +9,60 @@
       <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\GenerateServiceValidator.ttinclude">
+      <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServiceCalculator.ttinclude">
+      <LastGenOutput>GenerateServiceCalculator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\GenerateServiceInterface.ttinclude">
       <LastGenOutput>GenerateService.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateService.ttinclude">
-      <LastGenOutput>GenerateStructureDto.cs</LastGenOutput>
+      <LastGenOutput>GenerateServiceCalculator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\ReadDtoGrandChildren.ttinclude">
+      <LastGenOutput>ReadDtoGrandChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\ReadDtoGrandChildrenMethod.ttinclude">
+      <LastGenOutput>ReadDtoGrandChildrenMethod.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\ReadDtoListChildren.ttinclude">
+      <LastGenOutput>ReadDtoListChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\ReadDtoObjectChildren.ttinclude">
+      <LastGenOutput>ReadDtoListChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureDtoMapper-Bak.ttinclude">
+      <LastGenOutput>GenerateStructureDtoMapper.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\WriteDtoGrandChildren.ttinclude">
+      <LastGenOutput>WriteDtoGrandChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\WriteDtoGrandChildrenMethod.ttinclude">
+      <LastGenOutput>WriteDtoGrandChildrenMethod.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\WriteDtoListChildren.ttinclude">
+      <LastGenOutput>WriteDtoGrandChildrenMethod.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\WriteDtoObjectChildren.ttinclude">
+      <LastGenOutput>WriteDtoObjectChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureDtoTest.ttinclude">
+      <LastGenOutput>GenerateStructureDtoTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateStructureDtoMapper.ttinclude">
@@ -74,7 +122,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateStructure.ttinclude">
-      <LastGenOutput>GenerateService.cs</LastGenOutput>
+      <LastGenOutput>GenerateStructure.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepositoryPartialClass.ttinclude">
@@ -82,7 +130,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepository.ttinclude">
-      <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
+      <LastGenOutput>GenerateRepository.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepositoryTest.ttinclude">
@@ -109,20 +157,145 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DataAccess.tt</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateRepository.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateRepositoryDto.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateRepositoryTest.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepositoryTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateServiceCalculator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceCalculator.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateServicePartial.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServicePartial.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateServiceTest.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateServiceValidator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceValidator.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructureDtoMapper - Copy.cs">
+      <DependentUpon>GenerateStructureDtoMapper.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="T4\GenerateStructureDtoMapper.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureDtoMapper.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\ReadDtoGrandChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoGrandChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\ReadDtoGrandChildrenMethod.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoGrandChildrenMethod.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructureDtoTest.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureDtoTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructure.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructureGrandChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureGrandChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructureOneToManyChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureOneToManyChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructureOneToOneChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureOneToOneChildren.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\ReadDtoListChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoListChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\StructureWriteDtoObject - Copy - Copy %282%29.cs">
+      <DependentUpon>StructureWriteDtoObject - Copy.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\StructureWriteDtoObject - Copy - Copy - Copy.cs">
+      <DependentUpon>StructureWriteDtoObject - Copy - Copy.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\StructureWriteDtoObject - Copy - Copy.cs">
+      <DependentUpon>StructureWriteDtoObject - Copy.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\StructureWriteDtoObject - Copy.cs">
+      <DependentUpon>WriteDtoObjectChildren.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\WriteDtoGrandChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WriteDtoGrandChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\WriteDtoGrandChildrenMethod.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WriteDtoGrandChildrenMethod.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\WriteDtoObject - Copy %282%29.cs">
+      <DependentUpon>WriteDtoObjectChildren.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\WriteDtoObject - Copy - Copy.cs">
+      <DependentUpon>WriteDtoObject - Copy.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\WriteDtoObject - Copy.cs">
+      <DependentUpon>WriteDtoObjectChildren.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\WriteDtoObjectChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WriteDtoObjectChildren.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 

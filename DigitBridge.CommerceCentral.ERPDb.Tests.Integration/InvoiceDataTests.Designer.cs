@@ -116,6 +116,8 @@ WHERE itm.cnt > 0
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
+            Save_Test();
+
             var id = DataBaseFactory.GetValue<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 
 FROM InvoiceHeader ins 
@@ -132,7 +134,7 @@ WHERE itm.cnt > 0
 
             var dataUpdate = GetFakerData();
             dataUpdate.SetDataBaseFactory(DataBaseFactory);
-            data.CopyFrom(dataUpdate);
+            data?.CopyFrom(dataUpdate);
             data.Save();
 
             var dataGetById = new InvoiceData(DataBaseFactory);
@@ -150,6 +152,8 @@ WHERE itm.cnt > 0
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
         {
+            Save_Test();
+
             var id = DataBaseFactory.GetValue<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 
 FROM InvoiceHeader ins 
@@ -197,6 +201,8 @@ WHERE itm.cnt > 0
         //[Fact(Skip = SkipReason)]
         public async Task GetAsync_Test()
         {
+            await SaveAsync_Test();
+
             var id = await DataBaseFactory.GetValueAsync<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 
 FROM InvoiceHeader ins 
@@ -213,7 +219,7 @@ WHERE itm.cnt > 0
 
             var dataUpdate = GetFakerData();
             dataUpdate.SetDataBaseFactory(DataBaseFactory);
-            data.CopyFrom(dataUpdate);
+            data?.CopyFrom(dataUpdate);
             await data.SaveAsync();
 
             var dataGetById = new InvoiceData(DataBaseFactory);
@@ -231,6 +237,8 @@ WHERE itm.cnt > 0
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
+            await SaveAsync_Test();
+
             var id = await DataBaseFactory.GetValueAsync<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 
 FROM InvoiceHeader ins 

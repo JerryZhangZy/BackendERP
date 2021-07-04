@@ -1,0 +1,25 @@
+﻿<#
+    // generate single object read method for all children
+    WriteLine($"{new String('\t',indent)}protected virtual void Read{child.Table.Name}({child.Table.Name} data, {child.Table.DtoName} dto)");
+    WriteLine($"{new String('\t',indent)}{{");
+    WriteLine($"{new String('\t',indent+1)}if (data is null || dto is null)");
+    WriteLine($"{new String('\t',indent+2)}return;");
+
+    // generate all properties
+    WriteLine($"");
+    WriteLine($"{new String('\t',indent+1)}#region read all not null properties");
+    WriteLine($"");
+    foreach(var col in child.Table.Columns)
+    { 
+        if (col.ignoreGenerate) continue;
+        WriteLine($"{new String('\t',indent+1)}if (dto.Has{col.propertyName}) data.{col.propertyName} = dto.{col.propertyName}{col.ConvertPropertyTypeDtoToData};");
+    }
+    WriteLine($"");
+    WriteLine($"{new String('\t',indent+1)}#endregion read properties");
+    WriteLine($"");
+#>
+<#@ include file="ReadDtoGrandChildren.ttinclude" #>
+<#
+    WriteLine($"{new String('\t',indent+1)}return;");
+    WriteLine($"{new String('\t',indent)}}}");
+#>

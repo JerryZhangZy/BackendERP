@@ -1,11 +1,11 @@
 ﻿        // grand children
-        protected IEnumerable<<#= child.Table.Name #>> _<#= child.Table.Name #>;
+        protected IList<<#= child.Table.Name #>> _<#= child.Table.Name #>;
 
-        protected IEnumerable<<#= child.Table.Name #>> <#= child.Table.Name #> 
+        protected IList<<#= child.Table.Name #>> <#= child.Table.Name #> 
         { 
             get 
             {
-                _<#= child.Table.Name #> = InvoiceItems is null ? null : <#= child.ParentTable.Name #>.SelectMany(x => x.GetChildren<#= child.Table.Name #>());
+                _<#= child.Table.Name #> = InvoiceItems is null ? null : <#= child.ParentTable.Name #>.SelectMany(x => x.GetChildren<#= child.Table.Name #>()).ToList();
                 return _<#= child.Table.Name #>;
             } 
             set
@@ -17,33 +17,58 @@
             } 
         }
 
-        public virtual IEnumerable<<#= child.Table.Name #>> Get<#= child.Table.Name #>By<#= StructureClass.MainTable.UniqueKey #>(string <#= StructureClass.MainTable.UniqueKey #>) =>
+        protected IList<<#= child.Table.Name #>> <#= child.Table.Name #>Deleted 
+        { 
+            get 
+            {
+                var deleted = new List<<#= child.Table.Name #>>();
+                if (_<#= child.ParentTable.Name #>Deleted != null)
+                {
+                    var del = _<#= child.ParentTable.Name #>Deleted
+                            .Where(x => x?.GetChildren<#= child.Table.Name #>() != null)
+                            .SelectMany(x => x?.GetChildren<#= child.Table.Name #>());
+                    if (del.Any())
+                        deleted.AddRange(del.ToList());
+                }
+                if (<#= child.ParentTable.Name #> != null)
+                {
+                    var delChildren = <#= child.ParentTable.Name #>
+                                    .Where(x => x?.GetChildrenDeleted<#= child.Table.Name #>() != null)
+                                    .SelectMany(x => x?.GetChildrenDeleted<#= child.Table.Name #>());
+                    if (delChildren.Any())
+                        deleted.AddRange(delChildren.ToList());
+                }
+                return deleted;
+            } 
+        }
+
+        public virtual IList<<#= child.Table.Name #>> Get<#= child.Table.Name #>By<#= StructureClass.MainTable.UniqueKey #>(string <#= StructureClass.MainTable.UniqueKey #>) =>
             (string.IsNullOrEmpty(<#= StructureClass.MainTable.UniqueKey #>)) 
                 ? null 
-                : dbFactory.Find<<#= child.Table.Name #>>("WHERE <#= StructureClass.MainTable.UniqueKey #> = @0 ORDER BY <#= child.Table.CheckColumnNameOrRowNum("Seq") #> ", <#= StructureClass.MainTable.UniqueKey #>);
+                : dbFactory.Find<<#= child.Table.Name #>>("WHERE <#= StructureClass.MainTable.UniqueKey #> = @0 ORDER BY <#= child.Table.CheckColumnNameOrRowNum("Seq") #> ", <#= StructureClass.MainTable.UniqueKey #>).ToList();
 
-        public virtual bool Save<#= child.Table.Name #>(IEnumerable<<#= child.Table.Name #>> data) =>
+        public virtual bool Save<#= child.Table.Name #>(IList<<#= child.Table.Name #>> data) =>
             (data is null) ? false : data.Save();
 
-        public virtual int Delete<#= child.Table.Name #>(IEnumerable<<#= child.Table.Name #>> data) =>
+        public virtual int Delete<#= child.Table.Name #>(IList<<#= child.Table.Name #>> data) =>
             (data is null) ? 0 : data.Delete();
 
-        public virtual async Task<IEnumerable<<#= child.Table.Name #>>> Get<#= child.Table.Name #>By<#= StructureClass.MainTable.UniqueKey #>Async(string <#= StructureClass.MainTable.UniqueKey #>) =>
+        public virtual async Task<IList<<#= child.Table.Name #>>> Get<#= child.Table.Name #>By<#= StructureClass.MainTable.UniqueKey #>Async(string <#= StructureClass.MainTable.UniqueKey #>) =>
             (string.IsNullOrEmpty(<#= StructureClass.MainTable.UniqueKey #>)) 
                 ? null
-                : await dbFactory.FindAsync<<#= child.Table.Name #>>("WHERE <#= StructureClass.MainTable.UniqueKey #> = @0 ORDER BY <#= child.Table.CheckColumnNameOrRowNum("Seq") #> ", <#= StructureClass.MainTable.UniqueKey #>);
+                : (await dbFactory.FindAsync<<#= child.Table.Name #>>("WHERE <#= StructureClass.MainTable.UniqueKey #> = @0 ORDER BY <#= child.Table.CheckColumnNameOrRowNum("Seq") #> ", <#= StructureClass.MainTable.UniqueKey #>)).ToList();
 
-        public virtual async Task<bool> Save<#= child.Table.Name #>Async(IEnumerable<<#= child.Table.Name #>> data) =>
+        public virtual async Task<bool> Save<#= child.Table.Name #>Async(IList<<#= child.Table.Name #>> data) =>
             (data is null) ? false : await data.SaveAsync();
 
-        public virtual async Task<int> Delete<#= child.Table.Name #>Async(IEnumerable<<#= child.Table.Name #>> data) =>
+        public virtual async Task<int> Delete<#= child.Table.Name #>Async(IList<<#= child.Table.Name #>> data) =>
             (data is null) ? 0 : await data.DeleteAsync();
 
 <#
     if (child.Table.Name != StructureClass.MainTable.Name)
     {
 #>
-        public virtual IEnumerable<<#= child.Table.Name #>> CheckIntegrity<#= child.Table.Name #>()
+        public virtual IList<<#= child.Table.Name #>> CheckIntegrity<#= child.Table.Name #>()
         {
             if (<#= child.Table.Name #> is null || <#= StructureClass.MainTable.Name #> is null) 
                 return <#= child.Table.Name #>;
