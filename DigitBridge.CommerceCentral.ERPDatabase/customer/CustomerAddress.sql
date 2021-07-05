@@ -39,7 +39,7 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[CustomerAddress]') AND name = N'UI_CustomerAddress_AddressId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_CustomerAddress_AddressUuid] ON [dbo].[CustomerAddress]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_CustomerAddress_AddressUuid] ON [dbo].[CustomerAddress]
 (
 	[AddressUuid] ASC
 ) ON [PRIMARY]
