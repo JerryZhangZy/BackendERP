@@ -70,10 +70,10 @@ namespace <#= NamespaceServiceTest #>
 		{
             var srv = new <#= ServiceName #>(DataBaseFactory);
             srv.AttachData(GetFakerData());
-			srv.Save();
+			srv.SaveData();
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
-            srvGet.GetById(srv.Data.UniqueId);
+            srvGet.GetDataById(srv.Data.UniqueId);
             var result = srv.Data.Equals(srvGet.Data);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -88,18 +88,18 @@ namespace <#= NamespaceServiceTest #>
 <#@ include file="SelectFirstUniqueId.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
-            srv.GetById(id);
+            srv.GetDataById(id);
             var rowNum = srv.Data.<#= StructureClass.MainTable.Name #>.RowNum;
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
-            srv.Save();
+            srv.SaveData();
 
             var srvGetById = new <#= ServiceName #>(DataBaseFactory);
-            srvGetById.GetById(id);
+            srvGetById.GetDataById(id);
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
-            srvGet.Get(rowNum);
+            srvGet.GetData(rowNum);
 
             var result = srv.Data.Equals(srvGet.Data) && srvGet.Data.Equals(srvGetById.Data);
 
@@ -115,7 +115,7 @@ namespace <#= NamespaceServiceTest #>
 <#@ include file="SelectFirstUniqueId.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
-            srv.GetById(id);
+            srv.GetDataById(id);
             srv.Delete();
 
             var result = DataBaseFactory.ExistUniqueId<<#= StructureClass.MainTable.Name #>>(srv.Data.UniqueId);
@@ -133,10 +133,10 @@ namespace <#= NamespaceServiceTest #>
 		{
             var srv = new <#= ServiceName #>(DataBaseFactory);
             srv.AttachData(GetFakerData());
-			await srv.SaveAsync();
+			await srv.SaveDataAsync();
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
-            await srvGet.GetByIdAsync(srv.Data.UniqueId);
+            await srvGet.GetDataByIdAsync(srv.Data.UniqueId);
             var result = srv.Data.Equals(srvGet.Data);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -151,18 +151,18 @@ namespace <#= NamespaceServiceTest #>
 <#@ include file="SelectFirstUniqueIdAsync.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
-            await srv.GetByIdAsync(id);
+            await srv.GetDataByIdAsync(id);
             var rowNum = srv.Data.<#= StructureClass.MainTable.Name #>.RowNum;
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
-            await srv.SaveAsync();
+            await srv.SaveDataAsync();
 
             var srvGetById = new <#= ServiceName #>(DataBaseFactory);
-            await srvGetById.GetByIdAsync(id);
+            await srvGetById.GetDataByIdAsync(id);
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
-            await srvGet.GetAsync(rowNum);
+            await srvGet.GetDataAsync(rowNum);
 
             var result = srv.Data.Equals(srvGet.Data) && srvGet.Data.Equals(srvGetById.Data);
 
@@ -178,8 +178,8 @@ namespace <#= NamespaceServiceTest #>
 <#@ include file="SelectFirstUniqueIdAsync.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
-            await srv.GetByIdAsync(id);
-            await srv.DeleteAsync();
+            await srv.GetDataByIdAsync(id);
+            await srv.DeleteDataAsync();
 
             var result = DataBaseFactory.ExistUniqueId<<#= StructureClass.MainTable.Name #>>(srv.Data.UniqueId);
 
