@@ -54,7 +54,7 @@ namespace <#= NamespaceStructure #>
                 {
                     WriteLine($"{new String('\t',indent+2)}data.{child.Table.Name} = new List<{child.Table.Name}>();");
                     WriteLine($"{new String('\t',indent+1)}var deleted = Read{child.Table.Name}(data.{child.Table.Name}, dto.{child.Table.Name});");
-                    WriteLine($"{new String('\t',indent+1)}data.SetInvoiceItemsDeleted(deleted);");
+                    WriteLine($"{new String('\t',indent+1)}data.Set{child.Table.Name}Deleted(deleted);");
                 }
                 WriteLine($"{new String('\t',indent)}}}");
             }
