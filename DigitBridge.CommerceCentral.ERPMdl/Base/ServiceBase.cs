@@ -15,8 +15,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         where TEntity : StructureRepository<TEntity>, new()
         where TDto : class, new()
     {
-        public ServiceBase() 
-        { 
+        public ServiceBase()
+        {
             ProcessMode = ProcessingMode.List;
             Init();
         }
@@ -87,11 +87,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected IList<IValidator<TEntity>> _Validators;
         [XmlIgnore, JsonIgnore]
         public virtual IList<IValidator<TEntity>> Validators => _Validators;
-        public virtual void AddValidator(IValidator<TEntity> validator) => _Validators.Add(validator);
 
         #endregion Properties
 
         #region Methods
+
+        public virtual void AddValidator(IValidator<TEntity> validator)
+        {
+            if (_Validators == null)
+                _Validators = new List<IValidator<TEntity>>();
+            _Validators.Add(validator);
+        }
+
         public virtual TService Clear()
         {
             ProcessMode = ProcessingMode.List;
@@ -388,7 +395,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!Delete())
                 return false;
-            if ( !(await GetDataAsync(RowNum).ConfigureAwait(false)) )
+            if (!(await GetDataAsync(RowNum).ConfigureAwait(false)))
                 return false;
             return await DeleteDataAsync().ConfigureAwait(false);
         }
