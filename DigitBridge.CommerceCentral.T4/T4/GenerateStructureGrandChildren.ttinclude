@@ -5,7 +5,7 @@
         { 
             get 
             {
-                _<#= child.Table.Name #> = child.ParentTable.Name is null ? null : <#= child.ParentTable.Name #>.SelectMany(x => x.GetChildren<#= child.Table.Name #>()).ToList();
+                _<#= child.Table.Name #> = <#= child.ParentTable.Name #> is null ? null : <#= child.ParentTable.Name #>.SelectMany(x => x.GetChildren<#= child.Table.Name #>()).ToList();
                 return _<#= child.Table.Name #>;
             } 
             set
