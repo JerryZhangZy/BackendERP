@@ -13,6 +13,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         bool IsValid { get; set; }
         IList<string> Messages { get; set; }
         void Clear();
+
         bool Validate(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
+        Task<bool> ValidateAsync(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
     }
 }

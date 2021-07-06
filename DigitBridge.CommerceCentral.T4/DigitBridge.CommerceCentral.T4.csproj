@@ -18,7 +18,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateServiceInterface.ttinclude">
-      <LastGenOutput>GenerateService.cs</LastGenOutput>
+      <LastGenOutput>GenerateServiceInterface.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateService.ttinclude">
@@ -161,6 +161,36 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateServiceCalculator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceCalculator.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateServiceInterface.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceInterface.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateServicePartial.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServicePartial.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateServiceTest.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateServiceTestPartial.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceTestPartial.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateServiceValidator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceValidator.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateStructureDtoMapper.cs">
       <DesignTime>True</DesignTime>

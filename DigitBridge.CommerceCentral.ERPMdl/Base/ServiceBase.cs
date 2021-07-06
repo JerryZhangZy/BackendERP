@@ -10,6 +10,35 @@ using DigitBridge.CommerceCentral.ERPDb;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
+    /// <summary>
+    /// Service base class for all services inheritance.
+    /// </summary>
+    /// <remarks>
+    /// Derived class must specify Service, data and Dto class Type
+    /// Derived class should set instance for interface:
+    /// See <see cref="DigitBridge.CommerceCentral.YoPoco.IDataBaseFactory"/> to instance DataBaseFactory.
+    /// See <see cref="DigitBridge.CommerceCentral.ERPDb.IDtoMapper<TEntity, TDto>"/> to instance DtoMapper.
+    /// See <see cref="DigitBridge.CommerceCentral.ERPMdl.ICalculator<TEntity>"/> to instance Calculator.
+    /// See <see cref="DigitBridge.CommerceCentral.ERPMdl.IValidator<TEntity>"/> to instance Validator.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// public partial class InvoiceService : ServiceBase<InvoiceService, InvoiceData, InvoiceDataDto>, IInvoiceService
+    /// {
+    ///     public InvoiceService() : base() { }
+    ///     public InvoiceService(IDataBaseFactory dbFactory) : base(dbFactory) { }
+    ///
+    ///     public override InvoiceService Init()
+    ///     {
+    ///         base.Init();
+    ///         SetDtoMapper(new InvoiceDataDtoMapperDefault());
+    ///         SetCalculator(new InvoiceServiceCalculatorDefault());
+    ///         AddValidator(new InvoiceServiceValidatorDefault());
+    ///         return this;
+    ///     }
+    /// }
+    /// </code>
+    /// </example>
     public abstract partial class ServiceBase<TService, TEntity, TDto> : IService<TService, TEntity, TDto>
         where TService : ServiceBase<TService, TEntity, TDto>
         where TEntity : StructureRepository<TEntity>, new()
@@ -17,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public ServiceBase()
         {
-            ProcessMode = ProcessingMode.List;
+            _ProcessMode = ProcessingMode.List;
             Init();
         }
         public ServiceBase(
@@ -66,8 +95,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion DataBase
 
         #region Properties
+        protected ProcessingMode _ProcessMode;
+        /// <summary>
+        /// The processing mode for current service.
+        /// Gnerally do not change  ProcessMode directlly, use Add(), Edit(), List() or Delete() method to set processing mode.
+        /// </summary>
         [XmlIgnore, JsonIgnore]
-        public virtual ProcessingMode ProcessMode { get; set; }
+        public virtual ProcessingMode ProcessMode => _ProcessMode;
+        public virtual void SetProcessMode(ProcessingMode mode) => _ProcessMode = mode;
 
         protected TEntity _data;
         [XmlIgnore, JsonIgnore]
@@ -90,6 +125,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion Properties
 
+        #region Event Callback Methods
+
+        public virtual void OnClear(TEntity data) { }
+        public virtual bool OnAfterLoad(TEntity data) => true;
+        public virtual bool OnBeforeSave(TEntity data) => true;
+        public virtual bool OnSave(IDataBaseFactory dataBaseFactory, TEntity data) => true;
+        public virtual bool OnAfterSave(TEntity data) => true;
+        public virtual bool OnBeforeDelete(IDataBaseFactory dataBaseFactory, TEntity data) => true;
+        public virtual bool OnDelete(TEntity data) => true;
+        public virtual bool OnAfterDelete(TEntity data) => true;
+        public virtual bool OnException(Exception ex) => true;
+
+        #endregion Event Callback Methods
+
         #region Methods
 
         public virtual void AddValidator(IValidator<TEntity> validator)
@@ -99,9 +148,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _Validators.Add(validator);
         }
 
+        protected virtual void InitDataObject()
+        {
+            if (_data is null)
+                return;
+            _data.SetDataBaseFactory(dbFactory);
+            _data.OnClear(OnClear);
+            _data.OnAfterLoad(OnAfterLoad);
+            _data.OnBeforeSave(OnBeforeSave);
+            _data.OnSave(OnSave);
+            _data.OnAfterSave(OnAfterSave);
+            _data.OnBeforeDelete(OnBeforeDelete);
+            _data.OnDelete(OnDelete);
+            _data.OnAfterDelete(OnAfterDelete);
+            _data.OnException(OnException);
+            return;
+        }
+
         public virtual TService Clear()
         {
-            ProcessMode = ProcessingMode.List;
+            _ProcessMode = ProcessingMode.List;
             ClearData();
             return (TService)this;
         }
@@ -109,7 +175,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual TService AttachData(TEntity data)
         {
             _data = data;
-            _data?.SetDataBaseFactory(dbFactory);
+            InitDataObject();
             return (TService)this;
         }
         public virtual TService DetachData(TEntity data)
@@ -120,7 +186,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual TService NewData()
         {
             _data = new TEntity();
-            _data.SetDataBaseFactory(dbFactory);
+            InitDataObject();
             _data.New();
             return (TService)this;
         }
@@ -168,6 +234,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return Calculator.Calculate(Data, ProcessMode);
         }
 
+        public virtual async Task<bool> CalculateAsync()
+        {
+            if (Data is null || Calculator is null)
+                return false;
+            return await Calculator.CalculateAsync(Data, ProcessMode).ConfigureAwait(false);
+        }
+
         public virtual bool Validate()
         {
             if (Data is null || Validators is null || Validators.Count == 0)
@@ -175,6 +248,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             foreach (var validator in Validators)
             {
                 if (!validator.Validate(Data, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+
+        public virtual async Task<bool> ValidateAsync()
+        {
+            if (Data is null || Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!(await validator.ValidateAsync(Data, ProcessMode).ConfigureAwait(false)))
                     return false;
             }
             return true;
@@ -261,7 +346,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual bool Add()
         {
-            ProcessMode = ProcessingMode.Add;
+            _ProcessMode = ProcessingMode.Add;
             NewData();
             ClearData();
             return true;
@@ -274,7 +359,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual bool Edit()
         {
-            ProcessMode = ProcessingMode.Edit;
+            _ProcessMode = ProcessingMode.Edit;
             ClearData();
             return true;
         }
@@ -323,7 +408,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual bool List()
         {
-            ProcessMode = ProcessingMode.List;
+            _ProcessMode = ProcessingMode.List;
             ClearData();
             return true;
         }
@@ -362,7 +447,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual bool Delete()
         {
-            ProcessMode = ProcessingMode.Delete;
+            _ProcessMode = ProcessingMode.Delete;
             ClearData();
             return true;
         }

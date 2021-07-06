@@ -34,12 +34,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
+        public virtual async Task<bool> CalculateAsync(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            return true;
+        }
+
         public virtual bool CalculateSummary(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             return true;
         }
 
+        public virtual async Task<bool> CalculateSummaryAsync(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            return true;
+        }
+
         public virtual bool CalculateDetail(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            return true;
+        }
+
+        public virtual async Task<bool> CalculateDetailAsync(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             return true;
         }

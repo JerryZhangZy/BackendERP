@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Threading.Tasks;
+
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -16,6 +18,9 @@ namespace <#= NamespaceService #>
     public partial class <#= ServiceName #>
     {
 
+        /// <summary>
+        /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
+        /// </summary>
         public override <#= ServiceName #> Init()
         {
             base.Init();
@@ -24,6 +29,82 @@ namespace <#= NamespaceService #>
             AddValidator(new <#= ServiceName #>ValidatorDefault());
             return this;
         }
+
+
+        /// <summary>
+        /// Add new data from Dto object
+        /// </summary>
+        public virtual bool Add(<#= StructureDtoName #> dto)
+        {
+            if (dto is null) 
+                return false;
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(dto);
+            // validate data for Add processing
+            if (!Validate())
+                return false;
+
+            return SaveData();
+        }
+
+        /// <summary>
+        /// Add new data from Dto object
+        /// </summary>
+        public virtual async Task<bool> AddAsync(<#= StructureDtoName #> dto)
+        {
+            if (dto is null)
+                return false;
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(dto);
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+
+            return await SaveDataAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Update data from Dto object.
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
+        /// </summary>
+        public virtual bool Update(<#= StructureDtoName #> dto)
+        {
+            if (dto is null || !dto.Has<#= StructureClass.MainTable.Name #> || dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong() <= 0)
+                return false;
+            // set Add mode and clear data
+            Edit(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong());
+            // load data from dto
+            FromDto(dto);
+            // validate data for Add processing
+            if (!Validate())
+                return false;
+
+            return SaveData();
+        }
+
+        /// <summary>
+        /// Update data from Dto object
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
+        /// </summary>
+        public virtual async Task<bool> UpdateAsync(<#= StructureDtoName #> dto)
+        {
+            if (dto is null || !dto.Has<#= StructureClass.MainTable.Name #> || dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong() <= 0)
+                return false;
+            // set Add mode and clear data
+            await EditAsync(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong()).ConfigureAwait(false);
+            // load data from dto
+            FromDto(dto);
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+
+            return await SaveDataAsync();
+        }
+
     }
 }
 

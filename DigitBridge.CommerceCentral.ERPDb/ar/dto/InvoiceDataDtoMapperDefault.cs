@@ -103,6 +103,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasUnitCost) data.UnitCost = dto.UnitCost.ToDecimal();
 			if (dto.HasAvgCost) data.AvgCost = dto.AvgCost.ToDecimal();
 			if (dto.HasLotCost) data.LotCost = dto.LotCost.ToDecimal();
+			if (dto.HasInvoiceSourceCode) data.InvoiceSourceCode = dto.InvoiceSourceCode;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -398,6 +399,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.UnitCost = data.UnitCost;
 			dto.AvgCost = data.AvgCost;
 			dto.LotCost = data.LotCost;
+			dto.InvoiceSourceCode = data.InvoiceSourceCode;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;

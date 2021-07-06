@@ -19,7 +19,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         TService SetDataBaseFactory(IDataBaseFactory dbFactory);
 
         TEntity Data { get; }
-        ProcessingMode ProcessMode { get; set; }
+        ProcessingMode ProcessMode { get; }
+        void SetProcessMode(ProcessingMode mode);
 
         IDtoMapper<TEntity, TDto> DtoMapper { get; }
         void SetDtoMapper(IDtoMapper<TEntity, TDto> mapper);
@@ -29,6 +30,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         IList<IValidator<TEntity>> Validators { get; }
         void AddValidator(IValidator<TEntity> validator);
+
+        void OnClear(TEntity data);
+        bool OnAfterLoad(TEntity data);
+        bool OnBeforeSave(TEntity data);
+        bool OnSave(IDataBaseFactory dataBaseFactory, TEntity data);
+        bool OnAfterSave(TEntity data);
+        bool OnBeforeDelete(IDataBaseFactory dataBaseFactory, TEntity data);
+        bool OnDelete(TEntity data);
+        bool OnAfterDelete(TEntity data);
+        bool OnException(Exception ex);
 
 
         TService Clear();
@@ -45,7 +56,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
         bool Calculate();
+        Task<bool> CalculateAsync();
+
         bool Validate();
+        Task<bool> ValidateAsync();
 
         bool GetData(long RowNum);
         bool GetDataById(string id);

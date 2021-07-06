@@ -19,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Xunit;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.Base.Utility;
+using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -67,14 +68,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         [Fact()]
 		//[Fact(Skip = SkipReason)]
-		public void Save_Test()
+		public void SaveData_Test()
 		{
             var srv = new InvoiceService(DataBaseFactory);
+            srv.Add();
             srv.AttachData(GetFakerData());
-			srv.Save();
+			srv.SaveData();
 
             var srvGet = new InvoiceService(DataBaseFactory);
-            srvGet.GetById(srv.Data.UniqueId);
+            srvGet.Edit();
+            srvGet.GetDataById(srv.Data.UniqueId);
             var result = srv.Data.Equals(srvGet.Data);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -82,9 +85,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public void Get_Test()
+        public void GetData_Test()
         {
-            Save_Test();
+            SaveData_Test();
 
             var id = DataBaseFactory.GetValue<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 
@@ -97,18 +100,21 @@ WHERE itm.cnt > 0
 
 
             var srv = new InvoiceService(DataBaseFactory);
-            srv.GetById(id);
+            srv.Edit();
+            srv.GetDataById(id);
             var rowNum = srv.Data.InvoiceHeader.RowNum;
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
-            srv.Save();
+            srv.SaveData();
 
             var srvGetById = new InvoiceService(DataBaseFactory);
-            srvGetById.GetById(id);
+            srvGetById.List();
+            srvGetById.GetDataById(id);
 
             var srvGet = new InvoiceService(DataBaseFactory);
-            srvGet.Get(rowNum);
+            srvGet.List();
+            srvGet.GetData(rowNum);
 
             var result = srv.Data.Equals(srvGet.Data) && srvGet.Data.Equals(srvGetById.Data);
 
@@ -117,9 +123,9 @@ WHERE itm.cnt > 0
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public void Delete_Test()
+        public void DeleteData_Test()
         {
-            Save_Test();
+            SaveData_Test();
 
             var id = DataBaseFactory.GetValue<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 
@@ -132,8 +138,9 @@ WHERE itm.cnt > 0
 
 
             var srv = new InvoiceService(DataBaseFactory);
-            srv.GetById(id);
             srv.Delete();
+            srv.GetDataById(id);
+            srv.DeleteData();
 
             var result = DataBaseFactory.ExistUniqueId<InvoiceHeader>(srv.Data.UniqueId);
 
@@ -146,14 +153,16 @@ WHERE itm.cnt > 0
 
         [Fact()]
 		//[Fact(Skip = SkipReason)]
-		public async Task SaveAsync_Test()
+		public async Task SaveDataAsync_Test()
 		{
             var srv = new InvoiceService(DataBaseFactory);
+            srv.Add();
             srv.AttachData(GetFakerData());
-			await srv.SaveAsync();
+			await srv.SaveDataAsync();
 
             var srvGet = new InvoiceService(DataBaseFactory);
-            await srvGet.GetByIdAsync(srv.Data.UniqueId);
+            srvGet.Edit();
+            await srvGet.GetDataByIdAsync(srv.Data.UniqueId);
             var result = srv.Data.Equals(srvGet.Data);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -161,9 +170,9 @@ WHERE itm.cnt > 0
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task GetAsync_Test()
+        public async Task GetDataAsync_Test()
         {
-            await SaveAsync_Test();
+            await SaveDataAsync_Test();
 
             var id = await DataBaseFactory.GetValueAsync<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 
@@ -176,18 +185,21 @@ WHERE itm.cnt > 0
 
 
             var srv = new InvoiceService(DataBaseFactory);
-            await srv.GetByIdAsync(id);
+            srv.Edit();
+            await srv.GetDataByIdAsync(id);
             var rowNum = srv.Data.InvoiceHeader.RowNum;
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
-            await srv.SaveAsync();
+            await srv.SaveDataAsync();
 
             var srvGetById = new InvoiceService(DataBaseFactory);
-            await srvGetById.GetByIdAsync(id);
+            srvGetById.List();
+            await srvGetById.GetDataByIdAsync(id);
 
             var srvGet = new InvoiceService(DataBaseFactory);
-            await srvGet.GetAsync(rowNum);
+            srvGet.List();
+            await srvGet.GetDataAsync(rowNum);
 
             var result = srv.Data.Equals(srvGet.Data) && srvGet.Data.Equals(srvGetById.Data);
 
@@ -196,9 +208,9 @@ WHERE itm.cnt > 0
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task DeleteAsync_Test()
+        public async Task DeleteDataAsync_Test()
         {
-            await SaveAsync_Test();
+            await SaveDataAsync_Test();
 
             var id = await DataBaseFactory.GetValueAsync<InvoiceHeader, string>(@"
 SELECT TOP 1 ins.InvoiceUuid 
@@ -211,8 +223,9 @@ WHERE itm.cnt > 0
 
 
             var srv = new InvoiceService(DataBaseFactory);
-            await srv.GetByIdAsync(id);
-            await srv.DeleteAsync();
+            srv.Delete();
+            await srv.GetDataByIdAsync(id);
+            await srv.DeleteDataAsync();
 
             var result = DataBaseFactory.ExistUniqueId<InvoiceHeader>(srv.Data.UniqueId);
 

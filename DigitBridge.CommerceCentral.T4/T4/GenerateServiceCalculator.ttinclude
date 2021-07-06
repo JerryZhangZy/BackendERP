@@ -45,6 +45,22 @@ namespace <#= NamespaceService #>
             return true;
         }
 
+
+        public virtual async Task<bool> CalculateAsync(<#= StructureClass.ClassName #> data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            return true;
+        }
+
+        public virtual async Task<bool> CalculateSummaryAsync(<#= StructureClass.ClassName #> data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            return true;
+        }
+
+        public virtual async Task<bool> CalculateDetailAsync(<#= StructureClass.ClassName #> data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            return true;
+        }
+
     }
 }
 

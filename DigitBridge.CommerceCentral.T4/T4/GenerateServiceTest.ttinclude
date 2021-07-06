@@ -67,14 +67,15 @@ namespace <#= NamespaceServiceTest #>
 
         [Fact()]
 		//[Fact(Skip = SkipReason)]
-		public void Save_Test()
+		public void SaveData_Test()
 		{
             var srv = new <#= ServiceName #>(DataBaseFactory);
+            srv.Add();
             srv.AttachData(GetFakerData());
-            srv.ProcessMode= ProcessingMode.Add;
 			srv.SaveData();
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
+            srvGet.Edit();
             srvGet.GetDataById(srv.Data.UniqueId);
             var result = srv.Data.Equals(srvGet.Data);
 
@@ -83,25 +84,27 @@ namespace <#= NamespaceServiceTest #>
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public void Get_Test()
+        public void GetData_Test()
         {
-            Save_Test();
+            SaveData_Test();
 
 <#@ include file="SelectFirstUniqueId.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
+            srv.Edit();
             srv.GetDataById(id);
             var rowNum = srv.Data.<#= StructureClass.MainTable.Name #>.RowNum;
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
-            srv.ProcessMode= ProcessingMode.Edit;
             srv.SaveData();
 
             var srvGetById = new <#= ServiceName #>(DataBaseFactory);
+            srvGetById.List();
             srvGetById.GetDataById(id);
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
+            srvGet.List();
             srvGet.GetData(rowNum);
 
             var result = srv.Data.Equals(srvGet.Data) && srvGet.Data.Equals(srvGetById.Data);
@@ -111,15 +114,15 @@ namespace <#= NamespaceServiceTest #>
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public void Delete_Test()
+        public void DeleteData_Test()
         {
-            Save_Test();
+            SaveData_Test();
 
 <#@ include file="SelectFirstUniqueId.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
+            srv.Delete();
             srv.GetDataById(id);
-            srv.ProcessMode = ProcessingMode.Delete;
             srv.DeleteData();
 
             var result = DataBaseFactory.ExistUniqueId<<#= StructureClass.MainTable.Name #>>(srv.Data.UniqueId);
@@ -133,14 +136,15 @@ namespace <#= NamespaceServiceTest #>
 
         [Fact()]
 		//[Fact(Skip = SkipReason)]
-		public async Task SaveAsync_Test()
+		public async Task SaveDataAsync_Test()
 		{
             var srv = new <#= ServiceName #>(DataBaseFactory);
+            srv.Add();
             srv.AttachData(GetFakerData());
-            srv.ProcessMode= ProcessingMode.Add;
 			await srv.SaveDataAsync();
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
+            srvGet.Edit();
             await srvGet.GetDataByIdAsync(srv.Data.UniqueId);
             var result = srv.Data.Equals(srvGet.Data);
 
@@ -149,25 +153,27 @@ namespace <#= NamespaceServiceTest #>
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task GetAsync_Test()
+        public async Task GetDataAsync_Test()
         {
-            await SaveAsync_Test();
+            await SaveDataAsync_Test();
 
 <#@ include file="SelectFirstUniqueIdAsync.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
+            srv.Edit();
             await srv.GetDataByIdAsync(id);
             var rowNum = srv.Data.<#= StructureClass.MainTable.Name #>.RowNum;
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
-            srv.ProcessMode= ProcessingMode.Edit;
             await srv.SaveDataAsync();
 
             var srvGetById = new <#= ServiceName #>(DataBaseFactory);
+            srvGetById.List();
             await srvGetById.GetDataByIdAsync(id);
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
+            srvGet.List();
             await srvGet.GetDataAsync(rowNum);
 
             var result = srv.Data.Equals(srvGet.Data) && srvGet.Data.Equals(srvGetById.Data);
@@ -177,15 +183,15 @@ namespace <#= NamespaceServiceTest #>
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task DeleteAsync_Test()
+        public async Task DeleteDataAsync_Test()
         {
-            await SaveAsync_Test();
+            await SaveDataAsync_Test();
 
 <#@ include file="SelectFirstUniqueIdAsync.ttinclude" #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
+            srv.Delete();
             await srv.GetDataByIdAsync(id);
-            srv.ProcessMode = ProcessingMode.Delete;
             await srv.DeleteDataAsync();
 
             var result = DataBaseFactory.ExistUniqueId<<#= StructureClass.MainTable.Name #>>(srv.Data.UniqueId);
