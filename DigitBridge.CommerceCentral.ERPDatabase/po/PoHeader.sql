@@ -33,6 +33,8 @@
 	[MiscTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of handling charge
 	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O total Charg Allowance Amount
 
+	[PoSourceCode] VARCHAR(100) NOT NULL DEFAULT '', --P/O import or create from other entity number, use to prevent import duplicate P/O
+
     [EnterDateUtc] DATETIME NULL,
     [UpdateDateUtc] DATETIME NULL,
     [EnterBy] Varchar(100) NOT NULL,
@@ -57,9 +59,16 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_PoHeader_PoNum] ON [dbo].[PoHeader]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[UI_PoHeader]') AND name = N'UI_PoHeader_VendorID')
-CREATE NONCLUSTERED INDEX [UI_PoHeader_VendorUuid] ON [dbo].[PoHeader]
+CREATE NONCLUSTERED INDEX [IX_PoHeader_VendorUuid] ON [dbo].[PoHeader]
 (
 	[VendorUuid] ASC
+) ON [PRIMARY]
+GO
+
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[UI_PoHeader]') AND name = N'UI_PoHeader_PoSourceCode')
+CREATE NONCLUSTERED INDEX [IX_PoHeader_PoSourceCode] ON [dbo].[PoHeader]
+(
+	[PoSourceCode] ASC
 ) ON [PRIMARY]
 GO
 

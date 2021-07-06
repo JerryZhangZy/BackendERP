@@ -41,6 +41,8 @@
 	[AvgCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Avg.Cost. 
 	[LotCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Lot Cost. 
 
+	[OrderSourceCode] VARCHAR(100) NOT NULL DEFAULT '', --Order import or create from other entity number, use to prevent import duplicate order
+
     [UpdateDateUtc] DATETIME NULL,
     [EnterBy] Varchar(100) NOT NULL,
     [UpdateBy] Varchar(100) NOT NULL,
@@ -72,3 +74,9 @@ CREATE NONCLUSTERED INDEX [IX_OrderHeader_CustomerUuid] ON [dbo].[OrderHeader]
 ) ON [PRIMARY]
 GO
 
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderHeader]') AND name = N'IX_OrderHeader_OrderSourceCode')
+CREATE NONCLUSTERED INDEX [IX_OrderHeader_OrderSourceCode] ON [dbo].[OrderHeader]
+(
+	[OrderSourceCode] ASC
+) ON [PRIMARY]
+GO
