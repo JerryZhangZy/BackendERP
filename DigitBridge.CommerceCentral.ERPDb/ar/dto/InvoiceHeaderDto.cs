@@ -168,6 +168,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasLotCost => LotCost != null;
 
+        [StringLength(100, ErrorMessage = "The InvoiceSourceCode value cannot exceed 100 characters. ")]
+        public string InvoiceSourceCode { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasInvoiceSourceCode => InvoiceSourceCode != null;
+
         [DataType(DataType.DateTime)]
         public DateTime? UpdateDateUtc { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]

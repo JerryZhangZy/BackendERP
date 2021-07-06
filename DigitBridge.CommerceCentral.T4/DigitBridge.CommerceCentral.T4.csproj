@@ -18,7 +18,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateServiceInterface.ttinclude">
-      <LastGenOutput>GenerateService.cs</LastGenOutput>
+      <LastGenOutput>GenerateServiceInterface.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateService.ttinclude">

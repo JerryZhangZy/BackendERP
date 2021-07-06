@@ -153,6 +153,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("LotCost",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _lotCost;
 
+        [Column("InvoiceSourceCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _invoiceSourceCode;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -561,6 +564,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+        public virtual string InvoiceSourceCode
+        {
+            get
+            {
+				return _invoiceSourceCode?.TrimEnd(); 
+            }
+            set
+            {
+				_invoiceSourceCode = value.TruncateTo(100); 
+            }
+        }
+
         public virtual DateTime? UpdateDateUtc
         {
             get
@@ -657,6 +672,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_unitCost = default(decimal); 
 			_avgCost = default(decimal); 
 			_lotCost = default(decimal); 
+			_invoiceSourceCode = String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 

@@ -11,7 +11,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         where TEntity : StructureRepository<TEntity>, new()
     {
         bool Calculate(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
+        Task<bool> CalculateAsync(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
+
         bool CalculateSummary(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
+        Task<bool> CalculateSummaryAsync(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
+
         bool CalculateDetail(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
+        Task<bool> CalculateDetailAsync(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
     }
 }

@@ -40,8 +40,182 @@ namespace <#= NamespaceService #>
         public virtual bool Validate(<#= StructureClass.ClassName #> data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
-            return IsValid;
+            if (!ValidateAllMode(data))
+                return false;
+
+            return processingMode switch
+            {
+                ProcessingMode.Add => ValidateAdd(data),
+                ProcessingMode.Edit => ValidateEdit(data),
+                ProcessingMode.List => false,
+                ProcessingMode.Delete => ValidateDelete(data),
+                ProcessingMode.Void => ValidateDelete(data),
+                ProcessingMode.Cancel => ValidateDelete(data),
+                _ => false,
+            };
         }
+        protected virtual bool ValidateAllMode(<#= StructureClass.ClassName #> data)
+        {
+            var dbFactory = data.dbFactory;
+            if (string.IsNullOrEmpty(data.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>))
+            {
+                IsValid = false;
+                this.Messages.Add($"Unique Id cannot be empty.");
+                return IsValid;
+            }
+            //if (string.IsNullOrEmpty(data.<#= StructureClass.MainTable.Name #>.CustomerUuid))
+            //{
+            //    IsValid = false;
+            //    this.Messages.Add($"Customer cannot be empty.");
+            //    return IsValid;
+            //}
+            return true;
+
+        }
+
+        protected virtual bool ValidateAdd(<#= StructureClass.ClassName #> data)
+        {
+            var dbFactory = data.dbFactory;
+            if (data.InvoiceHeader.RowNum != 0 && dbFactory.Exists<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum))
+            {
+                IsValid = false;
+                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} is duplicate.");
+                return IsValid;
+            }
+            return true;
+
+        }
+
+        protected virtual bool ValidateEdit(<#= StructureClass.ClassName #> data)
+        {
+            var dbFactory = data.dbFactory;
+            if (data.<#= StructureClass.MainTable.Name #>.RowNum == 0)
+            {
+                IsValid = false;
+                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                return IsValid;
+            }
+
+            if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && !dbFactory.Exists<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum))
+            {
+                IsValid = false;
+                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                return IsValid;
+            }
+            return true;
+        }
+
+        protected virtual bool ValidateDelete(<#= StructureClass.ClassName #> data)
+        {
+            var dbFactory = data.dbFactory;
+            if (data.<#= StructureClass.MainTable.Name #>.RowNum == 0)
+            {
+                IsValid = false;
+                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                return IsValid;
+            }
+
+            if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && !dbFactory.Exists<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum))
+            {
+                IsValid = false;
+                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                return IsValid;
+            }
+            return true;
+        }
+
+
+        #region Async Methods
+
+        public virtual async Task<bool> ValidateAsync(<#= StructureClass.ClassName #> data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            Clear();
+            if (!(await ValidateAllModeAsync(data).ConfigureAwait(false)))
+                return false;
+
+            return processingMode switch
+            {
+                ProcessingMode.Add => await ValidateAddAsync(data).ConfigureAwait(false),
+                ProcessingMode.Edit => await ValidateEditAsync(data).ConfigureAwait(false),
+                ProcessingMode.List => false,
+                ProcessingMode.Delete => await ValidateDeleteAsync(data).ConfigureAwait(false),
+                ProcessingMode.Void => await ValidateDeleteAsync(data).ConfigureAwait(false),
+                ProcessingMode.Cancel => await ValidateDeleteAsync(data).ConfigureAwait(false),
+                _ => false,
+            };
+        }
+
+        protected virtual async Task<bool> ValidateAllModeAsync(<#= StructureClass.ClassName #> data)
+        {
+            var dbFactory = data.dbFactory;
+            if (string.IsNullOrEmpty(data.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>))
+            {
+                IsValid = false;
+                this.Messages.Add($"Unique Id cannot be empty.");
+                return IsValid;
+            }
+            //if (string.IsNullOrEmpty(data.<#= StructureClass.MainTable.Name #>.CustomerUuid))
+            //{
+            //    IsValid = false;
+            //    this.Messages.Add($"Customer cannot be empty.");
+            //    return IsValid;
+            //}
+            return true;
+
+        }
+
+        protected virtual async Task<bool> ValidateAddAsync(<#= StructureClass.ClassName #> data)
+        {
+            var dbFactory = data.dbFactory;
+            if (data.InvoiceHeader.RowNum != 0 && (await dbFactory.ExistsAsync<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum)))
+            {
+                IsValid = false;
+                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} is duplicate.");
+                return IsValid;
+            }
+            return true;
+
+        }
+
+        protected virtual async Task<bool> ValidateEditAsync(<#= StructureClass.ClassName #> data)
+        {
+            var dbFactory = data.dbFactory;
+            if (data.<#= StructureClass.MainTable.Name #>.RowNum == 0)
+            {
+                IsValid = false;
+                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                return IsValid;
+            }
+
+            if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && !(await dbFactory.ExistsAsync<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum)))
+            {
+                IsValid = false;
+                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                return IsValid;
+            }
+            return true;
+        }
+
+        protected virtual async Task<bool> ValidateDeleteAsync(<#= StructureClass.ClassName #> data)
+        {
+            var dbFactory = data.dbFactory;
+            if (data.<#= StructureClass.MainTable.Name #>.RowNum == 0)
+            {
+                IsValid = false;
+                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                return IsValid;
+            }
+
+            if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && !(await dbFactory.ExistsAsync<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum)))
+            {
+                IsValid = false;
+                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                return IsValid;
+            }
+            return true;
+        }
+
+        #endregion Async Methods
     }
 }
 

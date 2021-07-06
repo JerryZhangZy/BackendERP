@@ -29,6 +29,13 @@ namespace <#= NamespaceService #>
     /// </summary>
     public interface I<#= ServiceName #> : IService<<#= ServiceName #>, <#= StructureClass.ClassName #>, <#= StructureDtoName #>>
     {
+
+        bool Add(<#= StructureDtoName #> dto);
+        Task<bool> AddAsync(<#= StructureDtoName #> dto);
+        
+        bool Update(<#= StructureDtoName #> dto);
+        Task<bool> UpdateAsync(<#= StructureDtoName #> dto);
+
     }
 }
 

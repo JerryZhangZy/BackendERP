@@ -29,6 +29,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public interface IInvoiceService : IService<InvoiceService, InvoiceData, InvoiceDataDto>
     {
+
+        bool Add(InvoiceDataDto dto);
+        Task<bool> AddAsync(InvoiceDataDto dto);
+        
+        bool Update(InvoiceDataDto dto);
+        Task<bool> UpdateAsync(InvoiceDataDto dto);
+
     }
 }
 

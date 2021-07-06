@@ -40,6 +40,8 @@
 	[AvgCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Avg.Cost. 
 	[LotCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Lot Cost. 
 
+	[InvoiceSourceCode] VARCHAR(100) NOT NULL DEFAULT '', --Invoice import or create from other entity number, use to prevent import duplicate invoice
+
     [UpdateDateUtc] DATETIME NULL,
     [EnterBy] Varchar(100) NOT NULL DEFAULT '',
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '',
@@ -71,3 +73,9 @@ CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_CustomerUuid] ON [dbo].[InvoiceHeade
 ) ON [PRIMARY]
 GO
 
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_InvoiceSourceCode')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_InvoiceSourceCode] ON [dbo].[InvoiceHeader]
+(
+	[InvoiceSourceCode] ASC
+) ON [PRIMARY]
+GO
