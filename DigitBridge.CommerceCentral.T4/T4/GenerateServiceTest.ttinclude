@@ -95,6 +95,7 @@ namespace <#= NamespaceServiceTest #>
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
+            srv.ProcessMode= ProcessingMode.Edit;
             srv.SaveData();
 
             var srvGetById = new <#= ServiceName #>(DataBaseFactory);
@@ -118,7 +119,8 @@ namespace <#= NamespaceServiceTest #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
             srv.GetDataById(id);
-            srv.Delete();
+            srv.ProcessMode = ProcessingMode.Delete;
+            srv.DeleteData();
 
             var result = DataBaseFactory.ExistUniqueId<<#= StructureClass.MainTable.Name #>>(srv.Data.UniqueId);
 
@@ -159,6 +161,7 @@ namespace <#= NamespaceServiceTest #>
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
+            srv.ProcessMode= ProcessingMode.Edit;
             await srv.SaveDataAsync();
 
             var srvGetById = new <#= ServiceName #>(DataBaseFactory);
@@ -182,6 +185,7 @@ namespace <#= NamespaceServiceTest #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
             await srv.GetDataByIdAsync(id);
+            srv.ProcessMode = ProcessingMode.Delete;
             await srv.DeleteDataAsync();
 
             var result = DataBaseFactory.ExistUniqueId<<#= StructureClass.MainTable.Name #>>(srv.Data.UniqueId);
