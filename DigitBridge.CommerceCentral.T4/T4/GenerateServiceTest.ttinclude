@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Xunit;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.Base.Utility;
+using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using <#= NamespaceTest #>;
 using <#= Namespace #>;
@@ -70,6 +71,7 @@ namespace <#= NamespaceServiceTest #>
 		{
             var srv = new <#= ServiceName #>(DataBaseFactory);
             srv.AttachData(GetFakerData());
+            srv.ProcessMode= ProcessingMode.Add;
 			srv.SaveData();
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
@@ -133,6 +135,7 @@ namespace <#= NamespaceServiceTest #>
 		{
             var srv = new <#= ServiceName #>(DataBaseFactory);
             srv.AttachData(GetFakerData());
+            srv.ProcessMode= ProcessingMode.Add;
 			await srv.SaveDataAsync();
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
