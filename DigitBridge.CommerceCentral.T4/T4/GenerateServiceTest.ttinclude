@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Xunit;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.Base.Utility;
+using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using <#= NamespaceTest #>;
 using <#= Namespace #>;
@@ -70,6 +71,7 @@ namespace <#= NamespaceServiceTest #>
 		{
             var srv = new <#= ServiceName #>(DataBaseFactory);
             srv.AttachData(GetFakerData());
+            srv.ProcessMode= ProcessingMode.Add;
 			srv.SaveData();
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
@@ -93,6 +95,7 @@ namespace <#= NamespaceServiceTest #>
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
+            srv.ProcessMode= ProcessingMode.Edit;
             srv.SaveData();
 
             var srvGetById = new <#= ServiceName #>(DataBaseFactory);
@@ -116,7 +119,8 @@ namespace <#= NamespaceServiceTest #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
             srv.GetDataById(id);
-            srv.Delete();
+            srv.ProcessMode = ProcessingMode.Delete;
+            srv.DeleteData();
 
             var result = DataBaseFactory.ExistUniqueId<<#= StructureClass.MainTable.Name #>>(srv.Data.UniqueId);
 
@@ -133,6 +137,7 @@ namespace <#= NamespaceServiceTest #>
 		{
             var srv = new <#= ServiceName #>(DataBaseFactory);
             srv.AttachData(GetFakerData());
+            srv.ProcessMode= ProcessingMode.Add;
 			await srv.SaveDataAsync();
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
@@ -156,6 +161,7 @@ namespace <#= NamespaceServiceTest #>
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
+            srv.ProcessMode= ProcessingMode.Edit;
             await srv.SaveDataAsync();
 
             var srvGetById = new <#= ServiceName #>(DataBaseFactory);
@@ -179,6 +185,7 @@ namespace <#= NamespaceServiceTest #>
 
             var srv = new <#= ServiceName #>(DataBaseFactory);
             await srv.GetDataByIdAsync(id);
+            srv.ProcessMode = ProcessingMode.Delete;
             await srv.DeleteDataAsync();
 
             var result = DataBaseFactory.ExistUniqueId<<#= StructureClass.MainTable.Name #>>(srv.Data.UniqueId);
