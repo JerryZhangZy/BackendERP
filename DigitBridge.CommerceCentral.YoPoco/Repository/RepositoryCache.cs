@@ -70,7 +70,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return default;
         }
 
-
         public bool HasData<T>(string key)
         {
             if (_Cache == null)

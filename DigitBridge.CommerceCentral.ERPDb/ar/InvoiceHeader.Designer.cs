@@ -99,14 +99,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CustomerName",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _customerName;
 
+        [Column("Terms",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _terms;
+
+        [Column("TermsDays",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _termsDays;
+
         [Column("Currency",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _currency;
 
         [Column("SubTotalAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _subTotalAmount;
 
+        [Column("SalesAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _salesAmount;
+
         [Column("TotalAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _totalAmount;
+
+        [Column("TaxableAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _taxableAmount;
+
+        [Column("NonTaxableAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _nonTaxableAmount;
 
         [Column("TaxRate",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _taxRate;
@@ -348,6 +363,30 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+        public virtual string Terms
+        {
+            get
+            {
+				return _terms?.TrimEnd(); 
+            }
+            set
+            {
+				_terms = value.TruncateTo(50); 
+            }
+        }
+
+        public virtual int TermsDays
+        {
+            get
+            {
+				return _termsDays; 
+            }
+            set
+            {
+				_termsDays = value; 
+            }
+        }
+
         public virtual string Currency
         {
             get
@@ -372,6 +411,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+        public virtual decimal SalesAmount
+        {
+            get
+            {
+				return _salesAmount; 
+            }
+            set
+            {
+				_salesAmount = value; 
+            }
+        }
+
         public virtual decimal TotalAmount
         {
             get
@@ -381,6 +432,30 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_totalAmount = value; 
+            }
+        }
+
+        public virtual decimal TaxableAmount
+        {
+            get
+            {
+				return _taxableAmount; 
+            }
+            set
+            {
+				_taxableAmount = value; 
+            }
+        }
+
+        public virtual decimal NonTaxableAmount
+        {
+            get
+            {
+				return _nonTaxableAmount; 
+            }
+            set
+            {
+				_nonTaxableAmount = value; 
             }
         }
 
@@ -654,9 +729,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_customerUuid = String.Empty; 
 			_customerNum = String.Empty; 
 			_customerName = String.Empty; 
+			_terms = String.Empty; 
+			_termsDays = default(int); 
 			_currency = String.Empty; 
 			_subTotalAmount = default(decimal); 
+			_salesAmount = default(decimal); 
 			_totalAmount = default(decimal); 
+			_taxableAmount = default(decimal); 
+			_nonTaxableAmount = default(decimal); 
 			_taxRate = default(decimal); 
 			_taxAmount = default(decimal); 
 			_discountRate = default(decimal); 

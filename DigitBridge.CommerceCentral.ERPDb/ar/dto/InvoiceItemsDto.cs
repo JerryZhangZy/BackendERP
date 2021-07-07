@@ -150,6 +150,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasCancelledQty => CancelledQty != null;
 
+        public decimal? OpenQty { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasOpenQty => OpenQty != null;
+
         [StringLength(50, ErrorMessage = "The PriceRule value cannot exceed 50 characters. ")]
         public string PriceRule { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
@@ -174,6 +178,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public decimal? ExtAmount { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasExtAmount => ExtAmount != null;
+
+        public decimal? TaxableAmount { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasTaxableAmount => TaxableAmount != null;
+
+        public decimal? NonTaxableAmount { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasNonTaxableAmount => NonTaxableAmount != null;
 
         public decimal? TaxRate { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
@@ -207,6 +219,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasItemTotalAmount => ItemTotalAmount != null;
 
+        public decimal? OrderAmount { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasOrderAmount => OrderAmount != null;
+
+        public decimal? CancelledAmount { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasCancelledAmount => CancelledAmount != null;
+
+        public decimal? OpenAmount { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasOpenAmount => OpenAmount != null;
+
         public bool? Stockable { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasStockable => Stockable != null;
@@ -222,6 +246,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool? Costable { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasCostable => Costable != null;
+
+        public bool? IsProfit { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasIsProfit => IsProfit != null;
 
         public decimal? UnitCost { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]

@@ -49,6 +49,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
         protected RepositoryCache _Cache = new RepositoryCache();
         [XmlIgnore, JsonIgnore]
         public virtual RepositoryCache Cache => _Cache;
+        public virtual T GetCache<T>(string id) where T : TableRepository<T, long>, new()
+        {
+            return _Cache.FromCache<T>(id, () => dbFactory.GetById<T>(id));
+        }
 
         #endregion Cache
 

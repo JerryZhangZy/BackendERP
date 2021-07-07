@@ -24,11 +24,4 @@
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="InvoiceItems.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
-
 </Project>

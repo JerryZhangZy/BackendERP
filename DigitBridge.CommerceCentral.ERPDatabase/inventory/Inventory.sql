@@ -68,6 +68,7 @@
 	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice total Charg Allowance Amount
 	[UnitCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total receive cost. 
 	[AvgCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item moving average cost. 
+	[SalesCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item cost display for sales. 
 
 	[Stockable] TINYINT NOT NULL DEFAULT 1,--Invoice item will update inventory instock qty 
 	[IsAr] TINYINT NOT NULL DEFAULT 1,--Invoice item will add to A/R invoice total amount

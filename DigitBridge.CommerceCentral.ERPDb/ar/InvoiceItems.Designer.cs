@@ -50,11 +50,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("Seq",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _seq;
 
-        [Column("InvoiceItemType",SqlDbType.Int,IsDefault=true)]
-        private int? _invoiceItemType;
+        [Column("InvoiceItemType",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _invoiceItemType;
 
-        [Column("InvoiceItemStatus",SqlDbType.Int,IsDefault=true)]
-        private int? _invoiceItemStatus;
+        [Column("InvoiceItemStatus",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _invoiceItemStatus;
 
         [Column("ItemDate",SqlDbType.Date,NotNull=true)]
         private DateTime _itemDate;
@@ -77,25 +77,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("InventoryUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _inventoryUuid;
 
-        [Column("WarehouseUuid",SqlDbType.VarChar)]
+        [Column("WarehouseUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _warehouseUuid;
 
-        [Column("LotNum",SqlDbType.VarChar,NotNull=true)]
+        [Column("LotNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _lotNum;
 
-        [Column("Description",SqlDbType.NVarChar,NotNull=true)]
+        [Column("Description",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _description;
 
-        [Column("Notes",SqlDbType.NVarChar,NotNull=true)]
+        [Column("Notes",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _notes;
 
-        [Column("Currency",SqlDbType.VarChar)]
+        [Column("Currency",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _currency;
 
-        [Column("UOM",SqlDbType.VarChar)]
+        [Column("UOM",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _uOM;
 
-        [Column("PackType",SqlDbType.VarChar)]
+        [Column("PackType",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _packType;
 
         [Column("PackQty",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
@@ -119,17 +119,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CancelledQty",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _cancelledQty;
 
+        [Column("OpenQty",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _openQty;
+
         [Column("PriceRule",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _priceRule;
 
         [Column("Price",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _price;
 
-        [Column("DiscountRate",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _discountRate;
+        [Column("DiscountRate",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _discountRate;
 
-        [Column("DiscountAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _discountAmount;
+        [Column("DiscountAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _discountAmount;
 
         [Column("DiscountPrice",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _discountPrice;
@@ -137,29 +140,44 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ExtAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _extAmount;
 
-        [Column("TaxRate",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _taxRate;
+        [Column("TaxableAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _taxableAmount;
 
-        [Column("TaxAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _taxAmount;
+        [Column("NonTaxableAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _nonTaxableAmount;
 
-        [Column("ShippingAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _shippingAmount;
+        [Column("TaxRate",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _taxRate;
 
-        [Column("ShippingTaxAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _shippingTaxAmount;
+        [Column("TaxAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _taxAmount;
 
-        [Column("MiscAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _miscAmount;
+        [Column("ShippingAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _shippingAmount;
 
-        [Column("MiscTaxAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _miscTaxAmount;
+        [Column("ShippingTaxAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _shippingTaxAmount;
 
-        [Column("ChargeAndAllowanceAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _chargeAndAllowanceAmount;
+        [Column("MiscAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _miscAmount;
+
+        [Column("MiscTaxAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _miscTaxAmount;
+
+        [Column("ChargeAndAllowanceAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _chargeAndAllowanceAmount;
 
         [Column("ItemTotalAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _itemTotalAmount;
+
+        [Column("OrderAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _orderAmount;
+
+        [Column("CancelledAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _cancelledAmount;
+
+        [Column("OpenAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _openAmount;
 
         [Column("Stockable",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
         private byte _stockable;
@@ -172,6 +190,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("Costable",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
         private byte _costable;
+
+        [Column("IsProfit",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
+        private byte _isProfit;
 
         [Column("UnitCost",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _unitCost;
@@ -243,33 +264,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        public virtual int? InvoiceItemType
+        public virtual int InvoiceItemType
         {
             get
             {
-				if (!AllowNull && _invoiceItemType is null) 
-					_invoiceItemType = default(int); 
 				return _invoiceItemType; 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_invoiceItemType = value; 
+				_invoiceItemType = value; 
             }
         }
 
-        public virtual int? InvoiceItemStatus
+        public virtual int InvoiceItemStatus
         {
             get
             {
-				if (!AllowNull && _invoiceItemStatus is null) 
-					_invoiceItemStatus = default(int); 
 				return _invoiceItemStatus; 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_invoiceItemStatus = value; 
+				_invoiceItemStatus = value; 
             }
         }
 
@@ -367,14 +382,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _warehouseUuid is null) 
-					_warehouseUuid = String.Empty; 
 				return _warehouseUuid?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_warehouseUuid = value.TruncateTo(50); 
+				_warehouseUuid = value.TruncateTo(50); 
             }
         }
 
@@ -418,14 +430,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _currency is null) 
-					_currency = String.Empty; 
 				return _currency?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_currency = value.TruncateTo(10); 
+				_currency = value.TruncateTo(10); 
             }
         }
 
@@ -433,14 +442,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _uOM is null) 
-					_uOM = String.Empty; 
 				return _uOM?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_uOM = value.TruncateTo(50); 
+				_uOM = value.TruncateTo(50); 
             }
         }
 
@@ -448,14 +454,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _packType is null) 
-					_packType = String.Empty; 
 				return _packType?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_packType = value.TruncateTo(50); 
+				_packType = value.TruncateTo(50); 
             }
         }
 
@@ -543,6 +546,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+        public virtual decimal OpenQty
+        {
+            get
+            {
+				return _openQty; 
+            }
+            set
+            {
+				_openQty = value; 
+            }
+        }
+
         public virtual string PriceRule
         {
             get
@@ -567,33 +582,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        public virtual decimal? DiscountRate
+        public virtual decimal DiscountRate
         {
             get
             {
-				if (!AllowNull && _discountRate is null) 
-					_discountRate = default(decimal); 
 				return _discountRate; 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_discountRate = value; 
+				_discountRate = value; 
             }
         }
 
-        public virtual decimal? DiscountAmount
+        public virtual decimal DiscountAmount
         {
             get
             {
-				if (!AllowNull && _discountAmount is null) 
-					_discountAmount = default(decimal); 
 				return _discountAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_discountAmount = value; 
+				_discountAmount = value; 
             }
         }
 
@@ -621,108 +630,111 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        public virtual decimal? TaxRate
+        public virtual decimal TaxableAmount
         {
             get
             {
-				if (!AllowNull && _taxRate is null) 
-					_taxRate = default(decimal); 
+				return _taxableAmount; 
+            }
+            set
+            {
+				_taxableAmount = value; 
+            }
+        }
+
+        public virtual decimal NonTaxableAmount
+        {
+            get
+            {
+				return _nonTaxableAmount; 
+            }
+            set
+            {
+				_nonTaxableAmount = value; 
+            }
+        }
+
+        public virtual decimal TaxRate
+        {
+            get
+            {
 				return _taxRate; 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_taxRate = value; 
+				_taxRate = value; 
             }
         }
 
-        public virtual decimal? TaxAmount
+        public virtual decimal TaxAmount
         {
             get
             {
-				if (!AllowNull && _taxAmount is null) 
-					_taxAmount = default(decimal); 
 				return _taxAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_taxAmount = value; 
+				_taxAmount = value; 
             }
         }
 
-        public virtual decimal? ShippingAmount
+        public virtual decimal ShippingAmount
         {
             get
             {
-				if (!AllowNull && _shippingAmount is null) 
-					_shippingAmount = default(decimal); 
 				return _shippingAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_shippingAmount = value; 
+				_shippingAmount = value; 
             }
         }
 
-        public virtual decimal? ShippingTaxAmount
+        public virtual decimal ShippingTaxAmount
         {
             get
             {
-				if (!AllowNull && _shippingTaxAmount is null) 
-					_shippingTaxAmount = default(decimal); 
 				return _shippingTaxAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_shippingTaxAmount = value; 
+				_shippingTaxAmount = value; 
             }
         }
 
-        public virtual decimal? MiscAmount
+        public virtual decimal MiscAmount
         {
             get
             {
-				if (!AllowNull && _miscAmount is null) 
-					_miscAmount = default(decimal); 
 				return _miscAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_miscAmount = value; 
+				_miscAmount = value; 
             }
         }
 
-        public virtual decimal? MiscTaxAmount
+        public virtual decimal MiscTaxAmount
         {
             get
             {
-				if (!AllowNull && _miscTaxAmount is null) 
-					_miscTaxAmount = default(decimal); 
 				return _miscTaxAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_miscTaxAmount = value; 
+				_miscTaxAmount = value; 
             }
         }
 
-        public virtual decimal? ChargeAndAllowanceAmount
+        public virtual decimal ChargeAndAllowanceAmount
         {
             get
             {
-				if (!AllowNull && _chargeAndAllowanceAmount is null) 
-					_chargeAndAllowanceAmount = default(decimal); 
 				return _chargeAndAllowanceAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-					_chargeAndAllowanceAmount = value; 
+				_chargeAndAllowanceAmount = value; 
             }
         }
 
@@ -735,6 +747,42 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_itemTotalAmount = value; 
+            }
+        }
+
+        public virtual decimal OrderAmount
+        {
+            get
+            {
+				return _orderAmount; 
+            }
+            set
+            {
+				_orderAmount = value; 
+            }
+        }
+
+        public virtual decimal CancelledAmount
+        {
+            get
+            {
+				return _cancelledAmount; 
+            }
+            set
+            {
+				_cancelledAmount = value; 
+            }
+        }
+
+        public virtual decimal OpenAmount
+        {
+            get
+            {
+				return _openAmount; 
+            }
+            set
+            {
+				_openAmount = value; 
             }
         }
 
@@ -783,6 +831,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_costable = value ? (byte)1 : (byte)0; 
+            }
+        }
+
+        public virtual bool IsProfit
+        {
+            get
+            {
+				return (_isProfit == 1); 
+            }
+            set
+            {
+				_isProfit = value ? (byte)1 : (byte)0; 
             }
         }
 
@@ -983,8 +1043,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_invoiceItemsUuid = String.Empty; 
 			_invoiceUuid = String.Empty; 
 			_seq = default(int); 
-			_invoiceItemType = AllowNull ? (int?)null : default(int); 
-			_invoiceItemStatus = AllowNull ? (int?)null : default(int); 
+			_invoiceItemType = default(int); 
+			_invoiceItemStatus = default(int); 
 			_itemDate = new DateTime().MinValueSql(); 
 			_itemTime = new TimeSpan().MinValueSql(); 
 			_shipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
@@ -992,13 +1052,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_sKU = String.Empty; 
 			_productUuid = String.Empty; 
 			_inventoryUuid = String.Empty; 
-			_warehouseUuid = AllowNull ? (string)null : String.Empty; 
+			_warehouseUuid = String.Empty; 
 			_lotNum = String.Empty; 
 			_description = String.Empty; 
 			_notes = String.Empty; 
-			_currency = AllowNull ? (string)null : String.Empty; 
-			_uOM = AllowNull ? (string)null : String.Empty; 
-			_packType = AllowNull ? (string)null : String.Empty; 
+			_currency = String.Empty; 
+			_uOM = String.Empty; 
+			_packType = String.Empty; 
 			_packQty = default(decimal); 
 			_orderPack = default(decimal); 
 			_shipPack = default(decimal); 
@@ -1006,24 +1066,31 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_orderQty = default(decimal); 
 			_shipQty = default(decimal); 
 			_cancelledQty = default(decimal); 
+			_openQty = default(decimal); 
 			_priceRule = String.Empty; 
 			_price = default(decimal); 
-			_discountRate = AllowNull ? (decimal?)null : default(decimal); 
-			_discountAmount = AllowNull ? (decimal?)null : default(decimal); 
+			_discountRate = default(decimal); 
+			_discountAmount = default(decimal); 
 			_discountPrice = default(decimal); 
 			_extAmount = default(decimal); 
-			_taxRate = AllowNull ? (decimal?)null : default(decimal); 
-			_taxAmount = AllowNull ? (decimal?)null : default(decimal); 
-			_shippingAmount = AllowNull ? (decimal?)null : default(decimal); 
-			_shippingTaxAmount = AllowNull ? (decimal?)null : default(decimal); 
-			_miscAmount = AllowNull ? (decimal?)null : default(decimal); 
-			_miscTaxAmount = AllowNull ? (decimal?)null : default(decimal); 
-			_chargeAndAllowanceAmount = AllowNull ? (decimal?)null : default(decimal); 
+			_taxableAmount = default(decimal); 
+			_nonTaxableAmount = default(decimal); 
+			_taxRate = default(decimal); 
+			_taxAmount = default(decimal); 
+			_shippingAmount = default(decimal); 
+			_shippingTaxAmount = default(decimal); 
+			_miscAmount = default(decimal); 
+			_miscTaxAmount = default(decimal); 
+			_chargeAndAllowanceAmount = default(decimal); 
 			_itemTotalAmount = default(decimal); 
+			_orderAmount = default(decimal); 
+			_cancelledAmount = default(decimal); 
+			_openAmount = default(decimal); 
 			_stockable = default(byte); 
 			_isAr = default(byte); 
 			_taxable = default(byte); 
 			_costable = default(byte); 
+			_isProfit = default(byte); 
 			_unitCost = default(decimal); 
 			_avgCost = default(decimal); 
 			_lotCost = default(decimal); 

@@ -234,13 +234,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return Calculator.Calculate(Data, ProcessMode);
         }
 
-        public virtual async Task<bool> CalculateAsync()
-        {
-            if (Data is null || Calculator is null)
-                return false;
-            return await Calculator.CalculateAsync(Data, ProcessMode).ConfigureAwait(false);
-        }
-
         public virtual bool Validate()
         {
             if (Data is null || Validators is null || Validators.Count == 0)
@@ -290,6 +283,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 return false;
+
+            Calculate();
             return _data.Save();
         }
 
@@ -326,6 +321,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 return false;
+            Calculate();
             return await _data.SaveAsync().ConfigureAwait(false);
         }
 
