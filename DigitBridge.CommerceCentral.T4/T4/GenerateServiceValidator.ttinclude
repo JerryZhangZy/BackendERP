@@ -76,7 +76,7 @@ namespace <#= NamespaceService #>
         protected virtual bool ValidateAdd(<#= StructureClass.ClassName #> data)
         {
             var dbFactory = data.dbFactory;
-            if (data.InvoiceHeader.RowNum != 0 && dbFactory.Exists<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum))
+            if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && dbFactory.Exists<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum))
             {
                 IsValid = false;
                 this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} is duplicate.");
@@ -167,7 +167,7 @@ namespace <#= NamespaceService #>
         protected virtual async Task<bool> ValidateAddAsync(<#= StructureClass.ClassName #> data)
         {
             var dbFactory = data.dbFactory;
-            if (data.InvoiceHeader.RowNum != 0 && (await dbFactory.ExistsAsync<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum)))
+            if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && (await dbFactory.ExistsAsync<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum)))
             {
                 IsValid = false;
                 this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} is duplicate.");
