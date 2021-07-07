@@ -46,6 +46,7 @@ namespace DigitBridge.CommerceCentral.XUnit.Common
             }
             return value;
         }
+
     }
 
 }

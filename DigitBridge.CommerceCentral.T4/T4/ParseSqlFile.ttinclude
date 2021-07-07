@@ -352,7 +352,14 @@
                     gen = $"f => f.Date.Timespan()";
                     break;
                 case "decimal":
-                    gen = $"f => f.Random.Decimal(1, 1000, 4)";
+                    if (Name.EndsWith("Rate"))
+                    {
+                        gen = $"f => f.Random.Decimal(0.01m, 0.99m, 4)";
+                    }
+                    else
+                    {
+                        gen = $"f => f.Random.Decimal(1, 1000, 4)";
+                    }
                     break;
                 case "int":
                     gen = $"f => f.Random.Int(1, 100)";

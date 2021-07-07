@@ -162,16 +162,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateServiceCalculator.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateServiceCalculator.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateServiceTest.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateServiceTest.ttinclude</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateStructureDtoMapper.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
