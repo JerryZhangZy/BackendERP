@@ -5,8 +5,8 @@
 
     [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Invoice
     [Seq] INT NOT NULL DEFAULT 0, --Invoice Item Line sort sequence
-    [InvoiceItemType] INT NULL DEFAULT 0, --Invoice item type
-    [InvoiceItemStatus] INT NULL DEFAULT 0, --Invoice item status
+    [InvoiceItemType] INT NOT NULL DEFAULT 0, --Invoice item type
+    [InvoiceItemStatus] INT NOT NULL DEFAULT 0, --Invoice item status
 	[ItemDate] DATE NOT NULL, --Invoice date
 	[ItemTime] TIME NOT NULL, --Invoice time
 	[ShipDate] DATE NULL, --Estimated vendor ship date
@@ -15,14 +15,14 @@
 	[SKU] Varchar(100) NOT NULL,--Product SKU 
 	[ProductUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Inventory SKU
 	[InventoryUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Inventory Item Line
-	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
-	[LotNum] Varchar(100) NOT NULL,--Product SKU Lot Number 
-	[Description] NVarchar(200) NOT NULL,--Invoice item description 
-	[Notes] NVarchar(500) NOT NULL,--Invoice item notes 
+	[WarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --Warehouse Guid
+	[LotNum] Varchar(100) NOT NULL DEFAULT '',--Product SKU Lot Number 
+	[Description] NVarchar(200) NOT NULL DEFAULT '',--Invoice item description 
+	[Notes] NVarchar(500) NOT NULL DEFAULT '',--Invoice item notes 
 
-	[Currency] VARCHAR(10) NULL,
-	[UOM] Varchar(50) NULL,--Product SKU Qty unit of measure 
-	[PackType] Varchar(50) NULL,--Product SKU Qty pack type, for example: Case, Box, Each 
+	[Currency] VARCHAR(10) NOT NULL DEFAULT '',
+	[UOM] Varchar(50) NOT NULL DEFAULT '',--Product SKU Qty unit of measure 
+	[PackType] Varchar(50) NOT NULL DEFAULT '',--Product SKU Qty pack type, for example: Case, Box, Each 
 	[PackQty] DECIMAL(24, 6) NOT NULL DEFAULT 1, --Item Qty each per pack. 
 	[OrderPack] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Order number of pack. 
 	[ShipPack] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Shipped number of pack. 
@@ -30,26 +30,33 @@
 	[OrderQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Order Qty. 
 	[ShipQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Shipped Qty. 
 	[CancelledQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Cancelled Qty. 
+	[OpenQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Back order Qty. 
 
 	[PriceRule] VARCHAR(50) NOT NULL DEFAULT '', --Item Invoice price rule. 
 	[Price] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Invoice price. 
-	[DiscountRate] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice level discount rate. 
-	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice level discount amount, base on SubTotalAmount
+	[DiscountRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Invoice level discount rate. 
+	[DiscountAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Invoice level discount amount, base on SubTotalAmount
 	[DiscountPrice] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Invoice after discount price. 
 	[ExtAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount. 
-	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for Invoice items. 
-	[TaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total Invoice tax amount (include shipping tax and misc tax) 
-	[ShippingAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total shipping fee for all items
-	[ShippingTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of shipping fee
-	[MiscAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice handling charge 
-	[MiscTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of handling charge
-	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice total Charg Allowance Amount
+	[TaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Amount should apply tax
+	[NonTaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Amount should not apply tax
+	[TaxRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Default Tax rate for Invoice items. 
+	[TaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Invoice tax amount (include shipping tax and misc tax) 
+	[ShippingAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total shipping fee for all items
+	[ShippingTaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --tax amount of shipping fee
+	[MiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Invoice handling charge 
+	[MiscTaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --tax amount of handling charge
+	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Invoice total Charg Allowance Amount
 	[ItemTotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount. 
+	[OrderAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount. 
+	[CancelledAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount. 
+	[OpenAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount. 
 
 	[Stockable] TINYINT NOT NULL DEFAULT 1,--Invoice item will update inventory instock qty 
 	[IsAr] TINYINT NOT NULL DEFAULT 1,--Invoice item will add to invoice total amount
 	[Taxable] TINYINT NOT NULL DEFAULT 0,--Invoice item will apply tax
 	[Costable] TINYINT NOT NULL DEFAULT 1,--Invoice item will calculate total cost
+	[IsProfit] TINYINT NOT NULL DEFAULT 1,--Invoice item will calculate profilt
 
 	[UnitCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Unit Cost. 
 	[AvgCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Avg.Cost. 

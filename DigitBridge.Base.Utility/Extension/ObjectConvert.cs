@@ -18,6 +18,13 @@ namespace DigitBridge.Base.Utility
         public static TimeSpan MinTime = new TimeSpan(0,0,0);
         public static TimeSpan MaxTime = new TimeSpan(11,59,59);
 
+        public static int QtyDecimalDigits = 2;
+        public static int PriceDecimalDigits = 2;
+        public static int CostDecimalDigits = 3;
+        public static int AmountDecimalDigits = 2;
+        public static int RateDecimalDigits = 3;
+
+
         /// <summary>
         /// [True, T, Yes, Y, 1] are true, all the others are false.
         /// </summary>
@@ -468,14 +475,177 @@ namespace DigitBridge.Base.Utility
 
         public static DateTime ToDateTime(this DateTime? input) => (input is null) ? ObjectConvert.MinDatatime : (DateTime)input;
         public static TimeSpan ToTimeSpan(this DateTime? input) => (input is null) ? ObjectConvert.MinTime : ((DateTime)input).TimeOfDay;
+        public static TimeSpan ToTimeSpan(this TimeSpan? input) => (input is null) ? ObjectConvert.MinTime : (TimeSpan)input;
         public static DateTime ToDateTime(this TimeSpan? input) => (input is null) ? DateTime.Today : DateTime.Today + (TimeSpan)input;
         public static DateTime ToDateTime(this TimeSpan input) => DateTime.Today + input;
 
         public static int ToInt(this int? input) => (input is null) ? default(int) : (int)input;
+        public static int ToInt(this string input) =>
+            string.IsNullOrWhiteSpace(input)
+                ? (int)0
+                : int.TryParse(input, out int r)
+                    ? r
+                    : (int)0;
+
+
         public static long ToLong(this long? input) => (input is null) ? default(long) : (long)input;
+        public static long ToLong(this string input) =>
+            string.IsNullOrWhiteSpace(input)
+                ? (long)0
+                : long.TryParse(input, out long r)
+                    ? r
+                    : (long)0;
+
         public static decimal ToDecimal(this decimal? input) => (input is null) ? default(decimal) : (decimal)input;
+        public static decimal ToDecimal(this string input) =>
+            string.IsNullOrWhiteSpace(input)
+                ? (decimal)0
+                : decimal.TryParse(input, out decimal r)
+                    ? r
+                    : (decimal)0;
+
+
+        public static double ToDouble(this double? input) => (input is null) ? default(double) : (double)input;
+        public static double ToDouble(this string input) =>
+            string.IsNullOrWhiteSpace(input)
+                ? (double)0
+                : double.TryParse(input, out double r)
+                    ? r
+                    : (double)0;
+
         public static byte ToByte(this byte? input) => (input is null) ? default(byte) : (byte)input;
+        public static byte ToByte(this string input) =>
+            string.IsNullOrWhiteSpace(input)
+                ? (byte)0
+                : byte.TryParse(input, out byte r)
+                    ? r
+                    : (byte)0;
+
         public static bool ToBool(this bool? input) => (input is null) ? false : (bool)input;
+        public static bool ToBool(this string input) =>
+            string.IsNullOrWhiteSpace(input)
+                ? false
+                : bool.TryParse(input, out bool r)
+                    ? r
+                    : false;
+
+        public static bool IsZero(this decimal input) => Math.Abs(input) < (decimal)0.000001;
+        public static bool IsZero(this decimal? input) => (input is null) ? true : input.ToDecimal().IsZero();
+
+        public static bool IsZero(this double input) => Math.Abs(input) < (double)0.000001;
+        public static bool IsZero(this double? input) => (input is null) ? true : input.ToDouble().IsZero();
+
+        public static bool IsZero(this int input) => Math.Abs(input) < (int)0;
+        public static bool IsZero(this int? input) => (input is null) ? true : input.ToInt().IsZero();
+
+        public static bool IsZero(this long input) => Math.Abs(input) < (long)0;
+        public static bool IsZero(this long? input) => (input is null) ? true : input.ToLong().IsZero();
+
+        public static bool IsZero(this string input) => string.IsNullOrEmpty(input);
+
+        public static bool IsZero(this DateTime input) => input <= ObjectConvert.MinDatatime;
+        public static bool IsZero(this DateTime? input) => (input is null) ? true : input.ToDateTime().IsZero();
+
+        public static bool IsZero(this TimeSpan input) => input < ObjectConvert.MinTime || input > ObjectConvert.MaxTime;
+        public static bool IsZero(this TimeSpan? input) => (input is null) ? true : input.ToTimeSpan().IsZero();
+
+
+        public static decimal ToRateValue(this decimal? input) => (input is null) ? 0 : input.ToDecimal() / 100;
+        public static decimal ToRateValue(this decimal input) => input / 100;
+
+        public static decimal ToRateDisplay(this decimal? input) => (input is null) ? 0 : input.ToDecimal() * 100;
+        public static decimal ToRateDisplay(this decimal input) => input * 100;
+
+
+        public static decimal ToPrice(this string input) =>
+            string.IsNullOrWhiteSpace(input) ? 0 : input.ToDecimal().ToPrice();
+
+        public static decimal ToPrice(this decimal? input) =>
+            (input is null) ? (decimal)0 : input.ToDecimal().ToPrice();
+
+        public static decimal ToPrice(this decimal input) =>
+            Math.Round(input, ObjectConvert.PriceDecimalDigits, MidpointRounding.AwayFromZero);
+
+        public static double ToPrice(this double? input) =>
+            (input is null) ? (double)0 : input.ToDouble().ToPrice();
+
+        public static double ToPrice(this double input) =>
+            Math.Round(input, ObjectConvert.PriceDecimalDigits, MidpointRounding.AwayFromZero);
+
+
+        public static decimal ToQty(this string input) =>
+            string.IsNullOrWhiteSpace(input) ? 0 : input.ToDecimal().ToQty();
+
+        public static decimal ToQty(this decimal? input) =>
+            (input is null) ? (decimal)0 : input.ToDecimal().ToQty();
+
+        public static decimal ToQty(this decimal input) =>
+            Math.Round(input, ObjectConvert.QtyDecimalDigits, MidpointRounding.AwayFromZero);
+
+        public static double ToQty(this double? input) =>
+            (input is null) ? (double)0 : input.ToDouble().ToQty();
+
+        public static double ToQty(this double input) =>
+            Math.Round(input, ObjectConvert.QtyDecimalDigits, MidpointRounding.AwayFromZero);
+
+
+        public static decimal ToAmount(this string input) =>
+            string.IsNullOrWhiteSpace(input) ? 0 : input.ToDecimal().ToAmount();
+
+        public static decimal ToAmount(this decimal? input) =>
+            (input is null) ? (decimal)0 : input.ToDecimal().ToAmount();
+
+        public static decimal ToAmount(this decimal input) =>
+            Math.Round(input, ObjectConvert.AmountDecimalDigits, MidpointRounding.AwayFromZero);
+
+        public static double ToAmount(this double? input) =>
+            (input is null) ? (double)0 : input.ToDouble().ToAmount();
+
+        public static double ToAmount(this double input) =>
+            Math.Round(input, ObjectConvert.PriceDecimalDigits, MidpointRounding.AwayFromZero);
+
+
+        public static decimal ToCost(this string input) =>
+            string.IsNullOrWhiteSpace(input) ? 0 : input.ToDecimal().ToCost();
+
+        public static decimal ToCost(this decimal? input) =>
+            (input is null) ? (decimal)0 : input.ToDecimal().ToCost();
+
+        public static decimal ToCost(this decimal input) =>
+            Math.Round(input, ObjectConvert.CostDecimalDigits, MidpointRounding.AwayFromZero);
+
+        public static double ToCost(this double? input) =>
+            (input is null) ? (double)0 : input.ToDouble().ToCost();
+
+        public static double ToCost(this double input) =>
+            Math.Round(input, ObjectConvert.CostDecimalDigits, MidpointRounding.AwayFromZero);
+
+
+        public static decimal ToRate(this string input) =>
+            string.IsNullOrWhiteSpace(input) ? 0 : input.ToDecimal().ToRate();
+
+        public static decimal ToRate(this decimal? input) =>
+            (input is null) ? (decimal)0 : input.ToDecimal().ToRate();
+
+        public static decimal ToRate(this decimal input) =>
+            Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero);
+
+        public static double ToRate(this double? input) =>
+            (input is null) ? (double)0 : input.ToDouble().ToRate();
+
+        public static double ToRate(this double input) =>
+            Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero);
+
+
+        public static decimal RoundTo(this decimal? input, int decimalDigit = 2) =>
+            (input is null) ? (decimal)0 : input.ToDecimal().RoundTo(decimalDigit);
+        public static decimal RoundTo(this decimal input, int decimalDigit = 2) =>
+            Math.Round(input, decimalDigit, MidpointRounding.AwayFromZero);
+
+        public static double RoundTo(this double? input, int decimalDigit = 2) =>
+            (input is null) ? (double)0 : input.ToDouble().RoundTo(decimalDigit);
+        public static double RoundTo(this double input, int decimalDigit = 2) =>
+            Math.Round(input, decimalDigit, MidpointRounding.AwayFromZero);
 
     }
 }

@@ -95,6 +95,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasCustomerName => CustomerName != null;
 
+        [StringLength(50, ErrorMessage = "The Terms value cannot exceed 50 characters. ")]
+        public string Terms { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasTerms => Terms != null;
+
+        public int? TermsDays { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasTermsDays => TermsDays != null;
+
         [StringLength(10, ErrorMessage = "The Currency value cannot exceed 10 characters. ")]
         public string Currency { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
@@ -104,9 +113,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasSubTotalAmount => SubTotalAmount != null;
 
+        public decimal? SalesAmount { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasSalesAmount => SalesAmount != null;
+
         public decimal? TotalAmount { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasTotalAmount => TotalAmount != null;
+
+        public decimal? TaxableAmount { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasTaxableAmount => TaxableAmount != null;
+
+        public decimal? NonTaxableAmount { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasNonTaxableAmount => NonTaxableAmount != null;
 
         public decimal? TaxRate { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]

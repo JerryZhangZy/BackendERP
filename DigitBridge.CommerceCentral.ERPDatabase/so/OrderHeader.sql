@@ -8,34 +8,39 @@
     [OrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Order
 	[OrderNumber] VARCHAR(50) NOT NULL, --Unique in this database, ProfileNum + OrderNumber is DigitBridgeOrderNumber, which is global unique
 
-    [OrderType] INT NULL DEFAULT 0, --Order type
-    [OrderStatus] INT NULL DEFAULT 0, --Order status
+    [OrderType] INT NOT NULL DEFAULT 0, --Order type
+    [OrderStatus] INT NOT NULL DEFAULT 0, --Order status
 	[OrderDate] DATE NOT NULL, --Order date
 	[OrderTime] TIME NOT NULL, --Order time
 	[DueDate] DATE NULL, --Balance Due date
 	[BillDate] DATE NULL, --Next Billing date
 
-	[CustomerUuid] VARCHAR(50) NULL, --Customer Guid
-	[CustomerNum] VARCHAR(50) NULL, --Customer readable number, DatabaseNum + CustomerNum is DigitBridgeCustomerNum, which is global unique
-	[CustomerName] NVARCHAR(200) NULL, --Customer name
+	[CustomerUuid] VARCHAR(50) NOT NULL DEFAULT '', --Customer Guid
+	[CustomerNum] VARCHAR(50) NOT NULL DEFAULT '', --Customer readable number, DatabaseNum + CustomerNum is DigitBridgeCustomerNum, which is global unique
+	[CustomerName] NVARCHAR(200) NOT NULL DEFAULT '', --Customer name
 
-	[Currency] VARCHAR(10) NULL,
+	[Terms] VARCHAR(50) NOT NULL DEFAULT '', --Payment terms
+	[TermsDays] INT NOT NULL DEFAULT 0, --Payment terms
+
+	[Currency] VARCHAR(10) NOT NULL DEFAULT '',
 	[SubTotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sub total amount is sumary items amount. 
-	[TotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total order amount. Include every charge. Related to VAT. For US orders, tax should not be included. Refer to tax info to find more detail. Reference calculation 
-									--(Sum of all items OrderItems Quantity x OrderItems UnitPrice ) + TotalTaxPrice + Total ShippingPrice + TotalInsurancePrice + TotalGiftOptionPrice + AdditionalCostOrDiscount +PromotionAmount + (Sum of all items OrderItems Promotions Amount + OrderItems Promotions ShippingAmount + OrderItems RecyclingFee)
-	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for Order items. 
-	[TaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total Order tax amount (include shipping tax and misc tax) 
-	[DiscountRate] DECIMAL(24, 6) NULL DEFAULT 0, --Order level discount rate. 
-	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Order level discount amount, base on SubTotalAmount
-	[ShippingAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total shipping fee for all items
-	[ShippingTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of shipping fee
-	[MiscAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Order handling charge 
-	[MiscTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of handling charge
-	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Order total Charg Allowance Amount
+	[SalesAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sub Total amount deduct discount, but not include other charge
+	[TotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total amount. Include every charge (tax, shipping, misc...). 
+	[TaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Amount should apply tax
+	[NonTaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Amount should not apply tax
+	[TaxRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Default Tax rate for Order items. 
+	[TaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Order tax amount (include shipping tax and misc tax) 
+	[DiscountRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Order level discount rate. 
+	[DiscountAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Order level discount amount, base on SubTotalAmount
+	[ShippingAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total shipping fee for all items
+	[ShippingTaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --tax amount of shipping fee
+	[MiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Order handling charge 
+	[MiscTaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --tax amount of handling charge
+	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Order total Charg Allowance Amount
 
-	[PaidAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total Paid amount 
-	[CreditAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total Credit amount 
-	[Balance] DECIMAL(24, 6) NULL DEFAULT 0, --Current balance of Order 
+	[PaidAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Paid amount 
+	[CreditAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Credit amount 
+	[Balance] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Current balance of Order 
 
 	[UnitCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Unit Cost. 
 	[AvgCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Avg.Cost. 

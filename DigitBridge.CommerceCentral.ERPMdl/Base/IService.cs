@@ -56,8 +56,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
         bool Calculate();
-        Task<bool> CalculateAsync();
-
         bool Validate();
         Task<bool> ValidateAsync();
 

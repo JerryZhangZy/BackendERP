@@ -73,6 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var srv = new InvoiceService(DataBaseFactory);
             srv.Add();
             srv.AttachData(GetFakerData());
+            srv.Calculate();
 			srv.SaveData();
 
             var srvGet = new InvoiceService(DataBaseFactory);
@@ -106,6 +107,7 @@ WHERE itm.cnt > 0
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
+            srv.Calculate();
             srv.SaveData();
 
             var srvGetById = new InvoiceService(DataBaseFactory);
@@ -158,6 +160,7 @@ WHERE itm.cnt > 0
             var srv = new InvoiceService(DataBaseFactory);
             srv.Add();
             srv.AttachData(GetFakerData());
+            srv.Calculate();
 			await srv.SaveDataAsync();
 
             var srvGet = new InvoiceService(DataBaseFactory);
@@ -191,6 +194,7 @@ WHERE itm.cnt > 0
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
+            srv.Calculate();
             await srv.SaveDataAsync();
 
             var srvGetById = new InvoiceService(DataBaseFactory);

@@ -9,6 +9,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
     {
         IDataBaseFactory dbFactory { get; }
         IDatabase db { get; }
+
+        RepositoryCache Cache { get; }
+        T GetCache<T>(string id) where T : TableRepository<T, long>, new();
+
         bool AllowNull { get; }
         bool IsNew { get; }
 

@@ -72,6 +72,7 @@ namespace <#= NamespaceServiceTest #>
             var srv = new <#= ServiceName #>(DataBaseFactory);
             srv.Add();
             srv.AttachData(GetFakerData());
+            srv.Calculate();
 			srv.SaveData();
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
@@ -97,6 +98,7 @@ namespace <#= NamespaceServiceTest #>
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
+            srv.Calculate();
             srv.SaveData();
 
             var srvGetById = new <#= ServiceName #>(DataBaseFactory);
@@ -141,6 +143,7 @@ namespace <#= NamespaceServiceTest #>
             var srv = new <#= ServiceName #>(DataBaseFactory);
             srv.Add();
             srv.AttachData(GetFakerData());
+            srv.Calculate();
 			await srv.SaveDataAsync();
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
@@ -166,6 +169,7 @@ namespace <#= NamespaceServiceTest #>
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
+            srv.Calculate();
             await srv.SaveDataAsync();
 
             var srvGetById = new <#= ServiceName #>(DataBaseFactory);

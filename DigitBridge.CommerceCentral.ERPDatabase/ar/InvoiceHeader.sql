@@ -19,9 +19,15 @@
 	[CustomerNum] VARCHAR(50) NOT NULL DEFAULT '', --Customer readable number, DatabaseNum + CustomerNum is DigitBridgeCustomerNum, which is global unique
 	[CustomerName] NVARCHAR(200) NOT NULL DEFAULT '', --Customer name
 
+	[Terms] VARCHAR(50) NOT NULL DEFAULT '', --Payment terms
+	[TermsDays] INT NOT NULL DEFAULT 0, --Payment terms
+
 	[Currency] VARCHAR(10) NOT NULL DEFAULT '',
-	[SubTotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sub total amount is sumary items amount. 
-	[TotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total order amount. Include every charge. Related to VAT. For US orders, tax should not be included. Refer to tax info to find more detail. Reference calculation 
+	[SubTotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sub total amount is sumary of items amount. 
+	[SalesAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sub Total amount deduct discount, but not include other charge
+	[TotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total amount. Include every charge (tax, shipping, misc...). 
+	[TaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Amount should apply tax
+	[NonTaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Amount should not apply tax
 	[TaxRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Default Tax rate for Invoice items. 
 	[TaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Invoice tax amount (include shipping tax and misc tax) 
 	[DiscountRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Invoice level discount rate. 
