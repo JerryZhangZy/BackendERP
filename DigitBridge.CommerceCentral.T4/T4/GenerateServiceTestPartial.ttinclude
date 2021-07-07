@@ -42,7 +42,7 @@ namespace <#= NamespaceServiceTest #>
             srv.Add(dto);
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
-            srvGet.Edit();
+            //srvGet.Edit();
             srvGet.GetDataById(id);
             var result = srv.Data.Equals(srvGet.Data);
 
@@ -122,7 +122,7 @@ namespace <#= NamespaceServiceTest #>
             await srv.UpdateAsync(dto);
 
             var srvGet = new <#= ServiceName #>(DataBaseFactory);
-            srvGet.Edit();
+            //srvGet.Edit();
             await srvGet.GetDataByIdAsync(id);
             var result = srv.Data.Equals(srvGet.Data);
 
