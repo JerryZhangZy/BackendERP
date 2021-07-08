@@ -21,8 +21,7 @@
 	[Division] Varchar(50) NOT NULL DEFAULT '',--Product SKU department
 	[Year] Varchar(20) NOT NULL DEFAULT '',
 
-	[PriceRule] Varchar(50) NOT NULL DEFAULT '',--Product SKU 
-	[Stockable] Varchar(100) NOT NULL DEFAULT '',--Product SKU 
+	[PriceRule] Varchar(50) NOT NULL DEFAULT '',--Product SKU
 	[LeadDay] Int NOT NULL,--Product SKU processing days before ship
 
 	[SKU] Varchar(100) NOT NULL DEFAULT '',--Product SKU 

@@ -83,8 +83,8 @@
     var NamespaceStructure = "DigitBridge.CommerceCentral.ERPDb";
     var StructureFolder = "DigitBridge.CommerceCentral.ERPDb\\inventory";
     var StructureClass = new StructureInfo("InventoryData",
-            new StructureTable() { Name = "Inventory", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "ProductBasic", OneToOne = true }  
+            new StructureTable() { Name = "ProductBasic", MainTable = true, OneToOne = true },
+            new StructureTable() { Name = "Inventory", OneToOne = false,ParentName = "ProductBasic",DetailTable = true }  
         );
 
     // generate structure Dto class

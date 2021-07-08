@@ -43,7 +43,7 @@
     [EnterBy] Varchar(100) NOT NULL DEFAULT '',
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '',
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
-    CONSTRAINT [PK_Inventory] PRIMARY KEY ([RowNum]), 
+    CONSTRAINT [PK_InventoryLog] PRIMARY KEY ([RowNum]), 
 ) 
 GO
 
