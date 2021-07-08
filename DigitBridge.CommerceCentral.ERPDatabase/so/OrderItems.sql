@@ -65,19 +65,19 @@
 	[LotExpDate] DATE NULL, --Lot Expiration date
 
     [UpdateDateUtc] DATETIME NULL,
-    [EnterBy] Varchar(100) NOT NULL,
-    [UpdateBy] Varchar(100) NOT NULL,
+    [EnterBy] Varchar(100) NOT NULL DEFAULT '',
+    [UpdateBy] Varchar(100) NOT NULL DEFAULT '',
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
     CONSTRAINT [PK_OrderItems] PRIMARY KEY ([RowNum]), 
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderItems]') AND name = N'UK_OrderItems_OrderItemsId')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_OrderItems_OrderItemsUuid] ON [dbo].[OrderItems]
 (
 	[OrderItemsUuid] ASC
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderItems]') AND name = N'FK_OrderItems_OrderId_Seq')
@@ -85,28 +85,28 @@ CREATE NONCLUSTERED INDEX [FK_OrderItems_OrderUuid_Seq] ON [dbo].[OrderItems]
 (
 	[OrderUuid] ASC,
 	[Seq] ASC
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderItems]') AND name = N'BLK_OrderItems_OrderId_Seq')
 CREATE NONCLUSTERED INDEX [BLK_OrderItems_OrderUuid_Seq] ON [dbo].[OrderItems]
 (
 	[SKU] ASC
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderItems]') AND name = N'IX_OrderItems_OrderId')
 CREATE NONCLUSTERED INDEX [IX_OrderItems_OrderUuid] ON [dbo].[OrderItems]
 (
 	[OrderUuid] ASC
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderItems]') AND name = N'IX_OrderItems_InventoryId')
 CREATE NONCLUSTERED INDEX [IX_OrderItems_InventoryUuid] ON [dbo].[OrderItems]
 (
 	[InventoryUuid] ASC
-) ON [PRIMARY]
+) 
 GO
 
 

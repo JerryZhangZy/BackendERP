@@ -1,12 +1,12 @@
 ﻿CREATE TABLE [dbo].[InvoiceHeader]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [DatabaseNum] INT NOT NULL, --Each database has its own default value.
-	[MasterAccountNum] INT NOT NULL,
-	[ProfileNum] INT NOT NULL,
+    [DatabaseNum] INT NOT NULL DEFAULT 0, --Each database has its own default value.
+	[MasterAccountNum] INT NOT NULL DEFAULT 0,
+	[ProfileNum] INT NOT NULL DEFAULT 0,
 
     [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice
-	[InvoiceNumber] VARCHAR(50) NOT NULL, --Unique in this database, ProfileNum + InvoiceNumber is DigitBridgeInvoiceNumber, which is global unique
+	[InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT '', --Unique in this database, ProfileNum + InvoiceNumber is DigitBridgeInvoiceNumber, which is global unique
 
     [InvoiceType] INT NOT NULL DEFAULT 0, --Invoice type
     [InvoiceStatus] INT NOT NULL DEFAULT 0, --Invoice status
@@ -54,14 +54,14 @@
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
     CONSTRAINT [PK_InvoiceHeader] PRIMARY KEY ([RowNum]), 
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'UK_InvoiceHeader_InvoiceId')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceHeader] ON [dbo].[InvoiceHeader]
 (
 	[InvoiceUuid] ASC
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'UI_InvoiceHeader_InvoiceNumber')
@@ -69,19 +69,19 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_InvoiceHeader_InvoiceNumber] ON [dbo].[Invo
 (
 	[ProfileNum] ASC,
 	[InvoiceNumber] ASC
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_CustomerID')
 CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_CustomerUuid] ON [dbo].[InvoiceHeader]
 (
 	[CustomerUuid] ASC
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_InvoiceSourceCode')
 CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_InvoiceSourceCode] ON [dbo].[InvoiceHeader]
 (
 	[InvoiceSourceCode] ASC
-) ON [PRIMARY]
+) 
 GO
