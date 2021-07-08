@@ -38,7 +38,7 @@
     [BoxHeight]          DECIMAL (6, 2)  NOT NULL DEFAULT 0,
     [BoxLength]          DECIMAL (6, 2)  NOT NULL DEFAULT 0,
     [BoxWidth]           DECIMAL (6, 2)  NOT NULL DEFAULT 0,
-    [DimensionUnit]      TINYINT         NOT NULL DEFAULT 0,
+    [Unit]      TINYINT         NOT NULL DEFAULT 0,
     [HarmonizedCode]     NVARCHAR (20)   NOT NULL DEFAULT '',
     [TaxProductCode]     NVARCHAR (25)   NOT NULL DEFAULT '',
     [IsBlocked]          TINYINT         NOT NULL DEFAULT 0,
@@ -83,7 +83,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_ProductBasic_ProductUuid] ON [dbo].[Product
 (
 	[ProductUuid] ASC
 ) 
-GO
+GO 
 
 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'None =0 ; BundleItem =1 ', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProductBasic', @level2type = N'COLUMN', @level2name = N'BundleType';
 GO

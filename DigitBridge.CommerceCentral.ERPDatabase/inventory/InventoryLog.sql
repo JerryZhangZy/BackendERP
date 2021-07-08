@@ -48,7 +48,7 @@
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'FK_InventoryLog_InventoryUuid')
-CREATE UNIQUE NONCLUSTERED INDEX [FK_InventoryLog_InventoryUuid] ON [dbo].[InventoryLog]
+CREATE NONCLUSTERED INDEX [FK_InventoryLog_InventoryUuid] ON [dbo].[InventoryLog]
 (
 	[InventoryUuid] ASC
 ) 
@@ -79,7 +79,7 @@ CREATE NONCLUSTERED INDEX [IX_InventoryLog_S_W_L_L] ON [dbo].[InventoryLog]
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'IX_InventoryLog_WarehouseUuid')
-CREATE NONCLUSTERED INDEX [IX_InventoryLog_WarehouseUuid] ON [dbo].[InventoryLog]
+CREATE NONCLUSTERED INDEX [FK_InventoryLog_WarehouseUuid] ON [dbo].[InventoryLog]
 (
 	[WarehouseUuid] ASC
 ) 

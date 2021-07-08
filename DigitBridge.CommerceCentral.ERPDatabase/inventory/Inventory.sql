@@ -92,8 +92,8 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_Inventory_InventoryUuid] ON [dbo].[Inventor
 ) 
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'FK_Inventory_ProductUuid')
-CREATE UNIQUE NONCLUSTERED INDEX [FK_Inventory_ProductUuid] ON [dbo].[Inventory]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'FK_Inventory_ProductUuid_WarehouseUuid')
+CREATE UNIQUE NONCLUSTERED INDEX [FK_Inventory_ProductUuid_WarehouseUuid] ON [dbo].[Inventory]
 (
 	[ProductUuid] ASC,
 	[WarehouseUuid] ASC
@@ -118,7 +118,7 @@ CREATE NONCLUSTERED INDEX [IX_Inventory_S_W_L_L] ON [dbo].[Inventory]
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_WarehouseID')
-CREATE NONCLUSTERED INDEX [IX_Inventory_WarehouseID] ON [dbo].[Inventory]
+CREATE NONCLUSTERED INDEX [FK_Inventory_WarehouseID] ON [dbo].[Inventory]
 (
 	[WarehouseUuid] ASC
 ) 

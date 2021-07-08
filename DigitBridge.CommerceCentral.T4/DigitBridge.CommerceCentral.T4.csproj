@@ -8,9 +8,14 @@
     <None Remove="T4\DataAccess - customer.tt" />
     <None Remove="T4\DataAccess - order.tt" />
     <None Remove="T4\DataAccess -InventoryLog.tt" />
+    <None Remove="T4\DataAccess.tt" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="T4\DataAccess -Inventory.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DataAccess -Inventory.cs</LastGenOutput>
+    </None>
     <None Update="T4\GenerateRepositoryDto.ttinclude">
       <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -143,10 +148,6 @@
       <LastGenOutput>GenerateRepositoryTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="T4\DataAccess.tt">
-      <LastGenOutput>DataAccess.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -158,6 +159,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="T4\DataAccess -Inventory.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataAccess -Inventory.tt</DependentUpon>
+    </Compile>
     <Compile Update="T4\DataAccess.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
