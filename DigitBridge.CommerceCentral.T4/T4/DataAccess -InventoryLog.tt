@@ -60,7 +60,7 @@
 	// Database table define file path
     var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\inventory";
     // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
-    var Files = "InventoryLog";
+    var Files = "ProductBasic,Inventory";
     // current solution path
 	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
     var project= Path.Combine(path,DatabaseProjectName);
