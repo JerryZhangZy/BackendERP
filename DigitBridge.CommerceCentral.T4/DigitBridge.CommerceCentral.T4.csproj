@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="T4\DataAccess - customer.tt" />
+    <None Remove="T4\DataAccess - order.tt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="T4\GenerateRepositoryDto.ttinclude">
       <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
