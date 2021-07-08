@@ -72,7 +72,7 @@ IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[In
 CREATE NONCLUSTERED INDEX [IX_InventoryLog_S_W_L_L] ON [dbo].[InventoryLog]
 (
 	[SKU],
-	[WarehouseID],
+	[WarehouseUuid],
 	[LotNum],
 	[LpnNum]
 ) 
