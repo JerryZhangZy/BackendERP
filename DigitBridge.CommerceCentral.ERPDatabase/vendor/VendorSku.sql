@@ -20,7 +20,7 @@
 	[EffectStartDate] DATE NULL, --Reserve price start date
 	[EffectEndDate] DATE NULL, --Reserve price start date
 
-    [EnterDateUtc] DATETIME NULL,
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [UpdateDateUtc] DATETIME NULL,
     [EnterBy] Varchar(100) NOT NULL,
     [UpdateBy] Varchar(100) NOT NULL,

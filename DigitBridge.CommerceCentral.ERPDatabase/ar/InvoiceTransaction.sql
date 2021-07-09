@@ -38,26 +38,26 @@
 	[DebitAccount] BIGINT NOT NULL DEFAULT 0, --G/L Debit account
 
     [UpdateDateUtc] DATETIME NULL,
-    [EnterBy] Varchar(100) NOT NULL,
-    [UpdateBy] Varchar(100) NOT NULL,
+    [EnterBy] Varchar(100) NOT NULL DEFAULT '',
+    [UpdateBy] Varchar(100) NOT NULL DEFAULT '',
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
     CONSTRAINT [PK_InvoiceTransaction] PRIMARY KEY ([RowNum]), 
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'UK_InvoiceTransaction_TransId')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceTransaction_TransUuid] ON [dbo].[InvoiceTransaction]
 (
 	[TransUuid] ASC
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'FK_InvoiceTransaction_InvoiceId')
 CREATE NONCLUSTERED INDEX [FK_InvoiceTransaction_InvoiceUuid] ON [dbo].[InvoiceTransaction]
 (
 	[InvoiceUuid] ASC
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'IX_InvoiceTransaction_InvoiceNum')
@@ -65,6 +65,6 @@ CREATE NONCLUSTERED INDEX [IX_InvoiceTransaction_TransNum] ON [dbo].[InvoiceTran
 (
 	[InvoiceUuid] ASC,
 	[TransNum] ASC
-) ON [PRIMARY]
+) 
 GO
 

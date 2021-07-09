@@ -5,6 +5,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="T4\DataAccess - customer.cs" />
+    <Compile Remove="T4\DataAccess - InvoiceTransaction.cs" />
+    <Compile Remove="T4\DataAccess - order.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="T4\DataAccess - customer.tt" />
+    <None Remove="T4\DataAccess - InvoiceTransaction.tt" />
+    <None Remove="T4\DataAccess - order.tt" />
+    <None Remove="T4\DataAccess -Inventory.tt" />
+    <None Remove="T4\DataAccess -InventoryLog.tt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="T4\DataAccess.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DataAccess.cs</LastGenOutput>
+    </None>
     <None Update="T4\GenerateRepositoryDto.ttinclude">
       <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -137,10 +155,6 @@
       <LastGenOutput>GenerateRepositoryTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="T4\DataAccess.tt">
-      <LastGenOutput>DataAccess.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -152,11 +166,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="T4\DataAccess.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataAccess.tt</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateRepositoryDto.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

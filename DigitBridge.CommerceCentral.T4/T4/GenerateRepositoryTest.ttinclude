@@ -115,7 +115,7 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public void Put_Test()
         {
-            var list = DataBaseFactory.Find<<#= table.Name #>>().ToList();
+            var list = DataBaseFactory.Find<<#= table.Name #>>("SELECT TOP 1 * FROM <#= table.Name #>").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -139,7 +139,7 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public void Patch_Test()
         {
-            var list = DataBaseFactory.Find<<#= table.Name #>>().ToList();
+            var list = DataBaseFactory.Find<<#= table.Name #>>("SELECT TOP 1 * FROM <#= table.Name #>").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -189,8 +189,8 @@ namespace <#= NamespaceTest #>
         [Fact()]
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
-        {
-            var list = DataBaseFactory.Find<<#= table.Name #>>().ToList();
+        { 
+            var list = DataBaseFactory.Find<<#= table.Name #>>("SELECT TOP 1 * FROM <#= table.Name #>").ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -207,10 +207,14 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            var list = DataBaseFactory.Find<<#= table.Name #>>().ToList();
-            var listData = list.FirstOrDefault();
-            var data = DataBaseFactory.Get<<#= table.Name #>>(listData.RowNum);
-            var result = data.Equals(listData);
+            //var list = DataBaseFactory.Find<<#= table.Name #>>().ToList();
+            //var listData = list.FirstOrDefault();
+            //var data = DataBaseFactory.Get<<#= table.Name #>>(listData.RowNum);
+            //var result = data.Equals(listData);
+
+            var list = DataBaseFactory.Find<<#= table.Name #>>("SELECT TOP 1 * FROM <#= table.Name #>").ToList();
+            var listData = list.FirstOrDefault(); 
+            var result = listData!=null;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -219,7 +223,7 @@ namespace <#= NamespaceTest #>
         //[Fact(Skip = SkipReason)]
         public void GetById_Test()
         {
-            var list = DataBaseFactory.Find<<#= table.Name #>>().ToList();
+            var list = DataBaseFactory.Find<<#= table.Name #>>("SELECT TOP 1 * FROM <#= table.Name #>").ToList();
             var listData = list.FirstOrDefault();
             var data = DataBaseFactory.GetById<<#= table.Name #>>(listData.UniqueId);
             var result = data.Equals(listData);

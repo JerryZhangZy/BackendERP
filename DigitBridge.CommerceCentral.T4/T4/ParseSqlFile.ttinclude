@@ -136,6 +136,7 @@
         public string Type { get; set; }
         public string DataType { get; set; }
         public string Length { get; set; }
+        public int Decimals { get; set; }
         public bool Identity { get; set; }
         public bool Key { get; set; }
         public bool Null { get; set; }
@@ -354,11 +355,11 @@
                 case "decimal":
                     if (Name.EndsWith("Rate"))
                     {
-                        gen = $"f => f.Random.Decimal(0.01m, 0.99m, 4)";
+                        gen = $"f => f.Random.Decimal(0.01m, 0.99m, {this.Decimals})";
                     }
                     else
                     {
-                        gen = $"f => f.Random.Decimal(1, 1000, 4)";
+                        gen = $"f => f.Random.Decimal(1, 1000, {this.Decimals})";
                     }
                     break;
                 case "int":
@@ -607,6 +608,7 @@
                                 : m.Groups[1].Value,
                             Text = text
                         };
+                        col.Decimals = col.Length != null && col.Length.Contains(',') ? int.Parse(col.Length.Split(',')[1]) : 0;
                         col.Key = !string.IsNullOrEmpty(table.PrimaryKey) && table.PrimaryKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
                         col.IsUniqueKey = !string.IsNullOrEmpty(table.UniqueKey) && table.UniqueKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
                         GetFieldAtrribute(col);

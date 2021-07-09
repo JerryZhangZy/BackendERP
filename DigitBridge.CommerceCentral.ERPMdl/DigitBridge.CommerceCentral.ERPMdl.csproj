@@ -10,13 +10,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="customer\" />
-    <Folder Include="inventory\" />
     <Folder Include="ap\" />
     <Folder Include="CustomDefineCodes\" />
+    <Folder Include="customer\" />
+    <Folder Include="inventory\" />
     <Folder Include="po\" />
-    <Folder Include="vendor\" />
     <Folder Include="so\" />
+    <Folder Include="vendor\" />
   </ItemGroup>
 
   <ItemGroup>
