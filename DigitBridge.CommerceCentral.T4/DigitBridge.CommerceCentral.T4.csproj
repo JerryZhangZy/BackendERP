@@ -6,12 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="T4\DataAccess - customer.cs" />
+    <Compile Remove="T4\DataAccess - InvoiceTransaction.cs" />
     <Compile Remove="T4\DataAccess - order.cs" />
-    <Compile Remove="T4\DataAccess -Inventory.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="T4\DataAccess - customer.tt" />
+    <None Remove="T4\DataAccess - InvoiceTransaction.tt" />
     <None Remove="T4\DataAccess - order.tt" />
     <None Remove="T4\DataAccess -Inventory.tt" />
     <None Remove="T4\DataAccess -InventoryLog.tt" />
@@ -165,11 +166,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="T4\DataAccess.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataAccess.tt</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateRepositoryDto.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
