@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[ProductBasic] (
-    [CentralProductNum]  BIGINT          IDENTITY (1000000, 1) NOT NULL,
+    [RowNum] BIGINT IDENTITY(1,1) NOT NULL,
     [DatabaseNum]        INT             NOT NULL,
     [MasterAccountNum]   INT             NOT NULL,
     [ProfileNum]         INT             NOT NULL,
@@ -64,10 +64,11 @@
 
 	[PriceRule] Varchar(50) NOT NULL DEFAULT '',--Product SKU 
 	[Stockable] TINYINT NOT NULL DEFAULT 0,--Product Handel Stock 
-    [OriginalUPC] VARCHAR (20) NOT NULL DEFAULT '',
+    [OriginalUPC] VARCHAR(20) NOT NULL DEFAULT '',
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [ProductUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for product SKU
-    CONSTRAINT [PK_ProductBasic] PRIMARY KEY CLUSTERED ([CentralProductNum] ASC)
+    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
+    CONSTRAINT [PK_ProductBasic] PRIMARY KEY CLUSTERED ([RowNum] ASC)
 );
 GO
 

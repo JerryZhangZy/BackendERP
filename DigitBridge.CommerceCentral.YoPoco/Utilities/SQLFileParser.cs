@@ -134,6 +134,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public string Type { get; set; }
         public string DataType { get; set; }
         public string Length { get; set; }
+        public int Decimals { get; set; }
+        
         public bool Identity { get; set; }
         public bool Key { get; set; }
         public bool Null { get; set; }
@@ -366,11 +368,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 case "decimal":
                     if (Name.EndsWith("Rate"))
                     {
-                        gen = $"f => f.Random.Decimal(0.01m, 0.99m, 4)";
+                        gen = $"f => f.Random.Decimal(0.01m, 0.99m, {this.Decimals})";
                     }
                     else
                     {
-                        gen = $"f => f.Random.Decimal(1, 1000, 4)";
+                        gen = $"f => f.Random.Decimal(1, 1000, {this.Decimals})";
                     }
                     break;
                 case "int":
@@ -610,7 +612,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                             Name = m.Groups[1].Value,
                             Type = ChangeToCSharpType(m.Groups[2].Value, !IsNotNull(text)),
                             DataType = "SqlDbType." + Enum.Parse(typeof(SqlDbType), m.Groups[2].Value, true).ToString(),
-                            Length = m.Groups[3].Value,
+                            Length = m.Groups[3].Value, 
                             Identity = IsIdentity(text),
                             Null = !IsNotNull(text),
                             IsDefault = !string.IsNullOrWhiteSpace(GetColumnDefault(m.Groups[0].Value)),
@@ -619,6 +621,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                                 : m.Groups[1].Value,
                             Text = text
                         };
+                        col.Decimals = col.Length != null && col.Length.Contains(',') ? int.Parse(col.Length.Split(',')[1]) : 0;
                         col.Key = !string.IsNullOrEmpty(table.PrimaryKey) && table.PrimaryKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
                         col.IsUniqueKey = !string.IsNullOrEmpty(table.UniqueKey) && table.UniqueKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
                         GetFieldAtrribute(col);

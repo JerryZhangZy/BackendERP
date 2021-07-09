@@ -20,6 +20,7 @@
 
         3. Primary key - reqired, PK must be BIGINT
             PK_ and PRIMARY KEY define the PRIMARY KEY
+            The primary key field should be named [RowNum]
             for example: CONSTRAINT [PK_PoHeader] PRIMARY KEY ([RowNum])
             this will generate PK in repository
 
@@ -45,6 +46,10 @@
             If column define as TINYINT type.
             this column will generate a bool property. 
             1 = true, 0 = false
+        8. Type length
+           Length follows type without any space. eg. VARCHAR(50)
+           for example: VARCHAR (50) which will be failed to generate code
+           
 
     Generated code module:
         1. Generated file will name as *.Designer.cs, this will overwrie each time generate.
