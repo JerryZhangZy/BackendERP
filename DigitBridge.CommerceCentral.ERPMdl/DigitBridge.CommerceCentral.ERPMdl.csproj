@@ -15,8 +15,8 @@
     <Folder Include="inventory\" />
     <Folder Include="ap\" />
     <Folder Include="po\" />
-    <Folder Include="vendor\" />
     <Folder Include="so\" />
+    <Folder Include="vendor\" />
   </ItemGroup>
 
   <ItemGroup>

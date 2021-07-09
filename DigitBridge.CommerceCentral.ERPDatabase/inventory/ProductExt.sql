@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[ProductInfo] (
+﻿CREATE TABLE [dbo].[ProductExt] (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
     [DatabaseNum]        INT             NOT NULL,
     [MasterAccountNum]   INT             NOT NULL,
@@ -24,7 +24,7 @@
     [Remark] VARCHAR(50) NOT NULL DEFAULT '',
     [Model] VARCHAR(50) NOT NULL DEFAULT '',
     [CatalogPage] VARCHAR(50) NOT NULL DEFAULT '',
-    [Category] VARCHAR(50) NOT NULL DEFAULT '',
+    [CategoryCode] VARCHAR(50) NOT NULL DEFAULT '',
     [GroupCode] VARCHAR(50) NOT NULL DEFAULT '',
     [SubGroupCode] VARCHAR(50) NOT NULL DEFAULT '',
     [CatalogPage] VARCHAR(50) NOT NULL DEFAULT '',
@@ -48,20 +48,24 @@
 	[DefaultWarehouseNum] Varchar(50) NOT NULL DEFAULT '',--Default Warehouse
 	[DefaultVendorNum] Varchar(50) NOT NULL DEFAULT '',--Default package type in S/O or invoice
 
-	[OrderSize] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Default P/O qty. 
+	[PoSize] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Default P/O qty. 
 	[MinStock] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Garantee Instock in anytime. 
 	[SalesCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --A fake cost for sales 
 
-    [LeadDays] INT NOT NULL DEFAULT 0,	--Processing days before shipping 
+    [LeadTimeDay] INT NOT NULL DEFAULT 0,	--Processing days before shipping 
     [ProductYear] VARCHAR(50) NOT NULL DEFAULT '',	--Product year 
-    [YearFrom] DECIMAL(24, 6) NOT NULL DEFAULT 0,	--Product availiable from year
-    [YearTo] DECIMAL(24, 6) NOT NULL DEFAULT 0,		--Product availiable to year
 
-    CONSTRAINT [PK_ProductInfo] PRIMARY KEY CLUSTERED ([RowNum] ASC)
+    CONSTRAINT [PK_ProductExt] PRIMARY KEY CLUSTERED ([RowNum] ASC)
 );
 GO
 
-CREATE UNIQUE NONCLUSTERED INDEX [UI_ProductInfo_MasterAccountNum_ProfileNum_SKU] ON [dbo].[ProductInfo]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_ProductExt_ProductUuid] ON [dbo].[ProductExt]
+(
+	[ProductUuid] ASC
+) ON [PRIMARY]
+GO
+
+CREATE UNIQUE NONCLUSTERED INDEX [UI_ProductExt_MasterAccountNum_ProfileNum_SKU] ON [dbo].[ProductExt]
 (
     [MasterAccountNum] ASC, 
     [ProfileNum] ASC, 
@@ -69,13 +73,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_ProductInfo_MasterAccountNum_ProfileNum_SKU
 );
 GO
 
-CREATE UNIQUE NONCLUSTERED INDEX [UK_ProductInfo_ProductUuid] ON [dbo].[ProductInfo]
-(
-	[ProductUuid] ASC
-) ON [PRIMARY]
-GO
-
-CREATE UNIQUE NONCLUSTERED INDEX [UI_ProductInfo_CentralProductNum] ON [dbo].[ProductInfo]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_ProductExt_CentralProductNum] ON [dbo].[ProductExt]
 (
 	[CentralProductNum] ASC
 ) ON [PRIMARY]

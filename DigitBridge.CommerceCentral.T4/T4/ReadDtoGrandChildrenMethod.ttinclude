@@ -17,7 +17,14 @@
             foreach(var col in gradeChildTable.Columns)
             { 
                 if (col.ignoreGenerate) continue;
-                WriteLine($"{new String('\t',indent+1)}if (dto.Has{col.propertyName}) data.{col.propertyName} = dto.{col.propertyName}{col.ConvertPropertyTypeDtoToData};");
+                if (col.isJson)
+                {
+                    WriteLine($"{new String('\t',indent+1)}if (dto.Has{col.jsonDictionaryName}) data.{col.jsonDictionaryName}.LoadJson(dto.{col.jsonDictionaryName});");
+                }
+                else
+                {
+                    WriteLine($"{new String('\t',indent+1)}if (dto.Has{col.propertyName}) data.{col.propertyName} = dto.{col.propertyName}{col.ConvertPropertyTypeDtoToData};");
+                }
             }
             WriteLine($"");
             WriteLine($"{new String('\t',indent+1)}#endregion read properties");
@@ -48,7 +55,14 @@
             foreach(var col in gradeChildTable.Columns)
             { 
                 if (col.ignoreGenerate) continue;
-                WriteLine($"{new String('\t',indent+1)}if (dto.Has{col.propertyName}) data.{col.propertyName} = dto.{col.propertyName}{col.ConvertPropertyTypeDtoToData};");
+                if (col.isJson)
+                {
+                    WriteLine($"{new String('\t',indent+1)}if (dto.Has{col.jsonDictionaryName}) data.{col.jsonDictionaryName}.LoadJson(dto.{col.jsonDictionaryName});");
+                }
+                else
+                {
+                    WriteLine($"{new String('\t',indent+1)}if (dto.Has{col.propertyName}) data.{col.propertyName} = dto.{col.propertyName}{col.ConvertPropertyTypeDtoToData};");
+                }
             }
             WriteLine($"");
             WriteLine($"{new String('\t',indent+1)}#endregion read properties");

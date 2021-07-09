@@ -40,7 +40,7 @@
 	[BillToDaytimePhone] VARCHAR(50) NULL,
 	[BillToNightPhone] VARCHAR(50) NULL,
 
-    [EnterDateUtc] DATETIME NULL,
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [UpdateDateUtc] DATETIME NULL,
     [EnterBy] Varchar(100) NOT NULL,
     [UpdateBy] Varchar(100) NOT NULL,

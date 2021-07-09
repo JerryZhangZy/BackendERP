@@ -1,10 +1,12 @@
 ﻿using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -19,31 +21,99 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public Dictionary<string, object> Values => _customAttributeValues;
         public string AttributeFor => _attributeFor;
 
-        public CustomAttributes(string attributeFor)
+        #region DataBase
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        protected IDataBaseFactory _dbFactory;
+
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        protected IDataBaseFactory dbFactory
         {
+            get
+            {
+                if (_dbFactory is null)
+                    _dbFactory = DataBaseFactory.CreateDefault();
+                return _dbFactory;
+            }
+        }
+
+        public void SetDataBaseFactory(IDataBaseFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+            return;
+        }
+
+        #endregion DataBase
+
+        public CustomAttributes(IDataBaseFactory dataBaseFactory, string attributeFor)
+        {
+            _dbFactory = dataBaseFactory;
             _attributeFor = attributeFor;
             _customAttributeProfiles = new Dictionary<string, CustomAttributeProfile>();
             _customAttributeValues = new Dictionary<string, object>();
         }
-        public CustomAttributes(string type, IDictionary<string, CustomAttributeProfile> customAttributeProfiles, Dictionary<string, object> customAttributeValues)
+        public CustomAttributes(IDataBaseFactory dataBaseFactory, string type, IDictionary<string, CustomAttributeProfile> customAttributeProfiles, Dictionary<string, object> customAttributeValues)
         {
+            _dbFactory = dataBaseFactory;
             _attributeFor = type;
             _customAttributeProfiles = customAttributeProfiles;
             _customAttributeValues = customAttributeValues;
         }
-        public void LoadProfiles(IDataBaseFactory dataBaseFactory, string attributeFor)
+
+        public void LoadFromValueString(string json)
         {
-            _attributeFor = attributeFor;
-            dataBaseFactory.GetFromCache<List<CustomAttributeProfile>>(
+            LoadProfiles();
+            _customAttributeValues = json.ToDicationary();
+        }
+        public void LoadFromJObject(JObject json)
+        {
+            LoadProfiles();
+            _customAttributeValues = json.ToDicationary();
+        }
+        public void LoadProfiles()
+        {
+            if (_customAttributeProfiles != null && _customAttributeProfiles.Count > 0) return;
+            var lstProfiles = dbFactory.GetFromCache<List<CustomAttributeProfile>>(
                 $"CustomAttributeProfile: AttributeFor: {_attributeFor}",
-                () => dataBaseFactory.Find<CustomAttributeProfile>("WHERE AttributeFor = @0 ORDER BY Seq", _attributeFor).ToList()
+                () => dbFactory.Find<CustomAttributeProfile>("WHERE AttributeFor = @0 ORDER BY Seq", _attributeFor).ToList()
             );
+
+            _customAttributeProfiles = new Dictionary<string, CustomAttributeProfile>();
+            if (lstProfiles != null && lstProfiles.Count > 0)
+            {
+                foreach (var profile in lstProfiles)
+                {
+                    if (profile is null || string.IsNullOrEmpty(profile.AttributeName)) continue;
+                    _customAttributeProfiles.Add(profile.AttributeName, profile);
+                }
+            }
+        }
+        public CustomAttributes Clear() => ClearValues();
+
+        public CustomAttributes CopyFrom(CustomAttributes other)
+        {
+            _customAttributeValues = other.Values.Clone();
+            return this;
         }
 
-        public object Clone() => new CustomAttributes(_attributeFor, _customAttributeProfiles, _customAttributeValues.Clone());
+        public object Clone() => new CustomAttributes(_dbFactory, _attributeFor, _customAttributeProfiles, _customAttributeValues.Clone());
 
         public bool Equals(CustomAttributes other) => other is CustomAttributes && _customAttributeValues.IsEqualTo(other.Values);
 
+        public string ToValueString() => (_customAttributeValues is null) ? string.Empty : _customAttributeValues.ToJsonString();
+
+        public CustomAttributes LoadJson(JObject json)
+        {
+            LoadProfiles();
+            LoadFromJObject((JObject)json["values"]);
+            return this;
+        }
+        public JObject ToJson()
+        {
+            return new JObject()
+            {
+                { "schema", JObject.FromObject(_customAttributeProfiles) },
+                { "values", _customAttributeValues.ToJObject() } };
+        }
 
         #region CustomAttributeProfile define list
 
@@ -150,6 +220,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public CustomAttributes SetValues(Dictionary<string, object> customAttributeValues)
         {
             _customAttributeValues = customAttributeValues;
+            return this;
+        }
+        public CustomAttributes SetValues(JObject json)
+        {
+            _customAttributeValues = json.ToDicationary();
             return this;
         }
 

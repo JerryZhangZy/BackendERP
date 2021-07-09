@@ -64,19 +64,19 @@
 	[BillToNightPhone] VARCHAR(50) NOT NULL DEFAULT '',
 
     [UpdateDateUtc] DATETIME NULL,
-    [EnterBy] Varchar(100) NOT NULL,
-    [UpdateBy] Varchar(100) NOT NULL,
+    [EnterBy] Varchar(100) NOT NULL DEFAULT '',
+    [UpdateBy] Varchar(100) NOT NULL DEFAULT '',
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
     CONSTRAINT [PK_InvoiceHeaderInfo] PRIMARY KEY ([RowNum]), 
-) ON [PRIMARY]
+) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeaderInfo]') AND name = N'UK_InvoiceHeaderInfo_InvoiceId')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_InvoiceHeaderInfo_InvoiceUuid] ON [dbo].[InvoiceHeaderInfo]
 (
 	[InvoiceUuid] ASC
-) ON [PRIMARY]
+) 
 GO
 
 

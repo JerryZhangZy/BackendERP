@@ -51,26 +51,26 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.Terms, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.TermsDays, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))
-					.RuleFor(u => u.SubTotalAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.SalesAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.TotalAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.TaxableAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.NonTaxableAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.TaxRate, f => f.Random.Decimal(0.01m, 0.99m, 4))
-					.RuleFor(u => u.TaxAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.DiscountRate, f => f.Random.Decimal(0.01m, 0.99m, 4))
-					.RuleFor(u => u.DiscountAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.ShippingAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.ShippingTaxAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.MiscAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.MiscTaxAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.ChargeAndAllowanceAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.PaidAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.CreditAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.Balance, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.UnitCost, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.AvgCost, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.LotCost, f => f.Random.Decimal(1, 1000, 4))
+					.RuleFor(u => u.SubTotalAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.SalesAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.TotalAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.TaxableAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.NonTaxableAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.TaxRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
+					.RuleFor(u => u.TaxAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.DiscountRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
+					.RuleFor(u => u.DiscountAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ShippingAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ShippingTaxAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.MiscAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.MiscTaxAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ChargeAndAllowanceAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.PaidAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.CreditAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.Balance, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.UnitCost, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.AvgCost, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.LotCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.InvoiceSourceCode, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
@@ -150,7 +150,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Put_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeader>().ToList();
+            var list = DataBaseFactory.Find<InvoiceHeader>("SELECT TOP 1 * FROM InvoiceHeader").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -170,7 +170,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Patch_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeader>().ToList();
+            var list = DataBaseFactory.Find<InvoiceHeader>("SELECT TOP 1 * FROM InvoiceHeader").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -219,8 +219,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         [Fact()]
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
-        {
-            var list = DataBaseFactory.Find<InvoiceHeader>().ToList();
+        { 
+            var list = DataBaseFactory.Find<InvoiceHeader>("SELECT TOP 1 * FROM InvoiceHeader").ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -237,10 +237,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeader>().ToList();
-            var listData = list.FirstOrDefault();
-            var data = DataBaseFactory.Get<InvoiceHeader>(listData.RowNum);
-            var result = data.Equals(listData);
+            //var list = DataBaseFactory.Find<InvoiceHeader>().ToList();
+            //var listData = list.FirstOrDefault();
+            //var data = DataBaseFactory.Get<InvoiceHeader>(listData.RowNum);
+            //var result = data.Equals(listData);
+
+            var list = DataBaseFactory.Find<InvoiceHeader>("SELECT TOP 1 * FROM InvoiceHeader").ToList();
+            var listData = list.FirstOrDefault(); 
+            var result = listData!=null;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -249,7 +253,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetById_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeader>().ToList();
+            var list = DataBaseFactory.Find<InvoiceHeader>("SELECT TOP 1 * FROM InvoiceHeader").ToList();
             var listData = list.FirstOrDefault();
             var data = DataBaseFactory.GetById<InvoiceHeader>(listData.UniqueId);
             var result = data.Equals(listData);

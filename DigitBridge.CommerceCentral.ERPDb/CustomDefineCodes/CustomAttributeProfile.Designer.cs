@@ -379,6 +379,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+
+
         #endregion Properties - Generated 
 
         #region Methods - Parent

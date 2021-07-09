@@ -13,6 +13,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+using Newtonsoft.Json.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
@@ -287,6 +288,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public string UpdateBy { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasUpdateBy => UpdateBy != null;
+
 
 
         #endregion Properties - Generated 

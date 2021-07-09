@@ -6,7 +6,7 @@
 	[ProfileNum] INT NOT NULL,
 
     [InventoryLogUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Inventory Log Line
-    [ProductUuid] VARCHAR(50) NOT NULL DEFAULT '',
+    [ProductUuid] VARCHAR(50) NOT NULL,
     [InventoryUuid] VARCHAR(50) NOT NULL DEFAULT '',
 
     [BatchNum] BIGINT NULL DEFAULT 0, --Batch number for log update
@@ -16,21 +16,21 @@
     [LogStatus] INT NULL DEFAULT 0, --Log status
 	[LogDate] DATE NOT NULL, --Invoice date
 	[LogTime] TIME NOT NULL, --Invoice time
-	[LogBy] Varchar(100) NOT NULL,
+	[LogBy] Varchar(100) NOT NULL DEFAULT '',
 
-	[SKU] Varchar(100) NOT NULL,--Product SKU 
-	[Description] NVARCHAR(200) NULL, --Warehouse Guid
-	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
-	[WhsDescription] NVarchar(200) NOT NULL,--Invoice item description 
-	[LotNum] Varchar(100) NOT NULL,--Product SKU Lot Number 
+	[SKU] Varchar(100) NOT NULL DEFAULT '',--Product SKU 
+	[Description] NVARCHAR(200) NOT NULL DEFAULT '', --Warehouse Guid
+	[WarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --Warehouse Guid
+	[WhsDescription] NVarchar(200) NOT NULL DEFAULT '',--Invoice item description 
+	[LotNum] Varchar(100) NOT NULL DEFAULT '',--Product SKU Lot Number 
 	[LotInDate] DATE NULL, --Lot receive Date
 	[LotExpDate] DATE NULL, --Lot Expiration date
-	[LotDescription] NVarchar(200) NOT NULL,--Invoice item description 
-	[LpnNum] Varchar(100) NOT NULL,--Product SKU LPN Number 
-	[LpnDescription] NVarchar(200) NOT NULL,--Invoice item description 
+	[LotDescription] NVarchar(200) NOT NULL DEFAULT '',--Invoice item description 
+	[LpnNum] Varchar(100) NOT NULL DEFAULT '',--Product SKU LPN Number 
+	[LpnDescription] NVarchar(200) NOT NULL DEFAULT '',--Invoice item description 
 	[Notes] NVarchar(500) NOT NULL,--Invoice item notes 
 
-	[UOM] Varchar(50) NULL,--Product SKU Qty unit of measure 
+	[UOM] Varchar(50) NOT NULL DEFAULT '',--Product SKU Qty unit of measure 
 	[LogQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Log Transaction Qty (>0: in, <0: out ).
 
 	[BeforeInstock] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item in stock Qty. 
@@ -38,51 +38,58 @@
 	[BeforeUnitCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total receive cost. 
 	[BeforeAvgCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item moving average cost. 
 
-    [EnterDateUtc] DATETIME NULL,
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [UpdateDateUtc] DATETIME NULL,
-    [EnterBy] Varchar(100) NOT NULL,
-    [UpdateBy] Varchar(100) NOT NULL,
+    [EnterBy] Varchar(100) NOT NULL DEFAULT '',
+    [UpdateBy] Varchar(100) NOT NULL DEFAULT '',
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
-    CONSTRAINT [PK_Inventory] PRIMARY KEY ([RowNum]), 
-) ON [PRIMARY]
+    CONSTRAINT [PK_InventoryLog] PRIMARY KEY ([RowNum]), 
+) 
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'UI_Inventory_InventoryId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_Inventory_InventoryUuid] ON [dbo].[Inventory]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'FK_InventoryLog_InventoryUuid')
+CREATE NONCLUSTERED INDEX [FK_InventoryLog_InventoryUuid] ON [dbo].[InventoryLog]
 (
 	[InventoryUuid] ASC
-) ON [PRIMARY]
+) 
 GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'UK_InventoryLog_InventoryLogUuid')
+CREATE UNIQUE NONCLUSTERED INDEX [UK_InventoryLog_InventoryLogUuid] ON [dbo].[InventoryLog]
+(
+	[InventoryLogUuid] ASC
+) 
+GO 
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_SKU')
-CREATE NONCLUSTERED INDEX [IX_Inventory_SKU] ON [dbo].[Inventory]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'IX_InventoryLog_SKU')
+CREATE NONCLUSTERED INDEX [IX_InventoryLog_SKU] ON [dbo].[InventoryLog]
 (
 	[SKU] ASC
-) ON [PRIMARY]
+) 
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_S_W_L_L')
-CREATE NONCLUSTERED INDEX [IX_Inventory_S_W_L_L] ON [dbo].[Inventory]
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'IX_InventoryLog_S_W_L_L')
+CREATE NONCLUSTERED INDEX [IX_InventoryLog_S_W_L_L] ON [dbo].[InventoryLog]
 (
 	[SKU],
-	[WarehouseID],
+	[WarehouseUuid],
 	[LotNum],
 	[LpnNum]
-) ON [PRIMARY]
+) 
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_WarehouseID')
-CREATE NONCLUSTERED INDEX [IX_Inventory_WarehouseUuid] ON [dbo].[Inventory]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'IX_InventoryLog_WarehouseUuid')
+CREATE NONCLUSTERED INDEX [FK_InventoryLog_WarehouseUuid] ON [dbo].[InventoryLog]
 (
 	[WarehouseUuid] ASC
-) ON [PRIMARY]
+) 
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_LpnNum')
-CREATE NONCLUSTERED INDEX [IX_Inventory_LpnNum] ON [dbo].[Inventory]
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryLog]') AND name = N'IX_InventoryLog_LpnNum')
+CREATE NONCLUSTERED INDEX [IX_InventoryLog_LpnNum] ON [dbo].[InventoryLog]
 (
 	[LpnNum] ASC
-) ON [PRIMARY]
+) 
 GO
 
 

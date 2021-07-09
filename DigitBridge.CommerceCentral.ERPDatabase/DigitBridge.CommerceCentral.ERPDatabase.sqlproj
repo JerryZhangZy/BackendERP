@@ -131,6 +131,6 @@
     <None Include="CustomDefineCodes\CustomAttributeProfile.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="inventory\ProductInfo.sql" />
+    <None Include="inventory\ProductExt.sql" />
   </ItemGroup>
 </Project>

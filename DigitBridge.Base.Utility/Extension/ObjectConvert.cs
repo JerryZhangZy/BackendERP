@@ -688,6 +688,5 @@ namespace DigitBridge.Base.Utility
             (lst?.Any() != true)
                 ? new List<T>()
                 : lst.Select(x => x.ConvertObject<T>()).ToList();
-        }
     }
 }

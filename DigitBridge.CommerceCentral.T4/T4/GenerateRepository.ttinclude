@@ -166,6 +166,43 @@ foreach(var col in table.Columns)
         }
 
 <# } #>
+
+<# // generate all json fields
+if (table.HasJsonColumns)
+{
+    foreach(var col in table.JsonColumns)
+    { 
+        if (col.ignoreGenerate) continue;
+        if (col.IsPrimaryKey) continue;
+#>
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        protected CustomAttributes _<#= col.jsonDictionaryName #>;
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public virtual CustomAttributes <#= col.jsonDictionaryName #>
+        {
+            get
+            {
+<#
+                indent = 4;
+                WriteLine($"{new String('\t',indent)}if (_{col.jsonDictionaryName} is null) ");
+                WriteLine($"{new String('\t',indent+1)}_{col.jsonDictionaryName} = new CustomAttributes(dbFactory, \"{table.Name}\"); ");
+                WriteLine($"{new String('\t',indent)}return _{col.jsonDictionaryName}; ");
+#>
+            }
+            set
+            {
+<#				
+		        indent = 4;
+                WriteLine($"{new String('\t',indent)}_{col.jsonDictionaryName} = (value is null) ? new CustomAttributes(dbFactory, \"{table.Name}\") : value; ");
+#>
+            }
+        }
+
+<#  
+    } 
+}
+#>
+
         #endregion Properties - Generated 
 
         #region Methods - Parent
@@ -441,6 +478,7 @@ if(table.HasOneToManyChildren)
 
         public override <#= table.Name #> Clear()
         {
+            base.Clear();
 <# // generate clear method
             foreach(var col in table.Columns)
             { 
@@ -451,6 +489,10 @@ if(table.HasOneToManyChildren)
                 }
                 else {
                     WriteLine($"{new String('\t',indent)}{col.privateName} = {col.GetDefaultValue()}; ");
+                }
+                if (col.isJson)
+                {
+                    WriteLine($"{new String('\t',indent)}{col.jsonDictionaryName}.Clear(); ");
                 }
             }
 #>
@@ -586,6 +628,33 @@ if(table.HasForeignKey)
     }
 } 
 #>
+
+<# // generate convert methods for json fields
+if (table.HasJsonColumns)
+{
+    foreach(var col in table.JsonColumns)
+    { 
+        indent = 2;
+
+        // convert from DB Json string
+        WriteLine($"{new String('\t',indent)}public override {table.Name} ConvertDbFieldsToData()");
+        WriteLine($"{new String('\t',indent)}{{");
+        WriteLine($"{new String('\t',indent+1)}base.ConvertDbFieldsToData();");
+        WriteLine($"{new String('\t',indent+1)}{col.jsonDictionaryName}.LoadFromValueString({col.propertyName});");
+        WriteLine($"{new String('\t',indent+1)}return this;");
+        WriteLine($"{new String('\t',indent)}}}");
+
+        // convert to DB Json string
+        WriteLine($"{new String('\t',indent)}public override {table.Name} ConvertDataFieldsToDb()");
+        WriteLine($"{new String('\t',indent)}{{");
+        WriteLine($"{new String('\t',indent+1)}base.ConvertDataFieldsToDb();");
+        WriteLine($"{new String('\t',indent+1)}{col.propertyName} = {col.jsonDictionaryName}.ToValueString();");
+        WriteLine($"{new String('\t',indent+1)}return this;");
+        WriteLine($"{new String('\t',indent)}}}");
+    }
+} 
+#>
+
         #endregion Methods - Generated 
     }
 }

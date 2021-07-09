@@ -65,9 +65,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_invoiceUuid = value.TruncateTo(50); 
+				OnPropertyChanged("InvoiceUuid", value);
             }
         }
 
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
         public virtual string JsonFields
         {
             get
@@ -77,29 +79,34 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_jsonFields = value.TrimEnd(); 
+				OnPropertyChanged("JsonFields", value);
             }
         }
 
-        protected CustomAttributes _fields;
+
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        protected CustomAttributes _Fields;
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
         public virtual CustomAttributes Fields
         {
             get
             {
-                if (_fields is null)
-                    _fields = _jsonFields.ToDicationary();
-                return _fields;
+				if (_Fields is null) 
+					_Fields = new CustomAttributes(dbFactory, "InvoiceHeaderAttributes"); 
+				return _Fields; 
             }
             set
             {
-                _jsonFields = value.TrimEnd();
+				_Fields = (value is null) ? new CustomAttributes(dbFactory, "InvoiceHeaderAttributes") : value; 
             }
         }
+
 
         #endregion Properties - Generated 
 
         #region Methods - Parent
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+		[XmlIgnore, JsonIgnore, IgnoreCompare]
 		private InvoiceData Parent { get; set; }
 		public InvoiceData GetParent() => Parent;
 		public InvoiceHeaderAttributes SetParent(InvoiceData parent)
@@ -120,8 +127,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override InvoiceHeaderAttributes Clear()
         {
+            base.Clear();
 			_invoiceUuid = String.Empty; 
 			_jsonFields = String.Empty; 
+			Fields.Clear(); 
             ClearChildren();
             return this;
         }
@@ -141,6 +150,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (data is null) return;
             return;
         }
+
+
+		public override InvoiceHeaderAttributes ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			Fields.LoadFromValueString(JsonFields);
+			return this;
+		}
+		public override InvoiceHeaderAttributes ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			JsonFields = Fields.ToValueString();
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

@@ -20,7 +20,6 @@
 
         3. Primary key - reqired, PK must be BIGINT
             PK_ and PRIMARY KEY define the PRIMARY KEY
-            The primary key field should be named [RowNum]
             for example: CONSTRAINT [PK_PoHeader] PRIMARY KEY ([RowNum])
             this will generate PK in repository
 
@@ -46,10 +45,6 @@
             If column define as TINYINT type.
             this column will generate a bool property. 
             1 = true, 0 = false
-        8. Type length
-           Length follows type without any space. eg. VARCHAR(50)
-           for example: VARCHAR (50) which will be failed to generate code
-           
 
     Generated code module:
         1. Generated file will name as *.Designer.cs, this will overwrie each time generate.
@@ -61,8 +56,64 @@
         6. Service Class - will generate srevice class.
         7. Service Class Tester - will generate srevice class tester.
 */
-#>
-<#@ include file="SettingForInvoice.ttinclude" #>
+
+	// Database table define file path
+    var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\inventory";
+    // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
+    var Files = "InventoryLog";
+    // current solution path
+	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
+    var project= Path.Combine(path,DatabaseProjectName);
+
+    // generate repository class for each table
+    var generateModel = true;
+    var Namespace = "DigitBridge.CommerceCentral.ERPDb";
+    var ModelFolder = "DigitBridge.CommerceCentral.ERPDb\\inventory";
+    var generateDto = true;
+    var DtoFolder = "DigitBridge.CommerceCentral.ERPDb\\inventory\\dto";
+
+    // generate tester class for each table repository
+    var generateTester = true;
+    var NamespaceTest = "DigitBridge.CommerceCentral.ERPDb.Tests.Integration";
+    var TesterFolder = "DigitBridge.CommerceCentral.ERPDb.Tests.Integration";
+
+    // generate structure repository class contain multiple table
+    var generateStructureRepository = false;
+    var generateStructureTester = false;
+    var NamespaceStructure = "DigitBridge.CommerceCentral.ERPDb";
+    var StructureFolder = "DigitBridge.CommerceCentral.ERPDb\\inventory";
+    var StructureClass = new StructureInfo("InventoryLogData",
+            new StructureTable() { Name = "InventoryLog", MainTable = true, OneToOne = true } 
+        );
+
+    // generate structure Dto class
+    var generateStructureDto = false;
+    var generateStructureDtoTester = false;
+    var NamespaceStructureDto = "DigitBridge.CommerceCentral.ERPDb";
+    var StructureDtoFolder = "DigitBridge.CommerceCentral.ERPDb\\inventory\\dto";
+    var StructureDtoName = "InventoryLogDataDto";
+
+    // generate service class
+    var generateService = true;
+    var NamespaceService = "DigitBridge.CommerceCentral.ERPMdl";
+    var ServiceFolder = "DigitBridge.CommerceCentral.ERPMdl\\inventory";
+    var ServiceName = "InventoryLogService";
+
+    var generateServiceTester = true;
+    var NamespaceServiceTest = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
+    var ServiceTesterFolder = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
+
+    var indent = 2;
+    var dir = string.Empty;
+
+    // Read schema
+
+    //var manager = new Manager(Host, GenerationEnvironment, true) { OutputPath = path};
+    var parser = new SQLFileParser(project, Files, StructureClass);
+
+    parser.Parse();
+    var tables = parser.Tables;
+#>    
 
 <#      
     // Generate model output

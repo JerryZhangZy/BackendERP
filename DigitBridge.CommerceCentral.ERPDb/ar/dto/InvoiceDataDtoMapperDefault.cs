@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json.Linq;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 
@@ -201,7 +202,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#region read all not null properties
 
 			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
-			if (dto.HasJsonFields) data.JsonFields = dto.JsonFields;
+			if (dto.HasFields) data.Fields.LoadJson(dto.Fields);
 
 			#endregion read properties
 
@@ -327,7 +328,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			if (dto.HasInvoiceItemsUuid) data.InvoiceItemsUuid = dto.InvoiceItemsUuid;
 			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
-			if (dto.HasJsonFields) data.JsonFields = dto.JsonFields;
+			if (dto.HasFields) data.Fields.LoadJson(dto.Fields);
 
 			#endregion read properties
 
@@ -513,7 +514,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			dto.RowNum = data.RowNum;
 			dto.InvoiceUuid = data.InvoiceUuid;
-			dto.JsonFields = data.JsonFields;
+			dto.Fields = data.Fields.ToJson();
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
 
@@ -638,7 +639,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.RowNum = data.RowNum;
 			dto.InvoiceItemsUuid = data.InvoiceItemsUuid;
 			dto.InvoiceUuid = data.InvoiceUuid;
-			dto.JsonFields = data.JsonFields;
+			dto.Fields = data.Fields.ToJson();
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
 

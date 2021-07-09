@@ -49,7 +49,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public T FromCache<T>(string key, Func<T> create, bool reNew = false, bool useDefault = false)
         {
-            if (_Cache != null && reNew)
+            if (_Cache != null && !reNew)
             {
                 if (_Cache.TryGetValue(key, out var value))
                     return (T)value;

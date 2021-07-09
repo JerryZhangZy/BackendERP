@@ -46,7 +46,10 @@
         public string ParameterName { get {return $"{Name.First().ToString().ToLower()}{Name.Substring(1)}"; } }
         public string DtoName { get; set; }
         public List<SqlColumnInfo> Columns { get; set; }
+        public List<SqlColumnInfo> JsonColumns { get; set; }
         public string Text { get; set; }
+        
+        public bool HasJsonColumns { get { return JsonColumns != null && JsonColumns.Count > 0; } }
 
         public string PrimaryKey { get; set; }
         public string UniqueKey { get; set; }
@@ -146,6 +149,7 @@
         public string Type { get; set; }
         public string DataType { get; set; }
         public string Length { get; set; }
+        public int Decimals { get; set; }
         public bool Identity { get; set; }
         public bool Key { get; set; }
         public bool Null { get; set; }
@@ -246,6 +250,14 @@
                 ); 
             }
         }
+        public string jsonDictionaryName {
+            get { return $"{Name.Substring(4)}"; }
+        }
+
+        public bool isJson { 
+            get { return isString && Name.StartsWith("Json",StringComparison.CurrentCultureIgnoreCase); }
+        }
+
         public bool isString {
             get { return (Type == "string"); }
         }
@@ -331,7 +343,8 @@
                 return $".RuleFor(u => u.{Name}, f => f.PickRandom(TestHelper.InvoiceItemType))";
             if (Name.Equals("InvoiceItemStatus", StringComparison.CurrentCultureIgnoreCase))
                 return $".RuleFor(u => u.{Name}, f => f.PickRandom(TestHelper.InvoiceItemStatus))";
-
+            if (isJson)
+                return $".RuleFor(u => u.{jsonDictionaryName}, (f, u) => u.{jsonDictionaryName}.SetValues(f.Random.JObject()))";
 
             var gen = $"f => null";
             var t = Type.ToLower();
@@ -365,11 +378,11 @@
                 case "decimal":
                     if (Name.EndsWith("Rate"))
                     {
-                        gen = $"f => f.Random.Decimal(0.01m, 0.99m, 4)";
+                        gen = $"f => f.Random.Decimal(0.01m, 0.99m, {this.Decimals})";
                     }
                     else
                     {
-                        gen = $"f => f.Random.Decimal(1, 1000, 4)";
+                        gen = $"f => f.Random.Decimal(1, 1000, {this.Decimals})";
                     }
                     break;
                 case "int":
@@ -516,6 +529,7 @@
             if (table == null) return null;
 
             table.Columns = GetSqlColumnInfo(content, table);
+            table.JsonColumns = table.Columns.Where(x => x.isJson).ToList();
             table.GetRandomProperties();
             return table;
         }
@@ -618,6 +632,7 @@
                                 : m.Groups[1].Value,
                             Text = text
                         };
+                        col.Decimals = col.Length != null && col.Length.Contains(',') ? int.Parse(col.Length.Split(',')[1]) : 0;
                         col.Key = !string.IsNullOrEmpty(table.PrimaryKey) && table.PrimaryKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
                         col.IsUniqueKey = !string.IsNullOrEmpty(table.UniqueKey) && table.UniqueKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
                         col.IsPrimaryKey = !string.IsNullOrEmpty(table.PrimaryKey) && table.PrimaryKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
@@ -815,6 +830,9 @@
         {
             if (col == null) return col;
             col.PropertyAtrributes = new List<string>();
+
+            if (col.isJson)
+                col.PropertyAtrributes.Add($"[XmlIgnore, JsonIgnore, IgnoreCompare]");
 
             return col;
         }

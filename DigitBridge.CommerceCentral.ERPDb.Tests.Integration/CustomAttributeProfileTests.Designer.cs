@@ -129,7 +129,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Put_Test()
         {
-            var list = DataBaseFactory.Find<CustomAttributeProfile>().ToList();
+            var list = DataBaseFactory.Find<CustomAttributeProfile>("SELECT TOP 1 * FROM CustomAttributeProfile").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -149,7 +149,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Patch_Test()
         {
-            var list = DataBaseFactory.Find<CustomAttributeProfile>().ToList();
+            var list = DataBaseFactory.Find<CustomAttributeProfile>("SELECT TOP 1 * FROM CustomAttributeProfile").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -198,8 +198,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         [Fact()]
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
-        {
-            var list = DataBaseFactory.Find<CustomAttributeProfile>().ToList();
+        { 
+            var list = DataBaseFactory.Find<CustomAttributeProfile>("SELECT TOP 1 * FROM CustomAttributeProfile").ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -216,10 +216,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            var list = DataBaseFactory.Find<CustomAttributeProfile>().ToList();
-            var listData = list.FirstOrDefault();
-            var data = DataBaseFactory.Get<CustomAttributeProfile>(listData.RowNum);
-            var result = data.Equals(listData);
+            //var list = DataBaseFactory.Find<CustomAttributeProfile>().ToList();
+            //var listData = list.FirstOrDefault();
+            //var data = DataBaseFactory.Get<CustomAttributeProfile>(listData.RowNum);
+            //var result = data.Equals(listData);
+
+            var list = DataBaseFactory.Find<CustomAttributeProfile>("SELECT TOP 1 * FROM CustomAttributeProfile").ToList();
+            var listData = list.FirstOrDefault(); 
+            var result = listData!=null;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -228,7 +232,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetById_Test()
         {
-            var list = DataBaseFactory.Find<CustomAttributeProfile>().ToList();
+            var list = DataBaseFactory.Find<CustomAttributeProfile>("SELECT TOP 1 * FROM CustomAttributeProfile").ToList();
             var listData = list.FirstOrDefault();
             var data = DataBaseFactory.GetById<CustomAttributeProfile>(listData.UniqueId);
             var result = data.Equals(listData);

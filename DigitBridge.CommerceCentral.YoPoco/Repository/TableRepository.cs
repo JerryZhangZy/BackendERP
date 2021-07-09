@@ -222,6 +222,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #region Property Changed
         protected IList<string> _changedProperties;
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
         public virtual IList<string> ChangedProperties
         {
             get
@@ -236,10 +237,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (!string.IsNullOrEmpty(name) && !ChangedProperties.Contains(name))
                 ChangedProperties.Add(name);
         }
+        public virtual void ClearChangedProperties()
+        {
+            ChangedProperties.Clear();
+        }
 
         #endregion Property Changed
 
-            #region CRUD Methods
+        #region CRUD Methods
 
         public virtual bool Add(IDataBaseFactory DbFactory)
         {
@@ -532,6 +537,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
         public virtual TEntity Clear()
         {
+            ClearChangedProperties();
             return (TEntity)this;
         }
 

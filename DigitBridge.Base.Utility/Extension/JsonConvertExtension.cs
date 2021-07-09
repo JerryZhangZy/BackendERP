@@ -124,7 +124,14 @@ namespace DigitBridge.Base.Utility
             if (string.IsNullOrEmpty(jsonString))
                 return new Dictionary<string, object>();
 
-            return JObject.Parse(jsonString).ToDicationary();
+            try
+            {
+                return JObject.Parse(jsonString).ToDicationary();
+            }
+            catch (JsonReaderException jex)
+            {
+                return new Dictionary<string, object>();
+            }
         }
 
         public static Dictionary<string, object> ToDicationary(this JObject jObject) => DeserializeJObject(jObject);

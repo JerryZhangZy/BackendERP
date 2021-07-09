@@ -53,41 +53,41 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))
 					.RuleFor(u => u.UOM, f => f.PickRandom(TestHelper.UOM))
 					.RuleFor(u => u.PackType, f => f.PickRandom(TestHelper.PackType))
-					.RuleFor(u => u.PackQty, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.OrderPack, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.ShipPack, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.CancelledPack, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.OrderQty, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.ShipQty, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.CancelledQty, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.OpenQty, f => f.Random.Decimal(1, 1000, 4))
+					.RuleFor(u => u.PackQty, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.OrderPack, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ShipPack, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.CancelledPack, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.OrderQty, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ShipQty, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.CancelledQty, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.OpenQty, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.PriceRule, f => f.PickRandom(TestHelper.PriceRule))
-					.RuleFor(u => u.Price, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.DiscountRate, f => f.Random.Decimal(0.01m, 0.99m, 4))
-					.RuleFor(u => u.DiscountAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.DiscountPrice, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.ExtAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.TaxableAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.NonTaxableAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.TaxRate, f => f.Random.Decimal(0.01m, 0.99m, 4))
-					.RuleFor(u => u.TaxAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.ShippingAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.ShippingTaxAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.MiscAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.MiscTaxAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.ChargeAndAllowanceAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.ItemTotalAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.OrderAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.CancelledAmount, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.OpenAmount, f => f.Random.Decimal(1, 1000, 4))
+					.RuleFor(u => u.Price, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.DiscountRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
+					.RuleFor(u => u.DiscountAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.DiscountPrice, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ExtAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.TaxableAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.NonTaxableAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.TaxRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
+					.RuleFor(u => u.TaxAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ShippingAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ShippingTaxAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.MiscAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.MiscTaxAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ChargeAndAllowanceAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ItemTotalAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.OrderAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.CancelledAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.OpenAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.Stockable, f => f.Random.Bool())
 					.RuleFor(u => u.IsAr, f => f.Random.Bool())
 					.RuleFor(u => u.Taxable, f => f.Random.Bool())
 					.RuleFor(u => u.Costable, f => f.Random.Bool())
 					.RuleFor(u => u.IsProfit, f => f.Random.Bool())
-					.RuleFor(u => u.UnitCost, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.AvgCost, f => f.Random.Decimal(1, 1000, 4))
-					.RuleFor(u => u.LotCost, f => f.Random.Decimal(1, 1000, 4))
+					.RuleFor(u => u.UnitCost, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.AvgCost, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.LotCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.LotInDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.LotExpDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
@@ -168,7 +168,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Put_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItems>().ToList();
+            var list = DataBaseFactory.Find<InvoiceItems>("SELECT TOP 1 * FROM InvoiceItems").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -188,7 +188,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Patch_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItems>().ToList();
+            var list = DataBaseFactory.Find<InvoiceItems>("SELECT TOP 1 * FROM InvoiceItems").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -237,8 +237,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         [Fact()]
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
-        {
-            var list = DataBaseFactory.Find<InvoiceItems>().ToList();
+        { 
+            var list = DataBaseFactory.Find<InvoiceItems>("SELECT TOP 1 * FROM InvoiceItems").ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -255,10 +255,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItems>().ToList();
-            var listData = list.FirstOrDefault();
-            var data = DataBaseFactory.Get<InvoiceItems>(listData.RowNum);
-            var result = data.Equals(listData);
+            //var list = DataBaseFactory.Find<InvoiceItems>().ToList();
+            //var listData = list.FirstOrDefault();
+            //var data = DataBaseFactory.Get<InvoiceItems>(listData.RowNum);
+            //var result = data.Equals(listData);
+
+            var list = DataBaseFactory.Find<InvoiceItems>("SELECT TOP 1 * FROM InvoiceItems").ToList();
+            var listData = list.FirstOrDefault(); 
+            var result = listData!=null;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -267,7 +271,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetById_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItems>().ToList();
+            var list = DataBaseFactory.Find<InvoiceItems>("SELECT TOP 1 * FROM InvoiceItems").ToList();
             var listData = list.FirstOrDefault();
             var data = DataBaseFactory.GetById<InvoiceItems>(listData.UniqueId);
             var result = data.Equals(listData);

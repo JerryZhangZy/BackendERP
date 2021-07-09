@@ -3,18 +3,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-    
-
               
 
               
@@ -69,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("InvoiceUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _invoiceUuid;
 
-        [Column("InvoiceNumber",SqlDbType.VarChar,NotNull=true)]
+        [Column("InvoiceNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _invoiceNumber;
 
         [Column("InvoiceType",SqlDbType.Int,NotNull=true,IsDefault=true)]
@@ -90,7 +78,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("BillDate",SqlDbType.Date)]
         private DateTime? _billDate;
 
-        [Column("CustomerUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        [Column("CustomerUuid",SqlDbType.VarChar,NotNull=true)]
         private string _customerUuid;
 
         [Column("CustomerNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
@@ -198,6 +186,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_databaseNum = value; 
+				OnPropertyChanged("DatabaseNum", value);
             }
         }
 
@@ -210,6 +199,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_masterAccountNum = value; 
+				OnPropertyChanged("MasterAccountNum", value);
             }
         }
 
@@ -222,6 +212,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_profileNum = value; 
+				OnPropertyChanged("ProfileNum", value);
             }
         }
 
@@ -234,6 +225,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_invoiceUuid = value.TruncateTo(50); 
+				OnPropertyChanged("InvoiceUuid", value);
             }
         }
 
@@ -246,6 +238,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_invoiceNumber = value.TruncateTo(50); 
+				OnPropertyChanged("InvoiceNumber", value);
             }
         }
 
@@ -258,6 +251,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_invoiceType = value; 
+				OnPropertyChanged("InvoiceType", value);
             }
         }
 
@@ -270,6 +264,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_invoiceStatus = value; 
+				OnPropertyChanged("InvoiceStatus", value);
             }
         }
 
@@ -282,6 +277,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_invoiceDate = value.Date.ToSqlSafeValue(); 
+				OnPropertyChanged("InvoiceDate", value);
             }
         }
 
@@ -294,6 +290,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_invoiceTime = value.ToSqlSafeValue(); 
+				OnPropertyChanged("InvoiceTime", value);
             }
         }
 
@@ -308,7 +305,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				if (value != null || AllowNull) 
+				{
 					_dueDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("DueDate", value);
+				}
             }
         }
 
@@ -323,7 +323,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				if (value != null || AllowNull) 
+				{
 					_billDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("BillDate", value);
+				}
             }
         }
 
@@ -336,6 +339,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_customerUuid = value.TruncateTo(50); 
+				OnPropertyChanged("CustomerUuid", value);
             }
         }
 
@@ -348,6 +352,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_customerNum = value.TruncateTo(50); 
+				OnPropertyChanged("CustomerNum", value);
             }
         }
 
@@ -360,6 +365,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_customerName = value.TruncateTo(200); 
+				OnPropertyChanged("CustomerName", value);
             }
         }
 
@@ -372,6 +378,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_terms = value.TruncateTo(50); 
+				OnPropertyChanged("Terms", value);
             }
         }
 
@@ -384,6 +391,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_termsDays = value; 
+				OnPropertyChanged("TermsDays", value);
             }
         }
 
@@ -396,6 +404,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_currency = value.TruncateTo(10); 
+				OnPropertyChanged("Currency", value);
             }
         }
 
@@ -408,6 +417,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_subTotalAmount = value; 
+				OnPropertyChanged("SubTotalAmount", value);
             }
         }
 
@@ -420,6 +430,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_salesAmount = value; 
+				OnPropertyChanged("SalesAmount", value);
             }
         }
 
@@ -432,6 +443,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_totalAmount = value; 
+				OnPropertyChanged("TotalAmount", value);
             }
         }
 
@@ -444,6 +456,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_taxableAmount = value; 
+				OnPropertyChanged("TaxableAmount", value);
             }
         }
 
@@ -456,6 +469,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_nonTaxableAmount = value; 
+				OnPropertyChanged("NonTaxableAmount", value);
             }
         }
 
@@ -468,6 +482,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_taxRate = value; 
+				OnPropertyChanged("TaxRate", value);
             }
         }
 
@@ -480,6 +495,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_taxAmount = value; 
+				OnPropertyChanged("TaxAmount", value);
             }
         }
 
@@ -492,6 +508,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_discountRate = value; 
+				OnPropertyChanged("DiscountRate", value);
             }
         }
 
@@ -504,6 +521,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_discountAmount = value; 
+				OnPropertyChanged("DiscountAmount", value);
             }
         }
 
@@ -516,6 +534,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_shippingAmount = value; 
+				OnPropertyChanged("ShippingAmount", value);
             }
         }
 
@@ -528,6 +547,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_shippingTaxAmount = value; 
+				OnPropertyChanged("ShippingTaxAmount", value);
             }
         }
 
@@ -540,6 +560,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_miscAmount = value; 
+				OnPropertyChanged("MiscAmount", value);
             }
         }
 
@@ -552,6 +573,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_miscTaxAmount = value; 
+				OnPropertyChanged("MiscTaxAmount", value);
             }
         }
 
@@ -564,6 +586,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_chargeAndAllowanceAmount = value; 
+				OnPropertyChanged("ChargeAndAllowanceAmount", value);
             }
         }
 
@@ -576,6 +599,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_paidAmount = value; 
+				OnPropertyChanged("PaidAmount", value);
             }
         }
 
@@ -588,6 +612,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_creditAmount = value; 
+				OnPropertyChanged("CreditAmount", value);
             }
         }
 
@@ -600,6 +625,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_balance = value; 
+				OnPropertyChanged("Balance", value);
             }
         }
 
@@ -612,6 +638,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_unitCost = value; 
+				OnPropertyChanged("UnitCost", value);
             }
         }
 
@@ -624,6 +651,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_avgCost = value; 
+				OnPropertyChanged("AvgCost", value);
             }
         }
 
@@ -636,6 +664,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_lotCost = value; 
+				OnPropertyChanged("LotCost", value);
             }
         }
 
@@ -648,6 +677,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_invoiceSourceCode = value.TruncateTo(100); 
+				OnPropertyChanged("InvoiceSourceCode", value);
             }
         }
 
@@ -662,7 +692,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				if (value != null || AllowNull) 
+				{
 					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("UpdateDateUtc", value);
+				}
             }
         }
 
@@ -675,6 +708,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_enterBy = value.TruncateTo(100); 
+				OnPropertyChanged("EnterBy", value);
             }
         }
 
@@ -687,8 +721,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             set
             {
 				_updateBy = value.TruncateTo(100); 
+				OnPropertyChanged("UpdateBy", value);
             }
         }
+
+
 
         #endregion Properties - Generated 
 
@@ -715,6 +752,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override InvoiceHeader Clear()
         {
+            base.Clear();
 			_databaseNum = default(int); 
 			_masterAccountNum = default(int); 
 			_profileNum = default(int); 
@@ -775,6 +813,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (data is null) return;
             return;
         }
+
+
 
         #endregion Methods - Generated 
     }
