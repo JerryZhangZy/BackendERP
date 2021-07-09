@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="T4\DataAccess -Inventory.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="T4\DataAccess - customer.tt" />
     <None Remove="T4\DataAccess - order.tt" />
     <None Remove="T4\DataAccess -Inventory.tt" />

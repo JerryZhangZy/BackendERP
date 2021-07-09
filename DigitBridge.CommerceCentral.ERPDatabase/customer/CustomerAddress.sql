@@ -3,7 +3,7 @@
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
     [AddressUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Customer
 
-    [CustomerUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Customer
+    [CustomerUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Customer
     [AddressCode] VARCHAR(50) NOT NULL DEFAULT '', --Address code, human readable
 	[AddressType] INT NOT NULL DEFAULT 0, --Address type, billing, shipping, store
     [Description] NVARCHAR(200) NOT NULL DEFAULT '', --Address description
@@ -29,7 +29,7 @@
 	[DaytimePhone] VARCHAR(50) NOT NULL DEFAULT '',
 	[NightPhone] VARCHAR(50) NOT NULL DEFAULT '',
 
-    [EnterDateUtc] DATETIME NULL,
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [UpdateDateUtc] DATETIME NULL,
     [EnterBy] Varchar(100) NOT NULL DEFAULT '',
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '',

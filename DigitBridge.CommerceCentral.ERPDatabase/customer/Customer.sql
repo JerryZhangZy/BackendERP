@@ -1,9 +1,9 @@
 ﻿CREATE TABLE [dbo].[Customer]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [DatabaseNum] INT NOT NULL DEFAULT 0, --Each database has its own default value.
-	[MasterAccountNum] INT NOT NULL DEFAULT 0,
-	[ProfileNum] INT NOT NULL DEFAULT 0,
+    [DatabaseNum] INT NOT NULL, --Each database has its own default value.
+	[MasterAccountNum] INT NOT NULL,
+	[ProfileNum] INT NOT NULL,
 
     [Digit_seller_id] VARCHAR(50) NOT NULL DEFAULT '', --Digit bridge seller_id
 
@@ -37,7 +37,7 @@
 	[ClassCode] VARCHAR(50) NOT NULL DEFAULT '',
 	[DepartmentCode] VARCHAR(50) NOT NULL DEFAULT '',
 
-    [EnterDateUtc] DATETIME NULL,
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [UpdateDateUtc] DATETIME NULL,
     [EnterBy] Varchar(100) NOT NULL DEFAULT '',
     [UpdateBy] Varchar(100)NOT NULL DEFAULT '',

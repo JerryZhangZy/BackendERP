@@ -1,8 +1,8 @@
 ﻿CREATE TABLE [dbo].[OrderItemsAttributes]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [OrderItemsUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for P/O
-    [OrderUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Order
+    [OrderItemsUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O
+    [OrderUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Order
 	[JsonFields] VARCHAR(max) NOT NULL DEFAULT '', --JSON string, store any document fields
 
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),

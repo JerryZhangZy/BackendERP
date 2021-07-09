@@ -1,12 +1,12 @@
 ﻿CREATE TABLE [dbo].[InventoryLog]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [DatabaseNum] INT NOT NULL DEFAULT 0, --Each database has its own default value.
-	[MasterAccountNum] INT NOT NULL DEFAULT 0,
-	[ProfileNum] INT NOT NULL DEFAULT 0,
+    [DatabaseNum] INT NOT NULL, --Each database has its own default value.
+	[MasterAccountNum] INT NOT NULL,
+	[ProfileNum] INT NOT NULL,
 
     [InventoryLogUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Inventory Log Line
-    [ProductUuid] VARCHAR(50) NOT NULL DEFAULT '',
+    [ProductUuid] VARCHAR(50) NOT NULL,
     [InventoryUuid] VARCHAR(50) NOT NULL DEFAULT '',
 
     [BatchNum] BIGINT NULL DEFAULT 0, --Batch number for log update
@@ -38,7 +38,7 @@
 	[BeforeUnitCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total receive cost. 
 	[BeforeAvgCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item moving average cost. 
 
-    [EnterDateUtc] DATETIME NULL,
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [UpdateDateUtc] DATETIME NULL,
     [EnterBy] Varchar(100) NOT NULL DEFAULT '',
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '',

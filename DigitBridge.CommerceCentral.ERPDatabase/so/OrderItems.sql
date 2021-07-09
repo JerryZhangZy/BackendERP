@@ -3,7 +3,7 @@
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
     [OrderItemsUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Order Item Line
 
-    [OrderUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Order
+    [OrderUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Order
     [Seq] INT NOT NULL DEFAULT 0, --Order Item Line sort sequence
     [OrderItemType] INT NOT NULL DEFAULT 0, --Order item type
     [OrderItemStatus] INT NOT NULL DEFAULT 0, --Order item status
@@ -13,8 +13,8 @@
 	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer 
 
 	[SKU] Varchar(100) NOT NULL DEFAULT '',--Product SKU 
-	[ProductUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Inventory Item Line
-	[InventoryUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Inventory Item Line
+	[ProductUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Inventory Item Line
+	[InventoryUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Inventory Item Line
 	[WarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --Warehouse Guid
 	[LotNum] Varchar(100) NOT NULL DEFAULT '',--Product SKU Lot Number 
 	[Description] NVarchar(200) NOT NULL DEFAULT '',--Order item description 

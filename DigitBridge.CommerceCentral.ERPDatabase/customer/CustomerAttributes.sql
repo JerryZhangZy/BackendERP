@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[CustomerAttributes]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [CustomerUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for P/O
+    [CustomerUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O
 	[JsonFields] VARCHAR(max) NOT NULL DEFAULT '', --JSON string, store any document fields
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),

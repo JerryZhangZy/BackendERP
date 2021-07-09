@@ -1,11 +1,11 @@
 ﻿CREATE TABLE [dbo].[Inventory]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [DatabaseNum] INT NOT NULL DEFAULT 0, --Each database has its own default value.
-	[MasterAccountNum] INT NOT NULL DEFAULT 0,
-	[ProfileNum] INT NOT NULL DEFAULT 0,
+    [DatabaseNum] INT NOT NULL, --Each database has its own default value.
+	[MasterAccountNum] INT NOT NULL,
+	[ProfileNum] INT NOT NULL,
 
-    [ProductUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for product SKU
+    [ProductUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for product SKU
     [InventoryUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Inventory Item Line
 
 	[StyleCode] Varchar(100) NOT NULL DEFAULT '',--Product SKU Item No 
@@ -59,7 +59,7 @@
 	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for Invoice items. 
 	[TaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total Invoice tax amount (include shipping tax and misc tax) 
 	[DiscountRate] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice level discount rate. 
-	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice level discount amount, base on [SubTotalAmount]
+	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice level discount amount, base on column SubTotalAmount
 	[ShippingAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total shipping fee for all items
 	[ShippingTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of shipping fee
 	[MiscAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice handling charge 
@@ -75,7 +75,7 @@
 	[Taxable] TINYINT NOT NULL DEFAULT 0,--Invoice item will apply tax
 	[Costable] TINYINT NOT NULL DEFAULT 0,--Invoice item will apply to total sales cost
 
-    [EnterDateUtc] DATETIME NULL,
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [UpdateDateUtc] DATETIME NULL,
     [EnterBy] Varchar(100) NOT NULL DEFAULT '',
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '',

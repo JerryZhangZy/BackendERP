@@ -5,7 +5,7 @@
 
     [TransUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Invoice Transaction
     [Seq] INT NOT NULL DEFAULT 0, --Invoice Item Line sort sequence
-    [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Invoice
+    [InvoiceUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice
     [InvoiceItemsUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Invoice Item
     [ReturnItemType] INT NOT NULL DEFAULT 0, --Return item type
     [ReturnItemStatus] INT NOT NULL DEFAULT 0, --Return item status

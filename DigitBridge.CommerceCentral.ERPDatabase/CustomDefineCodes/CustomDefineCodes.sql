@@ -14,7 +14,7 @@
 	[EffectiveEnd] DATE NULL,
 	[JsonFields] VARCHAR(max) NULL, --JSON string, store any Code fields
 
-    [EnterDateUtc] DATETIME NULL,
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [UpdateDateUtc] DATETIME NULL,
     [EnterBy] Varchar(100) NOT NULL,
     [UpdateBy] Varchar(100) NOT NULL,

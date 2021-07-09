@@ -15,8 +15,7 @@
         1. column must start with [
         2. comment of column must not include [ or ] 
             for example: 
-            	[TotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Sum of all items OrderItems[Quantity] x OrderItems[UnitPrice] ) + TotalTaxPrice + Total ShippingPrice + TotalInsurancePrice + TotalGiftOptionPrice + AdditionalCostOrDiscount +PromotionAmount + (Sum of all items OrderItems[Promotions[Amount]] + OrderItems[Promotions[ShippingAmount]] + OrderItems[RecyclingFee])
-            this will not get correct table and columns info. must remove [ or ]
+            	  this will not get correct table and columns info. must remove [ or ]
 
         3. Primary key - reqired, PK must be BIGINT
             PK_ and PRIMARY KEY define the PRIMARY KEY

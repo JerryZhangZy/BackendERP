@@ -4,7 +4,7 @@
     [TransUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice Transaction
     [TransNum] INT NOT NULL DEFAULT 1, --Transaction number
 
-    [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Invoice
+    [InvoiceUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice
     [TransType] INT NOT NULL DEFAULT 0, --Transaction type, payment, return
     [TransStatus] INT NOT NULL DEFAULT 0, --Transaction status
 	[TransDate] DATE NOT NULL, --Invoice date

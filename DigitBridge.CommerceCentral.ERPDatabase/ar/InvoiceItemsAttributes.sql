@@ -1,8 +1,8 @@
 ﻿CREATE TABLE [dbo].[InvoiceItemsAttributes]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [InvoiceItemsUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for P/O
-    [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Invoice
+    [InvoiceItemsUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O
+    [InvoiceUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice
 	[JsonFields] VARCHAR(max) NOT NULL DEFAULT '', --JSON string, store any document fields
 
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),

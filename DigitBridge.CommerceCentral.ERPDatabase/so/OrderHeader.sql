@@ -15,7 +15,7 @@
 	[DueDate] DATE NULL, --Balance Due date
 	[BillDate] DATE NULL, --Next Billing date
 
-	[CustomerUuid] VARCHAR(50) NOT NULL DEFAULT '', --Customer Guid
+	[CustomerUuid] VARCHAR(50) NOT NULL, --Customer Guid
 	[CustomerNum] VARCHAR(50) NOT NULL DEFAULT '', --Customer readable number, DatabaseNum + CustomerNum is DigitBridgeCustomerNum, which is global unique
 	[CustomerName] NVARCHAR(200) NOT NULL DEFAULT '', --Customer name
 
@@ -73,7 +73,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_OrderHeader_OrderNumber] ON [dbo].[OrderHea
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderHeader]') AND name = N'IX_OrderHeader_CustomerID')
-CREATE NONCLUSTERED INDEX [IX_OrderHeader_CustomerUuid] ON [dbo].[OrderHeader]
+CREATE NONCLUSTERED INDEX [FK_OrderHeader_CustomerUuid] ON [dbo].[OrderHeader]
 (
 	[CustomerUuid] ASC
 ) 

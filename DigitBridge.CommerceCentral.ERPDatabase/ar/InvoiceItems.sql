@@ -3,7 +3,7 @@
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
     [InvoiceItemsUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice Item Line
 
-    [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Invoice
+    [InvoiceUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice
     [Seq] INT NOT NULL DEFAULT 0, --Invoice Item Line sort sequence
     [InvoiceItemType] INT NOT NULL DEFAULT 0, --Invoice item type
     [InvoiceItemStatus] INT NOT NULL DEFAULT 0, --Invoice item status

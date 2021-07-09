@@ -1,9 +1,9 @@
 ﻿CREATE TABLE [dbo].[InvoiceHeader]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [DatabaseNum] INT NOT NULL DEFAULT 0, --Each database has its own default value.
-	[MasterAccountNum] INT NOT NULL DEFAULT 0,
-	[ProfileNum] INT NOT NULL DEFAULT 0,
+    [DatabaseNum] INT NOT NULL, --Each database has its own default value.
+	[MasterAccountNum] INT NOT NULL,
+	[ProfileNum] INT NOT NULL,
 
     [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice
 	[InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT '', --Unique in this database, ProfileNum + InvoiceNumber is DigitBridgeInvoiceNumber, which is global unique
@@ -15,7 +15,7 @@
 	[DueDate] DATE NULL, --Balance Due date
 	[BillDate] DATE NULL, --Next Billing date
 
-	[CustomerUuid] VARCHAR(50) NOT NULL DEFAULT '', --Customer Guid
+	[CustomerUuid] VARCHAR(50) NOT NULL, --Customer Guid
 	[CustomerNum] VARCHAR(50) NOT NULL DEFAULT '', --Customer readable number, DatabaseNum + CustomerNum is DigitBridgeCustomerNum, which is global unique
 	[CustomerName] NVARCHAR(200) NOT NULL DEFAULT '', --Customer name
 
