@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.Base.Utility
 {
@@ -110,6 +112,60 @@ namespace DigitBridge.Base.Utility
         {
             string serialized = JsonConvert.SerializeObject(dt);
             return JsonConvert.DeserializeObject<List<T>>(serialized);
+        }
+
+
+        public static JObject ToJObject(this Dictionary<string, object> dict) => JObject.FromObject(dict);
+
+        public static string ToJsonString(this Dictionary<string, object> dict) => JObject.FromObject(dict).ToString(Formatting.None);
+
+        public static Dictionary<string, object> ToDicationary(this string jsonString)
+        {
+            if (string.IsNullOrEmpty(jsonString))
+                return new Dictionary<string, object>();
+
+            return JObject.Parse(jsonString).ToDicationary();
+        }
+
+        public static Dictionary<string, object> ToDicationary(this JObject jObject) => DeserializeJObject(jObject);
+
+        private static Dictionary<string, object> DeserializeJObject(JObject jObject)
+        {
+            var rtn = new Dictionary<string, object>();
+            foreach (var kv in jObject)
+            {
+                switch (kv.Value)
+                {
+                    case JObject obj:
+                        rtn.Add(kv.Key, DeserializeJObject(obj));
+                        break;
+                    case JArray arr:
+                        rtn.Add(kv.Key, DeserializeJArray(arr));
+                        break;
+                    case JValue val:
+                        rtn.Add(kv.Key, val.Value);
+                        break;
+                }
+            }
+            return rtn;
+        }
+
+        private static object DeserializeJArray(JArray jArray)
+        {
+            if (jArray == null)
+                return new List<object>();
+            if (jArray.Count == 0) return new List<object>();
+
+            switch (jArray[0])
+            {
+                case JObject _:
+                    return jArray.Select(o => DeserializeJObject(o as JObject)).ToList();
+                case JArray _:
+                    return jArray.Select(j => DeserializeJArray(j as JArray)).ToList();
+                case JValue _:
+                    return jArray.Select(v => v.ToString()).ToList();
+            }
+            return new List<object>();
         }
 
     }

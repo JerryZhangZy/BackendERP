@@ -80,11 +80,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+        protected CustomAttributes _fields;
+        public virtual CustomAttributes Fields
+        {
+            get
+            {
+                if (_fields is null)
+                    _fields = _jsonFields.ToDicationary();
+                return _fields;
+            }
+            set
+            {
+                _jsonFields = value.TrimEnd();
+            }
+        }
+
         #endregion Properties - Generated 
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
 		private InvoiceData Parent { get; set; }
 		public InvoiceData GetParent() => Parent;
 		public InvoiceHeaderAttributes SetParent(InvoiceData parent)

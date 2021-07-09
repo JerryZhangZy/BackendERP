@@ -209,21 +209,22 @@ namespace DigitBridge.CommerceCentral.YoPoco
         #endregion
 
         #region Query - get single record from Cache
+        public virtual T GetFromCache<T>(string key, Func<T> create, bool reNew = false) => Cache.FromCache<T>(key, create, reNew);
 
-        public virtual TEntity GetFromCache<TEntity>(long id) where TEntity : TableRepository<TEntity, long>, new()
-            => Cache.FromCache<TEntity>($"{typeof(TEntity).ToString()}:RowNum:{id}", () => Get<TEntity>(id));
+        public virtual TEntity GetFromCache<TEntity>(long id, bool reNew = false) where TEntity : TableRepository<TEntity, long>, new()
+            => Cache.FromCache<TEntity>($"{typeof(TEntity).ToString()}:RowNum:{id}", () => Get<TEntity>(id), reNew);
 
-        public virtual TEntity GetFromCacheById<TEntity>(string uid) where TEntity : TableRepository<TEntity, long>, new()
-            => Cache.FromCache<TEntity>($"{typeof(TEntity).ToString()}:Id:{uid}", () => GetById<TEntity>(uid));
+        public virtual TEntity GetFromCacheById<TEntity>(string uid, bool reNew = false) where TEntity : TableRepository<TEntity, long>, new()
+            => Cache.FromCache<TEntity>($"{typeof(TEntity).ToString()}:Id:{uid}", () => GetById<TEntity>(uid), reNew);
 
 
-        public virtual async Task<TEntity> GetFromCacheAsync<TEntity>(long id) where TEntity : TableRepository<TEntity, long>, new()
-            => await Cache.FromCache<Task<TEntity>>($"{typeof(TEntity).ToString()}:RowNum:{id}:async", 
-                async () => await GetAsync<TEntity>(id).ConfigureAwait(false)).ConfigureAwait(false);
+        public virtual async Task<TEntity> GetFromCacheAsync<TEntity>(long id, bool reNew = false) where TEntity : TableRepository<TEntity, long>, new()
+            => await Cache.FromCache<Task<TEntity>>($"{typeof(TEntity).ToString()}:RowNum:{id}:async",
+                async () => await GetAsync<TEntity>(id).ConfigureAwait(false), reNew).ConfigureAwait(false);
 
-        public virtual async Task<TEntity> GetFromCacheByIdAsync<TEntity>(string uid) where TEntity : TableRepository<TEntity, long>, new()
+        public virtual async Task<TEntity> GetFromCacheByIdAsync<TEntity>(string uid, bool reNew = false) where TEntity : TableRepository<TEntity, long>, new()
             => await Cache.FromCache<Task<TEntity>>($"{typeof(TEntity).ToString()}:Id:{uid}:async",
-                async () => await GetByIdAsync<TEntity>(uid).ConfigureAwait(false)).ConfigureAwait(false);
+                async () => await GetByIdAsync<TEntity>(uid).ConfigureAwait(false), reNew).ConfigureAwait(false);
 
         #endregion Query - get single record
 

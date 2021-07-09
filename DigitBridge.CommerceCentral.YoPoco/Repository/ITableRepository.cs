@@ -28,6 +28,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         int Put();
         int Patch(IDataBaseFactory DbFactory, IEnumerable<string> columns);
         int Patch(IEnumerable<string> columns);
+        int Patch(IDataBaseFactory DbFactory);
+        int Patch();
         int Delete(IDataBaseFactory DbFactory);
         int Delete();
         int Delete(IDataBaseFactory DbFactory, string sql, params object[] args);
@@ -53,5 +55,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
         TEntity CopyFrom(TEntity other);
         TEntity CopyFrom(TEntity other, IEnumerable<string> ignoreColumns);
         TEntity Clear();
+
+        TEntity ConvertDbFieldsToData();
+        TEntity ConvertDataFieldsToDb();
+        void OnPropertyChanged(string name, object value);
+
     }
 }

@@ -24,11 +24,14 @@
 	[PriceRule] Varchar(50) NOT NULL,--Product SKU 
 	[Stockable] Varchar(100) NOT NULL,--Product SKU 
 	[LeadDay] Int NOT NULL,--Product SKU processing days before ship
+	[OrderSize] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Default P/O qty. 
+	[MinStock] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Garantee Instock in anytime. 
 
 	[SKU] Varchar(100) NOT NULL,--Product SKU 
 	[Description] NVARCHAR(200) NULL, --Warehouse Guid
 	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
-	[WhsDescription] NVarchar(200) NOT NULL,--Invoice item description 
+	[WarehouseNum] VARCHAR(50) NOT NULL, --Warehouse Code
+	[WarehouseName] NVarchar(200) NOT NULL,--Warehouse Name 
 	[LotNum] Varchar(100) NOT NULL,--Product SKU Lot Number 
 	[LotInDate] DATE NULL, --Lot receive Date
 	[LotExpDate] DATE NULL, --Lot Expiration date
@@ -41,10 +44,10 @@
 	[UOM] Varchar(50) NULL,--Product SKU Qty unit of measure 
 	[PackType] Varchar(50) NULL,--Product SKU default Qty pack type, for example: Case, Box, Each 
 	[PackQty] DECIMAL(24, 6) NOT NULL DEFAULT 1, --Item default Qty each per pack. 
-	[EachPerPallot] DECIMAL(24, 6) NOT NULL DEFAULT 1, --Item Qty per Pallot. 
-	[EachPerCase] DECIMAL(24, 6) NOT NULL DEFAULT 1, --Item Qty per case. 
-	[EachPerBox] DECIMAL(24, 6) NOT NULL DEFAULT 1, --Item Qty per box. 
-	[QtyType] Varchar(50) NOT NULL DEFAULT 'EA', --Item storage type (case, box, pallot)
+	[QtyPerPallot] DECIMAL(24, 6) NOT NULL DEFAULT 1, --Item Qty per Pallot. 
+	[QtyPerCase] DECIMAL(24, 6) NOT NULL DEFAULT 1, --Item Qty per case. 
+	[QtyPerBox] DECIMAL(24, 6) NOT NULL DEFAULT 1, --Item Qty per box. 
+	[DefaultPackType] Varchar(50) NOT NULL DEFAULT '',--Default package type in S/O or invoice
 
 	[Instock] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item in stock Qty. 
 	[OnHand] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item On hand. 
@@ -103,7 +106,9 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Inventory]') AND name = N'IX_Inventory_SKU')
 CREATE NONCLUSTERED INDEX [IX_Inventory_SKU] ON [dbo].[Inventory]
 (
-	[SKU] ASC
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
+    [SKU] ASC
 ) ON [PRIMARY]
 GO
 

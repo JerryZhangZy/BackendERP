@@ -116,6 +116,16 @@
                 ? name
                 : "RowNum";
         }
+        public string NonRowNumPrimaryKey 
+        { 
+            get 
+            { 
+                return string.IsNullOrEmpty(PrimaryKey) || PrimaryKey.Equals("RowNum", StringComparison.CurrentCultureIgnoreCase) 
+                    ? null
+                    : $"_{PrimaryKey.First().ToString().ToLower()}{PrimaryKey.Substring(1)}";
+            } 
+        }
+
 
         public string StructureName { get; set; }
         public SqlTableInfo Parent { get; set; }
@@ -143,6 +153,7 @@
         public string Description { get; set; }
         public string Text { get; set; }
         public bool IsUniqueKey { get; set; }
+        public bool IsPrimaryKey { get; set; }
 
         public List<string> FieldAtrributes { get; set; }
         public List<string> PropertyAtrributes { get; set; }
@@ -335,7 +346,7 @@
                         ? $"f => f.Random.Guid().ToString()"
                         : (Length == "50") 
                             ? $"f => f.Random.AlphaNumeric({this.Length})"
-                            : (Length == "max")
+                            : (Length.Equals("max", StringComparison.CurrentCultureIgnoreCase))
                                 ? $"f => f.Lorem.Sentence()"
                                 : $"f => f.Lorem.Sentence().TruncateTo({this.Length})";
                     break;
@@ -609,6 +620,7 @@
                         };
                         col.Key = !string.IsNullOrEmpty(table.PrimaryKey) && table.PrimaryKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
                         col.IsUniqueKey = !string.IsNullOrEmpty(table.UniqueKey) && table.UniqueKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
+                        col.IsPrimaryKey = !string.IsNullOrEmpty(table.PrimaryKey) && table.PrimaryKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
                         GetFieldAtrribute(col);
                         GetPropertyAtrribute(col);
                         GetDtoAtrribute(col);

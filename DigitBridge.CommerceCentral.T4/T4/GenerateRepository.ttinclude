@@ -43,6 +43,20 @@ foreach(var atr in table.Atrributes)
 foreach(var col in table.Columns)
 { 
     if (col.ignoreGenerate) continue;
+
+    // if primary key not equal RowNum
+    if (col.IsPrimaryKey)
+    {
+        WriteLine($"{new String('\t',2)}[ResultColumn(Name = \"{col.Name}\", IncludeInAutoSelect = IncludeInAutoSelect.Yes)] ");
+        WriteLine($"{new String('\t',2)}[XmlIgnore] ");
+        WriteLine($"{new String('\t',2)}protected long {col.privateName}; ");
+
+        WriteLine($"{new String('\t',2)}public override long RowNum => {col.privateName};");
+        WriteLine($"{new String('\t',2)}public virtual long {col.propertyName} => {col.privateName};");
+
+        continue;
+    }
+
     foreach(var atr in col.FieldAtrributes)
     {
 #>
@@ -77,6 +91,7 @@ if(table.HasBlankKey && !string.IsNullOrEmpty(blankMatchString))
 foreach(var col in table.Columns)
 { 
     if (col.ignoreGenerate) continue;
+    if (col.IsPrimaryKey) continue;
     foreach(var atr in col.PropertyAtrributes)
     {
 #>
@@ -109,6 +124,7 @@ foreach(var col in table.Columns)
 		        indent = 4;
                 if (col.Null) {
                     WriteLine($"{new String('\t',indent)}if (value != null || AllowNull) ");
+                    WriteLine($"{new String('\t',indent)}{{");
                     indent += 1;
                 }
                 if (col.isString)  
@@ -137,6 +153,14 @@ foreach(var col in table.Columns)
                     WriteLine($"{new String('\t',indent)}{col.privateName} = value.ToSqlSafeValue(); ");
                 else 
                     WriteLine($"{new String('\t',indent)}{col.privateName} = value; ");
+
+                if (col.Null) {
+                    WriteLine($"{new String('\t',indent)}OnPropertyChanged(\"{col.Name}\", value);");
+                    indent -= 1;
+                    WriteLine($"{new String('\t',indent)}}}");
+                }
+                else
+                    WriteLine($"{new String('\t',indent)}OnPropertyChanged(\"{col.Name}\", value);");
 #>
             }
         }
@@ -147,7 +171,7 @@ foreach(var col in table.Columns)
         #region Methods - Parent
 
 <# // generate Parent
-if(!string.IsNullOrEmpty(table.StructureName))
+if(!string.IsNullOrEmpty(table.StructureName) && generateStructureRepository)
 { 
         indent = 2;
         // Parent class reference
@@ -409,6 +433,8 @@ if(table.HasOneToManyChildren)
             indent = 3;
             WriteLine($"{new String('\t',indent)}base.ClearMetaData(); ");
             WriteLine($"{new String('\t',indent)}{table.UniqueKey} = Guid.NewGuid().ToString(); ");
+            if (!string.IsNullOrEmpty(table.NonRowNumPrimaryKey))
+                WriteLine($"{new String('\t',indent)}{table.NonRowNumPrimaryKey} = 0; ");
 #>
             return;
         }

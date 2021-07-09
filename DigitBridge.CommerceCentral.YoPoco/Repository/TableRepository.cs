@@ -55,69 +55,69 @@ namespace DigitBridge.CommerceCentral.YoPoco
         #region Query - Static Methods for get single record
 
         public static TEntity Get(IDataBaseFactory dbFactory, TId id)
-            => dbFactory.Db.SingleOrDefault<TEntity>((object)id)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory);
+            => dbFactory.Db.SingleOrDefault<TEntity>((object)id)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         public static TEntity Get(IDataBaseFactory dbFactory, TId id, IEnumerable<string> columns)
-            => dbFactory.Db.SingleOrDefault<TEntity>(columns, (object)id)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory);
+            => dbFactory.Db.SingleOrDefault<TEntity>(columns, (object)id)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         public static TEntity GetById(IDataBaseFactory dbFactory, string uid)
-            => dbFactory.Db.SingleOrDefault<TEntity>((object)uid, true)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory);
+            => dbFactory.Db.SingleOrDefault<TEntity>((object)uid, true)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         public static TEntity GetById(IDataBaseFactory dbFactory, string uid, IEnumerable<string> columns)
-            => dbFactory.Db.SingleOrDefault<TEntity>(columns, (object)uid, true)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory);
+            => dbFactory.Db.SingleOrDefault<TEntity>(columns, (object)uid, true)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         public static TEntity GetBy(IDataBaseFactory dbFactory, string sql, params object[] args)
-            => dbFactory.Db.FirstOrDefault<TEntity>(sql, args)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory);
+            => dbFactory.Db.FirstOrDefault<TEntity>(sql, args)?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
 
         public static async Task<TEntity> GetAsync(IDataBaseFactory dbFactory, TId id)
-            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>((object)id).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory);
+            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>((object)id).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         public static async Task<TEntity> GetAsync(IDataBaseFactory dbFactory, TId id, IEnumerable<string> columns)
-            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>(columns, (object)id).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory);
+            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>(columns, (object)id).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         public static async Task<TEntity> GetByIdAsync(IDataBaseFactory dbFactory, string uid)
-            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>((object)uid, true).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory);
+            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>((object)uid, true).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         public static async Task<TEntity> GetByIdAsync(IDataBaseFactory dbFactory, string uid, IEnumerable<string> columns)
-            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>(columns, (object)uid, true).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory);
+            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>(columns, (object)uid, true).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         public static async Task<TEntity> GetByAsync(IDataBaseFactory dbFactory, string sql, params object[] args)
-            => (await dbFactory.Db.FirstOrDefaultAsync<TEntity>(sql, args).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory);
+            => (await dbFactory.Db.FirstOrDefaultAsync<TEntity>(sql, args).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         #endregion Query - get single record
 
         #region Query - Static Methods for find multiple records
 
         public static IEnumerable<TEntity> Find(IDataBaseFactory dbFactory)
-            => dbFactory.Db.Query<TEntity>().ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => dbFactory.Db.Query<TEntity>().ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         public static IEnumerable<TEntity> FindByOrder(IDataBaseFactory dbFactory, params string[] orderBy)
-            => dbFactory.Db.Query<TEntity>($"ORDER BY {orderBy.JoinToString(",")}").ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => dbFactory.Db.Query<TEntity>($"ORDER BY {orderBy.JoinToString(",")}").ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
         public static IEnumerable<TEntity> Find(IDataBaseFactory dbFactory, IEnumerable<string> columns, params string[] orderBy)
-            => dbFactory.Db.Query<TEntity>(columns, $"ORDER BY {orderBy.JoinToString(",")}").ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => dbFactory.Db.Query<TEntity>(columns, $"ORDER BY {orderBy.JoinToString(",")}").ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         public static IEnumerable<TEntity> Find(IDataBaseFactory dbFactory, string sql, params object[] args)
-            => dbFactory.Db.Query<TEntity>(sql, args).ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => dbFactory.Db.Query<TEntity>(sql, args).ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         public static IEnumerable<TEntity> Find(IDataBaseFactory dbFactory, string sql, IEnumerable<string> columns, params object[] args)
-            => dbFactory.Db.Query<TEntity>(columns, sql, args).ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => dbFactory.Db.Query<TEntity>(columns, sql, args).ToList().SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
 
         public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory)
-            => (await dbFactory.Db.FetchAsync<TEntity>().ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => (await dbFactory.Db.FetchAsync<TEntity>().ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         public static async Task<IEnumerable<TEntity>> FindByOrderAsync(IDataBaseFactory dbFactory, params string[] orderBy)
-            => (await dbFactory.Db.FetchAsync<TEntity>($"ORDER BY {orderBy.JoinToString(",")}").ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => (await dbFactory.Db.FetchAsync<TEntity>($"ORDER BY {orderBy.JoinToString(",")}").ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory, IEnumerable<string> columns, params string[] orderBy)
-            => (await dbFactory.Db.FetchAsync<TEntity>(columns, $"ORDER BY {orderBy.JoinToString(",")}").ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => (await dbFactory.Db.FetchAsync<TEntity>(columns, $"ORDER BY {orderBy.JoinToString(",")}").ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory, string sql, params object[] args)
-            => (await dbFactory.Db.FetchAsync<TEntity>(sql, args).ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => (await dbFactory.Db.FetchAsync<TEntity>(sql, args).ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory, string sql, IEnumerable<string> columns, params object[] args)
-            => (await dbFactory.Db.FetchAsync<TEntity>(columns, sql, args).ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory);
+            => (await dbFactory.Db.FetchAsync<TEntity>(columns, sql, args).ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         #endregion
 
@@ -177,7 +177,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #region Properties
 
-        public long RowNum => _rowNum;
+        public virtual long RowNum => _rowNum;
         [IgnoreCompare]
         public virtual string UniqueId => string.Empty;
         [IgnoreCompare]
@@ -188,7 +188,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool AllowNull { get; private set; } = true;
         [XmlIgnore, JsonIgnore, IgnoreCompare]
-        public bool IsNew => _rowNum <= 0;
+        public bool IsNew => RowNum <= 0;
 
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public virtual bool IsEmpty => false;
@@ -220,7 +220,26 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #endregion Properties
 
-        #region CRUD Methods
+        #region Property Changed
+        protected IList<string> _changedProperties;
+        public virtual IList<string> ChangedProperties
+        {
+            get
+            {
+                if (_changedProperties is null)
+                    _changedProperties = new List<string>();
+                return _changedProperties;
+            }
+        }
+        public virtual void OnPropertyChanged(string name, object value)
+        {
+            if (!string.IsNullOrEmpty(name) && !ChangedProperties.Contains(name))
+                ChangedProperties.Add(name);
+        }
+
+        #endregion Property Changed
+
+            #region CRUD Methods
 
         public virtual bool Add(IDataBaseFactory DbFactory)
         {
@@ -232,6 +251,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             if (!IsNew) return false;
             object rtn;
+            this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
                 rtn = db.Insert(this.SetAllowNull(false));
             else
@@ -253,6 +273,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             if (IsNew) return 0;
             int rtn;
+            this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
                 rtn = db.Update(this.SetAllowNull(false));
             else
@@ -264,16 +285,26 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return rtn;
         }
 
+        public virtual int Patch(IDataBaseFactory DbFactory)
+        {
+            return Patch(DbFactory, ChangedProperties);
+        }
+
         public virtual int Patch(IDataBaseFactory DbFactory, IEnumerable<string> columns)
         {
             SetDataBaseFactory(DbFactory);
             return Patch(columns);
+        }
+        public virtual int Patch()
+        {
+            return Patch(ChangedProperties);
         }
 
         public virtual int Patch(IEnumerable<string> columns)
         {
             if (IsNew) return 0;
             int rtn;
+            this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
                 rtn = db.Update(this.SetAllowNull(false), columns);
             else
@@ -295,6 +326,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             if (IsNew) return 0;
             int rtn;
+            this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
                 rtn = db.Delete(this);
             else
@@ -351,6 +383,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             if (!IsNew) return false;
             object rtn;
+            this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
                 rtn = await db.InsertAsync(this.SetAllowNull(false)).ConfigureAwait(false);
             else
@@ -372,6 +405,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             if (IsNew) return 0;
             int rtn;
+            this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
                 rtn = await db.UpdateAsync(this.SetAllowNull(false)).ConfigureAwait(false);
             else
@@ -382,17 +416,25 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             return rtn;
         }
-
+        public virtual async Task<int> PatchAsync(IDataBaseFactory DbFactory)
+        {
+            return await PatchAsync(DbFactory, this.ChangedProperties).ConfigureAwait(false);
+        }
         public virtual async Task<int> PatchAsync(IDataBaseFactory DbFactory, IEnumerable<string> columns)
         {
             SetDataBaseFactory(DbFactory);
             return await PatchAsync(columns).ConfigureAwait(false);
+        }
+        public virtual async Task<int> PatchAsync()
+        {
+            return await PatchAsync(this.ChangedProperties).ConfigureAwait(false);
         }
 
         public virtual async Task<int> PatchAsync(IEnumerable<string> columns)
         {
             if (IsNew) return 0;
             int rtn;
+            this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
                 rtn = await db.UpdateAsync(this.SetAllowNull(false), columns).ConfigureAwait(false);
             else
@@ -414,6 +456,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             if (IsNew) return 0;
             int rtn;
+            this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
                 rtn = await db.DeleteAsync(this).ConfigureAwait(false);
             else
@@ -461,6 +504,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #endregion
 
+        public virtual TEntity ConvertDbFieldsToData() { return (TEntity)this; }
+        public virtual TEntity ConvertDataFieldsToDb() { return (TEntity)this; }
 
         #region Interface Definition
 

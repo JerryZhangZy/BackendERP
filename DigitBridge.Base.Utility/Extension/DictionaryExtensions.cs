@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -76,6 +77,38 @@ namespace DigitBridge.Base.Utility
 
             return clone;
         }
+        public static bool IsEqualTo<K, T>(this IDictionary<K, T> src, IDictionary<K, T> dst)
+        {
+            if (ReferenceEquals(src, dst))
+                return true;
+
+            if ((src == null) || (dst == null) || (src.Count != dst.Count))
+                return false;
+
+            foreach (KeyValuePair<K, T> srcKeyValuePair in src)
+            {
+                var dstValue = dst.GetValue(srcKeyValuePair.Key);
+                if (dstValue == null) return false;
+                if (dstValue is IList)
+                {
+                    var dstArr = JArray.FromObject(dstValue);
+                    var srcArr = JArray.FromObject(srcKeyValuePair.Value);
+                    if (dstArr.Count != srcArr.Count) return false;
+                    for (int i = 0; i < srcArr.Count; i++)
+                    {
+                        if (!JToken.DeepEquals(srcArr[i], dstArr[i]))
+                            return false;
+                    }
+                }
+                else
+                {
+                    if (!Equals(srcKeyValuePair.Value, dstValue))
+                        return false;
+                }
+            }
+            return true;
+        }
+
 
         public static T GetValue<T>(this string value, T defaultValue = default(T))
         {
@@ -113,6 +146,20 @@ namespace DigitBridge.Base.Utility
         };
 
         public static Dictionary<Type, Func<object, object, object>> Converters => _converters;
+
+
+        public static R Maybe<T, R>(this T item, Func<T, R> selector)
+        {
+            return Maybe(item, selector, null);
+        }
+
+        public static R Maybe<T, R>(this T item, Func<T, R> selector, Func<R> defaultFunc)
+        {
+            if (item == null)
+                return defaultFunc != null ? defaultFunc() : default(R);
+
+            return selector(item);
+        }
 
     }
 
