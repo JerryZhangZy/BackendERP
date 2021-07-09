@@ -25,18 +25,35 @@ using Bogus;
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     /// <summary>
-    /// Represents a Tester for InvoiceItemsAttributes.
+    /// Represents a Tester for CustomAttributeProfile.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class InvoiceItemsAttributesTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class CustomAttributeProfileTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        public static Faker<InvoiceItemsAttributes> GetFakerData()
+        public static Faker<CustomAttributeProfile> GetFakerData()
         {
             #region faker data rules
-            return new Faker<InvoiceItemsAttributes>()
-					.RuleFor(u => u.InvoiceItemsUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.InvoiceUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.Fields, (f, u) => u.Fields.SetValues(f.Random.JObject()))
+            return new Faker<CustomAttributeProfile>()
+					.RuleFor(u => u.DatabaseNum, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.AttributeNum, f => default(long))
+					.RuleFor(u => u.MasterAccountNum, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.AttributeUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.AttributeFor, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.AttributeName, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.AttributeType, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.AttributeDataType, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.DefaultValue, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.OptionList, f => f.Lorem.Sentence())
+					.RuleFor(u => u.Group1, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.Group2, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.Group3, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.MaxLength, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.Searchable, f => f.Random.Bool())
+					.RuleFor(u => u.Seq, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
+					.RuleFor(u => u.CreateBy, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))
 					;
             #endregion faker data rules
         }
@@ -45,10 +62,10 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
-        public Faker<InvoiceItemsAttributes> FakerData { get; set; }
+        public Faker<CustomAttributeProfile> FakerData { get; set; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public InvoiceItemsAttributesTests(TestFixture<StartupTest> fixture) 
+        public CustomAttributeProfileTests(TestFixture<StartupTest> fixture) 
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -102,7 +119,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 			data.Add();
             DataBaseFactory.Commit();
 
-            var dataGet = DataBaseFactory.GetFromCacheById<InvoiceItemsAttributes>(data.UniqueId);
+            var dataGet = DataBaseFactory.GetFromCacheById<CustomAttributeProfile>(data.UniqueId);
             var result = data.Equals(dataGet);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -112,7 +129,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Put_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItemsAttributes>("SELECT TOP 1 * FROM InvoiceItemsAttributes").ToList();
+            var list = DataBaseFactory.Find<CustomAttributeProfile>("SELECT TOP 1 * FROM CustomAttributeProfile").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -122,12 +139,37 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.Put();
             DataBaseFactory.Commit();
 
-            var dataGet = DataBaseFactory.GetFromCacheById<InvoiceItemsAttributes>(data.UniqueId);
+            var dataGet = DataBaseFactory.GetFromCacheById<CustomAttributeProfile>(data.UniqueId);
             var result = data.Equals(dataGet);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void Patch_Test()
+        {
+            var list = DataBaseFactory.Find<CustomAttributeProfile>("SELECT TOP 1 * FROM CustomAttributeProfile").ToList();
+
+            DataBaseFactory.Begin();
+            var data = list.FirstOrDefault();
+            var dataOrig = new CustomAttributeProfile();
+            dataOrig?.CopyFrom(data);
+
+            data.SetDataBaseFactory(DataBaseFactory);
+            var newData = FakerData.Generate();
+            data?.CopyFrom(newData);
+            data.Patch(new[] { "AttributeFor", "AttributeName" });
+            DataBaseFactory.Commit();
+
+            var dataGet = DataBaseFactory.GetFromCache<CustomAttributeProfile>(data.RowNum);
+            var result = dataGet.AttributeFor != dataOrig.AttributeFor &&
+                            dataGet.AttributeName != dataOrig.AttributeName &&
+                            dataGet.AttributeFor == newData.AttributeFor &&
+                            dataGet.AttributeName == newData.AttributeName;
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
@@ -139,15 +181,15 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             dataNew.Save();
             DataBaseFactory.Commit();
 
-            var dataUpdate = DataBaseFactory.GetById<InvoiceItemsAttributes>(dataNew.UniqueId);
+            var dataUpdate = DataBaseFactory.GetById<CustomAttributeProfile>(dataNew.UniqueId);
 			var dataChanged = FakerData.Generate();
-            dataUpdate?.CopyFrom(dataChanged, new[] {"InvoiceItemsUuid"});
+            dataUpdate?.CopyFrom(dataChanged, new[] {"AttributeUuid"});
 
             DataBaseFactory.Begin();
             dataUpdate.Save();
             DataBaseFactory.Commit();
 
-            var dataGet = DataBaseFactory.GetFromCacheById<InvoiceItemsAttributes>(dataUpdate.UniqueId);
+            var dataGet = DataBaseFactory.GetFromCacheById<CustomAttributeProfile>(dataUpdate.UniqueId);
             var result = dataUpdate.Equals(dataGet);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -157,7 +199,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
         { 
-            var list = DataBaseFactory.Find<InvoiceItemsAttributes>("SELECT TOP 1 * FROM InvoiceItemsAttributes").ToList();
+            var list = DataBaseFactory.Find<CustomAttributeProfile>("SELECT TOP 1 * FROM CustomAttributeProfile").ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -165,7 +207,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.Delete();
             DataBaseFactory.Commit();
 
-            var result = DataBaseFactory.ExistUniqueId<InvoiceItemsAttributes>(data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<CustomAttributeProfile>(data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -174,12 +216,12 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            //var list = DataBaseFactory.Find<InvoiceItemsAttributes>().ToList();
+            //var list = DataBaseFactory.Find<CustomAttributeProfile>().ToList();
             //var listData = list.FirstOrDefault();
-            //var data = DataBaseFactory.Get<InvoiceItemsAttributes>(listData.RowNum);
+            //var data = DataBaseFactory.Get<CustomAttributeProfile>(listData.RowNum);
             //var result = data.Equals(listData);
 
-            var list = DataBaseFactory.Find<InvoiceItemsAttributes>("SELECT TOP 1 * FROM InvoiceItemsAttributes").ToList();
+            var list = DataBaseFactory.Find<CustomAttributeProfile>("SELECT TOP 1 * FROM CustomAttributeProfile").ToList();
             var listData = list.FirstOrDefault(); 
             var result = listData!=null;
 
@@ -190,9 +232,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetById_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItemsAttributes>("SELECT TOP 1 * FROM InvoiceItemsAttributes").ToList();
+            var list = DataBaseFactory.Find<CustomAttributeProfile>("SELECT TOP 1 * FROM CustomAttributeProfile").ToList();
             var listData = list.FirstOrDefault();
-            var data = DataBaseFactory.GetById<InvoiceItemsAttributes>(listData.UniqueId);
+            var data = DataBaseFactory.GetById<CustomAttributeProfile>(listData.UniqueId);
             var result = data.Equals(listData);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -203,10 +245,10 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetFromCacheById_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceItemsAttributes>("SELECT TOP 1 * FROM InvoiceItemsAttributes").ToList();
+            var list = DataBaseFactory.Find<CustomAttributeProfile>("SELECT TOP 1 * FROM CustomAttributeProfile").ToList();
             var data = list.FirstOrDefault();
-            var data1 = DataBaseFactory.GetFromCacheById<InvoiceItemsAttributes>(data.UniqueId);
-            var data2 = DataBaseFactory.GetFromCacheById<InvoiceItemsAttributes>(data.UniqueId);
+            var data1 = DataBaseFactory.GetFromCacheById<CustomAttributeProfile>(data.UniqueId);
+            var data2 = DataBaseFactory.GetFromCacheById<CustomAttributeProfile>(data.UniqueId);
 
             var result = data1 == data2;
 
@@ -227,7 +269,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await data.AddAsync();
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItemsAttributes>(data.UniqueId);
+            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<CustomAttributeProfile>(data.UniqueId);
             var result = data.Equals(dataGet);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -237,7 +279,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task PutAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<InvoiceItemsAttributes>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<CustomAttributeProfile>()).ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -247,8 +289,34 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await data.PutAsync();
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItemsAttributes>(data.UniqueId);
+            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<CustomAttributeProfile>(data.UniqueId);
             var result = data.Equals(dataGet);
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task PatchAsync_Test()
+        {
+            var list = (await DataBaseFactory.FindAsync<CustomAttributeProfile>()).ToList();
+
+            DataBaseFactory.Begin();
+            var data = list.FirstOrDefault();
+            var dataOrig = new CustomAttributeProfile();
+            dataOrig?.CopyFrom(data);
+
+            data.SetDataBaseFactory(DataBaseFactory);
+            var newData = FakerData.Generate();
+            data?.CopyFrom(newData);
+            await data.PatchAsync(new[] { "AttributeFor", "AttributeName" });
+            DataBaseFactory.Commit();
+
+            var dataGet = await DataBaseFactory.GetFromCacheAsync<CustomAttributeProfile>(data.RowNum);
+            var result = dataGet.AttributeFor != dataOrig.AttributeFor &&
+                            dataGet.AttributeName != dataOrig.AttributeName &&
+                            dataGet.AttributeFor == newData.AttributeFor &&
+                            dataGet.AttributeName == newData.AttributeName;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -263,15 +331,15 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await dataNew.SaveAsync();
             DataBaseFactory.Commit();
 
-            var dataUpdate = await DataBaseFactory.GetByIdAsync<InvoiceItemsAttributes>(dataNew.UniqueId);
+            var dataUpdate = await DataBaseFactory.GetByIdAsync<CustomAttributeProfile>(dataNew.UniqueId);
             var dataChanged = FakerData.Generate();
-            dataUpdate?.CopyFrom(dataChanged, new[] { "InvoiceItemsUuid" });
+            dataUpdate?.CopyFrom(dataChanged, new[] { "AttributeUuid" });
 
             DataBaseFactory.Begin();
             await dataUpdate.SaveAsync();
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItemsAttributes>(dataUpdate.UniqueId);
+            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<CustomAttributeProfile>(dataUpdate.UniqueId);
             var result = dataUpdate.Equals(dataGet);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -281,7 +349,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<InvoiceItemsAttributes>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<CustomAttributeProfile>()).ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -289,7 +357,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await data.DeleteAsync();
             DataBaseFactory.Commit();
 
-            var result = await DataBaseFactory.ExistUniqueIdAsync<InvoiceItemsAttributes>(data.UniqueId);
+            var result = await DataBaseFactory.ExistUniqueIdAsync<CustomAttributeProfile>(data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -298,9 +366,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<InvoiceItemsAttributes>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<CustomAttributeProfile>()).ToList();
             var listData = list.FirstOrDefault();
-            var data = await DataBaseFactory.GetAsync<InvoiceItemsAttributes>(listData.RowNum);
+            var data = await DataBaseFactory.GetAsync<CustomAttributeProfile>(listData.RowNum);
             var result = data.Equals(listData);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -310,9 +378,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetByIdAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<InvoiceItemsAttributes>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<CustomAttributeProfile>()).ToList();
             var listData = list.FirstOrDefault();
-            var data = await DataBaseFactory.GetByIdAsync<InvoiceItemsAttributes>(listData.UniqueId);
+            var data = await DataBaseFactory.GetByIdAsync<CustomAttributeProfile>(listData.UniqueId);
             var result = data.Equals(listData);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -323,10 +391,10 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetFromCacheByIdAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<InvoiceItemsAttributes>("SELECT TOP 1 * FROM InvoiceItemsAttributes")).ToList();
+            var list = (await DataBaseFactory.FindAsync<CustomAttributeProfile>("SELECT TOP 1 * FROM CustomAttributeProfile")).ToList();
             var data = list.FirstOrDefault();
-            var data1 = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItemsAttributes>(data.UniqueId);
-            var data2 = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItemsAttributes>(data.UniqueId);
+            var data1 = await DataBaseFactory.GetFromCacheByIdAsync<CustomAttributeProfile>(data.UniqueId);
+            var data2 = await DataBaseFactory.GetFromCacheByIdAsync<CustomAttributeProfile>(data.UniqueId);
 
             var result = data1 == data2;
 

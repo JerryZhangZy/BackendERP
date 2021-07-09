@@ -44,6 +44,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return tableRepositories;
         }
 
+        public static IList<TEntity> ConvertDbFieldsToData<TEntity>(this IList<TEntity> lst)
+            where TEntity : TableRepository<TEntity, long>, new()
+            => lst.ConvertDbFieldsToData<TEntity, long>();
+
+        public static IList<TEntity> ConvertDbFieldsToData<TEntity, TId>(this IList<TEntity> lst) where TEntity : TableRepository<TEntity, TId>, new()
+        {
+            var tableRepositories = lst.ToList();
+            tableRepositories?.ForEach(i => i?.ConvertDbFieldsToData());
+            return tableRepositories;
+        }
+
         public static bool Save<TEntity>(this IList<TEntity> lst)
             where TEntity : TableRepository<TEntity, long>, new()
             => lst.Save<TEntity, long>();

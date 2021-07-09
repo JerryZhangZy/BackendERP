@@ -1,11 +1,11 @@
 ﻿CREATE TABLE [dbo].[ProductBasic] (
-    [RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [DatabaseNum]        INT             NOT NULL,
-    [MasterAccountNum]   INT             NOT NULL,
-    [ProfileNum]         INT             NOT NULL,
-    [SKU]                VARCHAR(100)    NOT NULL DEFAULT '',
-    [FNSku]              NVARCHAR(10)    NOT NULL DEFAULT '',
-    [Condition]          TINYINT         NOT NULL DEFAULT 0,
+    [CentralProductNum]  BIGINT         IDENTITY (1000000, 1) NOT NULL,
+    [DatabaseNum]        INT            NOT NULL,
+    [MasterAccountNum]   INT            NOT NULL,
+    [ProfileNum]         INT            NOT NULL,
+    [SKU]                VARCHAR(100)   NOT NULL DEFAULT '',
+    [FNSku]              NVARCHAR(10)   NOT NULL DEFAULT '',
+    [Condition]          TINYINT        NOT NULL DEFAULT 0,
     [Brand]              VARCHAR(150)   NOT NULL DEFAULT '',
     [Manufacturer]       NVARCHAR(255)  NOT NULL DEFAULT '',
     [ProductTitle]       NVARCHAR(500)  NOT NULL DEFAULT '',
@@ -22,7 +22,7 @@
     [AvgCost]            DECIMAL(10, 2) NOT NULL DEFAULT 0,
     [MAPPrice]           DECIMAL(10, 2) NOT NULL DEFAULT 0,
     [MSRP]               MONEY           NOT NULL DEFAULT 0,
-    [BundleType]         TINYINT         NOT NULL DEFAULT 0,                --None=0 ; BundleItem =1
+    [BundleType]         TINYINT         NOT NULL DEFAULT 0,      --None=0 ; BundleItem =1
     [ProductType]        TINYINT         NOT NULL DEFAULT 0,
     [VariationVaryBy]    NVARCHAR(80)   NOT NULL DEFAULT '',      --Item=0 ; Child =1; Parent =2       
     [CopyToChildren]     TINYINT         NOT NULL DEFAULT 0,
@@ -32,13 +32,13 @@
     [NetWeight]          DECIMAL(10, 2) NOT NULL DEFAULT 0,
     [GrossWeight]        DECIMAL(6, 2)  NOT NULL DEFAULT 0,
     [WeightUnit]         TINYINT         NOT NULL DEFAULT 0,
-    [ProductHeight]    DECIMAL(10, 2) NOT NULL DEFAULT 0, -- Change column name
-    [ProductLength]    DECIMAL(10, 2) NOT NULL DEFAULT 0, -- Change column name
-    [ProductWidth]     DECIMAL(10, 2) NOT NULL DEFAULT 0,  -- Change column name
+    [ProductHeight]      DECIMAL(10, 2) NOT NULL DEFAULT 0, -- Change column name
+    [ProductLength]      DECIMAL(10, 2) NOT NULL DEFAULT 0, -- Change column name
+    [ProductWidth]       DECIMAL(10, 2) NOT NULL DEFAULT 0,  -- Change column name
     [BoxHeight]          DECIMAL(6, 2)  NOT NULL DEFAULT 0,
     [BoxLength]          DECIMAL(6, 2)  NOT NULL DEFAULT 0,
     [BoxWidth]           DECIMAL(6, 2)  NOT NULL DEFAULT 0,
-    [Unit]      TINYINT         NOT NULL DEFAULT 0,
+    [Unit]               TINYINT         NOT NULL DEFAULT 0,
     [HarmonizedCode]     NVARCHAR(20)   NOT NULL DEFAULT '',
     [TaxProductCode]     NVARCHAR(25)   NOT NULL DEFAULT '',
     [IsBlocked]          TINYINT         NOT NULL DEFAULT 0,
@@ -50,23 +50,9 @@
     [ClassificationNum]  BIGINT          NOT NULL DEFAULT 0,
 
     -- Add new Columns
-
-	[StyleCode] Varchar(100) NOT NULL DEFAULT '', --Product SKU Item No 
-	[ColorPatternCode] Varchar(50) NOT NULL DEFAULT '',--Product SKU Color Code 
-	[SizeType] Varchar(50) NOT NULL DEFAULT '',--Product SKU. Ex: Regular, Plus 
-	[SizeCode] Varchar(50) NOT NULL DEFAULT '',--Product SKU size code
-	[WidthCode] Varchar(30) NOT NULL DEFAULT '',--Product SKU width code
-	[LengthCode] Varchar(30) NOT NULL DEFAULT '',--Product SKU Length code
-
-	[ClassCode] Varchar(50) NOT NULL DEFAULT '',--Product SKU Class  
-	[DepartmentCode] Varchar(50) NOT NULL DEFAULT '',--Product SKU department
-	[DivisionCode] Varchar(50) NOT NULL DEFAULT '',--Product SKU department
-
-	[PriceRule] Varchar(50) NOT NULL DEFAULT '',--Product SKU 
-	[Stockable] TINYINT NOT NULL DEFAULT 0,--Product Handel Stock 
     [OriginalUPC] VARCHAR(20) NOT NULL DEFAULT '',
-    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [ProductUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for product SKU
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
     CONSTRAINT [PK_ProductBasic] PRIMARY KEY CLUSTERED ([RowNum] ASC)
 );

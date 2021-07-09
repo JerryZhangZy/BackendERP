@@ -13,6 +13,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+using Newtonsoft.Json.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
@@ -40,9 +41,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasInvoiceUuid => InvoiceUuid != null;
 
-        public string JsonFields { get; set; }
+
+        [IgnoreCompare]
+        public JObject Fields { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
-        public bool HasJsonFields => JsonFields != null;
+        public bool HasFields => Fields != null;
 
 
         #endregion Properties - Generated 

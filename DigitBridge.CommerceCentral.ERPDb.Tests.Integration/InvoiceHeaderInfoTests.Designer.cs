@@ -169,7 +169,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Put_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeaderInfo>().ToList();
+            var list = DataBaseFactory.Find<InvoiceHeaderInfo>("SELECT TOP 1 * FROM InvoiceHeaderInfo").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -189,7 +189,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Patch_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeaderInfo>().ToList();
+            var list = DataBaseFactory.Find<InvoiceHeaderInfo>("SELECT TOP 1 * FROM InvoiceHeaderInfo").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -238,8 +238,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         [Fact()]
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
-        {
-            var list = DataBaseFactory.Find<InvoiceHeaderInfo>().ToList();
+        { 
+            var list = DataBaseFactory.Find<InvoiceHeaderInfo>("SELECT TOP 1 * FROM InvoiceHeaderInfo").ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -256,10 +256,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeaderInfo>().ToList();
-            var listData = list.FirstOrDefault();
-            var data = DataBaseFactory.Get<InvoiceHeaderInfo>(listData.RowNum);
-            var result = data.Equals(listData);
+            //var list = DataBaseFactory.Find<InvoiceHeaderInfo>().ToList();
+            //var listData = list.FirstOrDefault();
+            //var data = DataBaseFactory.Get<InvoiceHeaderInfo>(listData.RowNum);
+            //var result = data.Equals(listData);
+
+            var list = DataBaseFactory.Find<InvoiceHeaderInfo>("SELECT TOP 1 * FROM InvoiceHeaderInfo").ToList();
+            var listData = list.FirstOrDefault(); 
+            var result = listData!=null;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -268,7 +272,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetById_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceHeaderInfo>().ToList();
+            var list = DataBaseFactory.Find<InvoiceHeaderInfo>("SELECT TOP 1 * FROM InvoiceHeaderInfo").ToList();
             var listData = list.FirstOrDefault();
             var data = DataBaseFactory.GetById<InvoiceHeaderInfo>(listData.UniqueId);
             var result = data.Equals(listData);

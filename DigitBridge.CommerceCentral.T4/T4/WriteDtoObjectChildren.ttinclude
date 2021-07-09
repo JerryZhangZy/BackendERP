@@ -11,7 +11,14 @@
     WriteLine($"");
     foreach(var col in child.Table.Columns)
     { 
-        WriteLine($"{new String('\t',indent+1)}dto.{col.propertyName} = data.{col.propertyName}{col.ConvertPropertyTypeDataToDto};");
+        if (col.isJson)
+        {
+            WriteLine($"{new String('\t',indent+1)}dto.{col.jsonDictionaryName} = data.{col.jsonDictionaryName}.ToJson();");
+        }
+        else
+        {
+            WriteLine($"{new String('\t',indent+1)}dto.{col.propertyName} = data.{col.propertyName}{col.ConvertPropertyTypeDataToDto};");
+        }
     }
     WriteLine($"");
     WriteLine($"{new String('\t',indent+1)}#endregion read properties");

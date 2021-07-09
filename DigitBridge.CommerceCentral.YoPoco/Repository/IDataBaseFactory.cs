@@ -114,12 +114,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #endregion
 
-        #region Query - get single record from Cache
+        #region Query - get record from Cache
 
-        TEntity GetFromCache<TEntity>(long id) where TEntity : TableRepository<TEntity, long>, new();
-        TEntity GetFromCacheById<TEntity>(string uid) where TEntity : TableRepository<TEntity, long>, new();
-        Task<TEntity> GetFromCacheAsync<TEntity>(long id) where TEntity : TableRepository<TEntity, long>, new();
-        Task<TEntity> GetFromCacheByIdAsync<TEntity>(string uid) where TEntity : TableRepository<TEntity, long>, new();
+        T GetFromCache<T>(string key, Func<T> create, bool reNew = false);
+        TEntity GetFromCache<TEntity>(long id, bool reNew = false) where TEntity : TableRepository<TEntity, long>, new();
+        TEntity GetFromCacheById<TEntity>(string uid, bool reNew = false) where TEntity : TableRepository<TEntity, long>, new();
+        Task<TEntity> GetFromCacheAsync<TEntity>(long id, bool reNew = false) where TEntity : TableRepository<TEntity, long>, new();
+        Task<TEntity> GetFromCacheByIdAsync<TEntity>(string uid, bool reNew = false) where TEntity : TableRepository<TEntity, long>, new();
 
         #endregion Query - get single record from Cache
 

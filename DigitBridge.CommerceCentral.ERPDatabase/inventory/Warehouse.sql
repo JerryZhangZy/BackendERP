@@ -15,7 +15,8 @@
     [WarehouseStatus] INT NULL DEFAULT 0, --Warehouse status
     [Priority] INT NULL DEFAULT 0, --Warehouse Priority
 
-	[WarehouseName] VARCHAR(200) NULL, --Warehouse Name
+	[WarehouseNum] VARCHAR(50) NULL, --Warehouse Code
+	[WarehouseName] NVARCHAR(200) NULL, --Warehouse Name
 	[CustomerUuid] VARCHAR(50) NULL, --Customer Guid
 	[VendorUuid] VARCHAR(50) NULL, --Vendor Guid
 

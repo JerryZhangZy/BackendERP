@@ -47,9 +47,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return (T)retValue;
         }
 
-        public T FromCache<T>(string key, Func<T> create, bool useDefault = false)
+        public T FromCache<T>(string key, Func<T> create, bool reNew = false, bool useDefault = false)
         {
-            if (_Cache != null)
+            if (_Cache != null && !reNew)
             {
                 if (_Cache.TryGetValue(key, out var value))
                     return (T)value;

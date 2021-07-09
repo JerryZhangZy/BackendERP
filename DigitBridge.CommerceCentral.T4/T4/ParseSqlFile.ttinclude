@@ -46,7 +46,10 @@
         public string ParameterName { get {return $"{Name.First().ToString().ToLower()}{Name.Substring(1)}"; } }
         public string DtoName { get; set; }
         public List<SqlColumnInfo> Columns { get; set; }
+        public List<SqlColumnInfo> JsonColumns { get; set; }
         public string Text { get; set; }
+        
+        public bool HasJsonColumns { get { return JsonColumns != null && JsonColumns.Count > 0; } }
 
         public string PrimaryKey { get; set; }
         public string UniqueKey { get; set; }
@@ -116,6 +119,16 @@
                 ? name
                 : "RowNum";
         }
+        public string NonRowNumPrimaryKey 
+        { 
+            get 
+            { 
+                return string.IsNullOrEmpty(PrimaryKey) || PrimaryKey.Equals("RowNum", StringComparison.CurrentCultureIgnoreCase) 
+                    ? null
+                    : $"_{PrimaryKey.First().ToString().ToLower()}{PrimaryKey.Substring(1)}";
+            } 
+        }
+
 
         public string StructureName { get; set; }
         public SqlTableInfo Parent { get; set; }
@@ -144,6 +157,7 @@
         public string Description { get; set; }
         public string Text { get; set; }
         public bool IsUniqueKey { get; set; }
+        public bool IsPrimaryKey { get; set; }
 
         public List<string> FieldAtrributes { get; set; }
         public List<string> PropertyAtrributes { get; set; }
@@ -236,6 +250,14 @@
                 ); 
             }
         }
+        public string jsonDictionaryName {
+            get { return $"{Name.Substring(4)}"; }
+        }
+
+        public bool isJson { 
+            get { return isString && Name.StartsWith("Json",StringComparison.CurrentCultureIgnoreCase); }
+        }
+
         public bool isString {
             get { return (Type == "string"); }
         }
@@ -321,7 +343,8 @@
                 return $".RuleFor(u => u.{Name}, f => f.PickRandom(TestHelper.InvoiceItemType))";
             if (Name.Equals("InvoiceItemStatus", StringComparison.CurrentCultureIgnoreCase))
                 return $".RuleFor(u => u.{Name}, f => f.PickRandom(TestHelper.InvoiceItemStatus))";
-
+            if (isJson)
+                return $".RuleFor(u => u.{jsonDictionaryName}, (f, u) => u.{jsonDictionaryName}.SetValues(f.Random.JObject()))";
 
             var gen = $"f => null";
             var t = Type.ToLower();
@@ -336,7 +359,7 @@
                         ? $"f => f.Random.Guid().ToString()"
                         : (Length == "50") 
                             ? $"f => f.Random.AlphaNumeric({this.Length})"
-                            : (Length == "max")
+                            : (Length.Equals("max", StringComparison.CurrentCultureIgnoreCase))
                                 ? $"f => f.Lorem.Sentence()"
                                 : $"f => f.Lorem.Sentence().TruncateTo({this.Length})";
                     break;
@@ -506,6 +529,7 @@
             if (table == null) return null;
 
             table.Columns = GetSqlColumnInfo(content, table);
+            table.JsonColumns = table.Columns.Where(x => x.isJson).ToList();
             table.GetRandomProperties();
             return table;
         }
@@ -611,6 +635,7 @@
                         col.Decimals = col.Length != null && col.Length.Contains(',') ? int.Parse(col.Length.Split(',')[1]) : 0;
                         col.Key = !string.IsNullOrEmpty(table.PrimaryKey) && table.PrimaryKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
                         col.IsUniqueKey = !string.IsNullOrEmpty(table.UniqueKey) && table.UniqueKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
+                        col.IsPrimaryKey = !string.IsNullOrEmpty(table.PrimaryKey) && table.PrimaryKey.Equals(col.Name, StringComparison.CurrentCultureIgnoreCase);
                         GetFieldAtrribute(col);
                         GetPropertyAtrribute(col);
                         GetDtoAtrribute(col);
@@ -805,6 +830,9 @@
         {
             if (col == null) return col;
             col.PropertyAtrributes = new List<string>();
+
+            if (col.isJson)
+                col.PropertyAtrributes.Add($"[XmlIgnore, JsonIgnore, IgnoreCompare]");
 
             return col;
         }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System;
 using DigitBridge.Base.Utility;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.XUnit.Common
 {
@@ -45,6 +46,22 @@ namespace DigitBridge.CommerceCentral.XUnit.Common
                 return Math.Round(value, decimals.Value);
             }
             return value;
+        }
+
+        public static string JsonString(this Randomizer r)
+        {
+            return r.JObject().ToString(Newtonsoft.Json.Formatting.None);
+        }
+
+        public static JObject JObject(this Randomizer r)
+        {
+            return new JObject()
+            {
+                { "ClassCode", r.AlphaNumeric(20) },
+                { "DepartmentCode", r.AlphaNumeric(20) },
+                { "ClassInt", r.Int(1, 100) },
+                { "ClassDecimal", r.Decimal(1, 1000, 4) }
+            };
         }
 
     }

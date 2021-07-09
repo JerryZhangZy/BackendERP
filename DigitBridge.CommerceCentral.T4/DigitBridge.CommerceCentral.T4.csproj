@@ -23,6 +23,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DataAccess.cs</LastGenOutput>
     </None>
+    <None Update="T4\SettingForInvoice.ttinclude">
+      <LastGenOutput>SettingForInvoice.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\GenerateRepositoryDto.ttinclude">
       <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -56,7 +60,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\ReadDtoObjectChildren.ttinclude">
-      <LastGenOutput>ReadDtoListChildren.cs</LastGenOutput>
+      <LastGenOutput>ReadDtoObjectChildren.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateStructureDtoMapper-Bak.ttinclude">
@@ -166,20 +170,40 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="T4\GenerateRepositoryDto.cs">
+    <Compile Update="T4\DataAccess.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
+      <DependentUpon>DataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateStructureDtoMapper.cs">
+    <Compile Update="T4\ReadDtoGrandChildrenMethod.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructureDtoMapper.ttinclude</DependentUpon>
+      <DependentUpon>ReadDtoGrandChildrenMethod.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\ReadDtoObjectChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoObjectChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForInvoice.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInvoice.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\WriteDtoGrandChildrenMethod.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WriteDtoGrandChildrenMethod.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\WriteDtoObjectChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WriteDtoObjectChildren.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 

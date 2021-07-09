@@ -127,4 +127,10 @@
   <ItemGroup>
     <None Include="inventory\ProductBasic.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomDefineCodes\CustomAttributeProfile.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\ProductExt.sql" />
+  </ItemGroup>
 </Project>

@@ -61,68 +61,8 @@
         6. Service Class - will generate srevice class.
         7. Service Class Tester - will generate srevice class tester.
 */
-
-	// Database table define file path
-    var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\ar";
-    // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
-    var Files = "InvoiceHeader,InvoiceHeaderInfo,InvoiceHeaderAttributes,InvoiceItems,InvoiceItemsAttributes";
-    // current solution path
-	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
-    var project= Path.Combine(path,DatabaseProjectName);
-
-    // generate repository class for each table
-    var generateModel = true;
-    var Namespace = "DigitBridge.CommerceCentral.ERPDb";
-    var ModelFolder = "DigitBridge.CommerceCentral.ERPDb\\ar";
-    var generateDto = true;
-    var DtoFolder = "DigitBridge.CommerceCentral.ERPDb\\ar\\dto";
-
-    // generate tester class for each table repository
-    var generateTester = true;
-    var NamespaceTest = "DigitBridge.CommerceCentral.ERPDb.Tests.Integration";
-    var TesterFolder = "DigitBridge.CommerceCentral.ERPDb.Tests.Integration";
-
-    // generate structure repository class contain multiple table
-    var generateStructureRepository = true;
-    var generateStructureTester = true;
-    var NamespaceStructure = "DigitBridge.CommerceCentral.ERPDb";
-    var StructureFolder = "DigitBridge.CommerceCentral.ERPDb\\ar";
-    var StructureClass = new StructureInfo("InvoiceData",
-            new StructureTable() { Name = "InvoiceHeader", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "InvoiceHeaderInfo", ParentName = "InvoiceHeader", OneToOne = true, LoadByColumn = "InvoiceId" },
-            new StructureTable() { Name = "InvoiceHeaderAttributes", ParentName = "InvoiceHeader", OneToOne = true, LoadByColumn = "InvoiceId" },
-            new StructureTable() { Name = "InvoiceItems", ParentName = "InvoiceHeader", DetailTable = true, OneToOne = false, LoadByColumn = "InvoiceId", oneToOneChildrenName = "InvoiceItemsAttributes" },
-            new StructureTable() { Name = "InvoiceItemsAttributes", ParentName = "InvoiceItems", OneToOne = false, LoadByColumn = "InvoiceId" }
-        );
-
-    // generate structure Dto class
-    var generateStructureDto = true;
-    var generateStructureDtoTester = true;
-    var NamespaceStructureDto = "DigitBridge.CommerceCentral.ERPDb";
-    var StructureDtoFolder = "DigitBridge.CommerceCentral.ERPDb\\ar\\dto";
-    var StructureDtoName = "InvoiceDataDto";
-
-    // generate service class
-    var generateService = true;
-    var NamespaceService = "DigitBridge.CommerceCentral.ERPMdl";
-    var ServiceFolder = "DigitBridge.CommerceCentral.ERPMdl\\ar";
-    var ServiceName = "InvoiceService";
-
-    var generateServiceTester = true;
-    var NamespaceServiceTest = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
-    var ServiceTesterFolder = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
-
-    var indent = 2;
-    var dir = string.Empty;
-
-    // Read schema
-
-    //var manager = new Manager(Host, GenerationEnvironment, true) { OutputPath = path};
-    var parser = new SQLFileParser(project, Files, StructureClass);
-
-    parser.Parse();
-    var tables = parser.Tables;
-#>    
+#>
+<#@ include file="SettingForInvoice.ttinclude" #>
 
 <#      
     // Generate model output

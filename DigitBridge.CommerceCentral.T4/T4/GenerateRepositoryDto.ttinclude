@@ -12,6 +12,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+using Newtonsoft.Json.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace <#= Namespace #>
@@ -33,6 +34,7 @@ namespace <#= Namespace #>
 foreach(var col in table.Columns)
 { 
     if (col.ignoreGenerate) continue;
+    if (col.isJson) continue;
     foreach(var atr in col.DtoAtrributes)
     {
 #>
@@ -43,6 +45,25 @@ foreach(var col in table.Columns)
         public bool Has<#= col.propertyName #> => <#= col.propertyName #> != null;
 
 <# } #>
+
+<# // generate all json fields
+if (table.HasJsonColumns)
+{
+
+    foreach(var col in table.JsonColumns)
+    { 
+        if (col.ignoreGenerate) continue;
+        if (!col.isJson) continue;
+#>
+        [IgnoreCompare]
+        public JObject <#= col.jsonDictionaryName #> { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool Has<#= col.jsonDictionaryName #> => <#= col.jsonDictionaryName #> != null;
+
+<#
+    } 
+} 
+#>
 
         #endregion Properties - Generated 
 

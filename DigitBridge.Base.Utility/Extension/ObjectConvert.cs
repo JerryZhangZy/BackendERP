@@ -647,5 +647,46 @@ namespace DigitBridge.Base.Utility
         public static double RoundTo(this double input, int decimalDigit = 2) =>
             Math.Round(input, decimalDigit, MidpointRounding.AwayFromZero);
 
+
+        public static bool IsString(this Type type) => type == typeof(String);
+        public static bool IsInt(this Type type) => type == typeof(int);
+        public static bool IsLong(this Type type) => type == typeof(long);
+        public static bool IsDecimal(this Type type) => type == typeof(Decimal);
+
+        /// <summary>
+        /// Split string to IEnumerable by separator
+        /// </summary>
+        public static IEnumerable<T> SplitTo<T>(this string input, params char[] separator)
+        {
+            if (string.IsNullOrWhiteSpace(input)) 
+                return new List<T>();
+            if (separator is null || separator.Length == 0) 
+                separator = new char[] { ',' };
+            return Array.ConvertAll<string, T>(input.Split(separator), item => item.ConvertObject<T>());
+        }
+
+        /// <summary>
+        /// Convert IList<T> to IList<string>
+        /// </summary>
+        public static IList<string> ToStringList<T>(this IEnumerable<T> lst) => 
+            (lst?.Any() != true) 
+                ? new List<string>() 
+            : lst.Select(x => x.ToString()).ToList();
+
+        /// <summary>
+        /// Convert IList<T> to IList<string>
+        /// </summary>
+        public static IList<string> ToStringList<T>(this IEnumerable<T> lst, Func<T, string> selector) =>
+            (lst?.Any() != true) 
+                ? new List<string>()
+                : lst.Select(selector).Distinct().ToList();
+
+        /// <summary>
+        /// Convert IList<T> to IList<string>
+        /// </summary>
+        public static IList<T> ToTypeList<T>(this IEnumerable<string> lst) =>
+            (lst?.Any() != true)
+                ? new List<T>()
+                : lst.Select(x => x.ConvertObject<T>()).ToList();
     }
 }
