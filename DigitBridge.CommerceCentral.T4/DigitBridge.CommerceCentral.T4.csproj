@@ -6,20 +6,21 @@
 
   <ItemGroup>
     <Compile Remove="T4\DataAccess - customer.cs" />
+    <Compile Remove="T4\DataAccess - order.cs" />
     <Compile Remove="T4\DataAccess -Inventory.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="T4\DataAccess - customer.tt" />
+    <None Remove="T4\DataAccess - order.tt" />
     <None Remove="T4\DataAccess -Inventory.tt" />
     <None Remove="T4\DataAccess -InventoryLog.tt" />
-    <None Remove="T4\DataAccess.tt" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="T4\DataAccess - order.tt">
+    <None Update="T4\DataAccess.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>DataAccess - order.cs</LastGenOutput>
+      <LastGenOutput>DataAccess.cs</LastGenOutput>
     </None>
     <None Update="T4\GenerateRepositoryDto.ttinclude">
       <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
@@ -164,11 +165,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="T4\DataAccess - order.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataAccess - order.tt</DependentUpon>
-    </Compile>
     <Compile Update="T4\DataAccess.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
