@@ -27,6 +27,7 @@
     <Folder Include="DTO\" />
     <Folder Include="inventory\dto\" />
     <Folder Include="po\dto\" />
+    <Folder Include="shipment\dto\" />
     <Folder Include="so\dto\" />
     <Folder Include="vendor\dto\" />
   </ItemGroup>

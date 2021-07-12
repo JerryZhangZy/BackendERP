@@ -63,6 +63,7 @@
     <Folder Include="CustomDefineCodes" />
     <Folder Include="so" />
     <Folder Include="shipment" />
+    <Folder Include="channelOrder" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -160,5 +161,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="inventory\ProductBasic_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderHeader.sql" />
+    <None Include="channelOrder\OrderLine.sql" />
   </ItemGroup>
 </Project>
