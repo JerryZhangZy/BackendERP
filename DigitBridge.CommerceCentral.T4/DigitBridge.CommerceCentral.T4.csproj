@@ -27,6 +27,18 @@
       <LastGenOutput>SettingForInventory.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForInvoice - Copy %282%29.ttinclude">
+      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForOrder.ttinclude">
+      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForCustomer.ttinclude">
+      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForInvoice.ttinclude">
       <LastGenOutput>SettingForInventory.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
