@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DigitBridge.CommerceCentral.WebApi": {
+      "commandName": "Executable",
+      "executablePath": "%LocalAppData%\\AzureFunctionsTools\\Releases\\3.23.5\\cli\\func.exe",
+      "commandLineArgs": "host start --verbose",
+      "workingDirectory": "$(TargetDir)"
+    }
+  }
+}

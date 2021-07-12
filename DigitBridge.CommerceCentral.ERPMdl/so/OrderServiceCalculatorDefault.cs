@@ -24,25 +24,25 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a default InvoiceService Calculator class.
+    /// Represents a default OrderService Calculator class.
     /// </summary>
-    public partial class InvoiceServiceCalculatorDefault : ICalculator<InvoiceData>
+    public partial class OrderServiceCalculatorDefault : ICalculator<OrderData>
     {
-        public virtual bool SetDefault(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool SetDefault(OrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             SetDefaultSummary(data, processingMode);
             SetDefaultDetail(data, processingMode);
             return true;
         }
 
-        public virtual bool SetDefaultSummary(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool SetDefaultSummary(OrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
 
             //TODO: add set default summary data logic
             /* This is generated sample code
-            var sum = data.InvoiceHeader;
+            var sum = data.OrderHeader;
             if (sum.InvoiceDate.IsZero()) sum.InvoiceDate = DateTime.Today;
             if (sum.InvoiceTime.IsZero()) sum.InvoiceTime = DateTime.Now.TimeOfDay;
 
@@ -54,7 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        public virtual bool SetDefaultDetail(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool SetDefaultDetail(OrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
@@ -75,13 +75,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         //TODO: add set default for detail line logic
         /* This is generated sample code
-        protected virtual bool SetDefault(InvoiceItems item, InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        protected virtual bool SetDefault(InvoiceItems item, OrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;
 
             var setting = new ERPSetting();
-            var sum = data.InvoiceHeader;
+            var sum = data.OrderHeader;
             //var prod = data.GetCache<ProductBasic>(ProductId);
             //var inv = data.GetCache<Inventory>(InventoryId);
             //var invCost = new ItemCostClass(inv);
@@ -109,14 +109,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         */
 
 
-        public virtual bool Calculate(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool Calculate(OrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             CalculateDetail(data, processingMode);
             CalculateSummary(data, processingMode);
             return true;
         }
 
-        public virtual bool CalculateSummary(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool CalculateSummary(OrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
@@ -164,7 +164,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        public virtual bool CalculateDetail(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool CalculateDetail(OrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
@@ -172,7 +172,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //TODO: add calculate summary object logic
             /* This is generated sample code
 
-            var sum = data.InvoiceHeader;
+            var sum = data.OrderHeader;
             sum.SubTotalAmount = 0;
             sum.TaxableAmount = 0;
             sum.NonTaxableAmount = 0;
@@ -203,7 +203,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         //TODO: add set default for detail line logic
         /* This is generated sample code
-        protected virtual bool CalculateDetail(InvoiceItems item, InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        protected virtual bool CalculateDetail(InvoiceItems item, OrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;
