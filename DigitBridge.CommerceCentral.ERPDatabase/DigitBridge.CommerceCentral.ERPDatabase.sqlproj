@@ -62,6 +62,7 @@
     <Folder Include="vendor" />
     <Folder Include="CustomDefineCodes" />
     <Folder Include="so" />
+    <Folder Include="shipment" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -132,5 +133,32 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="inventory\ProductExt.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\ProductExtAttributes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\InventoryAttributes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shipment\OrderShipmentCanceledItem.sql" />
+    <None Include="shipment\OrderShipmentHeader.sql" />
+    <None Include="shipment\OrderShipmentPackage.sql" />
+    <None Include="shipment\OrderShipmentShippedItem.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shipment\OrderShipmentHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shipment\OrderShipmentPackage_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shipment\OrderShipmentShippedItem_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shipment\OrderShipmentCanceledItem_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\ProductBasic_Update.sql" />
   </ItemGroup>
 </Project>

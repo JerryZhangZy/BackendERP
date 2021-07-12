@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("InvoiceUuid",SqlDbType.VarChar,NotNull=true)]
         private string _invoiceUuid;
 
-        [Column("JsonFields",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        [Column("JsonFields",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _jsonFields;
 
         #endregion Fields - Generated 

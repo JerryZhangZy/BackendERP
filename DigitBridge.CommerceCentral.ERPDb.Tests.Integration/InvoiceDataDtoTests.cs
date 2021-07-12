@@ -74,6 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             var data2 = new InvoiceData();
             mapper.ReadDto(data2, dto);
 
+
             var result = data.Equals(data2);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");

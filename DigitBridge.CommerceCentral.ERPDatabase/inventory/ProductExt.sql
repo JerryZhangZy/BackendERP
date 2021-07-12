@@ -27,7 +27,6 @@
     [CategoryCode] VARCHAR(50) NOT NULL DEFAULT '',
     [GroupCode] VARCHAR(50) NOT NULL DEFAULT '',
     [SubGroupCode] VARCHAR(50) NOT NULL DEFAULT '',
-    [CatalogPage] VARCHAR(50) NOT NULL DEFAULT '',
 
 	[PriceRule] Varchar(50) NOT NULL DEFAULT '',--Product Default Price Rule 
 	[Stockable] TINYINT NOT NULL DEFAULT 0,--Product has InStock 
@@ -55,7 +54,9 @@
     [LeadTimeDay] INT NOT NULL DEFAULT 0,	--Processing days before shipping 
     [ProductYear] VARCHAR(50) NOT NULL DEFAULT '',	--Product year 
 
-    CONSTRAINT [PK_ProductExt] PRIMARY KEY CLUSTERED ([RowNum] ASC)
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
+    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
+    CONSTRAINT [PK_ProductExt] PRIMARY KEY CLUSTERED ([RowNum])
 );
 GO
 
@@ -73,7 +74,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_ProductExt_MasterAccountNum_ProfileNum_SKU]
 );
 GO
 
-CREATE UNIQUE NONCLUSTERED INDEX [UI_ProductExt_CentralProductNum] ON [dbo].[ProductExt]
+CREATE NONCLUSTERED INDEX [UI_ProductExt_CentralProductNum] ON [dbo].[ProductExt]
 (
 	[CentralProductNum] ASC
 ) ON [PRIMARY]

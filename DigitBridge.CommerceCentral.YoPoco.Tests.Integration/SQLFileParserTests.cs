@@ -35,25 +35,33 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         public async Task GetTableFiles_Test()
         {
             var folder =
-                "C:\\digit\\JerryZhang\\DigitBridgeCommerceCentralSln\\DigitBridge.CommerceCentral.CommerceCentralDatabase\\ar";
-            var files = "InvoiceHeader,InvoiceHeaderInfo,InvoiceHeaderAttributes,InvoiceItems,InvoiceItemsAttributes";
-            var structure = new StructureInfo("InvoiceData",
-                new StructureTable() { Name = "InvoiceHeader", MainTable = true, oneToOneChildrenName = "InvoiceHeaderInfo,InvoiceHeaderAttributes" },
-                new StructureTable() { Name = "InvoiceHeaderInfo", ParentName = "InvoiceHeader", OneToOne = true, LoadByColumn = "InvoiceId" },
-                new StructureTable() { Name = "InvoiceHeaderAttributes", ParentName = "InvoiceHeader", OneToOne = true, LoadByColumn = "InvoiceId" },
-                new StructureTable() { Name = "InvoiceItems", ParentName = "InvoiceHeader", OneToOne = false, LoadByColumn = "InvoiceId", oneToOneChildrenName = "InvoiceItemsAttributes" },
-                new StructureTable() { Name = "InvoiceItemsAttributes", ParentName = "InvoiceItems", OneToOne = false, LoadByColumn = "InvoiceId" }
-            );
+                "C:\\DigitBridge.CommerceCentral.ERP\\centralerp\\DigitBridge.CommerceCentral.ERPDatabase\\inventory";
+            var files = "ProductBasic,ProductExt,ProductExtAttributes,Inventory,InventoryAttributes";
+            var processName = "Inventory";
+            var structureName = $"{processName}Data";
+            var structure = new StructureInfo(structureName,
+                    new StructureTable() { Name = "ProductBasic", MainTable = true, OneToOne = true },
+                    new StructureTable() { Name = "ProductExt", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
+                    new StructureTable() { Name = "ProductExtAttributes", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
+                    new StructureTable() { Name = "Inventory", ParentName = "ProductBasic", DetailTable = true, OneToOne = false, LoadByColumn = "ProductUuid", oneToOneChildrenName = "InventoryAttributes" },
+                    new StructureTable() { Name = "InventoryAttributes", ParentName = "Inventory", OneToOne = false, LoadByColumn = "ProductUuid" }
+                );
 
             var parser = new SQLFileParser(folder, files, structure);
-            parser.Parse();
+            try
+            {
+                parser.Parse();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
 
             Assert.True(true, "This test is a debug helper");
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
     }
 }
