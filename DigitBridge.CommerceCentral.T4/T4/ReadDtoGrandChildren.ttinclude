@@ -27,7 +27,7 @@
                 if (gradeChildTable == null) continue;
                 WriteLine($"{new String('\t',indent+1)}if (dto.{gradeChildTable.Name} != null)");
                 WriteLine($"{new String('\t',indent+1)}{{");
-                WriteLine($"{new String('\t',indent+2)}if (date.{gradeChildTable.Name} is null)");
+                WriteLine($"{new String('\t',indent+2)}if (data.{gradeChildTable.Name} is null)");
                 WriteLine($"{new String('\t',indent+3)}data.{gradeChildTable.Name} = new List<{gradeChildTable.Name}>();");
                 WriteLine($"{new String('\t',indent+2)}Read{gradeChildTable.Name}(data.{gradeChildTable.Name}, dto.{gradeChildTable.Name});");
                 WriteLine($"{new String('\t',indent+1)}}}");

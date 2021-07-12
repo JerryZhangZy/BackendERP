@@ -217,7 +217,14 @@ namespace <#= NamespaceStructure #>
                 if (child == null) continue;
                 if (child.Table.Name.Equals(StructureClass.MainTable.Name, StringComparison.CurrentCultureIgnoreCase)) continue;
 
-                WriteLine($"{new String('\t',indent)}{child.Table.Name} = Get{child.Table.Name}By{StructureClass.MainTable.UniqueKey}({StructureClass.MainTable.Name}.{StructureClass.MainTable.UniqueKey}); ");
+                if (string.IsNullOrEmpty(child.LoadByColumn) || child.LoadByColumn.Equals(StructureClass.MainTable.UniqueKey, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    WriteLine($"{new String('\t',indent)}{child.Table.Name} = Get{child.Table.Name}By{StructureClass.MainTable.UniqueKey}({StructureClass.MainTable.Name}.{StructureClass.MainTable.UniqueKey}); ");
+                }
+                else
+                {
+                    WriteLine($"{new String('\t',indent)}{child.Table.Name} = {Namespace}.{child.Table.Name}.FindBy{child.LoadByColumn}(dbFactory, {StructureClass.MainTable.Name}.{child.LoadByColumn}); ");
+                }
             }
 #>
         }

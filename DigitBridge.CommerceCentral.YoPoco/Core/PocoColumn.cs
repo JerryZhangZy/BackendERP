@@ -55,7 +55,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var jsonIgnore = pi.GetCustomAttributes(typeof(JsonIgnoreAttribute), true).Any();
             var ignoreCompare = pi.GetCustomAttributes(typeof(IgnoreCompareAttribute), true).Any();
             var dtoAttr = pi.GetCustomAttributes(typeof(DtoNameAttribute), true).FirstOrDefault() as ColumnAttribute;
-            var canCopy = !isIgnore && pi.Name != "RowNum";
+            var canCopy = !isIgnore && !ignoreCompare && pi.Name != "RowNum";
             var canCompare = !isIgnore && !ignoreCompare;
 
             var columnName = columnAttr?.Name ?? pi.Name;

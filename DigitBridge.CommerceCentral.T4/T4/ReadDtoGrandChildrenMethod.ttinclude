@@ -78,7 +78,7 @@
             WriteLine($"{new String('\t',indent)}protected virtual IList<{gradeChildTable.Name}> Read{gradeChildTable.Name}(IList<{gradeChildTable.Name}> data, IList<{gradeChildTable.DtoName}> dto)");
             WriteLine($"{new String('\t',indent)}{{");
             WriteLine($"{new String('\t',indent+1)}if (data is null || dto is null)");
-            WriteLine($"{new String('\t',indent+2)}return;");
+            WriteLine($"{new String('\t',indent+2)}return data;");
             WriteLine($"");
 
             WriteLine($"{new String('\t',indent+1)}var lstOrig = new List<{gradeChildTable.Name}>(data.Where(x => x != null));");

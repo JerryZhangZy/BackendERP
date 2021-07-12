@@ -89,6 +89,7 @@
             WriteLine($"{new String('\t',indent+2)}var obj = new {gradeChildTable.DtoName}();");
             WriteLine($"{new String('\t',indent+2)}dto.Add(obj);");
             WriteLine($"{new String('\t',indent+2)}Write{gradeChildTable.Name}(itemData, obj);");
+            WriteLine($"{new String('\t',indent+1)}}}");
 
             WriteLine($"{new String('\t',indent+1)}return;");
             WriteLine($"{new String('\t',indent)}}}");

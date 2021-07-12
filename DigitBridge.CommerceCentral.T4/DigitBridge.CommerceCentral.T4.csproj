@@ -31,12 +31,20 @@
       <LastGenOutput>SettingForInventory.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForChannelOrder.ttinclude">
+      <LastGenOutput>SettingForChannelOrder.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForOrder.ttinclude">
       <LastGenOutput>SettingForInventory.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForCustomer.ttinclude">
       <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForShipment.ttinclude">
+      <LastGenOutput>SettingForShipment.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForInvoice.ttinclude">
@@ -191,10 +199,50 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DataAccess.tt</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateRepository.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateRepositoryDto.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructure.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\ReadDtoGrandChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoGrandChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\ReadDtoGrandChildrenMethod.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoGrandChildrenMethod.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForChannelOrder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForChannelOrder.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForShipment.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForShipment.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\WriteDtoGrandChildrenMethod.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WriteDtoGrandChildrenMethod.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 
