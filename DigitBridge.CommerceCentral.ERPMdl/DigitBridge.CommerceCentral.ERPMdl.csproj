@@ -10,10 +10,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ar\" />
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="customer\" />
     <Folder Include="inventory\" />
     <Folder Include="ap\" />
+    <Folder Include="channelOrder\" />
     <Folder Include="shipment\" />
     <Folder Include="po\" />
     <Folder Include="so\" />

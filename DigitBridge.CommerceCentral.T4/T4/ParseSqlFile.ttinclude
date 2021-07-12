@@ -36,6 +36,15 @@
         public bool DetailTable { get; set; } 
         public bool OneToOne { get; set; } 
         public string LoadByColumn { get; set; }
+        public string LoadByColumnType
+        {
+            get 
+            { 
+                var col = ParentTable.GetColumn(LoadByColumn);
+                return (col == null) ? "string" : col.PropertyType;
+            }
+        }
+
         public SqlTableInfo Table { get; set; }
         public SqlTableInfo ParentTable { get; set; }
     }
@@ -53,6 +62,25 @@
 
         public string PrimaryKey { get; set; }
         public string UniqueKey { get; set; }
+        public string UniqueKeyType
+        {
+            get 
+            { 
+                var col = GetColumn(UniqueKey);
+                return (col == null) ? "string" : col.PropertyType;
+            }
+        }
+
+        public SqlColumnInfo GetColumn(string name)
+        {
+            return Columns.FirstOrDefault(c => c.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+        }
+        public string GetColumnType(string name)
+        {
+            var col = GetColumn(name);
+            return (col == null) ? "string" : col.PropertyType;
+        }
+
         public List<List<string>> ForeignKey { get; set; }
         public List<string> BlankKey { get; set; }
 

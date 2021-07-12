@@ -1,6 +1,5 @@
 ﻿CREATE TABLE [dbo].[OrderHeader]
 (
-	---[RowNum] BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY, SQL cannot have two identify column
     [DatabaseNum] INT NOT NULL, --Each database has its own default value.
 	[CentralOrderNum] BigInt IDENTITY(100000000, 1) NOT NULL, --Unique in this database, DatabaseNum + CentralOrderNum is DigitBridgeOrderId, which is global unique
 	[MasterAccountNum] Int NOT NULL,
@@ -14,20 +13,19 @@
 	[SellerOrderID] Varchar(30) NULL, --Order identifier assigned by the seller. Usually it is not used.
 	[Currency] Varchar(10) NULL,
 	[OriginalOrderDateUtc] DateTime NOT NULL, --Timestamp when the order was created at the original channel
-	--[CenterEnterDateUtc] DateTime NOT NULL, --Timestamp when the order enters commerce central system
 	[SellerPublicNote] Varchar(4500) NULL, --The note from the seller may be included on the invoice or packing list
 	[SellerPrivateNote] Varchar(4500) NULL, --The note from the seller for internal use. Cannot be printed on invoice or packing listing
 	[EndBuyerInstruction] Varchar(4500) NULL, --Usually it is related to shipping instruction
 	[TotalOrderAmount] Money NULL, --Total order amount. Include every charge. Related to VAT. For US orders, tax should not be included. Refer to tax info to find more detail. Reference calculation 
-									--(Sum of all items OrderItems[Quantity] x OrderItems[UnitPrice] ) + TotalTaxPrice + Total ShippingPrice + TotalInsurancePrice + TotalGiftOptionPrice + AdditionalCostOrDiscount +PromotionAmount + (Sum of all items OrderItems[Promotions[Amount]] + OrderItems[Promotions[ShippingAmount]] + OrderItems[RecyclingFee])
+									--(Sum of all items OrderItems Quantity x OrderItems UnitPrice ) + TotalTaxPrice + Total ShippingPrice + TotalInsurancePrice + TotalGiftOptionPrice + AdditionalCostOrDiscount +PromotionAmount + (Sum of all items OrderItems Promotions Amount + OrderItems Promotions ShippingAmount + OrderItems RecyclingFee)
 	[TotalTaxAmount] Money NULL, --Reference calculation. The real amount is provided by the channel. 
-									--(Sum of all OrderItems[TaxPrice]) + TotalShippingTaxPrice + TotalGiftOptionTaxPrice
-	[TotalShippingAmount] Money NULL, --Sum of all OrderItems[ShippingPrice] (Related to VAT. Refer to tax info for more detail) Does not include shipping item-level shipping promotions. 
-	[TotalShippingTaxAmount] Money NULL, --Sum of all OrderItems[ShippingTaxPrice]. Number generated here is estimate based on tax (VAT) settings in the profile. For representation only. No actual data provided by channels.
-	[TotalShippingDiscount] Money NULL, --Sum of all OrderItems[ShippingDiscount] Negative. 
-	[TotalShippingDiscountTaxAmount] Money NULL, --Sum of all OrderItems[ShippingDiscount] Negative. 
+									--(Sum of all OrderItems TaxPrice) + TotalShippingTaxPrice + TotalGiftOptionTaxPrice
+	[TotalShippingAmount] Money NULL, --Sum of all OrderItems ShippingPrice (Related to VAT. Refer to tax info for more detail) Does not include shipping item-level shipping promotions. 
+	[TotalShippingTaxAmount] Money NULL, --Sum of all OrderItems ShippingTaxPrice. Number generated here is estimate based on tax (VAT) settings in the profile. For representation only. No actual data provided by channels.
+	[TotalShippingDiscount] Money NULL, --Sum of all OrderItems ShippingDiscount Negative. 
+	[TotalShippingDiscountTaxAmount] Money NULL, --Sum of all OrderItems ShippingDiscount Negative. 
 	[TotalInsuranceAmount] Money NULL, --TotalInsurancePrice data - provided at order level only.
-	[TotalGiftOptionAmount] Money NULL, --Sum of all OrderItems[GiftPrice] (Related to VAT setting)
+	[TotalGiftOptionAmount] Money NULL, --Sum of all OrderItems GiftPrice (Related to VAT setting)
 	[TotalGiftOptionTaxAmount] Money NULL, --Number generated here is estimate based on VAT settings in the profile. For representation only. No actual data provided by channels.
 	[AdditionalCostOrDiscount] Money NULL, --provided at order level only. Not commonly populated. Miscellaneous cost modification which may be positive to indicate a cost or negative to indicate a discount.
 	[PromotionAmount] Money NULL, --provided at order level. Not a sum of Promotion Level pricing. A negative decimal. Will not be populated if item level promotions exist.
@@ -43,7 +41,6 @@
 	[ShippingUpdateUtc] datetime NULL, --Timestamp indicating the latest update to ShippingStatus.
 	[EndBuyerUserID] Varchar(255) NULL, --The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
 	[EndBuyerEmail] Varchar(255) NULL, --The email of the end customer
-	--[EndBuyerEmailOptin] tinyint NULL, --0, not opted in. 1, opted in. Deisgned to handle website orders if customer optin email subsciption
 	[PaymentMethod] nVarchar(50) NULL,
 	[ShipToName] nVarchar(100) NULL,
 	[ShipToFirstName] nVarchar(50) NULL,
@@ -103,10 +100,11 @@
 	[DBChannelOrderHeaderRowID] VARCHAR(50) NULL, 
     [DCAssignmentStatus] INT NULL, 
     [DCAssignmentDateUtc] DATETIME NULL, 
-    CONSTRAINT [PK_OrderHeader] PRIMARY KEY CLUSTERED 
-(
-	[CentralOrderNum] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF) ON [PRIMARY]
+
+    [RowNum]      BIGINT NOT NULL DEFAULT 0,
+    [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for CentralOrder
+
+    CONSTRAINT [PK_OrderHeader] PRIMARY KEY CLUSTERED ([CentralOrderNum])
 ) ON [PRIMARY]
 GO
 
@@ -131,6 +129,9 @@ GO
 ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_EnterDateUtc]  DEFAULT (getutcdate()) FOR [EnterDateUtc]
 GO
 
+ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [DF_OrderHeader_DigitBridgeGuid]  DEFAULT (newid()) FOR [DigitBridgeGuid]
+GO
+
 CREATE UNIQUE NONCLUSTERED INDEX [UI_OrderHeader_ChannelAccountNum_ChannelNum_ChannelOrderID] ON [dbo].[OrderHeader]
 (
 	[ChannelNum] ASC,
@@ -153,5 +154,10 @@ CREATE NONCLUSTERED INDEX [NUI_OrderHeader_MasterAccountNum_ProfileNum_ChannelNu
 )WITH (STATISTICS_NORECOMPUTE = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
 GO
 
+CREATE UNIQUE NONCLUSTERED INDEX [UK_OrderHeader] ON [dbo].[OrderHeader]
+(
+	[CentralOrderUuid] ASC
+) 
+GO
 
 

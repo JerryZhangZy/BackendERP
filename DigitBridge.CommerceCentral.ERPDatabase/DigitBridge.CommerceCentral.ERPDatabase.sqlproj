@@ -109,19 +109,19 @@
     </ArtifactReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="so\OrderHeader.sql" />
+    <None Include="so\SalesOrderHeader.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="so\OrderHeaderAttributes.sql" />
+    <None Include="so\SalesOrderHeaderAttributes.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="so\OrderHeaderInfo.sql" />
+    <None Include="so\SalesOrderHeaderInfo.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="so\OrderItems.sql" />
+    <None Include="so\SalesOrderItems.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="so\OrderItemsAttributes.sql" />
+    <None Include="so\SalesOrderItemsAttributes.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="inventory\InventoryLog.sql" />

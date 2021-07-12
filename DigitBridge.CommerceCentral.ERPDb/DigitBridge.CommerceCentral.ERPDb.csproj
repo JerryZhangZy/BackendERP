@@ -22,6 +22,7 @@
     <Folder Include="ap\dto\" />
     <Folder Include="ar\dto\" />
     <Folder Include="Attribute\" />
+    <Folder Include="channelOrder\dto\" />
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="customer\dto\" />
     <Folder Include="DTO\" />

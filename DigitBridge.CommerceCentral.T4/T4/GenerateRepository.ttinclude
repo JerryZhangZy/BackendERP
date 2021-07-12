@@ -597,7 +597,7 @@ if(table.HasForeignKey)
 
         indent = 2;
         // load by ForeignKey
-        WriteLine($"{new String('\t',indent)}public IList<{table.Name}> FindBy{colKey.Name}({colKey.PropertyType} {colKey.parameterName})");
+        WriteLine($"{new String('\t',indent)}public static IList<{table.Name}> FindBy{colKey.Name}(IDataBaseFactory dbFactory, {colKey.PropertyType} {colKey.parameterName})");
         WriteLine($"{new String('\t',indent)}{{");
         if (colSort == null) 
             WriteLine($"{new String('\t',indent+1)}return dbFactory.Find<{table.Name}>(\"WHERE {colKey.Name} = @0 \", {colKey.parameterName}).ToList();");
@@ -606,13 +606,13 @@ if(table.HasForeignKey)
         WriteLine($"{new String('\t',indent)}}}");
 
         // count by ForeignKey
-        WriteLine($"{new String('\t',indent)}public long CountBy{colKey.Name}({colKey.PropertyType} {colKey.parameterName})");
+        WriteLine($"{new String('\t',indent)}public static long CountBy{colKey.Name}(IDataBaseFactory dbFactory, {colKey.PropertyType} {colKey.parameterName})");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}return dbFactory.Count<{table.Name}>(\"WHERE {colKey.Name} = @0 \", {colKey.parameterName});");
         WriteLine($"{new String('\t',indent)}}}");
 
         // load by ForeignKey async
-        WriteLine($"{new String('\t',indent)}public async Task<IList<{table.Name}>> FindByAsync{colKey.Name}({colKey.PropertyType} {colKey.parameterName})");
+        WriteLine($"{new String('\t',indent)}public static async Task<IList<{table.Name}>> FindByAsync{colKey.Name}(IDataBaseFactory dbFactory, {colKey.PropertyType} {colKey.parameterName})");
         WriteLine($"{new String('\t',indent)}{{");
         if (colSort == null) 
             WriteLine($"{new String('\t',indent+1)}return (await dbFactory.FindAsync<{table.Name}>(\"WHERE {colKey.Name} = @0 \", {colKey.parameterName})).ToList();");
@@ -621,7 +621,7 @@ if(table.HasForeignKey)
         WriteLine($"{new String('\t',indent)}}}");
 
         // count by ForeignKey async
-        WriteLine($"{new String('\t',indent)}public async Task<long> CountByAsync{colKey.Name}({colKey.PropertyType} {colKey.parameterName})");
+        WriteLine($"{new String('\t',indent)}public static async Task<long> CountByAsync{colKey.Name}(IDataBaseFactory dbFactory, {colKey.PropertyType} {colKey.parameterName})");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}return await dbFactory.CountAsync<{table.Name}>(\"WHERE {colKey.Name} = @0 \", {colKey.parameterName});");
         WriteLine($"{new String('\t',indent)}}}");

@@ -35,16 +35,13 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         public async Task GetTableFiles_Test()
         {
             var folder =
-                "C:\\DigitBridge.CommerceCentral.ERP\\centralerp\\DigitBridge.CommerceCentral.ERPDatabase\\inventory";
-            var files = "ProductBasic,ProductExt,ProductExtAttributes,Inventory,InventoryAttributes";
-            var processName = "Inventory";
+                "C:\\DigitBridge.CommerceCentral.ERP\\centralerp\\DigitBridge.CommerceCentral.ERPDatabase\\channelOrder";
+            var files = "OrderHeader,OrderLine";
+            var processName = "ChannelOrder";
             var structureName = $"{processName}Data";
             var structure = new StructureInfo(structureName,
-                    new StructureTable() { Name = "ProductBasic", MainTable = true, OneToOne = true },
-                    new StructureTable() { Name = "ProductExt", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
-                    new StructureTable() { Name = "ProductExtAttributes", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
-                    new StructureTable() { Name = "Inventory", ParentName = "ProductBasic", DetailTable = true, OneToOne = false, LoadByColumn = "ProductUuid", oneToOneChildrenName = "InventoryAttributes" },
-                    new StructureTable() { Name = "InventoryAttributes", ParentName = "Inventory", OneToOne = false, LoadByColumn = "ProductUuid" }
+                    new StructureTable() { Name = "OrderHeader", MainTable = true, OneToOne = true },
+                    new StructureTable() { Name = "OrderLine", ParentName = "OrderHeader", DetailTable = true, OneToOne = false, LoadByColumn = "CentralOrderNum" }
                 );
 
             var parser = new SQLFileParser(folder, files, structure);

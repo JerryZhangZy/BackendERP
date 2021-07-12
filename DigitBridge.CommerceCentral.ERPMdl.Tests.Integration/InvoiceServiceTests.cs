@@ -42,7 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             srv.Add(dto);
 
             var srvGet = new InvoiceService(DataBaseFactory);
-            srvGet.Edit();
+            //srvGet.Edit();
             srvGet.GetDataById(id);
             var result = srv.Data.Equals(srvGet.Data);
 
@@ -138,7 +138,7 @@ WHERE itm.cnt > 0
             await srv.UpdateAsync(dto);
 
             var srvGet = new InvoiceService(DataBaseFactory);
-            srvGet.Edit();
+            //srvGet.Edit();
             await srvGet.GetDataByIdAsync(id);
             var result = srv.Data.Equals(srvGet.Data);
 

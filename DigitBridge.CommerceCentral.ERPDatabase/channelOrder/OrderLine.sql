@@ -35,15 +35,20 @@
 	[UnitOfMeasure]	Varchar(20) NULL, 
     [EnterDateUtc] DATETIME NULL, 
     [DigitBridgeGuid] uniqueidentifier NOT NULL, 
- [DBChannelOrderLineRowID] VARCHAR(50) NULL, 
-    CONSTRAINT [PK_OrderLine] PRIMARY KEY CLUSTERED 
-(
-	[CentralOrderLineNum] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF) ON [PRIMARY]
+	[DBChannelOrderLineRowID] VARCHAR(50) NULL, 
+
+    [RowNum]      BIGINT NOT NULL DEFAULT 0,
+    [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for CentralOrder
+    [CentralOrderLineUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for CentralOrder line
+
+    CONSTRAINT [PK_OrderLine] PRIMARY KEY CLUSTERED ([CentralOrderLineNum])
 ) ON [PRIMARY]
 GO
 
 ALTER TABLE [dbo].[OrderLine] ADD  CONSTRAINT [DF_OrderLine_EnterDateUtc]  DEFAULT (getutcdate()) FOR [EnterDateUtc]
+GO
+
+ALTER TABLE [dbo].[OrderLine] ADD  CONSTRAINT [DF_OrderLine_DigitBridgeGuid]  DEFAULT (newid()) FOR [DigitBridgeGuid]
 GO
 
 CREATE UNIQUE NONCLUSTERED INDEX [UI_OrderLine_CentralOrderLineNum]
@@ -73,4 +78,17 @@ CREATE NONCLUSTERED INDEX [NUI_OrderLine_MasterAccountNum_ProfileNum_CentralOrde
 	[ProfileNum] ASC
 )
 INCLUDE([CentralOrderNum],[ChannelNum],[CentralProductNum]) WITH (STATISTICS_NORECOMPUTE = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+GO
+
+CREATE UNIQUE NONCLUSTERED INDEX [UK_OrderLine_SalesOrderItemsUuid] ON [dbo].[OrderLine]
+(
+	[CentralOrderLineUuid] ASC
+) 
+GO
+
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderItems]') AND name = N'FK_SalesOrderItems_OrderId_Seq')
+CREATE NONCLUSTERED INDEX [FK_OrderLine_CentralOrderNum] ON [dbo].[OrderLine]
+(
+	[CentralOrderNum] ASC
+) 
 GO

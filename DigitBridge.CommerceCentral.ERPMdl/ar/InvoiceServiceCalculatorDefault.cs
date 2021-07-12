@@ -40,6 +40,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null)
                 return false;
 
+            //TODO: add set default summary data logic
+            /* This is generated sample code
             var sum = data.InvoiceHeader;
             if (sum.InvoiceDate.IsZero()) sum.InvoiceDate = DateTime.Today;
             if (sum.InvoiceTime.IsZero()) sum.InvoiceTime = DateTime.Now.TimeOfDay;
@@ -47,6 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //UpdateDateUtc
             //EnterBy
             //UpdateBy
+            */
 
             return true;
         }
@@ -56,6 +59,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null)
                 return false;
 
+            //TODO: add set default for detail list logic
+            /* This is generated sample code
+
             foreach (var item in data.InvoiceItems)
             {
                 if (item is null || item.IsEmpty)
@@ -63,9 +69,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 SetDefault(item, data, processingMode);
             }
 
+            */
             return true;
         }
 
+        //TODO: add set default for detail line logic
+        /* This is generated sample code
         protected virtual bool SetDefault(InvoiceItems item, InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
@@ -97,6 +106,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return true;
         }
+        */
+
 
         public virtual bool Calculate(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
@@ -109,6 +120,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (data is null)
                 return false;
+
+            //TODO: add calculate summary object logic
+            /* This is generated sample code
 
             var setting = new ERPSetting();
             var sum = data.InvoiceHeader;
@@ -146,6 +160,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             sum.DueDate = sum.InvoiceDate.AddDays(sum.TermsDays);
 
+            */
             return true;
         }
 
@@ -153,6 +168,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (data is null)
                 return false;
+
+            //TODO: add calculate summary object logic
+            /* This is generated sample code
 
             var sum = data.InvoiceHeader;
             sum.SubTotalAmount = 0;
@@ -179,9 +197,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 sum.LotCost += item.LotCost;
             }
 
+            */
             return true;
         }
 
+        //TODO: add set default for detail line logic
+        /* This is generated sample code
         protected virtual bool CalculateDetail(InvoiceItems item, InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
@@ -282,6 +303,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return true;
         }
+        */
 
     }
 }

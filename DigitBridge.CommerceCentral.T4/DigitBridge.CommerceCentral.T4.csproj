@@ -27,6 +27,22 @@
       <LastGenOutput>SettingForInventory.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForInvoice - Copy %282%29.ttinclude">
+      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForChannelOrder.ttinclude">
+      <LastGenOutput>SettingForChannelOrder.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForOrder.ttinclude">
+      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForCustomer.ttinclude">
+      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForShipment.ttinclude">
       <LastGenOutput>SettingForShipment.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -193,6 +209,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateStructure.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -207,6 +228,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ReadDtoGrandChildrenMethod.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForChannelOrder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForChannelOrder.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\SettingForShipment.cs">
       <DesignTime>True</DesignTime>
