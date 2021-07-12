@@ -2,7 +2,7 @@
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
     [VendorUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O
-	[JsonFields] VARCHAR(max) NULL, --JSON string, store any document fields
+	[JsonFields] NVARCHAR(max) NULL, --JSON string, store any document fields
 
     CONSTRAINT [PK_VendorAttributes] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]

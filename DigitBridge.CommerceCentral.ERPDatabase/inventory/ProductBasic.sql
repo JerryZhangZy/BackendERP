@@ -50,11 +50,12 @@
     [ClassificationNum]  BIGINT          NOT NULL DEFAULT 0,
 
     -- Add new Columns
+    [RowNum]      BIGINT NOT NULL DEFAULT 0,
     [OriginalUPC] VARCHAR(20) NOT NULL DEFAULT '',
     [ProductUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for product SKU
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
-    CONSTRAINT [PK_ProductBasic] PRIMARY KEY CLUSTERED ([RowNum] ASC)
+    CONSTRAINT [PK_ProductBasic] PRIMARY KEY CLUSTERED ([CentralProductNum])
 );
 GO
 
@@ -78,3 +79,4 @@ GO
 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'Item=0 ; Child =1 ; Parent =2', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProductBasic', @level2type = N'COLUMN', @level2name = N'ProductType';
 GO 
  
+

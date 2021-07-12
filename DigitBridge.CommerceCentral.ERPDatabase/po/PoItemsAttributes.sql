@@ -3,7 +3,7 @@
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
     [PoItemUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O Item Line
     [PoUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O
-	[JsonFields] VARCHAR(max) NULL, --JSON string, store any document fields
+	[JsonFields] NVARCHAR(max) NULL, --JSON string, store any document fields
 
     CONSTRAINT [PK_PoItemsAttributes] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
