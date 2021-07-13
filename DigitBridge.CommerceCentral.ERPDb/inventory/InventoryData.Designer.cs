@@ -70,6 +70,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				return false; 
 			if (InventoryAttributes != null && other.InventoryAttributes != null && !InventoryAttributes.EqualsList(other.InventoryAttributes)) 
 				return false; 
+			if (InventoryLog == null && other.InventoryLog != null || InventoryLog != null && other.InventoryLog == null) 
+				return false; 
+			if (InventoryLog != null && other.InventoryLog != null && !InventoryLog.EqualsList(other.InventoryLog)) 
+				return false; 
             return true;
         }
 
@@ -82,6 +86,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckIntegrityProductExtAttributes(); 
 			CheckIntegrityInventory(); 
 			CheckIntegrityInventoryAttributes(); 
+			CheckIntegrityInventoryLog(); 
             return this;
         }
 
@@ -94,6 +99,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			Inventory = new List<Inventory>(); 
 			ClearInventoryDeleted(); 
 			InventoryAttributes = new List<InventoryAttributes>(); 
+			InventoryLog = new List<InventoryLog>(); 
+			ClearInventoryLogDeleted(); 
 			ClearOthers(); 
 			if (_OnClear != null)
 				_OnClear(this);
@@ -110,6 +117,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			AddInventory(NewInventory()); 
 			Inventory.ToList().ForEach(x => x?.NewChildren()); 
 			ClearInventoryDeleted(); 
+			InventoryLog = new List<InventoryLog>(); 
+			AddInventoryLog(NewInventoryLog()); 
+			ClearInventoryLogDeleted(); 
             return;
         }
 
@@ -119,6 +129,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CopyProductExtFrom(data); 
 			CopyProductExtAttributesFrom(data); 
 			CopyInventoryFrom(data); 
+			CopyInventoryLogFrom(data); 
             CheckIntegrity();
             return;
         }
@@ -133,6 +144,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			newData.ProductExtAttributes.ClearMetaData(); 
 			newData.Inventory.ClearMetaData(); 
 			newData.InventoryAttributes.ClearMetaData(); 
+			newData.InventoryLog.ClearMetaData(); 
             newData.CheckIntegrity();
             return newData;
         }
@@ -167,6 +179,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			ProductExtAttributes = GetProductExtAttributesByProductUuid(ProductBasic.ProductUuid); 
 			Inventory = GetInventoryByProductUuid(ProductBasic.ProductUuid); 
 			InventoryAttributes = GetInventoryAttributesByProductUuid(ProductBasic.ProductUuid); 
+			InventoryLog = GetInventoryLogByProductUuid(ProductBasic.ProductUuid); 
         }
 
         public override bool Save()
@@ -196,6 +209,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			var delChildrenInventoryAttributes = InventoryAttributesDeleted;
 			if (delChildrenInventoryAttributes != null)
 				delChildrenInventoryAttributes.SetDataBaseFactory(dbFactory)?.Delete();
+
+			if (InventoryLog != null) 
+				InventoryLog.SetDataBaseFactory(dbFactory)?.Save();
+			var delInventoryLog = _InventoryLogDeleted;
+			if (delInventoryLog != null)
+				delInventoryLog.SetDataBaseFactory(dbFactory)?.Delete();
 
 			if (_OnSave != null)
 			{
@@ -227,6 +246,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				Inventory?.SetDataBaseFactory(dbFactory)?.Delete(); 
 			if (InventoryAttributes != null) 
 				InventoryAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			if (InventoryLog != null) 
+				InventoryLog?.SetDataBaseFactory(dbFactory)?.Delete(); 
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -272,6 +293,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			ProductExtAttributes = await GetProductExtAttributesByProductUuidAsync(ProductBasic.ProductUuid); 
 			Inventory = await GetInventoryByProductUuidAsync(ProductBasic.ProductUuid); 
 			InventoryAttributes = await GetInventoryAttributesByProductUuidAsync(ProductBasic.ProductUuid); 
+			InventoryLog = await GetInventoryLogByProductUuidAsync(ProductBasic.ProductUuid); 
         }
 
         public override async Task<bool> SaveAsync()
@@ -300,6 +322,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			var delInventoryAttributes = InventoryAttributesDeleted;
 			if (delInventoryAttributes != null)
 				await delInventoryAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+
+			if (InventoryLog != null) 
+				await InventoryLog.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+			var delInventoryLog = _InventoryLogDeleted;
+			if (delInventoryLog != null)
+				await delInventoryLog.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
 
 			if (_OnSave != null)
 			{
@@ -331,6 +359,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				await Inventory.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
 			if (InventoryAttributes != null) 
 				await InventoryAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			if (InventoryLog != null) 
+				await InventoryLog.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -701,6 +731,118 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 
         #endregion InventoryAttributes - Generated 
+
+        #region InventoryLog - Generated 
+        // One to many children
+        protected IList<InventoryLog> _InventoryLogDeleted;
+        public virtual InventoryLog AddInventoryLogDeleted(InventoryLog del) 
+        {
+            if (_InventoryLogDeleted is null)
+                _InventoryLogDeleted = new List<InventoryLog>();
+            var lst = _InventoryLogDeleted.ToList();
+            lst.Add(del);
+            _InventoryLogDeleted = lst;
+            return del;
+        } 
+
+        public virtual IList<InventoryLog> AddInventoryLogDeleted(IList<InventoryLog> del) 
+        {
+            if (_InventoryLogDeleted is null)
+                _InventoryLogDeleted = new List<InventoryLog>();
+            var lst = _InventoryLogDeleted.ToList();
+            lst.AddRange(del);
+            _InventoryLogDeleted = lst;
+            return del;
+        } 
+
+        public virtual void SetInventoryLogDeleted(IList<InventoryLog> del) =>
+            _InventoryLogDeleted = del;
+
+        public virtual void ClearInventoryLogDeleted() =>
+            _InventoryLogDeleted = null;
+
+
+        protected IList<InventoryLog> _InventoryLog;
+
+        public virtual IList<InventoryLog> InventoryLog 
+        { 
+            get 
+            {
+                if (_InventoryLog is null)
+                    _InventoryLog = new List<InventoryLog>();
+                return _InventoryLog;
+            } 
+            set
+            {
+                if (value != null)
+                {
+                    var valueList = value.ToList();
+                    valueList.ForEach(i => i?.SetParent(this));
+                    _InventoryLog = valueList;
+                }
+                else
+                    _InventoryLog = null;
+            } 
+        }
+
+        public virtual void CopyInventoryLogFrom(InventoryData data) 
+        {
+            if  (data is null) return;
+            var lstDeleted = InventoryLog?.CopyFrom(data.InventoryLog, new string[] {"ProductUuid"});
+            SetInventoryLogDeleted(lstDeleted);
+            foreach (var c in InventoryLog)
+                c?.CopyChildrenFrom(data.InventoryLog?.FindByRowNum(c.RowNum));
+        } 
+
+        public virtual InventoryLog NewInventoryLog() => new InventoryLog(dbFactory);
+
+        public virtual InventoryLog AddInventoryLog(InventoryLog obj) => 
+            InventoryLog.AddOrReplace(obj.SetParent(this));
+
+        public virtual InventoryLog RemoveInventoryLog(InventoryLog obj) => 
+            AddInventoryLogDeleted(InventoryLog.RemoveObject(obj.SetParent(this)));
+
+        public virtual IList<InventoryLog> GetInventoryLogByProductUuid(string ProductUuid) =>
+            (string.IsNullOrEmpty(ProductUuid)) 
+                ? null 
+                : dbFactory.Find<InventoryLog>("WHERE ProductUuid = @0 ORDER BY RowNum ", ProductUuid).ToList();
+
+        public virtual bool SaveInventoryLog(IList<InventoryLog> data) =>
+            (data is null) ? false : data.Save();
+
+        public virtual int DeleteInventoryLog(IList<InventoryLog> data) =>
+            (data is null) ? 0 : data.Delete();
+
+        public virtual async Task<IList<InventoryLog>> GetInventoryLogByProductUuidAsync(string ProductUuid) =>
+            (string.IsNullOrEmpty(ProductUuid)) 
+                ? null
+                : (await dbFactory.FindAsync<InventoryLog>("WHERE ProductUuid = @0 ORDER BY RowNum ", ProductUuid)).ToList();
+
+        public virtual async Task<bool> SaveInventoryLogAsync(IList<InventoryLog> data) =>
+            (data is null) ? false : await data.SaveAsync();
+
+        public virtual async Task<int> DeleteInventoryLogAsync(IList<InventoryLog> data) =>
+            (data is null) ? 0 : await data.DeleteAsync();
+
+        public virtual IList<InventoryLog> CheckIntegrityInventoryLog()
+        {
+            if (InventoryLog is null || ProductBasic is null) 
+                return InventoryLog;
+            var seq = 0;
+            InventoryLog.RemoveEmpty();
+            var children = InventoryLog.ToList();
+            foreach (var child in children.Where(x => x != null))
+            {
+                child.SetParent(this);
+                if (child.ProductUuid != ProductBasic.ProductUuid)
+                    child.ProductUuid = ProductBasic.ProductUuid;
+            }
+            return children;
+        }
+
+
+
+        #endregion InventoryLog - Generated 
 
 
     }

@@ -1,0 +1,249 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="T4\DataAccess - customer.cs" />
+    <Compile Remove="T4\DataAccess - InvoiceTransaction.cs" />
+    <Compile Remove="T4\DataAccess - order.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="T4\DataAccess - customer.tt" />
+    <None Remove="T4\DataAccess - InvoiceTransaction.tt" />
+    <None Remove="T4\DataAccess - order.tt" />
+    <None Remove="T4\DataAccess -Inventory.tt" />
+    <None Remove="T4\DataAccess -InventoryLog.tt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="T4\DataAccess.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DataAccess.cs</LastGenOutput>
+    </None>
+    <None Update="T4\SettingForInventory.ttinclude">
+      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForInvoice - Copy %282%29.ttinclude">
+      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForChannelOrder.ttinclude">
+      <LastGenOutput>SettingForChannelOrder.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForOrder.ttinclude">
+      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForCustomer.ttinclude">
+      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForShipment.ttinclude">
+      <LastGenOutput>SettingForShipment.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForInvoice.ttinclude">
+      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateRepositoryDto.ttinclude">
+      <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServiceValidator.ttinclude">
+      <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServiceCalculator.ttinclude">
+      <LastGenOutput>GenerateServiceCalculator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServiceInterface.ttinclude">
+      <LastGenOutput>GenerateServiceInterface.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateService.ttinclude">
+      <LastGenOutput>GenerateServiceCalculator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\ReadDtoGrandChildren.ttinclude">
+      <LastGenOutput>ReadDtoGrandChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\ReadDtoGrandChildrenMethod.ttinclude">
+      <LastGenOutput>ReadDtoGrandChildrenMethod.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\ReadDtoListChildren.ttinclude">
+      <LastGenOutput>ReadDtoListChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\ReadDtoObjectChildren.ttinclude">
+      <LastGenOutput>ReadDtoObjectChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureDtoMapper-Bak.ttinclude">
+      <LastGenOutput>GenerateStructureDtoMapper.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\WriteDtoGrandChildren.ttinclude">
+      <LastGenOutput>WriteDtoGrandChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\WriteDtoGrandChildrenMethod.ttinclude">
+      <LastGenOutput>WriteDtoGrandChildrenMethod.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\WriteDtoListChildren.ttinclude">
+      <LastGenOutput>WriteDtoGrandChildrenMethod.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\WriteDtoObjectChildren.ttinclude">
+      <LastGenOutput>WriteDtoObjectChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureDtoTest.ttinclude">
+      <LastGenOutput>GenerateStructureDtoTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureDtoMapper.ttinclude">
+      <LastGenOutput>GenerateStructureDtoMapper.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SelectFirstUniqueIdAsync.ttinclude">
+      <LastGenOutput>SelectFirstUniqueIdAsync.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SelectFirstUniqueId.ttinclude">
+      <LastGenOutput>GenerateServiceTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureDto.ttinclude">
+      <LastGenOutput>GenerateStructureDto.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureOneToManyChildren.ttinclude">
+      <LastGenOutput>GenerateStructureOneToManyChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureGrandChildren.ttinclude">
+      <LastGenOutput>GenerateStructureGrandChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureOneToOneChildren.ttinclude">
+      <LastGenOutput>GenerateStructureOneToOneChildren.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServicePartial.ttinclude">
+      <LastGenOutput>GenerateServicePartial.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServiceTest.ttinclude">
+      <LastGenOutput>GenerateServiceTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureTest.ttinclude">
+      <LastGenOutput>GenerateStructureTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServiceTestPartial.ttinclude">
+      <LastGenOutput>GenerateServiceTestPartial.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureTestPartial.ttinclude">
+      <LastGenOutput>GenerateServiceTestPartial.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateRepositoryTestPartial.ttinclude">
+      <LastGenOutput>GenerateRepositoryTestPartial.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructurePartial.ttinclude">
+      <LastGenOutput>GenerateServicePartial.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructure.ttinclude">
+      <LastGenOutput>GenerateStructure.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateRepositoryPartialClass.ttinclude">
+      <LastGenOutput>GenerateRepositoryPartialClass.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateRepository.ttinclude">
+      <LastGenOutput>GenerateRepository.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateRepositoryTest.ttinclude">
+      <LastGenOutput>GenerateRepositoryTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="T4\DataAccess.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataAccess.tt</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateRepository.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateRepositoryDto.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructure.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructureTest.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\ReadDtoGrandChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoGrandChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\ReadDtoGrandChildrenMethod.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoGrandChildrenMethod.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForChannelOrder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForChannelOrder.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForShipment.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForShipment.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\WriteDtoGrandChildrenMethod.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WriteDtoGrandChildrenMethod.ttinclude</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>
