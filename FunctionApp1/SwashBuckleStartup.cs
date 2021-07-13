@@ -1,21 +1,21 @@
-﻿using AzureFunctions.Extensions.Swashbuckle;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using AzureFunctions.Extensions.Swashbuckle;
 using AzureFunctions.Extensions.Swashbuckle.Settings;
-using DigitBridge.CommerceCentral.WebApi;
+using Function1;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
+using Swashbuckle.AspNetCore.SwaggerGen; 
 
-[assembly: WebJobsStartup(typeof(Startup))]
+[assembly: WebJobsStartup(typeof(SwashBuckleStartup))]
 
-namespace DigitBridge.CommerceCentral.WebApi
+namespace Function1
 {
-    internal class Startup : FunctionsStartup
+    internal class SwashBuckleStartup : FunctionsStartup
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.WebApi
                 opts.SpecVersion = OpenApiSpecVersion.OpenApi3_0;
                 opts.AddCodeParameter = true;
                 opts.PrependOperationWithRoutePrefix = true;
-                opts.XmlPath = "DigitBridge.CommerceCentral.WebApi.xml";
+                opts.XmlPath = "FunctionApp1.xml";
                 opts.Documents = new[]
                 {
                     new SwaggerDocument

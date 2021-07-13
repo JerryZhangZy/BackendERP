@@ -1,23 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<AzureFunctionsVersion>v3</AzureFunctionsVersion>
-		<Nullable>enable</Nullable>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DocumentationFile></DocumentationFile>
-		<PlatformTarget>AnyCPU</PlatformTarget>
-	</PropertyGroup>
-	<ItemGroup>
-	  <Compile Remove="Swagger\Class1.cs" />
-	  <Compile Remove="Swagger\Class2.cs" />
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-		<PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
-		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="0.7.2-preview" />
-	</ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>DigitBridge.CommerceCentral.WebApi.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+	  <PackageReference Include="AzureExtensions.Swashbuckle" Version="3.3.2" />
+	  <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
+	  <PackageReference Include="System.Text.Json" Version="4.7.0" />
+  </ItemGroup>
 	<ItemGroup>
 		<None Update="host.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -25,9 +18,6 @@
 		<None Update="local.settings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Swagger\" />
+		</None> 
 	</ItemGroup>
 </Project>
