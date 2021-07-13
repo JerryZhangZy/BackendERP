@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DigitBridge.CommerceCentral.WebApi
 {
     [Obsolete]
-    public class BaseApi : IFunctionInvocationFilter
+    public class BaseApi : IFunctionInvocationFilter,IFunctionExceptionFilter
     {
         public Task OnExceptionAsync(FunctionExceptionContext exceptionContext, CancellationToken cancellationToken)
         {
