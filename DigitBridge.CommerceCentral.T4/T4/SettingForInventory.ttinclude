@@ -2,7 +2,7 @@
 	// Database table define file path
     var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\inventory";
     // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
-    var Files = "ProductBasic,ProductExt,ProductExtAttributes,Inventory,InventoryAttributes";
+    var Files = "ProductBasic,ProductExt,ProductExtAttributes,Inventory,InventoryAttributes,InventoryLog,Warehouse";
 
     // current solution path
 	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
@@ -18,7 +18,8 @@
             new StructureTable() { Name = "ProductExt", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
             new StructureTable() { Name = "ProductExtAttributes", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
             new StructureTable() { Name = "Inventory", ParentName = "ProductBasic", DetailTable = true, OneToOne = false, LoadByColumn = "ProductUuid", oneToOneChildrenName = "InventoryAttributes" },
-            new StructureTable() { Name = "InventoryAttributes", ParentName = "Inventory", OneToOne = false, LoadByColumn = "ProductUuid" }
+            new StructureTable() { Name = "InventoryAttributes", ParentName = "Inventory", OneToOne = false, LoadByColumn = "ProductUuid" },
+            new StructureTable() { Name = "InventoryLog", ParentName = "ProductBasic",  DetailTable = true, OneToOne = false, LoadByColumn = "ProductUuid" }
         );
 
 

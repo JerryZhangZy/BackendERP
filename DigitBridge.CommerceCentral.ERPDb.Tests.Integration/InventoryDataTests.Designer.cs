@@ -39,6 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 			InventoryData.Inventory = InventoryTests.GetFakerData().Generate(10); 
 			foreach (var ln in InventoryData.Inventory) 
 				ln.InventoryAttributes = InventoryAttributesTests.GetFakerData().Generate(); 
+			InventoryData.InventoryLog = InventoryLogTests.GetFakerData().Generate(10); 
 			return InventoryData; 
         }
 
@@ -80,7 +81,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 SELECT TOP 1 ins.ProductUuid 
 FROM ProductBasic ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
+    SELECT it.ProductUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.ProductUuid
 ) itm ON (itm.ProductUuid = ins.ProductUuid)
 WHERE itm.cnt > 0
 ");
@@ -122,7 +123,7 @@ WHERE itm.cnt > 0
 SELECT TOP 1 ins.ProductUuid 
 FROM ProductBasic ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
+    SELECT it.ProductUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.ProductUuid
 ) itm ON (itm.ProductUuid = ins.ProductUuid)
 WHERE itm.cnt > 0
 ");
@@ -158,7 +159,7 @@ WHERE itm.cnt > 0
 SELECT TOP 1 ins.ProductUuid 
 FROM ProductBasic ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
+    SELECT it.ProductUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.ProductUuid
 ) itm ON (itm.ProductUuid = ins.ProductUuid)
 WHERE itm.cnt > 0
 ");
@@ -207,7 +208,7 @@ WHERE itm.cnt > 0
 SELECT TOP 1 ins.ProductUuid 
 FROM ProductBasic ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
+    SELECT it.ProductUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.ProductUuid
 ) itm ON (itm.ProductUuid = ins.ProductUuid)
 WHERE itm.cnt > 0
 ");
@@ -243,7 +244,7 @@ WHERE itm.cnt > 0
 SELECT TOP 1 ins.ProductUuid 
 FROM ProductBasic ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
+    SELECT it.ProductUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.ProductUuid
 ) itm ON (itm.ProductUuid = ins.ProductUuid)
 WHERE itm.cnt > 0
 ");
