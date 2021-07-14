@@ -4,16 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using DuoDotNetHelper.CommonV1;
-using GhpIntegration.IntermediateDb;
-using VibesCommon.Common;
-using VibesCommon45.OmsDB;
-using GhpIntegration.IntermediateMdl;
 namespace GhpIntegration.OrderImportApmMdl.Mappings
 {
     public class MapOrderBillingToApmCustomer
     {
-
+        /*
         public static CustomerDst ConvertOrderCustomerToApmCustomer(string cusId, OrderDst.vw_OrderHeaderRow ordHR
             ,AccountSalesNumRate sales1, AccountSalesNumRate sales2)
         {
@@ -126,6 +121,7 @@ namespace GhpIntegration.OrderImportApmMdl.Mappings
                 throw ExceptionUtility.ReformatException(ex);
             }
         }
+        */
 
     }
 }

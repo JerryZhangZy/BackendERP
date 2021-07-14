@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using DuoDotNetHelper.CommonV1;
-using GhpIntegration.IntermediateDb;
-using GhpIntegration.OrderImportApmMdl;
 namespace GhpIntegration.OrderImportApmMdl.Mappings
 {
     public class MapIntermediateOrderToOrderDetail
     {
+        /*
         public static OrderDetail ConvertIntermediateOrderToOrderDetail(IntermediateOrderDst imOrdDst)
         {
             OrderDetail ordDetail = new OrderDetail();
@@ -144,5 +142,6 @@ namespace GhpIntegration.OrderImportApmMdl.Mappings
                 throw ExceptionUtility.ReformatException(ex);
             }
         }
+        */
     }
 }

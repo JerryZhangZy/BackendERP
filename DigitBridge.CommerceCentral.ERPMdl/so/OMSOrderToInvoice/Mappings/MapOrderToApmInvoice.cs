@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using DuoDotNetHelper.CommonV1;
-using VibesCommon.Common;
-using VibesCommon45.OmsDB.VibesDataSet;
-using VibesCommon45.OmsDB;
-using GhpIntegration.IntermediateDb;
 namespace GhpIntegration.OrderImportApmMdl.Mappings
 {
+    /*
     public class ParaValue
     {
         public string CusId;
@@ -727,4 +723,5 @@ namespace GhpIntegration.OrderImportApmMdl.Mappings
                 return string.IsNullOrEmpty(whs) ? "01" : whs;
         }
     }
+    */
 }

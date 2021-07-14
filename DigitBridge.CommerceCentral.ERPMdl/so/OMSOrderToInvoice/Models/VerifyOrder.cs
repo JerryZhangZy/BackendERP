@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using DuoDotNetHelper.CommonV1;
-using DuoDotNetHelper.CommonV1.Data;
-using GhpIntegration.OrderImportApmMdl.Role;
-using GhpIntegration.IntermediateDb;
-using GhpIntegration.OrderImportApmDB;
 namespace GhpIntegration.OrderImportApmMdl.Models
 {
+    /*
     public class VerifyOrder : IVerifyOrder
     {
         private OrderDst _OrderDst;
@@ -336,4 +332,5 @@ namespace GhpIntegration.OrderImportApmMdl.Models
             }
         }
     }
+    */
 }

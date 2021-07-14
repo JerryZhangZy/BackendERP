@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using DuoDotNetHelper.CommonV1;
-using GhpIntegration.OrderImportApmMdl.Role;
-using GhpIntegration.OrderImportApmMdl.Mappings;
-using GhpIntegration.IntermediateDb;
 namespace GhpIntegration.OrderImportApmMdl.Models
 {
+    /*
     public class SplitTransferOrder : ISplitTransferOrder
     {
         private IntermediateOrderDst _IntermediateOrderDst;
@@ -119,4 +116,5 @@ namespace GhpIntegration.OrderImportApmMdl.Models
             }
         }
     }
+    */
 }

@@ -5,14 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 
-using DuoDotNetHelper.CommonV1;
-using GhpIntegration.OrderImportApmMdl.Role;
-using GhpIntegration.OrderImportApmMdl.Mappings;
-using GhpIntegration.IntermediateDb;
-
-using VibesCommon45.OmsDB;
 namespace GhpIntegration.OrderImportApmMdl.Models
-{
+{/*
     public class TransferOrderToApm : ITransferOrderToApm
     {
         private OrderDst _OrderDst;
@@ -203,4 +197,5 @@ namespace GhpIntegration.OrderImportApmMdl.Models
         }
 
     }
+    */
 }
