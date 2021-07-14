@@ -17,17 +17,35 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class InventoryService
     {
 
+        private InventoryLog _inventoryLog;
+
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
         /// </summary>
         public override InventoryService Init()
         {
             base.Init();
+            _inventoryLog = new InventoryLog(dbFactory);
             SetDtoMapper(new InventoryDataDtoMapperDefault());
             SetCalculator(new InventoryServiceCalculatorDefault());
             AddValidator(new InventoryServiceValidatorDefault());
             return this;
         }
+
+        public int DeleteInventoryLogByUuid(string logUuid)
+        {
+            return _inventoryLog.DeleteInventoryLogByLogUuid(logUuid);
+        }
+
+        //public int AddInventoryLogList(List<InventoryLogDto> list)
+        //{
+        //    if (list == null || list.Count() == 0)
+        //        return 0;
+        //    var batchNum = _inventoryLog.GetBatchNum();
+            
+
+
+        //}
 
 
         /// <summary>

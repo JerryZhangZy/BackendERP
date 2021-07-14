@@ -26,7 +26,42 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     public partial class InventoryLogTests
     {
+        [Fact]
+        public void InventoryAddList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var logUuid = Guid.NewGuid().ToString();
 
+
+            var svc = new InventoryLog(DataBaseFactory);
+            var batchNum = svc.GetBatchNum();
+            list.ForEach(x => {
+                x.LogUuid = logUuid;x.BatchNum = batchNum; 
+            });
+            svc.AddInventoryLogList(list);
+            var rlist = svc.GetInventoryLogByLogUuid(logUuid);
+            Assert.True(rlist.EqualsList(list));
+        }
+
+        [Fact]
+        public void InventoryUpdateList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var logUuid = Guid.NewGuid().ToString();
+
+            var svc = new InventoryLog(DataBaseFactory);
+            var batchNum = svc.GetBatchNum();
+            list.ForEach(x => {
+                x.LogUuid = logUuid; x.BatchNum = batchNum;
+            });
+            svc.AddInventoryLogList(list);
+            var rlist = svc.GetInventoryLogByLogUuid(logUuid).ToList();
+            var testTag = Guid.NewGuid().ToString();
+            rlist.ForEach(x => x.SKU = testTag);
+            svc.UpdateInventoryLogList(rlist);
+            var tlist = svc.GetInventoryLogByLogUuid(logUuid).ToList();
+            Assert.True(rlist.EqualsList(tlist));
+        }
     }
 }
 
