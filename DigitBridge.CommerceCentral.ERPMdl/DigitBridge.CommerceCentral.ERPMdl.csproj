@@ -18,7 +18,7 @@
     <Folder Include="channelOrder\" />
     <Folder Include="shipment\" />
     <Folder Include="po\" />
-    <Folder Include="so\" />
+    <Folder Include="so\OMSOrderToInvoice\" />
     <Folder Include="vendor\" />
   </ItemGroup>
 
