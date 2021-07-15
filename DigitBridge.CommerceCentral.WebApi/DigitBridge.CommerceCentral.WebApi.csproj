@@ -7,6 +7,9 @@
     <DocumentationFile>DigitBridge.CommerceCentral.WebApi.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="SalesOrderApi_bak.cs" />
+  </ItemGroup>
+  <ItemGroup>
 	  <PackageReference Include="AzureExtensions.Swashbuckle" Version="3.3.2" />
 	  <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
   </ItemGroup>

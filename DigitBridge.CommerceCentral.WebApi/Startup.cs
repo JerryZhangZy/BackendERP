@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.WebApi
             {
                 opts.SpecVersion = OpenApiSpecVersion.OpenApi3_0;
                 opts.AddCodeParameter = false;
-                opts.PrependOperationWithRoutePrefix = false;
+                opts.PrependOperationWithRoutePrefix = true;
                 opts.XmlPath = "DigitBridge.CommerceCentral.WebApi.xml";
                 opts.Documents = new[]
                 {

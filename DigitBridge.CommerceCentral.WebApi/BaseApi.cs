@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.WebApi
 {
-    [Obsolete]
+    /// <summary>
+    /// common function handler
+    /// </summary> 
     public class BaseApi : IFunctionInvocationFilter, IFunctionExceptionFilter
     {
 

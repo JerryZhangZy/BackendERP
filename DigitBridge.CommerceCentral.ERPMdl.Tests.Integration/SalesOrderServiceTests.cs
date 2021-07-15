@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public void AddDto_Test()
         {
             var srv = new SalesOrderService(DataBaseFactory);
-            srv.Add();
+            //srv.Add();
 
             var mapper = srv.DtoMapper;
             var data = GetFakerData();
