@@ -75,11 +75,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual bool ValidateAdd(InventoryData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.ProductBasic.RowNum != 0 && dbFactory.Exists<ProductBasic>(data.ProductBasic.RowNum))
+            if (data.ProductBasic != null)
             {
-                IsValid = false;
-                this.Messages.Add($"RowNum: {data.ProductBasic.RowNum} is duplicate.");
-                return IsValid;
+                if (data.ProductBasic.RowNum != 0 && dbFactory.Exists<ProductBasic>(data.ProductBasic.RowNum))
+                {
+                    IsValid = false;
+                    this.Messages.Add($"RowNum: {data.ProductBasic.RowNum} is duplicate.");
+                    return IsValid;
+                }
+            }
+            if (data.InventoryLog != null && data.InventoryLog.Count > 0)
+            {
+                foreach(var log in data.InventoryLog)
+                {
+                    if (string.IsNullOrEmpty(log.InventoryLogUuid))
+                    {
+                        IsValid = false;
+                        this.Messages.Add($"InventoryLogUuid must Required.");
+                        return IsValid;
+                    }
+                    if (string.IsNullOrEmpty(log.SKU))
+                    {
+                        IsValid = false;
+                        this.Messages.Add($"SKU must Required.");
+                        return IsValid;
+                    }
+                }
             }
             return true;
 
