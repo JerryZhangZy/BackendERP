@@ -13,8 +13,8 @@
     // Tables relatonship
     var structureName = $"{processName}Data";
     var StructureClass = new StructureInfo("InvoiceTransactionData",
-            new StructureTable() { Name = "InvoiceTransaction", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "InvoiceReturnItems", ParentName = "InvoiceTransaction", DetailTable = true, OneToOne = false} 
+            new StructureTable() { Name = "InvoiceTransaction", AlliesName = "trs", MainTable = true, OneToOne = true },
+            new StructureTable() { Name = "InvoiceReturnItems", AlliesName = "trsl", ParentName = "InvoiceTransaction", DetailTable = true, OneToOne = false, LoadByColumn = "TransUuid"} 
         );
 
 
@@ -41,6 +41,7 @@
     // generate repository class for each table
     var generateModel = true;
     var generateDto = true;
+    var generateModelHelper = true;
 
     // generate tester class for each table repository
     var generateTester = true;
@@ -57,6 +58,7 @@
     // generate service class
     var generateService = true;
     var ServiceName = $"{processName}Service";
+    var ServiceHelperName = $"{processName}Helper";
 
     var generateServiceTester = true;
 

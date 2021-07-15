@@ -18,6 +18,7 @@ using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -128,6 +129,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Fields - Generated 
 
         #region Properties - Generated 
+		[IgnoreCompare] 
 		public override string UniqueId => AddressUuid; 
 		public void CheckUniqueId() 
 		{
@@ -579,19 +581,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return;
         }
 
-		public IList<CustomerAddress> FindByCustomerUuid(string customerUuid)
+		public static IList<CustomerAddress> FindByCustomerUuid(IDataBaseFactory dbFactory, string customerUuid)
 		{
 			return dbFactory.Find<CustomerAddress>("WHERE CustomerUuid = @0 ", customerUuid).ToList();
 		}
-		public long CountByCustomerUuid(string customerUuid)
+		public static long CountByCustomerUuid(IDataBaseFactory dbFactory, string customerUuid)
 		{
 			return dbFactory.Count<CustomerAddress>("WHERE CustomerUuid = @0 ", customerUuid);
 		}
-		public async Task<IList<CustomerAddress>> FindByAsyncCustomerUuid(string customerUuid)
+		public static async Task<IList<CustomerAddress>> FindByAsyncCustomerUuid(IDataBaseFactory dbFactory, string customerUuid)
 		{
 			return (await dbFactory.FindAsync<CustomerAddress>("WHERE CustomerUuid = @0 ", customerUuid)).ToList();
 		}
-		public async Task<long> CountByAsyncCustomerUuid(string customerUuid)
+		public static async Task<long> CountByAsyncCustomerUuid(IDataBaseFactory dbFactory, string customerUuid)
 		{
 			return await dbFactory.CountAsync<CustomerAddress>("WHERE CustomerUuid = @0 ", customerUuid);
 		}

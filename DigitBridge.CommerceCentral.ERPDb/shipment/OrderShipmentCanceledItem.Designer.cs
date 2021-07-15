@@ -23,6 +23,7 @@ using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -47,10 +48,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Fields - Generated 
 		[ResultColumn(Name = "OrderShipmentCanceledItemNum", IncludeInAutoSelect = IncludeInAutoSelect.Yes)] 
-		[XmlIgnore] 
 		protected long _orderShipmentCanceledItemNum; 
-		public override long RowNum => _orderShipmentCanceledItemNum;
-		public virtual long OrderShipmentCanceledItemNum => _orderShipmentCanceledItemNum;
+		[XmlIgnore, IgnoreCompare] 
+		public virtual long OrderShipmentCanceledItemNum
+		{
+			get => _orderShipmentCanceledItemNum;
+			set => _orderShipmentCanceledItemNum = value;
+		}
+		[XmlIgnore, IgnoreCompare] 
+		public override long RowNum
+		{
+			get => OrderShipmentCanceledItemNum.ToLong();
+			set => OrderShipmentCanceledItemNum = value.ToLong();
+		}
+		[XmlIgnore, JsonIgnore, IgnoreCompare] 
+		public override bool IsNew => OrderShipmentCanceledItemNum <= 0; 
         [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
         private int _databaseNum;
 
@@ -99,6 +111,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Fields - Generated 
 
         #region Properties - Generated 
+		[IgnoreCompare] 
 		public override string UniqueId => OrderShipmentCanceledItemUuid; 
 		public void CheckUniqueId() 
 		{
@@ -395,19 +408,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return;
         }
 
-		public IList<OrderShipmentCanceledItem> FindByOrderShipmentUuid(string orderShipmentUuid)
+		public static IList<OrderShipmentCanceledItem> FindByOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
-			return dbFactory.Find<OrderShipmentCanceledItem>("WHERE OrderShipmentUuid = @0 ORDER BY OrderDCAssignmentLineNum ", orderShipmentUuid).ToList();
+			return dbFactory.Find<OrderShipmentCanceledItem>("WHERE OrderShipmentUuid = @0 ORDER BY OrderShipmentCanceledItemNum ", orderShipmentUuid).ToList();
 		}
-		public long CountByOrderShipmentUuid(string orderShipmentUuid)
+		public static long CountByOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
 			return dbFactory.Count<OrderShipmentCanceledItem>("WHERE OrderShipmentUuid = @0 ", orderShipmentUuid);
 		}
-		public async Task<IList<OrderShipmentCanceledItem>> FindByAsyncOrderShipmentUuid(string orderShipmentUuid)
+		public static async Task<IList<OrderShipmentCanceledItem>> FindByAsyncOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
-			return (await dbFactory.FindAsync<OrderShipmentCanceledItem>("WHERE OrderShipmentUuid = @0 ORDER BY OrderDCAssignmentLineNum ", orderShipmentUuid)).ToList();
+			return (await dbFactory.FindAsync<OrderShipmentCanceledItem>("WHERE OrderShipmentUuid = @0 ORDER BY OrderShipmentCanceledItemNum ", orderShipmentUuid)).ToList();
 		}
-		public async Task<long> CountByAsyncOrderShipmentUuid(string orderShipmentUuid)
+		public static async Task<long> CountByAsyncOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
 			return await dbFactory.CountAsync<OrderShipmentCanceledItem>("WHERE OrderShipmentUuid = @0 ", orderShipmentUuid);
 		}

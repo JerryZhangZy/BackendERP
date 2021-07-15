@@ -34,7 +34,7 @@ GO
 CREATE NONCLUSTERED INDEX [FK_OrderShipmentShippedItem_OrderShipmentUuid] ON [dbo].[OrderShipmentShippedItem]
 (
 	[OrderShipmentUuid] ASC,
-	[OrderDCAssignmentLineNum] ASC
+	[OrderShipmentShippedItemNum] ASC
 ) 
 GO
 

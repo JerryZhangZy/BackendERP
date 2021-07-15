@@ -18,6 +18,7 @@ using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -42,10 +43,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Fields - Generated 
 		[ResultColumn(Name = "CentralOrderLineNum", IncludeInAutoSelect = IncludeInAutoSelect.Yes)] 
-		[XmlIgnore] 
 		protected long _centralOrderLineNum; 
-		public override long RowNum => _centralOrderLineNum;
-		public virtual long CentralOrderLineNum => _centralOrderLineNum;
+		[XmlIgnore, IgnoreCompare] 
+		public virtual long CentralOrderLineNum
+		{
+			get => _centralOrderLineNum;
+			set => _centralOrderLineNum = value;
+		}
+		[XmlIgnore, IgnoreCompare] 
+		public override long RowNum
+		{
+			get => CentralOrderLineNum.ToLong();
+			set => CentralOrderLineNum = value.ToLong();
+		}
+		[XmlIgnore, JsonIgnore, IgnoreCompare] 
+		public override bool IsNew => CentralOrderLineNum <= 0; 
         [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
         private int _databaseNum;
 
@@ -151,6 +163,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Fields - Generated 
 
         #region Properties - Generated 
+		[IgnoreCompare] 
 		public override string UniqueId => CentralOrderLineUuid; 
 		public void CheckUniqueId() 
 		{

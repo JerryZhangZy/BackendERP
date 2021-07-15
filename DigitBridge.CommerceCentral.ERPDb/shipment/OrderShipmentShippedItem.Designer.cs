@@ -18,6 +18,7 @@ using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -42,10 +43,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Fields - Generated 
 		[ResultColumn(Name = "OrderShipmentShippedItemNum", IncludeInAutoSelect = IncludeInAutoSelect.Yes)] 
-		[XmlIgnore] 
 		protected long _orderShipmentShippedItemNum; 
-		public override long RowNum => _orderShipmentShippedItemNum;
-		public virtual long OrderShipmentShippedItemNum => _orderShipmentShippedItemNum;
+		[XmlIgnore, IgnoreCompare] 
+		public virtual long OrderShipmentShippedItemNum
+		{
+			get => _orderShipmentShippedItemNum;
+			set => _orderShipmentShippedItemNum = value;
+		}
+		[XmlIgnore, IgnoreCompare] 
+		public override long RowNum
+		{
+			get => OrderShipmentShippedItemNum.ToLong();
+			set => OrderShipmentShippedItemNum = value.ToLong();
+		}
+		[XmlIgnore, JsonIgnore, IgnoreCompare] 
+		public override bool IsNew => OrderShipmentShippedItemNum <= 0; 
         [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
         private int _databaseNum;
 
@@ -94,6 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Fields - Generated 
 
         #region Properties - Generated 
+		[IgnoreCompare] 
 		public override string UniqueId => OrderShipmentShippedItemUuid; 
 		public void CheckUniqueId() 
 		{
@@ -390,19 +403,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return;
         }
 
-		public IList<OrderShipmentShippedItem> FindByOrderShipmentUuid(string orderShipmentUuid)
+		public static IList<OrderShipmentShippedItem> FindByOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
-			return dbFactory.Find<OrderShipmentShippedItem>("WHERE OrderShipmentUuid = @0 ORDER BY OrderDCAssignmentLineNum ", orderShipmentUuid).ToList();
+			return dbFactory.Find<OrderShipmentShippedItem>("WHERE OrderShipmentUuid = @0 ORDER BY OrderShipmentShippedItemNum ", orderShipmentUuid).ToList();
 		}
-		public long CountByOrderShipmentUuid(string orderShipmentUuid)
+		public static long CountByOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
 			return dbFactory.Count<OrderShipmentShippedItem>("WHERE OrderShipmentUuid = @0 ", orderShipmentUuid);
 		}
-		public async Task<IList<OrderShipmentShippedItem>> FindByAsyncOrderShipmentUuid(string orderShipmentUuid)
+		public static async Task<IList<OrderShipmentShippedItem>> FindByAsyncOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
-			return (await dbFactory.FindAsync<OrderShipmentShippedItem>("WHERE OrderShipmentUuid = @0 ORDER BY OrderDCAssignmentLineNum ", orderShipmentUuid)).ToList();
+			return (await dbFactory.FindAsync<OrderShipmentShippedItem>("WHERE OrderShipmentUuid = @0 ORDER BY OrderShipmentShippedItemNum ", orderShipmentUuid)).ToList();
 		}
-		public async Task<long> CountByAsyncOrderShipmentUuid(string orderShipmentUuid)
+		public static async Task<long> CountByAsyncOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
 			return await dbFactory.CountAsync<OrderShipmentShippedItem>("WHERE OrderShipmentUuid = @0 ", orderShipmentUuid);
 		}

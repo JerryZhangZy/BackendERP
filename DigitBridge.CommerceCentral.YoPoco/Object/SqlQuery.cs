@@ -9,6 +9,9 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
+using System.Threading;
+using Newtonsoft.Json;
+using System.Data.Common;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
@@ -769,6 +772,24 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return () => dependency.OnChange -= OnDependencyChange;
         }
 
+        public static SqlQueryResultData QuerySqlQueryResultData(string sql, CommandType commandType, params IDataParameter[] parameters)
+        {
+            SqlQueryResultData returnItem = new SqlQueryResultData();
+
+            using (var dataReader = SqlQuery.ExecuteCommand(sql, commandType, parameters))
+            {
+                returnItem.heading = Enumerable.Range(0, dataReader.FieldCount).Select(dataReader.GetName)
+                    .Where(s => !s.StartsWith("_")).ToList();
+                while (dataReader.Read())
+                {
+                    returnItem.data.Add(Enumerable.Range(0, dataReader.FieldCount)
+                        .Where(i => !dataReader.GetName(i).StartsWith("_"))
+                        .Select(i => dataReader.GetValue(i).ConvertObject(dataReader.GetFieldType(i))).ToArray());
+                }
+            }
+            return returnItem;
+        }
+
         public static async Task<SqlQueryResultData> QuerySqlQueryResultDataAsync(string sql, CommandType commandType, params IDataParameter[] parameters)
         {
             SqlQueryResultData returnItem = new SqlQueryResultData();
@@ -786,7 +807,163 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             return returnItem;
         }
+
+        public static IEnumerable<T> Query<T>(string sql, CommandType commandType, params IDataParameter[] parameters)
+        {
+            var result = new List<T>();
+            var pd = ObjectSchema.ForType(typeof(T));
+
+            var dataReader = SqlQuery.ExecuteCommand(sql, commandType, parameters);
+            var readerObject = dataReader as DbDataReader;
+            var factory = pd.GetFactory();
+
+            using (dataReader)
+            {
+                while (true)
+                {
+                    T poco;
+                    try
+                    {
+                        if (readerObject != null)
+                        {
+                            if (!readerObject.Read())
+                                return result;
+                        }
+                        else
+                        {
+                            if (!dataReader.Read())
+                                return result;
+                        }
+
+                        poco = (T)factory(dataReader);
+                        if (poco != null)
+                            result.Add(poco);
+                    }
+                    catch (Exception e)
+                    {
+                        throw;
+                    }
+                }
+            }
+        }
+
+        public static async Task<IEnumerable<T>> QueryAsync<T>(string sql, CommandType commandType, params IDataParameter[] parameters)
+        {
+            var result = new List<T>();
+            var pd = ObjectSchema.ForType(typeof(T));
+
+            var dataReader = await SqlQuery.ExecuteCommandAsync(sql, commandType, parameters).ConfigureAwait(false);
+            var readerAsync = dataReader as DbDataReader;
+            var factory = pd.GetFactory();
+
+            using (dataReader)
+            {
+                while (true)
+                {
+                    T poco;
+                    try
+                    {
+                        if (readerAsync != null)
+                        {
+                            if (!await readerAsync.ReadAsync().ConfigureAwait(false))
+                                return result;
+                        }
+                        else
+                        {
+                            if (!await dataReader.ReadAsync().ConfigureAwait(false))
+                                return result;
+                        }
+
+                        poco = (T)factory(dataReader);
+                        if (poco != null)
+                            result.Add(poco);
+                    }
+                    catch (Exception e)
+                    {
+                        throw;
+                    }
+                }
+            }
+        }
+
+        public static IEnumerable<T> QueryJson<T>(string sql, CommandType commandType, params IDataParameter[] parameters)
+        {
+            var result = new List<T>();
+            var jsonResult = new StringBuilder();
+            if (!QueryJson(jsonResult, sql, commandType, parameters)) return new List<T>();
+            if (jsonResult.Length <= 0) return result;
+
+            var setting = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Include
+            };
+
+            try
+            {
+                result = JsonConvert.DeserializeObject<List<T>>(jsonResult.ToString(), setting);
+            }
+            catch (Exception ex)
+            {
+                return new List<T>();
+            }
+
+            return result.ToList();
+        }
+
+        public static async Task<IEnumerable<T>> QueryJsonAsync<T>(string sql, CommandType commandType, params IDataParameter[] parameters)
+        {
+            var result = new List<T>();
+            var jsonResult = new StringBuilder();
+            if (!(await QueryJsonAsync(jsonResult, sql, commandType, parameters))) return new List<T>();
+            if (jsonResult.Length <= 0) return result;
+
+            var setting = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Include
+            };
+
+            try
+            {
+                result = JsonConvert.DeserializeObject<List<T>>(jsonResult.ToString(), setting);
+            }
+            catch (Exception ex)
+            {
+                return new List<T>();
+            }
+
+            return result.ToList();
+        }
+
+        public static bool QueryJson(StringBuilder jsonResult, string sql, CommandType commandType, params IDataParameter[] parameters)
+        {
+            using (var dataReader = SqlQuery.ExecuteCommand(sql, commandType, parameters))
+            {
+                if (dataReader is null) return false;
+
+                while (dataReader.Read())
+                {
+                    jsonResult.Append(dataReader.GetValue(0).ToString());
+                }
+            }
+            return true;
+        }
+
+        public static async Task<bool> QueryJsonAsync(StringBuilder jsonResult, string sql, CommandType commandType, params IDataParameter[] parameters)
+        {
+            using (var dataReader = await SqlQuery.ExecuteCommandAsync(sql, commandType, parameters).ConfigureAwait(false))
+            {
+                if (dataReader is null) return false;
+
+                while (await dataReader.ReadAsync().ConfigureAwait(false))
+                {
+                    jsonResult.Append(dataReader.GetValue(0).ToString());
+                }
+            }
+            return true;
+        }
     }
+
+
 
     public static class ReaderExtensions
     {

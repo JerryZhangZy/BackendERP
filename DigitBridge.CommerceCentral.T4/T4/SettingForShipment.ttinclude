@@ -13,10 +13,10 @@
     // Tables relatonship
     var structureName = $"{processName}Data";
     var StructureClass = new StructureInfo(structureName,
-            new StructureTable() { Name = "OrderShipmentHeader", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "OrderShipmentCanceledItem", ParentName = "OrderShipmentHeader", OneToOne = false, LoadByColumn = "OrderShipmentUuid" },
-            new StructureTable() { Name = "OrderShipmentPackage", ParentName = "OrderShipmentHeader", DetailTable = true, OneToOne = false, LoadByColumn = "OrderShipmentUuid", oneToManyChildrenName = "OrderShipmentShippedItem" },
-            new StructureTable() { Name = "OrderShipmentShippedItem", ParentName = "OrderShipmentPackage", OneToOne = false, LoadByColumn = "OrderShipmentUuid" }
+            new StructureTable() { Name = "OrderShipmentHeader", AlliesName = "shp", MainTable = true, OneToOne = true },
+            new StructureTable() { Name = "OrderShipmentCanceledItem", AlliesName = "shpc", ParentName = "OrderShipmentHeader", OneToOne = false, LoadByColumn = "OrderShipmentUuid" },
+            new StructureTable() { Name = "OrderShipmentPackage", AlliesName = "shpp", ParentName = "OrderShipmentHeader", DetailTable = true, OneToOne = false, LoadByColumn = "OrderShipmentUuid", oneToManyChildrenName = "OrderShipmentShippedItem" },
+            new StructureTable() { Name = "OrderShipmentShippedItem", AlliesName = "shpl", ParentName = "OrderShipmentPackage", OneToOne = false, LoadByColumn = "OrderShipmentUuid" }
         );
 
 
@@ -43,6 +43,7 @@
     // generate repository class for each table
     var generateModel = true;
     var generateDto = true;
+    var generateModelHelper = true;
 
     // generate tester class for each table repository
     var generateTester = true;
@@ -59,6 +60,7 @@
     // generate service class
     var generateService = true;
     var ServiceName = $"{processName}Service";
+    var ServiceHelperName = $"{processName}Helper";
 
     var generateServiceTester = true;
 
