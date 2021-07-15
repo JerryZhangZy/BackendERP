@@ -1,5 +1,5 @@
 
-    
+
 
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual bool Add(SalesOrderDataDto dto)
         {
-            if (dto is null) 
+            if (dto is null)
                 return false;
             // set Add mode and clear data
             Add();
@@ -102,6 +102,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return await SaveDataAsync();
+        }
+        /// <summary>
+        /// Get sale order with detail by orderNumber
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> GetByOrderNumberAsync(string orderNumber)
+        {
+            List();
+            var success = await _data.GetByOrderNumberAsync(orderNumber);
+            //if (success) ToDto();
+            return success;
+        }
+        /// <summary>
+        /// Get sale order with detail by orderNumber
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual bool GetByOrderNumber(string orderNumber)
+        {
+            
+            List();
+            var success = _data.GetByOrderNumber(orderNumber);
+            //if (success) ToDto();
+            return success;
         }
 
     }
