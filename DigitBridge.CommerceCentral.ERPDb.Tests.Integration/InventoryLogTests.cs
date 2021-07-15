@@ -33,12 +33,12 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             var logUuid = Guid.NewGuid().ToString();
 
 
-            var svc = new InventoryLog(DataBaseFactory);
-            var batchNum = svc.GetBatchNum();
+            var svc = new InventoryData(DataBaseFactory);
+            var batchNum = svc.GetInventoryLogBatchNum();
             list.ForEach(x => {
                 x.LogUuid = logUuid;x.BatchNum = batchNum; 
             });
-            svc.AddInventoryLogList(list);
+            svc.SaveInventoryLog(list);
             var rlist = svc.GetInventoryLogByLogUuid(logUuid);
             Assert.True(rlist.EqualsList(list));
         }
@@ -49,16 +49,16 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             var list = FakerData.Generate(10);
             var logUuid = Guid.NewGuid().ToString();
 
-            var svc = new InventoryLog(DataBaseFactory);
-            var batchNum = svc.GetBatchNum();
+            var svc = new InventoryData(DataBaseFactory);
+            var batchNum = svc.GetInventoryLogBatchNum();
             list.ForEach(x => {
                 x.LogUuid = logUuid; x.BatchNum = batchNum;
             });
-            svc.AddInventoryLogList(list);
+            svc.SaveInventoryLog(list);
             var rlist = svc.GetInventoryLogByLogUuid(logUuid).ToList();
             var testTag = Guid.NewGuid().ToString();
             rlist.ForEach(x => x.SKU = testTag);
-            svc.UpdateInventoryLogList(rlist);
+            svc.SaveInventoryLog(rlist);
             var tlist = svc.GetInventoryLogByLogUuid(logUuid).ToList();
             Assert.True(rlist.EqualsList(tlist));
         }

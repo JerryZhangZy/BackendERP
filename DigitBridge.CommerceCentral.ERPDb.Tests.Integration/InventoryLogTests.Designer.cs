@@ -40,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.InventoryLogUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.ProductUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.InventoryUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.BatchNum, f => f.Random.Long(1,1000))
+					.RuleFor(u => u.BatchNum, f => default(long))
 					.RuleFor(u => u.LogType, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.LogUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.LogItemUuid, f => f.Random.Guid().ToString())
