@@ -42,8 +42,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //    if (list == null || list.Count() == 0)
         //        return 0;
         //    var batchNum = _inventoryLog.GetBatchNum();
-            
+        //    var tlist = new List<InventoryLog>();
+        //    //TODO:Validator验证，Mapper,补充完整Inventory信息进去，调用Dao
 
+
+        //}
+
+        //public int UpdateInventoryLogList(List<InventoryLogDto> list)
+        //{
 
         //}
 

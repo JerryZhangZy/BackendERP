@@ -35,6 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
+
         public virtual bool SetDefaultSummary(InventoryData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)

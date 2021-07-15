@@ -14,6 +14,39 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public partial class InventoryData
     {
 
+        public int GetInventoryLogBatchNum()
+        {
+            return dbFactory.Db.ExecuteScalar<int>("select max(BatchNum) from InventoryLog") + 1; ;
+        }
+
+        public Inventory GetInventory(int rowNum)
+        {
+            return dbFactory.Get<Inventory>(rowNum);
+        }
+
+        public Inventory GetInventoryBySku(int databaseNum, int masterAccountNum, int profileNum)
+        {
+            var sql = new Sql($"SELECT Top 1 * FROM Inventory WHERE DatabaseNum={databaseNum} AND MasterAccountNum={masterAccountNum} AND ProfileNum={profileNum}");
+            return dbFactory.Db.FirstOrDefault<Inventory>(sql);
+        }
+
+        public IList<InventoryLog> GetInventoryLogByLogUuid(string uuid)
+        {
+            var sql = new Sql($"SELECT * FROM InventoryLog WHERE LogUuid='{uuid}'");
+            return dbFactory.Db.Query<InventoryLog>(sql).ToList(); ;
+        }
+
+        public IList<InventoryLog> GetInventoryLogByBatchNum(int batchNum)
+        {
+            var sql = new Sql($"SELECT * FROM InventoryLog WHERE BatchNum={batchNum}");
+            return dbFactory.Db.Query<InventoryLog>(sql).ToList(); ;
+        }
+
+        public int DeleteInventoryLogByLogUuid(string logUuid)
+        {
+            var sql = new Sql($"DELETE FROM InventoryLog WHERE LogUuid='{logUuid}'");
+            return dbFactory.Db.Execute(sql);
+        }
     }
 }
 

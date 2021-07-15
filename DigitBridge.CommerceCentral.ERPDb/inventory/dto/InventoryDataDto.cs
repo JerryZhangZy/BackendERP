@@ -40,6 +40,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasInventory => Inventory != null;
 
+        public IList<InventoryLogDto> InventoryLog { get; set; }
+        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        public bool HasInventoryLog => InventoryLog != null;
+
     }
 }
 
