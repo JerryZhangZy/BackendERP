@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DigitBridge.CommerceCentral.WebApi</name>
+    </assembly>
+    <members>
+        <member name="M:DigitBridge.CommerceCentral.WebApi.SwaggerController.SwaggerOAuth2Redirect(System.Net.Http.HttpRequestMessage,AzureFunctions.Extensions.Swashbuckle.ISwashBuckleClient)">
+            <summary>
+            This is only needed for OAuth2 client. This redirecting document is normally served
+            as a static content. Functions don't provide this out of the box, so we serve it here.
+            Don't forget to set OAuth2RedirectPath configuration option to reflect this route.
+            </summary>
+            <param name="req"></param>
+            <param name="swashBuckleClient"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
