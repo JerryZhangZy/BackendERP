@@ -2,22 +2,22 @@
 	// Database table define file path
     var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\so";
     // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
-    var Files = "OrderHeader,OrderHeaderInfo,OrderHeaderAttributes,OrderItems,OrderItemsAttributes";
+    var Files = "SalesOrderHeader,SalesOrderHeaderInfo,SalesOrderHeaderAttributes,SalesOrderItems,SalesOrderItemsAttributes";
 
     // current solution path
 	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
     var project = Path.Combine(path,DatabaseProjectName);
-    var processName = "Order";
+    var processName = "SalesOrder";
     var processForlderName = "so";
 
     // Tables relatonship
     var structureName = $"{processName}Data";
-    var StructureClass = new StructureInfo("OrderData",
-            new StructureTable() { Name = "OrderHeader", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "OrderHeaderInfo", ParentName = "OrderHeader", OneToOne = true, LoadByColumn = "OrderUuid" },
-            new StructureTable() { Name = "OrderHeaderAttributes", ParentName = "OrderHeader", OneToOne = true, LoadByColumn = "OrderUuid" },
-            new StructureTable() { Name = "OrderItems", ParentName = "OrderHeader", DetailTable = true, OneToOne = false, LoadByColumn = "OrderUuid", oneToOneChildrenName = "OrderItemsAttributes" },
-            new StructureTable() { Name = "OrderItemsAttributes", ParentName = "OrderItems", OneToOne = false, LoadByColumn = "OrderItemsUuid" }
+    var StructureClass = new StructureInfo("SalesOrderData",
+            new StructureTable() { Name = "SalesOrderHeader", MainTable = true, OneToOne = true },
+            new StructureTable() { Name = "SalesOrderHeaderInfo", ParentName = "SalesOrderHeader", OneToOne = true, LoadByColumn = "SalesOrderUuid" },
+            new StructureTable() { Name = "SalesOrderHeaderAttributes", ParentName = "SalesOrderHeader", OneToOne = true, LoadByColumn = "SalesOrderUuid" },
+            new StructureTable() { Name = "SalesOrderItems", ParentName = "SalesOrderHeader", DetailTable = true, OneToOne = false, LoadByColumn = "SalesOrderUuid", oneToOneChildrenName = "SalesOrderItemsAttributes" },
+            new StructureTable() { Name = "SalesOrderItemsAttributes", ParentName = "SalesOrderItems", OneToOne = false, LoadByColumn = "SalesOrderUuid" }
         );
 
 

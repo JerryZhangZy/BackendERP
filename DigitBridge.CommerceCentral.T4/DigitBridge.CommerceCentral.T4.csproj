@@ -35,8 +35,8 @@
       <LastGenOutput>SettingForChannelOrder.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="T4\SettingForOrder.ttinclude">
-      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+    <None Update="T4\SettingForSalesOrder.ttinclude">
+      <LastGenOutput>SettingForSalesOrder.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForCustomer.ttinclude">
