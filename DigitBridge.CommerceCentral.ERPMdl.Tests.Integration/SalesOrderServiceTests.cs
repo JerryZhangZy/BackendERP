@@ -24,14 +24,14 @@ using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
-    public partial class InvoiceTransactionServiceTests
+    public partial class SalesOrderServiceTests
     {
 
         [Fact()]
 		//[Fact(Skip = SkipReason)]
 		public void AddDto_Test()
 		{
-            var srv = new InvoiceTransactionService(DataBaseFactory);
+            var srv = new SalesOrderService(DataBaseFactory);
             srv.Add();
 
             var mapper = srv.DtoMapper;
@@ -41,7 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             srv.Add(dto);
 
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
+            var srvGet = new SalesOrderService(DataBaseFactory);
             //srvGet.Edit();
             srvGet.GetDataById(id);
             var result = srv.Data.Equals(srvGet.Data);
@@ -55,30 +55,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 		{
             SaveData_Test();
 
-            var id = DataBaseFactory.GetValue<InvoiceTransaction, string>(@"
-SELECT TOP 1 ins.TransUuid 
-FROM InvoiceTransaction ins 
+            var id = DataBaseFactory.GetValue<SalesOrderHeader, string>(@"
+SELECT TOP 1 ins.OrderUuid 
+FROM SalesOrderHeader ins 
 INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
+    SELECT it.OrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.OrderUuid
+) itm ON (itm.OrderUuid = ins.OrderUuid)
 WHERE itm.cnt > 0
 ");
 
 
-            var srv = new InvoiceTransactionService(DataBaseFactory);
+            var srv = new SalesOrderService(DataBaseFactory);
             srv.Edit(id);
-            var rowNum = srv.Data.InvoiceTransaction.RowNum;
+            var rowNum = srv.Data.SalesOrderHeader.RowNum;
 
             var mapper = srv.DtoMapper;
             var data = GetFakerData();
             var dto = mapper.WriteDto(data, null);
-            dto.InvoiceTransaction.RowNum = rowNum;
-            dto.InvoiceTransaction.TransUuid = id;
+            dto.SalesOrderHeader.RowNum = rowNum;
+            dto.SalesOrderHeader.OrderUuid = id;
 
             srv.Clear();
             srv.Update(dto);
 
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
+            var srvGet = new SalesOrderService(DataBaseFactory);
             srvGet.Edit();
             srvGet.GetDataById(id);
             var result = srv.Data.Equals(srvGet.Data);
@@ -90,7 +90,7 @@ WHERE itm.cnt > 0
 		//[Fact(Skip = SkipReason)]
 		public async Task AddDtoAsync_Test()
 		{
-            var srv = new InvoiceTransactionService(DataBaseFactory);
+            var srv = new SalesOrderService(DataBaseFactory);
             srv.Add();
 
             var mapper = srv.DtoMapper;
@@ -100,7 +100,7 @@ WHERE itm.cnt > 0
 
             await srv.AddAsync(dto);
 
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
+            var srvGet = new SalesOrderService(DataBaseFactory);
             srvGet.Edit();
             await srvGet.GetDataByIdAsync(id);
             var result = srv.Data.Equals(srvGet.Data);
@@ -114,30 +114,30 @@ WHERE itm.cnt > 0
 		{
             await SaveDataAsync_Test();
 
-            var id = await DataBaseFactory.GetValueAsync<InvoiceTransaction, string>(@"
-SELECT TOP 1 ins.TransUuid 
-FROM InvoiceTransaction ins 
+            var id = await DataBaseFactory.GetValueAsync<SalesOrderHeader, string>(@"
+SELECT TOP 1 ins.OrderUuid 
+FROM SalesOrderHeader ins 
 INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
+    SELECT it.OrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.OrderUuid
+) itm ON (itm.OrderUuid = ins.OrderUuid)
 WHERE itm.cnt > 0
 ");
 
 
-            var srv = new InvoiceTransactionService(DataBaseFactory);
+            var srv = new SalesOrderService(DataBaseFactory);
             await srv.EditAsync(id);
-            var rowNum = srv.Data.InvoiceTransaction.RowNum;
+            var rowNum = srv.Data.SalesOrderHeader.RowNum;
 
             var mapper = srv.DtoMapper;
             var data = GetFakerData();
             var dto = mapper.WriteDto(data, null);
-            dto.InvoiceTransaction.RowNum = rowNum;
-            dto.InvoiceTransaction.TransUuid = id;
+            dto.SalesOrderHeader.RowNum = rowNum;
+            dto.SalesOrderHeader.OrderUuid = id;
 
             srv.Clear();
             await srv.UpdateAsync(dto);
 
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
+            var srvGet = new SalesOrderService(DataBaseFactory);
             //srvGet.Edit();
             await srvGet.GetDataByIdAsync(id);
             var result = srv.Data.Equals(srvGet.Data);

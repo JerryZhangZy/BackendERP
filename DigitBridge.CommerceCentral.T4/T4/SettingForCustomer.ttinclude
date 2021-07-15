@@ -14,9 +14,9 @@
     var structureName = $"{processName}Data";
      
     var StructureClass =  new StructureInfo("CustomerData",
-            new StructureTable() { Name = "Customer", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "CustomerAddress", ParentName = "Customer", OneToOne = false, LoadByColumn = "CustomerUuid" },
-            new StructureTable() { Name = "CustomerAttributes", ParentName = "Customer", OneToOne = true, LoadByColumn = "CustomerUuid"}
+            new StructureTable() { Name = "Customer", AlliesName = "cus", MainTable = true, OneToOne = true },
+            new StructureTable() { Name = "CustomerAddress", AlliesName = "cusd", ParentName = "Customer", OneToOne = false, LoadByColumn = "CustomerUuid" },
+            new StructureTable() { Name = "CustomerAttributes", AlliesName = "cusa", ParentName = "Customer", OneToOne = true, LoadByColumn = "CustomerUuid"}
         );
 
 
@@ -43,6 +43,7 @@
     // generate repository class for each table
     var generateModel = true;
     var generateDto = true;
+    var generateModelHelper = true;
 
     // generate tester class for each table repository
     var generateTester = true;
@@ -59,6 +60,7 @@
     // generate service class
     var generateService = true;
     var ServiceName = $"{processName}Service";
+    var ServiceHelperName = $"{processName}Helper";
 
     var generateServiceTester = true;
 

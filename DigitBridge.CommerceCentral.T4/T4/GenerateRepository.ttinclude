@@ -16,6 +16,7 @@ using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -48,11 +49,24 @@ foreach(var col in table.Columns)
     if (col.IsPrimaryKey)
     {
         WriteLine($"{new String('\t',2)}[ResultColumn(Name = \"{col.Name}\", IncludeInAutoSelect = IncludeInAutoSelect.Yes)] ");
-        WriteLine($"{new String('\t',2)}[XmlIgnore] ");
         WriteLine($"{new String('\t',2)}protected long {col.privateName}; ");
 
-        WriteLine($"{new String('\t',2)}public override long RowNum => {col.privateName};");
-        WriteLine($"{new String('\t',2)}public virtual long {col.propertyName} => {col.privateName};");
+        WriteLine($"{new String('\t',2)}[XmlIgnore, IgnoreCompare] ");
+        WriteLine($"{new String('\t',2)}public virtual long {col.propertyName}");
+        WriteLine($"{new String('\t',2)}{{");
+        WriteLine($"{new String('\t',3)}get => {col.privateName};");
+        WriteLine($"{new String('\t',3)}set => {col.privateName} = value;");
+        WriteLine($"{new String('\t',2)}}}");
+
+        WriteLine($"{new String('\t',2)}[XmlIgnore, IgnoreCompare] ");
+        WriteLine($"{new String('\t',2)}public override long RowNum");
+        WriteLine($"{new String('\t',2)}{{");
+        WriteLine($"{new String('\t',3)}get => {col.propertyName}.ToLong();");
+        WriteLine($"{new String('\t',3)}set => {col.propertyName} = value.ToLong();");
+        WriteLine($"{new String('\t',2)}}}");
+
+        WriteLine($"{new String('\t',2)}[XmlIgnore, JsonIgnore, IgnoreCompare] ");
+        WriteLine($"{new String('\t',2)}public override bool IsNew => {col.propertyName} <= 0; ");
 
         continue;
     }
@@ -72,6 +86,7 @@ foreach(var col in table.Columns)
 // generate unique key properties
 if (!string.IsNullOrEmpty(table.UniqueKey))
 {
+    WriteLine($"{new String('\t',2)}[IgnoreCompare] ");
     WriteLine($"{new String('\t',2)}public override string UniqueId => {table.UniqueKey}; ");
     WriteLine($"{new String('\t',2)}public void CheckUniqueId() ");
     WriteLine($"{new String('\t',2)}{{");
@@ -84,6 +99,7 @@ if (!string.IsNullOrEmpty(table.UniqueKey))
 var blankMatchString = table.BlankMatchString();
 if(table.HasBlankKey && !string.IsNullOrEmpty(blankMatchString))
 { 
+    WriteLine($"{new String('\t',2)}[IgnoreCompare] ");
     WriteLine($"{new String('\t',2)}public override bool IsEmpty => ( {blankMatchString});");
 } 
 

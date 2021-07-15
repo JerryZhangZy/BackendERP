@@ -18,6 +18,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

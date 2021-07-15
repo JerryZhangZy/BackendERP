@@ -2,22 +2,22 @@
 	// Database table define file path
     var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\so";
     // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
-    var Files = "OrderHeader,OrderHeaderInfo,OrderHeaderAttributes,OrderItems,OrderItemsAttributes";
+    var Files = "SalesOrderHeader,SalesOrderHeaderInfo,SalesOrderHeaderAttributes,SalesOrderItems,SalesOrderItemsAttributes";
 
     // current solution path
 	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
     var project = Path.Combine(path,DatabaseProjectName);
-    var processName = "Order";
+    var processName = "SalesOrder";
     var processForlderName = "so";
 
     // Tables relatonship
     var structureName = $"{processName}Data";
-    var StructureClass = new StructureInfo("OrderData",
-            new StructureTable() { Name = "OrderHeader", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "OrderHeaderInfo", ParentName = "OrderHeader", OneToOne = true, LoadByColumn = "OrderUuid" },
-            new StructureTable() { Name = "OrderHeaderAttributes", ParentName = "OrderHeader", OneToOne = true, LoadByColumn = "OrderUuid" },
-            new StructureTable() { Name = "OrderItems", ParentName = "OrderHeader", DetailTable = true, OneToOne = false, LoadByColumn = "OrderUuid", oneToOneChildrenName = "OrderItemsAttributes" },
-            new StructureTable() { Name = "OrderItemsAttributes", ParentName = "OrderItems", OneToOne = false, LoadByColumn = "OrderItemsUuid" }
+    var StructureClass = new StructureInfo(structureName,
+            new StructureTable() { Name = "SalesOrderHeader", AlliesName = "ord", MainTable = true, OneToOne = true },
+            new StructureTable() { Name = "SalesOrderHeaderInfo", AlliesName = "ordi", ParentName = "SalesOrderHeader", OneToOne = true, LoadByColumn = "OrderUuid" },
+            new StructureTable() { Name = "SalesOrderHeaderAttributes", AlliesName = "orda", ParentName = "SalesOrderHeader", OneToOne = true, LoadByColumn = "OrderUuid" },
+            new StructureTable() { Name = "SalesOrderItems", AlliesName = "ordl", ParentName = "SalesOrderHeader", DetailTable = true, OneToOne = false, LoadByColumn = "OrderUuid", oneToOneChildrenName = "SalesOrderItemsAttributes" },
+            new StructureTable() { Name = "SalesOrderItemsAttributes", AlliesName = "ordla", ParentName = "SalesOrderItems", OneToOne = false, LoadByColumn = "OrderUuid" }
         );
 
 
@@ -44,6 +44,7 @@
     // generate repository class for each table
     var generateModel = true;
     var generateDto = true;
+    var generateModelHelper = true;
 
     // generate tester class for each table repository
     var generateTester = true;
@@ -60,6 +61,7 @@
     // generate service class
     var generateService = true;
     var ServiceName = $"{processName}Service";
+    var ServiceHelperName = $"{processName}Helper";
 
     var generateServiceTester = true;
 

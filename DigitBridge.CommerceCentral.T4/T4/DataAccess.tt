@@ -63,7 +63,7 @@
 */
 #>
 
-<#@ include file="SettingForChannelOrder.ttinclude" #>
+<#@ include file="SettingForShipment.ttinclude" #>
 
 <#      
     // Generate model output
@@ -94,6 +94,28 @@
                 SaveOutputNotExists(dir, $"{table.Name}.cs");
             }
 #>
+
+<#          // Generate model SQL helper output
+	        if (generateModelHelper)
+	        {
+#>              
+<#@ include file="GenerateRepositoryHelper.ttinclude" #>
+<# 
+                dir = Path.Combine(path,ModelFolder);
+                SaveOutputNotExists(dir, $"{table.Name}Helper.cs");
+            }
+#>
+<#          // Generate model SQL helper output
+	        if (generateModelHelper)
+	        {
+#>              
+<#@ include file="GenerateRepositoryHelperTest.ttinclude" #>
+<# 
+                dir = Path.Combine(path,TesterFolder);
+                SaveOutputNotExists(dir, $"{table.Name}HelperTests.cs");
+            }
+#>
+
 
 <#          // Generate tester class
 	        if (generateTester)
@@ -215,6 +237,12 @@
         SaveOutputNotExists(dir, $"{ServiceName}.cs");
 #>
 
+<#@ include file="GenerateServiceHelper.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceFolder);
+        SaveOutputNotExists(dir, $"{ServiceHelperName}.cs");
+#>
+
 <#@ include file="GenerateServiceInterface.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceFolder);
@@ -248,6 +276,13 @@
         dir = Path.Combine(path,ServiceTesterFolder);
         SaveOutputNotExists(dir, $"{ServiceName}Tests.cs");
 #>
+
+<#@ include file="GenerateServiceHelperTest.ttinclude" #>
+<# 
+        dir = Path.Combine(path,ServiceTesterFolder);
+        SaveOutputNotExists(dir, $"{ServiceHelperName}Tests.cs");
+#>
+
 <# } #>
 
 

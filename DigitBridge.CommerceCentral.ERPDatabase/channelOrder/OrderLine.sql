@@ -1,6 +1,5 @@
 ﻿CREATE TABLE [dbo].[OrderLine]
 (
-	--[RowNum] bigint IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	[CentralOrderLineNum]	bigint NOT NULL IDENTITY(10000000, 1), --Global unique in this database. CommerceCentral
     [DatabaseNum] INT NOT NULL, --Each database has its own default value.
 	[CentralOrderNum]	bigint NOT NULL,

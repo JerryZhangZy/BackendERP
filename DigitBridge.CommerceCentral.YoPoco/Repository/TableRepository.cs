@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -177,7 +178,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #region Properties
 
-        public virtual long RowNum => _rowNum;
+        [IgnoreCompare]
+        public virtual long RowNum
+        {
+            get => _rowNum;
+            set => _rowNum = value;
+        }
         [IgnoreCompare]
         public virtual string UniqueId => string.Empty;
         [IgnoreCompare]
@@ -188,7 +194,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool AllowNull { get; private set; } = true;
         [XmlIgnore, JsonIgnore, IgnoreCompare]
-        public bool IsNew => RowNum <= 0;
+        public virtual bool IsNew => RowNum <= 0;
 
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public virtual bool IsEmpty => false;
