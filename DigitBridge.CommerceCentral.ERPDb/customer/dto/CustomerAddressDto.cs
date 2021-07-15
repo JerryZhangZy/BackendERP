@@ -13,6 +13,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
 

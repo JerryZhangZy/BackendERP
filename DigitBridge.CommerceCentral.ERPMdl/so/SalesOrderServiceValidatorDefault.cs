@@ -24,9 +24,9 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a default InvoiceTransactionService Validator class.
+    /// Represents a default SalesOrderService Validator class.
     /// </summary>
-    public partial class InvoiceTransactionServiceValidatorDefault : IValidator<InvoiceTransactionData>
+    public partial class SalesOrderServiceValidatorDefault : IValidator<SalesOrderData>
     {
         public virtual bool IsValid { get; set; }
         public virtual IList<string> Messages { get; set; }
@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             IsValid = true;
             Messages = new List<string>();
         }
-        public virtual bool Validate(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool Validate(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
             if (!ValidateAllMode(data))
@@ -53,16 +53,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 _ => false,
             };
         }
-        protected virtual bool ValidateAllMode(InvoiceTransactionData data)
+        protected virtual bool ValidateAllMode(SalesOrderData data)
         {
             var dbFactory = data.dbFactory;
-            if (string.IsNullOrEmpty(data.InvoiceTransaction.TransUuid))
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.OrderUuid))
             {
                 IsValid = false;
                 this.Messages.Add($"Unique Id cannot be empty.");
                 return IsValid;
             }
-            //if (string.IsNullOrEmpty(data.InvoiceTransaction.CustomerUuid))
+            //if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
             //{
             //    IsValid = false;
             //    this.Messages.Add($"Customer cannot be empty.");
@@ -72,52 +72,52 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        protected virtual bool ValidateAdd(InvoiceTransactionData data)
+        protected virtual bool ValidateAdd(SalesOrderData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.InvoiceTransaction.RowNum != 0 && dbFactory.Exists<InvoiceTransaction>(data.InvoiceTransaction.RowNum))
+            if (data.SalesOrderHeader.RowNum != 0 && dbFactory.Exists<SalesOrderHeader>(data.SalesOrderHeader.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InvoiceTransaction.RowNum} is duplicate.");
+                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
 
         }
 
-        protected virtual bool ValidateEdit(InvoiceTransactionData data)
+        protected virtual bool ValidateEdit(SalesOrderData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.InvoiceTransaction.RowNum == 0)
+            if (data.SalesOrderHeader.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InvoiceTransaction.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
 
-            if (data.InvoiceTransaction.RowNum != 0 && !dbFactory.Exists<InvoiceTransaction>(data.InvoiceTransaction.RowNum))
+            if (data.SalesOrderHeader.RowNum != 0 && !dbFactory.Exists<SalesOrderHeader>(data.SalesOrderHeader.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InvoiceTransaction.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
             return true;
         }
 
-        protected virtual bool ValidateDelete(InvoiceTransactionData data)
+        protected virtual bool ValidateDelete(SalesOrderData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.InvoiceTransaction.RowNum == 0)
+            if (data.SalesOrderHeader.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InvoiceTransaction.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
 
-            if (data.InvoiceTransaction.RowNum != 0 && !dbFactory.Exists<InvoiceTransaction>(data.InvoiceTransaction.RowNum))
+            if (data.SalesOrderHeader.RowNum != 0 && !dbFactory.Exists<SalesOrderHeader>(data.SalesOrderHeader.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InvoiceTransaction.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -126,7 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Async Methods
 
-        public virtual async Task<bool> ValidateAsync(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual async Task<bool> ValidateAsync(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
             if (!(await ValidateAllModeAsync(data).ConfigureAwait(false)))
@@ -144,16 +144,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
         }
 
-        protected virtual async Task<bool> ValidateAllModeAsync(InvoiceTransactionData data)
+        protected virtual async Task<bool> ValidateAllModeAsync(SalesOrderData data)
         {
             var dbFactory = data.dbFactory;
-            if (string.IsNullOrEmpty(data.InvoiceTransaction.TransUuid))
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.OrderUuid))
             {
                 IsValid = false;
                 this.Messages.Add($"Unique Id cannot be empty.");
                 return IsValid;
             }
-            //if (string.IsNullOrEmpty(data.InvoiceTransaction.CustomerUuid))
+            //if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
             //{
             //    IsValid = false;
             //    this.Messages.Add($"Customer cannot be empty.");
@@ -163,52 +163,52 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        protected virtual async Task<bool> ValidateAddAsync(InvoiceTransactionData data)
+        protected virtual async Task<bool> ValidateAddAsync(SalesOrderData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.InvoiceTransaction.RowNum != 0 && (await dbFactory.ExistsAsync<InvoiceTransaction>(data.InvoiceTransaction.RowNum)))
+            if (data.SalesOrderHeader.RowNum != 0 && (await dbFactory.ExistsAsync<SalesOrderHeader>(data.SalesOrderHeader.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InvoiceTransaction.RowNum} is duplicate.");
+                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
 
         }
 
-        protected virtual async Task<bool> ValidateEditAsync(InvoiceTransactionData data)
+        protected virtual async Task<bool> ValidateEditAsync(SalesOrderData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.InvoiceTransaction.RowNum == 0)
+            if (data.SalesOrderHeader.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InvoiceTransaction.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
 
-            if (data.InvoiceTransaction.RowNum != 0 && !(await dbFactory.ExistsAsync<InvoiceTransaction>(data.InvoiceTransaction.RowNum)))
+            if (data.SalesOrderHeader.RowNum != 0 && !(await dbFactory.ExistsAsync<SalesOrderHeader>(data.SalesOrderHeader.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InvoiceTransaction.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
             return true;
         }
 
-        protected virtual async Task<bool> ValidateDeleteAsync(InvoiceTransactionData data)
+        protected virtual async Task<bool> ValidateDeleteAsync(SalesOrderData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.InvoiceTransaction.RowNum == 0)
+            if (data.SalesOrderHeader.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InvoiceTransaction.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
 
-            if (data.InvoiceTransaction.RowNum != 0 && !(await dbFactory.ExistsAsync<InvoiceTransaction>(data.InvoiceTransaction.RowNum)))
+            if (data.SalesOrderHeader.RowNum != 0 && !(await dbFactory.ExistsAsync<SalesOrderHeader>(data.SalesOrderHeader.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InvoiceTransaction.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
             return true;

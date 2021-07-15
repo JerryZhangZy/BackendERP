@@ -382,7 +382,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#region write all properties with null
 
-			dto.RowNum = data.RowNum;
 			dto.CentralOrderLineNum = data.CentralOrderLineNum;
 			dto.DatabaseNum = data.DatabaseNum;
 			dto.CentralOrderNum = data.CentralOrderNum;

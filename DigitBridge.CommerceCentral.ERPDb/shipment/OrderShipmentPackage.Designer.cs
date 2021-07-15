@@ -18,6 +18,7 @@ using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -42,10 +43,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Fields - Generated 
 		[ResultColumn(Name = "OrderShipmentPackageNum", IncludeInAutoSelect = IncludeInAutoSelect.Yes)] 
-		[XmlIgnore] 
 		protected long _orderShipmentPackageNum; 
-		public override long RowNum => _orderShipmentPackageNum;
-		public virtual long OrderShipmentPackageNum => _orderShipmentPackageNum;
+		[XmlIgnore, IgnoreCompare] 
+		public virtual long OrderShipmentPackageNum
+		{
+			get => _orderShipmentPackageNum;
+			set => _orderShipmentPackageNum = value;
+		}
+		[XmlIgnore, IgnoreCompare] 
+		public override long RowNum
+		{
+			get => OrderShipmentPackageNum.ToLong();
+			set => OrderShipmentPackageNum = value.ToLong();
+		}
+		[XmlIgnore, JsonIgnore, IgnoreCompare] 
+		public override bool IsNew => OrderShipmentPackageNum <= 0; 
         [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
         private int _databaseNum;
 
@@ -112,6 +124,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Fields - Generated 
 
         #region Properties - Generated 
+		[IgnoreCompare] 
 		public override string UniqueId => OrderShipmentPackageUuid; 
 		public void CheckUniqueId() 
 		{
@@ -650,19 +663,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return;
         }
 
-		public IList<OrderShipmentPackage> FindByOrderShipmentUuid(string orderShipmentUuid)
+		public static IList<OrderShipmentPackage> FindByOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
-			return dbFactory.Find<OrderShipmentPackage>("WHERE OrderShipmentUuid = @0 ORDER BY PackageID ", orderShipmentUuid).ToList();
+			return dbFactory.Find<OrderShipmentPackage>("WHERE OrderShipmentUuid = @0 ORDER BY OrderShipmentPackageNum ", orderShipmentUuid).ToList();
 		}
-		public long CountByOrderShipmentUuid(string orderShipmentUuid)
+		public static long CountByOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
 			return dbFactory.Count<OrderShipmentPackage>("WHERE OrderShipmentUuid = @0 ", orderShipmentUuid);
 		}
-		public async Task<IList<OrderShipmentPackage>> FindByAsyncOrderShipmentUuid(string orderShipmentUuid)
+		public static async Task<IList<OrderShipmentPackage>> FindByAsyncOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
-			return (await dbFactory.FindAsync<OrderShipmentPackage>("WHERE OrderShipmentUuid = @0 ORDER BY PackageID ", orderShipmentUuid)).ToList();
+			return (await dbFactory.FindAsync<OrderShipmentPackage>("WHERE OrderShipmentUuid = @0 ORDER BY OrderShipmentPackageNum ", orderShipmentUuid)).ToList();
 		}
-		public async Task<long> CountByAsyncOrderShipmentUuid(string orderShipmentUuid)
+		public static async Task<long> CountByAsyncOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
 			return await dbFactory.CountAsync<OrderShipmentPackage>("WHERE OrderShipmentUuid = @0 ", orderShipmentUuid);
 		}

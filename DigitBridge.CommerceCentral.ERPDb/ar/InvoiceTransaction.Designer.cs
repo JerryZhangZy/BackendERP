@@ -18,6 +18,7 @@ using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -146,6 +147,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Fields - Generated 
 
         #region Properties - Generated 
+		[IgnoreCompare] 
 		public override string UniqueId => TransUuid; 
 		public void CheckUniqueId() 
 		{
@@ -681,19 +683,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return;
         }
 
-		public IList<InvoiceTransaction> FindByInvoiceUuid(string invoiceUuid)
+		public static IList<InvoiceTransaction> FindByInvoiceUuid(IDataBaseFactory dbFactory, string invoiceUuid)
 		{
 			return dbFactory.Find<InvoiceTransaction>("WHERE InvoiceUuid = @0 ", invoiceUuid).ToList();
 		}
-		public long CountByInvoiceUuid(string invoiceUuid)
+		public static long CountByInvoiceUuid(IDataBaseFactory dbFactory, string invoiceUuid)
 		{
 			return dbFactory.Count<InvoiceTransaction>("WHERE InvoiceUuid = @0 ", invoiceUuid);
 		}
-		public async Task<IList<InvoiceTransaction>> FindByAsyncInvoiceUuid(string invoiceUuid)
+		public static async Task<IList<InvoiceTransaction>> FindByAsyncInvoiceUuid(IDataBaseFactory dbFactory, string invoiceUuid)
 		{
 			return (await dbFactory.FindAsync<InvoiceTransaction>("WHERE InvoiceUuid = @0 ", invoiceUuid)).ToList();
 		}
-		public async Task<long> CountByAsyncInvoiceUuid(string invoiceUuid)
+		public static async Task<long> CountByAsyncInvoiceUuid(IDataBaseFactory dbFactory, string invoiceUuid)
 		{
 			return await dbFactory.CountAsync<InvoiceTransaction>("WHERE InvoiceUuid = @0 ", invoiceUuid);
 		}

@@ -14,18 +14,18 @@ using DigitBridge.CommerceCentral.ERPDb;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public partial class InvoiceTransactionService
+    public partial class SalesOrderService
     {
 
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
         /// </summary>
-        public override InvoiceTransactionService Init()
+        public override SalesOrderService Init()
         {
             base.Init();
-            SetDtoMapper(new InvoiceTransactionDataDtoMapperDefault());
-            SetCalculator(new InvoiceTransactionServiceCalculatorDefault());
-            AddValidator(new InvoiceTransactionServiceValidatorDefault());
+            SetDtoMapper(new SalesOrderDataDtoMapperDefault());
+            SetCalculator(new SalesOrderServiceCalculatorDefault());
+            AddValidator(new SalesOrderServiceValidatorDefault());
             return this;
         }
 
@@ -33,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
-        public virtual bool Add(InvoiceTransactionDataDto dto)
+        public virtual bool Add(SalesOrderDataDto dto)
         {
             if (dto is null) 
                 return false;
@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
-        public virtual async Task<bool> AddAsync(InvoiceTransactionDataDto dto)
+        public virtual async Task<bool> AddAsync(SalesOrderDataDto dto)
         {
             if (dto is null)
                 return false;
@@ -70,12 +70,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual bool Update(InvoiceTransactionDataDto dto)
+        public virtual bool Update(SalesOrderDataDto dto)
         {
-            if (dto is null || !dto.HasInvoiceTransaction || dto.InvoiceTransaction.RowNum.ToLong() <= 0)
+            if (dto is null || !dto.HasSalesOrderHeader || dto.SalesOrderHeader.RowNum.ToLong() <= 0)
                 return false;
             // set Add mode and clear data
-            Edit(dto.InvoiceTransaction.RowNum.ToLong());
+            Edit(dto.SalesOrderHeader.RowNum.ToLong());
             // load data from dto
             FromDto(dto);
             // validate data for Add processing
@@ -89,12 +89,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual async Task<bool> UpdateAsync(InvoiceTransactionDataDto dto)
+        public virtual async Task<bool> UpdateAsync(SalesOrderDataDto dto)
         {
-            if (dto is null || !dto.HasInvoiceTransaction || dto.InvoiceTransaction.RowNum.ToLong() <= 0)
+            if (dto is null || !dto.HasSalesOrderHeader || dto.SalesOrderHeader.RowNum.ToLong() <= 0)
                 return false;
             // set Add mode and clear data
-            await EditAsync(dto.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
+            await EditAsync(dto.SalesOrderHeader.RowNum.ToLong()).ConfigureAwait(false);
             // load data from dto
             FromDto(dto);
             // validate data for Add processing

@@ -1,6 +1,4 @@
 
-
-              
     
 
 //-------------------------------------------------------------------------
@@ -26,13 +24,18 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a InvoiceTransactionService.
-    /// NOTE: This class is generated from a T4 template - you should not modify it manually.
+    /// Represents a ISalesOrderService.
+    /// NOTE: This interface is generated from a T4 template once only - if you want re-generate it, you should delete this file first.
     /// </summary>
-    public partial class InvoiceTransactionService : ServiceBase<InvoiceTransactionService, InvoiceTransactionData, InvoiceTransactionDataDto>, IInvoiceTransactionService
+    public interface ISalesOrderService : IService<SalesOrderService, SalesOrderData, SalesOrderDataDto>
     {
-        public InvoiceTransactionService() : base() {}
-        public InvoiceTransactionService(IDataBaseFactory dbFactory): base(dbFactory) {}
+
+        bool Add(SalesOrderDataDto dto);
+        Task<bool> AddAsync(SalesOrderDataDto dto);
+        
+        bool Update(SalesOrderDataDto dto);
+        Task<bool> UpdateAsync(SalesOrderDataDto dto);
+
     }
 }
 
