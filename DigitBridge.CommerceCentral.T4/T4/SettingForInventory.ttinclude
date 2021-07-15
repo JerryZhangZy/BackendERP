@@ -18,8 +18,8 @@
             new StructureTable() { Name = "ProductExt", AlliesName = "prdx", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
             new StructureTable() { Name = "ProductExtAttributes", AlliesName = "prda", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
             new StructureTable() { Name = "Inventory", AlliesName = "inv", ParentName = "ProductBasic", DetailTable = true, OneToOne = false, LoadByColumn = "ProductUuid", oneToOneChildrenName = "InventoryAttributes" },
-            new StructureTable() { Name = "InventoryAttributes", AlliesName = "inva", ParentName = "Inventory", OneToOne = false, LoadByColumn = "ProductUuid" }
-            new StructureTable() { Name = "InventoryLog",AliesName="invl" ParentName = "ProductBasic",  DetailTable = true, OneToOne = false, LoadByColumn = "ProductUuid" }
+            new StructureTable() { Name = "InventoryAttributes", AlliesName = "inva", ParentName = "Inventory", OneToOne = false, LoadByColumn = "ProductUuid" },
+            new StructureTable() { Name = "InventoryLog",AlliesName="invl",ParentName = "ProductBasic",  DetailTable = true, OneToOne = false, LoadByColumn = "ProductUuid" }
         );
 
 
