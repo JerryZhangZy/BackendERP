@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.WebApi
 {
-    public class Function1 : BaseApi
+    public class SalesOrder : BaseApi
     {
         [FunctionName("Function1")]
         public async Task<IActionResult> Run(

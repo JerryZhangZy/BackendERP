@@ -25,6 +25,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// </summary>
     public class SalesOrderHeaderDto
     {
+        /// <summary>
+        /// Record Unique Number
+        /// Title: Record Number
+        /// Display: false.
+        /// Editable: false.
+        /// </summary>
         public long? RowNum { get; set; }
         public string UniqueId { get; set; }
         public DateTime? EnterDateUtc { get; set; }
