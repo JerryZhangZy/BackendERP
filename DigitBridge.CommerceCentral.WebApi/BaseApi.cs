@@ -8,24 +8,25 @@ using System.Threading.Tasks;
 namespace DigitBridge.CommerceCentral.WebApi
 {
     [Obsolete]
-    public class BaseApi : IFunctionInvocationFilter,IFunctionExceptionFilter
+    public class BaseApi : IFunctionInvocationFilter, IFunctionExceptionFilter
     {
+
         public Task OnExceptionAsync(FunctionExceptionContext exceptionContext, CancellationToken cancellationToken)
         {
             // todo unhandle exception
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public Task OnExecutedAsync(FunctionExecutedContext executedContext, CancellationToken cancellationToken)
         {
             // todo 
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
         {
             // todo Authorize
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
-    }  
+    }
 }

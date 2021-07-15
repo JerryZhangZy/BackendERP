@@ -4,6 +4,27 @@
         <name>DigitBridge.CommerceCentral.WebApi</name>
     </assembly>
     <members>
+        <member name="T:DigitBridge.CommerceCentral.WebApi.SalesOrderApi">
+            <summary>
+            Processing sales order business
+            </summary>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.WebApi.SalesOrderApi.GetSalesOrder(Microsoft.AspNetCore.Http.HttpRequest,Microsoft.Extensions.Logging.ILogger,System.String)">
+            <summary>
+            get SalesOrder dto by orderNumber
+            </summary>
+            <param name="orderNumber"></param>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.WebApi.SalesOrderApi.AddSalesOrder(DigitBridge.CommerceCentral.ERPDb.SalesOrderDataDto)">
+            <summary>
+            add one SalesOrderDto 
+            </summary>
+            <param name="orderNumber"></param>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
         <member name="M:DigitBridge.CommerceCentral.WebApi.SwaggerController.SwaggerOAuth2Redirect(System.Net.Http.HttpRequestMessage,AzureFunctions.Extensions.Swashbuckle.ISwashBuckleClient)">
             <summary>
             This is only needed for OAuth2 client. This redirecting document is normally served

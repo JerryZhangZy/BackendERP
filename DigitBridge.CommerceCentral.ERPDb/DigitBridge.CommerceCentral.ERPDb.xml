@@ -1,0 +1,473 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DigitBridge.CommerceCentral.ERPDb</name>
+    </assembly>
+    <members>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceDataDto">
+            <summary>
+            Represents a InvoiceDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceDataDtoMapperDefault">
+            <summary>
+            Represents a InvoiceDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderAttributesDto">
+            <summary>
+            Represents a InvoiceHeaderAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderDto">
+            <summary>
+            Represents a InvoiceHeader Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderInfoDto">
+            <summary>
+            Represents a InvoiceHeaderInfo Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItemsAttributesDto">
+            <summary>
+            Represents a InvoiceItemsAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItemsDto">
+            <summary>
+            Represents a InvoiceItems Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceReturnItemsDto">
+            <summary>
+            Represents a InvoiceReturnItems Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionDataDto">
+            <summary>
+            Represents a InvoiceTransactionDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionDataDtoMapperDefault">
+            <summary>
+            Represents a InvoiceTransactionDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionDto">
+            <summary>
+            Represents a InvoiceTransaction Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceData">
+            <summary>
+            Represents a InvoiceData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeader">
+            <summary>
+            Represents a InvoiceHeader.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderAttributes">
+            <summary>
+            Represents a InvoiceHeaderAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderInfo">
+            <summary>
+            Represents a InvoiceHeaderInfo.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItems">
+            <summary>
+            Represents a InvoiceItems.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItemsAttributes">
+            <summary>
+            Represents a InvoiceItemsAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceReturnItems">
+            <summary>
+            Represents a InvoiceReturnItems.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransaction">
+            <summary>
+            Represents a InvoiceTransaction.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionData">
+            <summary>
+            Represents a InvoiceTransactionData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ChannelOrderData">
+            <summary>
+            Represents a ChannelOrderData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ChannelOrderDataDto">
+            <summary>
+            Represents a ChannelOrderDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ChannelOrderDataDtoMapperDefault">
+            <summary>
+            Represents a ChannelOrderDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderHeaderDto">
+            <summary>
+            Represents a OrderHeader Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderLineDto">
+            <summary>
+            Represents a OrderLine Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderHeader">
+            <summary>
+            Represents a OrderHeader.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderLine">
+            <summary>
+            Represents a OrderLine.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomAttributeProfile">
+            <summary>
+            Represents a CustomAttributeProfile.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomAttributeProfileDto">
+            <summary>
+            Represents a CustomAttributeProfile Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.Customer">
+            <summary>
+            Represents a Customer.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAddress">
+            <summary>
+            Represents a CustomerAddress.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAttributes">
+            <summary>
+            Represents a CustomerAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerData">
+            <summary>
+            Represents a CustomerData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAddressDto">
+            <summary>
+            Represents a CustomerAddress Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAttributesDto">
+            <summary>
+            Represents a CustomerAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerDataDto">
+            <summary>
+            Represents a CustomerDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerDataDtoMapperDefault">
+            <summary>
+            Represents a CustomerDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerDto">
+            <summary>
+            Represents a Customer Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryAttributesDto">
+            <summary>
+            Represents a InventoryAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryDataDto">
+            <summary>
+            Represents a InventoryDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryDataDtoMapperDefault">
+            <summary>
+            Represents a InventoryDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryDto">
+            <summary>
+            Represents a Inventory Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductBasicDto">
+            <summary>
+            Represents a ProductBasic Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExtAttributesDto">
+            <summary>
+            Represents a ProductExtAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExtDto">
+            <summary>
+            Represents a ProductExt Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.Inventory">
+            <summary>
+            Represents a Inventory.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryAttributes">
+            <summary>
+            Represents a InventoryAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryData">
+            <summary>
+            Represents a InventoryData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductBasic">
+            <summary>
+            Represents a ProductBasic.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExt">
+            <summary>
+            Represents a ProductExt.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExtAttributes">
+            <summary>
+            Represents a ProductExtAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPDb.ItemCostClass.CalculateCost">
+            <summary>
+            Calculate UnitCost, and return cost
+            </summary>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPDb.ItemCostClass.CalculateAvgCost(DigitBridge.CommerceCentral.ERPDb.ItemCostClass)">
+            <summary>
+            ReCalculate moving avg_cost
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ERPSetting">
+            <summary>
+            Represents a ERP setting Class.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto">
+            <summary>
+            Represents a OrderShipmentCanceledItem Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentDataDto">
+            <summary>
+            Represents a OrderShipmentDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentDataDtoMapperDefault">
+            <summary>
+            Represents a OrderShipmentDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto">
+            <summary>
+            Represents a OrderShipmentHeader Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto">
+            <summary>
+            Represents a OrderShipmentPackage Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto">
+            <summary>
+            Represents a OrderShipmentShippedItem Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem">
+            <summary>
+            Represents a OrderShipmentCanceledItem.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentData">
+            <summary>
+            Represents a OrderShipmentData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader">
+            <summary>
+            Represents a OrderShipmentHeader.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage">
+            <summary>
+            Represents a OrderShipmentPackage.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem">
+            <summary>
+            Represents a OrderShipmentShippedItem.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderDataDto">
+            <summary>
+            Represents a SalesOrderDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderDataDtoMapperDefault">
+            <summary>
+            Represents a SalesOrderDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributesDto">
+            <summary>
+            Represents a SalesOrderHeaderAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto">
+            <summary>
+            Represents a SalesOrderHeader Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto">
+            <summary>
+            Represents a SalesOrderHeaderInfo Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesDto">
+            <summary>
+            Represents a SalesOrderItemsAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto">
+            <summary>
+            Represents a SalesOrderItems Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderData">
+            <summary>
+            Represents a SalesOrderData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader">
+            <summary>
+            Represents a SalesOrderHeader.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributes">
+            <summary>
+            Represents a SalesOrderHeaderAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo">
+            <summary>
+            Represents a SalesOrderHeaderInfo.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems">
+            <summary>
+            Represents a SalesOrderItems.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributes">
+            <summary>
+            Represents a SalesOrderItemsAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+    </members>
+</doc>
