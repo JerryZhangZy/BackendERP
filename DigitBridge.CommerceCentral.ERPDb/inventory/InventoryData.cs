@@ -24,9 +24,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return dbFactory.Get<Inventory>(rowNum);
         }
 
-        public Inventory GetInventoryBySku(int databaseNum, int masterAccountNum, int profileNum)
+        public Inventory GetInventoryBySku(int databaseNum, int masterAccountNum, int profileNum,string sku)
         {
-            var sql = new Sql($"SELECT Top 1 * FROM Inventory WHERE DatabaseNum={databaseNum} AND MasterAccountNum={masterAccountNum} AND ProfileNum={profileNum}");
+            var sql = new Sql($"SELECT Top 1 * FROM Inventory WHERE Sku='{sku}' AND DatabaseNum={databaseNum} AND MasterAccountNum={masterAccountNum} AND ProfileNum={profileNum}");
             return dbFactory.Db.FirstOrDefault<Inventory>(sql);
         }
 

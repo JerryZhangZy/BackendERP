@@ -1,5 +1,5 @@
 
-    
+
 
 using System;
 using System.Collections.Generic;
@@ -16,42 +16,85 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class InventoryService
     {
-
-        private InventoryLog _inventoryLog;
-
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
         /// </summary>
         public override InventoryService Init()
         {
             base.Init();
-            _inventoryLog = new InventoryLog(dbFactory);
             SetDtoMapper(new InventoryDataDtoMapperDefault());
             SetCalculator(new InventoryServiceCalculatorDefault());
             AddValidator(new InventoryServiceValidatorDefault());
             return this;
         }
 
-        public int DeleteInventoryLogByUuid(string logUuid)
+        public int DeleteInventoryLog(string logUuid)
         {
-            return _inventoryLog.DeleteInventoryLogByLogUuid(logUuid);
+            var svc = new InventoryData(dbFactory);
+            return svc.DeleteInventoryLogByLogUuid(logUuid);
         }
 
-        //public int AddInventoryLogList(List<InventoryLogDto> list)
-        //{
-        //    if (list == null || list.Count() == 0)
-        //        return 0;
-        //    var batchNum = _inventoryLog.GetBatchNum();
-        //    var tlist = new List<InventoryLog>();
-        //    //TODO:Validator验证，Mapper,补充完整Inventory信息进去，调用Dao
+        public List<InventoryLogDto> GetInventoryLogByUuid(string logUuid)
+        {
+            var svc = new InventoryData(dbFactory);
+            var list = svc.GetInventoryLogByLogUuid(logUuid);
+            var data = new InventoryData() { InventoryLog = list };
+            var datadto = ToDto(data);
+            return datadto.InventoryLog.ToList() ;
+        }
+
+        public bool AddInventoryLogList(List<InventoryLogDto> list)
+        {
+            if (list == null || list.Count() == 0)
+                return false;
+            if (list.Exists(r => string.IsNullOrEmpty(r.SKU)))
+                return false;
+            if (list.Exists(r => string.IsNullOrEmpty(r.LogUuid)))
+                return false;
+            var svc = new InventoryData(dbFactory);
+            var batchNum = svc.GetInventoryLogBatchNum();
+
+            list.ForEach(x =>
+            {
+                x.BatchNum = batchNum;
+                var inventory = svc.GetInventoryBySku(x.DatabaseNum.Value, x.MasterAccountNum.Value, x.ProfileNum.Value, x.SKU);
+                if (inventory != null)
+                {
+                    x.ProductUuid = inventory.ProductUuid;
+                    x.InventoryUuid = inventory.InventoryUuid;
+                    x.WarehouseUuid = inventory.WarehouseUuid;
+                    x.BeforeInstock = inventory.Instock;
+                    x.BeforeBaseCost = inventory.BaseCost;
+                    x.BeforeUnitCost = inventory.UnitCost;
+                    x.BeforeAvgCost = inventory.AvgCost;
+                }
+            });
+            var newdto = new InventoryDataDto() { InventoryLog = list };
+
+            var data= FromDto(newdto);
+            return svc.SaveInventoryLog(data.InventoryLog);
+            //TODO:Validator验证，Mapper,补充完整Inventory信息进去，调用Dao
 
 
-        //}
+        }
 
-        //public int UpdateInventoryLogList(List<InventoryLogDto> list)
-        //{
+        public bool UpdateInventoryLogList(List<InventoryLogDto> list)
+        {
+            if (list == null || list.Count() == 0)
+                return false;
+            var newdto = new InventoryDataDto() { InventoryLog = list };
+            var logUuidList = list.Select(r => r.LogUuid).Distinct();
 
-        //}
+            var svc = new InventoryData(dbFactory);
+            var dlist = new List<InventoryLog>();
+            foreach (var uuid in logUuidList)
+            {
+                dlist.AddRange(svc.GetInventoryLogByLogUuid(uuid));
+            }
+            var oridata = new InventoryData() { InventoryLog = dlist };
+            var data = DtoMapper.ReadDto(oridata,newdto);
+            return svc.SaveInventoryLog(data.InventoryLog);
+        }
 
 
         /// <summary>
@@ -59,7 +102,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual bool Add(InventoryDataDto dto)
         {
-            if (dto is null) 
+            if (dto is null)
                 return false;
             // set Add mode and clear data
             Add();

@@ -389,7 +389,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
-
 			#endregion read properties
 
 			return;

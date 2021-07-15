@@ -21,11 +21,106 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
+using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
     public partial class InventoryServiceTests
     {
+
+        [Fact]
+        public void DeleteInventoryLog_Test()
+        {
+            var list= InventoryLogTests.GetFakerData().Generate(10);
+
+            var logUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => {
+                x.LogUuid = logUuid; 
+            });
+
+            var srv = new InventoryService(DataBaseFactory);
+            var inventory = new InventoryData() { InventoryLog = list };;
+
+            var mapper = srv.DtoMapper;
+            var dto = mapper.WriteDto(inventory, null);
+            srv.AddInventoryLogList(dto.InventoryLog.ToList());
+            var rlist = srv.GetInventoryLogByUuid(logUuid);
+            Assert.True(rlist.Count()==10);
+            srv.DeleteInventoryLog(logUuid);
+            rlist = srv.GetInventoryLogByUuid(logUuid);
+            Assert.True(rlist.Count() == 0);
+        }
+
+        [Fact]
+        public void LoadInventoryLog_Test()
+        {
+            var list= InventoryLogTests.GetFakerData().Generate(10);
+
+            var logUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => {
+                x.LogUuid = logUuid; 
+            });
+
+            var srv = new InventoryService(DataBaseFactory);
+            var inventory = new InventoryData() { InventoryLog = list };;
+
+            var mapper = srv.DtoMapper;
+            var dto = mapper.WriteDto(inventory, null);
+            srv.AddInventoryLogList(dto.InventoryLog.ToList());
+            var rlist = srv.GetInventoryLogByUuid(logUuid);
+            Assert.True(rlist.Count()==10);
+        }
+
+        [Fact]
+        public void UpdateInventoryLog_Test()
+        {
+            var list= InventoryLogTests.GetFakerData().Generate(10);
+
+            var logUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => {
+                x.LogUuid = logUuid; 
+            });
+
+            var srv = new InventoryService(DataBaseFactory);
+            var inventory = new InventoryData() { InventoryLog = list };;
+
+            var mapper = srv.DtoMapper;
+            var dto = mapper.WriteDto(inventory, null);
+            srv.AddInventoryLogList(dto.InventoryLog.ToList());
+            var rlist = srv.GetInventoryLogByUuid(logUuid);
+            Assert.True(rlist.Count()==10);
+            var tag = Guid.NewGuid().ToString("N");
+            rlist.ForEach(x => x.SKU = tag);
+            srv.UpdateInventoryLogList(rlist);
+
+            var rlist2 = srv.GetInventoryLogByUuid(logUuid);
+            Assert.True(rlist2.Count()==10);
+        }
+
+        [Fact]
+        public void AddInventoryLog_Test()
+        {
+            var list= InventoryLogTests.GetFakerData().Generate(10);
+
+            var logUuid = Guid.NewGuid().ToString();
+
+            var svc = new InventoryData(DataBaseFactory);
+            list.ForEach(x => {
+                x.LogUuid = logUuid; 
+            });
+
+            var srv = new InventoryService(DataBaseFactory);
+            var inventory = new InventoryData() { InventoryLog = list };;
+
+            var mapper = srv.DtoMapper;
+            var dto = mapper.WriteDto(inventory, null);
+            srv.AddInventoryLogList(dto.InventoryLog.ToList());
+            var rlist = svc.GetInventoryLogByLogUuid(logUuid);
+            Assert.True(rlist.Count()==10);
+        }
 
         [Fact()]
 		//[Fact(Skip = SkipReason)]
