@@ -3,7 +3,7 @@
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
     [SalesOrderItemsUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Order Item Line
 
-    [OrderUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Order
+    [SalesOrderUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Order
     [Seq] INT NOT NULL DEFAULT 0, --Order Item Line sort sequence
     [OrderItemType] INT NOT NULL DEFAULT 0, --Order item type
     [SalesOrderItemstatus] INT NOT NULL DEFAULT 0, --Order item status
@@ -83,7 +83,7 @@ GO
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderItems]') AND name = N'FK_SalesOrderItems_OrderId_Seq')
 CREATE NONCLUSTERED INDEX [FK_SalesOrderItems_OrderUuid_Seq] ON [dbo].[SalesOrderItems]
 (
-	[OrderUuid] ASC,
+	[SalesOrderUuid] ASC,
 	[Seq] ASC
 ) 
 GO
@@ -98,7 +98,7 @@ GO
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderItems]') AND name = N'IX_SalesOrderItems_OrderId')
 CREATE NONCLUSTERED INDEX [IX_SalesOrderItems_OrderUuid] ON [dbo].[SalesOrderItems]
 (
-	[OrderUuid] ASC
+	[SalesOrderUuid] ASC
 ) 
 GO
 
