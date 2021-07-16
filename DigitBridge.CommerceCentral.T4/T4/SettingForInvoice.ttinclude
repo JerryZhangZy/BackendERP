@@ -13,11 +13,11 @@
     // Tables relatonship
     var structureName = $"{processName}Data";
     var StructureClass = new StructureInfo(structureName,
-            new StructureTable() { Name = "InvoiceHeader", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "InvoiceHeaderInfo", ParentName = "InvoiceHeader", OneToOne = true, LoadByColumn = "InvoiceId" },
-            new StructureTable() { Name = "InvoiceHeaderAttributes", ParentName = "InvoiceHeader", OneToOne = true, LoadByColumn = "InvoiceId" },
-            new StructureTable() { Name = "InvoiceItems", ParentName = "InvoiceHeader", DetailTable = true, OneToOne = false, LoadByColumn = "InvoiceId", oneToOneChildrenName = "InvoiceItemsAttributes" },
-            new StructureTable() { Name = "InvoiceItemsAttributes", ParentName = "InvoiceItems", OneToOne = false, LoadByColumn = "InvoiceId" }
+            new StructureTable() { Name = "InvoiceHeader", AlliesName = "ins", MainTable = true, OneToOne = true },
+            new StructureTable() { Name = "InvoiceHeaderInfo", AlliesName = "insi", ParentName = "InvoiceHeader", OneToOne = true, LoadByColumn = "InvoiceUuid" },
+            new StructureTable() { Name = "InvoiceHeaderAttributes", AlliesName = "insa", ParentName = "InvoiceHeader", OneToOne = true, LoadByColumn = "InvoiceUuid" },
+            new StructureTable() { Name = "InvoiceItems", AlliesName = "insl", ParentName = "InvoiceHeader", DetailTable = true, OneToOne = false, LoadByColumn = "InvoiceUuid", oneToOneChildrenName = "InvoiceItemsAttributes" },
+            new StructureTable() { Name = "InvoiceItemsAttributes", AlliesName = "insla", ParentName = "InvoiceItems", OneToOne = false, LoadByColumn = "InvoiceUuid" }
         );
 
 
@@ -44,6 +44,7 @@
     // generate repository class for each table
     var generateModel = true;
     var generateDto = true;
+    var generateModelHelper = true;
 
     // generate tester class for each table repository
     var generateTester = true;
@@ -60,6 +61,7 @@
     // generate service class
     var generateService = true;
     var ServiceName = $"{processName}Service";
+    var ServiceHelperName = $"{processName}Helper";
 
     var generateServiceTester = true;
 

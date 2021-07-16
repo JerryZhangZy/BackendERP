@@ -3,11 +3,17 @@ using System;
 using System.Linq;
 using System.Configuration;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
     public class DataBaseFactory : IDataBaseFactory
     {
+        public static readonly DateTime _SqlMinDateTime = new DateTime(1753, 1, 1);
+        public static readonly int DefaultTimeout = 180;
+        public static readonly string TimestampFormat = "yyyy-MM-dd HH:mm:ss";
+        public static readonly string DateFormat = "yyyy-MM-dd";
+
         public static IDataBaseFactory CreateDefault(string connectionString = null)
         {
             return new DataBaseFactory(connectionString ?? ConfigurationManager.AppSettings["dsn"]);
@@ -17,12 +23,23 @@ namespace DigitBridge.CommerceCentral.YoPoco
         private IList<IDatabase> DbList { get; set; } = new List<IDatabase>();
         private readonly string _ConnectionString;
         public string ConnectionString => _ConnectionString ?? ConfigurationManager.AppSettings["dsn"];
+
+        private readonly SqlConnection _Connection;
+        public SqlConnection Connection => _Connection;
+
         public IDatabase Db => GetDb();
 
         public DataBaseFactory() {}
         public DataBaseFactory(string connectionString)
         {
             _ConnectionString = connectionString;
+        }
+        public DataBaseFactory(MsSqlUniversalDBConfig config)
+        {
+            _Connection = new SqlConnection(config.DbConnectionString);
+            if (config.UseAzureManagedIdentity)
+                _Connection.AccessToken = config.AccessToken;
+            _ConnectionString = config.DbConnectionString;
         }
 
         #region Create and Get Database

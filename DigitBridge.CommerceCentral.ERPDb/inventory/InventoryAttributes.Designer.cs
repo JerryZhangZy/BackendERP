@@ -18,6 +18,7 @@ using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -53,6 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Fields - Generated 
 
         #region Properties - Generated 
+		[IgnoreCompare] 
 		public override string UniqueId => InventoryUuid; 
 		public void CheckUniqueId() 
 		{
@@ -168,19 +170,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return;
         }
 
-		public IList<InventoryAttributes> FindByProductUuid(string productUuid)
+		public static IList<InventoryAttributes> FindByProductUuid(IDataBaseFactory dbFactory, string productUuid)
 		{
 			return dbFactory.Find<InventoryAttributes>("WHERE ProductUuid = @0 ", productUuid).ToList();
 		}
-		public long CountByProductUuid(string productUuid)
+		public static long CountByProductUuid(IDataBaseFactory dbFactory, string productUuid)
 		{
 			return dbFactory.Count<InventoryAttributes>("WHERE ProductUuid = @0 ", productUuid);
 		}
-		public async Task<IList<InventoryAttributes>> FindByAsyncProductUuid(string productUuid)
+		public static async Task<IList<InventoryAttributes>> FindByAsyncProductUuid(IDataBaseFactory dbFactory, string productUuid)
 		{
 			return (await dbFactory.FindAsync<InventoryAttributes>("WHERE ProductUuid = @0 ", productUuid)).ToList();
 		}
-		public async Task<long> CountByAsyncProductUuid(string productUuid)
+		public static async Task<long> CountByAsyncProductUuid(IDataBaseFactory dbFactory, string productUuid)
 		{
 			return await dbFactory.CountAsync<InventoryAttributes>("WHERE ProductUuid = @0 ", productUuid);
 		}

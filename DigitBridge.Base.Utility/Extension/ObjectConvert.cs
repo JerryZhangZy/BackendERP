@@ -472,8 +472,46 @@ namespace DigitBridge.Base.Utility
         /// <returns></returns>
         public static TimeSpan MaxValueSql(this TimeSpan netDateTime) => ObjectConvert.MaxTime;
 
+        public static string DbToString(this object obj) => (obj == null || obj == DBNull.Value) ? string.Empty : obj.ToString().TrimEnd();
+        public static decimal ToDecimal(this object obj) => obj.DbToString().ToDecimal();
+
+        public static int ToInt(this object obj) => obj.DbToString().ToInt();
+        public static long ToLong(this object obj) => obj.DbToString().ToLong();
+
+        public static short ToShort(this object obj) => obj.DbToString().ToShort();
+        public static short ToShort(this short? s) => (s == null) ? (short)0 : (short)s;
+        public static short ToShort(this string s) =>
+            string.IsNullOrWhiteSpace(s)
+                ? (short)0
+                : short.TryParse(s, out short r)
+                    ? r
+                    : (short)0;
+
+        public static byte ToByte(this object obj) => obj.DbToString().ToByte();
+
+        public static bool ToBool(this object obj) => obj.DbToString().ToBool();
+        public static bool ToBool(this string s) =>
+            string.IsNullOrWhiteSpace(s)
+                ? false
+                : (s.ToInt() > 0)
+                    ? true
+                    : bool.TryParse(s, out bool r)
+                        ? r
+                        : false;
+
+        /// <summary>
+        /// Convert nullable value to its default, non-nullable value when its nullable value is null. 
+        /// For example: default(int?) is null, this function will return default(int) is 0;
+        /// </summary>
+        /// <returns></returns>
+        public static T NullableToValue<T>(this T? value) where T : struct
+        {
+            return value ?? default(T);
+        }
+
 
         public static DateTime ToDateTime(this DateTime? input) => (input is null) ? ObjectConvert.MinDatatime : (DateTime)input;
+        public static TimeSpan ToTimeSpan(this object input) => (input is null) ? ObjectConvert.MinTime : ((DateTime)input).TimeOfDay;
         public static TimeSpan ToTimeSpan(this DateTime? input) => (input is null) ? ObjectConvert.MinTime : ((DateTime)input).TimeOfDay;
         public static TimeSpan ToTimeSpan(this TimeSpan? input) => (input is null) ? ObjectConvert.MinTime : (TimeSpan)input;
         public static DateTime ToDateTime(this TimeSpan? input) => (input is null) ? DateTime.Today : DateTime.Today + (TimeSpan)input;
@@ -486,7 +524,6 @@ namespace DigitBridge.Base.Utility
                 : int.TryParse(input, out int r)
                     ? r
                     : (int)0;
-
 
         public static long ToLong(this long? input) => (input is null) ? default(long) : (long)input;
         public static long ToLong(this string input) =>
@@ -522,12 +559,6 @@ namespace DigitBridge.Base.Utility
                     : (byte)0;
 
         public static bool ToBool(this bool? input) => (input is null) ? false : (bool)input;
-        public static bool ToBool(this string input) =>
-            string.IsNullOrWhiteSpace(input)
-                ? false
-                : bool.TryParse(input, out bool r)
-                    ? r
-                    : false;
 
         public static bool IsZero(this decimal input) => Math.Abs(input) < (decimal)0.000001;
         public static bool IsZero(this decimal? input) => (input is null) ? true : input.ToDecimal().IsZero();

@@ -23,6 +23,22 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DataAccess.cs</LastGenOutput>
     </None>
+    <None Update="T4\GenerateRepositoryHelper.ttinclude">
+      <LastGenOutput>GenerateRepositoryHelper.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateRepositoryHelperTest.ttinclude">
+      <LastGenOutput>GenerateRepositoryHelperTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServiceHelper.ttinclude">
+      <LastGenOutput>GenerateServiceHelper.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServiceHelperTest.ttinclude">
+      <LastGenOutput>GenerateServiceHelperTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForInventory.ttinclude">
       <LastGenOutput>SettingForInventory.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -40,7 +56,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForCustomer.ttinclude">
-      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <LastGenOutput>SettingForCustomer.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForShipment.ttinclude">
@@ -48,11 +64,11 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForInvoice.ttinclude">
-      <LastGenOutput>SettingForInventory.cs</LastGenOutput>
+      <LastGenOutput>SettingForInvoice.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepositoryDto.ttinclude">
-      <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
+      <LastGenOutput>GenerateTableSQL.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateServiceValidator.ttinclude">
@@ -180,7 +196,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepositoryTest.ttinclude">
-      <LastGenOutput>GenerateRepositoryTest.cs</LastGenOutput>
+      <LastGenOutput>GenerateRepositoryHelperTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
   </ItemGroup>
@@ -199,50 +215,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DataAccess.tt</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateRepository.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateRepositoryDto.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateStructure.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\ReadDtoGrandChildren.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ReadDtoGrandChildren.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\ReadDtoGrandChildrenMethod.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ReadDtoGrandChildrenMethod.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForChannelOrder.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForChannelOrder.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForShipment.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForShipment.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\WriteDtoGrandChildrenMethod.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>WriteDtoGrandChildrenMethod.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 

@@ -18,6 +18,7 @@ using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -227,6 +228,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(SalesOrderItemsUuid)) 
 				SalesOrderItemsUuid = Guid.NewGuid().ToString(); 
 		}
+		[IgnoreCompare] 
 		public override bool IsEmpty => ( string.IsNullOrWhiteSpace(SKU) );
         public virtual string SalesOrderItemsUuid
         {

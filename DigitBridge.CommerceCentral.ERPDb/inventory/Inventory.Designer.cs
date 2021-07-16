@@ -23,6 +23,7 @@ using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -259,6 +260,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Fields - Generated 
 
         #region Properties - Generated 
+		[IgnoreCompare] 
 		public override string UniqueId => InventoryUuid; 
 		public void CheckUniqueId() 
 		{
@@ -1431,35 +1433,35 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return;
         }
 
-		public IList<Inventory> FindByProductUuid(string productUuid)
+		public static IList<Inventory> FindByProductUuid(IDataBaseFactory dbFactory, string productUuid)
 		{
 			return dbFactory.Find<Inventory>("WHERE ProductUuid = @0 ORDER BY WarehouseUuid ", productUuid).ToList();
 		}
-		public long CountByProductUuid(string productUuid)
+		public static long CountByProductUuid(IDataBaseFactory dbFactory, string productUuid)
 		{
 			return dbFactory.Count<Inventory>("WHERE ProductUuid = @0 ", productUuid);
 		}
-		public async Task<IList<Inventory>> FindByAsyncProductUuid(string productUuid)
+		public static async Task<IList<Inventory>> FindByAsyncProductUuid(IDataBaseFactory dbFactory, string productUuid)
 		{
 			return (await dbFactory.FindAsync<Inventory>("WHERE ProductUuid = @0 ORDER BY WarehouseUuid ", productUuid)).ToList();
 		}
-		public async Task<long> CountByAsyncProductUuid(string productUuid)
+		public static async Task<long> CountByAsyncProductUuid(IDataBaseFactory dbFactory, string productUuid)
 		{
 			return await dbFactory.CountAsync<Inventory>("WHERE ProductUuid = @0 ", productUuid);
 		}
-		public IList<Inventory> FindByWarehouseUuid(string warehouseUuid)
+		public static IList<Inventory> FindByWarehouseUuid(IDataBaseFactory dbFactory, string warehouseUuid)
 		{
 			return dbFactory.Find<Inventory>("WHERE WarehouseUuid = @0 ", warehouseUuid).ToList();
 		}
-		public long CountByWarehouseUuid(string warehouseUuid)
+		public static long CountByWarehouseUuid(IDataBaseFactory dbFactory, string warehouseUuid)
 		{
 			return dbFactory.Count<Inventory>("WHERE WarehouseUuid = @0 ", warehouseUuid);
 		}
-		public async Task<IList<Inventory>> FindByAsyncWarehouseUuid(string warehouseUuid)
+		public static async Task<IList<Inventory>> FindByAsyncWarehouseUuid(IDataBaseFactory dbFactory, string warehouseUuid)
 		{
 			return (await dbFactory.FindAsync<Inventory>("WHERE WarehouseUuid = @0 ", warehouseUuid)).ToList();
 		}
-		public async Task<long> CountByAsyncWarehouseUuid(string warehouseUuid)
+		public static async Task<long> CountByAsyncWarehouseUuid(IDataBaseFactory dbFactory, string warehouseUuid)
 		{
 			return await dbFactory.CountAsync<Inventory>("WHERE WarehouseUuid = @0 ", warehouseUuid);
 		}

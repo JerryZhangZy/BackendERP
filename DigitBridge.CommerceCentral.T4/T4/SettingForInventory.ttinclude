@@ -14,11 +14,11 @@
     // Tables relatonship
     var structureName = $"{processName}Data";
     var StructureClass = new StructureInfo(structureName,
-            new StructureTable() { Name = "ProductBasic", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "ProductExt", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
-            new StructureTable() { Name = "ProductExtAttributes", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
-            new StructureTable() { Name = "Inventory", ParentName = "ProductBasic", DetailTable = true, OneToOne = false, LoadByColumn = "ProductUuid", oneToOneChildrenName = "InventoryAttributes" },
-            new StructureTable() { Name = "InventoryAttributes", ParentName = "Inventory", OneToOne = false, LoadByColumn = "ProductUuid" }
+            new StructureTable() { Name = "ProductBasic", AlliesName = "prd", MainTable = true, OneToOne = true },
+            new StructureTable() { Name = "ProductExt", AlliesName = "prdx", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
+            new StructureTable() { Name = "ProductExtAttributes", AlliesName = "prda", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
+            new StructureTable() { Name = "Inventory", AlliesName = "inv", ParentName = "ProductBasic", DetailTable = true, OneToOne = false, LoadByColumn = "ProductUuid", oneToOneChildrenName = "InventoryAttributes" },
+            new StructureTable() { Name = "InventoryAttributes", AlliesName = "inva", ParentName = "Inventory", OneToOne = false, LoadByColumn = "ProductUuid" }
         );
 
 
@@ -45,6 +45,7 @@
     // generate repository class for each table
     var generateModel = true;
     var generateDto = true;
+    var generateModelHelper = true;
 
     // generate tester class for each table repository
     var generateTester = true;
@@ -61,6 +62,7 @@
     // generate service class
     var generateService = true;
     var ServiceName = $"{processName}Service";
+    var ServiceHelperName = $"{processName}Helper";
 
     var generateServiceTester = true;
 

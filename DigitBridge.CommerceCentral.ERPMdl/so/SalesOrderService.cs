@@ -1,5 +1,5 @@
 
-
+    
 
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual bool Add(SalesOrderDataDto dto)
         {
-            if (dto is null)
+            if (dto is null) 
                 return false;
             // set Add mode and clear data
             Add();
