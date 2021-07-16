@@ -7,6 +7,10 @@
     <FileVersion>1.0.2.1</FileVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\work\projects\hurraymart\centralerp-new\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="DigitBridge.Orchestration.DataType" Version="1.0.0.4" />
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.1" />

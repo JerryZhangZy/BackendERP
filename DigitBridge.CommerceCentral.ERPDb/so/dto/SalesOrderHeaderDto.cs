@@ -25,12 +25,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// </summary>
     public class SalesOrderHeaderDto
     {
-        /// <summary>
-        /// Record Unique Number
-        /// Title: Record Number
-        /// Display: false.
-        /// Editable: false.
-        /// </summary>
         public long? RowNum { get; set; }
         public string UniqueId { get; set; }
         public DateTime? EnterDateUtc { get; set; }
@@ -50,10 +44,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasProfileNum => ProfileNum != null;
 
-        [StringLength(50, ErrorMessage = "The OrderUuid value cannot exceed 50 characters. ")]
-        public string OrderUuid { get; set; }
+        [StringLength(50, ErrorMessage = "The SalesOrderUuid value cannot exceed 50 characters. ")]
+        public string SalesOrderUuid { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
-        public bool HasOrderUuid => OrderUuid != null;
+        public bool HasSalesOrderUuid => SalesOrderUuid != null;
 
         [StringLength(50, ErrorMessage = "The OrderNumber value cannot exceed 50 characters. ")]
         public string OrderNumber { get; set; }

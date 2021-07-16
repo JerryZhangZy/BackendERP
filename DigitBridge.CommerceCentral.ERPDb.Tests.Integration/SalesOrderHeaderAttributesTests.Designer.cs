@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
             #region faker data rules
             return new Faker<SalesOrderHeaderAttributes>()
-					.RuleFor(u => u.OrderUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.SalesOrderUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.Fields, (f, u) => u.Fields.SetValues(f.Random.JObject()))
 					;
             #endregion faker data rules
@@ -143,7 +143,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataUpdate = DataBaseFactory.GetById<SalesOrderHeaderAttributes>(dataNew.UniqueId);
 			var dataChanged = FakerData.Generate();
-            dataUpdate?.CopyFrom(dataChanged, new[] {"OrderUuid"});
+            dataUpdate?.CopyFrom(dataChanged, new[] {"SalesOrderUuid"});
 
             DataBaseFactory.Begin();
             dataUpdate.Save();
@@ -267,7 +267,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataUpdate = await DataBaseFactory.GetByIdAsync<SalesOrderHeaderAttributes>(dataNew.UniqueId);
             var dataChanged = FakerData.Generate();
-            dataUpdate?.CopyFrom(dataChanged, new[] { "OrderUuid" });
+            dataUpdate?.CopyFrom(dataChanged, new[] { "SalesOrderUuid" });
 
             DataBaseFactory.Begin();
             await dataUpdate.SaveAsync();

@@ -5,7 +5,7 @@
 	[MasterAccountNum] INT NOT NULL,
 	[ProfileNum] INT NOT NULL,
 
-    [OrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Order
+    [SalesOrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Order
 	[OrderNumber] VARCHAR(50) NOT NULL DEFAULT '', --Unique in this database, ProfileNum + OrderNumber is DigitBridgeOrderNumber, which is global unique
 
     [OrderType] INT NOT NULL DEFAULT 0, --Order type
@@ -60,7 +60,7 @@ GO
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'UK_SalesOrderHeader_OrderId')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_SalesOrderHeader] ON [dbo].[SalesOrderHeader]
 (
-	[OrderUuid] ASC
+	[SalesOrderUuid] ASC
 ) 
 GO
 

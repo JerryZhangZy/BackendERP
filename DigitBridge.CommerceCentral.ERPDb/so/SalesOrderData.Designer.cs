@@ -148,9 +148,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        public override bool GetById(string OrderUuid)
+        public override bool GetById(string SalesOrderUuid)
         {
-			var obj = GetSalesOrderHeaderByOrderUuid(OrderUuid); 
+			var obj = GetSalesOrderHeaderBySalesOrderUuid(SalesOrderUuid); 
 			if (obj is null) return false; 
 			SalesOrderHeader = obj; 
 			GetOthers(); 
@@ -162,16 +162,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         protected virtual void GetOthers()
         {
             
-			if (string.IsNullOrEmpty(SalesOrderHeader.OrderUuid)) return; 
-			SalesOrderHeaderInfo = GetSalesOrderHeaderInfoByOrderUuid(SalesOrderHeader.OrderUuid); 
-			SalesOrderHeaderAttributes = GetSalesOrderHeaderAttributesByOrderUuid(SalesOrderHeader.OrderUuid); 
-			SalesOrderItems = GetSalesOrderItemsByOrderUuid(SalesOrderHeader.OrderUuid); 
-			SalesOrderItemsAttributes = GetSalesOrderItemsAttributesByOrderUuid(SalesOrderHeader.OrderUuid); 
+			if (string.IsNullOrEmpty(SalesOrderHeader.SalesOrderUuid)) return; 
+			SalesOrderHeaderInfo = GetSalesOrderHeaderInfoBySalesOrderUuid(SalesOrderHeader.SalesOrderUuid); 
+			SalesOrderHeaderAttributes = GetSalesOrderHeaderAttributesBySalesOrderUuid(SalesOrderHeader.SalesOrderUuid); 
+			SalesOrderItems = GetSalesOrderItemsBySalesOrderUuid(SalesOrderHeader.SalesOrderUuid); 
+			SalesOrderItemsAttributes = GetSalesOrderItemsAttributesBySalesOrderUuid(SalesOrderHeader.SalesOrderUuid); 
         }
 
         public override bool Save()
         {
-			if (SalesOrderHeader is null || string.IsNullOrEmpty(SalesOrderHeader.OrderUuid)) return false; 
+			if (SalesOrderHeader is null || string.IsNullOrEmpty(SalesOrderHeader.SalesOrderUuid)) return false; 
 			CheckIntegrity();
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
@@ -213,7 +213,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override bool Delete()
         {
-			if (SalesOrderHeader is null || string.IsNullOrEmpty(SalesOrderHeader.OrderUuid)) return false; 
+			if (SalesOrderHeader is null || string.IsNullOrEmpty(SalesOrderHeader.SalesOrderUuid)) return false; 
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
@@ -253,9 +253,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        public override async Task<bool> GetByIdAsync(string OrderUuid)
+        public override async Task<bool> GetByIdAsync(string SalesOrderUuid)
         {
-			var obj = await GetSalesOrderHeaderByOrderUuidAsync(OrderUuid); 
+			var obj = await GetSalesOrderHeaderBySalesOrderUuidAsync(SalesOrderUuid); 
 			if (obj is null) return false; 
 			SalesOrderHeader = obj; 
 			await GetOthersAsync(); 
@@ -267,16 +267,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         protected virtual async Task GetOthersAsync()
         {
             
-			if (string.IsNullOrEmpty(SalesOrderHeader.OrderUuid)) return; 
-			SalesOrderHeaderInfo = await GetSalesOrderHeaderInfoByOrderUuidAsync(SalesOrderHeader.OrderUuid); 
-			SalesOrderHeaderAttributes = await GetSalesOrderHeaderAttributesByOrderUuidAsync(SalesOrderHeader.OrderUuid); 
-			SalesOrderItems = await GetSalesOrderItemsByOrderUuidAsync(SalesOrderHeader.OrderUuid); 
-			SalesOrderItemsAttributes = await GetSalesOrderItemsAttributesByOrderUuidAsync(SalesOrderHeader.OrderUuid); 
+			if (string.IsNullOrEmpty(SalesOrderHeader.SalesOrderUuid)) return; 
+			SalesOrderHeaderInfo = await GetSalesOrderHeaderInfoBySalesOrderUuidAsync(SalesOrderHeader.SalesOrderUuid); 
+			SalesOrderHeaderAttributes = await GetSalesOrderHeaderAttributesBySalesOrderUuidAsync(SalesOrderHeader.SalesOrderUuid); 
+			SalesOrderItems = await GetSalesOrderItemsBySalesOrderUuidAsync(SalesOrderHeader.SalesOrderUuid); 
+			SalesOrderItemsAttributes = await GetSalesOrderItemsAttributesBySalesOrderUuidAsync(SalesOrderHeader.SalesOrderUuid); 
         }
 
         public override async Task<bool> SaveAsync()
         {
-			if (SalesOrderHeader is null || string.IsNullOrEmpty(SalesOrderHeader.OrderUuid)) return false; 
+			if (SalesOrderHeader is null || string.IsNullOrEmpty(SalesOrderHeader.SalesOrderUuid)) return false; 
 			CheckIntegrity(); 
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
@@ -317,7 +317,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override async Task<bool> DeleteAsync()
         {
-			if (SalesOrderHeader is null || string.IsNullOrEmpty(SalesOrderHeader.OrderUuid)) return false; 
+			if (SalesOrderHeader is null || string.IsNullOrEmpty(SalesOrderHeader.SalesOrderUuid)) return false; 
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
@@ -361,15 +361,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         public virtual void CopySalesOrderHeaderFrom(SalesOrderData data) => 
-            SalesOrderHeader?.CopyFrom(data.SalesOrderHeader, new string[] {"OrderUuid"});
+            SalesOrderHeader?.CopyFrom(data.SalesOrderHeader, new string[] {"SalesOrderUuid"});
 
         public virtual SalesOrderHeader NewSalesOrderHeader() => new SalesOrderHeader(dbFactory).SetParent(this);
 
         public virtual SalesOrderHeader GetSalesOrderHeader(long RowNum) =>
             (RowNum <= 0) ? null : dbFactory.Get<SalesOrderHeader>(RowNum);
 
-        public virtual SalesOrderHeader GetSalesOrderHeaderByOrderUuid(string OrderUuid) =>
-            (string.IsNullOrEmpty(OrderUuid)) ? null : dbFactory.GetById<SalesOrderHeader>(OrderUuid);
+        public virtual SalesOrderHeader GetSalesOrderHeaderBySalesOrderUuid(string SalesOrderUuid) =>
+            (string.IsNullOrEmpty(SalesOrderUuid)) ? null : dbFactory.GetById<SalesOrderHeader>(SalesOrderUuid);
 
         public virtual bool SaveSalesOrderHeader(SalesOrderHeader data) =>
             (data is null) ? false : data.Save();
@@ -380,8 +380,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual async Task<SalesOrderHeader> GetSalesOrderHeaderAsync(long RowNum) =>
             (RowNum <= 0) ? null : await dbFactory.GetAsync<SalesOrderHeader>(RowNum);
 
-        public virtual async Task<SalesOrderHeader> GetSalesOrderHeaderByOrderUuidAsync(string OrderUuid) =>
-            (string.IsNullOrEmpty(OrderUuid)) ? null : await dbFactory.GetByIdAsync<SalesOrderHeader>(OrderUuid);
+        public virtual async Task<SalesOrderHeader> GetSalesOrderHeaderBySalesOrderUuidAsync(string SalesOrderUuid) =>
+            (string.IsNullOrEmpty(SalesOrderUuid)) ? null : await dbFactory.GetByIdAsync<SalesOrderHeader>(SalesOrderUuid);
 
         public virtual async Task<bool> SaveSalesOrderHeaderAsync(SalesOrderHeader data) =>
             (data is null) ? false : await data.SaveAsync();
@@ -407,15 +407,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         public virtual void CopySalesOrderHeaderInfoFrom(SalesOrderData data) => 
-            SalesOrderHeaderInfo?.CopyFrom(data.SalesOrderHeaderInfo, new string[] {"OrderUuid"});
+            SalesOrderHeaderInfo?.CopyFrom(data.SalesOrderHeaderInfo, new string[] {"SalesOrderUuid"});
 
         public virtual SalesOrderHeaderInfo NewSalesOrderHeaderInfo() => new SalesOrderHeaderInfo(dbFactory).SetParent(this);
 
         public virtual SalesOrderHeaderInfo GetSalesOrderHeaderInfo(long RowNum) =>
             (RowNum <= 0) ? null : dbFactory.Get<SalesOrderHeaderInfo>(RowNum);
 
-        public virtual SalesOrderHeaderInfo GetSalesOrderHeaderInfoByOrderUuid(string OrderUuid) =>
-            (string.IsNullOrEmpty(OrderUuid)) ? null : dbFactory.GetById<SalesOrderHeaderInfo>(OrderUuid);
+        public virtual SalesOrderHeaderInfo GetSalesOrderHeaderInfoBySalesOrderUuid(string SalesOrderUuid) =>
+            (string.IsNullOrEmpty(SalesOrderUuid)) ? null : dbFactory.GetById<SalesOrderHeaderInfo>(SalesOrderUuid);
 
         public virtual bool SaveSalesOrderHeaderInfo(SalesOrderHeaderInfo data) =>
             (data is null) ? false : data.Save();
@@ -426,8 +426,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual async Task<SalesOrderHeaderInfo> GetSalesOrderHeaderInfoAsync(long RowNum) =>
             (RowNum <= 0) ? null : await dbFactory.GetAsync<SalesOrderHeaderInfo>(RowNum);
 
-        public virtual async Task<SalesOrderHeaderInfo> GetSalesOrderHeaderInfoByOrderUuidAsync(string OrderUuid) =>
-            (string.IsNullOrEmpty(OrderUuid)) ? null : await dbFactory.GetByIdAsync<SalesOrderHeaderInfo>(OrderUuid);
+        public virtual async Task<SalesOrderHeaderInfo> GetSalesOrderHeaderInfoBySalesOrderUuidAsync(string SalesOrderUuid) =>
+            (string.IsNullOrEmpty(SalesOrderUuid)) ? null : await dbFactory.GetByIdAsync<SalesOrderHeaderInfo>(SalesOrderUuid);
 
         public virtual async Task<bool> SaveSalesOrderHeaderInfoAsync(SalesOrderHeaderInfo data) =>
             (data is null) ? false : await data.SaveAsync();
@@ -440,8 +440,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (SalesOrderHeaderInfo is null || SalesOrderHeader is null) 
                 return SalesOrderHeaderInfo;
             SalesOrderHeaderInfo.SetParent(this);
-            if (SalesOrderHeaderInfo.OrderUuid != SalesOrderHeader.OrderUuid)
-                SalesOrderHeaderInfo.OrderUuid = SalesOrderHeader.OrderUuid;
+            if (SalesOrderHeaderInfo.SalesOrderUuid != SalesOrderHeader.SalesOrderUuid)
+                SalesOrderHeaderInfo.SalesOrderUuid = SalesOrderHeader.SalesOrderUuid;
             return SalesOrderHeaderInfo;
         }
 
@@ -462,15 +462,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         public virtual void CopySalesOrderHeaderAttributesFrom(SalesOrderData data) => 
-            SalesOrderHeaderAttributes?.CopyFrom(data.SalesOrderHeaderAttributes, new string[] {"OrderUuid"});
+            SalesOrderHeaderAttributes?.CopyFrom(data.SalesOrderHeaderAttributes, new string[] {"SalesOrderUuid"});
 
         public virtual SalesOrderHeaderAttributes NewSalesOrderHeaderAttributes() => new SalesOrderHeaderAttributes(dbFactory).SetParent(this);
 
         public virtual SalesOrderHeaderAttributes GetSalesOrderHeaderAttributes(long RowNum) =>
             (RowNum <= 0) ? null : dbFactory.Get<SalesOrderHeaderAttributes>(RowNum);
 
-        public virtual SalesOrderHeaderAttributes GetSalesOrderHeaderAttributesByOrderUuid(string OrderUuid) =>
-            (string.IsNullOrEmpty(OrderUuid)) ? null : dbFactory.GetById<SalesOrderHeaderAttributes>(OrderUuid);
+        public virtual SalesOrderHeaderAttributes GetSalesOrderHeaderAttributesBySalesOrderUuid(string SalesOrderUuid) =>
+            (string.IsNullOrEmpty(SalesOrderUuid)) ? null : dbFactory.GetById<SalesOrderHeaderAttributes>(SalesOrderUuid);
 
         public virtual bool SaveSalesOrderHeaderAttributes(SalesOrderHeaderAttributes data) =>
             (data is null) ? false : data.Save();
@@ -481,8 +481,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual async Task<SalesOrderHeaderAttributes> GetSalesOrderHeaderAttributesAsync(long RowNum) =>
             (RowNum <= 0) ? null : await dbFactory.GetAsync<SalesOrderHeaderAttributes>(RowNum);
 
-        public virtual async Task<SalesOrderHeaderAttributes> GetSalesOrderHeaderAttributesByOrderUuidAsync(string OrderUuid) =>
-            (string.IsNullOrEmpty(OrderUuid)) ? null : await dbFactory.GetByIdAsync<SalesOrderHeaderAttributes>(OrderUuid);
+        public virtual async Task<SalesOrderHeaderAttributes> GetSalesOrderHeaderAttributesBySalesOrderUuidAsync(string SalesOrderUuid) =>
+            (string.IsNullOrEmpty(SalesOrderUuid)) ? null : await dbFactory.GetByIdAsync<SalesOrderHeaderAttributes>(SalesOrderUuid);
 
         public virtual async Task<bool> SaveSalesOrderHeaderAttributesAsync(SalesOrderHeaderAttributes data) =>
             (data is null) ? false : await data.SaveAsync();
@@ -495,8 +495,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (SalesOrderHeaderAttributes is null || SalesOrderHeader is null) 
                 return SalesOrderHeaderAttributes;
             SalesOrderHeaderAttributes.SetParent(this);
-            if (SalesOrderHeaderAttributes.OrderUuid != SalesOrderHeader.OrderUuid)
-                SalesOrderHeaderAttributes.OrderUuid = SalesOrderHeader.OrderUuid;
+            if (SalesOrderHeaderAttributes.SalesOrderUuid != SalesOrderHeader.SalesOrderUuid)
+                SalesOrderHeaderAttributes.SalesOrderUuid = SalesOrderHeader.SalesOrderUuid;
             return SalesOrderHeaderAttributes;
         }
 
@@ -560,7 +560,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual void CopySalesOrderItemsFrom(SalesOrderData data) 
         {
             if  (data is null) return;
-            var lstDeleted = SalesOrderItems?.CopyFrom(data.SalesOrderItems, new string[] {"OrderUuid"});
+            var lstDeleted = SalesOrderItems?.CopyFrom(data.SalesOrderItems, new string[] {"SalesOrderUuid"});
             SetSalesOrderItemsDeleted(lstDeleted);
             foreach (var c in SalesOrderItems)
                 c?.CopyChildrenFrom(data.SalesOrderItems?.FindByRowNum(c.RowNum));
@@ -574,10 +574,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual SalesOrderItems RemoveSalesOrderItems(SalesOrderItems obj) => 
             AddSalesOrderItemsDeleted(SalesOrderItems.RemoveObject(obj.SetParent(this)));
 
-        public virtual IList<SalesOrderItems> GetSalesOrderItemsByOrderUuid(string OrderUuid) =>
-            (string.IsNullOrEmpty(OrderUuid)) 
+        public virtual IList<SalesOrderItems> GetSalesOrderItemsBySalesOrderUuid(string SalesOrderUuid) =>
+            (string.IsNullOrEmpty(SalesOrderUuid)) 
                 ? null 
-                : dbFactory.Find<SalesOrderItems>("WHERE OrderUuid = @0 ORDER BY Seq ", OrderUuid).ToList();
+                : dbFactory.Find<SalesOrderItems>("WHERE SalesOrderUuid = @0 ORDER BY Seq ", SalesOrderUuid).ToList();
 
         public virtual bool SaveSalesOrderItems(IList<SalesOrderItems> data) =>
             (data is null) ? false : data.Save();
@@ -585,10 +585,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual int DeleteSalesOrderItems(IList<SalesOrderItems> data) =>
             (data is null) ? 0 : data.Delete();
 
-        public virtual async Task<IList<SalesOrderItems>> GetSalesOrderItemsByOrderUuidAsync(string OrderUuid) =>
-            (string.IsNullOrEmpty(OrderUuid)) 
+        public virtual async Task<IList<SalesOrderItems>> GetSalesOrderItemsBySalesOrderUuidAsync(string SalesOrderUuid) =>
+            (string.IsNullOrEmpty(SalesOrderUuid)) 
                 ? null
-                : (await dbFactory.FindAsync<SalesOrderItems>("WHERE OrderUuid = @0 ORDER BY Seq ", OrderUuid)).ToList();
+                : (await dbFactory.FindAsync<SalesOrderItems>("WHERE SalesOrderUuid = @0 ORDER BY Seq ", SalesOrderUuid)).ToList();
 
         public virtual async Task<bool> SaveSalesOrderItemsAsync(IList<SalesOrderItems> data) =>
             (data is null) ? false : await data.SaveAsync();
@@ -606,8 +606,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             foreach (var child in children.Where(x => x != null))
             {
                 child.SetParent(this);
-                if (child.OrderUuid != SalesOrderHeader.OrderUuid)
-                    child.OrderUuid = SalesOrderHeader.OrderUuid;
+                if (child.SalesOrderUuid != SalesOrderHeader.SalesOrderUuid)
+                    child.SalesOrderUuid = SalesOrderHeader.SalesOrderUuid;
                 seq += 1;
                 child.Seq = seq;
             }
@@ -663,10 +663,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             } 
         }
 
-        public virtual IList<SalesOrderItemsAttributes> GetSalesOrderItemsAttributesByOrderUuid(string OrderUuid) =>
-            (string.IsNullOrEmpty(OrderUuid)) 
+        public virtual IList<SalesOrderItemsAttributes> GetSalesOrderItemsAttributesBySalesOrderUuid(string SalesOrderUuid) =>
+            (string.IsNullOrEmpty(SalesOrderUuid)) 
                 ? null 
-                : dbFactory.Find<SalesOrderItemsAttributes>("WHERE OrderUuid = @0 ORDER BY RowNum ", OrderUuid).ToList();
+                : dbFactory.Find<SalesOrderItemsAttributes>("WHERE SalesOrderUuid = @0 ORDER BY RowNum ", SalesOrderUuid).ToList();
 
         public virtual bool SaveSalesOrderItemsAttributes(IList<SalesOrderItemsAttributes> data) =>
             (data is null) ? false : data.Save();
@@ -674,10 +674,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual int DeleteSalesOrderItemsAttributes(IList<SalesOrderItemsAttributes> data) =>
             (data is null) ? 0 : data.Delete();
 
-        public virtual async Task<IList<SalesOrderItemsAttributes>> GetSalesOrderItemsAttributesByOrderUuidAsync(string OrderUuid) =>
-            (string.IsNullOrEmpty(OrderUuid)) 
+        public virtual async Task<IList<SalesOrderItemsAttributes>> GetSalesOrderItemsAttributesBySalesOrderUuidAsync(string SalesOrderUuid) =>
+            (string.IsNullOrEmpty(SalesOrderUuid)) 
                 ? null
-                : (await dbFactory.FindAsync<SalesOrderItemsAttributes>("WHERE OrderUuid = @0 ORDER BY RowNum ", OrderUuid)).ToList();
+                : (await dbFactory.FindAsync<SalesOrderItemsAttributes>("WHERE SalesOrderUuid = @0 ORDER BY RowNum ", SalesOrderUuid)).ToList();
 
         public virtual async Task<bool> SaveSalesOrderItemsAttributesAsync(IList<SalesOrderItemsAttributes> data) =>
             (data is null) ? false : await data.SaveAsync();
@@ -695,8 +695,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             foreach (var child in children.Where(x => x != null))
             {
                 child.SetParent(this);
-                if (child.OrderUuid != SalesOrderHeader.OrderUuid)
-                    child.OrderUuid = SalesOrderHeader.OrderUuid;
+                if (child.SalesOrderUuid != SalesOrderHeader.SalesOrderUuid)
+                    child.SalesOrderUuid = SalesOrderHeader.SalesOrderUuid;
             }
             return children;
         }

@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[SalesOrderHeaderInfo]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [OrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Order
+    [SalesOrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Order
 
 	-- drop ship S/O info
 	[CentralFulfillmentNum] BIGINT NOT NULL DEFAULT 0, --CentralFulfillmentNum of dropship S/O
@@ -75,7 +75,7 @@ GO
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'UK_SalesOrderHeaderInfo_OrderId')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_SalesOrderHeaderInfo_OrderUuid] ON [dbo].[SalesOrderHeaderInfo]
 (
-	[OrderUuid] ASC
+	[SalesOrderUuid] ASC
 ) 
 GO
 

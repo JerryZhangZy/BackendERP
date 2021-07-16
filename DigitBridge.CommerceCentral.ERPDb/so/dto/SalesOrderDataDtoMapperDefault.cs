@@ -75,7 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
 			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
-			if (dto.HasOrderUuid) data.OrderUuid = dto.OrderUuid;
+			if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
 			if (dto.HasOrderNumber) data.OrderNumber = dto.OrderNumber;
 			if (dto.HasOrderType) data.OrderType = dto.OrderType.ToInt();
 			if (dto.HasOrderStatus) data.OrderStatus = dto.OrderStatus.ToInt();
@@ -127,7 +127,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#region read all not null properties
 
-			if (dto.HasOrderUuid) data.OrderUuid = dto.OrderUuid;
+			if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
 			if (dto.HasCentralFulfillmentNum) data.CentralFulfillmentNum = dto.CentralFulfillmentNum.ToLong();
 			if (dto.HasShippingCarrier) data.ShippingCarrier = dto.ShippingCarrier;
 			if (dto.HasShippingClass) data.ShippingClass = dto.ShippingClass;
@@ -201,7 +201,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#region read all not null properties
 
-			if (dto.HasOrderUuid) data.OrderUuid = dto.OrderUuid;
+			if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
 			if (dto.HasFields) data.Fields.LoadJson(dto.Fields);
 
 			#endregion read properties
@@ -217,8 +217,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#region read all not null properties
 
-			if (dto.HasOrderItemsUuid) data.OrderItemsUuid = dto.OrderItemsUuid;
-			if (dto.HasOrderUuid) data.OrderUuid = dto.OrderUuid;
+			if (dto.HasSalesOrderItemsUuid) data.SalesOrderItemsUuid = dto.SalesOrderItemsUuid;
+			if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
 			if (dto.HasSeq) data.Seq = dto.Seq.ToInt();
 			if (dto.HasOrderItemType) data.OrderItemType = dto.OrderItemType.ToInt();
 			if (dto.HasSalesOrderItemstatus) data.SalesOrderItemstatus = dto.SalesOrderItemstatus.ToInt();
@@ -305,7 +305,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 				var obj = itemDto.RowNum > 0
 					? lstOrig.Find(x => x.RowNum == itemDto.RowNum)
-					: lstOrig.Find(x => x.OrderItemsUuid == itemDto.OrderItemsUuid);
+					: lstOrig.Find(x => x.SalesOrderItemsUuid == itemDto.SalesOrderItemsUuid);
 				if (obj is null)
 					obj = new SalesOrderItems().SetAllowNull(false);
 				else
@@ -326,8 +326,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#region read all not null properties
 
-			if (dto.HasOrderItemsUuid) data.OrderItemsUuid = dto.OrderItemsUuid;
-			if (dto.HasOrderUuid) data.OrderUuid = dto.OrderUuid;
+			if (dto.HasSalesOrderItemsUuid) data.SalesOrderItemsUuid = dto.SalesOrderItemsUuid;
+			if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
 			if (dto.HasFields) data.Fields.LoadJson(dto.Fields);
 
 			#endregion read properties
@@ -383,7 +383,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.DatabaseNum = data.DatabaseNum;
 			dto.MasterAccountNum = data.MasterAccountNum;
 			dto.ProfileNum = data.ProfileNum;
-			dto.OrderUuid = data.OrderUuid;
+			dto.SalesOrderUuid = data.SalesOrderUuid;
 			dto.OrderNumber = data.OrderNumber;
 			dto.OrderType = data.OrderType;
 			dto.OrderStatus = data.OrderStatus;
@@ -437,7 +437,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#region write all properties with null
 
 			dto.RowNum = data.RowNum;
-			dto.OrderUuid = data.OrderUuid;
+			dto.SalesOrderUuid = data.SalesOrderUuid;
 			dto.CentralFulfillmentNum = data.CentralFulfillmentNum;
 			dto.ShippingCarrier = data.ShippingCarrier;
 			dto.ShippingClass = data.ShippingClass;
@@ -513,7 +513,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#region write all properties with null
 
 			dto.RowNum = data.RowNum;
-			dto.OrderUuid = data.OrderUuid;
+			dto.SalesOrderUuid = data.SalesOrderUuid;
 			dto.Fields = data.Fields.ToJson();
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
@@ -531,8 +531,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#region write all properties with null
 
 			dto.RowNum = data.RowNum;
-			dto.OrderItemsUuid = data.OrderItemsUuid;
-			dto.OrderUuid = data.OrderUuid;
+			dto.SalesOrderItemsUuid = data.SalesOrderItemsUuid;
+			dto.SalesOrderUuid = data.SalesOrderUuid;
 			dto.Seq = data.Seq;
 			dto.OrderItemType = data.OrderItemType;
 			dto.SalesOrderItemstatus = data.SalesOrderItemstatus;
@@ -637,8 +637,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#region write all properties with null
 
 			dto.RowNum = data.RowNum;
-			dto.OrderItemsUuid = data.OrderItemsUuid;
-			dto.OrderUuid = data.OrderUuid;
+			dto.SalesOrderItemsUuid = data.SalesOrderItemsUuid;
+			dto.SalesOrderUuid = data.SalesOrderUuid;
 			dto.Fields = data.Fields.ToJson();
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;

@@ -39,7 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region - static SQL fileds statement
 
         public static string RowNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum"} ";
-        public static string OrderUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.OrderUuid) AS {name ?? "OrderUuid"} ";
+        public static string SalesOrderUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderUuid) AS {name ?? "SalesOrderUuid"} ";
         public static string JsonFields(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.JsonFields) AS {name ?? "JsonFields"} ";
         public static string EnterDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc"} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid"} ";
@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             var allies = string.IsNullOrEmpty(tableAllies) ? string.Empty : $"{tableAllies.TrimEnd()}.";
             return $@"
 {allies}RowNum AS RowNum,
-RTRIM({allies}OrderUuid) AS OrderUuid,
+RTRIM({allies}SalesOrderUuid) AS SalesOrderUuid,
 RTRIM({allies}JsonFields) AS JsonFields,
 {allies}EnterDateUtc AS EnterDateUtc,
 {allies}DigitBridgeGuid AS DigitBridgeGuid

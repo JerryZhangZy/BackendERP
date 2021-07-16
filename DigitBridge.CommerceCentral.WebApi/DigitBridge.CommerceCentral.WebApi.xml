@@ -4,6 +4,44 @@
         <name>DigitBridge.CommerceCentral.WebApi</name>
     </assembly>
     <members>
+        <member name="T:DigitBridge.CommerceCentral.WebApi.BaseApi">
+            <summary>
+            common function handler
+            </summary> 
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.WebApi.SalesOrderApi">
+            <summary>
+            Process sale order
+            </summary>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.WebApi.SalesOrderApi.Delete(DigitBridge.CommerceCentral.ERPDb.SalesOrderDataDto)">
+            <summary>
+            Delete sales order 
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.WebApi.SalesOrderApi.Update(DigitBridge.CommerceCentral.ERPDb.SalesOrderDataDto)">
+            <summary>
+            Update sales order 
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.WebApi.SalesOrderApi.Add(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Add sales order 
+            </summary>
+            <param name="req"></param>
+            <returns></returns> 
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.WebApi.SalesOrderApi.Get(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>
+            Get sales order
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
         <member name="M:DigitBridge.CommerceCentral.WebApi.SwaggerController.SwaggerOAuth2Redirect(System.Net.Http.HttpRequestMessage,AzureFunctions.Extensions.Swashbuckle.ISwashBuckleClient)">
             <summary>
             This is only needed for OAuth2 client. This redirecting document is normally served

@@ -32,15 +32,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 
-        [StringLength(50, ErrorMessage = "The OrderItemsUuid value cannot exceed 50 characters. ")]
-        public string OrderItemsUuid { get; set; }
+        [StringLength(50, ErrorMessage = "The SalesOrderItemsUuid value cannot exceed 50 characters. ")]
+        public string SalesOrderItemsUuid { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
-        public bool HasOrderItemsUuid => OrderItemsUuid != null;
+        public bool HasSalesOrderItemsUuid => SalesOrderItemsUuid != null;
 
-        [StringLength(50, ErrorMessage = "The OrderUuid value cannot exceed 50 characters. ")]
-        public string OrderUuid { get; set; }
+        [StringLength(50, ErrorMessage = "The SalesOrderUuid value cannot exceed 50 characters. ")]
+        public string SalesOrderUuid { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
-        public bool HasOrderUuid => OrderUuid != null;
+        public bool HasSalesOrderUuid => SalesOrderUuid != null;
 
 
         [IgnoreCompare]
