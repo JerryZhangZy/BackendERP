@@ -30,10 +30,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddValidator(new InventoryLogServiceValidatorDefault());
             return this;
         }
-        public int DeleteByLogUuid(string logUuid)
+        public bool DeleteByLogUuid(string logUuid)
         {
-            var svc = new InventoryLog(dbFactory);
-            return svc.Delete("");
+            InventoryLogHelper.DeleteByLogUuid(logUuid);
+            return true;
         }
 
         public List<InventoryLogDto> GetListByUuid(string logUuid)

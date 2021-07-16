@@ -21,6 +21,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
+using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -48,6 +49,76 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}
+
+        [Fact]
+        public void Test_AddAndQueryLogList()
+        {
+            var inventoryLogFaker = InventoryLogTests.GetFakerData();
+            var datalist = inventoryLogFaker.Generate(20);
+            var logUUid = Guid.NewGuid().ToString();
+            datalist.ForEach(x =>
+            {
+                x.LogUuid = logUUid;
+            });
+            var mapper = new InventoryLogDataDtoMapperDefault();
+            var dtolist = mapper.WriteInventoryLogDtoList(datalist,null);
+            var svc = new InventoryLogService(DataBaseFactory);
+            var addresult = svc.AddList(dtolist);
+            Assert.True(addresult);
+            var list = svc.GetListByUuid(logUUid);
+            Assert.True(list.Count > 0);
+        }
+
+        [Fact]
+        public void Test_AddAndUpdateLogList()
+        {
+            var inventoryLogFaker = InventoryLogTests.GetFakerData();
+            var datalist = inventoryLogFaker.Generate(20);
+            var logUUid = Guid.NewGuid().ToString();
+            datalist.ForEach(x =>
+            {
+                x.LogUuid = logUUid;
+            });
+            var mapper = new InventoryLogDataDtoMapperDefault();
+            var dtolist = mapper.WriteInventoryLogDtoList(datalist,null);
+            var svc = new InventoryLogService(DataBaseFactory);
+            var addresult = svc.AddList(dtolist);
+            Assert.True(addresult);
+            var list = svc.GetListByUuid(logUUid);
+            Assert.True(list.Count > 0);
+            var newtag = Guid.NewGuid().ToString();
+            list.ForEach(x =>
+            {
+                x.SKU = newtag;
+                x.Notes = newtag;
+            });
+            var updateresult= svc.UpdateInventoryLogList(list);
+            Assert.True(updateresult);
+            var count = svc.GetListByUuid(logUUid).Where(x=>x.Notes==newtag&&x.SKU==newtag).Count();
+            Assert.True(count == 20);
+        }
+        [Fact]
+        public void Test_AddAndDeleteLogList()
+        {
+            var inventoryLogFaker = InventoryLogTests.GetFakerData();
+            var datalist = inventoryLogFaker.Generate(20);
+            var logUUid = Guid.NewGuid().ToString();
+            datalist.ForEach(x =>
+            {
+                x.LogUuid = logUUid;
+            });
+            var mapper = new InventoryLogDataDtoMapperDefault();
+            var dtolist = mapper.WriteInventoryLogDtoList(datalist,null);
+            var svc = new InventoryLogService(DataBaseFactory);
+            var addresult = svc.AddList(dtolist);
+            Assert.True(addresult);
+            var list = svc.GetListByUuid(logUUid);
+            Assert.True(list.Count > 0);
+            var deleteresult= svc.DeleteByLogUuid(logUUid);
+            Assert.True(deleteresult);
+            list = svc.GetListByUuid(logUUid);
+            Assert.True(list.Count == 0);
+        }
 
         [Fact()]
 		//[Fact(Skip = SkipReason)]

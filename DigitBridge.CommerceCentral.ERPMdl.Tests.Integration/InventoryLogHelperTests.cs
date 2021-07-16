@@ -50,6 +50,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
         }
 
+        [Fact]
+        public void Test_GetBatchNum()
+        {
+            var batchNum = InventoryLogHelper.GetBatchNum();
+            Assert.True(batchNum > 0);
+            var batchNum2 = InventoryLogHelper.GetBatchNum();
+            Assert.True(batchNum == batchNum2);
+        }
+
+        [Fact]
+        public void Test_GetInventoryLogByUuid()
+        {
+            var list = DataBaseFactory.Find<InventoryLog>("SELECT TOP 10 * FROM InventoryLog").ToList();
+            foreach (var info in list)
+            {
+                var result = InventoryLogHelper.QueryInventoryLogByUuid(info.LogUuid);
+                Assert.True(result.Count > 0);
+            }
+        }
 
         #region sync methods
 
