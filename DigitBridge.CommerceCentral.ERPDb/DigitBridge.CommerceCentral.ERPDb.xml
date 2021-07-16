@@ -88,10 +88,28 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderAttributesHelper">
+            <summary>
+            Represents a InvoiceHeaderAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderHelper">
+            <summary>
+            Represents a InvoiceHeader SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderInfo">
             <summary>
             Represents a InvoiceHeaderInfo.
             NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderInfoHelper">
+            <summary>
+            Represents a InvoiceHeaderInfo SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
             </summary>
         </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItems">
@@ -106,10 +124,28 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItemsAttributesHelper">
+            <summary>
+            Represents a InvoiceItemsAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItemsHelper">
+            <summary>
+            Represents a InvoiceItems SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceReturnItems">
             <summary>
             Represents a InvoiceReturnItems.
             NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceReturnItemsHelper">
+            <summary>
+            Represents a InvoiceReturnItems SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
             </summary>
         </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransaction">
@@ -122,6 +158,12 @@
             <summary>
             Represents a InvoiceTransactionData.
             NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionHelper">
+            <summary>
+            Represents a InvoiceTransaction SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
             </summary>
         </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.ChannelOrderData">
@@ -160,10 +202,22 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderHeaderHelper">
+            <summary>
+            Represents a OrderHeader SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderLine">
             <summary>
             Represents a OrderLine.
             NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderLineHelper">
+            <summary>
+            Represents a OrderLine SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
             </summary>
         </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomAttributeProfile">
@@ -190,16 +244,34 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAddressHelper">
+            <summary>
+            Represents a CustomerAddress SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAttributes">
             <summary>
             Represents a CustomerAttributes.
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAttributesHelper">
+            <summary>
+            Represents a CustomerAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerData">
             <summary>
             Represents a CustomerData.
             NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerHelper">
+            <summary>
+            Represents a Customer SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
             </summary>
         </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAddressDto">
@@ -286,16 +358,34 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryAttributesHelper">
+            <summary>
+            Represents a InventoryAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryData">
             <summary>
             Represents a InventoryData.
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryHelper">
+            <summary>
+            Represents a Inventory SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductBasic">
             <summary>
             Represents a ProductBasic.
             NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductBasicHelper">
+            <summary>
+            Represents a ProductBasic SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
             </summary>
         </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExt">
@@ -310,6 +400,34 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExtAttributesHelper">
+            <summary>
+            Represents a ProductExtAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExtHelper">
+            <summary>
+            Represents a ProductExt SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.ErrorClass.Code">
+            <summary>
+            Error code.
+            Optional,
+            Default value is Empty.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.ErrorClass.Message">
+            <summary>
+            Error message.
+            Optional,
+            Default value is Empty.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
         <member name="M:DigitBridge.CommerceCentral.ERPDb.ItemCostClass.CalculateCost">
             <summary>
             Calculate UnitCost, and return cost
@@ -318,6 +436,57 @@
         <member name="M:DigitBridge.CommerceCentral.ERPDb.ItemCostClass.CalculateAvgCost(DigitBridge.CommerceCentral.ERPDb.ItemCostClass)">
             <summary>
             ReCalculate moving avg_cost
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.PagingClass.Top">
+            <summary>
+            Page size to load.
+            Optional,
+            Default value is 100.
+            Maximum value is 500.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.PagingClass.Skip">
+            <summary>
+            Records to skip.
+            Optional,
+            Default value is 0.
+            Maximum value is 500.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.PagingClass.TotalCount">
+            <summary>
+            Return total count of records or current requested count of data
+            Optional,
+            Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.
+            Default value: true.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.PagingClass.SortBy">
+            <summary>
+            Sort by fields (comma delimited).
+            Optional,
+            Default order by LastUpdateDate.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.PagingClass.Filter">
+            <summary>
+            Filter Json object.
+            Optional,
+            Default value: {}.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.PagingClass.Errors">
+            <summary>
+            Response error array.
+            Optional,
+            Default value: null.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
             </summary>
         </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.ERPSetting">
@@ -367,6 +536,12 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemHelper">
+            <summary>
+            Represents a OrderShipmentCanceledItem SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentData">
             <summary>
             Represents a OrderShipmentData.
@@ -379,16 +554,34 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderHelper">
+            <summary>
+            Represents a OrderShipmentHeader SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage">
             <summary>
             Represents a OrderShipmentPackage.
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageHelper">
+            <summary>
+            Represents a OrderShipmentPackage SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem">
             <summary>
             Represents a OrderShipmentShippedItem.
             NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemHelper">
+            <summary>
+            Represents a OrderShipmentShippedItem SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
             </summary>
         </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderDataDto">
@@ -451,10 +644,28 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributesHelper">
+            <summary>
+            Represents a SalesOrderHeaderAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderHelper">
+            <summary>
+            Represents a SalesOrderHeader SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo">
             <summary>
             Represents a SalesOrderHeaderInfo.
             NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoHelper">
+            <summary>
+            Represents a SalesOrderHeaderInfo SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
             </summary>
         </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems">
@@ -467,6 +678,18 @@
             <summary>
             Represents a SalesOrderItemsAttributes.
             NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesHelper">
+            <summary>
+            Represents a SalesOrderItemsAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsHelper">
+            <summary>
+            Represents a SalesOrderItems SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
             </summary>
         </member>
     </members>

@@ -39,7 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region - static SQL fileds statement
 
         public static string RowNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum"} ";
-        public static string OrderUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.OrderUuid) AS {name ?? "OrderUuid"} ";
+        public static string SalesOrderUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderUuid) AS {name ?? "SalesOrderUuid"} ";
         public static string CentralFulfillmentNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.CentralFulfillmentNum AS {name ?? "CentralFulfillmentNum"} ";
         public static string ShippingCarrier(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShippingCarrier) AS {name ?? "ShippingCarrier"} ";
         public static string ShippingClass(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShippingClass) AS {name ?? "ShippingClass"} ";
@@ -109,7 +109,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             var allies = string.IsNullOrEmpty(tableAllies) ? string.Empty : $"{tableAllies.TrimEnd()}.";
             return $@"
 {allies}RowNum AS RowNum,
-RTRIM({allies}OrderUuid) AS OrderUuid,
+RTRIM({allies}SalesOrderUuid) AS SalesOrderUuid,
 {allies}CentralFulfillmentNum AS CentralFulfillmentNum,
 RTRIM({allies}ShippingCarrier) AS ShippingCarrier,
 RTRIM({allies}ShippingClass) AS ShippingClass,

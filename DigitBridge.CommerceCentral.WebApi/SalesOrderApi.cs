@@ -19,7 +19,7 @@ namespace DigitBridge.CommerceCentral.WebApi
     /// <summary>
     /// Process sale order
     /// </summary>
-    [ApiExplorerSettings(GroupName = "SalesOrder")]
+    [ApiExplorerSettings(GroupName = "SalesOrders")]
     public class SalesOrderApi : BaseApi
     {
         /// <summary>
@@ -46,7 +46,7 @@ namespace DigitBridge.CommerceCentral.WebApi
         [ProducesResponseType(typeof(SalesOrderDataDto), (int)HttpStatusCode.OK)]
         [FunctionName("Update")]
         public async Task<IActionResult> Update(
-           [HttpTrigger(AuthorizationLevel.Function, "put", Route = "salesorder")]
+           [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesorder")]
              SalesOrderDataDto dto)
         {
             var dataBaseFactory = new DataBaseFactory(ConfigFile.Dsn);

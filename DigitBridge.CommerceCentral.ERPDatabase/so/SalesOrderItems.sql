@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[SalesOrderItems]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [OrderItemsUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Order Item Line
+    [SalesOrderItemsUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Order Item Line
 
     [SalesOrderUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Order
     [Seq] INT NOT NULL DEFAULT 0, --Order Item Line sort sequence
@@ -74,9 +74,9 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderItems]') AND name = N'UK_SalesOrderItems_SalesOrderItemsId')
-CREATE UNIQUE NONCLUSTERED INDEX [UK_SalesOrderItems_OrderItemsUuid] ON [dbo].[SalesOrderItems]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_SalesOrderItems_SalesOrderItemsUuid] ON [dbo].[SalesOrderItems]
 (
-	[OrderItemsUuid] ASC
+	[SalesOrderItemsUuid] ASC
 ) 
 GO
 

@@ -51,6 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion Fields - Generated 
 
         #region Properties - Generated 
+		[IgnoreCompare] 
 		public override string UniqueId => SalesOrderUuid; 
 		public void CheckUniqueId() 
 		{
