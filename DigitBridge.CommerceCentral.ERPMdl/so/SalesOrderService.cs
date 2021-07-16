@@ -114,7 +114,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             List();
             var rowNum = await _data.GetRowNumAsync(orderNumber);
-            var success = await GetDataAsync(rowNum);
+            if (!rowNum.HasValue)
+                return false;
+            var success = await GetDataAsync(rowNum.Value);
             //if (success) ToDto();
             return success;
         }
@@ -129,7 +131,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             List();
             var rowNum = _data.GetRowNum(orderNumber);
-            var success = GetData(rowNum);
+            if (!rowNum.HasValue)
+                return false;
+            var success = GetData(rowNum.Value);
             //if (success) ToDto();
             return success;
         }
@@ -145,7 +149,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             Delete();
             var rowNum = _data.GetRowNum(orderNumber);
-            var success = GetData(rowNum);
+            if (!rowNum.HasValue)
+                return false;
+            var success = GetData(rowNum.Value);
             success = success && DeleteData();
             return success;
         }
@@ -160,7 +166,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             Delete();
             var rowNum = await _data.GetRowNumAsync(orderNumber);
-            var success = await GetDataAsync(rowNum);
+            if (!rowNum.HasValue)
+                return false;
+            var success = await GetDataAsync(rowNum.Value);
             success = success && await DeleteDataAsync();
             return success;
         }

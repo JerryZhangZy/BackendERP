@@ -19,18 +19,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public virtual async Task<long> GetRowNumAsync(string orderNumber)
+        public virtual async Task<long?> GetRowNumAsync(string orderNumber)
         {
-            return await dbFactory.GetValueAsync<SalesOrderHeader, long>($"SELECT TOP 1 RowNum FROM SalesOrderHeader where OrderNumber='{orderNumber}'");
+            return await dbFactory.GetValueAsync<SalesOrderHeader, long?>($"SELECT TOP 1 RowNum FROM SalesOrderHeader where OrderNumber='{orderNumber}'");
         }
         /// <summary>
         /// Get row num by order number
         /// </summary>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public virtual long GetRowNum(string orderNumber)
+        public virtual long? GetRowNum(string orderNumber)
         {
-            return dbFactory.GetValue<SalesOrderHeader, long>($"SELECT TOP 1 RowNum FROM SalesOrderHeader where OrderNumber='{orderNumber}'");
+            return dbFactory.GetValue<SalesOrderHeader, long?>($"SELECT TOP 1 RowNum FROM SalesOrderHeader where OrderNumber='{orderNumber}'");
         }
     }
 }

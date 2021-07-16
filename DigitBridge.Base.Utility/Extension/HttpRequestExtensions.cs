@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DigitBridge.Base.Utility
 {
@@ -75,6 +77,16 @@ namespace DigitBridge.Base.Utility
                 return (T)Convert.ChangeType(value, typeof(T));
             }
             return null;
+        }
+
+        public static async Task<T> GetBodyObjectAsync<T>(this HttpRequest req) where T : class
+        {
+            using (var reader = new StreamReader(req.Body))
+            {
+                var json = await reader.ReadToEndAsync();
+                return json.StringToObject<T>(); //JsonConvert.DeserializeObject<SalesOrderDataDto>(json); 
+
+            }
         }
     }
 }

@@ -66,6 +66,19 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var success = await srv.DeleteByOrderNumberAsync(orderNumber);
             return new OkObjectResult(success);
         }
+
+        [FunctionName(nameof(UpdateSalesOrders))]
+        [OpenApiOperation(operationId: "UpdateSalesOrders", tags: new[] { "SalesOrders" })]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Description = "Request Body in json format")]
+        public static async Task<IActionResult> UpdateSalesOrders(
+[HttpTrigger(AuthorizationLevel.Function, "POST", Route = "UpdateSalesOrders")] HttpRequest req)
+        {
+            var dto = await req.GetBodyObjectAsync<SalesOrderDataDto>();
+            var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
+            var srv = new SalesOrderService(dataBaseFactory);
+            var result = srv.Update(dto);
+            return new OkObjectResult(result);
+        }
     }
 }
 
