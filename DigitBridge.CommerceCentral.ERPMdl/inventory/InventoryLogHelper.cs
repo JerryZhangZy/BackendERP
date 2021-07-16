@@ -27,23 +27,26 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a InventoryHelper SQL Helper Static Class.
+    /// Represents a InventoryLogHelper SQL Helper Static Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public static class InventoryHelper
+    public static class InventoryLogHelper
     {
-
-        public static Inventory QueryInventoryBySku(int masterAccountNum, string sku)
+        public static long GetBatchNum()
         {
-            return SqlQuery.Query<Inventory>(
+            var reader= SqlQuery.ExecuteCommand("select isnull(max(BatchNum),0)+1 as maxBatchNum from InventoryLog;",
+                        CommandType.Text);
+            return reader.GetInt64(0);
+        }
+
+        public static List<InventoryLog> QueryInventoryLogByUuid(string logUuid)
+        {
+            return SqlQuery.Query<InventoryLog>(
                         ERPDb.InventoryHelper.SelectAllWhere(
-                            sqlWhere: $"WHERE MasterAccountNum = @masterAccountNum AND Sku=@sku ORDER BY RowNum"
+                            sqlWhere: $"WHERE LogUuid = @logUuid ORDER BY RowNum"
                         ),
-                        CommandType.Text,
-                        new[] {
-                            new SqlParameter("@masterAccountNum", masterAccountNum),
-                            new SqlParameter("@sku", sku)
-                        }).FirstOrDefault();
+                        CommandType.Text,new SqlParameter("@logUuid", logUuid)
+                        ).ToList();
         }
     }
 }

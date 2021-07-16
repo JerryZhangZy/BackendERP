@@ -60,13 +60,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				var deleted = ReadInventory(data.Inventory, dto.Inventory);
 				data.SetInventoryDeleted(deleted);
 			}
-			if (dto.InventoryLog != null)
-			{
-				if (data.InventoryLog is null)
-					data.InventoryLog = new List<InventoryLog>();
-				var deleted = ReadInventoryLog(data.InventoryLog, dto.InventoryLog);
-				data.SetInventoryLogDeleted(deleted);
-			}
 
             data.CheckIntegrity();
             return data;
@@ -348,79 +341,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return;
 		}
 
-		protected virtual void ReadInventoryLog(InventoryLog data, InventoryLogDto dto)
-		{
-			if (data is null || dto is null)
-				return;
-
-			#region read all not null properties
-
-			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
-			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
-			if (dto.HasInventoryLogUuid) data.InventoryLogUuid = dto.InventoryLogUuid;
-			if (dto.HasProductUuid) data.ProductUuid = dto.ProductUuid;
-			if (dto.HasInventoryUuid) data.InventoryUuid = dto.InventoryUuid;
-			if (dto.HasBatchNum) data.BatchNum = dto.BatchNum;
-			if (dto.HasLogType) data.LogType = dto.LogType;
-			if (dto.HasLogUuid) data.LogUuid = dto.LogUuid;
-			if (dto.HasLogItemUuid) data.LogItemUuid = dto.LogItemUuid;
-			if (dto.HasLogStatus) data.LogStatus = dto.LogStatus;
-			if (dto.HasLogDate) data.LogDate = dto.LogDate.ToDateTime();
-			if (dto.HasLogTime) data.LogTime = dto.LogTime.ToTimeSpan();
-			if (dto.HasLogBy) data.LogBy = dto.LogBy;
-			if (dto.HasSKU) data.SKU = dto.SKU;
-			if (dto.HasDescription) data.Description = dto.Description;
-			if (dto.HasWarehouseUuid) data.WarehouseUuid = dto.WarehouseUuid;
-			if (dto.HasWhsDescription) data.WhsDescription = dto.WhsDescription;
-			if (dto.HasLotNum) data.LotNum = dto.LotNum;
-			if (dto.HasLotInDate) data.LotInDate = dto.LotInDate;
-			if (dto.HasLotExpDate) data.LotExpDate = dto.LotExpDate;
-			if (dto.HasLotDescription) data.LotDescription = dto.LotDescription;
-			if (dto.HasLpnNum) data.LpnNum = dto.LpnNum;
-			if (dto.HasLpnDescription) data.LpnDescription = dto.LpnDescription;
-			if (dto.HasNotes) data.Notes = dto.Notes;
-			if (dto.HasUOM) data.UOM = dto.UOM;
-			if (dto.HasLogQty) data.LogQty = dto.LogQty.ToDecimal();
-			if (dto.HasBeforeInstock) data.BeforeInstock = dto.BeforeInstock.ToDecimal();
-			if (dto.HasBeforeBaseCost) data.BeforeBaseCost = dto.BeforeBaseCost.ToDecimal();
-			if (dto.HasBeforeUnitCost) data.BeforeUnitCost = dto.BeforeUnitCost.ToDecimal();
-			if (dto.HasBeforeAvgCost) data.BeforeAvgCost = dto.BeforeAvgCost.ToDecimal();
-			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
-			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
-			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
-			#endregion read properties
-
-			return;
-		}
-
-		protected virtual IList<InventoryLog> ReadInventoryLog(IList<InventoryLog> data, IList<InventoryLogDto> dto)
-		{
-			if (data is null || dto is null)
-				return null;
-			var lstOrig = new List<InventoryLog>(data.Where(x => x != null).ToList());
-			data.Clear();
-			foreach (var itemDto in dto)
-			{
-				if (itemDto == null) continue;
-
-				var obj = itemDto.RowNum > 0
-					? lstOrig.Find(x => x.RowNum == itemDto.RowNum)
-					: lstOrig.Find(x => x.InventoryLogUuid == itemDto.InventoryLogUuid);
-				if (obj is null)
-					obj = new InventoryLog().SetAllowNull(false);
-				else
-					lstOrig.Remove(obj);
-
-				data.Add(obj);
-
-				ReadInventoryLog(obj, itemDto);
-
-			}
-			return lstOrig;
-		}
-
-
 
         #endregion read from dto to data
 
@@ -454,11 +374,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			{
 				dto.Inventory = new List<InventoryDto>();
 				WriteInventory(data.Inventory, dto.Inventory);
-			}
-			if (data.InventoryLog != null)
-			{
-				dto.InventoryLog = new List<InventoryLogDto>();
-				WriteInventoryLog(data.InventoryLog, dto.InventoryLog);
 			}
             return dto;
         }
@@ -745,77 +660,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			return;
 		}
-		protected virtual void WriteInventoryLog(InventoryLog data, InventoryLogDto dto)
-		{
-			if (data is null || dto is null)
-				return;
-
-			#region write all properties with null
-
-			dto.RowNum = data.RowNum;
-			dto.DatabaseNum = data.DatabaseNum;
-			dto.MasterAccountNum = data.MasterAccountNum;
-			dto.ProfileNum = data.ProfileNum;
-			dto.InventoryLogUuid = data.InventoryLogUuid;
-			dto.ProductUuid = data.ProductUuid;
-			dto.InventoryUuid = data.InventoryUuid;
-			dto.BatchNum = data.BatchNum;
-			dto.LogType = data.LogType;
-			dto.LogUuid = data.LogUuid;
-			dto.LogItemUuid = data.LogItemUuid;
-			dto.LogStatus = data.LogStatus;
-			dto.LogDate = data.LogDate;
-			dto.LogTime = data.LogTime.ToDateTime();
-			dto.LogBy = data.LogBy;
-			dto.SKU = data.SKU;
-			dto.Description = data.Description;
-			dto.WarehouseUuid = data.WarehouseUuid;
-			dto.WhsDescription = data.WhsDescription;
-			dto.LotNum = data.LotNum;
-			dto.LotInDate = data.LotInDate;
-			dto.LotExpDate = data.LotExpDate;
-			dto.LotDescription = data.LotDescription;
-			dto.LpnNum = data.LpnNum;
-			dto.LpnDescription = data.LpnDescription;
-			dto.Notes = data.Notes;
-			dto.UOM = data.UOM;
-			dto.LogQty = data.LogQty;
-			dto.BeforeInstock = data.BeforeInstock;
-			dto.BeforeBaseCost = data.BeforeBaseCost;
-			dto.BeforeUnitCost = data.BeforeUnitCost;
-			dto.BeforeAvgCost = data.BeforeAvgCost;
-			dto.EnterDateUtc = data.EnterDateUtc;
-			dto.UpdateDateUtc = data.UpdateDateUtc;
-			dto.EnterBy = data.EnterBy;
-			dto.UpdateBy = data.UpdateBy;
-			dto.DigitBridgeGuid = data.DigitBridgeGuid;
-
-			#endregion read properties
-
-			return;
-		}
-		protected virtual void WriteInventoryLog(IList<InventoryLog> data, IList<InventoryLogDto> dto)
-		{
-			if (data is null || dto is null)
-				return;
-
-			dto.Clear();
-
-			#region write all list items and properties with null
-
-			foreach (var itemData in data)
-			{
-				if (itemData is null) continue;
-				var obj = new InventoryLogDto();
-				dto.Add(obj);
-				WriteInventoryLog(itemData, obj);
-			}
-
-			#endregion write all list items and properties with null
-			return;
-		}
-
-
 
         #endregion write to dto from data
 

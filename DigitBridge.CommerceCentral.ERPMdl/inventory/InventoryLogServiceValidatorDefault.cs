@@ -24,9 +24,9 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a default InventoryService Validator class.
+    /// Represents a default InventoryLogService Validator class.
     /// </summary>
-    public partial class InventoryServiceValidatorDefault : IValidator<InventoryData>
+    public partial class InventoryLogServiceValidatorDefault : IValidator<InventoryLogData>
     {
         public virtual bool IsValid { get; set; }
         public virtual IList<string> Messages { get; set; }
@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             IsValid = true;
             Messages = new List<string>();
         }
-        public virtual bool Validate(InventoryData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool Validate(InventoryLogData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
             if (!ValidateAllMode(data))
@@ -53,16 +53,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 _ => false,
             };
         }
-        protected virtual bool ValidateAllMode(InventoryData data)
+        protected virtual bool ValidateAllMode(InventoryLogData data)
         {
             var dbFactory = data.dbFactory;
-            if (string.IsNullOrEmpty(data.ProductBasic.ProductUuid))
+            if (string.IsNullOrEmpty(data.InventoryLog.InventoryLogUuid))
             {
                 IsValid = false;
                 this.Messages.Add($"Unique Id cannot be empty.");
                 return IsValid;
             }
-            //if (string.IsNullOrEmpty(data.ProductBasic.CustomerUuid))
+            //if (string.IsNullOrEmpty(data.InventoryLog.CustomerUuid))
             //{
             //    IsValid = false;
             //    this.Messages.Add($"Customer cannot be empty.");
@@ -72,55 +72,52 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        protected virtual bool ValidateAdd(InventoryData data)
+        protected virtual bool ValidateAdd(InventoryLogData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.ProductBasic != null)
+            if (data.InventoryLog.RowNum != 0 && dbFactory.Exists<InventoryLog>(data.InventoryLog.RowNum))
             {
-                if (data.ProductBasic.RowNum != 0 && dbFactory.Exists<ProductBasic>(data.ProductBasic.RowNum))
-                {
-                    IsValid = false;
-                    this.Messages.Add($"RowNum: {data.ProductBasic.RowNum} is duplicate.");
-                    return IsValid;
-                }
+                IsValid = false;
+                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} is duplicate.");
+                return IsValid;
             }
             return true;
 
         }
 
-        protected virtual bool ValidateEdit(InventoryData data)
+        protected virtual bool ValidateEdit(InventoryLogData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.ProductBasic.RowNum == 0)
+            if (data.InventoryLog.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.ProductBasic.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
 
-            if (data.ProductBasic.RowNum != 0 && !dbFactory.Exists<ProductBasic>(data.ProductBasic.RowNum))
+            if (data.InventoryLog.RowNum != 0 && !dbFactory.Exists<InventoryLog>(data.InventoryLog.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.ProductBasic.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
             return true;
         }
 
-        protected virtual bool ValidateDelete(InventoryData data)
+        protected virtual bool ValidateDelete(InventoryLogData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.ProductBasic.RowNum == 0)
+            if (data.InventoryLog.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.ProductBasic.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
 
-            if (data.ProductBasic.RowNum != 0 && !dbFactory.Exists<ProductBasic>(data.ProductBasic.RowNum))
+            if (data.InventoryLog.RowNum != 0 && !dbFactory.Exists<InventoryLog>(data.InventoryLog.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.ProductBasic.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -129,7 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Async Methods
 
-        public virtual async Task<bool> ValidateAsync(InventoryData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual async Task<bool> ValidateAsync(InventoryLogData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
             if (!(await ValidateAllModeAsync(data).ConfigureAwait(false)))
@@ -147,16 +144,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
         }
 
-        protected virtual async Task<bool> ValidateAllModeAsync(InventoryData data)
+        protected virtual async Task<bool> ValidateAllModeAsync(InventoryLogData data)
         {
             var dbFactory = data.dbFactory;
-            if (string.IsNullOrEmpty(data.ProductBasic.ProductUuid))
+            if (string.IsNullOrEmpty(data.InventoryLog.InventoryLogUuid))
             {
                 IsValid = false;
                 this.Messages.Add($"Unique Id cannot be empty.");
                 return IsValid;
             }
-            //if (string.IsNullOrEmpty(data.ProductBasic.CustomerUuid))
+            //if (string.IsNullOrEmpty(data.InventoryLog.CustomerUuid))
             //{
             //    IsValid = false;
             //    this.Messages.Add($"Customer cannot be empty.");
@@ -166,52 +163,52 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        protected virtual async Task<bool> ValidateAddAsync(InventoryData data)
+        protected virtual async Task<bool> ValidateAddAsync(InventoryLogData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.ProductBasic.RowNum != 0 && (await dbFactory.ExistsAsync<ProductBasic>(data.ProductBasic.RowNum)))
+            if (data.InventoryLog.RowNum != 0 && (await dbFactory.ExistsAsync<InventoryLog>(data.InventoryLog.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.ProductBasic.RowNum} is duplicate.");
+                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
 
         }
 
-        protected virtual async Task<bool> ValidateEditAsync(InventoryData data)
+        protected virtual async Task<bool> ValidateEditAsync(InventoryLogData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.ProductBasic.RowNum == 0)
+            if (data.InventoryLog.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.ProductBasic.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
 
-            if (data.ProductBasic.RowNum != 0 && !(await dbFactory.ExistsAsync<ProductBasic>(data.ProductBasic.RowNum)))
+            if (data.InventoryLog.RowNum != 0 && !(await dbFactory.ExistsAsync<InventoryLog>(data.InventoryLog.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.ProductBasic.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
             return true;
         }
 
-        protected virtual async Task<bool> ValidateDeleteAsync(InventoryData data)
+        protected virtual async Task<bool> ValidateDeleteAsync(InventoryLogData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.ProductBasic.RowNum == 0)
+            if (data.InventoryLog.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.ProductBasic.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
 
-            if (data.ProductBasic.RowNum != 0 && !(await dbFactory.ExistsAsync<ProductBasic>(data.ProductBasic.RowNum)))
+            if (data.InventoryLog.RowNum != 0 && !(await dbFactory.ExistsAsync<InventoryLog>(data.InventoryLog.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.ProductBasic.RowNum} not found.");
+                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
             return true;
