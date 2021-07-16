@@ -19,26 +19,18 @@ using DigitBridge.CommerceCentral.YoPoco;
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
-    /// Represents a InventoryDataDto Class.
+    /// Represents a InventoryLogDataDto Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public partial class InventoryDataDto
+    public partial class InventoryLogDataDto
     {
-        public ProductBasicDto ProductBasic { get; set; }
+        public InventoryLogDto InventoryLog { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
-        public bool HasProductBasic => ProductBasic != null;
+        public bool HasInventoryLog => InventoryLog != null;
 
-        public ProductExtDto ProductExt { get; set; }
+        public List<InventoryLogDto> InventoryLogList { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
-        public bool HasProductExt => ProductExt != null;
-
-        public ProductExtAttributesDto ProductExtAttributes { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
-        public bool HasProductExtAttributes => ProductExtAttributes != null;
-
-        public IList<InventoryDto> Inventory { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
-        public bool HasInventory => Inventory != null;
+        public bool HasInventoryLogList => InventoryLogList != null&& InventoryLogList.Count>0;
 
     }
 }

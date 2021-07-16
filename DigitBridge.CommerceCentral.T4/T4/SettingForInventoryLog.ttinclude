@@ -2,23 +2,19 @@
 	// Database table define file path
     var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\inventory";
     // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
-    var Files = "ProductBasic,ProductExt,ProductExtAttributes,Inventory,InventoryAttributes";
+    var Files = "InventoryLog";
 
     // current solution path
 	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
     var project = Path.Combine(path,DatabaseProjectName);
-    var processName = "Inventory";
+    var processName = "InventoryLog";
     var processForlderName = "inventory";
 
 
     // Tables relatonship
     var structureName = $"{processName}Data";
     var StructureClass = new StructureInfo(structureName,
-            new StructureTable() { Name = "ProductBasic", AlliesName = "prd", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "ProductExt", AlliesName = "prdx", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
-            new StructureTable() { Name = "ProductExtAttributes", AlliesName = "prda", ParentName = "ProductBasic", OneToOne = true, LoadByColumn = "ProductUuid" },
-            new StructureTable() { Name = "Inventory", AlliesName = "inv", ParentName = "ProductBasic", DetailTable = true, OneToOne = false, LoadByColumn = "ProductUuid", oneToOneChildrenName = "InventoryAttributes" },
-            new StructureTable() { Name = "InventoryAttributes", AlliesName = "inva", ParentName = "Inventory", OneToOne = false, LoadByColumn = "ProductUuid" }
+            new StructureTable() { Name = "InventoryLog", AlliesName = "invl", DetailTable = true, MainTable = true, OneToOne = true }
         );
 
 

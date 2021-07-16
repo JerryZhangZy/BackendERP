@@ -25,29 +25,24 @@ using Bogus;
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     /// <summary>
-    /// Represents a Tester for InventoryData.
+    /// Represents a Tester for InventoryLogData.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class InventoryDataTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class InventoryLogDataTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        public static InventoryData GetFakerData()
+        public static InventoryLogData GetFakerData()
         {
-			var InventoryData = new InventoryData(); 
-			InventoryData.ProductBasic = ProductBasicTests.GetFakerData().Generate(); 
-			InventoryData.ProductExt = ProductExtTests.GetFakerData().Generate(); 
-			InventoryData.ProductExtAttributes = ProductExtAttributesTests.GetFakerData().Generate(); 
-			InventoryData.Inventory = InventoryTests.GetFakerData().Generate(10); 
-			foreach (var ln in InventoryData.Inventory) 
-				ln.InventoryAttributes = InventoryAttributesTests.GetFakerData().Generate(); 
-			return InventoryData; 
+			var InventoryLogData = new InventoryLogData(); 
+			InventoryLogData.InventoryLog = InventoryLogTests.GetFakerData().Generate(); 
+			return InventoryLogData; 
         }
 
-        public static List<InventoryData> GetFakerData(int count)
+        public static List<InventoryLogData> GetFakerData(int count)
         {
-			var InventoryDatas = new List<InventoryData>(); 
+			var InventoryLogDatas = new List<InventoryLogData>(); 
 			for (int i = 0; i < count; i++) 
-				InventoryDatas.Add(GetFakerData()); 
-			return InventoryDatas; 
+				InventoryLogDatas.Add(GetFakerData()); 
+			return InventoryLogDatas; 
         }
 
         protected const string SkipReason = "Debug Helper Function";
@@ -56,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public IConfiguration Configuration { get; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public InventoryDataTests(TestFixture<StartupTest> fixture) 
+        public InventoryLogDataTests(TestFixture<StartupTest> fixture) 
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -76,17 +71,17 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 		//[Fact(Skip = SkipReason)]
 		public void Clone_Test()
 		{
-            var id = DataBaseFactory.GetValue<ProductBasic, string>(@"
-SELECT TOP 1 ins.ProductUuid 
-FROM ProductBasic ins 
+            var id = DataBaseFactory.GetValue<InventoryLog, string>(@"
+SELECT TOP 1 ins.InventoryLogUuid 
+FROM InventoryLog ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
-) itm ON (itm.ProductUuid = ins.ProductUuid)
+    SELECT it.InventoryLogUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.InventoryLogUuid
+) itm ON (itm.InventoryLogUuid = ins.InventoryLogUuid)
 WHERE itm.cnt > 0
 ");
 
 
-            var data = new InventoryData(DataBaseFactory);
+            var data = new InventoryLogData(DataBaseFactory);
             data.GetById(id);
 
             var dataClone = data.Clone();
@@ -105,7 +100,7 @@ WHERE itm.cnt > 0
             data.SetDataBaseFactory(DataBaseFactory);
 			data.Save();
 
-            var dataGet = new InventoryData(DataBaseFactory);
+            var dataGet = new InventoryLogData(DataBaseFactory);
             dataGet.GetById(data.UniqueId);
             var result = data.Equals(dataGet);
 
@@ -118,29 +113,29 @@ WHERE itm.cnt > 0
         {
             Save_Test();
 
-            var id = DataBaseFactory.GetValue<ProductBasic, string>(@"
-SELECT TOP 1 ins.ProductUuid 
-FROM ProductBasic ins 
+            var id = DataBaseFactory.GetValue<InventoryLog, string>(@"
+SELECT TOP 1 ins.InventoryLogUuid 
+FROM InventoryLog ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
-) itm ON (itm.ProductUuid = ins.ProductUuid)
+    SELECT it.InventoryLogUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.InventoryLogUuid
+) itm ON (itm.InventoryLogUuid = ins.InventoryLogUuid)
 WHERE itm.cnt > 0
 ");
 
 
-            var data = new InventoryData(DataBaseFactory);
+            var data = new InventoryLogData(DataBaseFactory);
             data.GetById(id);
-            var rowNum = data.ProductBasic.RowNum;
+            var rowNum = data.InventoryLog.RowNum;
 
             var dataUpdate = GetFakerData();
             dataUpdate.SetDataBaseFactory(DataBaseFactory);
             data?.CopyFrom(dataUpdate);
             data.Save();
 
-            var dataGetById = new InventoryData(DataBaseFactory);
+            var dataGetById = new InventoryLogData(DataBaseFactory);
             dataGetById.GetById(id);
 
-            var dataGet = new InventoryData(DataBaseFactory);
+            var dataGet = new InventoryLogData(DataBaseFactory);
             dataGet.Get(rowNum);
 
             var result = data.Equals(dataGet) && dataGet.Equals(dataGetById);
@@ -154,17 +149,17 @@ WHERE itm.cnt > 0
         {
             Save_Test();
 
-            var id = DataBaseFactory.GetValue<ProductBasic, string>(@"
-SELECT TOP 1 ins.ProductUuid 
-FROM ProductBasic ins 
+            var id = DataBaseFactory.GetValue<InventoryLog, string>(@"
+SELECT TOP 1 ins.InventoryLogUuid 
+FROM InventoryLog ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
-) itm ON (itm.ProductUuid = ins.ProductUuid)
+    SELECT it.InventoryLogUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.InventoryLogUuid
+) itm ON (itm.InventoryLogUuid = ins.InventoryLogUuid)
 WHERE itm.cnt > 0
 ");
 
 
-            var data = new InventoryData(DataBaseFactory);
+            var data = new InventoryLogData(DataBaseFactory);
             data.GetById(id);
 
             DataBaseFactory.Begin();
@@ -172,7 +167,7 @@ WHERE itm.cnt > 0
             data.Delete();
             DataBaseFactory.Commit();
 
-            var result = DataBaseFactory.ExistUniqueId<ProductBasic>(data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<InventoryLog>(data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -190,7 +185,7 @@ WHERE itm.cnt > 0
             data.SetDataBaseFactory(DataBaseFactory);
 			await data.SaveAsync();
 
-            var dataGet = new InventoryData(DataBaseFactory);
+            var dataGet = new InventoryLogData(DataBaseFactory);
             await dataGet.GetByIdAsync(data.UniqueId);
             var result = data.Equals(dataGet);
 
@@ -203,29 +198,29 @@ WHERE itm.cnt > 0
         {
             await SaveAsync_Test();
 
-            var id = await DataBaseFactory.GetValueAsync<ProductBasic, string>(@"
-SELECT TOP 1 ins.ProductUuid 
-FROM ProductBasic ins 
+            var id = await DataBaseFactory.GetValueAsync<InventoryLog, string>(@"
+SELECT TOP 1 ins.InventoryLogUuid 
+FROM InventoryLog ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
-) itm ON (itm.ProductUuid = ins.ProductUuid)
+    SELECT it.InventoryLogUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.InventoryLogUuid
+) itm ON (itm.InventoryLogUuid = ins.InventoryLogUuid)
 WHERE itm.cnt > 0
 ");
 
 
-            var data = new InventoryData(DataBaseFactory);
+            var data = new InventoryLogData(DataBaseFactory);
             await data.GetByIdAsync(id);
-            var rowNum = data.ProductBasic.RowNum;
+            var rowNum = data.InventoryLog.RowNum;
 
             var dataUpdate = GetFakerData();
             dataUpdate.SetDataBaseFactory(DataBaseFactory);
             data?.CopyFrom(dataUpdate);
             await data.SaveAsync();
 
-            var dataGetById = new InventoryData(DataBaseFactory);
+            var dataGetById = new InventoryLogData(DataBaseFactory);
             await dataGetById.GetByIdAsync(id);
 
-            var dataGet = new InventoryData(DataBaseFactory);
+            var dataGet = new InventoryLogData(DataBaseFactory);
             await dataGet.GetAsync(rowNum);
 
             var result = data.Equals(dataGet) && dataGet.Equals(dataGetById);
@@ -239,17 +234,17 @@ WHERE itm.cnt > 0
         {
             await SaveAsync_Test();
 
-            var id = await DataBaseFactory.GetValueAsync<ProductBasic, string>(@"
-SELECT TOP 1 ins.ProductUuid 
-FROM ProductBasic ins 
+            var id = await DataBaseFactory.GetValueAsync<InventoryLog, string>(@"
+SELECT TOP 1 ins.InventoryLogUuid 
+FROM InventoryLog ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
-) itm ON (itm.ProductUuid = ins.ProductUuid)
+    SELECT it.InventoryLogUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.InventoryLogUuid
+) itm ON (itm.InventoryLogUuid = ins.InventoryLogUuid)
 WHERE itm.cnt > 0
 ");
 
 
-            var data = new InventoryData(DataBaseFactory);
+            var data = new InventoryLogData(DataBaseFactory);
             await data.GetByIdAsync(id);
 
             DataBaseFactory.Begin();
@@ -257,7 +252,7 @@ WHERE itm.cnt > 0
             await data.DeleteAsync();
             DataBaseFactory.Commit();
 
-            var result = DataBaseFactory.ExistUniqueId<ProductBasic>(data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<InventoryLog>(data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }

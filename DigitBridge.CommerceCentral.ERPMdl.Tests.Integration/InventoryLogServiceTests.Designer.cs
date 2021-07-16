@@ -27,19 +27,19 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
     /// <summary>
-    /// Represents a Tester for InventoryService.
+    /// Represents a Tester for InventoryLogService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class InventoryServiceTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class InventoryLogServiceTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        protected InventoryData GetFakerData()
+        protected InventoryLogData GetFakerData()
         {
-            return InventoryDataTests.GetFakerData();
+            return InventoryLogDataTests.GetFakerData();
         }
 
-        protected List<InventoryData> GetFakerData(int count)
+        protected List<InventoryLogData> GetFakerData(int count)
         {
-            return InventoryDataTests.GetFakerData(count);
+            return InventoryLogDataTests.GetFakerData(count);
         }
 
         protected const string SkipReason = "Debug Helper Function";
@@ -48,7 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public IConfiguration Configuration { get; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public InventoryServiceTests(TestFixture<StartupTest> fixture) 
+        public InventoryLogServiceTests(TestFixture<StartupTest> fixture) 
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -70,13 +70,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 		//[Fact(Skip = SkipReason)]
 		public void SaveData_Test()
 		{
-            var srv = new InventoryService(DataBaseFactory);
+            var srv = new InventoryLogService(DataBaseFactory);
             srv.Add();
             srv.AttachData(GetFakerData());
             srv.Calculate();
 			srv.SaveData();
 
-            var srvGet = new InventoryService(DataBaseFactory);
+            var srvGet = new InventoryLogService(DataBaseFactory);
             srvGet.Edit();
             srvGet.GetDataById(srv.Data.UniqueId);
             var result = srv.Data.Equals(srvGet.Data);
@@ -90,31 +90,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             SaveData_Test();
 
-            var id = DataBaseFactory.GetValue<ProductBasic, string>(@"
-SELECT TOP 1 ins.ProductUuid 
-FROM ProductBasic ins 
+            var id = DataBaseFactory.GetValue<InventoryLog, string>(@"
+SELECT TOP 1 ins.InventoryLogUuid 
+FROM InventoryLog ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
-) itm ON (itm.ProductUuid = ins.ProductUuid)
+    SELECT it.InventoryLogUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.InventoryLogUuid
+) itm ON (itm.InventoryLogUuid = ins.InventoryLogUuid)
 WHERE itm.cnt > 0
 ");
 
 
-            var srv = new InventoryService(DataBaseFactory);
+            var srv = new InventoryLogService(DataBaseFactory);
             srv.Edit();
             srv.GetDataById(id);
-            var rowNum = srv.Data.ProductBasic.RowNum;
+            var rowNum = srv.Data.InventoryLog.RowNum;
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
             srv.Calculate();
             srv.SaveData();
 
-            var srvGetById = new InventoryService(DataBaseFactory);
+            var srvGetById = new InventoryLogService(DataBaseFactory);
             srvGetById.List();
             srvGetById.GetDataById(id);
 
-            var srvGet = new InventoryService(DataBaseFactory);
+            var srvGet = new InventoryLogService(DataBaseFactory);
             srvGet.List();
             srvGet.GetData(rowNum);
 
@@ -129,22 +129,22 @@ WHERE itm.cnt > 0
         {
             SaveData_Test();
 
-            var id = DataBaseFactory.GetValue<ProductBasic, string>(@"
-SELECT TOP 1 ins.ProductUuid 
-FROM ProductBasic ins 
+            var id = DataBaseFactory.GetValue<InventoryLog, string>(@"
+SELECT TOP 1 ins.InventoryLogUuid 
+FROM InventoryLog ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
-) itm ON (itm.ProductUuid = ins.ProductUuid)
+    SELECT it.InventoryLogUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.InventoryLogUuid
+) itm ON (itm.InventoryLogUuid = ins.InventoryLogUuid)
 WHERE itm.cnt > 0
 ");
 
 
-            var srv = new InventoryService(DataBaseFactory);
+            var srv = new InventoryLogService(DataBaseFactory);
             srv.Delete();
             srv.GetDataById(id);
             srv.DeleteData();
 
-            var result = DataBaseFactory.ExistUniqueId<ProductBasic>(srv.Data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<InventoryLog>(srv.Data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -157,13 +157,13 @@ WHERE itm.cnt > 0
 		//[Fact(Skip = SkipReason)]
 		public async Task SaveDataAsync_Test()
 		{
-            var srv = new InventoryService(DataBaseFactory);
+            var srv = new InventoryLogService(DataBaseFactory);
             srv.Add();
             srv.AttachData(GetFakerData());
             srv.Calculate();
 			await srv.SaveDataAsync();
 
-            var srvGet = new InventoryService(DataBaseFactory);
+            var srvGet = new InventoryLogService(DataBaseFactory);
             srvGet.Edit();
             await srvGet.GetDataByIdAsync(srv.Data.UniqueId);
             var result = srv.Data.Equals(srvGet.Data);
@@ -177,31 +177,31 @@ WHERE itm.cnt > 0
         {
             await SaveDataAsync_Test();
 
-            var id = await DataBaseFactory.GetValueAsync<ProductBasic, string>(@"
-SELECT TOP 1 ins.ProductUuid 
-FROM ProductBasic ins 
+            var id = await DataBaseFactory.GetValueAsync<InventoryLog, string>(@"
+SELECT TOP 1 ins.InventoryLogUuid 
+FROM InventoryLog ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
-) itm ON (itm.ProductUuid = ins.ProductUuid)
+    SELECT it.InventoryLogUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.InventoryLogUuid
+) itm ON (itm.InventoryLogUuid = ins.InventoryLogUuid)
 WHERE itm.cnt > 0
 ");
 
 
-            var srv = new InventoryService(DataBaseFactory);
+            var srv = new InventoryLogService(DataBaseFactory);
             srv.Edit();
             await srv.GetDataByIdAsync(id);
-            var rowNum = srv.Data.ProductBasic.RowNum;
+            var rowNum = srv.Data.InventoryLog.RowNum;
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
             srv.Calculate();
             await srv.SaveDataAsync();
 
-            var srvGetById = new InventoryService(DataBaseFactory);
+            var srvGetById = new InventoryLogService(DataBaseFactory);
             srvGetById.List();
             await srvGetById.GetDataByIdAsync(id);
 
-            var srvGet = new InventoryService(DataBaseFactory);
+            var srvGet = new InventoryLogService(DataBaseFactory);
             srvGet.List();
             await srvGet.GetDataAsync(rowNum);
 
@@ -216,22 +216,22 @@ WHERE itm.cnt > 0
         {
             await SaveDataAsync_Test();
 
-            var id = await DataBaseFactory.GetValueAsync<ProductBasic, string>(@"
-SELECT TOP 1 ins.ProductUuid 
-FROM ProductBasic ins 
+            var id = await DataBaseFactory.GetValueAsync<InventoryLog, string>(@"
+SELECT TOP 1 ins.InventoryLogUuid 
+FROM InventoryLog ins 
 INNER JOIN (
-    SELECT it.ProductUuid, COUNT(1) AS cnt FROM Inventory it GROUP BY it.ProductUuid
-) itm ON (itm.ProductUuid = ins.ProductUuid)
+    SELECT it.InventoryLogUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.InventoryLogUuid
+) itm ON (itm.InventoryLogUuid = ins.InventoryLogUuid)
 WHERE itm.cnt > 0
 ");
 
 
-            var srv = new InventoryService(DataBaseFactory);
+            var srv = new InventoryLogService(DataBaseFactory);
             srv.Delete();
             await srv.GetDataByIdAsync(id);
             await srv.DeleteDataAsync();
 
-            var result = DataBaseFactory.ExistUniqueId<ProductBasic>(srv.Data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<InventoryLog>(srv.Data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }

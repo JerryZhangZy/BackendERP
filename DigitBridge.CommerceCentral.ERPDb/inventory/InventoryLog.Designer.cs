@@ -1,4 +1,9 @@
 
+
+
+
+
+
               
 
               
@@ -628,9 +633,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Methods - Parent
 
 		[XmlIgnore, JsonIgnore, IgnoreCompare]
-		private InventoryData Parent { get; set; }
-		public InventoryData GetParent() => Parent;
-		public InventoryLog SetParent(InventoryData parent)
+		private InventoryLogData Parent { get; set; }
+		public InventoryLogData GetParent() => Parent;
+		public InventoryLog SetParent(InventoryLogData parent)
 		{
 			Parent = parent;
 			return this;

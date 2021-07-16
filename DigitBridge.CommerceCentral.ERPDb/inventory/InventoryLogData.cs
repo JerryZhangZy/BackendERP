@@ -11,9 +11,9 @@ using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
-    public partial class InventoryData
+    public partial class InventoryLogData
     {
-
+        public IList<InventoryLog> InventoryLogList { get; set; }
     }
 }
 

@@ -1,5 +1,4 @@
 
-              
     
 
 //-------------------------------------------------------------------------
@@ -24,8 +23,9 @@ using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
-    public partial class InventoryLogTests
+    public partial class InventoryLogDataTests
     {
+
     }
 }
 
