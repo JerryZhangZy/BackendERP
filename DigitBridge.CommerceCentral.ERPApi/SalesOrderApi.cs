@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Example = typeof(SalesOrderDataDto), Description = "The OK response")]
         public static async Task<IActionResult> GetSalesOrders(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesOrders/{orderNumber}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder/{orderNumber}")] HttpRequest req,
             ILogger log)
         {
             var orderNumber = req.GetRouteObject<string>("orderNumber");
@@ -67,16 +67,38 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new OkObjectResult(success);
         }
 
+        /// <summary>
+        ///  Update salesorder 
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
         [FunctionName(nameof(UpdateSalesOrders))]
         [OpenApiOperation(operationId: "UpdateSalesOrders", tags: new[] { "SalesOrders" })]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Description = "Request Body in json format")]
         public static async Task<IActionResult> UpdateSalesOrders(
-[HttpTrigger(AuthorizationLevel.Function, "POST", Route = "UpdateSalesOrders")] HttpRequest req)
+[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesorder")] HttpRequest req)
         {
             var dto = await req.GetBodyObjectAsync<SalesOrderDataDto>();
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
             var srv = new SalesOrderService(dataBaseFactory);
             var result = srv.Update(dto);
+            return new OkObjectResult(result);
+        }
+        /// <summary>
+        /// Add sales order
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(AddSalesOrders))]
+        [OpenApiOperation(operationId: "AddSalesOrders", tags: new[] { "SalesOrders" })]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Description = "Request Body in json format")]
+        public static async Task<IActionResult> AddSalesOrders(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesorder")] HttpRequest req)
+        {
+            var dto = await req.GetBodyObjectAsync<SalesOrderDataDto>();
+            var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
+            var srv = new SalesOrderService(dataBaseFactory);
+            var result = srv.Add(dto);
             return new OkObjectResult(result);
         }
     }
