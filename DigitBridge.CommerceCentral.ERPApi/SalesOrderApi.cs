@@ -13,7 +13,6 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using DigitBridge.Base.Utility;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -33,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Example = typeof(SalesOrderDataDto), Description = "The OK response")]
         public static async Task<IActionResult> GetSalesOrders(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "salesOrders/{orderNumber}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesOrders/{orderNumber}")] HttpRequest req,
             ILogger log)
         {
             var orderNumber = req.GetRouteObject<string>("orderNumber");
@@ -47,6 +46,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
             }
             else
                 return new NoContentResult();
+        }
+
+        /// <summary>
+        /// Delete salesorder 
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [OpenApiOperation(operationId: "DeleteSalesOrders", tags: new[] { "SalesOrders" })]
+        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [FunctionName("DeleteSalesOrders")]
+        public static async Task<IActionResult> DeleteSalesOrders(
+           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "salesorder/{orderNumber}")]
+            HttpRequest req)
+        {
+            var orderNumber = req.GetRouteObject<string>("orderNumber");
+            var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
+            var srv = new SalesOrderService(dataBaseFactory);
+            var success = await srv.DeleteByOrderNumberAsync(orderNumber);
+            return new OkObjectResult(success);
         }
     }
 }

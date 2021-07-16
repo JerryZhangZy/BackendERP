@@ -1,5 +1,5 @@
 
-    
+
 
 using System;
 using System.Collections.Generic;
@@ -14,15 +14,23 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class SalesOrderData
     {
-        public virtual async Task<bool> GetByOrderNumberAsync(string orderNumber)
+        /// <summary>
+        /// Get row num by order number
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<long> GetRowNumAsync(string orderNumber)
         {
-            var rowNum = await dbFactory.GetValueAsync<SalesOrderHeader, long>($"SELECT TOP 1 RowNum FROM SalesOrderHeader where OrderNumber='{orderNumber}'");
-            return await GetAsync(rowNum);
+            return await dbFactory.GetValueAsync<SalesOrderHeader, long>($"SELECT TOP 1 RowNum FROM SalesOrderHeader where OrderNumber='{orderNumber}'");
         }
-        public virtual bool GetByOrderNumber(string orderNumber)
+        /// <summary>
+        /// Get row num by order number
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual long GetRowNum(string orderNumber)
         {
-            var rowNum = dbFactory.GetValue<SalesOrderHeader, long>($"SELECT TOP 1 RowNum FROM SalesOrderHeader where OrderNumber='{orderNumber}'");
-            return Get(rowNum);
+            return dbFactory.GetValue<SalesOrderHeader, long>($"SELECT TOP 1 RowNum FROM SalesOrderHeader where OrderNumber='{orderNumber}'");
         }
     }
 }

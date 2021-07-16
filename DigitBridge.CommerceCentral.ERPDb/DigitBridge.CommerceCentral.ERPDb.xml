@@ -632,6 +632,20 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPDb.SalesOrderData.GetRowNumAsync(System.String)">
+            <summary>
+            Get row num by order number
+            </summary>
+            <param name="orderNumber"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPDb.SalesOrderData.GetRowNum(System.String)">
+            <summary>
+            Get row num by order number
+            </summary>
+            <param name="orderNumber"></param>
+            <returns></returns>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader">
             <summary>
             Represents a SalesOrderHeader.

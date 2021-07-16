@@ -1,5 +1,5 @@
 
-    
+
 
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual bool Add(SalesOrderDataDto dto)
         {
-            if (dto is null) 
+            if (dto is null)
                 return false;
             // set Add mode and clear data
             Add();
@@ -110,8 +110,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> GetByOrderNumberAsync(string orderNumber)
         {
+            if (string.IsNullOrEmpty(orderNumber))
+                return false;
             List();
-            var success = await _data.GetByOrderNumberAsync(orderNumber);
+            var rowNum = await _data.GetRowNumAsync(orderNumber);
+            var success = await GetDataAsync(rowNum);
             //if (success) ToDto();
             return success;
         }
@@ -122,13 +125,45 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual bool GetByOrderNumber(string orderNumber)
         {
-            
+            if (string.IsNullOrEmpty(orderNumber))
+                return false;
             List();
-            var success = _data.GetByOrderNumber(orderNumber);
+            var rowNum = _data.GetRowNum(orderNumber);
+            var success = GetData(rowNum);
             //if (success) ToDto();
             return success;
         }
 
+        /// <summary>
+        /// Delete salesorder by order number
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual bool DeleteByOrderNumber(string orderNumber)
+        {
+            if (string.IsNullOrEmpty(orderNumber))
+                return false;
+            Delete();
+            var rowNum = _data.GetRowNum(orderNumber);
+            var success = GetData(rowNum);
+            success = success && DeleteData();
+            return success;
+        }
+        /// <summary>
+        /// Delete salesorder by order number
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByOrderNumberAsync(string orderNumber)
+        {
+            if (string.IsNullOrEmpty(orderNumber))
+                return false;
+            Delete();
+            var rowNum = await _data.GetRowNumAsync(orderNumber);
+            var success = await GetDataAsync(rowNum);
+            success = success && await DeleteDataAsync();
+            return success;
+        }
     }
 }
 
