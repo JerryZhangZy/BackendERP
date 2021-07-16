@@ -50,6 +50,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
         }
 
+        [Fact]
+        public void Test_QueryInventoryBySku()
+        {
+            var inventoryFaker = ERPDb.Tests.Integration.InventoryTests.GetFakerData();
+            var inventory = inventoryFaker.Generate(1);
+            inventory.SetDataBaseFactory(DataBaseFactory).Save();
+            var result = InventoryHelper.QueryInventoryBySku(inventory[0].MasterAccountNum, inventory[0].SKU);
+            Assert.True(result != null);
+        }
+
 
         #region sync methods
 

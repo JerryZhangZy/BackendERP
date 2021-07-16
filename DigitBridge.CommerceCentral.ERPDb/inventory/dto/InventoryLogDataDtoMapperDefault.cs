@@ -68,7 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				dataList.Add(obj);
 				ReadInventoryLog(obj, itemDto);
 			}
-			return lstOrig;
+			return dataList;
 		}
 
 		public List<InventoryLogDto> WriteInventoryLogDtoList(List<InventoryLog> dataList, List<InventoryLogDto> dtoList)
