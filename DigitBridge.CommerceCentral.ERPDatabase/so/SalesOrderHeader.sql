@@ -5,7 +5,7 @@
 	[MasterAccountNum] INT NOT NULL, --(Readonly) Login user account. <br> Display: false, Editable: false.
 	[ProfileNum] INT NOT NULL, --(Readonly) Login user profile. <br> Display: false, Editable: false.
 
-    [OrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Order uuid. <br> Display: false, Editable: false.
+    [SalesOrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Order uuid. <br> Display: false, Editable: false.
 	[OrderNumber] VARCHAR(50) NOT NULL DEFAULT '', --Readable order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
 
     [OrderType] INT NOT NULL DEFAULT 0, --Order type. <br> Title: Type, Display: true, Editable: true
@@ -60,7 +60,7 @@ GO
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'UK_SalesOrderHeader_OrderId')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_SalesOrderHeader] ON [dbo].[SalesOrderHeader]
 (
-	[OrderUuid] ASC
+	[SalesOrderUuid] ASC
 ) 
 GO
 

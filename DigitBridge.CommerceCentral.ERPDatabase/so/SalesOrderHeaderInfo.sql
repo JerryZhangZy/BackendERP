@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[SalesOrderHeaderInfo]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL, --(Readonly) Record Number. Required, <br> Display: false, Editable: false.
-    [OrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Order uuid. <br> Display: false, Editable: false.
+    [SalesOrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Order uuid. <br> Display: false, Editable: false.
 
 	[CentralFulfillmentNum] BIGINT NOT NULL DEFAULT 0, --(Ignore) Reference to CentralFulfillmentNum. <br> Display: false, Editable: false
 	[ShippingCarrier] VARCHAR(50) NOT NULL DEFAULT '', --Shipping Carrier. <br> Title: Shipping Carrier: Display: true, Editable: true
@@ -74,9 +74,9 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeaderInfo]') AND name = N'UK_SalesOrderHeaderInfo_OrderId')
-CREATE UNIQUE NONCLUSTERED INDEX [UK_SalesOrderHeaderInfo_OrderUuid] ON [dbo].[SalesOrderHeaderInfo]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_SalesOrderHeaderInfo_SalesOrderUuid] ON [dbo].[SalesOrderHeaderInfo]
 (
-	[OrderUuid] ASC
+	[SalesOrderUuid] ASC
 ) 
 GO
 

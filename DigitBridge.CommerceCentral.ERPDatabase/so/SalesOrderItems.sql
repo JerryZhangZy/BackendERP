@@ -1,9 +1,9 @@
 ﻿CREATE TABLE [dbo].[SalesOrderItems]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL, --(Readonly) Record Number. Required, <br> Display: false, Editable: false.
-    [OrderItemsUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --(Readonly) Order Item Line uuid. <br> Display: false, Editable: false
+    [SalesOrderItemsUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --(Readonly) Order Item Line uuid. <br> Display: false, Editable: false
 
-    [OrderUuid] VARCHAR(50) NOT NULL, --Order uuid. <br> Display: false, Editable: false.
+    [SalesOrderUuid] VARCHAR(50) NOT NULL, --Order uuid. <br> Display: false, Editable: false.
     [Seq] INT NOT NULL DEFAULT 0, --Order Item Line sequence number. <br> Title: Line#, Display: true, Editable: false
     [OrderItemType] INT NOT NULL DEFAULT 0, --Order item type. <br> Title: Type, Display: true, Editable: true
     [SalesOrderItemstatus] INT NOT NULL DEFAULT 0, --Order item status. <br> Title: Status, Display: true, Editable: true
@@ -75,31 +75,31 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderItems]') AND name = N'UK_SalesOrderItems_SalesOrderItemsId')
-CREATE UNIQUE NONCLUSTERED INDEX [UK_SalesOrderItems_OrderItemsUuid] ON [dbo].[SalesOrderItems]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_SalesOrderItems_SalesOrderItemsUuid] ON [dbo].[SalesOrderItems]
 (
-	[OrderItemsUuid] ASC
+	[SalesOrderItemsUuid] ASC
 ) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderItems]') AND name = N'FK_SalesOrderItems_OrderId_Seq')
-CREATE NONCLUSTERED INDEX [FK_SalesOrderItems_OrderUuid_Seq] ON [dbo].[SalesOrderItems]
+CREATE NONCLUSTERED INDEX [FK_SalesOrderItems_SalesOrderUuid_Seq] ON [dbo].[SalesOrderItems]
 (
-	[OrderUuid] ASC,
+	[SalesOrderUuid] ASC,
 	[Seq] ASC
 ) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderItems]') AND name = N'BLK_SalesOrderItems_OrderId_Seq')
-CREATE NONCLUSTERED INDEX [BLK_SalesOrderItems_OrderUuid_Seq] ON [dbo].[SalesOrderItems]
+CREATE NONCLUSTERED INDEX [BLK_SalesOrderItems_SalesOrderUuid_Seq] ON [dbo].[SalesOrderItems]
 (
 	[SKU] ASC
 ) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderItems]') AND name = N'IX_SalesOrderItems_OrderId')
-CREATE NONCLUSTERED INDEX [IX_SalesOrderItems_OrderUuid] ON [dbo].[SalesOrderItems]
+CREATE NONCLUSTERED INDEX [IX_SalesOrderItems_SalesOrderUuid] ON [dbo].[SalesOrderItems]
 (
-	[OrderUuid] ASC
+	[SalesOrderUuid] ASC
 ) 
 GO
 
