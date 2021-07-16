@@ -1,11 +1,11 @@
 ﻿CREATE TABLE [dbo].[SalesOrderHeaderAttributes]
 (
-	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [OrderUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O
-	[JsonFields] NVARCHAR(max) NOT NULL DEFAULT '', --JSON string, store any document fields
+	[RowNum] BIGINT IDENTITY(1,1) NOT NULL, --(Readonly) Record Number. Required, <br> Display: false, Editable: false.
+    [OrderUuid] VARCHAR(50) NOT NULL, --Order uuid. <br> Display: false, Editable: false.
+	[JsonFields] NVARCHAR(max) NOT NULL DEFAULT '', --(Ignore) JSON string. 
 
-    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
-    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Ignore) 
+    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)
     CONSTRAINT [PK_SalesOrderHeaderAttributes] PRIMARY KEY ([RowNum]), 
 ) 
 GO

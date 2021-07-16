@@ -1,12 +1,12 @@
 ﻿CREATE TABLE [dbo].[SalesOrderItemsAttributes]
 (
-	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [OrderItemsUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O
-    [OrderUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Order
-	[JsonFields] NVARCHAR(max) NOT NULL DEFAULT '', --JSON string, store any document fields
+	[RowNum] BIGINT IDENTITY(1,1) NOT NULL, --(Readonly) Record Number. Required, <br> Display: false, Editable: false.
+    [OrderItemsUuid] VARCHAR(50) NOT NULL, --Order item line uuid. <br> Display: false, Editable: false.
+    [OrderUuid] VARCHAR(50) NOT NULL,  --Order uuid. <br> Display: false, Editable: false.
+	[JsonFields] NVARCHAR(max) NOT NULL DEFAULT '', --(Ignore) JSON string
 
-    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
-    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Ignore)
+    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)
     CONSTRAINT [PK_SalesOrderItemsAttributes] PRIMARY KEY ([RowNum]), 
 ) 
 GO

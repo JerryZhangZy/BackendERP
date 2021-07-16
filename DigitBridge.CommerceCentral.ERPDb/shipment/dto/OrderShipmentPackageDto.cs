@@ -14,6 +14,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Newtonsoft.Json.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
 
@@ -32,94 +33,182 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public long? OrderShipmentPackageNum { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasOrderShipmentPackageNum => OrderShipmentPackageNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public int? DatabaseNum { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasDatabaseNum => DatabaseNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public int? MasterAccountNum { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasMasterAccountNum => MasterAccountNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public int? ProfileNum { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasProfileNum => ProfileNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public int? ChannelNum { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasChannelNum => ChannelNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public int? ChannelAccountNum { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasChannelAccountNum => ChannelAccountNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public long? OrderShipmentNum { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasOrderShipmentNum => OrderShipmentNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         [StringLength(50, ErrorMessage = "The PackageID value cannot exceed 50 characters. ")]
         public string PackageID { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasPackageID => PackageID != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public int? PackageType { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasPackageType => PackageType != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public int? PackagePatternNum { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasPackagePatternNum => PackagePatternNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         [StringLength(50, ErrorMessage = "The PackageTrackingNumber value cannot exceed 50 characters. ")]
         public string PackageTrackingNumber { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasPackageTrackingNumber => PackageTrackingNumber != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         [StringLength(50, ErrorMessage = "The PackageReturnTrackingNumber value cannot exceed 50 characters. ")]
         public string PackageReturnTrackingNumber { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasPackageReturnTrackingNumber => PackageReturnTrackingNumber != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? PackageWeight { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasPackageWeight => PackageWeight != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? PackageLength { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasPackageLength => PackageLength != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? PackageWidth { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasPackageWidth => PackageWidth != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? PackageHeight { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasPackageHeight => PackageHeight != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? PackageVolume { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasPackageVolume => PackageVolume != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public decimal? PackageQty { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasPackageQty => PackageQty != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public long? ParentPackageNum { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasParentPackageNum => ParentPackageNum != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
         public bool? HasChildPackage { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasHasChildPackage => HasChildPackage != null;
 
+		/// <summary>
+		/// Global Unique Guid for one OrderShipment
+		/// </summary>
+		[OpenApiPropertyDescription("Global Unique Guid for one OrderShipment")]
         [StringLength(50, ErrorMessage = "The OrderShipmentUuid value cannot exceed 50 characters. ")]
         public string OrderShipmentUuid { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]
         public bool HasOrderShipmentUuid => OrderShipmentUuid != null;
 
+		/// <summary>
+		/// Global Unique Guid for one OrderShipment Package
+		/// </summary>
+		[OpenApiPropertyDescription("Global Unique Guid for one OrderShipment Package")]
         [StringLength(50, ErrorMessage = "The OrderShipmentPackageUuid value cannot exceed 50 characters. ")]
         public string OrderShipmentPackageUuid { get; set; }
         [XmlIgnore, JsonIgnore, IgnoreCompare]

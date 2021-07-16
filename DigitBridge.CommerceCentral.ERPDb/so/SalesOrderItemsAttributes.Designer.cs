@@ -61,6 +61,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(OrderItemsUuid)) 
 				OrderItemsUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// Order item line uuid. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual string OrderItemsUuid
         {
             get
@@ -74,6 +77,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order uuid. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual string OrderUuid
         {
             get
@@ -87,7 +93,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+		/// <summary>
+		/// (Ignore) JSON string
+		/// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual string JsonFields
         {
             get
@@ -102,9 +111,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         protected CustomAttributes _Fields;
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual CustomAttributes Fields
         {
             get
@@ -124,7 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private SalesOrderData Parent { get; set; }
 		public SalesOrderData GetParent() => Parent;
 		public SalesOrderItemsAttributes SetParent(SalesOrderData parent)

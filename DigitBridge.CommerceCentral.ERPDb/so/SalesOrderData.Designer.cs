@@ -33,10 +33,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public SalesOrderData() : base() {}
         public SalesOrderData(IDataBaseFactory dbFactory): base(dbFactory) {}
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new bool IsNew => SalesOrderHeader.IsNew;
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new string UniqueId => SalesOrderHeader.UniqueId;
 
         #region CRUD Methods

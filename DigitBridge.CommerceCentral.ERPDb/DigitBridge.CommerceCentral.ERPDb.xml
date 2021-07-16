@@ -1,0 +1,2168 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DigitBridge.CommerceCentral.ERPDb</name>
+    </assembly>
+    <members>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceDataDto">
+            <summary>
+            Represents a InvoiceDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceDataDtoMapperDefault">
+            <summary>
+            Represents a InvoiceDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderAttributesDto">
+            <summary>
+            Represents a InvoiceHeaderAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderDto">
+            <summary>
+            Represents a InvoiceHeader Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderInfoDto">
+            <summary>
+            Represents a InvoiceHeaderInfo Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItemsAttributesDto">
+            <summary>
+            Represents a InvoiceItemsAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItemsDto">
+            <summary>
+            Represents a InvoiceItems Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceReturnItemsDto">
+            <summary>
+            Represents a InvoiceReturnItems Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionDataDto">
+            <summary>
+            Represents a InvoiceTransactionDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionDataDtoMapperDefault">
+            <summary>
+            Represents a InvoiceTransactionDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionDto">
+            <summary>
+            Represents a InvoiceTransaction Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceData">
+            <summary>
+            Represents a InvoiceData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeader">
+            <summary>
+            Represents a InvoiceHeader.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderAttributes">
+            <summary>
+            Represents a InvoiceHeaderAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderAttributesHelper">
+            <summary>
+            Represents a InvoiceHeaderAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderHelper">
+            <summary>
+            Represents a InvoiceHeader SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderInfo">
+            <summary>
+            Represents a InvoiceHeaderInfo.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderInfoHelper">
+            <summary>
+            Represents a InvoiceHeaderInfo SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItems">
+            <summary>
+            Represents a InvoiceItems.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItemsAttributes">
+            <summary>
+            Represents a InvoiceItemsAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItemsAttributesHelper">
+            <summary>
+            Represents a InvoiceItemsAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceItemsHelper">
+            <summary>
+            Represents a InvoiceItems SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceReturnItems">
+            <summary>
+            Represents a InvoiceReturnItems.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceReturnItemsHelper">
+            <summary>
+            Represents a InvoiceReturnItems SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransaction">
+            <summary>
+            Represents a InvoiceTransaction.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionData">
+            <summary>
+            Represents a InvoiceTransactionData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionHelper">
+            <summary>
+            Represents a InvoiceTransaction SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ChannelOrderData">
+            <summary>
+            Represents a ChannelOrderData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ChannelOrderDataDto">
+            <summary>
+            Represents a ChannelOrderDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ChannelOrderDataDtoMapperDefault">
+            <summary>
+            Represents a ChannelOrderDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderHeaderDto">
+            <summary>
+            Represents a OrderHeader Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderLineDto">
+            <summary>
+            Represents a OrderLine Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderHeader">
+            <summary>
+            Represents a OrderHeader.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderHeaderHelper">
+            <summary>
+            Represents a OrderHeader SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderLine">
+            <summary>
+            Represents a OrderLine.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderLineHelper">
+            <summary>
+            Represents a OrderLine SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomAttributeProfile">
+            <summary>
+            Represents a CustomAttributeProfile.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomAttributeProfileDto">
+            <summary>
+            Represents a CustomAttributeProfile Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.Customer">
+            <summary>
+            Represents a Customer.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAddress">
+            <summary>
+            Represents a CustomerAddress.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAddressHelper">
+            <summary>
+            Represents a CustomerAddress SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAttributes">
+            <summary>
+            Represents a CustomerAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAttributesHelper">
+            <summary>
+            Represents a CustomerAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerData">
+            <summary>
+            Represents a CustomerData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerHelper">
+            <summary>
+            Represents a Customer SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAddressDto">
+            <summary>
+            Represents a CustomerAddress Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerAttributesDto">
+            <summary>
+            Represents a CustomerAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerDataDto">
+            <summary>
+            Represents a CustomerDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerDataDtoMapperDefault">
+            <summary>
+            Represents a CustomerDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.CustomerDto">
+            <summary>
+            Represents a Customer Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryAttributesDto">
+            <summary>
+            Represents a InventoryAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryDataDto">
+            <summary>
+            Represents a InventoryDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryDataDtoMapperDefault">
+            <summary>
+            Represents a InventoryDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryDto">
+            <summary>
+            Represents a Inventory Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductBasicDto">
+            <summary>
+            Represents a ProductBasic Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExtAttributesDto">
+            <summary>
+            Represents a ProductExtAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExtDto">
+            <summary>
+            Represents a ProductExt Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.Inventory">
+            <summary>
+            Represents a Inventory.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryAttributes">
+            <summary>
+            Represents a InventoryAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryAttributesHelper">
+            <summary>
+            Represents a InventoryAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryData">
+            <summary>
+            Represents a InventoryData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.InventoryHelper">
+            <summary>
+            Represents a Inventory SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductBasic">
+            <summary>
+            Represents a ProductBasic.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductBasicHelper">
+            <summary>
+            Represents a ProductBasic SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExt">
+            <summary>
+            Represents a ProductExt.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExtAttributes">
+            <summary>
+            Represents a ProductExtAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExtAttributesHelper">
+            <summary>
+            Represents a ProductExtAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ProductExtHelper">
+            <summary>
+            Represents a ProductExt SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.ErrorClass.Code">
+            <summary>
+            Error code.
+            Optional,
+            Default value is Empty.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.ErrorClass.Message">
+            <summary>
+            Error message.
+            Optional,
+            Default value is Empty.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPDb.ItemCostClass.CalculateCost">
+            <summary>
+            Calculate UnitCost, and return cost
+            </summary>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPDb.ItemCostClass.CalculateAvgCost(DigitBridge.CommerceCentral.ERPDb.ItemCostClass)">
+            <summary>
+            ReCalculate moving avg_cost
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.PagingClass.Top">
+            <summary>
+            Page size to load.
+            Optional,
+            Default value is 100.
+            Maximum value is 500.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.PagingClass.Skip">
+            <summary>
+            Records to skip.
+            Optional,
+            Default value is 0.
+            Maximum value is 500.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.PagingClass.TotalCount">
+            <summary>
+            Return total count of records or current requested count of data
+            Optional,
+            Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.
+            Default value: true.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.PagingClass.SortBy">
+            <summary>
+            Sort by fields (comma delimited).
+            Optional,
+            Default order by LastUpdateDate.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.PagingClass.Filter">
+            <summary>
+            Filter Json object.
+            Optional,
+            Default value: {}.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.PagingClass.Errors">
+            <summary>
+            Response error array.
+            Optional,
+            Default value: null.
+            <see cref="!:https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.ERPSetting">
+            <summary>
+            Represents a ERP setting Class.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto">
+            <summary>
+            Represents a OrderShipmentCanceledItem Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.OrderShipmentCanceledItemNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.DatabaseNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.MasterAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.ProfileNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.ChannelNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.ChannelAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.OrderShipmentNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.ChannelOrderID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.OrderDCAssignmentLineNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.SKU">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.CanceledQty">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.CancelCode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.CancelOtherReason">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.DBChannelOrderLineRowID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.OrderShipmentUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemDto.OrderShipmentCanceledItemUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment cancell Item
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentDataDto">
+            <summary>
+            Represents a OrderShipmentDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentDataDtoMapperDefault">
+            <summary>
+            Represents a OrderShipmentDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto">
+            <summary>
+            Represents a OrderShipmentHeader Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.OrderShipmentNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.DatabaseNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.MasterAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ProfileNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ChannelNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ChannelAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.OrderDCAssignmentNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.DistributionCenterNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.CentralOrderNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ChannelOrderID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ShipmentID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.WarehouseID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ShipmentType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ShipmentReferenceID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ShipmentDateUtc">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ShippingCarrier">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ShippingClass">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ShippingCost">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.MainTrackingNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.MainReturnTrackingNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.BillOfLadingID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.TotalPackages">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.TotalShippedQty">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.TotalCanceledQty">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.TotalWeight">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.TotalVolume">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.WeightUnit">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.LengthUnit">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.VolumeUnit">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ShipmentStatus">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.DBChannelOrderHeaderRowID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ProcessStatus">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.ProcessDateUtc">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderDto.OrderShipmentUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto">
+            <summary>
+            Represents a OrderShipmentPackage Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.OrderShipmentPackageNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.DatabaseNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.MasterAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.ProfileNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.ChannelNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.ChannelAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.OrderShipmentNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.PackageID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.PackageType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.PackagePatternNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.PackageTrackingNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.PackageReturnTrackingNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.PackageWeight">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.PackageLength">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.PackageWidth">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.PackageHeight">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.PackageVolume">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.PackageQty">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.ParentPackageNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.HasChildPackage">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.OrderShipmentUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageDto.OrderShipmentPackageUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment Package
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto">
+            <summary>
+            Represents a OrderShipmentShippedItem Dto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.OrderShipmentShippedItemNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.DatabaseNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.MasterAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.ProfileNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.ChannelNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.ChannelAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.OrderShipmentNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.OrderShipmentPackageNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.ChannelOrderID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.OrderDCAssignmentLineNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.SKU">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.ShippedQty">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.DBChannelOrderLineRowID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.OrderShipmentUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.OrderShipmentPackageUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment Package
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemDto.OrderShipmentShippedItemUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment Item
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem">
+            <summary>
+            Represents a OrderShipmentCanceledItem.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.DatabaseNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.MasterAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.ProfileNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.ChannelNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.ChannelAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.OrderShipmentNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.ChannelOrderID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.OrderDCAssignmentLineNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.SKU">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.CanceledQty">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.CancelCode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.CancelOtherReason">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.DBChannelOrderLineRowID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.OrderShipmentUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItem.OrderShipmentCanceledItemUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment cancell Item
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentCanceledItemHelper">
+            <summary>
+            Represents a OrderShipmentCanceledItem SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentData">
+            <summary>
+            Represents a OrderShipmentData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader">
+            <summary>
+            Represents a OrderShipmentHeader.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.DatabaseNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.MasterAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ProfileNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ChannelNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ChannelAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.OrderDCAssignmentNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.DistributionCenterNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.CentralOrderNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ChannelOrderID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ShipmentID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.WarehouseID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ShipmentType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ShipmentReferenceID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ShipmentDateUtc">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ShippingCarrier">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ShippingClass">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ShippingCost">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.MainTrackingNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.MainReturnTrackingNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.BillOfLadingID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.TotalPackages">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.TotalShippedQty">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.TotalCanceledQty">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.TotalWeight">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.TotalVolume">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.WeightUnit">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.LengthUnit">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.VolumeUnit">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ShipmentStatus">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.DBChannelOrderHeaderRowID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ProcessStatus">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.ProcessDateUtc">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeader.OrderShipmentUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderHelper">
+            <summary>
+            Represents a OrderShipmentHeader SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage">
+            <summary>
+            Represents a OrderShipmentPackage.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.DatabaseNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.MasterAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.ProfileNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.ChannelNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.ChannelAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.OrderShipmentNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.PackageID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.PackageType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.PackagePatternNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.PackageTrackingNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.PackageReturnTrackingNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.PackageWeight">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.PackageLength">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.PackageWidth">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.PackageHeight">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.PackageVolume">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.PackageQty">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.ParentPackageNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.HasChildPackage">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.OrderShipmentUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackage.OrderShipmentPackageUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment Package
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageHelper">
+            <summary>
+            Represents a OrderShipmentPackage SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem">
+            <summary>
+            Represents a OrderShipmentShippedItem.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.DatabaseNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.MasterAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.ProfileNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.ChannelNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.ChannelAccountNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.OrderShipmentNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.OrderShipmentPackageNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.ChannelOrderID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.OrderDCAssignmentLineNum">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.SKU">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.ShippedQty">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.DBChannelOrderLineRowID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.OrderShipmentUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.OrderShipmentPackageUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment Package
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItem.OrderShipmentShippedItemUuid">
+            <summary>
+            Global Unique Guid for one OrderShipment Item
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.OrderShipmentShippedItemHelper">
+            <summary>
+            Represents a OrderShipmentShippedItem SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderDataDto">
+            <summary>
+            Represents a SalesOrderDataDto Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderDataDtoMapperDefault">
+            <summary>
+            Represents a SalesOrderDataDtoMapperDefault Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributesDto">
+            <summary>
+            Represents a SalesOrderHeaderAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributesDto.OrderUuid" -->
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto">
+            <summary>
+            Represents a SalesOrderHeader Dto Class.
+            NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.DatabaseNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.MasterAccountNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.ProfileNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.OrderNumber" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.OrderType" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.OrderStatus" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.OrderDate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.OrderTime" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.DueDate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.BillDate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.CustomerUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.CustomerNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.CustomerName" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.Terms" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.TermsDays" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.Currency" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.SubTotalAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.SalesAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.TotalAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.TaxableAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.NonTaxableAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.TaxRate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.TaxAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.DiscountRate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.DiscountAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.ShippingAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.ShippingTaxAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.MiscAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.MiscTaxAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.ChargeAndAllowanceAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.PaidAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.CreditAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.Balance" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.UnitCost" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.AvgCost" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.LotCost" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.OrderSourceCode" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.UpdateDateUtc" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.EnterBy" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.UpdateBy" -->
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto">
+            <summary>
+            Represents a SalesOrderHeaderInfo Dto Class.
+            NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.CentralFulfillmentNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShippingCarrier" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShippingClass" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.DistributionCenterNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.CentralOrderNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ChannelNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ChannelAccountNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ChannelOrderID" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.SecondaryChannelOrderID" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShippingAccount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.WarehouseUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.WarehouseCode" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.RefNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.CustomerPoNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.EndBuyerUserID" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.EndBuyerName" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.EndBuyerEmail" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToName" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToFirstName">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToLastName">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToSuffix">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToCompany" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToCompanyJobTitle">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToAttention" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToAddressLine1" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToAddressLine2" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToAddressLine3" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToCity" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToState" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToStateFullName">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToPostalCode" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToPostalCodeExt">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToCounty" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToCountry" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToEmail" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToDaytimePhone" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShipToNightPhone">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToName" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToFirstName">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToLastName">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToSuffix">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToCompany" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToCompanyJobTitle">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToAttention" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToAddressLine1" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToAddressLine2" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToAddressLine3" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToCity" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToState" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToStateFullName">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToPostalCode" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToPostalCodeExt">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToCounty" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToCountry" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToEmail" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToDaytimePhone" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.BillToNightPhone">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.UpdateDateUtc">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.EnterBy">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.UpdateBy">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesDto">
+            <summary>
+            Represents a SalesOrderItemsAttributes Dto Class.
+            NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesDto.OrderItemsUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesDto.OrderUuid" -->
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto">
+            <summary>
+            Represents a SalesOrderItems Dto Class.
+            NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.OrderItemsUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.Seq" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.OrderItemType" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.SalesOrderItemstatus" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.ItemDate">
+            <summary>
+            (Ignore) Order date
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.ItemTime">
+            <summary>
+            (Ignore) Order time
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.ShipDate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.EtaArrivalDate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.SKU" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.ProductUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.InventoryUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.WarehouseUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.WarehouseCode" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.LotNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.Description" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.Notes" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.Currency">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.UOM" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.PackType">
+            <summary>
+            (Ignore) Product SKU Qty pack type, for example: Case, Box, Each
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.PackQty">
+            <summary>
+            (Ignore) Item Qty each per pack.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.OrderPack">
+            <summary>
+            (Ignore) Item Order number of pack.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.ShipPack">
+            <summary>
+            (Ignore) Item Shipped number of pack.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.CancelledPack">
+            <summary>
+            (Ignore) Item Cancelled number of pack.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.OrderQty" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.ShipQty" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.CancelledQty" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.OpenQty">
+            <summary>
+            Item Open Qty.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.PriceRule" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.Price" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.DiscountRate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.DiscountAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.DiscountPrice" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.ExtAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.TaxableAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.NonTaxableAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.TaxRate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.TaxAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.ShippingAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.ShippingTaxAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.MiscAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.MiscTaxAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.ChargeAndAllowanceAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.ItemTotalAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.ShipAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.CancelledAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.OpenAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.Stockable" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.IsAr" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.Taxable" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.Costable" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.IsProfit" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.UnitCost">
+            <summary>
+            (Ignore) Item Unit Cost.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.AvgCost">
+            <summary>
+            (Ignore) Item Avg.Cost.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.LotCost">
+            <summary>
+            (Ignore) Item Lot Cost.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.LotInDate">
+            <summary>
+            (Ignore) Lot receive Date
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.LotExpDate">
+            <summary>
+            (Ignore) Lot Expiration date
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.UpdateDateUtc">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.EnterBy">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.UpdateBy">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderData">
+            <summary>
+            Represents a SalesOrderData.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader">
+            <summary>
+            Represents a SalesOrderHeader.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.DatabaseNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.MasterAccountNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.ProfileNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.OrderNumber" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.OrderType" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.OrderStatus" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.OrderDate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.OrderTime" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.DueDate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.BillDate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.CustomerUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.CustomerNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.CustomerName" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.Terms" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.TermsDays" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.Currency" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.SubTotalAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.SalesAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.TotalAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.TaxableAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.NonTaxableAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.TaxRate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.TaxAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.DiscountRate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.DiscountAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.ShippingAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.ShippingTaxAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.MiscAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.MiscTaxAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.ChargeAndAllowanceAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.PaidAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.CreditAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.Balance" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.UnitCost" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.AvgCost" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.LotCost" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.OrderSourceCode" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.UpdateDateUtc" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.EnterBy" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.UpdateBy" -->
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributes">
+            <summary>
+            Represents a SalesOrderHeaderAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributes.OrderUuid" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributes.JsonFields">
+            <summary>
+            (Ignore) JSON string.
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributesHelper">
+            <summary>
+            Represents a SalesOrderHeaderAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderHelper">
+            <summary>
+            Represents a SalesOrderHeader SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo">
+            <summary>
+            Represents a SalesOrderHeaderInfo.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.CentralFulfillmentNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShippingCarrier" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShippingClass" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.DistributionCenterNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.CentralOrderNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ChannelNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ChannelAccountNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ChannelOrderID" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.SecondaryChannelOrderID" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShippingAccount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.WarehouseUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.WarehouseCode" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.RefNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.CustomerPoNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.EndBuyerUserID" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.EndBuyerName" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.EndBuyerEmail" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToName" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToFirstName">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToLastName">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToSuffix">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToCompany" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToCompanyJobTitle">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToAttention" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToAddressLine1" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToAddressLine2" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToAddressLine3" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToCity" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToState" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToStateFullName">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToPostalCode" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToPostalCodeExt">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToCounty" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToCountry" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToEmail" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToDaytimePhone" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShipToNightPhone">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToName" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToFirstName">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToLastName">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToSuffix">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToCompany" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToCompanyJobTitle">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToAttention" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToAddressLine1" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToAddressLine2" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToAddressLine3" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToCity" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToState" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToStateFullName">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToPostalCode" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToPostalCodeExt">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToCounty" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToCountry" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToEmail" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToDaytimePhone" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.BillToNightPhone">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.UpdateDateUtc">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.EnterBy">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.UpdateBy">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoHelper">
+            <summary>
+            Represents a SalesOrderHeaderInfo SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems">
+            <summary>
+            Represents a SalesOrderItems.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.OrderItemsUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.Seq" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.OrderItemType" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.SalesOrderItemstatus" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.ItemDate">
+            <summary>
+            (Ignore) Order date
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.ItemTime">
+            <summary>
+            (Ignore) Order time
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.ShipDate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.EtaArrivalDate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.SKU" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.ProductUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.InventoryUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.WarehouseUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.WarehouseCode" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.LotNum" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.Description" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.Notes" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.Currency">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.UOM" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.PackType">
+            <summary>
+            (Ignore) Product SKU Qty pack type, for example: Case, Box, Each
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.PackQty">
+            <summary>
+            (Ignore) Item Qty each per pack.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.OrderPack">
+            <summary>
+            (Ignore) Item Order number of pack.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.ShipPack">
+            <summary>
+            (Ignore) Item Shipped number of pack.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.CancelledPack">
+            <summary>
+            (Ignore) Item Cancelled number of pack.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.OrderQty" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.ShipQty" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.CancelledQty" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.OpenQty">
+            <summary>
+            Item Open Qty.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.PriceRule" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.Price" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.DiscountRate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.DiscountAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.DiscountPrice" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.ExtAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.TaxableAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.NonTaxableAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.TaxRate" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.TaxAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.ShippingAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.ShippingTaxAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.MiscAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.MiscTaxAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.ChargeAndAllowanceAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.ItemTotalAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.ShipAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.CancelledAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.OpenAmount" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.Stockable" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.IsAr" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.Taxable" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.Costable" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.IsProfit" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.UnitCost">
+            <summary>
+            (Ignore) Item Unit Cost.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.AvgCost">
+            <summary>
+            (Ignore) Item Avg.Cost.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.LotCost">
+            <summary>
+            (Ignore) Item Lot Cost.
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.LotInDate">
+            <summary>
+            (Ignore) Lot receive Date
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.LotExpDate">
+            <summary>
+            (Ignore) Lot Expiration date
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.UpdateDateUtc">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.EnterBy">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.UpdateBy">
+            <summary>
+            (Ignore)
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributes">
+            <summary>
+            Represents a SalesOrderItemsAttributes.
+            NOTE: This class is generated from a T4 template - you should not modify it manually.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributes.OrderItemsUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributes.OrderUuid" -->
+        <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributes.JsonFields">
+            <summary>
+            (Ignore) JSON string
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesHelper">
+            <summary>
+            Represents a SalesOrderItemsAttributes SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+        <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsHelper">
+            <summary>
+            Represents a SalesOrderItems SQL Helper Static Class.
+            NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+            </summary>
+        </member>
+    </members>
+</doc>

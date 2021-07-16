@@ -49,6 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.SecondaryChannelOrderID, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.ShippingAccount, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.WarehouseUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.WarehouseCode, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.RefNum, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.CustomerPoNum, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.EndBuyerUserID, f => f.Random.Guid().ToString())
