@@ -139,6 +139,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasSecondaryChannelOrderID) data.SecondaryChannelOrderID = dto.SecondaryChannelOrderID;
 			if (dto.HasShippingAccount) data.ShippingAccount = dto.ShippingAccount;
 			if (dto.HasWarehouseUuid) data.WarehouseUuid = dto.WarehouseUuid;
+			if (dto.HasWarehouseCode) data.WarehouseCode = dto.WarehouseCode;
 			if (dto.HasRefNum) data.RefNum = dto.RefNum;
 			if (dto.HasCustomerPoNum) data.CustomerPoNum = dto.CustomerPoNum;
 			if (dto.HasEndBuyerUserID) data.EndBuyerUserID = dto.EndBuyerUserID;
@@ -230,6 +231,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProductUuid) data.ProductUuid = dto.ProductUuid;
 			if (dto.HasInventoryUuid) data.InventoryUuid = dto.InventoryUuid;
 			if (dto.HasWarehouseUuid) data.WarehouseUuid = dto.WarehouseUuid;
+			if (dto.HasWarehouseCode) data.WarehouseCode = dto.WarehouseCode;
 			if (dto.HasLotNum) data.LotNum = dto.LotNum;
 			if (dto.HasDescription) data.Description = dto.Description;
 			if (dto.HasNotes) data.Notes = dto.Notes;
@@ -449,6 +451,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.SecondaryChannelOrderID = data.SecondaryChannelOrderID;
 			dto.ShippingAccount = data.ShippingAccount;
 			dto.WarehouseUuid = data.WarehouseUuid;
+			dto.WarehouseCode = data.WarehouseCode;
 			dto.RefNum = data.RefNum;
 			dto.CustomerPoNum = data.CustomerPoNum;
 			dto.EndBuyerUserID = data.EndBuyerUserID;
@@ -544,6 +547,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ProductUuid = data.ProductUuid;
 			dto.InventoryUuid = data.InventoryUuid;
 			dto.WarehouseUuid = data.WarehouseUuid;
+			dto.WarehouseCode = data.WarehouseCode;
 			dto.LotNum = data.LotNum;
 			dto.Description = data.Description;
 			dto.Notes = data.Notes;

@@ -14,6 +14,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
 
@@ -21,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Represents a SalesOrderItemsAttributes Dto Class.
-    /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+    /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
     public class SalesOrderItemsAttributesDto
     {
@@ -32,20 +34,31 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 
+		/// <summary>
+		/// Order item line uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Order item line uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The SalesOrderItemsUuid value cannot exceed 50 characters. ")]
         public string SalesOrderItemsUuid { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasSalesOrderItemsUuid => SalesOrderItemsUuid != null;
 
+		/// <summary>
+		/// Order uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Order uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The SalesOrderUuid value cannot exceed 50 characters. ")]
         public string SalesOrderUuid { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasSalesOrderUuid => SalesOrderUuid != null;
 
 
         [IgnoreCompare]
         public JObject Fields { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasFields => Fields != null;
 
 

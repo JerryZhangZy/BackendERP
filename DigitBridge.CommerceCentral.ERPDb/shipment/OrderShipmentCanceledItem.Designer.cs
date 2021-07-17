@@ -118,6 +118,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(OrderShipmentCanceledItemUuid)) 
 				OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int DatabaseNum
         {
             get
@@ -131,6 +134,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int? MasterAccountNum
         {
             get
@@ -149,6 +155,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int? ProfileNum
         {
             get
@@ -167,6 +176,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int ChannelNum
         {
             get
@@ -180,6 +192,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int ChannelAccountNum
         {
             get
@@ -193,6 +208,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual long? OrderShipmentNum
         {
             get
@@ -211,6 +229,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string ChannelOrderID
         {
             get
@@ -224,6 +245,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual long? OrderDCAssignmentLineNum
         {
             get
@@ -242,6 +266,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string SKU
         {
             get
@@ -260,6 +287,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal CanceledQty
         {
             get
@@ -273,6 +303,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string CancelCode
         {
             get
@@ -286,6 +319,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string CancelOtherReason
         {
             get
@@ -304,6 +340,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string DBChannelOrderLineRowID
         {
             get
@@ -317,6 +356,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Global Unique Guid for one OrderShipment
+		/// </summary>
         public virtual string OrderShipmentUuid
         {
             get
@@ -330,6 +372,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Global Unique Guid for one OrderShipment cancell Item
+		/// </summary>
         public virtual string OrderShipmentCanceledItemUuid
         {
             get

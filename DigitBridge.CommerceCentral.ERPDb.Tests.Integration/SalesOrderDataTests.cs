@@ -43,7 +43,7 @@ WHERE itm.cnt > 0
 
             var data = new SalesOrderData(DataBaseFactory);
             var rowNum = data.GetRowNum(orderNumber);
-            data.Get(rowNum);
+            data.Get(rowNum.ToLong());
             var result = data.SalesOrderHeader.OrderNumber.Equals(orderNumber);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -66,7 +66,7 @@ WHERE itm.cnt > 0
 
             var data = new SalesOrderData(DataBaseFactory);
             var rowNum=await data.GetRowNumAsync(orderNumber);
-            await data.GetAsync(rowNum);
+            await data.GetAsync(rowNum.ToLong());
 
             var result = data.SalesOrderHeader.OrderNumber.Equals(orderNumber);
 

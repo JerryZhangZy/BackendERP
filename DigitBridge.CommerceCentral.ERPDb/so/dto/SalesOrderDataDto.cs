@@ -25,19 +25,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public partial class SalesOrderDataDto
     {
         public SalesOrderHeaderDto SalesOrderHeader { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasSalesOrderHeader => SalesOrderHeader != null;
 
         public SalesOrderHeaderInfoDto SalesOrderHeaderInfo { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasSalesOrderHeaderInfo => SalesOrderHeaderInfo != null;
 
         public SalesOrderHeaderAttributesDto SalesOrderHeaderAttributes { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasSalesOrderHeaderAttributes => SalesOrderHeaderAttributes != null;
 
         public IList<SalesOrderItemsDto> SalesOrderItems { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasSalesOrderItems => SalesOrderItems != null;
 
     }

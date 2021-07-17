@@ -35,7 +35,7 @@ foreach(var item in StructureClass.StructureTables)
     {
 #>
         public <#= child.Table.DtoName #> <#= child.Table.Name #> { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool Has<#= child.Table.Name #> => <#= child.Table.Name #> != null;
 
 <# 
@@ -45,7 +45,7 @@ foreach(var item in StructureClass.StructureTables)
     {
 #>
         public IList<<#= child.Table.DtoName #>> <#= child.Table.Name #> { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool Has<#= child.Table.Name #> => <#= child.Table.Name #> != null;
 
 <# 

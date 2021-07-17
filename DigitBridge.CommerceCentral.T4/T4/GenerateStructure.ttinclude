@@ -32,10 +32,10 @@ namespace <#= NamespaceStructure #>
         public <#= StructureClass.ClassName #>() : base() {}
         public <#= StructureClass.ClassName #>(IDataBaseFactory dbFactory): base(dbFactory) {}
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new bool IsNew => <#= StructureClass.MainTable.Name #>.IsNew;
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new string UniqueId => <#= StructureClass.MainTable.Name #>.UniqueId;
 
         #region CRUD Methods

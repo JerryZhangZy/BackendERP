@@ -65,7 +65,7 @@ foreach(var col in table.Columns)
         WriteLine($"{new String('\t',3)}set => {col.propertyName} = value.ToLong();");
         WriteLine($"{new String('\t',2)}}}");
 
-        WriteLine($"{new String('\t',2)}[XmlIgnore, JsonIgnore, IgnoreCompare] ");
+        WriteLine($"{new String('\t',2)}[JsonIgnore, XmlIgnore, IgnoreCompare] ");
         WriteLine($"{new String('\t',2)}public override bool IsNew => {col.propertyName} <= 0; ");
 
         continue;
@@ -108,6 +108,10 @@ foreach(var col in table.Columns)
 { 
     if (col.ignoreGenerate) continue;
     if (col.IsPrimaryKey) continue;
+
+    WriteLine($"{new String('\t',2)}/// <summary>");
+    WriteLine($"{new String('\t',2)}/// {col.Description}");
+    WriteLine($"{new String('\t',2)}/// </summary>");
     foreach(var atr in col.PropertyAtrributes)
     {
 #>
@@ -191,9 +195,9 @@ if (table.HasJsonColumns)
         if (col.ignoreGenerate) continue;
         if (col.IsPrimaryKey) continue;
 #>
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         protected CustomAttributes _<#= col.jsonDictionaryName #>;
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual CustomAttributes <#= col.jsonDictionaryName #>
         {
             get
@@ -228,7 +232,7 @@ if(!string.IsNullOrEmpty(table.StructureName) && generateStructureRepository)
 { 
         indent = 2;
         // Parent class reference
-        WriteLine($"{new String('\t',indent)}[XmlIgnore, JsonIgnore, IgnoreCompare]");
+        WriteLine($"{new String('\t',indent)}[JsonIgnore, XmlIgnore, IgnoreCompare]");
         WriteLine($"{new String('\t',indent)}private {table.StructureName} Parent {{ get; set; }}");
         WriteLine($"{new String('\t',indent)}public {table.StructureName} GetParent() => Parent;");
         WriteLine($"{new String('\t',indent)}public {table.Name} SetParent({table.StructureName} parent)");

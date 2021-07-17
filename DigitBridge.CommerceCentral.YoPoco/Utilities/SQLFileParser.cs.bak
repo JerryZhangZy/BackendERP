@@ -27,7 +27,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
     public class StructureTable
     {
         public string Name { get; set; }
-        public string AlliesName { get; set; }
         public string ParentName { get; set; }
         public string oneToOneChildrenName { get; set; }
         public string oneToManyChildrenName { get; set; }
@@ -35,15 +34,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public bool DetailTable { get; set; }
         public bool OneToOne { get; set; }
         public string LoadByColumn { get; set; }
-        public string LoadByColumnType
-        {
-            get 
-            { 
-                var col = ParentTable.GetColumn(LoadByColumn);
-                return (col == null) ? "string" : col.PropertyType;
-            }
-        }
-
         public SqlTableInfo Table { get; set; }
         public SqlTableInfo ParentTable { get; set; }
     }
@@ -51,7 +41,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
     public class SqlTableInfo
     {
         public string Name { get; set; }
-        public string AlliesName { get; set; }
         public string ParameterName { get {return $"{Name.First().ToString().ToLower()}{Name.Substring(1)}"; } }
         public string DtoName { get; set; }
         public List<SqlColumnInfo> Columns { get; set; }
@@ -62,25 +51,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public string PrimaryKey { get; set; }
         public string UniqueKey { get; set; }
-        public string UniqueKeyType
-        {
-            get 
-            { 
-                var col = GetColumn(UniqueKey);
-                return (col == null) ? "string" : col.PropertyType;
-            }
-        }
-
-        public SqlColumnInfo GetColumn(string name)
-        {
-            return Columns.FirstOrDefault(c => c.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
-        }
-        public string GetColumnType(string name)
-        {
-            var col = GetColumn(name);
-            return (col == null) ? "string" : col.PropertyType;
-        }
-
         public List<List<string>> ForeignKey { get; set; }
         public List<string> BlankKey { get; set; }
 
@@ -486,8 +456,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
                 stuTb.Table.StructureName = Structure.ClassName;
                 stuTb.Table.OneToOneInStructure = stuTb.OneToOne;
-                stuTb.Table.AlliesName = stuTb.AlliesName;
-                
                 if (stuTb.MainTable)
                     Structure.MainTable = stuTb.Table;
                 if (stuTb.DetailTable)
@@ -637,8 +605,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         protected List<SqlColumnInfo> GetSqlColumnInfo(string content, SqlTableInfo table)
         {
-            var columnRegx = new Regex(@"\[(\S+)\]\s+\[?(\w+)\]?(?:\((\d+|max|\d+,\s?\d+)\))?(?:\s+(?:[\(\w\,'\(\)]+)){1,10},(\s*--([^\[]+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            /*var columnRegx = new Regex(@"\[(\S+)\]\s+\[?(\w+)\]?(?:\((\d+|max|\d+,\s?\d+)\))?(?:\s+(?:[\(\w\,'\(\)]+)){1,10},", RegexOptions.IgnoreCase | RegexOptions.Multiline);*/
+            var columnRegx = new Regex(@"\[(\S+)\]\s+\[?(\w+)\]?(?:\((\d+|max|\d+,\s?\d+)\))?(?:\s+(?:[\(\w\,'\(\)]+)){1,10},", RegexOptions.IgnoreCase | RegexOptions.Multiline);
             var columns = new List<SqlColumnInfo>();
             var descriptions = GetDescription(content);
 
@@ -659,10 +626,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
                             Identity = IsIdentity(text),
                             Null = !IsNotNull(text),
                             IsDefault = !string.IsNullOrWhiteSpace(GetColumnDefault(m.Groups[0].Value)),
-                            Description = m.Groups[5].Value?.Trim(),
-                            //Description = descriptions.ContainsKey(m.Groups[1].Value)
-                            //    ? descriptions[m.Groups[1].Value]
-                            //    : m.Groups[1].Value,
+                            Description = descriptions.ContainsKey(m.Groups[1].Value)
+                                ? descriptions[m.Groups[1].Value]
+                                : m.Groups[1].Value,
                             Text = text
                         };
                         col.Decimals = col.Length != null && col.Length.Contains(',') ? int.Parse(col.Length.Split(',')[1]) : 0;

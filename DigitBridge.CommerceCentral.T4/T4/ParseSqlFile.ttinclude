@@ -638,7 +638,8 @@
 
         protected List<SqlColumnInfo> GetSqlColumnInfo(string content, SqlTableInfo table)
         {
-            var columnRegx = new Regex(@"\[(\S+)\]\s+\[?(\w+)\]?(?:\((\d+|max|\d+,\s?\d+)\))?(?:\s+(?:[\(\w\,'\(\)]+)){1,10},", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            var columnRegx = new Regex(@"\[(\S+)\]\s+\[?(\w+)\]?(?:\((\d+|max|\d+,\s?\d+)\))?(?:\s+(?:[\(\w\,'\(\)]+)){1,10},(\s*--([^\[]+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            /*var columnRegx = new Regex(@"\[(\S+)\]\s+\[?(\w+)\]?(?:\((\d+|max|\d+,\s?\d+)\))?(?:\s+(?:[\(\w\,'\(\)]+)){1,10},", RegexOptions.IgnoreCase | RegexOptions.Multiline);*/
             var columns = new List<SqlColumnInfo>();
             var descriptions = GetDescription(content);
 
@@ -659,9 +660,10 @@
                             Identity = IsIdentity(text),
                             Null = !IsNotNull(text),
                             IsDefault = !string.IsNullOrWhiteSpace(GetColumnDefault(m.Groups[0].Value)),
-                            Description = descriptions.ContainsKey(m.Groups[1].Value)
-                                ? descriptions[m.Groups[1].Value]
-                                : m.Groups[1].Value,
+                            Description = m.Groups[5].Value?.Trim(),
+                            //Description = descriptions.ContainsKey(m.Groups[1].Value)
+                            //    ? descriptions[m.Groups[1].Value]
+                            //    : m.Groups[1].Value,
                             Text = text
                         };
                         col.Decimals = col.Length != null && col.Length.Contains(',') ? int.Parse(col.Length.Split(',')[1]) : 0;
@@ -864,7 +866,7 @@
             col.PropertyAtrributes = new List<string>();
 
             if (col.isJson)
-                col.PropertyAtrributes.Add($"[XmlIgnore, JsonIgnore, IgnoreCompare]");
+                col.PropertyAtrributes.Add($"[JsonIgnore, XmlIgnore, IgnoreCompare]");
 
             return col;
         }

@@ -51,6 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string SecondaryChannelOrderID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SecondaryChannelOrderID) AS {name ?? "SecondaryChannelOrderID"} ";
         public static string ShippingAccount(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShippingAccount) AS {name ?? "ShippingAccount"} ";
         public static string WarehouseUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseUuid) AS {name ?? "WarehouseUuid"} ";
+        public static string WarehouseCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseCode) AS {name ?? "WarehouseCode"} ";
         public static string RefNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.RefNum) AS {name ?? "RefNum"} ";
         public static string CustomerPoNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CustomerPoNum) AS {name ?? "CustomerPoNum"} ";
         public static string EndBuyerUserID(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.EndBuyerUserID) AS {name ?? "EndBuyerUserID"} ";
@@ -121,6 +122,7 @@ RTRIM({allies}ChannelOrderID) AS ChannelOrderID,
 RTRIM({allies}SecondaryChannelOrderID) AS SecondaryChannelOrderID,
 RTRIM({allies}ShippingAccount) AS ShippingAccount,
 RTRIM({allies}WarehouseUuid) AS WarehouseUuid,
+RTRIM({allies}WarehouseCode) AS WarehouseCode,
 RTRIM({allies}RefNum) AS RefNum,
 RTRIM({allies}CustomerPoNum) AS CustomerPoNum,
 RTRIM({allies}EndBuyerUserID) AS EndBuyerUserID,

@@ -61,12 +61,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public void LoadFromValueString(string json)
         {
-            LoadProfiles();
+            //LoadProfiles();
             _customAttributeValues = json.ToDicationary();
         }
         public void LoadFromJObject(JObject json)
         {
-            LoadProfiles();
+            //LoadProfiles();
             _customAttributeValues = json.ToDicationary();
         }
         public void LoadProfiles()
@@ -103,8 +103,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public CustomAttributes LoadJson(JObject json)
         {
-            LoadProfiles();
-            LoadFromJObject(json.ContainsKey("values") ? (JObject)json["values"] : json);
+            //LoadProfiles();
+            LoadFromJObject((JObject)json["values"]);
             return this;
         }
         public JObject ToJson()
@@ -174,7 +174,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return value.ConvertObject(type, name);
         }
 
-        public void SetValue<T>(string name, T value)
+        public void SetValue<T>(string name, T value, bool insensitive = false)
         {
             if (value is null)
             {
@@ -191,19 +191,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 }
             }
 
-            var profile = GetProfile(name);
-            if (profile is null)
-            {
-                _customAttributeValues.Remove(name); // in case property was removed
-                return;
-            }
-
             var valueAsString = value.ToString();
-            if (!string.IsNullOrEmpty(profile.OptionList) && profile.OptionList.SplitTo<string>('|').Contains(valueAsString))
-                return;
 
-            //if ((profile.DefaultValue != null) && profile.DefaultValue.Equals(valueAsString, StringComparison.OrdinalIgnoreCase))
-            //    return;
+            if (insensitive)
+            {
+                var profile = GetProfile(name);
+                if (profile is null)
+                {
+                    _customAttributeValues.Remove(name); // in case property was removed
+                    return;
+                }
+                if (!string.IsNullOrEmpty(profile.OptionList) && profile.OptionList.SplitTo<string>('|').Contains(valueAsString))
+                    return;
+            }
 
             _customAttributeValues[name] = value;
         }
