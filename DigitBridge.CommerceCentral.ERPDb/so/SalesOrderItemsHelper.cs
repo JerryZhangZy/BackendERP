@@ -39,8 +39,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region - static SQL fileds statement
 
         public static string RowNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum"} ";
-        public static string OrderItemsUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.OrderItemsUuid) AS {name ?? "OrderItemsUuid"} ";
-        public static string OrderUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.OrderUuid) AS {name ?? "OrderUuid"} ";
+        public static string SalesOrderItemsUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderItemsUuid) AS {name ?? "SalesOrderItemsUuid"} ";
+        public static string SalesOrderUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderUuid) AS {name ?? "SalesOrderUuid"} ";
         public static string Seq(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Seq AS {name ?? "Seq"} ";
         public static string OrderItemType(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderItemType AS {name ?? "OrderItemType"} ";
         public static string SalesOrderItemstatus(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.SalesOrderItemstatus AS {name ?? "SalesOrderItemstatus"} ";
@@ -109,8 +109,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             var allies = string.IsNullOrEmpty(tableAllies) ? string.Empty : $"{tableAllies.TrimEnd()}.";
             return $@"
 {allies}RowNum AS RowNum,
-RTRIM({allies}OrderItemsUuid) AS OrderItemsUuid,
-RTRIM({allies}OrderUuid) AS OrderUuid,
+RTRIM({allies}SalesOrderItemsUuid) AS SalesOrderItemsUuid,
+RTRIM({allies}SalesOrderUuid) AS SalesOrderUuid,
 {allies}Seq AS Seq,
 {allies}OrderItemType AS OrderItemType,
 {allies}SalesOrderItemstatus AS SalesOrderItemstatus,

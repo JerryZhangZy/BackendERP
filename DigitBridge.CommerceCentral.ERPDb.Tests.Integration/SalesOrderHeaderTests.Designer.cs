@@ -40,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.DatabaseNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.MasterAccountNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.OrderUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.SalesOrderUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.OrderNumber, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.OrderType, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.OrderStatus, f => f.Random.Int(1, 100))
@@ -207,7 +207,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataUpdate = DataBaseFactory.GetById<SalesOrderHeader>(dataNew.UniqueId);
 			var dataChanged = FakerData.Generate();
-            dataUpdate?.CopyFrom(dataChanged, new[] {"OrderUuid"});
+            dataUpdate?.CopyFrom(dataChanged, new[] {"SalesOrderUuid"});
 
             DataBaseFactory.Begin();
             dataUpdate.Save();
@@ -415,7 +415,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataUpdate = await DataBaseFactory.GetByIdAsync<SalesOrderHeader>(dataNew.UniqueId);
             var dataChanged = FakerData.Generate();
-            dataUpdate?.CopyFrom(dataChanged, new[] { "OrderUuid" });
+            dataUpdate?.CopyFrom(dataChanged, new[] { "SalesOrderUuid" });
 
             DataBaseFactory.Begin();
             await dataUpdate.SaveAsync();

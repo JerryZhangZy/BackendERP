@@ -225,6 +225,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateRepositoryPartialClass.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepositoryPartialClass.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructure.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

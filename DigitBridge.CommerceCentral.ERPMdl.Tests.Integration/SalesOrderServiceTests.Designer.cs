@@ -91,11 +91,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             SaveData_Test();
 
             var id = DataBaseFactory.GetValue<SalesOrderHeader, string>(@"
-SELECT TOP 1 ins.OrderUuid 
+SELECT TOP 1 ins.SalesOrderUuid 
 FROM SalesOrderHeader ins 
 INNER JOIN (
-    SELECT it.OrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.OrderUuid
-) itm ON (itm.OrderUuid = ins.OrderUuid)
+    SELECT it.SalesOrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.SalesOrderUuid
+) itm ON (itm.SalesOrderUuid = ins.SalesOrderUuid)
 WHERE itm.cnt > 0
 ");
 
@@ -130,11 +130,11 @@ WHERE itm.cnt > 0
             SaveData_Test();
 
             var id = DataBaseFactory.GetValue<SalesOrderHeader, string>(@"
-SELECT TOP 1 ins.OrderUuid 
+SELECT TOP 1 ins.SalesOrderUuid 
 FROM SalesOrderHeader ins 
 INNER JOIN (
-    SELECT it.OrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.OrderUuid
-) itm ON (itm.OrderUuid = ins.OrderUuid)
+    SELECT it.SalesOrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.SalesOrderUuid
+) itm ON (itm.SalesOrderUuid = ins.SalesOrderUuid)
 WHERE itm.cnt > 0
 ");
 
@@ -178,11 +178,11 @@ WHERE itm.cnt > 0
             await SaveDataAsync_Test();
 
             var id = await DataBaseFactory.GetValueAsync<SalesOrderHeader, string>(@"
-SELECT TOP 1 ins.OrderUuid 
+SELECT TOP 1 ins.SalesOrderUuid 
 FROM SalesOrderHeader ins 
 INNER JOIN (
-    SELECT it.OrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.OrderUuid
-) itm ON (itm.OrderUuid = ins.OrderUuid)
+    SELECT it.SalesOrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.SalesOrderUuid
+) itm ON (itm.SalesOrderUuid = ins.SalesOrderUuid)
 WHERE itm.cnt > 0
 ");
 
@@ -217,11 +217,11 @@ WHERE itm.cnt > 0
             await SaveDataAsync_Test();
 
             var id = await DataBaseFactory.GetValueAsync<SalesOrderHeader, string>(@"
-SELECT TOP 1 ins.OrderUuid 
+SELECT TOP 1 ins.SalesOrderUuid 
 FROM SalesOrderHeader ins 
 INNER JOIN (
-    SELECT it.OrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.OrderUuid
-) itm ON (itm.OrderUuid = ins.OrderUuid)
+    SELECT it.SalesOrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.SalesOrderUuid
+) itm ON (itm.SalesOrderUuid = ins.SalesOrderUuid)
 WHERE itm.cnt > 0
 ");
 

@@ -1462,7 +1462,7 @@
             NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributesDto.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributesDto.SalesOrderUuid" -->
         <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto">
             <summary>
             Represents a SalesOrderHeader Dto Class.
@@ -1472,7 +1472,7 @@
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.DatabaseNum" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.MasterAccountNum" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.ProfileNum" -->
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.SalesOrderUuid" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.OrderNumber" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.OrderType" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderDto.OrderStatus" -->
@@ -1516,7 +1516,7 @@
             NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.SalesOrderUuid" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.CentralFulfillmentNum" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShippingCarrier" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoDto.ShippingClass" -->
@@ -1651,16 +1651,16 @@
             NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesDto.OrderItemsUuid" -->
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesDto.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesDto.SalesOrderItemsUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesDto.SalesOrderUuid" -->
         <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto">
             <summary>
             Represents a SalesOrderItems Dto Class.
             NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.OrderItemsUuid" -->
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.SalesOrderItemsUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.SalesOrderUuid" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.Seq" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.OrderItemType" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsDto.SalesOrderItemstatus" -->
@@ -1793,6 +1793,20 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPDb.SalesOrderData.GetRowNumAsync(System.String)">
+            <summary>
+            Get row num by order number
+            </summary>
+            <param name="orderNumber"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigitBridge.CommerceCentral.ERPDb.SalesOrderData.GetRowNum(System.String)">
+            <summary>
+            Get row num by order number
+            </summary>
+            <param name="orderNumber"></param>
+            <returns></returns>
+        </member>
         <member name="T:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader">
             <summary>
             Represents a SalesOrderHeader.
@@ -1802,7 +1816,7 @@
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.DatabaseNum" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.MasterAccountNum" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.ProfileNum" -->
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.SalesOrderUuid" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.OrderNumber" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.OrderType" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeader.OrderStatus" -->
@@ -1846,7 +1860,7 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributes.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributes.SalesOrderUuid" -->
         <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributes.JsonFields">
             <summary>
             (Ignore) JSON string.
@@ -1870,7 +1884,7 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.SalesOrderUuid" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.CentralFulfillmentNum" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShippingCarrier" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfo.ShippingClass" -->
@@ -2011,8 +2025,8 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.OrderItemsUuid" -->
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.SalesOrderItemsUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.SalesOrderUuid" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.Seq" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.OrderItemType" -->
         <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItems.SalesOrderItemstatus" -->
@@ -2145,8 +2159,8 @@
             NOTE: This class is generated from a T4 template - you should not modify it manually.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributes.OrderItemsUuid" -->
-        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributes.OrderUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributes.SalesOrderItemsUuid" -->
+        <!-- Badly formed XML comment ignored for member "P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributes.SalesOrderUuid" -->
         <member name="P:DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributes.JsonFields">
             <summary>
             (Ignore) JSON string

@@ -38,21 +38,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Order Item Line uuid. <br> Display: false, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Order Item Line uuid. <br> Display: false, Editable: false")]
-        [StringLength(50, ErrorMessage = "The OrderItemsUuid value cannot exceed 50 characters. ")]
-        public string OrderItemsUuid { get; set; }
+        [StringLength(50, ErrorMessage = "The SalesOrderItemsUuid value cannot exceed 50 characters. ")]
+        public string SalesOrderItemsUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasOrderItemsUuid => OrderItemsUuid != null;
+        public bool HasSalesOrderItemsUuid => SalesOrderItemsUuid != null;
 
 		/// <summary>
 		/// Order uuid. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("Order uuid. <br> Display: false, Editable: false.")]
-        [StringLength(50, ErrorMessage = "The OrderUuid value cannot exceed 50 characters. ")]
-        public string OrderUuid { get; set; }
+        [StringLength(50, ErrorMessage = "The SalesOrderUuid value cannot exceed 50 characters. ")]
+        public string SalesOrderUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasOrderUuid => OrderUuid != null;
+        public bool HasSalesOrderUuid => SalesOrderUuid != null;
 
 		/// <summary>
 		/// Order Item Line sequence number. <br> Title: Line#, Display: true, Editable: false

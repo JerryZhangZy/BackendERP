@@ -42,7 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string DatabaseNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DatabaseNum AS {name ?? "DatabaseNum"} ";
         public static string MasterAccountNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.MasterAccountNum AS {name ?? "MasterAccountNum"} ";
         public static string ProfileNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum"} ";
-        public static string OrderUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.OrderUuid) AS {name ?? "OrderUuid"} ";
+        public static string SalesOrderUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderUuid) AS {name ?? "SalesOrderUuid"} ";
         public static string OrderNumber(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.OrderNumber) AS {name ?? "OrderNumber"} ";
         public static string OrderType(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderType AS {name ?? "OrderType"} ";
         public static string OrderStatus(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderStatus AS {name ?? "OrderStatus"} ";
@@ -93,7 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {allies}DatabaseNum AS DatabaseNum,
 {allies}MasterAccountNum AS MasterAccountNum,
 {allies}ProfileNum AS ProfileNum,
-RTRIM({allies}OrderUuid) AS OrderUuid,
+RTRIM({allies}SalesOrderUuid) AS SalesOrderUuid,
 RTRIM({allies}OrderNumber) AS OrderNumber,
 {allies}OrderType AS OrderType,
 {allies}OrderStatus AS OrderStatus,

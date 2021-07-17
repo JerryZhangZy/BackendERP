@@ -38,7 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [ExplicitColumns]
     [TableName("SalesOrderHeader")]
     [PrimaryKey("RowNum", AutoIncrement = true)]
-    [UniqueId("OrderUuid")]
+    [UniqueId("SalesOrderUuid")]
     [DtoName("SalesOrderHeaderDto")]
     public partial class SalesOrderHeader : TableRepository<SalesOrderHeader, long>
     {
@@ -56,8 +56,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ProfileNum",SqlDbType.Int,NotNull=true)]
         private int _profileNum;
 
-        [Column("OrderUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _orderUuid;
+        [Column("SalesOrderUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesOrderUuid;
 
         [Column("OrderNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _orderNumber;
@@ -174,11 +174,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 		[IgnoreCompare] 
-		public override string UniqueId => OrderUuid; 
+		public override string UniqueId => SalesOrderUuid; 
 		public void CheckUniqueId() 
 		{
-			if (string.IsNullOrEmpty(OrderUuid)) 
-				OrderUuid = Guid.NewGuid().ToString(); 
+			if (string.IsNullOrEmpty(SalesOrderUuid)) 
+				SalesOrderUuid = Guid.NewGuid().ToString(); 
 		}
 		/// <summary>
 		/// (Readonly) Database Number. <br> Display: false, Editable: false.
@@ -231,16 +231,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Order uuid. <br> Display: false, Editable: false.
 		/// </summary>
-        public virtual string OrderUuid
+        public virtual string SalesOrderUuid
         {
             get
             {
-				return _orderUuid?.TrimEnd(); 
+				return _salesOrderUuid?.TrimEnd(); 
             }
             set
             {
-				_orderUuid = value.TruncateTo(50); 
-				OnPropertyChanged("OrderUuid", value);
+				_salesOrderUuid = value.TruncateTo(50); 
+				OnPropertyChanged("SalesOrderUuid", value);
             }
         }
 
@@ -872,7 +872,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void ClearMetaData()
         {
 			base.ClearMetaData(); 
-			OrderUuid = Guid.NewGuid().ToString(); 
+			SalesOrderUuid = Guid.NewGuid().ToString(); 
             return;
         }
 
@@ -882,7 +882,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_databaseNum = default(int); 
 			_masterAccountNum = default(int); 
 			_profileNum = default(int); 
-			_orderUuid = String.Empty; 
+			_salesOrderUuid = String.Empty; 
 			_orderNumber = String.Empty; 
 			_orderType = default(int); 
 			_orderStatus = default(int); 
