@@ -13,6 +13,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -107,30 +108,30 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new OkObjectResult(result);
         }
 
-        [FunctionName(nameof(AddSalesOrders))]
-        [OpenApiOperation(operationId: "AddSalesOrders", tags: new[] { "SalesOrders" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Example = typeof(SalesOrderDataDto), Description = "The OK response")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Example = typeof(SalesOrderDataDto), Description = "The OK response")]
-        public static async Task<IActionResult> AddSalesOrders(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "salesOrders")] HttpRequest req,
-            ILogger log)
-        {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+        //[FunctionName(nameof(AddSalesOrders))]
+        //[OpenApiOperation(operationId: "AddSalesOrders", tags: new[] { "SalesOrders" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Example = typeof(SalesOrderDataDto), Description = "The OK response")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Example = typeof(SalesOrderDataDto), Description = "The OK response")]
+        //public static async Task<IActionResult> AddSalesOrders(
+        //    [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "salesOrders")] HttpRequest req,
+        //    ILogger log)
+        //{
+        //    log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+        //    string name = req.Query["name"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+        //    string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+        //    dynamic data = JsonConvert.DeserializeObject(requestBody);
+        //    name = name ?? data?.name;
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+        //    string responseMessage = string.IsNullOrEmpty(name)
+        //        ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
+        //        : $"Hello, {name}. This HTTP triggered function executed successfully.";
 
-            return new OkObjectResult(responseMessage);
-        }
+        //    return new OkObjectResult(responseMessage);
+        //}
 
     }
 }
