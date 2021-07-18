@@ -33,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [ExplicitColumns]
     [TableName("SalesOrderItems")]
     [PrimaryKey("RowNum", AutoIncrement = true)]
-    [UniqueId("OrderItemsUuid")]
+    [UniqueId("SalesOrderItemsUuid")]
     [DtoName("SalesOrderItemsDto")]
     public partial class SalesOrderItems : TableRepository<SalesOrderItems, long>
     {
@@ -42,11 +42,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public SalesOrderItems(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         #region Fields - Generated 
-        [Column("OrderItemsUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _orderItemsUuid;
+        [Column("SalesOrderItemsUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesOrderItemsUuid;
 
-        [Column("OrderUuid",SqlDbType.VarChar,NotNull=true)]
-        private string _orderUuid;
+        [Column("SalesOrderUuid",SqlDbType.VarChar,NotNull=true)]
+        private string _salesOrderUuid;
 
         [Column("Seq",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _seq;
@@ -80,6 +80,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("WarehouseUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _warehouseUuid;
+
+        [Column("WarehouseCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _warehouseCode;
 
         [Column("LotNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _lotNum;
@@ -223,40 +226,49 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 		[IgnoreCompare] 
-		public override string UniqueId => OrderItemsUuid; 
+		public override string UniqueId => SalesOrderItemsUuid; 
 		public void CheckUniqueId() 
 		{
-			if (string.IsNullOrEmpty(OrderItemsUuid)) 
-				OrderItemsUuid = Guid.NewGuid().ToString(); 
+			if (string.IsNullOrEmpty(SalesOrderItemsUuid)) 
+				SalesOrderItemsUuid = Guid.NewGuid().ToString(); 
 		}
 		[IgnoreCompare] 
 		public override bool IsEmpty => ( string.IsNullOrWhiteSpace(SKU) );
-        public virtual string OrderItemsUuid
+		/// <summary>
+		/// (Readonly) Order Item Line uuid. <br> Display: false, Editable: false
+		/// </summary>
+        public virtual string SalesOrderItemsUuid
         {
             get
             {
-				return _orderItemsUuid?.TrimEnd(); 
+				return _salesOrderItemsUuid?.TrimEnd(); 
             }
             set
             {
-				_orderItemsUuid = value.TruncateTo(50); 
-				OnPropertyChanged("OrderItemsUuid", value);
+				_salesOrderItemsUuid = value.TruncateTo(50); 
+				OnPropertyChanged("SalesOrderItemsUuid", value);
             }
         }
 
-        public virtual string OrderUuid
+		/// <summary>
+		/// Order uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string SalesOrderUuid
         {
             get
             {
-				return _orderUuid?.TrimEnd(); 
+				return _salesOrderUuid?.TrimEnd(); 
             }
             set
             {
-				_orderUuid = value.TruncateTo(50); 
-				OnPropertyChanged("OrderUuid", value);
+				_salesOrderUuid = value.TruncateTo(50); 
+				OnPropertyChanged("SalesOrderUuid", value);
             }
         }
 
+		/// <summary>
+		/// Order Item Line sequence number. <br> Title: Line#, Display: true, Editable: false
+		/// </summary>
         public virtual int Seq
         {
             get
@@ -270,6 +282,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order item type. <br> Title: Type, Display: true, Editable: true
+		/// </summary>
         public virtual int OrderItemType
         {
             get
@@ -283,6 +298,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order item status. <br> Title: Status, Display: true, Editable: true
+		/// </summary>
         public virtual int SalesOrderItemstatus
         {
             get
@@ -296,6 +314,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Order date
+		/// </summary>
         public virtual DateTime ItemDate
         {
             get
@@ -309,6 +330,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Order time
+		/// </summary>
         public virtual TimeSpan ItemTime
         {
             get
@@ -322,6 +346,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
+		/// </summary>
         public virtual DateTime? ShipDate
         {
             get
@@ -340,6 +367,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Estimated date when item arrival to buyer. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
         public virtual DateTime? EtaArrivalDate
         {
             get
@@ -358,6 +388,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product SKU. <br> Title: SKU, Display: true, Editable: true
+		/// </summary>
         public virtual string SKU
         {
             get
@@ -371,6 +404,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
+		/// </summary>
         public virtual string ProductUuid
         {
             get
@@ -384,6 +420,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Inventory Item Line uuid, load from inventory data. <br> Display: false, Editable: false
+		/// </summary>
         public virtual string InventoryUuid
         {
             get
@@ -397,6 +436,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Warehouse uuid, load from inventory data. <br> Display: false, Editable: false
+		/// </summary>
         public virtual string WarehouseUuid
         {
             get
@@ -410,6 +452,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
+		/// </summary>
+        public virtual string WarehouseCode
+        {
+            get
+            {
+				return _warehouseCode?.TrimEnd(); 
+            }
+            set
+            {
+				_warehouseCode = value.TruncateTo(50); 
+				OnPropertyChanged("WarehouseCode", value);
+            }
+        }
+
+		/// <summary>
+		/// Lot Number. <br> Title: Lot Number, Display: true, Editable: true
+		/// </summary>
         public virtual string LotNum
         {
             get
@@ -423,6 +484,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item line description, default from ProductBasic data. <br> Title: Description, Display: true, Editable: true
+		/// </summary>
         public virtual string Description
         {
             get
@@ -436,6 +500,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order item line notes. <br> Title: Notes, Display: true, Editable: true
+		/// </summary>
         public virtual string Notes
         {
             get
@@ -449,6 +516,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore)
+		/// </summary>
         public virtual string Currency
         {
             get
@@ -462,6 +532,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Product unit of measure, load from ProductBasic data. <br> Title: UOM, Display: true, Editable: false
+		/// </summary>
         public virtual string UOM
         {
             get
@@ -475,6 +548,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Product SKU Qty pack type, for example: Case, Box, Each
+		/// </summary>
         public virtual string PackType
         {
             get
@@ -488,6 +564,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Item Qty each per pack.
+		/// </summary>
         public virtual decimal PackQty
         {
             get
@@ -501,6 +580,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Item Order number of pack.
+		/// </summary>
         public virtual decimal OrderPack
         {
             get
@@ -514,6 +596,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Item Shipped number of pack.
+		/// </summary>
         public virtual decimal ShipPack
         {
             get
@@ -527,6 +612,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Item Cancelled number of pack.
+		/// </summary>
         public virtual decimal CancelledPack
         {
             get
@@ -540,6 +628,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item Order Qty. <br> Title: Order Qty, Display: true, Editable: true
+		/// </summary>
         public virtual decimal OrderQty
         {
             get
@@ -553,6 +644,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item Shipped Qty. <br> Title: Shipped Qty, Display: true, Editable: false
+		/// </summary>
         public virtual decimal ShipQty
         {
             get
@@ -566,6 +660,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item Cancelled Qty. <br> Title: Cancelled Qty, Display: true, Editable: false
+		/// </summary>
         public virtual decimal CancelledQty
         {
             get
@@ -579,6 +676,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item Open Qty.
+		/// </summary>
         public virtual decimal OpenQty
         {
             get
@@ -592,6 +692,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item Order price rule. <br> Title: Price Type, Display: true, Editable: true
+		/// </summary>
         public virtual string PriceRule
         {
             get
@@ -605,6 +708,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item Order price. <br> Title: Unit Price, Display: true, Editable: true
+		/// </summary>
         public virtual decimal Price
         {
             get
@@ -618,6 +724,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item level discount rate. <br> Title: Discount Rate, Display: true, Editable: true
+		/// </summary>
         public virtual decimal DiscountRate
         {
             get
@@ -631,6 +740,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item level discount amount. <br> Title: Discount Amount, Display: true, Editable: true
+		/// </summary>
         public virtual decimal DiscountAmount
         {
             get
@@ -644,6 +756,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item after discount price. <br> Title: Discount Price, Display: true, Editable: false
+		/// </summary>
         public virtual decimal DiscountPrice
         {
             get
@@ -657,6 +772,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item total amount. <br> Title: Ext.Amount, Display: true, Editable: false
+		/// </summary>
         public virtual decimal ExtAmount
         {
             get
@@ -670,6 +788,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Amount should apply tax. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal TaxableAmount
         {
             get
@@ -683,6 +804,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Amount should not apply tax. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal NonTaxableAmount
         {
             get
@@ -696,6 +820,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Default Tax rate for Order items. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal TaxRate
         {
             get
@@ -709,6 +836,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item level tax amount (include shipping tax and misc tax). <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal TaxAmount
         {
             get
@@ -722,6 +852,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Total shipping fee for all items. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal ShippingAmount
         {
             get
@@ -735,6 +868,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item level tax amount of shipping fee. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal ShippingTaxAmount
         {
             get
@@ -748,6 +884,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item level handling charge. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal MiscAmount
         {
             get
@@ -761,6 +900,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item level tax amount of handling charge. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal MiscTaxAmount
         {
             get
@@ -774,6 +916,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item level Charge and Allowance Amount. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal ChargeAndAllowanceAmount
         {
             get
@@ -787,6 +932,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item total amount. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal ItemTotalAmount
         {
             get
@@ -800,6 +948,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item total amount. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal ShipAmount
         {
             get
@@ -813,6 +964,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item total amount. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal CancelledAmount
         {
             get
@@ -826,6 +980,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item total amount. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal OpenAmount
         {
             get
@@ -839,6 +996,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order item will update inventory instock qty. <br> Title: Stockable, Display: true, Editable: true
+		/// </summary>
         public virtual bool Stockable
         {
             get
@@ -852,6 +1012,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order item will add to Order total amount. <br> Title: A/R, Display: true, Editable: true
+		/// </summary>
         public virtual bool IsAr
         {
             get
@@ -865,6 +1028,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order item will apply tax. <br> Title: Taxable, Display: true, Editable: true
+		/// </summary>
         public virtual bool Taxable
         {
             get
@@ -878,6 +1044,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order item will calculate total cost. <br> Title: Apply Cost, Display: true, Editable: true
+		/// </summary>
         public virtual bool Costable
         {
             get
@@ -891,6 +1060,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Invoice item will calculate profit. <br> Title: Apply Profit, Display: true, Editable: true
+		/// </summary>
         public virtual bool IsProfit
         {
             get
@@ -904,6 +1076,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Item Unit Cost.
+		/// </summary>
         public virtual decimal UnitCost
         {
             get
@@ -917,6 +1092,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Item Avg.Cost.
+		/// </summary>
         public virtual decimal AvgCost
         {
             get
@@ -930,6 +1108,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Item Lot Cost.
+		/// </summary>
         public virtual decimal LotCost
         {
             get
@@ -943,6 +1124,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Lot receive Date
+		/// </summary>
         public virtual DateTime? LotInDate
         {
             get
@@ -961,6 +1145,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Lot Expiration date
+		/// </summary>
         public virtual DateTime? LotExpDate
         {
             get
@@ -979,6 +1166,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore)
+		/// </summary>
         public virtual DateTime? UpdateDateUtc
         {
             get
@@ -997,6 +1187,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore)
+		/// </summary>
         public virtual string EnterBy
         {
             get
@@ -1010,6 +1203,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore)
+		/// </summary>
         public virtual string UpdateBy
         {
             get
@@ -1029,7 +1225,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private SalesOrderData Parent { get; set; }
 		public SalesOrderData GetParent() => Parent;
 		public SalesOrderItems SetParent(SalesOrderData parent)
@@ -1057,7 +1253,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		public SalesOrderItemsAttributes SetChildrenSalesOrderItemsAttributes(IList<SalesOrderItemsAttributes> children)
 		{
 			var childrenList = children.ToList();
-			SalesOrderItemsAttributes = childrenList.FirstOrDefault(x => !string.IsNullOrEmpty(OrderItemsUuid) && x.OrderItemsUuid == OrderItemsUuid);
+			SalesOrderItemsAttributes = childrenList.FirstOrDefault(x => !string.IsNullOrEmpty(SalesOrderItemsUuid) && x.SalesOrderItemsUuid == SalesOrderItemsUuid);
 			return SalesOrderItemsAttributes;
 		}
 		public IList<SalesOrderItemsAttributes> GetChildrenSalesOrderItemsAttributes()
@@ -1074,17 +1270,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				return SalesOrderItemsAttributes;
 			CheckUniqueId();
 			SalesOrderItemsAttributes.SetParent(Parent);
-			if (SalesOrderItemsAttributes.OrderItemsUuid != OrderItemsUuid) SalesOrderItemsAttributes.OrderItemsUuid = OrderItemsUuid;
+			if (SalesOrderItemsAttributes.SalesOrderItemsUuid != SalesOrderItemsUuid) SalesOrderItemsAttributes.SalesOrderItemsUuid = SalesOrderItemsUuid;
 			return SalesOrderItemsAttributes;
 		}
 		public SalesOrderItemsAttributes LoadSalesOrderItemsAttributes()
 		{
-			SalesOrderItemsAttributes = dbFactory.GetById<SalesOrderItemsAttributes>(OrderItemsUuid);
+			SalesOrderItemsAttributes = dbFactory.GetById<SalesOrderItemsAttributes>(SalesOrderItemsUuid);
 			return SalesOrderItemsAttributes;
 		}
 		public async Task<SalesOrderItemsAttributes> LoadSalesOrderItemsAttributesAsync()
 		{
-			SalesOrderItemsAttributes = await dbFactory.GetByIdAsync<SalesOrderItemsAttributes>(OrderItemsUuid);
+			SalesOrderItemsAttributes = await dbFactory.GetByIdAsync<SalesOrderItemsAttributes>(SalesOrderItemsUuid);
 			return SalesOrderItemsAttributes;
 		}
 		public SalesOrderItemsAttributes NewSalesOrderItemsAttributes()
@@ -1092,7 +1288,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckUniqueId();
 			var child = new SalesOrderItemsAttributes(dbFactory);
 			child.SetParent(Parent);
-			child.OrderItemsUuid = OrderItemsUuid;
+			child.SalesOrderItemsUuid = SalesOrderItemsUuid;
 			return child;
 		}
 		public SalesOrderItemsAttributes AddSalesOrderItemsAttributes(SalesOrderItemsAttributes child)
@@ -1108,15 +1304,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void ClearMetaData()
         {
 			base.ClearMetaData(); 
-			OrderItemsUuid = Guid.NewGuid().ToString(); 
+			SalesOrderItemsUuid = Guid.NewGuid().ToString(); 
             return;
         }
 
         public override SalesOrderItems Clear()
         {
             base.Clear();
-			_orderItemsUuid = String.Empty; 
-			_orderUuid = String.Empty; 
+			_salesOrderItemsUuid = String.Empty; 
+			_salesOrderUuid = String.Empty; 
 			_seq = default(int); 
 			_orderItemType = default(int); 
 			_salesOrderItemstatus = default(int); 
@@ -1128,6 +1324,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_productUuid = String.Empty; 
 			_inventoryUuid = String.Empty; 
 			_warehouseUuid = String.Empty; 
+			_warehouseCode = String.Empty; 
 			_lotNum = String.Empty; 
 			_description = String.Empty; 
 			_notes = String.Empty; 
@@ -1198,21 +1395,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return;
         }
 
-		public static IList<SalesOrderItems> FindByOrderUuid(IDataBaseFactory dbFactory, string orderUuid)
+		public static IList<SalesOrderItems> FindBySalesOrderUuid(IDataBaseFactory dbFactory, string salesOrderUuid)
 		{
-			return dbFactory.Find<SalesOrderItems>("WHERE OrderUuid = @0 ORDER BY Seq ", orderUuid).ToList();
+			return dbFactory.Find<SalesOrderItems>("WHERE SalesOrderUuid = @0 ORDER BY Seq ", salesOrderUuid).ToList();
 		}
-		public static long CountByOrderUuid(IDataBaseFactory dbFactory, string orderUuid)
+		public static long CountBySalesOrderUuid(IDataBaseFactory dbFactory, string salesOrderUuid)
 		{
-			return dbFactory.Count<SalesOrderItems>("WHERE OrderUuid = @0 ", orderUuid);
+			return dbFactory.Count<SalesOrderItems>("WHERE SalesOrderUuid = @0 ", salesOrderUuid);
 		}
-		public static async Task<IList<SalesOrderItems>> FindByAsyncOrderUuid(IDataBaseFactory dbFactory, string orderUuid)
+		public static async Task<IList<SalesOrderItems>> FindByAsyncSalesOrderUuid(IDataBaseFactory dbFactory, string salesOrderUuid)
 		{
-			return (await dbFactory.FindAsync<SalesOrderItems>("WHERE OrderUuid = @0 ORDER BY Seq ", orderUuid)).ToList();
+			return (await dbFactory.FindAsync<SalesOrderItems>("WHERE SalesOrderUuid = @0 ORDER BY Seq ", salesOrderUuid)).ToList();
 		}
-		public static async Task<long> CountByAsyncOrderUuid(IDataBaseFactory dbFactory, string orderUuid)
+		public static async Task<long> CountByAsyncSalesOrderUuid(IDataBaseFactory dbFactory, string salesOrderUuid)
 		{
-			return await dbFactory.CountAsync<SalesOrderItems>("WHERE OrderUuid = @0 ", orderUuid);
+			return await dbFactory.CountAsync<SalesOrderItems>("WHERE SalesOrderUuid = @0 ", salesOrderUuid);
 		}
 
 

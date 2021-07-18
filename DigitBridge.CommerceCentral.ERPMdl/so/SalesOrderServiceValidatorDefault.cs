@@ -56,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual bool ValidateAllMode(SalesOrderData data)
         {
             var dbFactory = data.dbFactory;
-            if (string.IsNullOrEmpty(data.SalesOrderHeader.OrderUuid))
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesOrderUuid))
             {
                 IsValid = false;
                 this.Messages.Add($"Unique Id cannot be empty.");
@@ -147,7 +147,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual async Task<bool> ValidateAllModeAsync(SalesOrderData data)
         {
             var dbFactory = data.dbFactory;
-            if (string.IsNullOrEmpty(data.SalesOrderHeader.OrderUuid))
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesOrderUuid))
             {
                 IsValid = false;
                 this.Messages.Add($"Unique Id cannot be empty.");

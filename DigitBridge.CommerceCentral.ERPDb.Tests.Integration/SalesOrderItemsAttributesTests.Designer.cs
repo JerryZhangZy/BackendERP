@@ -37,8 +37,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
             #region faker data rules
             return new Faker<SalesOrderItemsAttributes>()
-					.RuleFor(u => u.OrderItemsUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.OrderUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.SalesOrderItemsUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.SalesOrderUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.Fields, (f, u) => u.Fields.SetValues(f.Random.JObject()))
 					;
             #endregion faker data rules
@@ -144,7 +144,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataUpdate = DataBaseFactory.GetById<SalesOrderItemsAttributes>(dataNew.UniqueId);
 			var dataChanged = FakerData.Generate();
-            dataUpdate?.CopyFrom(dataChanged, new[] {"OrderItemsUuid"});
+            dataUpdate?.CopyFrom(dataChanged, new[] {"SalesOrderItemsUuid"});
 
             DataBaseFactory.Begin();
             dataUpdate.Save();
@@ -268,7 +268,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataUpdate = await DataBaseFactory.GetByIdAsync<SalesOrderItemsAttributes>(dataNew.UniqueId);
             var dataChanged = FakerData.Generate();
-            dataUpdate?.CopyFrom(dataChanged, new[] { "OrderItemsUuid" });
+            dataUpdate?.CopyFrom(dataChanged, new[] { "SalesOrderItemsUuid" });
 
             DataBaseFactory.Begin();
             await dataUpdate.SaveAsync();

@@ -1,14 +1,16 @@
-﻿using System;
-using Microsoft.CSharp;
-using System.Data;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="Microsoft.CSharp" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating"#>
 
-namespace DigitBridge.CommerceCentral.YoPoco
-{
+<#+
     public class StructureInfo
     {
         public string ClassName { get; set; }
@@ -31,9 +33,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public string ParentName { get; set; }
         public string oneToOneChildrenName { get; set; }
         public string oneToManyChildrenName { get; set; }
-        public bool MainTable { get; set; }
-        public bool DetailTable { get; set; }
-        public bool OneToOne { get; set; }
+        public bool MainTable { get; set; } 
+        public bool DetailTable { get; set; } 
+        public bool OneToOne { get; set; } 
         public string LoadByColumn { get; set; }
         public string LoadByColumnType
         {
@@ -57,7 +59,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public List<SqlColumnInfo> Columns { get; set; }
         public List<SqlColumnInfo> JsonColumns { get; set; }
         public string Text { get; set; }
-
+        
         public bool HasJsonColumns { get { return JsonColumns != null && JsonColumns.Count > 0; } }
 
         public string PrimaryKey { get; set; }
@@ -100,17 +102,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
             IdProperties = new List<string>();
             foreach (var col in Columns)
             {
-                if (!col.Name.Equals(PrimaryKey, StringComparison.CurrentCultureIgnoreCase) &&
-                    !col.Name.Equals(UniqueKey, StringComparison.CurrentCultureIgnoreCase) &&
-                    col.Type.Equals("string", StringComparison.CurrentCultureIgnoreCase) &&
-                    !col.Name.EndsWith("Id", StringComparison.CurrentCultureIgnoreCase))
+                if (!col.Name.Equals(PrimaryKey, StringComparison.CurrentCultureIgnoreCase) && 
+                    !col.Name.Equals(UniqueKey, StringComparison.CurrentCultureIgnoreCase) &&  
+                    col.Type.Equals("string", StringComparison.CurrentCultureIgnoreCase) && 
+                    !col.Name.EndsWith("Id", StringComparison.CurrentCultureIgnoreCase)) 
                 {
                     StringProperties.Add(col.Name);
                 }
 
-                if (!col.Name.Equals(PrimaryKey, StringComparison.CurrentCultureIgnoreCase) &&
-                    !col.Name.Equals(UniqueKey, StringComparison.CurrentCultureIgnoreCase) &&
-                    col.Type.Equals("string", StringComparison.CurrentCultureIgnoreCase) &&
+                if (!col.Name.Equals(PrimaryKey, StringComparison.CurrentCultureIgnoreCase) && 
+                    !col.Name.Equals(UniqueKey, StringComparison.CurrentCultureIgnoreCase) &&  
+                    col.Type.Equals("string", StringComparison.CurrentCultureIgnoreCase) && 
                     col.Name.EndsWith("Id", StringComparison.CurrentCultureIgnoreCase))
                 {
                     IdProperties.Add(col.Name);
@@ -123,14 +125,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (!HasBlankKey) return null;
             var sb = new StringBuilder();
             foreach(var fKey in BlankKey)
-            {
+            { 
                 if (string.IsNullOrEmpty(fKey)) continue;
                 var colKey = Columns.FirstOrDefault(x => x.Name.Equals(fKey, StringComparison.CurrentCultureIgnoreCase));
                 if (colKey == null) continue;
                 if (sb.Length > 1) sb.Append("&& ");
                 if (colKey.Type =="string")
                     sb.Append($"string.IsNullOrWhiteSpace({colKey.Name}) ");
-                else
+                else 
                     sb.Append($"({colKey.Name} is null || {colKey.Name} == {colKey.GetDefaultValue()}) ");
             }
             return sb.ToString();
@@ -168,7 +170,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public bool HasOneToManyChildren { get { return oneToManyChildren != null && oneToManyChildren.Count > 0; } }
 
         public bool OneToOneInStructure { get; set; }
-        public bool IsChildrenOfChildren { get; set; }
+        public bool IsChildrenOfChildren { get; set; } 
     }
 
     public class SqlColumnInfo
@@ -178,7 +180,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public string DataType { get; set; }
         public string Length { get; set; }
         public int Decimals { get; set; }
-        
         public bool Identity { get; set; }
         public bool Key { get; set; }
         public bool Null { get; set; }
@@ -194,19 +195,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public string PropertyType
         {
-            get
-            {
+            get 
+            { 
                 var t = FieldType;
-                return t.ToLower().Contains("byte") ? "bool" : t;
+                return t.ToLower().Contains("byte") ? "bool" : t; 
             }
         }
 
         public string FieldType
         {
-            get
-            {
+            get 
+            { 
                 return (
-                    !Null ||
+                    !Null || 
                     Type =="byte[]" || 
                     Type =="string" ||
                     Type =="Guid" ||
@@ -218,15 +219,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public string DtoPropertyType
         {
-            get
-            {
+            get 
+            { 
                 var t = PropertyType;
                 if (isDateTimeLikely)
                     t = "DateTime";
 
-                return t.EndsWith("?")
-                    ? t
-                    : (t.ToLower() == "byte[]" ||
+                return t.EndsWith("?") 
+                    ? t 
+                    : (t.ToLower() == "byte[]" || 
                        t.ToLower() == "string" ||
                        t.ToLower() == "object")
                         ? t
@@ -236,8 +237,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public string ConvertPropertyTypeDtoToData
         {
-            get
-            {
+            get 
+            { 
                 var t = PropertyType;
                 var td = DtoPropertyType;
                 return (t == td)
@@ -248,8 +249,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public string ConvertPropertyTypeDataToDto
         {
-            get
-            {
+            get 
+            { 
                 var t = PropertyType;
                 var td = DtoPropertyType;
                 return (t == td || $"{t}?" == td)
@@ -273,10 +274,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public bool ignoreGenerate {
             get { 
                 return (
-                    Name.Equals("RowNum", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("RowNum", StringComparison.CurrentCultureIgnoreCase) || 
                     Name.Equals("EnterDateUtc", StringComparison.CurrentCultureIgnoreCase) ||
                     Name.Equals("DigitBridgeGuid", StringComparison.CurrentCultureIgnoreCase)
-                );
+                ); 
             }
         }
         public string jsonDictionaryName {
@@ -351,7 +352,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 case "timespan":
                     defaultExp = "new TimeSpan().MinValueSql()";
                     break;
-
+                
                 default:
                     defaultExp = string.Format("default({0})",Type.TrimEnd());
                     break;
@@ -384,9 +385,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     break;
 
                 case "string":
-                    gen = (IsUniqueKey || Name.ToLower().EndsWith("id"))
+                    gen = (IsUniqueKey || Name.ToLower().EndsWith("id")) 
                         ? $"f => f.Random.Guid().ToString()"
-                        : (Length == "50")
+                        : (Length == "50") 
                             ? $"f => f.Random.AlphaNumeric({this.Length})"
                             : (Length.Equals("max", StringComparison.CurrentCultureIgnoreCase))
                                 ? $"f => f.Lorem.Sentence()"
@@ -417,7 +418,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 case "int":
                     gen = $"f => f.Random.Int(1, 100)";
                     break;
-
+                
                 default:
                     gen = $"f => default({t})";
                     break;
@@ -474,7 +475,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public StructureInfo GetStructure()
         {
-            if (Structure == null || !Structure.StructureTables.Any() || !Tables.Any())
+            if (Structure == null || !Structure.StructureTables.Any() || !Tables.Any()) 
                 return null;
             foreach (var stu in Structure.StructureTables)
             {
@@ -538,7 +539,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 var folder = new DirectoryInfo(path);
                 foreach (var file in folder.GetFiles())
                 {
-                    if (!file.Extension.Equals(".sql", StringComparison.CurrentCultureIgnoreCase))
+                    if (!file.Extension.Equals(".sql", StringComparison.CurrentCultureIgnoreCase)) 
                         continue;
                     if (IsFileSkip(Path.GetFileNameWithoutExtension(file.Name)))
                         continue;
@@ -637,8 +638,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         protected List<SqlColumnInfo> GetSqlColumnInfo(string content, SqlTableInfo table)
         {
-            var columnRegx = new Regex(@"\[(\S+)\]\s+\[?(\w+)\]?(?:\((\d+|max|\d+,\s?\d+)\))?(?:\s+(?:[\(\w\,'\(\)]+)){1,10},(\s*--([^\[]+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            /*var columnRegx = new Regex(@"\[(\S+)\]\s+\[?(\w+)\]?(?:\((\d+|max|\d+,\s?\d+)\))?(?:\s+(?:[\(\w\,'\(\)]+)){1,10},", RegexOptions.IgnoreCase | RegexOptions.Multiline);*/
+            var columnRegx = new Regex(@"\[(\S+)\]\s+\[?(\w+)\]?(?:\((\d+|max|\d+,\s?\d+)\))?(?:\s+(?:[\(\w\,'\(\)]+)){1,10},", RegexOptions.IgnoreCase | RegexOptions.Multiline);
             var columns = new List<SqlColumnInfo>();
             var descriptions = GetDescription(content);
 
@@ -655,14 +655,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
                             Name = m.Groups[1].Value,
                             Type = ChangeToCSharpType(m.Groups[2].Value, !IsNotNull(text)),
                             DataType = "SqlDbType." + Enum.Parse(typeof(SqlDbType), m.Groups[2].Value, true).ToString(),
-                            Length = m.Groups[3].Value, 
+                            Length = m.Groups[3].Value,
                             Identity = IsIdentity(text),
                             Null = !IsNotNull(text),
                             IsDefault = !string.IsNullOrWhiteSpace(GetColumnDefault(m.Groups[0].Value)),
-                            Description = m.Groups[5].Value?.Trim(),
-                            //Description = descriptions.ContainsKey(m.Groups[1].Value)
-                            //    ? descriptions[m.Groups[1].Value]
-                            //    : m.Groups[1].Value,
+                            Description = descriptions.ContainsKey(m.Groups[1].Value)
+                                ? descriptions[m.Groups[1].Value]
+                                : m.Groups[1].Value,
                             Text = text
                         };
                         col.Decimals = col.Length != null && col.Length.Contains(',') ? int.Parse(col.Length.Split(',')[1]) : 0;
@@ -855,7 +854,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             // Datetime
             if (col.isDateTimeLikely)
                 col.DtoAtrributes.Add($"[DataType(DataType.DateTime)]");
-
+            
             return col;
         }
 
@@ -865,7 +864,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             col.PropertyAtrributes = new List<string>();
 
             if (col.isJson)
-                col.PropertyAtrributes.Add($"[XmlIgnore, JsonIgnore, IgnoreCompare]");
+                col.PropertyAtrributes.Add($"[JsonIgnore, XmlIgnore, IgnoreCompare]");
 
             return col;
         }
@@ -937,4 +936,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
 
     }
-}
+
+
+#>

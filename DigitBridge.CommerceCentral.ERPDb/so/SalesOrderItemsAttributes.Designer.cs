@@ -33,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [ExplicitColumns]
     [TableName("SalesOrderItemsAttributes")]
     [PrimaryKey("RowNum", AutoIncrement = true)]
-    [UniqueId("OrderItemsUuid")]
+    [UniqueId("SalesOrderItemsUuid")]
     [DtoName("SalesOrderItemsAttributesDto")]
     public partial class SalesOrderItemsAttributes : TableRepository<SalesOrderItemsAttributes, long>
     {
@@ -42,11 +42,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public SalesOrderItemsAttributes(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         #region Fields - Generated 
-        [Column("OrderItemsUuid",SqlDbType.VarChar,NotNull=true)]
-        private string _orderItemsUuid;
+        [Column("SalesOrderItemsUuid",SqlDbType.VarChar,NotNull=true)]
+        private string _salesOrderItemsUuid;
 
-        [Column("OrderUuid",SqlDbType.VarChar,NotNull=true)]
-        private string _orderUuid;
+        [Column("SalesOrderUuid",SqlDbType.VarChar,NotNull=true)]
+        private string _salesOrderUuid;
 
         [Column("JsonFields",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _jsonFields;
@@ -55,39 +55,48 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 		[IgnoreCompare] 
-		public override string UniqueId => OrderItemsUuid; 
+		public override string UniqueId => SalesOrderItemsUuid; 
 		public void CheckUniqueId() 
 		{
-			if (string.IsNullOrEmpty(OrderItemsUuid)) 
-				OrderItemsUuid = Guid.NewGuid().ToString(); 
+			if (string.IsNullOrEmpty(SalesOrderItemsUuid)) 
+				SalesOrderItemsUuid = Guid.NewGuid().ToString(); 
 		}
-        public virtual string OrderItemsUuid
+		/// <summary>
+		/// Order item line uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string SalesOrderItemsUuid
         {
             get
             {
-				return _orderItemsUuid?.TrimEnd(); 
+				return _salesOrderItemsUuid?.TrimEnd(); 
             }
             set
             {
-				_orderItemsUuid = value.TruncateTo(50); 
-				OnPropertyChanged("OrderItemsUuid", value);
+				_salesOrderItemsUuid = value.TruncateTo(50); 
+				OnPropertyChanged("SalesOrderItemsUuid", value);
             }
         }
 
-        public virtual string OrderUuid
+		/// <summary>
+		/// Order uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string SalesOrderUuid
         {
             get
             {
-				return _orderUuid?.TrimEnd(); 
+				return _salesOrderUuid?.TrimEnd(); 
             }
             set
             {
-				_orderUuid = value.TruncateTo(50); 
-				OnPropertyChanged("OrderUuid", value);
+				_salesOrderUuid = value.TruncateTo(50); 
+				OnPropertyChanged("SalesOrderUuid", value);
             }
         }
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+		/// <summary>
+		/// (Ignore) JSON string
+		/// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual string JsonFields
         {
             get
@@ -102,9 +111,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         protected CustomAttributes _Fields;
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual CustomAttributes Fields
         {
             get
@@ -124,7 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private SalesOrderData Parent { get; set; }
 		public SalesOrderData GetParent() => Parent;
 		public SalesOrderItemsAttributes SetParent(SalesOrderData parent)
@@ -139,15 +148,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void ClearMetaData()
         {
 			base.ClearMetaData(); 
-			OrderItemsUuid = Guid.NewGuid().ToString(); 
+			SalesOrderItemsUuid = Guid.NewGuid().ToString(); 
             return;
         }
 
         public override SalesOrderItemsAttributes Clear()
         {
             base.Clear();
-			_orderItemsUuid = String.Empty; 
-			_orderUuid = String.Empty; 
+			_salesOrderItemsUuid = String.Empty; 
+			_salesOrderUuid = String.Empty; 
 			_jsonFields = String.Empty; 
 			Fields.Clear(); 
             ClearChildren();
@@ -170,21 +179,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return;
         }
 
-		public static IList<SalesOrderItemsAttributes> FindByOrderUuid(IDataBaseFactory dbFactory, string orderUuid)
+		public static IList<SalesOrderItemsAttributes> FindBySalesOrderUuid(IDataBaseFactory dbFactory, string salesOrderUuid)
 		{
-			return dbFactory.Find<SalesOrderItemsAttributes>("WHERE OrderUuid = @0 ", orderUuid).ToList();
+			return dbFactory.Find<SalesOrderItemsAttributes>("WHERE SalesOrderUuid = @0 ", salesOrderUuid).ToList();
 		}
-		public static long CountByOrderUuid(IDataBaseFactory dbFactory, string orderUuid)
+		public static long CountBySalesOrderUuid(IDataBaseFactory dbFactory, string salesOrderUuid)
 		{
-			return dbFactory.Count<SalesOrderItemsAttributes>("WHERE OrderUuid = @0 ", orderUuid);
+			return dbFactory.Count<SalesOrderItemsAttributes>("WHERE SalesOrderUuid = @0 ", salesOrderUuid);
 		}
-		public static async Task<IList<SalesOrderItemsAttributes>> FindByAsyncOrderUuid(IDataBaseFactory dbFactory, string orderUuid)
+		public static async Task<IList<SalesOrderItemsAttributes>> FindByAsyncSalesOrderUuid(IDataBaseFactory dbFactory, string salesOrderUuid)
 		{
-			return (await dbFactory.FindAsync<SalesOrderItemsAttributes>("WHERE OrderUuid = @0 ", orderUuid)).ToList();
+			return (await dbFactory.FindAsync<SalesOrderItemsAttributes>("WHERE SalesOrderUuid = @0 ", salesOrderUuid)).ToList();
 		}
-		public static async Task<long> CountByAsyncOrderUuid(IDataBaseFactory dbFactory, string orderUuid)
+		public static async Task<long> CountByAsyncSalesOrderUuid(IDataBaseFactory dbFactory, string salesOrderUuid)
 		{
-			return await dbFactory.CountAsync<SalesOrderItemsAttributes>("WHERE OrderUuid = @0 ", orderUuid);
+			return await dbFactory.CountAsync<SalesOrderItemsAttributes>("WHERE SalesOrderUuid = @0 ", salesOrderUuid);
 		}
 
 		public override SalesOrderItemsAttributes ConvertDbFieldsToData()

@@ -131,6 +131,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(OrderShipmentPackageUuid)) 
 				OrderShipmentPackageUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int DatabaseNum
         {
             get
@@ -144,6 +147,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int? MasterAccountNum
         {
             get
@@ -162,6 +168,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int? ProfileNum
         {
             get
@@ -180,6 +189,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int ChannelNum
         {
             get
@@ -193,6 +205,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int ChannelAccountNum
         {
             get
@@ -206,6 +221,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual long? OrderShipmentNum
         {
             get
@@ -224,6 +242,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string PackageID
         {
             get
@@ -242,6 +263,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int? PackageType
         {
             get
@@ -260,6 +284,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual int? PackagePatternNum
         {
             get
@@ -278,6 +305,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string PackageTrackingNumber
         {
             get
@@ -296,6 +326,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual string PackageReturnTrackingNumber
         {
             get
@@ -314,6 +347,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? PackageWeight
         {
             get
@@ -332,6 +368,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? PackageLength
         {
             get
@@ -350,6 +389,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? PackageWidth
         {
             get
@@ -368,6 +410,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? PackageHeight
         {
             get
@@ -386,6 +431,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? PackageVolume
         {
             get
@@ -404,6 +452,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual decimal? PackageQty
         {
             get
@@ -422,6 +473,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual long? ParentPackageNum
         {
             get
@@ -440,6 +494,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
         public virtual bool? HasChildPackage
         {
             get
@@ -458,6 +515,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Global Unique Guid for one OrderShipment
+		/// </summary>
         public virtual string OrderShipmentUuid
         {
             get
@@ -471,6 +531,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Global Unique Guid for one OrderShipment Package
+		/// </summary>
         public virtual string OrderShipmentPackageUuid
         {
             get

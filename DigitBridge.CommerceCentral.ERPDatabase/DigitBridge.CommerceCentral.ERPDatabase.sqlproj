@@ -109,21 +109,6 @@
     </ArtifactReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="so\SalesOrderHeader.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="so\SalesOrderHeaderAttributes.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="so\SalesOrderHeaderInfo.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="so\SalesOrderItems.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="so\SalesOrderItemsAttributes.sql" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="inventory\InventoryLog.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -165,5 +150,12 @@
   <ItemGroup>
     <None Include="channelOrder\OrderHeader.sql" />
     <None Include="channelOrder\OrderLine.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="so\SalesOrderHeader.sql" />
+    <None Include="so\SalesOrderHeaderAttributes.sql" />
+    <None Include="so\SalesOrderHeaderInfo.sql" />
+    <None Include="so\SalesOrderItems.sql" />
+    <None Include="so\SalesOrderItemsAttributes.sql" />
   </ItemGroup>
 </Project>

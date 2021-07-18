@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.WebApi
             builder.AddSwashBuckle(Assembly.GetExecutingAssembly(), opts =>
             {
                 opts.SpecVersion = OpenApiSpecVersion.OpenApi3_0;
-                opts.AddCodeParameter = true;
+                opts.AddCodeParameter = false;
                 opts.PrependOperationWithRoutePrefix = true;
                 opts.XmlPath = "DigitBridge.CommerceCentral.WebApi.xml";
                 opts.Documents = new[]
@@ -48,7 +48,7 @@ namespace DigitBridge.CommerceCentral.WebApi
                 //opts.OverridenPathToSwaggerJson = new Uri("http://localhost:7071/api/Swagger/json");
                 opts.ConfigureSwaggerGen = x =>
                 {
-                    x.OperationFilter<AddRequiredHeaderParameter>();
+                    x.OperationFilter<RequiredHeaderParameter>();
                     //custom operation example
                     x.CustomOperationIds(apiDesc => apiDesc.TryGetMethodInfo(out MethodInfo methodInfo)
                         ? methodInfo.Name
@@ -56,7 +56,7 @@ namespace DigitBridge.CommerceCentral.WebApi
 
                     //custom filter example
                     //x.DocumentFilter<RemoveSchemasFilter>();
-
+                    x.IncludeXmlComments("DigitBridge.CommerceCentral.ERPDb.xml", true);
                     //oauth2
                     x.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                     {

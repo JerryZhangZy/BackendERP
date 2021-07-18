@@ -33,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [ExplicitColumns]
     [TableName("SalesOrderHeaderAttributes")]
     [PrimaryKey("RowNum", AutoIncrement = true)]
-    [UniqueId("OrderUuid")]
+    [UniqueId("SalesOrderUuid")]
     [DtoName("SalesOrderHeaderAttributesDto")]
     public partial class SalesOrderHeaderAttributes : TableRepository<SalesOrderHeaderAttributes, long>
     {
@@ -42,8 +42,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public SalesOrderHeaderAttributes(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         #region Fields - Generated 
-        [Column("OrderUuid",SqlDbType.VarChar,NotNull=true)]
-        private string _orderUuid;
+        [Column("SalesOrderUuid",SqlDbType.VarChar,NotNull=true)]
+        private string _salesOrderUuid;
 
         [Column("JsonFields",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _jsonFields;
@@ -52,26 +52,32 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 		[IgnoreCompare] 
-		public override string UniqueId => OrderUuid; 
+		public override string UniqueId => SalesOrderUuid; 
 		public void CheckUniqueId() 
 		{
-			if (string.IsNullOrEmpty(OrderUuid)) 
-				OrderUuid = Guid.NewGuid().ToString(); 
+			if (string.IsNullOrEmpty(SalesOrderUuid)) 
+				SalesOrderUuid = Guid.NewGuid().ToString(); 
 		}
-        public virtual string OrderUuid
+		/// <summary>
+		/// Order uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string SalesOrderUuid
         {
             get
             {
-				return _orderUuid?.TrimEnd(); 
+				return _salesOrderUuid?.TrimEnd(); 
             }
             set
             {
-				_orderUuid = value.TruncateTo(50); 
-				OnPropertyChanged("OrderUuid", value);
+				_salesOrderUuid = value.TruncateTo(50); 
+				OnPropertyChanged("SalesOrderUuid", value);
             }
         }
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+		/// <summary>
+		/// (Ignore) JSON string.
+		/// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual string JsonFields
         {
             get
@@ -86,9 +92,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         protected CustomAttributes _Fields;
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual CustomAttributes Fields
         {
             get
@@ -108,7 +114,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private SalesOrderData Parent { get; set; }
 		public SalesOrderData GetParent() => Parent;
 		public SalesOrderHeaderAttributes SetParent(SalesOrderData parent)
@@ -123,14 +129,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void ClearMetaData()
         {
 			base.ClearMetaData(); 
-			OrderUuid = Guid.NewGuid().ToString(); 
+			SalesOrderUuid = Guid.NewGuid().ToString(); 
             return;
         }
 
         public override SalesOrderHeaderAttributes Clear()
         {
             base.Clear();
-			_orderUuid = String.Empty; 
+			_salesOrderUuid = String.Empty; 
 			_jsonFields = String.Empty; 
 			Fields.Clear(); 
             ClearChildren();

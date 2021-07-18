@@ -9,16 +9,14 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Aliencube.AzureFunctions.Extensions.OpenApi" Version="3.1.1" />
-    <PackageReference Include="AzureExtensions.Swashbuckle" Version="3.3.2" />
-    <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
-    <PackageReference Include="Microsoft.OpenApi.CSharpAnnotations.DocumentGeneration" Version="2.0.0-beta02" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
+    <Compile Remove="SalesOrderApi_bak.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
+	  <PackageReference Include="AzureExtensions.Swashbuckle" Version="3.3.2" />
+	  <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPMdl\DigitBridge.CommerceCentral.ERPMdl.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

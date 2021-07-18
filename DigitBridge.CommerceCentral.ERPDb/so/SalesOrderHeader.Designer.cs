@@ -38,7 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [ExplicitColumns]
     [TableName("SalesOrderHeader")]
     [PrimaryKey("RowNum", AutoIncrement = true)]
-    [UniqueId("OrderUuid")]
+    [UniqueId("SalesOrderUuid")]
     [DtoName("SalesOrderHeaderDto")]
     public partial class SalesOrderHeader : TableRepository<SalesOrderHeader, long>
     {
@@ -56,8 +56,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ProfileNum",SqlDbType.Int,NotNull=true)]
         private int _profileNum;
 
-        [Column("OrderUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _orderUuid;
+        [Column("SalesOrderUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesOrderUuid;
 
         [Column("OrderNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _orderNumber;
@@ -174,12 +174,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 		[IgnoreCompare] 
-		public override string UniqueId => OrderUuid; 
+		public override string UniqueId => SalesOrderUuid; 
 		public void CheckUniqueId() 
 		{
-			if (string.IsNullOrEmpty(OrderUuid)) 
-				OrderUuid = Guid.NewGuid().ToString(); 
+			if (string.IsNullOrEmpty(SalesOrderUuid)) 
+				SalesOrderUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual int DatabaseNum
         {
             get
@@ -193,6 +196,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual int MasterAccountNum
         {
             get
@@ -206,6 +212,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual int ProfileNum
         {
             get
@@ -219,19 +228,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        public virtual string OrderUuid
+		/// <summary>
+		/// Order uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string SalesOrderUuid
         {
             get
             {
-				return _orderUuid?.TrimEnd(); 
+				return _salesOrderUuid?.TrimEnd(); 
             }
             set
             {
-				_orderUuid = value.TruncateTo(50); 
-				OnPropertyChanged("OrderUuid", value);
+				_salesOrderUuid = value.TruncateTo(50); 
+				OnPropertyChanged("SalesOrderUuid", value);
             }
         }
 
+		/// <summary>
+		/// Readable order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
+		/// </summary>
         public virtual string OrderNumber
         {
             get
@@ -245,6 +260,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order type. <br> Title: Type, Display: true, Editable: true
+		/// </summary>
         public virtual int OrderType
         {
             get
@@ -258,6 +276,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order status. <br> Title: Status, Display: true, Editable: true
+		/// </summary>
         public virtual int OrderStatus
         {
             get
@@ -271,6 +292,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order date. <br> Title: Date, Display: true, Editable: true
+		/// </summary>
         public virtual DateTime OrderDate
         {
             get
@@ -284,6 +308,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order time. <br> Title: Time, Display: true, Editable: true
+		/// </summary>
         public virtual TimeSpan OrderTime
         {
             get
@@ -297,6 +324,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Order due date. <br> Display: false, Editable: false
+		/// </summary>
         public virtual DateTime? DueDate
         {
             get
@@ -315,6 +345,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Order bill date. <br> Display: false, Editable: false
+		/// </summary>
         public virtual DateTime? BillDate
         {
             get
@@ -333,6 +366,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer uuid, load from customer data. <br> Display: false, Editable: false
+		/// </summary>
         public virtual string CustomerUuid
         {
             get
@@ -346,6 +382,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer number. use DatabaseNum-CustomerNum too load customer data. <br> Title: Customer Number, Display: true, Editable: true
+		/// </summary>
         public virtual string CustomerNum
         {
             get
@@ -359,6 +398,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Customer name, load from customer data. <br> Title: Customer Name, Display: true, Editable: false
+		/// </summary>
         public virtual string CustomerName
         {
             get
@@ -372,6 +414,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Payment terms, default from customer data. <br> Title: Terms, Display: true, Editable: true
+		/// </summary>
         public virtual string Terms
         {
             get
@@ -385,6 +430,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Payment terms days, default from customer data. <br> Title: Days, Display: true, Editable: true
+		/// </summary>
         public virtual int TermsDays
         {
             get
@@ -398,6 +446,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Currency code. <br> Title: Currency, Display: true, Editable: true
+		/// </summary>
         public virtual string Currency
         {
             get
@@ -411,6 +462,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Sub total amount of items. Sales amount without discount, tax and other charge. <br> Title: Subtotal, Display: true, Editable: false
+		/// </summary>
         public virtual decimal SubTotalAmount
         {
             get
@@ -424,6 +478,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Sub Total amount deduct discount, but not include tax and other charge. <br> Title: Sales Amount, Display: true, Editable: false
+		/// </summary>
         public virtual decimal SalesAmount
         {
             get
@@ -437,6 +494,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Total amount. Include every charge (tax, shipping, misc...). <br> Title: Total, Display: true, Editable: false
+		/// </summary>
         public virtual decimal TotalAmount
         {
             get
@@ -450,6 +510,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Amount should apply tax. <br> Title: Taxable Amount, Display: true, Editable: false
+		/// </summary>
         public virtual decimal TaxableAmount
         {
             get
@@ -463,6 +526,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Amount should not apply tax. <br> Title: NonTaxable, Display: true, Editable: false
+		/// </summary>
         public virtual decimal NonTaxableAmount
         {
             get
@@ -476,6 +542,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order Tax rate. <br> Title: Tax, Display: true, Editable: true
+		/// </summary>
         public virtual decimal TaxRate
         {
             get
@@ -489,6 +558,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order tax amount (include shipping tax and misc tax). <br> Title: Tax Amount, Display: true, Editable: false
+		/// </summary>
         public virtual decimal TaxAmount
         {
             get
@@ -502,6 +574,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order discount rate base on SubTotalAmount. If user enter discount rate, should recalculate discount amount. <br> Title: Discount, Display: true, Editable: true
+		/// </summary>
         public virtual decimal DiscountRate
         {
             get
@@ -515,6 +590,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order discount amount base on SubTotalAmount. If user enter discount amount, should set discount rate to zero. <br> Title: Discount Amount, Display: true, Editable: true
+		/// </summary>
         public virtual decimal DiscountAmount
         {
             get
@@ -528,6 +606,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order shipping fee. <br> Title: Shipping, Display: true, Editable: true
+		/// </summary>
         public virtual decimal ShippingAmount
         {
             get
@@ -541,6 +622,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) tax amount for shipping fee. <br> Title: Shipping Tax, Display: true, Editable: false
+		/// </summary>
         public virtual decimal ShippingTaxAmount
         {
             get
@@ -554,6 +638,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order handling charge. <br> Title: Handling, Display: true, Editable: true
+		/// </summary>
         public virtual decimal MiscAmount
         {
             get
@@ -567,6 +654,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) tax amount for handling charge. <br> Title: Handling Tax, Display: true, Editable: false
+		/// </summary>
         public virtual decimal MiscTaxAmount
         {
             get
@@ -580,6 +670,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Order other Charg and Allowance Amount. Positive is charge, Negative is Allowance. <br> Title: Charge&Allowance, Display: true, Editable: true
+		/// </summary>
         public virtual decimal ChargeAndAllowanceAmount
         {
             get
@@ -593,6 +686,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Total Paid amount. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal PaidAmount
         {
             get
@@ -606,6 +702,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Total Credit amount. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal CreditAmount
         {
             get
@@ -619,6 +718,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Current balance of Order. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal Balance
         {
             get
@@ -632,6 +734,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Total Unit Cost. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal UnitCost
         {
             get
@@ -645,6 +750,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Total Avg.Cost. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal AvgCost
         {
             get
@@ -658,6 +766,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Total Lot Cost. <br> Display: false, Editable: false
+		/// </summary>
         public virtual decimal LotCost
         {
             get
@@ -671,6 +782,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Order created from other entity number, use to prevent import duplicate order. <br> Title: Source Number, Display: false, Editable: false
+		/// </summary>
         public virtual string OrderSourceCode
         {
             get
@@ -684,6 +798,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
+		/// </summary>
         public virtual DateTime? UpdateDateUtc
         {
             get
@@ -702,6 +819,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
+		/// </summary>
         public virtual string EnterBy
         {
             get
@@ -715,6 +835,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
+		/// </summary>
         public virtual string UpdateBy
         {
             get
@@ -734,7 +857,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private SalesOrderData Parent { get; set; }
 		public SalesOrderData GetParent() => Parent;
 		public SalesOrderHeader SetParent(SalesOrderData parent)
@@ -749,7 +872,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void ClearMetaData()
         {
 			base.ClearMetaData(); 
-			OrderUuid = Guid.NewGuid().ToString(); 
+			SalesOrderUuid = Guid.NewGuid().ToString(); 
             return;
         }
 
@@ -759,7 +882,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_databaseNum = default(int); 
 			_masterAccountNum = default(int); 
 			_profileNum = default(int); 
-			_orderUuid = String.Empty; 
+			_salesOrderUuid = String.Empty; 
 			_orderNumber = String.Empty; 
 			_orderType = default(int); 
 			_orderStatus = default(int); 

@@ -39,8 +39,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region - static SQL fileds statement
 
         public static string RowNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum"} ";
-        public static string OrderItemsUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.OrderItemsUuid) AS {name ?? "OrderItemsUuid"} ";
-        public static string OrderUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.OrderUuid) AS {name ?? "OrderUuid"} ";
+        public static string SalesOrderItemsUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderItemsUuid) AS {name ?? "SalesOrderItemsUuid"} ";
+        public static string SalesOrderUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderUuid) AS {name ?? "SalesOrderUuid"} ";
         public static string Seq(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Seq AS {name ?? "Seq"} ";
         public static string OrderItemType(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderItemType AS {name ?? "OrderItemType"} ";
         public static string SalesOrderItemstatus(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.SalesOrderItemstatus AS {name ?? "SalesOrderItemstatus"} ";
@@ -52,6 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ProductUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ProductUuid) AS {name ?? "ProductUuid"} ";
         public static string InventoryUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.InventoryUuid) AS {name ?? "InventoryUuid"} ";
         public static string WarehouseUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseUuid) AS {name ?? "WarehouseUuid"} ";
+        public static string WarehouseCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseCode) AS {name ?? "WarehouseCode"} ";
         public static string LotNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.LotNum) AS {name ?? "LotNum"} ";
         public static string Description(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Description) AS {name ?? "Description"} ";
         public static string Notes(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Notes) AS {name ?? "Notes"} ";
@@ -108,8 +109,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             var allies = string.IsNullOrEmpty(tableAllies) ? string.Empty : $"{tableAllies.TrimEnd()}.";
             return $@"
 {allies}RowNum AS RowNum,
-RTRIM({allies}OrderItemsUuid) AS OrderItemsUuid,
-RTRIM({allies}OrderUuid) AS OrderUuid,
+RTRIM({allies}SalesOrderItemsUuid) AS SalesOrderItemsUuid,
+RTRIM({allies}SalesOrderUuid) AS SalesOrderUuid,
 {allies}Seq AS Seq,
 {allies}OrderItemType AS OrderItemType,
 {allies}SalesOrderItemstatus AS SalesOrderItemstatus,
@@ -121,6 +122,7 @@ RTRIM({allies}SKU) AS SKU,
 RTRIM({allies}ProductUuid) AS ProductUuid,
 RTRIM({allies}InventoryUuid) AS InventoryUuid,
 RTRIM({allies}WarehouseUuid) AS WarehouseUuid,
+RTRIM({allies}WarehouseCode) AS WarehouseCode,
 RTRIM({allies}LotNum) AS LotNum,
 RTRIM({allies}Description) AS Description,
 RTRIM({allies}Notes) AS Notes,

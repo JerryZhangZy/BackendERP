@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[OrderHeader]
 (
-    [DatabaseNum] INT NOT NULL, --Each database has its own default value.
-	[CentralOrderNum] BigInt IDENTITY(100000000, 1) NOT NULL, --Unique in this database, DatabaseNum + CentralOrderNum is DigitBridgeOrderId, which is global unique
+    [DatabaseNum] INT NOT NULL, --Database Number. Required, Title: Database Number, Display: false, Editable: false--
+	[CentralOrderNum] BigInt IDENTITY(100000000, 1) NOT NULL, --Unique in this database, DatabaseNum + CentralOrderNum is DigitBridgeOrderId, which is global unique--
 	[MasterAccountNum] Int NOT NULL,
 	[ProfileNum] Int NOT NULL,
 	[ChannelNum] int NOT NULL, --The channel which sells the item. Refer to Master Account Channel Setting
