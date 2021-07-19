@@ -1,12 +1,12 @@
 ﻿CREATE TABLE [dbo].[InventoryAttributes]
 (
-	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [ProductUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Produc
-    [InventoryUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Inventory
-	[JsonFields] NVARCHAR(max) NOT NULL DEFAULT '', --JSON string, store any document fields
+	[RowNum] BIGINT IDENTITY(1,1) NOT NULL, --(Readonly) Record Number. Required, <br> Display: false, Editable: false.
+    [ProductUuid] VARCHAR(50) NOT NULL, --(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
+    [InventoryUuid] VARCHAR(50) NOT NULL, --(Readonly) Inventory Item Line uuid, load from inventory data. <br> Display: false, Editable: false
+	[JsonFields] NVARCHAR(max) NOT NULL DEFAULT '', --(Ignore) JSON string
 
-    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
-    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Ignore)
+    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)
     CONSTRAINT [PK_InventoryAttributes] PRIMARY KEY ([RowNum]), 
 )
 GO

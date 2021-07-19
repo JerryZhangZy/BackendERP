@@ -58,6 +58,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(CustomerUuid)) 
 				CustomerUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// Customer uuid. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual string CustomerUuid
         {
             get
@@ -71,7 +74,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+		/// <summary>
+		/// (Ignore) JSON string
+		/// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual string JsonFields
         {
             get
@@ -86,9 +92,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         protected CustomAttributes _Fields;
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual CustomAttributes Fields
         {
             get
@@ -108,7 +114,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private CustomerData Parent { get; set; }
 		public CustomerData GetParent() => Parent;
 		public CustomerAttributes SetParent(CustomerData parent)

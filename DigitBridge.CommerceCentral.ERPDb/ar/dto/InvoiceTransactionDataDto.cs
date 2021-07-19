@@ -25,11 +25,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public partial class InvoiceTransactionDataDto
     {
         public InvoiceTransactionDto InvoiceTransaction { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInvoiceTransaction => InvoiceTransaction != null;
 
         public IList<InvoiceReturnItemsDto> InvoiceReturnItems { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInvoiceReturnItems => InvoiceReturnItems != null;
 
     }

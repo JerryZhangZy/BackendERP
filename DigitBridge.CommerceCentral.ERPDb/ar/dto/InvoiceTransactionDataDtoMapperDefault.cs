@@ -60,9 +60,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#region read all not null properties
 
+			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
+			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasTransUuid) data.TransUuid = dto.TransUuid;
 			if (dto.HasTransNum) data.TransNum = dto.TransNum.ToInt();
 			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
+			if (dto.HasInvoiceNumber) data.InvoiceNumber = dto.InvoiceNumber;
 			if (dto.HasTransType) data.TransType = dto.TransType.ToInt();
 			if (dto.HasTransStatus) data.TransStatus = dto.TransStatus.ToInt();
 			if (dto.HasTransDate) data.TransDate = dto.TransDate.ToDateTime();
@@ -71,6 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasNotes) data.Notes = dto.Notes;
 			if (dto.HasPaidBy) data.PaidBy = dto.PaidBy.ToInt();
 			if (dto.HasBankAccountUuid) data.BankAccountUuid = dto.BankAccountUuid;
+			if (dto.HasBankAccountCode) data.BankAccountCode = dto.BankAccountCode;
 			if (dto.HasCheckNum) data.CheckNum = dto.CheckNum;
 			if (dto.HasAuthCode) data.AuthCode = dto.AuthCode;
 			if (dto.HasCurrency) data.Currency = dto.Currency;
@@ -91,6 +96,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasChargeAndAllowanceAmount) data.ChargeAndAllowanceAmount = dto.ChargeAndAllowanceAmount.ToDecimal();
 			if (dto.HasCreditAccount) data.CreditAccount = dto.CreditAccount.ToLong();
 			if (dto.HasDebitAccount) data.DebitAccount = dto.DebitAccount.ToLong();
+			if (dto.HasTransSourceCode) data.TransSourceCode = dto.TransSourceCode;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -122,8 +128,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasSKU) data.SKU = dto.SKU;
 			if (dto.HasProductUuid) data.ProductUuid = dto.ProductUuid;
 			if (dto.HasInventoryUuid) data.InventoryUuid = dto.InventoryUuid;
+			if (dto.HasInvoiceWarehouseUuid) data.InvoiceWarehouseUuid = dto.InvoiceWarehouseUuid;
+			if (dto.HasInvoiceWarehouseCode) data.InvoiceWarehouseCode = dto.InvoiceWarehouseCode;
 			if (dto.HasWarehouseUuid) data.WarehouseUuid = dto.WarehouseUuid;
+			if (dto.HasWarehouseCode) data.WarehouseCode = dto.WarehouseCode;
 			if (dto.HasLotNum) data.LotNum = dto.LotNum;
+			if (dto.HasReason) data.Reason = dto.Reason;
 			if (dto.HasDescription) data.Description = dto.Description;
 			if (dto.HasNotes) data.Notes = dto.Notes;
 			if (dto.HasCurrency) data.Currency = dto.Currency;
@@ -138,10 +148,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasReceiveQty) data.ReceiveQty = dto.ReceiveQty.ToDecimal();
 			if (dto.HasStockQty) data.StockQty = dto.StockQty.ToDecimal();
 			if (dto.HasNonStockQty) data.NonStockQty = dto.NonStockQty.ToDecimal();
+			if (dto.HasPutBackWarehouseUuid) data.PutBackWarehouseUuid = dto.PutBackWarehouseUuid;
+			if (dto.HasPutBackWarehouseCode) data.PutBackWarehouseCode = dto.PutBackWarehouseCode;
+			if (dto.HasDamageWarehouseUuid) data.DamageWarehouseUuid = dto.DamageWarehouseUuid;
+			if (dto.HasDamageWarehouseCode) data.DamageWarehouseCode = dto.DamageWarehouseCode;
+			if (dto.HasInvoiceDiscountPrice) data.InvoiceDiscountPrice = dto.InvoiceDiscountPrice.ToDecimal();
 			if (dto.HasPrice) data.Price = dto.Price.ToDecimal();
-			if (dto.HasDiscountRate) data.DiscountRate = dto.DiscountRate.ToDecimal();
-			if (dto.HasDiscountAmount) data.DiscountAmount = dto.DiscountAmount.ToDecimal();
-			if (dto.HasDiscountPrice) data.DiscountPrice = dto.DiscountPrice.ToDecimal();
 			if (dto.HasExtAmount) data.ExtAmount = dto.ExtAmount.ToDecimal();
 			if (dto.HasTaxableAmount) data.TaxableAmount = dto.TaxableAmount.ToDecimal();
 			if (dto.HasNonTaxableAmount) data.NonTaxableAmount = dto.NonTaxableAmount.ToDecimal();
@@ -226,9 +238,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#region write all properties with null
 
 			dto.RowNum = data.RowNum;
+			dto.DatabaseNum = data.DatabaseNum;
+			dto.MasterAccountNum = data.MasterAccountNum;
+			dto.ProfileNum = data.ProfileNum;
 			dto.TransUuid = data.TransUuid;
 			dto.TransNum = data.TransNum;
 			dto.InvoiceUuid = data.InvoiceUuid;
+			dto.InvoiceNumber = data.InvoiceNumber;
 			dto.TransType = data.TransType;
 			dto.TransStatus = data.TransStatus;
 			dto.TransDate = data.TransDate;
@@ -237,6 +253,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.Notes = data.Notes;
 			dto.PaidBy = data.PaidBy;
 			dto.BankAccountUuid = data.BankAccountUuid;
+			dto.BankAccountCode = data.BankAccountCode;
 			dto.CheckNum = data.CheckNum;
 			dto.AuthCode = data.AuthCode;
 			dto.Currency = data.Currency;
@@ -257,6 +274,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ChargeAndAllowanceAmount = data.ChargeAndAllowanceAmount;
 			dto.CreditAccount = data.CreditAccount;
 			dto.DebitAccount = data.DebitAccount;
+			dto.TransSourceCode = data.TransSourceCode;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;
@@ -290,8 +308,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.SKU = data.SKU;
 			dto.ProductUuid = data.ProductUuid;
 			dto.InventoryUuid = data.InventoryUuid;
+			dto.InvoiceWarehouseUuid = data.InvoiceWarehouseUuid;
+			dto.InvoiceWarehouseCode = data.InvoiceWarehouseCode;
 			dto.WarehouseUuid = data.WarehouseUuid;
+			dto.WarehouseCode = data.WarehouseCode;
 			dto.LotNum = data.LotNum;
+			dto.Reason = data.Reason;
 			dto.Description = data.Description;
 			dto.Notes = data.Notes;
 			dto.Currency = data.Currency;
@@ -306,10 +328,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ReceiveQty = data.ReceiveQty;
 			dto.StockQty = data.StockQty;
 			dto.NonStockQty = data.NonStockQty;
+			dto.PutBackWarehouseUuid = data.PutBackWarehouseUuid;
+			dto.PutBackWarehouseCode = data.PutBackWarehouseCode;
+			dto.DamageWarehouseUuid = data.DamageWarehouseUuid;
+			dto.DamageWarehouseCode = data.DamageWarehouseCode;
+			dto.InvoiceDiscountPrice = data.InvoiceDiscountPrice;
 			dto.Price = data.Price;
-			dto.DiscountRate = data.DiscountRate;
-			dto.DiscountAmount = data.DiscountAmount;
-			dto.DiscountPrice = data.DiscountPrice;
 			dto.ExtAmount = data.ExtAmount;
 			dto.TaxableAmount = data.TaxableAmount;
 			dto.NonTaxableAmount = data.NonTaxableAmount;

@@ -62,14 +62,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CustomerUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _customerUuid;
 
-        [Column("CustomerNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _customerNum;
+        [Column("CustomerCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _customerCode;
 
         [Column("CustomerName",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _customerName;
 
         [Column("Contact",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _contact;
+
+        [Column("Contact2",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
+        private string _contact2;
+
+        [Column("Contact3",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
+        private string _contact3;
 
         [Column("Phone1",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _phone1;
@@ -85,6 +91,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("Email",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _email;
+
+        [Column("WebSite",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _webSite;
 
         [Column("CustomerType",SqlDbType.Int,IsDefault=true)]
         private int? _customerType;
@@ -128,6 +137,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("Area",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _area;
 
+        [Column("Region",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _region;
+
+        [Column("Districtn",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _districtn;
+
+        [Column("Zone",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _zone;
+
         [Column("TaxId",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _taxId;
 
@@ -140,11 +158,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("DepartmentCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _departmentCode;
 
+        [Column("DivisionCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _divisionCode;
+
+        [Column("SourceCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _sourceCode;
+
+        [Column("Terms",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _terms;
+
+        [Column("TermsDays",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _termsDays;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
         [Column("EnterBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _enterBy;
+
+        [Column("UpdateBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _updateBy;
 
         #endregion Fields - Generated 
 
@@ -156,6 +189,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(CustomerUuid)) 
 				CustomerUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual int DatabaseNum
         {
             get
@@ -169,6 +205,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual int MasterAccountNum
         {
             get
@@ -182,6 +221,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual int ProfileNum
         {
             get
@@ -195,6 +237,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Digit bridge seller_id. <br> Title: Digit Seller Id, Display: true, Editable: true.
+		/// </summary>
         public virtual string Digit_seller_id
         {
             get
@@ -208,6 +253,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer uuid. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual string CustomerUuid
         {
             get
@@ -221,19 +269,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        public virtual string CustomerNum
+		/// <summary>
+		/// Readable customer number, unique in same database and profile. <br> Parameter should pass ProfileNum-CustomerCode. <br> Title: Customer Number, Display: true, Editable: true
+		/// </summary>
+        public virtual string CustomerCode
         {
             get
             {
-				return _customerNum?.TrimEnd(); 
+				return _customerCode?.TrimEnd(); 
             }
             set
             {
-				_customerNum = value.TruncateTo(50); 
-				OnPropertyChanged("CustomerNum", value);
+				_customerCode = value.TruncateTo(50); 
+				OnPropertyChanged("CustomerCode", value);
             }
         }
 
+		/// <summary>
+		/// Customer name. <br> Title: Name, Display: true, Editable: true
+		/// </summary>
         public virtual string CustomerName
         {
             get
@@ -247,6 +301,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer contact person. <br> Title: Contact, Display: true, Editable: true
+		/// </summary>
         public virtual string Contact
         {
             get
@@ -260,6 +317,41 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer contact person 2. <br> Title: Contact 2, Display: true, Editable: true
+		/// </summary>
+        public virtual string Contact2
+        {
+            get
+            {
+				return _contact2?.TrimEnd(); 
+            }
+            set
+            {
+				_contact2 = value.TruncateTo(200); 
+				OnPropertyChanged("Contact2", value);
+            }
+        }
+
+		/// <summary>
+		/// Customer contact person 3. <br> Title: Contact 3, Display: true, Editable: true
+		/// </summary>
+        public virtual string Contact3
+        {
+            get
+            {
+				return _contact3?.TrimEnd(); 
+            }
+            set
+            {
+				_contact3 = value.TruncateTo(200); 
+				OnPropertyChanged("Contact3", value);
+            }
+        }
+
+		/// <summary>
+		/// Customer phone 1. <br> Title: Phone, Display: true, Editable: true
+		/// </summary>
         public virtual string Phone1
         {
             get
@@ -273,6 +365,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer phone 2. <br> Title: Phone 2, Display: true, Editable: true
+		/// </summary>
         public virtual string Phone2
         {
             get
@@ -286,6 +381,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer phone 3. <br> Title: Phone 3, Display: true, Editable: true
+		/// </summary>
         public virtual string Phone3
         {
             get
@@ -299,6 +397,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer phone 4. <br> Title: Fax, Display: true, Editable: true
+		/// </summary>
         public virtual string Phone4
         {
             get
@@ -312,6 +413,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer email. <br> Title: Email, Display: true, Editable: true
+		/// </summary>
         public virtual string Email
         {
             get
@@ -325,6 +429,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer WebSite. <br> Title: WebSite, Display: true, Editable: true
+		/// </summary>
+        public virtual string WebSite
+        {
+            get
+            {
+				return _webSite?.TrimEnd(); 
+            }
+            set
+            {
+				_webSite = value.TruncateTo(200); 
+				OnPropertyChanged("WebSite", value);
+            }
+        }
+
+		/// <summary>
+		/// Customer type. <br> Title: Type, Display: true, Editable: true
+		/// </summary>
         public virtual int? CustomerType
         {
             get
@@ -343,6 +466,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer status. <br> Title: Status, Display: true, Editable: true
+		/// </summary>
         public virtual int? CustomerStatus
         {
             get
@@ -361,6 +487,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer business type. <br> Title: Business Type, Display: true, Editable: true
+		/// </summary>
         public virtual string BusinessType
         {
             get
@@ -374,6 +503,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer default price rule. <br> Title: Price Rule, Display: true, Editable: true
+		/// </summary>
         public virtual string PriceRule
         {
             get
@@ -387,6 +519,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer create date. <br> Title: Since, Display: true, Editable: true
+		/// </summary>
         public virtual DateTime FirstDate
         {
             get
@@ -400,6 +535,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer default Currency. <br> Title: Currency, Display: true, Editable: true
+		/// </summary>
         public virtual string Currency
         {
             get
@@ -413,6 +551,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer Credit Limit. <br> Title: Credit Limit, Display: true, Editable: true
+		/// </summary>
         public virtual decimal CreditLimit
         {
             get
@@ -426,6 +567,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Default Tax rate. <br> Title: Tax Rate, Display: true, Editable: true
+		/// </summary>
         public virtual decimal? TaxRate
         {
             get
@@ -444,6 +588,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer default discount rate. <br> Title: Discount Rate, Display: true, Editable: true
+		/// </summary>
         public virtual decimal? DiscountRate
         {
             get
@@ -462,6 +609,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer default ShippingCarrier. <br> Title: Shipping Carrier, Display: true, Editable: true
+		/// </summary>
         public virtual string ShippingCarrier
         {
             get
@@ -475,6 +625,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer default ShippingClass. <br> Title: Shipping Method, Display: true, Editable: true
+		/// </summary>
         public virtual string ShippingClass
         {
             get
@@ -488,6 +641,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer default Shipping Account. <br> Title: Shipping Account, Display: true, Editable: true
+		/// </summary>
         public virtual string ShippingAccount
         {
             get
@@ -501,6 +657,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer Priority. <br> Title: Priority, Display: true, Editable: true
+		/// </summary>
         public virtual string Priority
         {
             get
@@ -514,6 +673,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer Area. <br> Title: Area, Display: true, Editable: true
+		/// </summary>
         public virtual string Area
         {
             get
@@ -527,6 +689,57 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer Region. <br> Title: Region, Display: true, Editable: true
+		/// </summary>
+        public virtual string Region
+        {
+            get
+            {
+				return _region?.TrimEnd(); 
+            }
+            set
+            {
+				_region = value.TruncateTo(20); 
+				OnPropertyChanged("Region", value);
+            }
+        }
+
+		/// <summary>
+		/// Customer Districtn. <br> Districtn: Area, Display: true, Editable: true
+		/// </summary>
+        public virtual string Districtn
+        {
+            get
+            {
+				return _districtn?.TrimEnd(); 
+            }
+            set
+            {
+				_districtn = value.TruncateTo(20); 
+				OnPropertyChanged("Districtn", value);
+            }
+        }
+
+		/// <summary>
+		/// Customer Zone. <br> Title: Zone, Display: true, Editable: true
+		/// </summary>
+        public virtual string Zone
+        {
+            get
+            {
+				return _zone?.TrimEnd(); 
+            }
+            set
+            {
+				_zone = value.TruncateTo(20); 
+				OnPropertyChanged("Zone", value);
+            }
+        }
+
+		/// <summary>
+		/// Customer Tax Id. <br> Title: Tax Id, Display: true, Editable: true
+		/// </summary>
         public virtual string TaxId
         {
             get
@@ -540,6 +753,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer Resale License number. <br> Title: Resale License, Display: true, Editable: true
+		/// </summary>
         public virtual string ResaleLicense
         {
             get
@@ -553,6 +769,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer Class. <br> Title: Class, Display: true, Editable: true
+		/// </summary>
         public virtual string ClassCode
         {
             get
@@ -566,6 +785,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer Department. <br> Title: Department, Display: true, Editable: true
+		/// </summary>
         public virtual string DepartmentCode
         {
             get
@@ -579,6 +801,73 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer Division. <br> Title: Division, Display: true, Editable: true
+		/// </summary>
+        public virtual string DivisionCode
+        {
+            get
+            {
+				return _divisionCode?.TrimEnd(); 
+            }
+            set
+            {
+				_divisionCode = value.TruncateTo(50); 
+				OnPropertyChanged("DivisionCode", value);
+            }
+        }
+
+		/// <summary>
+		/// Customer Source. <br> Title: Source, Display: true, Editable: true
+		/// </summary>
+        public virtual string SourceCode
+        {
+            get
+            {
+				return _sourceCode?.TrimEnd(); 
+            }
+            set
+            {
+				_sourceCode = value.TruncateTo(50); 
+				OnPropertyChanged("SourceCode", value);
+            }
+        }
+
+		/// <summary>
+		/// Payment terms. <br> Title: Terms, Display: true, Editable: true
+		/// </summary>
+        public virtual string Terms
+        {
+            get
+            {
+				return _terms?.TrimEnd(); 
+            }
+            set
+            {
+				_terms = value.TruncateTo(50); 
+				OnPropertyChanged("Terms", value);
+            }
+        }
+
+		/// <summary>
+		/// Payment terms days. <br> Title: Days, Display: true, Editable: true
+		/// </summary>
+        public virtual int TermsDays
+        {
+            get
+            {
+				return _termsDays; 
+            }
+            set
+            {
+				_termsDays = value; 
+				OnPropertyChanged("TermsDays", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
+		/// </summary>
         public virtual DateTime? UpdateDateUtc
         {
             get
@@ -597,6 +886,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
+		/// </summary>
         public virtual string EnterBy
         {
             get
@@ -610,13 +902,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
+		/// </summary>
+        public virtual string UpdateBy
+        {
+            get
+            {
+				return _updateBy?.TrimEnd(); 
+            }
+            set
+            {
+				_updateBy = value.TruncateTo(100); 
+				OnPropertyChanged("UpdateBy", value);
+            }
+        }
+
 
 
         #endregion Properties - Generated 
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private CustomerData Parent { get; set; }
 		public CustomerData GetParent() => Parent;
 		public Customer SetParent(CustomerData parent)
@@ -643,14 +951,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_profileNum = default(int); 
 			_digit_seller_id = String.Empty; 
 			_customerUuid = String.Empty; 
-			_customerNum = String.Empty; 
+			_customerCode = String.Empty; 
 			_customerName = String.Empty; 
 			_contact = String.Empty; 
+			_contact2 = String.Empty; 
+			_contact3 = String.Empty; 
 			_phone1 = String.Empty; 
 			_phone2 = String.Empty; 
 			_phone3 = String.Empty; 
 			_phone4 = String.Empty; 
 			_email = String.Empty; 
+			_webSite = String.Empty; 
 			_customerType = AllowNull ? (int?)null : default(int); 
 			_customerStatus = AllowNull ? (int?)null : default(int); 
 			_businessType = String.Empty; 
@@ -665,12 +976,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_shippingAccount = String.Empty; 
 			_priority = String.Empty; 
 			_area = String.Empty; 
+			_region = String.Empty; 
+			_districtn = String.Empty; 
+			_zone = String.Empty; 
 			_taxId = String.Empty; 
 			_resaleLicense = String.Empty; 
 			_classCode = String.Empty; 
 			_departmentCode = String.Empty; 
+			_divisionCode = String.Empty; 
+			_sourceCode = String.Empty; 
+			_terms = String.Empty; 
+			_termsDays = default(int); 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
+			_updateBy = String.Empty; 
             ClearChildren();
             return this;
         }

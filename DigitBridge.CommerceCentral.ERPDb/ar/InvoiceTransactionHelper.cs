@@ -39,9 +39,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region - static SQL fileds statement
 
         public static string RowNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum"} ";
+        public static string DatabaseNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DatabaseNum AS {name ?? "DatabaseNum"} ";
+        public static string MasterAccountNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.MasterAccountNum AS {name ?? "MasterAccountNum"} ";
+        public static string ProfileNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum"} ";
         public static string TransUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.TransUuid) AS {name ?? "TransUuid"} ";
         public static string TransNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TransNum AS {name ?? "TransNum"} ";
         public static string InvoiceUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceUuid) AS {name ?? "InvoiceUuid"} ";
+        public static string InvoiceNumber(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceNumber) AS {name ?? "InvoiceNumber"} ";
         public static string TransType(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TransType AS {name ?? "TransType"} ";
         public static string TransStatus(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TransStatus AS {name ?? "TransStatus"} ";
         public static string TransDate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TransDate AS {name ?? "TransDate"} ";
@@ -50,6 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string Notes(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Notes) AS {name ?? "Notes"} ";
         public static string PaidBy(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.PaidBy AS {name ?? "PaidBy"} ";
         public static string BankAccountUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BankAccountUuid) AS {name ?? "BankAccountUuid"} ";
+        public static string BankAccountCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BankAccountCode) AS {name ?? "BankAccountCode"} ";
         public static string CheckNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CheckNum) AS {name ?? "CheckNum"} ";
         public static string AuthCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.AuthCode) AS {name ?? "AuthCode"} ";
         public static string Currency(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Currency) AS {name ?? "Currency"} ";
@@ -70,6 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ChargeAndAllowanceAmount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ChargeAndAllowanceAmount AS {name ?? "ChargeAndAllowanceAmount"} ";
         public static string CreditAccount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.CreditAccount AS {name ?? "CreditAccount"} ";
         public static string DebitAccount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DebitAccount AS {name ?? "DebitAccount"} ";
+        public static string TransSourceCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.TransSourceCode) AS {name ?? "TransSourceCode"} ";
         public static string UpdateDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc"} ";
         public static string EnterBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy"} ";
         public static string UpdateBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy"} ";
@@ -83,9 +89,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
             var allies = string.IsNullOrEmpty(tableAllies) ? string.Empty : $"{tableAllies.TrimEnd()}.";
             return $@"
 {allies}RowNum AS RowNum,
+{allies}DatabaseNum AS DatabaseNum,
+{allies}MasterAccountNum AS MasterAccountNum,
+{allies}ProfileNum AS ProfileNum,
 RTRIM({allies}TransUuid) AS TransUuid,
 {allies}TransNum AS TransNum,
 RTRIM({allies}InvoiceUuid) AS InvoiceUuid,
+RTRIM({allies}InvoiceNumber) AS InvoiceNumber,
 {allies}TransType AS TransType,
 {allies}TransStatus AS TransStatus,
 {allies}TransDate AS TransDate,
@@ -94,6 +104,7 @@ RTRIM({allies}Description) AS Description,
 RTRIM({allies}Notes) AS Notes,
 {allies}PaidBy AS PaidBy,
 RTRIM({allies}BankAccountUuid) AS BankAccountUuid,
+RTRIM({allies}BankAccountCode) AS BankAccountCode,
 RTRIM({allies}CheckNum) AS CheckNum,
 RTRIM({allies}AuthCode) AS AuthCode,
 RTRIM({allies}Currency) AS Currency,
@@ -114,6 +125,7 @@ RTRIM({allies}Currency) AS Currency,
 {allies}ChargeAndAllowanceAmount AS ChargeAndAllowanceAmount,
 {allies}CreditAccount AS CreditAccount,
 {allies}DebitAccount AS DebitAccount,
+RTRIM({allies}TransSourceCode) AS TransSourceCode,
 {allies}UpdateDateUtc AS UpdateDateUtc,
 RTRIM({allies}EnterBy) AS EnterBy,
 RTRIM({allies}UpdateBy) AS UpdateBy,

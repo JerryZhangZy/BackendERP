@@ -31,6 +31,7 @@
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="customer\dto\" />
     <Folder Include="DTO\" />
+    <Folder Include="InventoryLog\dto\" />
     <Folder Include="inventory\dto\" />
     <Folder Include="po\dto\" />
     <Folder Include="shipment\dto\" />

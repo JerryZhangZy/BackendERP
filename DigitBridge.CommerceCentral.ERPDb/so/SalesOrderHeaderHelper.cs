@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string DueDate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DueDate AS {name ?? "DueDate"} ";
         public static string BillDate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.BillDate AS {name ?? "BillDate"} ";
         public static string CustomerUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CustomerUuid) AS {name ?? "CustomerUuid"} ";
-        public static string CustomerNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CustomerNum) AS {name ?? "CustomerNum"} ";
+        public static string CustomerCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CustomerCode) AS {name ?? "CustomerCode"} ";
         public static string CustomerName(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CustomerName) AS {name ?? "CustomerName"} ";
         public static string Terms(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Terms) AS {name ?? "Terms"} ";
         public static string TermsDays(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TermsDays AS {name ?? "TermsDays"} ";
@@ -102,7 +102,7 @@ RTRIM({allies}OrderNumber) AS OrderNumber,
 {allies}DueDate AS DueDate,
 {allies}BillDate AS BillDate,
 RTRIM({allies}CustomerUuid) AS CustomerUuid,
-RTRIM({allies}CustomerNum) AS CustomerNum,
+RTRIM({allies}CustomerCode) AS CustomerCode,
 RTRIM({allies}CustomerName) AS CustomerName,
 RTRIM({allies}Terms) AS Terms,
 {allies}TermsDays AS TermsDays,

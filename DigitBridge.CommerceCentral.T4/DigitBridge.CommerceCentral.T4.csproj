@@ -39,6 +39,10 @@
       <LastGenOutput>GenerateServiceHelperTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForInventoryLog.ttinclude">
+      <LastGenOutput>SettingForInventoryLog.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForInventory.ttinclude">
       <LastGenOutput>SettingForInventory.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -244,6 +248,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForInventoryLog.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInventoryLog.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 

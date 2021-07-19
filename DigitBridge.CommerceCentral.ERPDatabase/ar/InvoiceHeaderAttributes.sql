@@ -1,11 +1,11 @@
 ﻿CREATE TABLE [dbo].[InvoiceHeaderAttributes]
 (
-	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [InvoiceUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O
-	[JsonFields] NVARCHAR(max) NOT NULL DEFAULT '', --JSON string, store any document fields
+	[RowNum] BIGINT IDENTITY(1,1) NOT NULL, --(Readonly) Record Number. Required, <br> Display: false, Editable: false.
+    [InvoiceUuid] VARCHAR(50) NOT NULL, --Invoice uuid. <br> Display: false, Editable: false.
+	[JsonFields] NVARCHAR(max) NOT NULL DEFAULT '', --(Ignore) JSON string. 
 
-    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
-    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Ignore) 
+    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore) 
     CONSTRAINT [PK_InvoiceHeaderAttributes] PRIMARY KEY ([RowNum]), 
 )
 GO

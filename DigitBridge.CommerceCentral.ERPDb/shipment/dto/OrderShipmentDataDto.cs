@@ -25,15 +25,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public partial class OrderShipmentDataDto
     {
         public OrderShipmentHeaderDto OrderShipmentHeader { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderShipmentHeader => OrderShipmentHeader != null;
 
         public IList<OrderShipmentCanceledItemDto> OrderShipmentCanceledItem { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderShipmentCanceledItem => OrderShipmentCanceledItem != null;
 
         public IList<OrderShipmentPackageDto> OrderShipmentPackage { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderShipmentPackage => OrderShipmentPackage != null;
 
     }

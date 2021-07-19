@@ -68,8 +68,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#region read all not null properties
 
 			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum;
-			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum;
+			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
 			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
 			if (dto.HasOrderDCAssignmentNum) data.OrderDCAssignmentNum = dto.OrderDCAssignmentNum;
@@ -115,8 +115,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#region read all not null properties
 
 			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum;
-			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum;
+			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
 			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
 			if (dto.HasOrderShipmentNum) data.OrderShipmentNum = dto.OrderShipmentNum;
@@ -170,8 +170,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#region read all not null properties
 
 			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum;
-			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum;
+			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
 			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
 			if (dto.HasOrderShipmentNum) data.OrderShipmentNum = dto.OrderShipmentNum;
@@ -241,8 +241,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#region read all not null properties
 
 			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum;
-			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum;
+			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
 			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
 			if (dto.HasOrderShipmentNum) data.OrderShipmentNum = dto.OrderShipmentNum;

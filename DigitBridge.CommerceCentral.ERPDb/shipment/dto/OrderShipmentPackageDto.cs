@@ -15,6 +15,7 @@ using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
 
@@ -22,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Represents a OrderShipmentPackage Dto Class.
-    /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+    /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
     public class OrderShipmentPackageDto
     {
@@ -34,184 +35,206 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 
 		/// <summary>
-		/// 
+		/// (Readonly) Shipment Package Unique Number. Required, <br> Title: Package Number, Display: true, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Shipment Package Unique Number. Required, <br> Title: Package Number, Display: true, Editable: false.")]
         public long? OrderShipmentPackageNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderShipmentPackageNum => OrderShipmentPackageNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
         public int? DatabaseNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDatabaseNum => DatabaseNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
         public int? MasterAccountNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMasterAccountNum => MasterAccountNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
         public int? ProfileNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasProfileNum => ProfileNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false")]
         public int? ChannelNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelNum => ChannelNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false")]
         public int? ChannelAccountNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelAccountNum => ChannelAccountNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Shipment Unique Number. Required, <br> Title: Shipment Number Display: true, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Shipment Unique Number. Required, <br> Title: Shipment Number Display: true, Editable: false.")]
         public long? OrderShipmentNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderShipmentNum => OrderShipmentNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Package ID. <br> Title: Package Id, Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Package ID. <br> Title: Package Id, Display: true, Editable: false")]
         [StringLength(50, ErrorMessage = "The PackageID value cannot exceed 50 characters. ")]
         public string PackageID { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPackageID => PackageID != null;
 
 		/// <summary>
-		/// 
+		/// Package Type. <br> Title: Package Type, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Package Type. <br> Title: Package Type, Display: true, Editable: true")]
         public int? PackageType { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPackageType => PackageType != null;
 
 		/// <summary>
-		/// 
+		/// Package Pattern. <br> Title: Package Pattern, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Package Pattern. <br> Title: Package Pattern, Display: true, Editable: true")]
         public int? PackagePatternNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPackagePatternNum => PackagePatternNum != null;
 
 		/// <summary>
-		/// 
+		/// Package TrackingNumber. <br> Title: Tracking Number, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Package TrackingNumber. <br> Title: Tracking Number, Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The PackageTrackingNumber value cannot exceed 50 characters. ")]
         public string PackageTrackingNumber { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPackageTrackingNumber => PackageTrackingNumber != null;
 
 		/// <summary>
-		/// 
+		/// Return TrackingNumber. <br> Title: Return Tracking Number, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Return TrackingNumber. <br> Title: Return Tracking Number, Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The PackageReturnTrackingNumber value cannot exceed 50 characters. ")]
         public string PackageReturnTrackingNumber { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPackageReturnTrackingNumber => PackageReturnTrackingNumber != null;
 
 		/// <summary>
-		/// 
+		/// Weight. <br> Title: Weight, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Weight. <br> Title: Weight, Display: true, Editable: true")]
         public decimal? PackageWeight { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPackageWeight => PackageWeight != null;
 
 		/// <summary>
-		/// 
+		/// Length. <br> Title: Length, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Length. <br> Title: Length, Display: true, Editable: true")]
         public decimal? PackageLength { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPackageLength => PackageLength != null;
 
 		/// <summary>
-		/// 
+		/// Width. <br> Title: Width, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Width. <br> Title: Width, Display: true, Editable: true")]
         public decimal? PackageWidth { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPackageWidth => PackageWidth != null;
 
 		/// <summary>
-		/// 
+		/// Height. <br> Title: Height, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Height. <br> Title: Height, Display: true, Editable: true")]
         public decimal? PackageHeight { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPackageHeight => PackageHeight != null;
 
 		/// <summary>
-		/// 
+		/// Volume. <br> Title: Volume, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Volume. <br> Title: Volume, Display: true, Editable: true")]
         public decimal? PackageVolume { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPackageVolume => PackageVolume != null;
 
 		/// <summary>
-		/// 
+		/// Qty. <br> Title: Qty, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Qty. <br> Title: Qty, Display: true, Editable: true")]
         public decimal? PackageQty { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPackageQty => PackageQty != null;
 
 		/// <summary>
-		/// 
+		/// Parent Package Num. <br> Title: Parent Package, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Parent Package Num. <br> Title: Parent Package, Display: true, Editable: true")]
         public long? ParentPackageNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasParentPackageNum => ParentPackageNum != null;
 
 		/// <summary>
-		/// 
+		/// Has Child Package. <br> Title: Has Child, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Has Child Package. <br> Title: Has Child, Display: true, Editable: true")]
         public bool? HasChildPackage { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasHasChildPackage => HasChildPackage != null;
 
 		/// <summary>
-		/// Global Unique Guid for one OrderShipment
+		/// Shipment uuid. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for one OrderShipment")]
+		[OpenApiPropertyDescription("Shipment uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The OrderShipmentUuid value cannot exceed 50 characters. ")]
         public string OrderShipmentUuid { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderShipmentUuid => OrderShipmentUuid != null;
 
 		/// <summary>
-		/// Global Unique Guid for one OrderShipment Package
+		/// Shipment Pachage uuid. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for one OrderShipment Package")]
+		[OpenApiPropertyDescription("Shipment Pachage uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The OrderShipmentPackageUuid value cannot exceed 50 characters. ")]
         public string OrderShipmentPackageUuid { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderShipmentPackageUuid => OrderShipmentPackageUuid != null;
 
 
@@ -221,7 +244,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Children - Generated 
 
 		public IList<OrderShipmentShippedItemDto> OrderShipmentShippedItem { get; set; }
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		public bool HasOrderShipmentShippedItem => OrderShipmentShippedItem != null;
 		
         #endregion Children - Generated 

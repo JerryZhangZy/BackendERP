@@ -83,8 +83,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CustomerUuid",SqlDbType.VarChar,NotNull=true)]
         private string _customerUuid;
 
-        [Column("CustomerNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _customerNum;
+        [Column("CustomerCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _customerCode;
 
         [Column("CustomerName",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _customerName;
@@ -383,18 +383,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Customer number. use DatabaseNum-CustomerNum too load customer data. <br> Title: Customer Number, Display: true, Editable: true
+		/// Customer number. use DatabaseNum-CustomerCode too load customer data. <br> Title: Customer Number, Display: true, Editable: true
 		/// </summary>
-        public virtual string CustomerNum
+        public virtual string CustomerCode
         {
             get
             {
-				return _customerNum?.TrimEnd(); 
+				return _customerCode?.TrimEnd(); 
             }
             set
             {
-				_customerNum = value.TruncateTo(50); 
-				OnPropertyChanged("CustomerNum", value);
+				_customerCode = value.TruncateTo(50); 
+				OnPropertyChanged("CustomerCode", value);
             }
         }
 
@@ -891,7 +891,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_dueDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_billDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_customerUuid = String.Empty; 
-			_customerNum = String.Empty; 
+			_customerCode = String.Empty; 
 			_customerName = String.Empty; 
 			_terms = String.Empty; 
 			_termsDays = default(int); 
