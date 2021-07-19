@@ -30,10 +30,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddValidator(new InventoryLogServiceValidatorDefault());
             return this;
         }
-        public bool DeleteByLogUuid(string logUuid)
+        public int DeleteByLogUuid(string logUuid)
         {
-            InventoryLogHelper.DeleteByLogUuid(logUuid);
-            return true;
+            var list = InventoryLogHelper.QueryInventoryLogByUuid(logUuid);
+            return list.SetDataBaseFactory(dbFactory).Delete();
         }
 
         public List<InventoryLogDto> GetListByUuid(string logUuid)
@@ -42,25 +42,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return _mapper.WriteInventoryLogDtoList(list, null);
         }
 
-        private Inventory QueryInventoryBySku(int masterAccountNum,int profileNum,string sku)
-        {
-            return InventoryHelper.QueryInventoryBySku(masterAccountNum,profileNum, sku);
-        }
-
-        public bool AddList(List<InventoryLogDto> dtoList)
+        public int AddList(List<InventoryLogDto> dtoList)
         {
             if (dtoList == null || dtoList.Count()==0)
-                return false;
+                return 0;
             if (dtoList.Exists(r => string.IsNullOrEmpty(r.SKU)))
-                return false;
+                return 0;
             if (dtoList.Exists(r => string.IsNullOrEmpty(r.LogUuid)))
-                return false;
+                return 0;
             var svc = new InventoryData(dbFactory);
             var batchNum = InventoryLogHelper.GetBatchNum();
             
             dtoList.ForEach(x =>
             {
                 x.BatchNum = batchNum;
+                x.RowNum = 0;
+                x.InventoryLogUuid = Guid.NewGuid().ToString();
                 var inventory = InventoryHelper.QueryInventoryBySku(x.MasterAccountNum.Value,x.ProfileNum.Value, x.SKU);//svc.GetInventoryBySku(x.DatabaseNum.Value, x.MasterAccountNum.Value, x.ProfileNum.Value, x.SKU);
                 if (inventory != null)
                 {
@@ -75,15 +72,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             });
             var mapper = new InventoryLogDataDtoMapperDefault();
             var datalist = mapper.ReadInventoryLogDtoList(null,dtoList);
-
-            return datalist.SetDataBaseFactory<InventoryLog>(dbFactory).Save();
+            var addcount = datalist.Count();
+            return datalist.SetDataBaseFactory(dbFactory).Save() ? addcount : 0;
             //TODO:Validator验证，Mapper,补充完整Inventory信息进去，调用Dao
         }
 
-        public bool UpdateInventoryLogList(List<InventoryLogDto> list)
+        public int UpdateInventoryLogList(List<InventoryLogDto> list)
         {
             if (list == null || list.Count() == 0)
-                return false;
+                return 0;
             var logUuidList = list.Select(r => r.LogUuid).Distinct();
 
             var dlist = new List<InventoryLog>();
@@ -91,9 +88,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 dlist.AddRange(InventoryLogHelper.QueryInventoryLogByUuid(uuid));
             }
-            var data = _mapper.ReadInventoryLogDtoList(dlist, list);
-
-            return dlist.SetDataBaseFactory<InventoryLog>(dbFactory).Save();
+            var data = _mapper.ReadInventoryLogDtoList(dlist, list).Where(x => x.RowNum > 0).ToList() ;
+            int result = data.Count();
+            return data.SetDataBaseFactory(dbFactory).Save() ? result : 0;
         }
 
 

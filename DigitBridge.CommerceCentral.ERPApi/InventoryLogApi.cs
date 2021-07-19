@@ -55,9 +55,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dbFactory = MyAppHelper.GetDatabase();
             DbUtility.Begin(dbFactory.ConnectionString);
             var svc = new InventoryLogService(dbFactory);
-            svc.DeleteByLogUuid(logUuid);
+            var deletecount= svc.DeleteByLogUuid(logUuid);
             DbUtility.CloseConnection();
-            return new OkResult();
+            return new OkObjectResult(deletecount);
         }
         [FunctionName(nameof(AddInventoryLogs))]
         [OpenApiOperation(operationId: "AddInventoryLogs", tags: new[] { "InventoryLogs" })]
@@ -77,9 +77,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             List<InventoryLogDto> dtolist = JsonConvert.DeserializeObject< List<InventoryLogDto>>(requestBody);
 
-            svc.AddList(dtolist);
+            var addcount= svc.AddList(dtolist);
             DbUtility.CloseConnection();
-            return new OkResult();
+            return new OkObjectResult(addcount);
         }
 
         [FunctionName(nameof(UpdateInventoryLogs))]
@@ -100,9 +100,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             List<InventoryLogDto> dtolist = JsonConvert.DeserializeObject< List<InventoryLogDto>>(requestBody);
 
-            svc.UpdateInventoryLogList(dtolist);
+            int updatecount= svc.UpdateInventoryLogList(dtolist);
             DbUtility.CloseConnection();
-            return new OkResult();
+            return new OkObjectResult(updatecount);
         }
     }
 }
