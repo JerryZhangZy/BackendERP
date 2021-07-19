@@ -56,99 +56,99 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			get => OrderShipmentNum.ToLong();
 			set => OrderShipmentNum = value.ToLong();
 		}
-		[XmlIgnore, JsonIgnore, IgnoreCompare] 
+		[JsonIgnore, XmlIgnore, IgnoreCompare] 
 		public override bool IsNew => OrderShipmentNum <= 0; 
         [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
         private int _databaseNum;
 
-        [Column("MasterAccountNum",SqlDbType.Int)]
-        private int? _masterAccountNum;
+        [Column("MasterAccountNum",SqlDbType.Int,NotNull=true)]
+        private int _masterAccountNum;
 
-        [Column("ProfileNum",SqlDbType.Int)]
-        private int? _profileNum;
+        [Column("ProfileNum",SqlDbType.Int,NotNull=true)]
+        private int _profileNum;
 
-        [Column("ChannelNum",SqlDbType.Int,NotNull=true)]
+        [Column("ChannelNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _channelNum;
 
-        [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true)]
+        [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _channelAccountNum;
 
-        [Column("OrderDCAssignmentNum",SqlDbType.BigInt)]
+        [Column("OrderDCAssignmentNum",SqlDbType.BigInt,IsDefault=true)]
         private long? _orderDCAssignmentNum;
 
-        [Column("DistributionCenterNum",SqlDbType.Int)]
+        [Column("DistributionCenterNum",SqlDbType.Int,IsDefault=true)]
         private int? _distributionCenterNum;
 
-        [Column("CentralOrderNum",SqlDbType.BigInt)]
+        [Column("CentralOrderNum",SqlDbType.BigInt,IsDefault=true)]
         private long? _centralOrderNum;
 
-        [Column("ChannelOrderID",SqlDbType.VarChar,NotNull=true)]
+        [Column("ChannelOrderID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _channelOrderID;
 
-        [Column("ShipmentID",SqlDbType.NVarChar)]
+        [Column("ShipmentID",SqlDbType.NVarChar,IsDefault=true)]
         private string _shipmentID;
 
-        [Column("WarehouseID",SqlDbType.NVarChar)]
+        [Column("WarehouseID",SqlDbType.NVarChar,IsDefault=true)]
         private string _warehouseID;
 
-        [Column("ShipmentType",SqlDbType.Int)]
+        [Column("ShipmentType",SqlDbType.Int,IsDefault=true)]
         private int? _shipmentType;
 
-        [Column("ShipmentReferenceID",SqlDbType.VarChar)]
+        [Column("ShipmentReferenceID",SqlDbType.VarChar,IsDefault=true)]
         private string _shipmentReferenceID;
 
         [Column("ShipmentDateUtc",SqlDbType.DateTime)]
         private DateTime? _shipmentDateUtc;
 
-        [Column("ShippingCarrier",SqlDbType.VarChar)]
+        [Column("ShippingCarrier",SqlDbType.VarChar,IsDefault=true)]
         private string _shippingCarrier;
 
-        [Column("ShippingClass",SqlDbType.VarChar)]
+        [Column("ShippingClass",SqlDbType.VarChar,IsDefault=true)]
         private string _shippingClass;
 
-        [Column("ShippingCost",SqlDbType.Decimal)]
+        [Column("ShippingCost",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _shippingCost;
 
-        [Column("MainTrackingNumber",SqlDbType.VarChar)]
+        [Column("MainTrackingNumber",SqlDbType.VarChar,IsDefault=true)]
         private string _mainTrackingNumber;
 
-        [Column("MainReturnTrackingNumber",SqlDbType.VarChar)]
+        [Column("MainReturnTrackingNumber",SqlDbType.VarChar,IsDefault=true)]
         private string _mainReturnTrackingNumber;
 
-        [Column("BillOfLadingID",SqlDbType.NVarChar)]
+        [Column("BillOfLadingID",SqlDbType.NVarChar,IsDefault=true)]
         private string _billOfLadingID;
 
-        [Column("TotalPackages",SqlDbType.Int)]
+        [Column("TotalPackages",SqlDbType.Int,IsDefault=true)]
         private int? _totalPackages;
 
-        [Column("TotalShippedQty",SqlDbType.Decimal)]
+        [Column("TotalShippedQty",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _totalShippedQty;
 
-        [Column("TotalCanceledQty",SqlDbType.Decimal)]
+        [Column("TotalCanceledQty",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _totalCanceledQty;
 
-        [Column("TotalWeight",SqlDbType.Decimal)]
+        [Column("TotalWeight",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _totalWeight;
 
-        [Column("TotalVolume",SqlDbType.Decimal)]
+        [Column("TotalVolume",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _totalVolume;
 
-        [Column("WeightUnit",SqlDbType.Int)]
+        [Column("WeightUnit",SqlDbType.Int,IsDefault=true)]
         private int? _weightUnit;
 
-        [Column("LengthUnit",SqlDbType.Int)]
+        [Column("LengthUnit",SqlDbType.Int,IsDefault=true)]
         private int? _lengthUnit;
 
-        [Column("VolumeUnit",SqlDbType.Int)]
+        [Column("VolumeUnit",SqlDbType.Int,IsDefault=true)]
         private int? _volumeUnit;
 
-        [Column("ShipmentStatus",SqlDbType.Int)]
+        [Column("ShipmentStatus",SqlDbType.Int,IsDefault=true)]
         private int? _shipmentStatus;
 
-        [Column("DBChannelOrderHeaderRowID",SqlDbType.VarChar)]
+        [Column("DBChannelOrderHeaderRowID",SqlDbType.VarChar,IsDefault=true)]
         private string _dBChannelOrderHeaderRowID;
 
-        [Column("ProcessStatus",SqlDbType.Int)]
+        [Column("ProcessStatus",SqlDbType.Int,IsDefault=true)]
         private int? _processStatus;
 
         [Column("ProcessDateUtc",SqlDbType.DateTime)]
@@ -168,7 +168,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				OrderShipmentUuid = Guid.NewGuid().ToString(); 
 		}
 		/// <summary>
-		/// 
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual int DatabaseNum
         {
@@ -184,49 +184,39 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
-        public virtual int? MasterAccountNum
+        public virtual int MasterAccountNum
         {
             get
             {
-				if (!AllowNull && _masterAccountNum is null) 
-					_masterAccountNum = default(int); 
 				return _masterAccountNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_masterAccountNum = value; 
-					OnPropertyChanged("MasterAccountNum", value);
-				}
+				_masterAccountNum = value; 
+				OnPropertyChanged("MasterAccountNum", value);
             }
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
-        public virtual int? ProfileNum
+        public virtual int ProfileNum
         {
             get
             {
-				if (!AllowNull && _profileNum is null) 
-					_profileNum = default(int); 
 				return _profileNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_profileNum = value; 
-					OnPropertyChanged("ProfileNum", value);
-				}
+				_profileNum = value; 
+				OnPropertyChanged("ProfileNum", value);
             }
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 		/// </summary>
         public virtual int ChannelNum
         {
@@ -242,7 +232,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
 		/// </summary>
         public virtual int ChannelAccountNum
         {
@@ -258,7 +248,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
 		/// </summary>
         public virtual long? OrderDCAssignmentNum
         {
@@ -279,7 +269,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) DC number. <br> Title: DC Number: Display: true, Editable: false
 		/// </summary>
         public virtual int? DistributionCenterNum
         {
@@ -300,7 +290,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
 		/// </summary>
         public virtual long? CentralOrderNum
         {
@@ -321,7 +311,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
 		/// </summary>
         public virtual string ChannelOrderID
         {
@@ -337,7 +327,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Shipment ID. <br> Title: Shipment Id, Display: true, Editable: false
 		/// </summary>
         public virtual string ShipmentID
         {
@@ -358,7 +348,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Warehouse Code. <br> Title: Warehouse Code, Display: true, Editable: true
 		/// </summary>
         public virtual string WarehouseID
         {
@@ -379,7 +369,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Shipment Type. <br> Title: Shipment Type, Display: true, Editable: true
 		/// </summary>
         public virtual int? ShipmentType
         {
@@ -400,7 +390,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ref Id. <br> Title: Reference, Display: true, Editable: true
 		/// </summary>
         public virtual string ShipmentReferenceID
         {
@@ -421,7 +411,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship Date. <br> Title: Ship Date, Display: true, Editable: true
 		/// </summary>
         public virtual DateTime? ShipmentDateUtc
         {
@@ -442,7 +432,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Shipping Carrier. <br> Title: Shipping Carrier: Display: true, Editable: true
 		/// </summary>
         public virtual string ShippingCarrier
         {
@@ -463,7 +453,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Shipping Method. <br> Title: Shipping Method: Display: true, Editable: true
 		/// </summary>
         public virtual string ShippingClass
         {
@@ -484,7 +474,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Shipping fee. <br> Title: Shipping Fee, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? ShippingCost
         {
@@ -505,7 +495,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Master TrackingNumber. <br> Title: Tracking Number, Display: true, Editable: true
 		/// </summary>
         public virtual string MainTrackingNumber
         {
@@ -526,7 +516,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Master Return TrackingNumber. <br> Title: Return Tracking Number, Display: true, Editable: true
 		/// </summary>
         public virtual string MainReturnTrackingNumber
         {
@@ -547,7 +537,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill Of Lading ID. <br> Title: BOL Id, Display: true, Editable: true
 		/// </summary>
         public virtual string BillOfLadingID
         {
@@ -568,7 +558,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Total Packages. <br> Title: Number of Package, Display: true, Editable: true
 		/// </summary>
         public virtual int? TotalPackages
         {
@@ -589,7 +579,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Total Shipped Qty. <br> Title: Shipped Qty, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? TotalShippedQty
         {
@@ -610,7 +600,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Total Cancelled Qty. <br> Title: Cancelled Qty, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? TotalCanceledQty
         {
@@ -631,7 +621,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Total Weight. <br> Title: Weight, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? TotalWeight
         {
@@ -652,7 +642,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Total Volume. <br> Title: Volume, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? TotalVolume
         {
@@ -673,7 +663,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Weight Unit. <br> Title: Weight Unit, Display: true, Editable: true
 		/// </summary>
         public virtual int? WeightUnit
         {
@@ -694,7 +684,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Length Unit. <br> Title: Length Unit, Display: true, Editable: true
 		/// </summary>
         public virtual int? LengthUnit
         {
@@ -715,7 +705,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Volume Unit. <br> Title: Volume Unit, Display: true, Editable: true
 		/// </summary>
         public virtual int? VolumeUnit
         {
@@ -736,7 +726,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Shipment Status. <br> Title: Shipment Status, Display: true, Editable: true
 		/// </summary>
         public virtual int? ShipmentStatus
         {
@@ -757,7 +747,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore) DBChannelOrderHeaderRowID. <br> Display: false, Editable: false
 		/// </summary>
         public virtual string DBChannelOrderHeaderRowID
         {
@@ -778,7 +768,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Process Status. <br> Title: Process Status, Display: true, Editable: false
 		/// </summary>
         public virtual int? ProcessStatus
         {
@@ -799,7 +789,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Process Date. <br> Title: Process Date, Display: true, Editable: false
 		/// </summary>
         public virtual DateTime? ProcessDateUtc
         {
@@ -820,7 +810,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Global Unique Guid for one OrderShipment
+		/// Shipment uuid. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual string OrderShipmentUuid
         {
@@ -841,7 +831,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private OrderShipmentData Parent { get; set; }
 		public OrderShipmentData GetParent() => Parent;
 		public OrderShipmentHeader SetParent(OrderShipmentData parent)
@@ -866,8 +856,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             base.Clear();
 			_orderShipmentNum = default(long); 
 			_databaseNum = default(int); 
-			_masterAccountNum = AllowNull ? (int?)null : default(int); 
-			_profileNum = AllowNull ? (int?)null : default(int); 
+			_masterAccountNum = default(int); 
+			_profileNum = default(int); 
 			_channelNum = default(int); 
 			_channelAccountNum = default(int); 
 			_orderDCAssignmentNum = AllowNull ? (long?)null : default(long); 

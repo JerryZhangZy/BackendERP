@@ -44,14 +44,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ProfileNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum"} ";
         public static string Digit_seller_id(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Digit_seller_id) AS {name ?? "Digit_seller_id"} ";
         public static string CustomerUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CustomerUuid) AS {name ?? "CustomerUuid"} ";
-        public static string CustomerNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CustomerNum) AS {name ?? "CustomerNum"} ";
+        public static string CustomerCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CustomerCode) AS {name ?? "CustomerCode"} ";
         public static string CustomerName(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CustomerName) AS {name ?? "CustomerName"} ";
         public static string Contact(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Contact) AS {name ?? "Contact"} ";
+        public static string Contact2(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Contact2) AS {name ?? "Contact2"} ";
+        public static string Contact3(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Contact3) AS {name ?? "Contact3"} ";
         public static string Phone1(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Phone1) AS {name ?? "Phone1"} ";
         public static string Phone2(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Phone2) AS {name ?? "Phone2"} ";
         public static string Phone3(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Phone3) AS {name ?? "Phone3"} ";
         public static string Phone4(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Phone4) AS {name ?? "Phone4"} ";
         public static string Email(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Email) AS {name ?? "Email"} ";
+        public static string WebSite(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WebSite) AS {name ?? "WebSite"} ";
         public static string CustomerType(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.CustomerType AS {name ?? "CustomerType"} ";
         public static string CustomerStatus(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.CustomerStatus AS {name ?? "CustomerStatus"} ";
         public static string BusinessType(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.BusinessType) AS {name ?? "BusinessType"} ";
@@ -66,13 +69,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ShippingAccount(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShippingAccount) AS {name ?? "ShippingAccount"} ";
         public static string Priority(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Priority) AS {name ?? "Priority"} ";
         public static string Area(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Area) AS {name ?? "Area"} ";
+        public static string Region(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Region) AS {name ?? "Region"} ";
+        public static string Districtn(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Districtn) AS {name ?? "Districtn"} ";
+        public static string Zone(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Zone) AS {name ?? "Zone"} ";
         public static string TaxId(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.TaxId) AS {name ?? "TaxId"} ";
         public static string ResaleLicense(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ResaleLicense) AS {name ?? "ResaleLicense"} ";
         public static string ClassCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ClassCode) AS {name ?? "ClassCode"} ";
         public static string DepartmentCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DepartmentCode) AS {name ?? "DepartmentCode"} ";
-        public static string EnterDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc"} ";
+        public static string DivisionCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DivisionCode) AS {name ?? "DivisionCode"} ";
+        public static string SourceCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SourceCode) AS {name ?? "SourceCode"} ";
+        public static string Terms(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Terms) AS {name ?? "Terms"} ";
+        public static string TermsDays(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TermsDays AS {name ?? "TermsDays"} ";
         public static string UpdateDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc"} ";
         public static string EnterBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy"} ";
+        public static string UpdateBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy"} ";
+        public static string EnterDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc"} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid"} ";
 
         #endregion - static SQL fileds statement
@@ -87,14 +98,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {allies}ProfileNum AS ProfileNum,
 RTRIM({allies}Digit_seller_id) AS Digit_seller_id,
 RTRIM({allies}CustomerUuid) AS CustomerUuid,
-RTRIM({allies}CustomerNum) AS CustomerNum,
+RTRIM({allies}CustomerCode) AS CustomerCode,
 RTRIM({allies}CustomerName) AS CustomerName,
 RTRIM({allies}Contact) AS Contact,
+RTRIM({allies}Contact2) AS Contact2,
+RTRIM({allies}Contact3) AS Contact3,
 RTRIM({allies}Phone1) AS Phone1,
 RTRIM({allies}Phone2) AS Phone2,
 RTRIM({allies}Phone3) AS Phone3,
 RTRIM({allies}Phone4) AS Phone4,
 RTRIM({allies}Email) AS Email,
+RTRIM({allies}WebSite) AS WebSite,
 {allies}CustomerType AS CustomerType,
 {allies}CustomerStatus AS CustomerStatus,
 RTRIM({allies}BusinessType) AS BusinessType,
@@ -109,13 +123,21 @@ RTRIM({allies}ShippingClass) AS ShippingClass,
 RTRIM({allies}ShippingAccount) AS ShippingAccount,
 RTRIM({allies}Priority) AS Priority,
 RTRIM({allies}Area) AS Area,
+RTRIM({allies}Region) AS Region,
+RTRIM({allies}Districtn) AS Districtn,
+RTRIM({allies}Zone) AS Zone,
 RTRIM({allies}TaxId) AS TaxId,
 RTRIM({allies}ResaleLicense) AS ResaleLicense,
 RTRIM({allies}ClassCode) AS ClassCode,
 RTRIM({allies}DepartmentCode) AS DepartmentCode,
-{allies}EnterDateUtc AS EnterDateUtc,
+RTRIM({allies}DivisionCode) AS DivisionCode,
+RTRIM({allies}SourceCode) AS SourceCode,
+RTRIM({allies}Terms) AS Terms,
+{allies}TermsDays AS TermsDays,
 {allies}UpdateDateUtc AS UpdateDateUtc,
 RTRIM({allies}EnterBy) AS EnterBy,
+RTRIM({allies}UpdateBy) AS UpdateBy,
+{allies}EnterDateUtc AS EnterDateUtc,
 {allies}DigitBridgeGuid AS DigitBridgeGuid
 ";
         }

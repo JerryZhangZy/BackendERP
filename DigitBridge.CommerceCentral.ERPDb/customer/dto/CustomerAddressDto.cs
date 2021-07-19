@@ -14,6 +14,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
 
@@ -21,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Represents a CustomerAddress Dto Class.
-    /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+    /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
     public class CustomerAddressDto
     {
@@ -32,143 +34,283 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 
+		/// <summary>
+		/// Customer Address uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Customer Address uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The AddressUuid value cannot exceed 50 characters. ")]
         public string AddressUuid { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasAddressUuid => AddressUuid != null;
 
+		/// <summary>
+		/// Customer uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Customer uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The CustomerUuid value cannot exceed 50 characters. ")]
         public string CustomerUuid { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCustomerUuid => CustomerUuid != null;
 
+		/// <summary>
+		/// Address code, human readable. <br> Title: Address Code, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Address code, human readable. <br> Title: Address Code, Display: true, Editable: true.")]
         [StringLength(50, ErrorMessage = "The AddressCode value cannot exceed 50 characters. ")]
         public string AddressCode { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasAddressCode => AddressCode != null;
 
+		/// <summary>
+		/// Address type, billing, shipping, store. <br> Title: Address Type, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Address type, billing, shipping, store. <br> Title: Address Type, Display: true, Editable: true.")]
         public int? AddressType { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasAddressType => AddressType != null;
 
+		/// <summary>
+		/// Address description. <br> Title: Address Description, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Address description. <br> Title: Address Description, Display: true, Editable: true.")]
         [StringLength(200, ErrorMessage = "The Description value cannot exceed 200 characters. ")]
         public string Description { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDescription => Description != null;
 
+		/// <summary>
+		/// Name. <br> Title: Name, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Name. <br> Title: Name, Display: true, Editable: true.")]
         [StringLength(100, ErrorMessage = "The Name value cannot exceed 100 characters. ")]
         public string Name { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasName => Name != null;
 
+		/// <summary>
+		/// First Name. <br> Title: First Name, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("First Name. <br> Title: First Name, Display: true, Editable: true.")]
         [StringLength(50, ErrorMessage = "The FirstName value cannot exceed 50 characters. ")]
         public string FirstName { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasFirstName => FirstName != null;
 
+		/// <summary>
+		/// Last Name. <br> Title: Last Name, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Last Name. <br> Title: Last Name, Display: true, Editable: true.")]
         [StringLength(50, ErrorMessage = "The LastName value cannot exceed 50 characters. ")]
         public string LastName { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLastName => LastName != null;
 
+		/// <summary>
+		/// Suffix <br> Title: Suffix, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Suffix <br> Title: Suffix, Display: true, Editable: true.")]
         [StringLength(50, ErrorMessage = "The Suffix value cannot exceed 50 characters. ")]
         public string Suffix { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasSuffix => Suffix != null;
 
+		/// <summary>
+		/// Company Name <br> Title: Company, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Company Name <br> Title: Company, Display: true, Editable: true.")]
         [StringLength(100, ErrorMessage = "The Company value cannot exceed 100 characters. ")]
         public string Company { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCompany => Company != null;
 
+		/// <summary>
+		/// Job Title <br> Title: Job Title, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Job Title <br> Title: Job Title, Display: true, Editable: true.")]
         [StringLength(100, ErrorMessage = "The CompanyJobTitle value cannot exceed 100 characters. ")]
         public string CompanyJobTitle { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCompanyJobTitle => CompanyJobTitle != null;
 
+		/// <summary>
+		/// Attention <br> Title: Attention, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Attention <br> Title: Attention, Display: true, Editable: true.")]
         [StringLength(100, ErrorMessage = "The Attention value cannot exceed 100 characters. ")]
         public string Attention { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasAttention => Attention != null;
 
+		/// <summary>
+		/// Address Line 1 <br> Title: Address Line 1, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Address Line 1 <br> Title: Address Line 1, Display: true, Editable: true.")]
         [StringLength(200, ErrorMessage = "The AddressLine1 value cannot exceed 200 characters. ")]
         public string AddressLine1 { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasAddressLine1 => AddressLine1 != null;
 
+		/// <summary>
+		/// Address Line 2 <br> Title: Address Line 2, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Address Line 2 <br> Title: Address Line 2, Display: true, Editable: true.")]
         [StringLength(200, ErrorMessage = "The AddressLine2 value cannot exceed 200 characters. ")]
         public string AddressLine2 { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasAddressLine2 => AddressLine2 != null;
 
+		/// <summary>
+		/// Address Line 3 <br> Title: Address Line 3, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Address Line 3 <br> Title: Address Line 3, Display: true, Editable: true.")]
         [StringLength(200, ErrorMessage = "The AddressLine3 value cannot exceed 200 characters. ")]
         public string AddressLine3 { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasAddressLine3 => AddressLine3 != null;
 
+		/// <summary>
+		/// City <br> Title: City, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("City <br> Title: City, Display: true, Editable: true.")]
         [StringLength(100, ErrorMessage = "The City value cannot exceed 100 characters. ")]
         public string City { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCity => City != null;
 
+		/// <summary>
+		/// State <br> Title: State, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("State <br> Title: State, Display: true, Editable: true.")]
         [StringLength(50, ErrorMessage = "The State value cannot exceed 50 characters. ")]
         public string State { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasState => State != null;
 
+		/// <summary>
+		/// State Full Name <br> Title: State Name, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("State Full Name <br> Title: State Name, Display: true, Editable: true.")]
         [StringLength(100, ErrorMessage = "The StateFullName value cannot exceed 100 characters. ")]
         public string StateFullName { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasStateFullName => StateFullName != null;
 
+		/// <summary>
+		/// PostalCode <br> Title: Postal Code, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("PostalCode <br> Title: Postal Code, Display: true, Editable: true.")]
         [StringLength(50, ErrorMessage = "The PostalCode value cannot exceed 50 characters. ")]
         public string PostalCode { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPostalCode => PostalCode != null;
 
+		/// <summary>
+		/// PostalCodeExt <br> Title: Postal Code Ext., Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("PostalCodeExt <br> Title: Postal Code Ext., Display: true, Editable: true.")]
         [StringLength(50, ErrorMessage = "The PostalCodeExt value cannot exceed 50 characters. ")]
         public string PostalCodeExt { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPostalCodeExt => PostalCodeExt != null;
 
+		/// <summary>
+		/// County <br> Title: County, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("County <br> Title: County, Display: true, Editable: true.")]
         [StringLength(100, ErrorMessage = "The County value cannot exceed 100 characters. ")]
         public string County { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCounty => County != null;
 
+		/// <summary>
+		/// Country <br> Title: Country, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Country <br> Title: Country, Display: true, Editable: true.")]
         [StringLength(100, ErrorMessage = "The Country value cannot exceed 100 characters. ")]
         public string Country { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCountry => Country != null;
 
+		/// <summary>
+		/// Email <br> Title: Email, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("Email <br> Title: Email, Display: true, Editable: true.")]
         [StringLength(100, ErrorMessage = "The Email value cannot exceed 100 characters. ")]
         public string Email { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasEmail => Email != null;
 
+		/// <summary>
+		/// DaytimePhone <br> Title: Phone, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("DaytimePhone <br> Title: Phone, Display: true, Editable: true.")]
         [StringLength(50, ErrorMessage = "The DaytimePhone value cannot exceed 50 characters. ")]
         public string DaytimePhone { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDaytimePhone => DaytimePhone != null;
 
+		/// <summary>
+		/// NightPhone <br> Title: Phone 2, Display: true, Editable: true.
+		/// </summary>
+		[OpenApiPropertyDescription("NightPhone <br> Title: Phone 2, Display: true, Editable: true.")]
         [StringLength(50, ErrorMessage = "The NightPhone value cannot exceed 50 characters. ")]
         public string NightPhone { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasNightPhone => NightPhone != null;
 
+		/// <summary>
+		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false")]
         [DataType(DataType.DateTime)]
         public DateTime? UpdateDateUtc { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasUpdateDateUtc => UpdateDateUtc != null;
 
+		/// <summary>
+		/// (Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false")]
         [StringLength(100, ErrorMessage = "The EnterBy value cannot exceed 100 characters. ")]
         public string EnterBy { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasEnterBy => EnterBy != null;
 
+		/// <summary>
+		/// (Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false")]
         [StringLength(100, ErrorMessage = "The UpdateBy value cannot exceed 100 characters. ")]
         public string UpdateBy { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasUpdateBy => UpdateBy != null;
 
 

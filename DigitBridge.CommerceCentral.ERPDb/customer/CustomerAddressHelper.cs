@@ -64,10 +64,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string Email(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Email) AS {name ?? "Email"} ";
         public static string DaytimePhone(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DaytimePhone) AS {name ?? "DaytimePhone"} ";
         public static string NightPhone(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.NightPhone) AS {name ?? "NightPhone"} ";
-        public static string EnterDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc"} ";
         public static string UpdateDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc"} ";
         public static string EnterBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy"} ";
         public static string UpdateBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy"} ";
+        public static string EnterDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc"} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid"} ";
 
         #endregion - static SQL fileds statement
@@ -102,10 +102,10 @@ RTRIM({allies}Country) AS Country,
 RTRIM({allies}Email) AS Email,
 RTRIM({allies}DaytimePhone) AS DaytimePhone,
 RTRIM({allies}NightPhone) AS NightPhone,
-{allies}EnterDateUtc AS EnterDateUtc,
 {allies}UpdateDateUtc AS UpdateDateUtc,
 RTRIM({allies}EnterBy) AS EnterBy,
 RTRIM({allies}UpdateBy) AS UpdateBy,
+{allies}EnterDateUtc AS EnterDateUtc,
 {allies}DigitBridgeGuid AS DigitBridgeGuid
 ";
         }

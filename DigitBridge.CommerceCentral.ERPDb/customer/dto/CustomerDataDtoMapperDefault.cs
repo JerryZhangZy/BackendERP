@@ -71,14 +71,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasDigit_seller_id) data.Digit_seller_id = dto.Digit_seller_id;
 			if (dto.HasCustomerUuid) data.CustomerUuid = dto.CustomerUuid;
-			if (dto.HasCustomerNum) data.CustomerNum = dto.CustomerNum;
+			if (dto.HasCustomerCode) data.CustomerCode = dto.CustomerCode;
 			if (dto.HasCustomerName) data.CustomerName = dto.CustomerName;
 			if (dto.HasContact) data.Contact = dto.Contact;
+			if (dto.HasContact2) data.Contact2 = dto.Contact2;
+			if (dto.HasContact3) data.Contact3 = dto.Contact3;
 			if (dto.HasPhone1) data.Phone1 = dto.Phone1;
 			if (dto.HasPhone2) data.Phone2 = dto.Phone2;
 			if (dto.HasPhone3) data.Phone3 = dto.Phone3;
 			if (dto.HasPhone4) data.Phone4 = dto.Phone4;
 			if (dto.HasEmail) data.Email = dto.Email;
+			if (dto.HasWebSite) data.WebSite = dto.WebSite;
 			if (dto.HasCustomerType) data.CustomerType = dto.CustomerType;
 			if (dto.HasCustomerStatus) data.CustomerStatus = dto.CustomerStatus;
 			if (dto.HasBusinessType) data.BusinessType = dto.BusinessType;
@@ -93,12 +96,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasShippingAccount) data.ShippingAccount = dto.ShippingAccount;
 			if (dto.HasPriority) data.Priority = dto.Priority;
 			if (dto.HasArea) data.Area = dto.Area;
+			if (dto.HasRegion) data.Region = dto.Region;
+			if (dto.HasDistrictn) data.Districtn = dto.Districtn;
+			if (dto.HasZone) data.Zone = dto.Zone;
 			if (dto.HasTaxId) data.TaxId = dto.TaxId;
 			if (dto.HasResaleLicense) data.ResaleLicense = dto.ResaleLicense;
 			if (dto.HasClassCode) data.ClassCode = dto.ClassCode;
 			if (dto.HasDepartmentCode) data.DepartmentCode = dto.DepartmentCode;
+			if (dto.HasDivisionCode) data.DivisionCode = dto.DivisionCode;
+			if (dto.HasSourceCode) data.SourceCode = dto.SourceCode;
+			if (dto.HasTerms) data.Terms = dto.Terms;
+			if (dto.HasTermsDays) data.TermsDays = dto.TermsDays.ToInt();
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
+			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
 			#endregion read properties
 
@@ -235,14 +246,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ProfileNum = data.ProfileNum;
 			dto.Digit_seller_id = data.Digit_seller_id;
 			dto.CustomerUuid = data.CustomerUuid;
-			dto.CustomerNum = data.CustomerNum;
+			dto.CustomerCode = data.CustomerCode;
 			dto.CustomerName = data.CustomerName;
 			dto.Contact = data.Contact;
+			dto.Contact2 = data.Contact2;
+			dto.Contact3 = data.Contact3;
 			dto.Phone1 = data.Phone1;
 			dto.Phone2 = data.Phone2;
 			dto.Phone3 = data.Phone3;
 			dto.Phone4 = data.Phone4;
 			dto.Email = data.Email;
+			dto.WebSite = data.WebSite;
 			dto.CustomerType = data.CustomerType;
 			dto.CustomerStatus = data.CustomerStatus;
 			dto.BusinessType = data.BusinessType;
@@ -257,13 +271,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ShippingAccount = data.ShippingAccount;
 			dto.Priority = data.Priority;
 			dto.Area = data.Area;
+			dto.Region = data.Region;
+			dto.Districtn = data.Districtn;
+			dto.Zone = data.Zone;
 			dto.TaxId = data.TaxId;
 			dto.ResaleLicense = data.ResaleLicense;
 			dto.ClassCode = data.ClassCode;
 			dto.DepartmentCode = data.DepartmentCode;
-			dto.EnterDateUtc = data.EnterDateUtc;
+			dto.DivisionCode = data.DivisionCode;
+			dto.SourceCode = data.SourceCode;
+			dto.Terms = data.Terms;
+			dto.TermsDays = data.TermsDays;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
+			dto.UpdateBy = data.UpdateBy;
+			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
 
 			#endregion read properties
@@ -304,10 +326,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.Email = data.Email;
 			dto.DaytimePhone = data.DaytimePhone;
 			dto.NightPhone = data.NightPhone;
-			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;
+			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
 
 			#endregion read properties

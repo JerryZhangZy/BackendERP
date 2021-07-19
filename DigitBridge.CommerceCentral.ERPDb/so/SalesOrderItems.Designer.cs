@@ -114,6 +114,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CancelledPack",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _cancelledPack;
 
+        [Column("OpenPack",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _openPack;
+
         [Column("OrderQty",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _orderQty;
 
@@ -453,7 +456,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// (Readonly) Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
+		/// Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
 		/// </summary>
         public virtual string WarehouseCode
         {
@@ -629,6 +632,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Ignore) Item Cancelled number of pack.
+		/// </summary>
+        public virtual decimal OpenPack
+        {
+            get
+            {
+				return _openPack; 
+            }
+            set
+            {
+				_openPack = value; 
+				OnPropertyChanged("OpenPack", value);
+            }
+        }
+
+		/// <summary>
 		/// Item Order Qty. <br> Title: Order Qty, Display: true, Editable: true
 		/// </summary>
         public virtual decimal OrderQty
@@ -693,7 +712,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item Order price rule. <br> Title: Price Type, Display: true, Editable: true
+		/// Item price rule. <br> Title: Price Type, Display: true, Editable: true
 		/// </summary>
         public virtual string PriceRule
         {
@@ -709,7 +728,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item Order price. <br> Title: Unit Price, Display: true, Editable: true
+		/// Item unit price. <br> Title: Unit Price, Display: true, Editable: true
 		/// </summary>
         public virtual decimal Price
         {
@@ -821,7 +840,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Default Tax rate for Order items. <br> Display: false, Editable: false
+		/// Default Tax rate for item. <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal TaxRate
         {
@@ -853,7 +872,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Total shipping fee for all items. <br> Display: false, Editable: false
+		/// shipping fee for this item. <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal ShippingAmount
         {
@@ -933,7 +952,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item total amount. <br> Display: false, Editable: false
+		/// Item total amount include all. <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal ItemTotalAmount
         {
@@ -949,7 +968,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item total amount. <br> Display: false, Editable: false
+		/// Item shipped amount. <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal ShipAmount
         {
@@ -965,7 +984,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item total amount. <br> Display: false, Editable: false
+		/// Item cancelled amount. <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal CancelledAmount
         {
@@ -981,7 +1000,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item total amount. <br> Display: false, Editable: false
+		/// Item open amount. <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal OpenAmount
         {
@@ -997,7 +1016,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Order item will update inventory instock qty. <br> Title: Stockable, Display: true, Editable: true
+		/// item will update inventory instock qty. <br> Title: Stockable, Display: true, Editable: true
 		/// </summary>
         public virtual bool Stockable
         {
@@ -1013,7 +1032,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Order item will add to Order total amount. <br> Title: A/R, Display: true, Editable: true
+		/// item will add to Order total amount. <br> Title: A/R, Display: true, Editable: true
 		/// </summary>
         public virtual bool IsAr
         {
@@ -1029,7 +1048,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Order item will apply tax. <br> Title: Taxable, Display: true, Editable: true
+		/// item will apply tax. <br> Title: Taxable, Display: true, Editable: true
 		/// </summary>
         public virtual bool Taxable
         {
@@ -1045,7 +1064,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Order item will calculate total cost. <br> Title: Apply Cost, Display: true, Editable: true
+		/// item will calculate total cost. <br> Title: Apply Cost, Display: true, Editable: true
 		/// </summary>
         public virtual bool Costable
         {
@@ -1061,7 +1080,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Invoice item will calculate profit. <br> Title: Apply Profit, Display: true, Editable: true
+		/// item will calculate profit. <br> Title: Apply Profit, Display: true, Editable: true
 		/// </summary>
         public virtual bool IsProfit
         {
@@ -1335,6 +1354,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_orderPack = default(decimal); 
 			_shipPack = default(decimal); 
 			_cancelledPack = default(decimal); 
+			_openPack = default(decimal); 
 			_orderQty = default(decimal); 
 			_shipQty = default(decimal); 
 			_cancelledQty = default(decimal); 

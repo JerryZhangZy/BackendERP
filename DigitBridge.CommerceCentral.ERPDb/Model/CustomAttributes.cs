@@ -103,8 +103,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public CustomAttributes LoadJson(JObject json)
         {
-            //LoadProfiles();
-            LoadFromJObject((JObject)json["values"]);
+            //LoadProfiles(); 
+            LoadFromJObject(json.ContainsKey("values") ? (JObject)json["values"] : json);
             return this;
         }
         public JObject ToJson()

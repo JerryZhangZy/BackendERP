@@ -33,10 +33,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public InventoryData() : base() {}
         public InventoryData(IDataBaseFactory dbFactory): base(dbFactory) {}
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new bool IsNew => ProductBasic.IsNew;
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new string UniqueId => ProductBasic.UniqueId;
 
         #region CRUD Methods

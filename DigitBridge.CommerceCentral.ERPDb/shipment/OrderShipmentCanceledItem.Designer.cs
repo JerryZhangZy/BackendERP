@@ -61,33 +61,33 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			get => OrderShipmentCanceledItemNum.ToLong();
 			set => OrderShipmentCanceledItemNum = value.ToLong();
 		}
-		[XmlIgnore, JsonIgnore, IgnoreCompare] 
+		[JsonIgnore, XmlIgnore, IgnoreCompare] 
 		public override bool IsNew => OrderShipmentCanceledItemNum <= 0; 
         [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
         private int _databaseNum;
 
-        [Column("MasterAccountNum",SqlDbType.Int)]
-        private int? _masterAccountNum;
+        [Column("MasterAccountNum",SqlDbType.Int,NotNull=true)]
+        private int _masterAccountNum;
 
-        [Column("ProfileNum",SqlDbType.Int)]
-        private int? _profileNum;
+        [Column("ProfileNum",SqlDbType.Int,NotNull=true)]
+        private int _profileNum;
 
-        [Column("ChannelNum",SqlDbType.Int,NotNull=true)]
+        [Column("ChannelNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _channelNum;
 
-        [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true)]
+        [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _channelAccountNum;
 
-        [Column("OrderShipmentNum",SqlDbType.BigInt)]
+        [Column("OrderShipmentNum",SqlDbType.BigInt,IsDefault=true)]
         private long? _orderShipmentNum;
 
-        [Column("ChannelOrderID",SqlDbType.VarChar,NotNull=true)]
+        [Column("ChannelOrderID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _channelOrderID;
 
-        [Column("OrderDCAssignmentLineNum",SqlDbType.BigInt)]
+        [Column("OrderDCAssignmentLineNum",SqlDbType.BigInt,IsDefault=true)]
         private long? _orderDCAssignmentLineNum;
 
-        [Column("SKU",SqlDbType.VarChar)]
+        [Column("SKU",SqlDbType.VarChar,IsDefault=true)]
         private string _sKU;
 
         [Column("CanceledQty",SqlDbType.Decimal,NotNull=true)]
@@ -119,7 +119,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString(); 
 		}
 		/// <summary>
-		/// 
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual int DatabaseNum
         {
@@ -135,49 +135,39 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
-        public virtual int? MasterAccountNum
+        public virtual int MasterAccountNum
         {
             get
             {
-				if (!AllowNull && _masterAccountNum is null) 
-					_masterAccountNum = default(int); 
 				return _masterAccountNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_masterAccountNum = value; 
-					OnPropertyChanged("MasterAccountNum", value);
-				}
+				_masterAccountNum = value; 
+				OnPropertyChanged("MasterAccountNum", value);
             }
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
-        public virtual int? ProfileNum
+        public virtual int ProfileNum
         {
             get
             {
-				if (!AllowNull && _profileNum is null) 
-					_profileNum = default(int); 
 				return _profileNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_profileNum = value; 
-					OnPropertyChanged("ProfileNum", value);
-				}
+				_profileNum = value; 
+				OnPropertyChanged("ProfileNum", value);
             }
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 		/// </summary>
         public virtual int ChannelNum
         {
@@ -193,7 +183,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
 		/// </summary>
         public virtual int ChannelAccountNum
         {
@@ -209,7 +199,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Shipment Unique Number. Required, <br> Title: Shipment Number Display: true, Editable: false.
 		/// </summary>
         public virtual long? OrderShipmentNum
         {
@@ -230,7 +220,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
 		/// </summary>
         public virtual string ChannelOrderID
         {
@@ -246,7 +236,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
 		/// </summary>
         public virtual long? OrderDCAssignmentLineNum
         {
@@ -267,7 +257,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Product SKU. <br> Title: Sku, Display: true, Editable: false
 		/// </summary>
         public virtual string SKU
         {
@@ -288,7 +278,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Canceled Qty. <br> Title: Canceled Qty, Display: true, Editable: true
 		/// </summary>
         public virtual decimal CanceledQty
         {
@@ -304,7 +294,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Cancel code. <br> Title: Cancel Code, Display: true, Editable: true
 		/// </summary>
         public virtual string CancelCode
         {
@@ -320,7 +310,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Cancel Reason. <br> Title: Cancel Reason, Display: true, Editable: true
 		/// </summary>
         public virtual string CancelOtherReason
         {
@@ -341,7 +331,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string DBChannelOrderLineRowID
         {
@@ -357,7 +347,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Global Unique Guid for one OrderShipment
+		/// Shipment uuid. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual string OrderShipmentUuid
         {
@@ -373,7 +363,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Global Unique Guid for one OrderShipment cancell Item
+		/// Shipment Canceled Item uuid. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual string OrderShipmentCanceledItemUuid
         {
@@ -394,7 +384,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private OrderShipmentData Parent { get; set; }
 		public OrderShipmentData GetParent() => Parent;
 		public OrderShipmentCanceledItem SetParent(OrderShipmentData parent)
@@ -419,8 +409,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             base.Clear();
 			_orderShipmentCanceledItemNum = default(long); 
 			_databaseNum = default(int); 
-			_masterAccountNum = AllowNull ? (int?)null : default(int); 
-			_profileNum = AllowNull ? (int?)null : default(int); 
+			_masterAccountNum = default(int); 
+			_profileNum = default(int); 
 			_channelNum = default(int); 
 			_channelAccountNum = default(int); 
 			_orderShipmentNum = AllowNull ? (long?)null : default(long); 

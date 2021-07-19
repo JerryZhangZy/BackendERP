@@ -33,10 +33,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public InvoiceData() : base() {}
         public InvoiceData(IDataBaseFactory dbFactory): base(dbFactory) {}
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new bool IsNew => InvoiceHeader.IsNew;
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new string UniqueId => InvoiceHeader.UniqueId;
 
         #region CRUD Methods

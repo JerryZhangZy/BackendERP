@@ -136,6 +136,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(AddressUuid)) 
 				AddressUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// Customer Address uuid. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual string AddressUuid
         {
             get
@@ -149,6 +152,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Customer uuid. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual string CustomerUuid
         {
             get
@@ -162,6 +168,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Address code, human readable. <br> Title: Address Code, Display: true, Editable: true.
+		/// </summary>
         public virtual string AddressCode
         {
             get
@@ -175,6 +184,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Address type, billing, shipping, store. <br> Title: Address Type, Display: true, Editable: true.
+		/// </summary>
         public virtual int AddressType
         {
             get
@@ -188,6 +200,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Address description. <br> Title: Address Description, Display: true, Editable: true.
+		/// </summary>
         public virtual string Description
         {
             get
@@ -201,6 +216,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Name. <br> Title: Name, Display: true, Editable: true.
+		/// </summary>
         public virtual string Name
         {
             get
@@ -214,6 +232,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// First Name. <br> Title: First Name, Display: true, Editable: true.
+		/// </summary>
         public virtual string FirstName
         {
             get
@@ -227,6 +248,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Last Name. <br> Title: Last Name, Display: true, Editable: true.
+		/// </summary>
         public virtual string LastName
         {
             get
@@ -240,6 +264,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Suffix <br> Title: Suffix, Display: true, Editable: true.
+		/// </summary>
         public virtual string Suffix
         {
             get
@@ -253,6 +280,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Company Name <br> Title: Company, Display: true, Editable: true.
+		/// </summary>
         public virtual string Company
         {
             get
@@ -266,6 +296,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Job Title <br> Title: Job Title, Display: true, Editable: true.
+		/// </summary>
         public virtual string CompanyJobTitle
         {
             get
@@ -279,6 +312,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Attention <br> Title: Attention, Display: true, Editable: true.
+		/// </summary>
         public virtual string Attention
         {
             get
@@ -292,6 +328,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Address Line 1 <br> Title: Address Line 1, Display: true, Editable: true.
+		/// </summary>
         public virtual string AddressLine1
         {
             get
@@ -305,6 +344,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Address Line 2 <br> Title: Address Line 2, Display: true, Editable: true.
+		/// </summary>
         public virtual string AddressLine2
         {
             get
@@ -318,6 +360,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Address Line 3 <br> Title: Address Line 3, Display: true, Editable: true.
+		/// </summary>
         public virtual string AddressLine3
         {
             get
@@ -331,6 +376,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// City <br> Title: City, Display: true, Editable: true.
+		/// </summary>
         public virtual string City
         {
             get
@@ -344,6 +392,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// State <br> Title: State, Display: true, Editable: true.
+		/// </summary>
         public virtual string State
         {
             get
@@ -357,6 +408,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// State Full Name <br> Title: State Name, Display: true, Editable: true.
+		/// </summary>
         public virtual string StateFullName
         {
             get
@@ -370,6 +424,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// PostalCode <br> Title: Postal Code, Display: true, Editable: true.
+		/// </summary>
         public virtual string PostalCode
         {
             get
@@ -383,6 +440,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// PostalCodeExt <br> Title: Postal Code Ext., Display: true, Editable: true.
+		/// </summary>
         public virtual string PostalCodeExt
         {
             get
@@ -396,6 +456,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// County <br> Title: County, Display: true, Editable: true.
+		/// </summary>
         public virtual string County
         {
             get
@@ -409,6 +472,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Country <br> Title: Country, Display: true, Editable: true.
+		/// </summary>
         public virtual string Country
         {
             get
@@ -422,6 +488,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Email <br> Title: Email, Display: true, Editable: true.
+		/// </summary>
         public virtual string Email
         {
             get
@@ -435,6 +504,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// DaytimePhone <br> Title: Phone, Display: true, Editable: true.
+		/// </summary>
         public virtual string DaytimePhone
         {
             get
@@ -448,6 +520,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// NightPhone <br> Title: Phone 2, Display: true, Editable: true.
+		/// </summary>
         public virtual string NightPhone
         {
             get
@@ -461,6 +536,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
+		/// </summary>
         public virtual DateTime? UpdateDateUtc
         {
             get
@@ -479,6 +557,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
+		/// </summary>
         public virtual string EnterBy
         {
             get
@@ -492,6 +573,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
+		/// </summary>
         public virtual string UpdateBy
         {
             get
@@ -511,7 +595,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private CustomerData Parent { get; set; }
 		public CustomerData GetParent() => Parent;
 		public CustomerAddress SetParent(CustomerData parent)

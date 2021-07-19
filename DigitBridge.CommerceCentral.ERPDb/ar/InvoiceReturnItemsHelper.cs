@@ -53,8 +53,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string SKU(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SKU) AS {name ?? "SKU"} ";
         public static string ProductUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ProductUuid) AS {name ?? "ProductUuid"} ";
         public static string InventoryUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.InventoryUuid) AS {name ?? "InventoryUuid"} ";
+        public static string InvoiceWarehouseUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceWarehouseUuid) AS {name ?? "InvoiceWarehouseUuid"} ";
+        public static string InvoiceWarehouseCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceWarehouseCode) AS {name ?? "InvoiceWarehouseCode"} ";
         public static string WarehouseUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseUuid) AS {name ?? "WarehouseUuid"} ";
+        public static string WarehouseCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseCode) AS {name ?? "WarehouseCode"} ";
         public static string LotNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.LotNum) AS {name ?? "LotNum"} ";
+        public static string Reason(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Reason) AS {name ?? "Reason"} ";
         public static string Description(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Description) AS {name ?? "Description"} ";
         public static string Notes(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Notes) AS {name ?? "Notes"} ";
         public static string Currency(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Currency) AS {name ?? "Currency"} ";
@@ -69,10 +73,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ReceiveQty(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ReceiveQty AS {name ?? "ReceiveQty"} ";
         public static string StockQty(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.StockQty AS {name ?? "StockQty"} ";
         public static string NonStockQty(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.NonStockQty AS {name ?? "NonStockQty"} ";
+        public static string PutBackWarehouseUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.PutBackWarehouseUuid) AS {name ?? "PutBackWarehouseUuid"} ";
+        public static string PutBackWarehouseCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.PutBackWarehouseCode) AS {name ?? "PutBackWarehouseCode"} ";
+        public static string DamageWarehouseUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DamageWarehouseUuid) AS {name ?? "DamageWarehouseUuid"} ";
+        public static string DamageWarehouseCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DamageWarehouseCode) AS {name ?? "DamageWarehouseCode"} ";
+        public static string InvoiceDiscountPrice(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.InvoiceDiscountPrice AS {name ?? "InvoiceDiscountPrice"} ";
         public static string Price(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Price AS {name ?? "Price"} ";
-        public static string DiscountRate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DiscountRate AS {name ?? "DiscountRate"} ";
-        public static string DiscountAmount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DiscountAmount AS {name ?? "DiscountAmount"} ";
-        public static string DiscountPrice(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DiscountPrice AS {name ?? "DiscountPrice"} ";
         public static string ExtAmount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ExtAmount AS {name ?? "ExtAmount"} ";
         public static string TaxableAmount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TaxableAmount AS {name ?? "TaxableAmount"} ";
         public static string NonTaxableAmount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.NonTaxableAmount AS {name ?? "NonTaxableAmount"} ";
@@ -113,8 +119,12 @@ RTRIM({allies}InvoiceItemsUuid) AS InvoiceItemsUuid,
 RTRIM({allies}SKU) AS SKU,
 RTRIM({allies}ProductUuid) AS ProductUuid,
 RTRIM({allies}InventoryUuid) AS InventoryUuid,
+RTRIM({allies}InvoiceWarehouseUuid) AS InvoiceWarehouseUuid,
+RTRIM({allies}InvoiceWarehouseCode) AS InvoiceWarehouseCode,
 RTRIM({allies}WarehouseUuid) AS WarehouseUuid,
+RTRIM({allies}WarehouseCode) AS WarehouseCode,
 RTRIM({allies}LotNum) AS LotNum,
+RTRIM({allies}Reason) AS Reason,
 RTRIM({allies}Description) AS Description,
 RTRIM({allies}Notes) AS Notes,
 RTRIM({allies}Currency) AS Currency,
@@ -129,10 +139,12 @@ RTRIM({allies}PackType) AS PackType,
 {allies}ReceiveQty AS ReceiveQty,
 {allies}StockQty AS StockQty,
 {allies}NonStockQty AS NonStockQty,
+RTRIM({allies}PutBackWarehouseUuid) AS PutBackWarehouseUuid,
+RTRIM({allies}PutBackWarehouseCode) AS PutBackWarehouseCode,
+RTRIM({allies}DamageWarehouseUuid) AS DamageWarehouseUuid,
+RTRIM({allies}DamageWarehouseCode) AS DamageWarehouseCode,
+{allies}InvoiceDiscountPrice AS InvoiceDiscountPrice,
 {allies}Price AS Price,
-{allies}DiscountRate AS DiscountRate,
-{allies}DiscountAmount AS DiscountAmount,
-{allies}DiscountPrice AS DiscountPrice,
 {allies}ExtAmount AS ExtAmount,
 {allies}TaxableAmount AS TaxableAmount,
 {allies}NonTaxableAmount AS NonTaxableAmount,

@@ -249,6 +249,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\SettingForInventoryLog.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInventoryLog.ttinclude</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

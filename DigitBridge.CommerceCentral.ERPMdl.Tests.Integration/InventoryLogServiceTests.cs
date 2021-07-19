@@ -129,10 +129,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var id = DataBaseFactory.GetValue<InventoryLog, string>(@"
 SELECT TOP 1 ins.InventoryLogUuid 
 FROM InventoryLog ins 
-INNER JOIN (
-    SELECT it.InventoryLogUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.InventoryLogUuid
-) itm ON (itm.InventoryLogUuid = ins.InventoryLogUuid)
-WHERE itm.cnt > 0
 ");
 
 
@@ -188,10 +184,6 @@ WHERE itm.cnt > 0
             var id = await DataBaseFactory.GetValueAsync<InventoryLog, string>(@"
 SELECT TOP 1 ins.InventoryLogUuid 
 FROM InventoryLog ins 
-INNER JOIN (
-    SELECT it.InventoryLogUuid, COUNT(1) AS cnt FROM InventoryLog it GROUP BY it.InventoryLogUuid
-) itm ON (itm.InventoryLogUuid = ins.InventoryLogUuid)
-WHERE itm.cnt > 0
 ");
 
 

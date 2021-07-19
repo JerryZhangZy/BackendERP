@@ -45,24 +45,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ProductUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ProductUuid) AS {name ?? "ProductUuid"} ";
         public static string InventoryUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.InventoryUuid) AS {name ?? "InventoryUuid"} ";
         public static string StyleCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.StyleCode) AS {name ?? "StyleCode"} ";
-        public static string Color(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Color) AS {name ?? "Color"} ";
+        public static string ColorPatternCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ColorPatternCode) AS {name ?? "ColorPatternCode"} ";
         public static string SizeType(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SizeType) AS {name ?? "SizeType"} ";
-        public static string SizeSystem(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SizeSystem) AS {name ?? "SizeSystem"} ";
-        public static string Size(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Size) AS {name ?? "Size"} ";
-        public static string Width(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Width) AS {name ?? "Width"} ";
-        public static string Length(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Length) AS {name ?? "Length"} ";
-        public static string ClassCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ClassCode) AS {name ?? "ClassCode"} ";
-        public static string Department(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Department) AS {name ?? "Department"} ";
-        public static string Division(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Division) AS {name ?? "Division"} ";
-        public static string Year(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Year) AS {name ?? "Year"} ";
+        public static string SizeCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SizeCode) AS {name ?? "SizeCode"} ";
+        public static string WidthCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WidthCode) AS {name ?? "WidthCode"} ";
+        public static string LengthCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.LengthCode) AS {name ?? "LengthCode"} ";
         public static string PriceRule(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.PriceRule) AS {name ?? "PriceRule"} ";
         public static string LeadTimeDay(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.LeadTimeDay AS {name ?? "LeadTimeDay"} ";
-        public static string OrderSize(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderSize AS {name ?? "OrderSize"} ";
+        public static string PoSize(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.PoSize AS {name ?? "PoSize"} ";
         public static string MinStock(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.MinStock AS {name ?? "MinStock"} ";
         public static string SKU(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SKU) AS {name ?? "SKU"} ";
-        public static string Description(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Description) AS {name ?? "Description"} ";
         public static string WarehouseUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseUuid) AS {name ?? "WarehouseUuid"} ";
-        public static string WarehouseNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseNum) AS {name ?? "WarehouseNum"} ";
+        public static string WarehouseCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseCode) AS {name ?? "WarehouseCode"} ";
         public static string WarehouseName(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseName) AS {name ?? "WarehouseName"} ";
         public static string LotNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.LotNum) AS {name ?? "LotNum"} ";
         public static string LotInDate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.LotInDate AS {name ?? "LotInDate"} ";
@@ -73,11 +67,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string Notes(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Notes) AS {name ?? "Notes"} ";
         public static string Currency(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Currency) AS {name ?? "Currency"} ";
         public static string UOM(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.UOM) AS {name ?? "UOM"} ";
-        public static string PackType(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.PackType) AS {name ?? "PackType"} ";
-        public static string PackQty(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.PackQty AS {name ?? "PackQty"} ";
         public static string QtyPerPallot(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.QtyPerPallot AS {name ?? "QtyPerPallot"} ";
         public static string QtyPerCase(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.QtyPerCase AS {name ?? "QtyPerCase"} ";
         public static string QtyPerBox(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.QtyPerBox AS {name ?? "QtyPerBox"} ";
+        public static string PackType(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.PackType) AS {name ?? "PackType"} ";
+        public static string PackQty(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.PackQty AS {name ?? "PackQty"} ";
         public static string DefaultPackType(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DefaultPackType) AS {name ?? "DefaultPackType"} ";
         public static string Instock(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Instock AS {name ?? "Instock"} ";
         public static string OnHand(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OnHand AS {name ?? "OnHand"} ";
@@ -91,21 +85,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string BaseCost(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.BaseCost AS {name ?? "BaseCost"} ";
         public static string TaxRate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TaxRate AS {name ?? "TaxRate"} ";
         public static string TaxAmount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.TaxAmount AS {name ?? "TaxAmount"} ";
-        public static string DiscountRate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DiscountRate AS {name ?? "DiscountRate"} ";
-        public static string DiscountAmount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DiscountAmount AS {name ?? "DiscountAmount"} ";
         public static string ShippingAmount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ShippingAmount AS {name ?? "ShippingAmount"} ";
-        public static string ShippingTaxAmount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ShippingTaxAmount AS {name ?? "ShippingTaxAmount"} ";
         public static string MiscAmount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.MiscAmount AS {name ?? "MiscAmount"} ";
-        public static string MiscTaxAmount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.MiscTaxAmount AS {name ?? "MiscTaxAmount"} ";
         public static string ChargeAndAllowanceAmount(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ChargeAndAllowanceAmount AS {name ?? "ChargeAndAllowanceAmount"} ";
         public static string UnitCost(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.UnitCost AS {name ?? "UnitCost"} ";
         public static string AvgCost(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.AvgCost AS {name ?? "AvgCost"} ";
         public static string SalesCost(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.SalesCost AS {name ?? "SalesCost"} ";
-        public static string Stockable(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Stockable AS {name ?? "Stockable"} ";
-        public static string IsAr(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.IsAr AS {name ?? "IsAr"} ";
-        public static string IsAp(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.IsAp AS {name ?? "IsAp"} ";
-        public static string Taxable(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Taxable AS {name ?? "Taxable"} ";
-        public static string Costable(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Costable AS {name ?? "Costable"} ";
         public static string UpdateDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc"} ";
         public static string EnterBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy"} ";
         public static string UpdateBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy"} ";
@@ -125,24 +110,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
 RTRIM({allies}ProductUuid) AS ProductUuid,
 RTRIM({allies}InventoryUuid) AS InventoryUuid,
 RTRIM({allies}StyleCode) AS StyleCode,
-RTRIM({allies}Color) AS Color,
+RTRIM({allies}ColorPatternCode) AS ColorPatternCode,
 RTRIM({allies}SizeType) AS SizeType,
-RTRIM({allies}SizeSystem) AS SizeSystem,
-RTRIM({allies}Size) AS Size,
-RTRIM({allies}Width) AS Width,
-RTRIM({allies}Length) AS Length,
-RTRIM({allies}ClassCode) AS ClassCode,
-RTRIM({allies}Department) AS Department,
-RTRIM({allies}Division) AS Division,
-RTRIM({allies}Year) AS Year,
+RTRIM({allies}SizeCode) AS SizeCode,
+RTRIM({allies}WidthCode) AS WidthCode,
+RTRIM({allies}LengthCode) AS LengthCode,
 RTRIM({allies}PriceRule) AS PriceRule,
 {allies}LeadTimeDay AS LeadTimeDay,
-{allies}OrderSize AS OrderSize,
+{allies}PoSize AS PoSize,
 {allies}MinStock AS MinStock,
 RTRIM({allies}SKU) AS SKU,
-RTRIM({allies}Description) AS Description,
 RTRIM({allies}WarehouseUuid) AS WarehouseUuid,
-RTRIM({allies}WarehouseNum) AS WarehouseNum,
+RTRIM({allies}WarehouseCode) AS WarehouseCode,
 RTRIM({allies}WarehouseName) AS WarehouseName,
 RTRIM({allies}LotNum) AS LotNum,
 {allies}LotInDate AS LotInDate,
@@ -153,11 +132,11 @@ RTRIM({allies}LpnDescription) AS LpnDescription,
 RTRIM({allies}Notes) AS Notes,
 RTRIM({allies}Currency) AS Currency,
 RTRIM({allies}UOM) AS UOM,
-RTRIM({allies}PackType) AS PackType,
-{allies}PackQty AS PackQty,
 {allies}QtyPerPallot AS QtyPerPallot,
 {allies}QtyPerCase AS QtyPerCase,
 {allies}QtyPerBox AS QtyPerBox,
+RTRIM({allies}PackType) AS PackType,
+{allies}PackQty AS PackQty,
 RTRIM({allies}DefaultPackType) AS DefaultPackType,
 {allies}Instock AS Instock,
 {allies}OnHand AS OnHand,
@@ -171,21 +150,12 @@ RTRIM({allies}DefaultPackType) AS DefaultPackType,
 {allies}BaseCost AS BaseCost,
 {allies}TaxRate AS TaxRate,
 {allies}TaxAmount AS TaxAmount,
-{allies}DiscountRate AS DiscountRate,
-{allies}DiscountAmount AS DiscountAmount,
 {allies}ShippingAmount AS ShippingAmount,
-{allies}ShippingTaxAmount AS ShippingTaxAmount,
 {allies}MiscAmount AS MiscAmount,
-{allies}MiscTaxAmount AS MiscTaxAmount,
 {allies}ChargeAndAllowanceAmount AS ChargeAndAllowanceAmount,
 {allies}UnitCost AS UnitCost,
 {allies}AvgCost AS AvgCost,
 {allies}SalesCost AS SalesCost,
-{allies}Stockable AS Stockable,
-{allies}IsAr AS IsAr,
-{allies}IsAp AS IsAp,
-{allies}Taxable AS Taxable,
-{allies}Costable AS Costable,
 {allies}UpdateDateUtc AS UpdateDateUtc,
 RTRIM({allies}EnterBy) AS EnterBy,
 RTRIM({allies}UpdateBy) AS UpdateBy,

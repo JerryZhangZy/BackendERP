@@ -84,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasDueDate) data.DueDate = dto.DueDate;
 			if (dto.HasBillDate) data.BillDate = dto.BillDate;
 			if (dto.HasCustomerUuid) data.CustomerUuid = dto.CustomerUuid;
-			if (dto.HasCustomerNum) data.CustomerNum = dto.CustomerNum;
+			if (dto.HasCustomerCode) data.CustomerCode = dto.CustomerCode;
 			if (dto.HasCustomerName) data.CustomerName = dto.CustomerName;
 			if (dto.HasTerms) data.Terms = dto.Terms;
 			if (dto.HasTermsDays) data.TermsDays = dto.TermsDays.ToInt();
@@ -242,6 +242,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasOrderPack) data.OrderPack = dto.OrderPack.ToDecimal();
 			if (dto.HasShipPack) data.ShipPack = dto.ShipPack.ToDecimal();
 			if (dto.HasCancelledPack) data.CancelledPack = dto.CancelledPack.ToDecimal();
+			if (dto.HasOpenPack) data.OpenPack = dto.OpenPack.ToDecimal();
 			if (dto.HasOrderQty) data.OrderQty = dto.OrderQty.ToDecimal();
 			if (dto.HasShipQty) data.ShipQty = dto.ShipQty.ToDecimal();
 			if (dto.HasCancelledQty) data.CancelledQty = dto.CancelledQty.ToDecimal();
@@ -394,7 +395,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.DueDate = data.DueDate;
 			dto.BillDate = data.BillDate;
 			dto.CustomerUuid = data.CustomerUuid;
-			dto.CustomerNum = data.CustomerNum;
+			dto.CustomerCode = data.CustomerCode;
 			dto.CustomerName = data.CustomerName;
 			dto.Terms = data.Terms;
 			dto.TermsDays = data.TermsDays;
@@ -558,6 +559,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.OrderPack = data.OrderPack;
 			dto.ShipPack = data.ShipPack;
 			dto.CancelledPack = data.CancelledPack;
+			dto.OpenPack = data.OpenPack;
 			dto.OrderQty = data.OrderQty;
 			dto.ShipQty = data.ShipQty;
 			dto.CancelledQty = data.CancelledQty;

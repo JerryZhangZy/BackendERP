@@ -69,6 +69,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.Costable, f => f.Random.Bool())
 					.RuleFor(u => u.IsProfit, f => f.Random.Bool())
 					.RuleFor(u => u.Release, f => f.Random.Bool())
+					.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))
 					.RuleFor(u => u.UOM, f => f.PickRandom(TestHelper.UOM))
 					.RuleFor(u => u.QtyPerPallot, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.QtyPerCase, f => f.Random.Decimal(1, 1000, 6))
@@ -76,13 +77,16 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.PackType, f => f.PickRandom(TestHelper.PackType))
 					.RuleFor(u => u.PackQty, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.DefaultPackType, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.DefaultWarehouseNum, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.DefaultVendorNum, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.DefaultWarehouseCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.DefaultVendorCode, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.PoSize, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.MinStock, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.SalesCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.LeadTimeDay, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ProductYear, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
+					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))
 					;
             #endregion faker data rules
         }

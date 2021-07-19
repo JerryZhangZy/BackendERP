@@ -162,9 +162,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasWarehouseUuid => WarehouseUuid != null;
 
 		/// <summary>
-		/// (Readonly) Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
+		/// Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("(Readonly) Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true")]
+		[OpenApiPropertyDescription("Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The WarehouseCode value cannot exceed 50 characters. ")]
         public string WarehouseCode { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -268,6 +268,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasCancelledPack => CancelledPack != null;
 
 		/// <summary>
+		/// (Ignore) Item Cancelled number of pack.
+		/// </summary>
+		[OpenApiPropertyDescription("(Ignore) Item Cancelled number of pack.")]
+        public decimal? OpenPack { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOpenPack => OpenPack != null;
+
+		/// <summary>
 		/// Item Order Qty. <br> Title: Order Qty, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Item Order Qty. <br> Title: Order Qty, Display: true, Editable: true")]
@@ -304,9 +313,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasOpenQty => OpenQty != null;
 
 		/// <summary>
-		/// Item Order price rule. <br> Title: Price Type, Display: true, Editable: true
+		/// Item price rule. <br> Title: Price Type, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Item Order price rule. <br> Title: Price Type, Display: true, Editable: true")]
+		[OpenApiPropertyDescription("Item price rule. <br> Title: Price Type, Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The PriceRule value cannot exceed 50 characters. ")]
         public string PriceRule { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -314,9 +323,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasPriceRule => PriceRule != null;
 
 		/// <summary>
-		/// Item Order price. <br> Title: Unit Price, Display: true, Editable: true
+		/// Item unit price. <br> Title: Unit Price, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Item Order price. <br> Title: Unit Price, Display: true, Editable: true")]
+		[OpenApiPropertyDescription("Item unit price. <br> Title: Unit Price, Display: true, Editable: true")]
         public decimal? Price { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -377,9 +386,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasNonTaxableAmount => NonTaxableAmount != null;
 
 		/// <summary>
-		/// Default Tax rate for Order items. <br> Display: false, Editable: false
+		/// Default Tax rate for item. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Default Tax rate for Order items. <br> Display: false, Editable: false")]
+		[OpenApiPropertyDescription("Default Tax rate for item. <br> Display: false, Editable: false")]
         public decimal? TaxRate { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -395,9 +404,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasTaxAmount => TaxAmount != null;
 
 		/// <summary>
-		/// Total shipping fee for all items. <br> Display: false, Editable: false
+		/// shipping fee for this item. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Total shipping fee for all items. <br> Display: false, Editable: false")]
+		[OpenApiPropertyDescription("shipping fee for this item. <br> Display: false, Editable: false")]
         public decimal? ShippingAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -440,81 +449,81 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasChargeAndAllowanceAmount => ChargeAndAllowanceAmount != null;
 
 		/// <summary>
-		/// Item total amount. <br> Display: false, Editable: false
+		/// Item total amount include all. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Item total amount. <br> Display: false, Editable: false")]
+		[OpenApiPropertyDescription("Item total amount include all. <br> Display: false, Editable: false")]
         public decimal? ItemTotalAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasItemTotalAmount => ItemTotalAmount != null;
 
 		/// <summary>
-		/// Item total amount. <br> Display: false, Editable: false
+		/// Item shipped amount. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Item total amount. <br> Display: false, Editable: false")]
+		[OpenApiPropertyDescription("Item shipped amount. <br> Display: false, Editable: false")]
         public decimal? ShipAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipAmount => ShipAmount != null;
 
 		/// <summary>
-		/// Item total amount. <br> Display: false, Editable: false
+		/// Item cancelled amount. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Item total amount. <br> Display: false, Editable: false")]
+		[OpenApiPropertyDescription("Item cancelled amount. <br> Display: false, Editable: false")]
         public decimal? CancelledAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCancelledAmount => CancelledAmount != null;
 
 		/// <summary>
-		/// Item total amount. <br> Display: false, Editable: false
+		/// Item open amount. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Item total amount. <br> Display: false, Editable: false")]
+		[OpenApiPropertyDescription("Item open amount. <br> Display: false, Editable: false")]
         public decimal? OpenAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOpenAmount => OpenAmount != null;
 
 		/// <summary>
-		/// Order item will update inventory instock qty. <br> Title: Stockable, Display: true, Editable: true
+		/// item will update inventory instock qty. <br> Title: Stockable, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Order item will update inventory instock qty. <br> Title: Stockable, Display: true, Editable: true")]
+		[OpenApiPropertyDescription("item will update inventory instock qty. <br> Title: Stockable, Display: true, Editable: true")]
         public bool? Stockable { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasStockable => Stockable != null;
 
 		/// <summary>
-		/// Order item will add to Order total amount. <br> Title: A/R, Display: true, Editable: true
+		/// item will add to Order total amount. <br> Title: A/R, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Order item will add to Order total amount. <br> Title: A/R, Display: true, Editable: true")]
+		[OpenApiPropertyDescription("item will add to Order total amount. <br> Title: A/R, Display: true, Editable: true")]
         public bool? IsAr { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasIsAr => IsAr != null;
 
 		/// <summary>
-		/// Order item will apply tax. <br> Title: Taxable, Display: true, Editable: true
+		/// item will apply tax. <br> Title: Taxable, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Order item will apply tax. <br> Title: Taxable, Display: true, Editable: true")]
+		[OpenApiPropertyDescription("item will apply tax. <br> Title: Taxable, Display: true, Editable: true")]
         public bool? Taxable { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTaxable => Taxable != null;
 
 		/// <summary>
-		/// Order item will calculate total cost. <br> Title: Apply Cost, Display: true, Editable: true
+		/// item will calculate total cost. <br> Title: Apply Cost, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Order item will calculate total cost. <br> Title: Apply Cost, Display: true, Editable: true")]
+		[OpenApiPropertyDescription("item will calculate total cost. <br> Title: Apply Cost, Display: true, Editable: true")]
         public bool? Costable { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCostable => Costable != null;
 
 		/// <summary>
-		/// Invoice item will calculate profit. <br> Title: Apply Profit, Display: true, Editable: true
+		/// item will calculate profit. <br> Title: Apply Profit, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Invoice item will calculate profit. <br> Title: Apply Profit, Display: true, Editable: true")]
+		[OpenApiPropertyDescription("item will calculate profit. <br> Title: Apply Profit, Display: true, Editable: true")]
         public bool? IsProfit { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
