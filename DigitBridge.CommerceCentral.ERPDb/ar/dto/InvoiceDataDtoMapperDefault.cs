@@ -84,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasDueDate) data.DueDate = dto.DueDate;
 			if (dto.HasBillDate) data.BillDate = dto.BillDate;
 			if (dto.HasCustomerUuid) data.CustomerUuid = dto.CustomerUuid;
-			if (dto.HasCustomerNum) data.CustomerNum = dto.CustomerNum;
+			if (dto.HasCustomerCode) data.CustomerCode = dto.CustomerCode;
 			if (dto.HasCustomerName) data.CustomerName = dto.CustomerName;
 			if (dto.HasTerms) data.Terms = dto.Terms;
 			if (dto.HasTermsDays) data.TermsDays = dto.TermsDays.ToInt();
@@ -129,6 +129,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
 			if (dto.HasCentralFulfillmentNum) data.CentralFulfillmentNum = dto.CentralFulfillmentNum.ToLong();
+			if (dto.HasOrderShipmentNum) data.OrderShipmentNum = dto.OrderShipmentNum.ToLong();
+			if (dto.HasOrderShipmentUuid) data.OrderShipmentUuid = dto.OrderShipmentUuid;
 			if (dto.HasShippingCarrier) data.ShippingCarrier = dto.ShippingCarrier;
 			if (dto.HasShippingClass) data.ShippingClass = dto.ShippingClass;
 			if (dto.HasDistributionCenterNum) data.DistributionCenterNum = dto.DistributionCenterNum.ToInt();
@@ -139,6 +141,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasSecondaryChannelOrderID) data.SecondaryChannelOrderID = dto.SecondaryChannelOrderID;
 			if (dto.HasShippingAccount) data.ShippingAccount = dto.ShippingAccount;
 			if (dto.HasWarehouseUuid) data.WarehouseUuid = dto.WarehouseUuid;
+			if (dto.HasWarehouseCode) data.WarehouseCode = dto.WarehouseCode;
 			if (dto.HasRefNum) data.RefNum = dto.RefNum;
 			if (dto.HasCustomerPoNum) data.CustomerPoNum = dto.CustomerPoNum;
 			if (dto.HasEndBuyerUserId) data.EndBuyerUserId = dto.EndBuyerUserId;
@@ -230,6 +233,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProductUuid) data.ProductUuid = dto.ProductUuid;
 			if (dto.HasInventoryUuid) data.InventoryUuid = dto.InventoryUuid;
 			if (dto.HasWarehouseUuid) data.WarehouseUuid = dto.WarehouseUuid;
+			if (dto.HasWarehouseCode) data.WarehouseCode = dto.WarehouseCode;
 			if (dto.HasLotNum) data.LotNum = dto.LotNum;
 			if (dto.HasDescription) data.Description = dto.Description;
 			if (dto.HasNotes) data.Notes = dto.Notes;
@@ -240,6 +244,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasOrderPack) data.OrderPack = dto.OrderPack.ToDecimal();
 			if (dto.HasShipPack) data.ShipPack = dto.ShipPack.ToDecimal();
 			if (dto.HasCancelledPack) data.CancelledPack = dto.CancelledPack.ToDecimal();
+			if (dto.HasOpenPack) data.OpenPack = dto.OpenPack.ToDecimal();
 			if (dto.HasOrderQty) data.OrderQty = dto.OrderQty.ToDecimal();
 			if (dto.HasShipQty) data.ShipQty = dto.ShipQty.ToDecimal();
 			if (dto.HasCancelledQty) data.CancelledQty = dto.CancelledQty.ToDecimal();
@@ -392,7 +397,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.DueDate = data.DueDate;
 			dto.BillDate = data.BillDate;
 			dto.CustomerUuid = data.CustomerUuid;
-			dto.CustomerNum = data.CustomerNum;
+			dto.CustomerCode = data.CustomerCode;
 			dto.CustomerName = data.CustomerName;
 			dto.Terms = data.Terms;
 			dto.TermsDays = data.TermsDays;
@@ -439,6 +444,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.RowNum = data.RowNum;
 			dto.InvoiceUuid = data.InvoiceUuid;
 			dto.CentralFulfillmentNum = data.CentralFulfillmentNum;
+			dto.OrderShipmentNum = data.OrderShipmentNum;
+			dto.OrderShipmentUuid = data.OrderShipmentUuid;
 			dto.ShippingCarrier = data.ShippingCarrier;
 			dto.ShippingClass = data.ShippingClass;
 			dto.DistributionCenterNum = data.DistributionCenterNum;
@@ -449,6 +456,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.SecondaryChannelOrderID = data.SecondaryChannelOrderID;
 			dto.ShippingAccount = data.ShippingAccount;
 			dto.WarehouseUuid = data.WarehouseUuid;
+			dto.WarehouseCode = data.WarehouseCode;
 			dto.RefNum = data.RefNum;
 			dto.CustomerPoNum = data.CustomerPoNum;
 			dto.EndBuyerUserId = data.EndBuyerUserId;
@@ -544,6 +552,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ProductUuid = data.ProductUuid;
 			dto.InventoryUuid = data.InventoryUuid;
 			dto.WarehouseUuid = data.WarehouseUuid;
+			dto.WarehouseCode = data.WarehouseCode;
 			dto.LotNum = data.LotNum;
 			dto.Description = data.Description;
 			dto.Notes = data.Notes;
@@ -554,6 +563,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.OrderPack = data.OrderPack;
 			dto.ShipPack = data.ShipPack;
 			dto.CancelledPack = data.CancelledPack;
+			dto.OpenPack = data.OpenPack;
 			dto.OrderQty = data.OrderQty;
 			dto.ShipQty = data.ShipQty;
 			dto.CancelledQty = data.CancelledQty;

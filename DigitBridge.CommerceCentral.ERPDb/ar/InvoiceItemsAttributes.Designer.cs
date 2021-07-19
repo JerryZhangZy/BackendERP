@@ -61,6 +61,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(InvoiceItemsUuid)) 
 				InvoiceItemsUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// Invoice item line uuid. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual string InvoiceItemsUuid
         {
             get
@@ -74,6 +77,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Invoice uuid. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual string InvoiceUuid
         {
             get
@@ -87,7 +93,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+		/// <summary>
+		/// (Ignore) JSON string
+		/// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual string JsonFields
         {
             get
@@ -102,9 +111,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         protected CustomAttributes _Fields;
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual CustomAttributes Fields
         {
             get
@@ -124,7 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private InvoiceData Parent { get; set; }
 		public InvoiceData GetParent() => Parent;
 		public InvoiceItemsAttributes SetParent(InvoiceData parent)

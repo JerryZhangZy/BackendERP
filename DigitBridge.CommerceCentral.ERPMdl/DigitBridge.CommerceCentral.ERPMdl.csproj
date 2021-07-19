@@ -16,6 +16,7 @@
     <Folder Include="inventory\" />
     <Folder Include="ap\" />
     <Folder Include="channelOrder\" />
+    <Folder Include="inventoryLog\" />
     <Folder Include="shipment\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />

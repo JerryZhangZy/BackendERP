@@ -56,63 +56,63 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			get => OrderShipmentPackageNum.ToLong();
 			set => OrderShipmentPackageNum = value.ToLong();
 		}
-		[XmlIgnore, JsonIgnore, IgnoreCompare] 
+		[JsonIgnore, XmlIgnore, IgnoreCompare] 
 		public override bool IsNew => OrderShipmentPackageNum <= 0; 
         [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
         private int _databaseNum;
 
-        [Column("MasterAccountNum",SqlDbType.Int)]
-        private int? _masterAccountNum;
+        [Column("MasterAccountNum",SqlDbType.Int,NotNull=true)]
+        private int _masterAccountNum;
 
-        [Column("ProfileNum",SqlDbType.Int)]
-        private int? _profileNum;
+        [Column("ProfileNum",SqlDbType.Int,NotNull=true)]
+        private int _profileNum;
 
-        [Column("ChannelNum",SqlDbType.Int,NotNull=true)]
+        [Column("ChannelNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _channelNum;
 
-        [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true)]
+        [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _channelAccountNum;
 
-        [Column("OrderShipmentNum",SqlDbType.BigInt)]
+        [Column("OrderShipmentNum",SqlDbType.BigInt,IsDefault=true)]
         private long? _orderShipmentNum;
 
-        [Column("PackageID",SqlDbType.NVarChar)]
+        [Column("PackageID",SqlDbType.NVarChar,IsDefault=true)]
         private string _packageID;
 
-        [Column("PackageType",SqlDbType.Int)]
+        [Column("PackageType",SqlDbType.Int,IsDefault=true)]
         private int? _packageType;
 
-        [Column("PackagePatternNum",SqlDbType.Int)]
+        [Column("PackagePatternNum",SqlDbType.Int,IsDefault=true)]
         private int? _packagePatternNum;
 
-        [Column("PackageTrackingNumber",SqlDbType.VarChar)]
+        [Column("PackageTrackingNumber",SqlDbType.VarChar,IsDefault=true)]
         private string _packageTrackingNumber;
 
-        [Column("PackageReturnTrackingNumber",SqlDbType.VarChar)]
+        [Column("PackageReturnTrackingNumber",SqlDbType.VarChar,IsDefault=true)]
         private string _packageReturnTrackingNumber;
 
-        [Column("PackageWeight",SqlDbType.Decimal)]
+        [Column("PackageWeight",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _packageWeight;
 
-        [Column("PackageLength",SqlDbType.Decimal)]
+        [Column("PackageLength",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _packageLength;
 
-        [Column("PackageWidth",SqlDbType.Decimal)]
+        [Column("PackageWidth",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _packageWidth;
 
-        [Column("PackageHeight",SqlDbType.Decimal)]
+        [Column("PackageHeight",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _packageHeight;
 
-        [Column("PackageVolume",SqlDbType.Decimal)]
+        [Column("PackageVolume",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _packageVolume;
 
-        [Column("PackageQty",SqlDbType.Decimal)]
+        [Column("PackageQty",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _packageQty;
 
-        [Column("ParentPackageNum",SqlDbType.BigInt)]
+        [Column("ParentPackageNum",SqlDbType.BigInt,IsDefault=true)]
         private long? _parentPackageNum;
 
-        [Column("HasChildPackage",SqlDbType.Bit)]
+        [Column("HasChildPackage",SqlDbType.Bit,IsDefault=true)]
         private bool? _hasChildPackage;
 
         [Column("OrderShipmentUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
@@ -132,7 +132,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				OrderShipmentPackageUuid = Guid.NewGuid().ToString(); 
 		}
 		/// <summary>
-		/// 
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual int DatabaseNum
         {
@@ -148,49 +148,39 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
-        public virtual int? MasterAccountNum
+        public virtual int MasterAccountNum
         {
             get
             {
-				if (!AllowNull && _masterAccountNum is null) 
-					_masterAccountNum = default(int); 
 				return _masterAccountNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_masterAccountNum = value; 
-					OnPropertyChanged("MasterAccountNum", value);
-				}
+				_masterAccountNum = value; 
+				OnPropertyChanged("MasterAccountNum", value);
             }
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
-        public virtual int? ProfileNum
+        public virtual int ProfileNum
         {
             get
             {
-				if (!AllowNull && _profileNum is null) 
-					_profileNum = default(int); 
 				return _profileNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_profileNum = value; 
-					OnPropertyChanged("ProfileNum", value);
-				}
+				_profileNum = value; 
+				OnPropertyChanged("ProfileNum", value);
             }
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 		/// </summary>
         public virtual int ChannelNum
         {
@@ -206,7 +196,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
 		/// </summary>
         public virtual int ChannelAccountNum
         {
@@ -222,7 +212,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Shipment Unique Number. Required, <br> Title: Shipment Number Display: true, Editable: false.
 		/// </summary>
         public virtual long? OrderShipmentNum
         {
@@ -243,7 +233,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Package ID. <br> Title: Package Id, Display: true, Editable: false
 		/// </summary>
         public virtual string PackageID
         {
@@ -264,7 +254,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Package Type. <br> Title: Package Type, Display: true, Editable: true
 		/// </summary>
         public virtual int? PackageType
         {
@@ -285,7 +275,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Package Pattern. <br> Title: Package Pattern, Display: true, Editable: true
 		/// </summary>
         public virtual int? PackagePatternNum
         {
@@ -306,7 +296,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Package TrackingNumber. <br> Title: Tracking Number, Display: true, Editable: true
 		/// </summary>
         public virtual string PackageTrackingNumber
         {
@@ -327,7 +317,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Return TrackingNumber. <br> Title: Return Tracking Number, Display: true, Editable: true
 		/// </summary>
         public virtual string PackageReturnTrackingNumber
         {
@@ -348,7 +338,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Weight. <br> Title: Weight, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? PackageWeight
         {
@@ -369,7 +359,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Length. <br> Title: Length, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? PackageLength
         {
@@ -390,7 +380,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Width. <br> Title: Width, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? PackageWidth
         {
@@ -411,7 +401,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Height. <br> Title: Height, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? PackageHeight
         {
@@ -432,7 +422,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Volume. <br> Title: Volume, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? PackageVolume
         {
@@ -453,7 +443,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Qty. <br> Title: Qty, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? PackageQty
         {
@@ -474,7 +464,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Parent Package Num. <br> Title: Parent Package, Display: true, Editable: true
 		/// </summary>
         public virtual long? ParentPackageNum
         {
@@ -495,7 +485,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Has Child Package. <br> Title: Has Child, Display: true, Editable: true
 		/// </summary>
         public virtual bool? HasChildPackage
         {
@@ -516,7 +506,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Global Unique Guid for one OrderShipment
+		/// Shipment uuid. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual string OrderShipmentUuid
         {
@@ -532,7 +522,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Global Unique Guid for one OrderShipment Package
+		/// Shipment Pachage uuid. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual string OrderShipmentPackageUuid
         {
@@ -553,7 +543,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private OrderShipmentData Parent { get; set; }
 		public OrderShipmentData GetParent() => Parent;
 		public OrderShipmentPackage SetParent(OrderShipmentData parent)
@@ -681,8 +671,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             base.Clear();
 			_orderShipmentPackageNum = default(long); 
 			_databaseNum = default(int); 
-			_masterAccountNum = AllowNull ? (int?)null : default(int); 
-			_profileNum = AllowNull ? (int?)null : default(int); 
+			_masterAccountNum = default(int); 
+			_profileNum = default(int); 
 			_channelNum = default(int); 
 			_channelAccountNum = default(int); 
 			_orderShipmentNum = AllowNull ? (long?)null : default(long); 

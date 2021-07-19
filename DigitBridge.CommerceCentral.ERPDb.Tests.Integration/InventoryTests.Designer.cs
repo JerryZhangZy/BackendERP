@@ -43,24 +43,18 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ProductUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.InventoryUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.StyleCode, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.Color, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.ColorPatternCode, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.SizeType, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.SizeSystem, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.Size, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.Width, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.Length, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.ClassCode, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.Department, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.Division, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.Year, f => f.Lorem.Sentence().TruncateTo(20))
+					.RuleFor(u => u.SizeCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.WidthCode, f => f.Lorem.Sentence().TruncateTo(30))
+					.RuleFor(u => u.LengthCode, f => f.Lorem.Sentence().TruncateTo(30))
 					.RuleFor(u => u.PriceRule, f => f.PickRandom(TestHelper.PriceRule))
 					.RuleFor(u => u.LeadTimeDay, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.OrderSize, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.PoSize, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.MinStock, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.SKU, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.Description, f => f.Lorem.Sentence().TruncateTo(200))
 					.RuleFor(u => u.WarehouseUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.WarehouseNum, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.WarehouseCode, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.WarehouseName, f => f.Lorem.Sentence().TruncateTo(200))
 					.RuleFor(u => u.LotNum, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.LotInDate, f => f.Date.Past(0).Date)
@@ -71,11 +65,11 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.Notes, f => f.Lorem.Sentence().TruncateTo(500))
 					.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))
 					.RuleFor(u => u.UOM, f => f.PickRandom(TestHelper.UOM))
-					.RuleFor(u => u.PackType, f => f.PickRandom(TestHelper.PackType))
-					.RuleFor(u => u.PackQty, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.QtyPerPallot, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.QtyPerCase, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.QtyPerBox, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.PackType, f => f.PickRandom(TestHelper.PackType))
+					.RuleFor(u => u.PackQty, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.DefaultPackType, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.Instock, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.OnHand, f => f.Random.Decimal(1, 1000, 6))
@@ -89,21 +83,12 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.BaseCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.TaxRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
 					.RuleFor(u => u.TaxAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.DiscountRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
-					.RuleFor(u => u.DiscountAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.ShippingAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.ShippingTaxAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.MiscAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.MiscTaxAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.ChargeAndAllowanceAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.UnitCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.AvgCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.SalesCost, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.Stockable, f => f.Random.Bool())
-					.RuleFor(u => u.IsAr, f => f.Random.Bool())
-					.RuleFor(u => u.IsAp, f => f.Random.Bool())
-					.RuleFor(u => u.Taxable, f => f.Random.Bool())
-					.RuleFor(u => u.Costable, f => f.Random.Bool())
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))
@@ -212,14 +197,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            data.Patch(new[] { "StyleCode", "Color" });
+            data.Patch(new[] { "StyleCode", "ColorPatternCode" });
             DataBaseFactory.Commit();
 
             var dataGet = DataBaseFactory.GetFromCache<Inventory>(data.RowNum);
             var result = dataGet.StyleCode != dataOrig.StyleCode &&
-                            dataGet.Color != dataOrig.Color &&
+                            dataGet.ColorPatternCode != dataOrig.ColorPatternCode &&
                             dataGet.StyleCode == newData.StyleCode &&
-                            dataGet.Color == newData.Color;
+                            dataGet.ColorPatternCode == newData.ColorPatternCode;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -321,13 +306,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             list.SetDataBaseFactory<Inventory>(DataBaseFactory)
                 .Save<Inventory>();
 
-            var NewColor = Guid.NewGuid().ToString();
+            var NewColorPatternCode = Guid.NewGuid().ToString();
             var listFind = DataBaseFactory.Find<Inventory>("WHERE ProductUuid = @0 ORDER BY RowNum", ProductUuid).ToList();
-            listFind.ToList().ForEach(x => x.Color = NewColor);
+            listFind.ToList().ForEach(x => x.ColorPatternCode = NewColorPatternCode);
             listFind.Save<Inventory>();
 
             list = DataBaseFactory.Find<Inventory>("WHERE ProductUuid = @0 ORDER BY RowNum", ProductUuid).ToList();
-            var result = list.Where(x => x.Color == NewColor).Count() == listFind.Count();
+            var result = list.Where(x => x.ColorPatternCode == NewColorPatternCode).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -420,14 +405,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            await data.PatchAsync(new[] { "StyleCode", "Color" });
+            await data.PatchAsync(new[] { "StyleCode", "ColorPatternCode" });
             DataBaseFactory.Commit();
 
             var dataGet = await DataBaseFactory.GetFromCacheAsync<Inventory>(data.RowNum);
             var result = dataGet.StyleCode != dataOrig.StyleCode &&
-                            dataGet.Color != dataOrig.Color &&
+                            dataGet.ColorPatternCode != dataOrig.ColorPatternCode &&
                             dataGet.StyleCode == newData.StyleCode &&
-                            dataGet.Color == newData.Color;
+                            dataGet.ColorPatternCode == newData.ColorPatternCode;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -527,13 +512,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 .SetDataBaseFactory<Inventory>(DataBaseFactory)
                 .SaveAsync<Inventory>();
 
-            var NewColor = Guid.NewGuid().ToString();
+            var NewColorPatternCode = Guid.NewGuid().ToString();
             var listFind = (await DataBaseFactory.FindAsync<Inventory>("WHERE ProductUuid = @0 ORDER BY RowNum", ProductUuid)).ToList();
-            listFind.ToList().ForEach(x => x.Color = NewColor);
+            listFind.ToList().ForEach(x => x.ColorPatternCode = NewColorPatternCode);
             await listFind.SaveAsync<Inventory>();
 
             list = DataBaseFactory.Find<Inventory>("WHERE ProductUuid = @0 ORDER BY RowNum", ProductUuid).ToList();
-            var result = list.Where(x => x.Color == NewColor).Count() == listFind.Count();
+            var result = list.Where(x => x.ColorPatternCode == NewColorPatternCode).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }

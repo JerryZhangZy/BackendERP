@@ -15,6 +15,7 @@ using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
 
@@ -22,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Represents a OrderShipmentCanceledItem Dto Class.
-    /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+    /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
     public class OrderShipmentCanceledItemDto
     {
@@ -34,138 +35,154 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 
 		/// <summary>
-		/// 
+		/// (Readonly) Shipment Canceled Item Unique Number. Required, <br> Title: Canceled Item Number, Display: true, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Shipment Canceled Item Unique Number. Required, <br> Title: Canceled Item Number, Display: true, Editable: false.")]
         public long? OrderShipmentCanceledItemNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderShipmentCanceledItemNum => OrderShipmentCanceledItemNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
         public int? DatabaseNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDatabaseNum => DatabaseNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
         public int? MasterAccountNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMasterAccountNum => MasterAccountNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
         public int? ProfileNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasProfileNum => ProfileNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false")]
         public int? ChannelNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelNum => ChannelNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false")]
         public int? ChannelAccountNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelAccountNum => ChannelAccountNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Shipment Unique Number. Required, <br> Title: Shipment Number Display: true, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Shipment Unique Number. Required, <br> Title: Shipment Number Display: true, Editable: false.")]
         public long? OrderShipmentNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderShipmentNum => OrderShipmentNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false")]
         [StringLength(130, ErrorMessage = "The ChannelOrderID value cannot exceed 130 characters. ")]
         public string ChannelOrderID { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelOrderID => ChannelOrderID != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false")]
         public long? OrderDCAssignmentLineNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderDCAssignmentLineNum => OrderDCAssignmentLineNum != null;
 
 		/// <summary>
-		/// 
+		/// Product SKU. <br> Title: Sku, Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Product SKU. <br> Title: Sku, Display: true, Editable: false")]
         [StringLength(100, ErrorMessage = "The SKU value cannot exceed 100 characters. ")]
         public string SKU { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasSKU => SKU != null;
 
 		/// <summary>
-		/// 
+		/// Canceled Qty. <br> Title: Canceled Qty, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Canceled Qty. <br> Title: Canceled Qty, Display: true, Editable: true")]
         public decimal? CanceledQty { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCanceledQty => CanceledQty != null;
 
 		/// <summary>
-		/// 
+		/// Cancel code. <br> Title: Cancel Code, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Cancel code. <br> Title: Cancel Code, Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The CancelCode value cannot exceed 50 characters. ")]
         public string CancelCode { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCancelCode => CancelCode != null;
 
 		/// <summary>
-		/// 
+		/// Cancel Reason. <br> Title: Cancel Reason, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Cancel Reason. <br> Title: Cancel Reason, Display: true, Editable: true")]
         [StringLength(200, ErrorMessage = "The CancelOtherReason value cannot exceed 200 characters. ")]
         public string CancelOtherReason { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCancelOtherReason => CancelOtherReason != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(50, ErrorMessage = "The DBChannelOrderLineRowID value cannot exceed 50 characters. ")]
         public string DBChannelOrderLineRowID { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDBChannelOrderLineRowID => DBChannelOrderLineRowID != null;
 
 		/// <summary>
-		/// Global Unique Guid for one OrderShipment
+		/// Shipment uuid. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for one OrderShipment")]
+		[OpenApiPropertyDescription("Shipment uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The OrderShipmentUuid value cannot exceed 50 characters. ")]
         public string OrderShipmentUuid { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderShipmentUuid => OrderShipmentUuid != null;
 
 		/// <summary>
-		/// Global Unique Guid for one OrderShipment cancell Item
+		/// Shipment Canceled Item uuid. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for one OrderShipment cancell Item")]
+		[OpenApiPropertyDescription("Shipment Canceled Item uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The OrderShipmentCanceledItemUuid value cannot exceed 50 characters. ")]
         public string OrderShipmentCanceledItemUuid { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderShipmentCanceledItemUuid => OrderShipmentCanceledItemUuid != null;
 
 

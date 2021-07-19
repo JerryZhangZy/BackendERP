@@ -51,8 +51,12 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.SKU, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.ProductUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.InventoryUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.InvoiceWarehouseUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.InvoiceWarehouseCode, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.WarehouseUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.WarehouseCode, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.LotNum, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.Reason, f => f.Lorem.Sentence().TruncateTo(200))
 					.RuleFor(u => u.Description, f => f.Lorem.Sentence().TruncateTo(200))
 					.RuleFor(u => u.Notes, f => f.Lorem.Sentence().TruncateTo(500))
 					.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))
@@ -67,10 +71,12 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ReceiveQty, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.StockQty, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.NonStockQty, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.PutBackWarehouseUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.PutBackWarehouseCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.DamageWarehouseUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.DamageWarehouseCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.InvoiceDiscountPrice, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.Price, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.DiscountRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
-					.RuleFor(u => u.DiscountAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.DiscountPrice, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.ExtAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.TaxableAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.NonTaxableAmount, f => f.Random.Decimal(1, 1000, 6))
@@ -192,14 +198,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            data.Patch(new[] { "SKU", "LotNum" });
+            data.Patch(new[] { "SKU", "InvoiceWarehouseCode" });
             DataBaseFactory.Commit();
 
             var dataGet = DataBaseFactory.GetFromCache<InvoiceReturnItems>(data.RowNum);
             var result = dataGet.SKU != dataOrig.SKU &&
-                            dataGet.LotNum != dataOrig.LotNum &&
+                            dataGet.InvoiceWarehouseCode != dataOrig.InvoiceWarehouseCode &&
                             dataGet.SKU == newData.SKU &&
-                            dataGet.LotNum == newData.LotNum;
+                            dataGet.InvoiceWarehouseCode == newData.InvoiceWarehouseCode;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -301,13 +307,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             list.SetDataBaseFactory<InvoiceReturnItems>(DataBaseFactory)
                 .Save<InvoiceReturnItems>();
 
-            var NewLotNum = Guid.NewGuid().ToString();
+            var NewInvoiceWarehouseCode = Guid.NewGuid().ToString();
             var listFind = DataBaseFactory.Find<InvoiceReturnItems>("WHERE TransUuid = @0 ORDER BY RowNum", TransUuid).ToList();
-            listFind.ToList().ForEach(x => x.LotNum = NewLotNum);
+            listFind.ToList().ForEach(x => x.InvoiceWarehouseCode = NewInvoiceWarehouseCode);
             listFind.Save<InvoiceReturnItems>();
 
             list = DataBaseFactory.Find<InvoiceReturnItems>("WHERE TransUuid = @0 ORDER BY RowNum", TransUuid).ToList();
-            var result = list.Where(x => x.LotNum == NewLotNum).Count() == listFind.Count();
+            var result = list.Where(x => x.InvoiceWarehouseCode == NewInvoiceWarehouseCode).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -400,14 +406,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            await data.PatchAsync(new[] { "SKU", "LotNum" });
+            await data.PatchAsync(new[] { "SKU", "InvoiceWarehouseCode" });
             DataBaseFactory.Commit();
 
             var dataGet = await DataBaseFactory.GetFromCacheAsync<InvoiceReturnItems>(data.RowNum);
             var result = dataGet.SKU != dataOrig.SKU &&
-                            dataGet.LotNum != dataOrig.LotNum &&
+                            dataGet.InvoiceWarehouseCode != dataOrig.InvoiceWarehouseCode &&
                             dataGet.SKU == newData.SKU &&
-                            dataGet.LotNum == newData.LotNum;
+                            dataGet.InvoiceWarehouseCode == newData.InvoiceWarehouseCode;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -507,13 +513,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 .SetDataBaseFactory<InvoiceReturnItems>(DataBaseFactory)
                 .SaveAsync<InvoiceReturnItems>();
 
-            var NewLotNum = Guid.NewGuid().ToString();
+            var NewInvoiceWarehouseCode = Guid.NewGuid().ToString();
             var listFind = (await DataBaseFactory.FindAsync<InvoiceReturnItems>("WHERE TransUuid = @0 ORDER BY RowNum", TransUuid)).ToList();
-            listFind.ToList().ForEach(x => x.LotNum = NewLotNum);
+            listFind.ToList().ForEach(x => x.InvoiceWarehouseCode = NewInvoiceWarehouseCode);
             await listFind.SaveAsync<InvoiceReturnItems>();
 
             list = DataBaseFactory.Find<InvoiceReturnItems>("WHERE TransUuid = @0 ORDER BY RowNum", TransUuid).ToList();
-            var result = list.Where(x => x.LotNum == NewLotNum).Count() == listFind.Count();
+            var result = list.Where(x => x.InvoiceWarehouseCode == NewInvoiceWarehouseCode).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }

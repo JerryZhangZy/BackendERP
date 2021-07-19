@@ -16,7 +16,7 @@
 	[BillDate] DATE NULL, --(Ignore) Order bill date. <br> Display: false, Editable: false
 
 	[CustomerUuid] VARCHAR(50) NOT NULL, --Customer uuid, load from customer data. <br> Display: false, Editable: false
-	[CustomerNum] VARCHAR(50) NOT NULL DEFAULT '', --Customer number. use DatabaseNum-CustomerNum too load customer data. <br> Title: Customer Number, Display: true, Editable: true
+	[CustomerCode] VARCHAR(50) NOT NULL DEFAULT '', --Customer number. use DatabaseNum-CustomerCode too load customer data. <br> Title: Customer Number, Display: true, Editable: true
 	[CustomerName] NVARCHAR(200) NOT NULL DEFAULT '', --(Readonly) Customer name, load from customer data. <br> Title: Customer Name, Display: true, Editable: false
 
 	[Terms] VARCHAR(50) NOT NULL DEFAULT '', --Payment terms, default from customer data. <br> Title: Terms, Display: true, Editable: true

@@ -25,19 +25,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public partial class InventoryDataDto
     {
         public ProductBasicDto ProductBasic { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasProductBasic => ProductBasic != null;
 
         public ProductExtDto ProductExt { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasProductExt => ProductExt != null;
 
         public ProductExtAttributesDto ProductExtAttributes { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasProductExtAttributes => ProductExtAttributes != null;
 
         public IList<InventoryDto> Inventory { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInventory => Inventory != null;
 
     }

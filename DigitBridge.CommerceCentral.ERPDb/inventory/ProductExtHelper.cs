@@ -71,6 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string Costable(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Costable AS {name ?? "Costable"} ";
         public static string IsProfit(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.IsProfit AS {name ?? "IsProfit"} ";
         public static string Release(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Release AS {name ?? "Release"} ";
+        public static string Currency(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Currency) AS {name ?? "Currency"} ";
         public static string UOM(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.UOM) AS {name ?? "UOM"} ";
         public static string QtyPerPallot(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.QtyPerPallot AS {name ?? "QtyPerPallot"} ";
         public static string QtyPerCase(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.QtyPerCase AS {name ?? "QtyPerCase"} ";
@@ -78,13 +79,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string PackType(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.PackType) AS {name ?? "PackType"} ";
         public static string PackQty(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.PackQty AS {name ?? "PackQty"} ";
         public static string DefaultPackType(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DefaultPackType) AS {name ?? "DefaultPackType"} ";
-        public static string DefaultWarehouseNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DefaultWarehouseNum) AS {name ?? "DefaultWarehouseNum"} ";
-        public static string DefaultVendorNum(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DefaultVendorNum) AS {name ?? "DefaultVendorNum"} ";
+        public static string DefaultWarehouseCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DefaultWarehouseCode) AS {name ?? "DefaultWarehouseCode"} ";
+        public static string DefaultVendorCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.DefaultVendorCode) AS {name ?? "DefaultVendorCode"} ";
         public static string PoSize(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.PoSize AS {name ?? "PoSize"} ";
         public static string MinStock(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.MinStock AS {name ?? "MinStock"} ";
         public static string SalesCost(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.SalesCost AS {name ?? "SalesCost"} ";
         public static string LeadTimeDay(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.LeadTimeDay AS {name ?? "LeadTimeDay"} ";
         public static string ProductYear(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ProductYear) AS {name ?? "ProductYear"} ";
+        public static string UpdateDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc"} ";
+        public static string EnterBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy"} ";
+        public static string UpdateBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy"} ";
         public static string EnterDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc"} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid"} ";
 
@@ -127,6 +131,7 @@ RTRIM({allies}PriceRule) AS PriceRule,
 {allies}Costable AS Costable,
 {allies}IsProfit AS IsProfit,
 {allies}Release AS Release,
+RTRIM({allies}Currency) AS Currency,
 RTRIM({allies}UOM) AS UOM,
 {allies}QtyPerPallot AS QtyPerPallot,
 {allies}QtyPerCase AS QtyPerCase,
@@ -134,13 +139,16 @@ RTRIM({allies}UOM) AS UOM,
 RTRIM({allies}PackType) AS PackType,
 {allies}PackQty AS PackQty,
 RTRIM({allies}DefaultPackType) AS DefaultPackType,
-RTRIM({allies}DefaultWarehouseNum) AS DefaultWarehouseNum,
-RTRIM({allies}DefaultVendorNum) AS DefaultVendorNum,
+RTRIM({allies}DefaultWarehouseCode) AS DefaultWarehouseCode,
+RTRIM({allies}DefaultVendorCode) AS DefaultVendorCode,
 {allies}PoSize AS PoSize,
 {allies}MinStock AS MinStock,
 {allies}SalesCost AS SalesCost,
 {allies}LeadTimeDay AS LeadTimeDay,
 RTRIM({allies}ProductYear) AS ProductYear,
+{allies}UpdateDateUtc AS UpdateDateUtc,
+RTRIM({allies}EnterBy) AS EnterBy,
+RTRIM({allies}UpdateBy) AS UpdateBy,
 {allies}EnterDateUtc AS EnterDateUtc,
 {allies}DigitBridgeGuid AS DigitBridgeGuid
 ";

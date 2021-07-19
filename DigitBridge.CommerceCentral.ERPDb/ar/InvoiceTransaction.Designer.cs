@@ -42,6 +42,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public InvoiceTransaction(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         #region Fields - Generated 
+        [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
+        private int _databaseNum;
+
+        [Column("MasterAccountNum",SqlDbType.Int,NotNull=true)]
+        private int _masterAccountNum;
+
+        [Column("ProfileNum",SqlDbType.Int,NotNull=true)]
+        private int _profileNum;
+
         [Column("TransUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _transUuid;
 
@@ -50,6 +59,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("InvoiceUuid",SqlDbType.VarChar,NotNull=true)]
         private string _invoiceUuid;
+
+        [Column("InvoiceNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _invoiceNumber;
 
         [Column("TransType",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _transType;
@@ -74,6 +86,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("BankAccountUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _bankAccountUuid;
+
+        [Column("BankAccountCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _bankAccountCode;
 
         [Column("CheckNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _checkNum;
@@ -135,6 +150,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("DebitAccount",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
         private long _debitAccount;
 
+        [Column("TransSourceCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _transSourceCode;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -154,6 +172,57 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(TransUuid)) 
 				TransUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual int DatabaseNum
+        {
+            get
+            {
+				return _databaseNum; 
+            }
+            set
+            {
+				_databaseNum = value; 
+				OnPropertyChanged("DatabaseNum", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual int MasterAccountNum
+        {
+            get
+            {
+				return _masterAccountNum; 
+            }
+            set
+            {
+				_masterAccountNum = value; 
+				OnPropertyChanged("MasterAccountNum", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual int ProfileNum
+        {
+            get
+            {
+				return _profileNum; 
+            }
+            set
+            {
+				_profileNum = value; 
+				OnPropertyChanged("ProfileNum", value);
+            }
+        }
+
+		/// <summary>
+		/// Invoice Transaction uuid. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual string TransUuid
         {
             get
@@ -167,6 +236,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Readable invoice transaction number, unique in same database and profile. <br> Parameter should pass ProfileNum-InvoiceNumber-TransNum. <br> Title: Order Number, Display: true, Editable: true
+		/// </summary>
         public virtual int TransNum
         {
             get
@@ -180,6 +252,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Invoice uuid. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual string InvoiceUuid
         {
             get
@@ -193,6 +268,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Readable invoice number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
+		/// </summary>
+        public virtual string InvoiceNumber
+        {
+            get
+            {
+				return _invoiceNumber?.TrimEnd(); 
+            }
+            set
+            {
+				_invoiceNumber = value.TruncateTo(50); 
+				OnPropertyChanged("InvoiceNumber", value);
+            }
+        }
+
+		/// <summary>
+		/// Transaction type, payment, return. <br> Title: Type, Display: true, Editable: true
+		/// </summary>
         public virtual int TransType
         {
             get
@@ -206,6 +300,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Transaction status. <br> Title: Status, Display: true, Editable: true
+		/// </summary>
         public virtual int TransStatus
         {
             get
@@ -219,6 +316,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Invoice date. <br> Title: Date, Display: true, Editable: true
+		/// </summary>
         public virtual DateTime TransDate
         {
             get
@@ -232,6 +332,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Invoice time. <br> Title: Time, Display: true, Editable: true
+		/// </summary>
         public virtual TimeSpan TransTime
         {
             get
@@ -245,6 +348,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Description of Invoice Transaction. <br> Title: Description, Display: true, Editable: true
+		/// </summary>
         public virtual string Description
         {
             get
@@ -258,6 +364,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Notes of Invoice Transaction. <br> Title: Notes, Display: true, Editable: true
+		/// </summary>
         public virtual string Notes
         {
             get
@@ -271,6 +380,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Payment method number. <br> Title: Paid By, Display: true, Editable: true
+		/// </summary>
         public virtual int PaidBy
         {
             get
@@ -284,6 +396,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Payment bank account uuid.
+		/// </summary>
         public virtual string BankAccountUuid
         {
             get
@@ -297,6 +412,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Readable payment Bank account code. <br> Title: Bank, Display: true, Editable: true
+		/// </summary>
+        public virtual string BankAccountCode
+        {
+            get
+            {
+				return _bankAccountCode?.TrimEnd(); 
+            }
+            set
+            {
+				_bankAccountCode = value.TruncateTo(50); 
+				OnPropertyChanged("BankAccountCode", value);
+            }
+        }
+
+		/// <summary>
+		/// Check number. <br> Title: Check No., Display: true, Editable: true
+		/// </summary>
         public virtual string CheckNum
         {
             get
@@ -310,6 +444,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Auth code from merchant bank. <br> Title: Auth. No., Display: true, Editable: true
+		/// </summary>
         public virtual string AuthCode
         {
             get
@@ -323,6 +460,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Currency code. <br> Title: Currency, Display: true, Editable: true
+		/// </summary>
         public virtual string Currency
         {
             get
@@ -336,6 +476,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Realtime Exchange Rate when process transaction. <br> Title: Exchange Rate, Display: true, Editable: true
+		/// </summary>
         public virtual decimal ExchangeRate
         {
             get
@@ -349,6 +492,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Sub total amount of items. Sales amount without discount, tax and other charge. <br> Title: Subtotal, Display: true, Editable: false
+		/// </summary>
         public virtual decimal SubTotalAmount
         {
             get
@@ -362,6 +508,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Sub Total amount deduct discount, but not include tax and other charge. <br> Title: Sales Amount, Display: true, Editable: false
+		/// </summary>
         public virtual decimal SalesAmount
         {
             get
@@ -375,6 +524,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Total amount. Include every charge (tax, shipping, misc...). <br> Title: Total, Display: true, Editable: false
+		/// </summary>
         public virtual decimal TotalAmount
         {
             get
@@ -388,6 +540,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Amount should apply tax. <br> Title: Taxable Amount, Display: true, Editable: false
+		/// </summary>
         public virtual decimal TaxableAmount
         {
             get
@@ -401,6 +556,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Amount should not apply tax. <br> Title: NonTaxable, Display: true, Editable: false
+		/// </summary>
         public virtual decimal NonTaxableAmount
         {
             get
@@ -414,6 +572,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Invoice Tax rate. <br> Title: Tax, Display: true, Editable: true
+		/// </summary>
         public virtual decimal TaxRate
         {
             get
@@ -427,6 +588,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Invoice tax amount (include shipping tax and misc tax). <br> Title: Tax Amount, Display: true, Editable: false
+		/// </summary>
         public virtual decimal TaxAmount
         {
             get
@@ -440,6 +604,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Invoice discount rate base on SubTotalAmount. If user enter discount rate, should recalculate discount amount. <br> Title: Discount, Display: true, Editable: true
+		/// </summary>
         public virtual decimal DiscountRate
         {
             get
@@ -453,6 +620,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Invoice discount amount base on SubTotalAmount. If user enter discount amount, should set discount rate to zero. <br> Title: Discount Amount, Display: true, Editable: true
+		/// </summary>
         public virtual decimal DiscountAmount
         {
             get
@@ -466,6 +636,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Invoice shipping fee. <br> Title: Shipping, Display: true, Editable: true
+		/// </summary>
         public virtual decimal ShippingAmount
         {
             get
@@ -479,6 +652,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) tax amount for shipping fee. <br> Title: Shipping Tax, Display: true, Editable: false
+		/// </summary>
         public virtual decimal ShippingTaxAmount
         {
             get
@@ -492,6 +668,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Invoice handling charge. <br> Title: Handling, Display: true, Editable: true
+		/// </summary>
         public virtual decimal MiscAmount
         {
             get
@@ -505,6 +684,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) tax amount for handling charge. <br> Title: Handling Tax, Display: true, Editable: false
+		/// </summary>
         public virtual decimal MiscTaxAmount
         {
             get
@@ -518,6 +700,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Invoice other Charg and Allowance Amount. Positive is charge, Negative is Allowance. <br> Title: Charge&Allowance, Display: true, Editable: true
+		/// </summary>
         public virtual decimal ChargeAndAllowanceAmount
         {
             get
@@ -531,6 +716,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// G/L Credit account. <br> Display: true, Editable: true
+		/// </summary>
         public virtual long CreditAccount
         {
             get
@@ -544,6 +732,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// G/L Debit account. <br> Display: true, Editable: true
+		/// </summary>
         public virtual long DebitAccount
         {
             get
@@ -557,6 +748,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Invoice transaction created from other entity number, use to prevent import duplicate invoice transaction. <br> Title: Source Number, Display: false, Editable: false
+		/// </summary>
+        public virtual string TransSourceCode
+        {
+            get
+            {
+				return _transSourceCode?.TrimEnd(); 
+            }
+            set
+            {
+				_transSourceCode = value.TruncateTo(100); 
+				OnPropertyChanged("TransSourceCode", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
+		/// </summary>
         public virtual DateTime? UpdateDateUtc
         {
             get
@@ -575,6 +785,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) User who created this transaction. <br> Title: Created By, Display: true, Editable: false
+		/// </summary>
         public virtual string EnterBy
         {
             get
@@ -588,6 +801,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
+		/// </summary>
         public virtual string UpdateBy
         {
             get
@@ -607,7 +823,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private InvoiceTransactionData Parent { get; set; }
 		public InvoiceTransactionData GetParent() => Parent;
 		public InvoiceTransaction SetParent(InvoiceTransactionData parent)
@@ -629,9 +845,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override InvoiceTransaction Clear()
         {
             base.Clear();
+			_databaseNum = default(int); 
+			_masterAccountNum = default(int); 
+			_profileNum = default(int); 
 			_transUuid = String.Empty; 
 			_transNum = default(int); 
 			_invoiceUuid = String.Empty; 
+			_invoiceNumber = String.Empty; 
 			_transType = default(int); 
 			_transStatus = default(int); 
 			_transDate = new DateTime().MinValueSql(); 
@@ -640,6 +860,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_notes = String.Empty; 
 			_paidBy = default(int); 
 			_bankAccountUuid = String.Empty; 
+			_bankAccountCode = String.Empty; 
 			_checkNum = String.Empty; 
 			_authCode = String.Empty; 
 			_currency = String.Empty; 
@@ -660,6 +881,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_chargeAndAllowanceAmount = default(decimal); 
 			_creditAccount = default(long); 
 			_debitAccount = default(long); 
+			_transSourceCode = String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
@@ -685,7 +907,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		public static IList<InvoiceTransaction> FindByInvoiceUuid(IDataBaseFactory dbFactory, string invoiceUuid)
 		{
-			return dbFactory.Find<InvoiceTransaction>("WHERE InvoiceUuid = @0 ", invoiceUuid).ToList();
+			return dbFactory.Find<InvoiceTransaction>("WHERE InvoiceUuid = @0 ORDER BY TransNum ", invoiceUuid).ToList();
 		}
 		public static long CountByInvoiceUuid(IDataBaseFactory dbFactory, string invoiceUuid)
 		{
@@ -693,7 +915,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		}
 		public static async Task<IList<InvoiceTransaction>> FindByAsyncInvoiceUuid(IDataBaseFactory dbFactory, string invoiceUuid)
 		{
-			return (await dbFactory.FindAsync<InvoiceTransaction>("WHERE InvoiceUuid = @0 ", invoiceUuid)).ToList();
+			return (await dbFactory.FindAsync<InvoiceTransaction>("WHERE InvoiceUuid = @0 ORDER BY TransNum ", invoiceUuid)).ToList();
 		}
 		public static async Task<long> CountByAsyncInvoiceUuid(IDataBaseFactory dbFactory, string invoiceUuid)
 		{

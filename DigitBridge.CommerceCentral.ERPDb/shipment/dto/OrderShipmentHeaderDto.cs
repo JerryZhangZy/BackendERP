@@ -15,15 +15,15 @@ using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Represents a OrderShipmentHeader Dto Class.
-    /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+    /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
     public class OrderShipmentHeaderDto
     {
@@ -35,290 +35,322 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 
 		/// <summary>
-		/// 
+		/// (Readonly) Shipment Unique Number. Required, <br> Title: Shipment Number Display: true, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Shipment Unique Number. Required, <br> Title: Shipment Number Display: true, Editable: false.")]
         public long? OrderShipmentNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        [JsonIgnore]
-        [XmlIgnore, IgnoreCompare]
         public bool HasOrderShipmentNum => OrderShipmentNum != null;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        [OpenApiPropertyDescription("")]
+		/// <summary>
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
         public int? DatabaseNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDatabaseNum => DatabaseNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
         public int? MasterAccountNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMasterAccountNum => MasterAccountNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
         public int? ProfileNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasProfileNum => ProfileNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false")]
         public int? ChannelNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelNum => ChannelNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false")]
         public int? ChannelAccountNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelAccountNum => ChannelAccountNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false")]
         public long? OrderDCAssignmentNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderDCAssignmentNum => OrderDCAssignmentNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) DC number. <br> Title: DC Number: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) DC number. <br> Title: DC Number: Display: true, Editable: false")]
         public int? DistributionCenterNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDistributionCenterNum => DistributionCenterNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false")]
         public long? CentralOrderNum { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCentralOrderNum => CentralOrderNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false")]
         [StringLength(130, ErrorMessage = "The ChannelOrderID value cannot exceed 130 characters. ")]
         public string ChannelOrderID { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelOrderID => ChannelOrderID != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Shipment ID. <br> Title: Shipment Id, Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Shipment ID. <br> Title: Shipment Id, Display: true, Editable: false")]
         [StringLength(50, ErrorMessage = "The ShipmentID value cannot exceed 50 characters. ")]
         public string ShipmentID { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipmentID => ShipmentID != null;
 
 		/// <summary>
-		/// 
+		/// Warehouse Code. <br> Title: Warehouse Code, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Warehouse Code. <br> Title: Warehouse Code, Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The WarehouseID value cannot exceed 50 characters. ")]
         public string WarehouseID { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasWarehouseID => WarehouseID != null;
 
 		/// <summary>
-		/// 
+		/// Shipment Type. <br> Title: Shipment Type, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Shipment Type. <br> Title: Shipment Type, Display: true, Editable: true")]
         public int? ShipmentType { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipmentType => ShipmentType != null;
 
 		/// <summary>
-		/// 
+		/// Ref Id. <br> Title: Reference, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Ref Id. <br> Title: Reference, Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The ShipmentReferenceID value cannot exceed 50 characters. ")]
         public string ShipmentReferenceID { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipmentReferenceID => ShipmentReferenceID != null;
 
 		/// <summary>
-		/// 
+		/// Ship Date. <br> Title: Ship Date, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Ship Date. <br> Title: Ship Date, Display: true, Editable: true")]
         [DataType(DataType.DateTime)]
         public DateTime? ShipmentDateUtc { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipmentDateUtc => ShipmentDateUtc != null;
 
 		/// <summary>
-		/// 
+		/// Shipping Carrier. <br> Title: Shipping Carrier: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Shipping Carrier. <br> Title: Shipping Carrier: Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The ShippingCarrier value cannot exceed 50 characters. ")]
         public string ShippingCarrier { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShippingCarrier => ShippingCarrier != null;
 
 		/// <summary>
-		/// 
+		/// Shipping Method. <br> Title: Shipping Method: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Shipping Method. <br> Title: Shipping Method: Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The ShippingClass value cannot exceed 50 characters. ")]
         public string ShippingClass { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShippingClass => ShippingClass != null;
 
 		/// <summary>
-		/// 
+		/// Shipping fee. <br> Title: Shipping Fee, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Shipping fee. <br> Title: Shipping Fee, Display: true, Editable: true")]
         public decimal? ShippingCost { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShippingCost => ShippingCost != null;
 
 		/// <summary>
-		/// 
+		/// Master TrackingNumber. <br> Title: Tracking Number, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Master TrackingNumber. <br> Title: Tracking Number, Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The MainTrackingNumber value cannot exceed 50 characters. ")]
         public string MainTrackingNumber { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMainTrackingNumber => MainTrackingNumber != null;
 
 		/// <summary>
-		/// 
+		/// Master Return TrackingNumber. <br> Title: Return Tracking Number, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Master Return TrackingNumber. <br> Title: Return Tracking Number, Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The MainReturnTrackingNumber value cannot exceed 50 characters. ")]
         public string MainReturnTrackingNumber { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMainReturnTrackingNumber => MainReturnTrackingNumber != null;
 
 		/// <summary>
-		/// 
+		/// Bill Of Lading ID. <br> Title: BOL Id, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Bill Of Lading ID. <br> Title: BOL Id, Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The BillOfLadingID value cannot exceed 50 characters. ")]
         public string BillOfLadingID { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBillOfLadingID => BillOfLadingID != null;
 
 		/// <summary>
-		/// 
+		/// Total Packages. <br> Title: Number of Package, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Total Packages. <br> Title: Number of Package, Display: true, Editable: true")]
         public int? TotalPackages { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTotalPackages => TotalPackages != null;
 
 		/// <summary>
-		/// 
+		/// Total Shipped Qty. <br> Title: Shipped Qty, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Total Shipped Qty. <br> Title: Shipped Qty, Display: true, Editable: true")]
         public decimal? TotalShippedQty { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTotalShippedQty => TotalShippedQty != null;
 
 		/// <summary>
-		/// 
+		/// Total Cancelled Qty. <br> Title: Cancelled Qty, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Total Cancelled Qty. <br> Title: Cancelled Qty, Display: true, Editable: true")]
         public decimal? TotalCanceledQty { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTotalCanceledQty => TotalCanceledQty != null;
 
 		/// <summary>
-		/// 
+		/// Total Weight. <br> Title: Weight, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Total Weight. <br> Title: Weight, Display: true, Editable: true")]
         public decimal? TotalWeight { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTotalWeight => TotalWeight != null;
 
 		/// <summary>
-		/// 
+		/// Total Volume. <br> Title: Volume, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Total Volume. <br> Title: Volume, Display: true, Editable: true")]
         public decimal? TotalVolume { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTotalVolume => TotalVolume != null;
 
 		/// <summary>
-		/// 
+		/// Weight Unit. <br> Title: Weight Unit, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Weight Unit. <br> Title: Weight Unit, Display: true, Editable: true")]
         public int? WeightUnit { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasWeightUnit => WeightUnit != null;
 
 		/// <summary>
-		/// 
+		/// Length Unit. <br> Title: Length Unit, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Length Unit. <br> Title: Length Unit, Display: true, Editable: true")]
         public int? LengthUnit { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLengthUnit => LengthUnit != null;
 
 		/// <summary>
-		/// 
+		/// Volume Unit. <br> Title: Volume Unit, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Volume Unit. <br> Title: Volume Unit, Display: true, Editable: true")]
         public int? VolumeUnit { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasVolumeUnit => VolumeUnit != null;
 
 		/// <summary>
-		/// 
+		/// Shipment Status. <br> Title: Shipment Status, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Shipment Status. <br> Title: Shipment Status, Display: true, Editable: true")]
         public int? ShipmentStatus { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipmentStatus => ShipmentStatus != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore) DBChannelOrderHeaderRowID. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore) DBChannelOrderHeaderRowID. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The DBChannelOrderHeaderRowID value cannot exceed 50 characters. ")]
         public string DBChannelOrderHeaderRowID { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDBChannelOrderHeaderRowID => DBChannelOrderHeaderRowID != null;
 
 		/// <summary>
-		/// 
+		/// Process Status. <br> Title: Process Status, Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Process Status. <br> Title: Process Status, Display: true, Editable: false")]
         public int? ProcessStatus { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasProcessStatus => ProcessStatus != null;
 
 		/// <summary>
-		/// 
+		/// Process Date. <br> Title: Process Date, Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Process Date. <br> Title: Process Date, Display: true, Editable: false")]
         [DataType(DataType.DateTime)]
         public DateTime? ProcessDateUtc { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasProcessDateUtc => ProcessDateUtc != null;
 
 		/// <summary>
-		/// Global Unique Guid for one OrderShipment
+		/// Shipment uuid. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for one OrderShipment")]
+		[OpenApiPropertyDescription("Shipment uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The OrderShipmentUuid value cannot exceed 50 characters. ")]
         public string OrderShipmentUuid { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderShipmentUuid => OrderShipmentUuid != null;
 
 

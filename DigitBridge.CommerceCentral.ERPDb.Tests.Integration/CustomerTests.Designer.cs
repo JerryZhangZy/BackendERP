@@ -42,14 +42,17 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.Digit_seller_id, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.CustomerUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.CustomerNum, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.CustomerCode, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.CustomerName, f => f.Lorem.Sentence().TruncateTo(200))
 					.RuleFor(u => u.Contact, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.Contact2, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.Contact3, f => f.Lorem.Sentence().TruncateTo(200))
 					.RuleFor(u => u.Phone1, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.Phone2, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.Phone3, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.Phone4, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.Email, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.WebSite, f => f.Lorem.Sentence().TruncateTo(200))
 					.RuleFor(u => u.CustomerType, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.CustomerStatus, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.BusinessType, f => f.Random.AlphaNumeric(50))
@@ -64,12 +67,20 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ShippingAccount, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.Priority, f => f.Lorem.Sentence().TruncateTo(10))
 					.RuleFor(u => u.Area, f => f.Lorem.Sentence().TruncateTo(20))
+					.RuleFor(u => u.Region, f => f.Lorem.Sentence().TruncateTo(20))
+					.RuleFor(u => u.Districtn, f => f.Lorem.Sentence().TruncateTo(20))
+					.RuleFor(u => u.Zone, f => f.Lorem.Sentence().TruncateTo(20))
 					.RuleFor(u => u.TaxId, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.ResaleLicense, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.ClassCode, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.DepartmentCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.DivisionCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.SourceCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.Terms, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.TermsDays, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))
 					;
             #endregion faker data rules
         }
@@ -175,13 +186,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            data.Patch(new[] { "CustomerNum", "CustomerName" });
+            data.Patch(new[] { "CustomerCode", "CustomerName" });
             DataBaseFactory.Commit();
 
             var dataGet = DataBaseFactory.GetFromCache<Customer>(data.RowNum);
-            var result = dataGet.CustomerNum != dataOrig.CustomerNum &&
+            var result = dataGet.CustomerCode != dataOrig.CustomerCode &&
                             dataGet.CustomerName != dataOrig.CustomerName &&
-                            dataGet.CustomerNum == newData.CustomerNum &&
+                            dataGet.CustomerCode == newData.CustomerCode &&
                             dataGet.CustomerName == newData.CustomerName;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -383,13 +394,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            await data.PatchAsync(new[] { "CustomerNum", "CustomerName" });
+            await data.PatchAsync(new[] { "CustomerCode", "CustomerName" });
             DataBaseFactory.Commit();
 
             var dataGet = await DataBaseFactory.GetFromCacheAsync<Customer>(data.RowNum);
-            var result = dataGet.CustomerNum != dataOrig.CustomerNum &&
+            var result = dataGet.CustomerCode != dataOrig.CustomerCode &&
                             dataGet.CustomerName != dataOrig.CustomerName &&
-                            dataGet.CustomerNum == newData.CustomerNum &&
+                            dataGet.CustomerCode == newData.CustomerCode &&
                             dataGet.CustomerName == newData.CustomerName;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");

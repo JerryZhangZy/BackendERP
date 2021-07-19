@@ -39,6 +39,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             return new Faker<InvoiceHeaderInfo>()
 					.RuleFor(u => u.InvoiceUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.CentralFulfillmentNum, f => default(long))
+					.RuleFor(u => u.OrderShipmentNum, f => default(long))
+					.RuleFor(u => u.OrderShipmentUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.ShippingCarrier, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.ShippingClass, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.DistributionCenterNum, f => f.Random.Int(1, 100))
@@ -49,6 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.SecondaryChannelOrderID, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.ShippingAccount, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.WarehouseUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.WarehouseCode, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.RefNum, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.CustomerPoNum, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.EndBuyerUserId, f => f.Random.Guid().ToString())
@@ -288,13 +291,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void AddList_Test()
         {
             var list = FakerData.Generate(10);
-            var ChannelOrderID = Guid.NewGuid().ToString();
+            var OrderShipmentUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.ForEach(x => x.OrderShipmentUuid = OrderShipmentUuid);
             list.SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
                 .Save<InvoiceHeaderInfo>();
 
-            var cnt = DataBaseFactory.Count<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0", ChannelOrderID);
+            var cnt = DataBaseFactory.Count<InvoiceHeaderInfo>("WHERE OrderShipmentUuid = @0", OrderShipmentUuid);
             var result = cnt.Equals(list.Count());
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -305,18 +308,18 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void SaveList_Test()
         {
             var list = FakerData.Generate(10);
-            var ChannelOrderID = Guid.NewGuid().ToString();
+            var OrderShipmentUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.ForEach(x => x.OrderShipmentUuid = OrderShipmentUuid);
             list.SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
                 .Save<InvoiceHeaderInfo>();
 
             var NewShippingClass = Guid.NewGuid().ToString();
-            var listFind = DataBaseFactory.Find<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
+            var listFind = DataBaseFactory.Find<InvoiceHeaderInfo>("WHERE OrderShipmentUuid = @0 ORDER BY RowNum", OrderShipmentUuid).ToList();
             listFind.ToList().ForEach(x => x.ShippingClass = NewShippingClass);
             listFind.Save<InvoiceHeaderInfo>();
 
-            list = DataBaseFactory.Find<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
+            list = DataBaseFactory.Find<InvoiceHeaderInfo>("WHERE OrderShipmentUuid = @0 ORDER BY RowNum", OrderShipmentUuid).ToList();
             var result = list.Where(x => x.ShippingClass == NewShippingClass).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -327,16 +330,16 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void DeleteList_Test()
         {
             var list = FakerData.Generate(10);
-            var ChannelOrderID = Guid.NewGuid().ToString();
+            var OrderShipmentUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.ForEach(x => x.OrderShipmentUuid = OrderShipmentUuid);
             list.SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
                 .Save();
 
-            var listFind = DataBaseFactory.Find<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
+            var listFind = DataBaseFactory.Find<InvoiceHeaderInfo>("WHERE OrderShipmentUuid = @0 ORDER BY RowNum", OrderShipmentUuid).ToList();
             listFind.Delete();
 
-            var cnt = DataBaseFactory.Count<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0", ChannelOrderID);
+            var cnt = DataBaseFactory.Count<InvoiceHeaderInfo>("WHERE OrderShipmentUuid = @0", OrderShipmentUuid);
             var result = cnt == 0;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -492,14 +495,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public async Task AddListAsync_Test()
         {
             var list = FakerData.Generate(10);
-            var ChannelOrderID = Guid.NewGuid().ToString();
+            var OrderShipmentUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.ForEach(x => x.OrderShipmentUuid = OrderShipmentUuid);
             await list
                 .SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
                 .SaveAsync<InvoiceHeaderInfo>();
 
-            var cnt = await DataBaseFactory.CountAsync<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0", ChannelOrderID);
+            var cnt = await DataBaseFactory.CountAsync<InvoiceHeaderInfo>("WHERE OrderShipmentUuid = @0", OrderShipmentUuid);
             var result = cnt.Equals(list.Count());
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -510,19 +513,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public async Task SaveListAsync_Test()
         {
             var list = FakerData.Generate(10);
-            var ChannelOrderID = Guid.NewGuid().ToString();
+            var OrderShipmentUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.ForEach(x => x.OrderShipmentUuid = OrderShipmentUuid);
             await list
                 .SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
                 .SaveAsync<InvoiceHeaderInfo>();
 
             var NewShippingClass = Guid.NewGuid().ToString();
-            var listFind = (await DataBaseFactory.FindAsync<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID)).ToList();
+            var listFind = (await DataBaseFactory.FindAsync<InvoiceHeaderInfo>("WHERE OrderShipmentUuid = @0 ORDER BY RowNum", OrderShipmentUuid)).ToList();
             listFind.ToList().ForEach(x => x.ShippingClass = NewShippingClass);
             await listFind.SaveAsync<InvoiceHeaderInfo>();
 
-            list = DataBaseFactory.Find<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
+            list = DataBaseFactory.Find<InvoiceHeaderInfo>("WHERE OrderShipmentUuid = @0 ORDER BY RowNum", OrderShipmentUuid).ToList();
             var result = list.Where(x => x.ShippingClass == NewShippingClass).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -533,17 +536,17 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public async Task DeleteListAsync_Test()
         {
             var list = FakerData.Generate(10);
-            var ChannelOrderID = Guid.NewGuid().ToString();
+            var OrderShipmentUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.ForEach(x => x.OrderShipmentUuid = OrderShipmentUuid);
             await list
                 .SetDataBaseFactory<InvoiceHeaderInfo>(DataBaseFactory)
                 .SaveAsync();
 
-            var listFind = (await DataBaseFactory.FindAsync<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID)).ToList();
+            var listFind = (await DataBaseFactory.FindAsync<InvoiceHeaderInfo>("WHERE OrderShipmentUuid = @0 ORDER BY RowNum", OrderShipmentUuid)).ToList();
             await listFind.DeleteAsync();
 
-            var cnt = await DataBaseFactory.CountAsync<InvoiceHeaderInfo>("WHERE ChannelOrderID = @0", ChannelOrderID);
+            var cnt = await DataBaseFactory.CountAsync<InvoiceHeaderInfo>("WHERE OrderShipmentUuid = @0", OrderShipmentUuid);
             var result = cnt == 0;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");

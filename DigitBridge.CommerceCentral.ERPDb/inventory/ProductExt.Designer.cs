@@ -54,10 +54,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ProductUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _productUuid;
 
-        [Column("CentralProductNum",SqlDbType.BigInt,NotNull=true)]
+        [Column("CentralProductNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
         private long _centralProductNum;
 
-        [Column("SKU",SqlDbType.VarChar,NotNull=true)]
+        [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _sKU;
 
         [Column("StyleCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
@@ -138,6 +138,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("Release",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
         private byte _release;
 
+        [Column("Currency",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _currency;
+
         [Column("UOM",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _uOM;
 
@@ -159,11 +162,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("DefaultPackType",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _defaultPackType;
 
-        [Column("DefaultWarehouseNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _defaultWarehouseNum;
+        [Column("DefaultWarehouseCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _defaultWarehouseCode;
 
-        [Column("DefaultVendorNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _defaultVendorNum;
+        [Column("DefaultVendorCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _defaultVendorCode;
 
         [Column("PoSize",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _poSize;
@@ -180,6 +183,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ProductYear",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _productYear;
 
+        [Column("UpdateDateUtc",SqlDbType.DateTime)]
+        private DateTime? _updateDateUtc;
+
+        [Column("EnterBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _enterBy;
+
+        [Column("UpdateBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _updateBy;
+
         #endregion Fields - Generated 
 
         #region Properties - Generated 
@@ -190,6 +202,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(ProductUuid)) 
 				ProductUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual int DatabaseNum
         {
             get
@@ -203,6 +218,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual int MasterAccountNum
         {
             get
@@ -216,6 +234,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual int ProfileNum
         {
             get
@@ -229,6 +250,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
+		/// </summary>
         public virtual string ProductUuid
         {
             get
@@ -242,6 +266,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Product Number. load from ProductBasic data. <br> Display: false, Editable: false
+		/// </summary>
         public virtual long CentralProductNum
         {
             get
@@ -255,6 +282,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product SKU. load from ProductBasic data. <br> Display: false, Editable: false
+		/// </summary>
         public virtual string SKU
         {
             get
@@ -268,6 +298,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product style code use to group multiple SKU. load from ProductExt data. <br> Title: Style Code, Display: true, Editable: true
+		/// </summary>
         public virtual string StyleCode
         {
             get
@@ -281,6 +314,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product color and pattern code. <br> Title: Color, Display: true, Editable: true
+		/// </summary>
         public virtual string ColorPatternCode
         {
             get
@@ -294,6 +330,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product size type. <br> Title: Size Type, Display: true, Editable: true
+		/// </summary>
         public virtual string SizeType
         {
             get
@@ -307,6 +346,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product size code. <br> Title: Size, Display: true, Editable: true
+		/// </summary>
         public virtual string SizeCode
         {
             get
@@ -320,6 +362,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product width code. <br> Title: Width, Display: true, Editable: true
+		/// </summary>
         public virtual string WidthCode
         {
             get
@@ -333,6 +378,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product length code. <br> Title: Length, Display: true, Editable: true
+		/// </summary>
         public virtual string LengthCode
         {
             get
@@ -346,6 +394,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product class code. <br> Title: Class, Display: true, Editable: true
+		/// </summary>
         public virtual string ClassCode
         {
             get
@@ -359,6 +410,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product sub class code. <br> Title: Sub Class, Display: true, Editable: true
+		/// </summary>
         public virtual string SubClassCode
         {
             get
@@ -372,6 +426,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product department code. <br> Title: Department, Display: true, Editable: true
+		/// </summary>
         public virtual string DepartmentCode
         {
             get
@@ -385,6 +442,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product division code. <br> Title: Division, Display: true, Editable: true
+		/// </summary>
         public virtual string DivisionCode
         {
             get
@@ -398,6 +458,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product OEM code. <br> Title: OEM, Display: true, Editable: true
+		/// </summary>
         public virtual string OEMCode
         {
             get
@@ -411,6 +474,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product alternate number. <br> Title: Alt. Code, Display: true, Editable: true
+		/// </summary>
         public virtual string AlternateCode
         {
             get
@@ -424,6 +490,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product remark. <br> Title: Remark, Display: true, Editable: true
+		/// </summary>
         public virtual string Remark
         {
             get
@@ -437,6 +506,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product model. <br> Title: Model, Display: true, Editable: true
+		/// </summary>
         public virtual string Model
         {
             get
@@ -450,6 +522,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product in page of catalog. <br> Title: Catalog, Display: true, Editable: true
+		/// </summary>
         public virtual string CatalogPage
         {
             get
@@ -463,6 +538,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Category. <br> Title: Category, Display: true, Editable: true
+		/// </summary>
         public virtual string CategoryCode
         {
             get
@@ -476,6 +554,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Group. <br> Title: Group, Display: true, Editable: true
+		/// </summary>
         public virtual string GroupCode
         {
             get
@@ -489,6 +570,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Sub Group. <br> Title: Sub Group, Display: true, Editable: true
+		/// </summary>
         public virtual string SubGroupCode
         {
             get
@@ -502,6 +586,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Default Price Rule. <br> Title: Price Rule, Display: true, Editable: true
+		/// </summary>
         public virtual string PriceRule
         {
             get
@@ -515,6 +602,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product need calculate inventory instock qty. <br> Title: Stockable, Display: true, Editable: true
+		/// </summary>
         public virtual bool Stockable
         {
             get
@@ -528,6 +618,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product need add to Invoice sales amount amount. <br> Title: A/R, Display: true, Editable: true
+		/// </summary>
         public virtual bool IsAr
         {
             get
@@ -541,6 +634,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product need add to A/P Invoice payable amount. <br> Title: A/P, Display: true, Editable: true
+		/// </summary>
         public virtual bool IsAp
         {
             get
@@ -554,6 +650,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product need apply tax. <br> Title: Taxable, Display: true, Editable: true
+		/// </summary>
         public virtual bool Taxable
         {
             get
@@ -567,6 +666,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product need calculate total cost. <br> Title: Apply Cost, Display: true, Editable: true
+		/// </summary>
         public virtual bool Costable
         {
             get
@@ -580,6 +682,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product need calculate profit. <br> Title: Apply Profit, Display: true, Editable: true
+		/// </summary>
         public virtual bool IsProfit
         {
             get
@@ -593,6 +698,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product is release to sales
+		/// </summary>
         public virtual bool Release
         {
             get
@@ -606,6 +714,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Inventory price in currency. <br> Title: Currency, Display: false, Editable: false
+		/// </summary>
+        public virtual string Currency
+        {
+            get
+            {
+				return _currency?.TrimEnd(); 
+            }
+            set
+            {
+				_currency = value.TruncateTo(10); 
+				OnPropertyChanged("Currency", value);
+            }
+        }
+
+		/// <summary>
+		/// Product SKU Qty unit of measure. <br> Title: UOM, Display: true, Editable: true
+		/// </summary>
         public virtual string UOM
         {
             get
@@ -619,6 +746,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item Qty per Pallot. <br> Title: Qty/Pallot, Display: true, Editable: true
+		/// </summary>
         public virtual decimal QtyPerPallot
         {
             get
@@ -632,6 +762,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item Qty per case. <br> Title: Qty/Case, Display: true, Editable: true
+		/// </summary>
         public virtual decimal QtyPerCase
         {
             get
@@ -645,6 +778,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Item Qty per box. <br> Title: Qty/Box, Display: true, Editable: true
+		/// </summary>
         public virtual decimal QtyPerBox
         {
             get
@@ -658,6 +794,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product specified pack type name. <br> Title: Pack Type, Display: true, Editable: true
+		/// </summary>
         public virtual string PackType
         {
             get
@@ -671,6 +810,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Qty per each pack. <br> Title: Qty/Pack, Display: true, Editable: true
+		/// </summary>
         public virtual decimal PackQty
         {
             get
@@ -684,6 +826,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Default pack type in S/O or invoice. <br> Title: Default Pack, Display: true, Editable: true
+		/// </summary>
         public virtual string DefaultPackType
         {
             get
@@ -697,32 +842,41 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        public virtual string DefaultWarehouseNum
+		/// <summary>
+		/// Default Warehouse. <br> Title: Deafult Warehouse, Display: true, Editable: true
+		/// </summary>
+        public virtual string DefaultWarehouseCode
         {
             get
             {
-				return _defaultWarehouseNum?.TrimEnd(); 
+				return _defaultWarehouseCode?.TrimEnd(); 
             }
             set
             {
-				_defaultWarehouseNum = value.TruncateTo(50); 
-				OnPropertyChanged("DefaultWarehouseNum", value);
+				_defaultWarehouseCode = value.TruncateTo(50); 
+				OnPropertyChanged("DefaultWarehouseCode", value);
             }
         }
 
-        public virtual string DefaultVendorNum
+		/// <summary>
+		/// Default Vendor code when make P/O. <br> Title: Deafult Warehouse, Display: true, Editable: true
+		/// </summary>
+        public virtual string DefaultVendorCode
         {
             get
             {
-				return _defaultVendorNum?.TrimEnd(); 
+				return _defaultVendorCode?.TrimEnd(); 
             }
             set
             {
-				_defaultVendorNum = value.TruncateTo(50); 
-				OnPropertyChanged("DefaultVendorNum", value);
+				_defaultVendorCode = value.TruncateTo(50); 
+				OnPropertyChanged("DefaultVendorCode", value);
             }
         }
 
+		/// <summary>
+		/// Default P/O qty. <br> Title: Deafult P/O Qty, Display: true, Editable: true
+		/// </summary>
         public virtual decimal PoSize
         {
             get
@@ -736,6 +890,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Garantee minimal Instock in anytime. <br> Title: Min.Stock, Display: true, Editable: true
+		/// </summary>
         public virtual decimal MinStock
         {
             get
@@ -749,6 +906,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// A display cost for sales. <br> Title: Sales Cost, Display: true, Editable: true
+		/// </summary>
         public virtual decimal SalesCost
         {
             get
@@ -762,6 +922,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Processing days before shipping. <br> Title: Leading Days, Display: true, Editable: true
+		/// </summary>
         public virtual int LeadTimeDay
         {
             get
@@ -775,6 +938,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product year. <br> Title: Year od Product, Display: true, Editable: true
+		/// </summary>
         public virtual string ProductYear
         {
             get
@@ -788,13 +954,66 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
+		/// </summary>
+        public virtual DateTime? UpdateDateUtc
+        {
+            get
+            {
+				if (!AllowNull && _updateDateUtc is null) 
+					_updateDateUtc = new DateTime().MinValueSql(); 
+				return _updateDateUtc; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("UpdateDateUtc", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) User who created this transaction. <br> Title: Created By, Display: true, Editable: false
+		/// </summary>
+        public virtual string EnterBy
+        {
+            get
+            {
+				return _enterBy?.TrimEnd(); 
+            }
+            set
+            {
+				_enterBy = value.TruncateTo(100); 
+				OnPropertyChanged("EnterBy", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
+		/// </summary>
+        public virtual string UpdateBy
+        {
+            get
+            {
+				return _updateBy?.TrimEnd(); 
+            }
+            set
+            {
+				_updateBy = value.TruncateTo(100); 
+				OnPropertyChanged("UpdateBy", value);
+            }
+        }
+
 
 
         #endregion Properties - Generated 
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private InventoryData Parent { get; set; }
 		public InventoryData GetParent() => Parent;
 		public ProductExt SetParent(InventoryData parent)
@@ -848,6 +1067,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_costable = default(byte); 
 			_isProfit = default(byte); 
 			_release = default(byte); 
+			_currency = String.Empty; 
 			_uOM = String.Empty; 
 			_qtyPerPallot = default(decimal); 
 			_qtyPerCase = default(decimal); 
@@ -855,13 +1075,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_packType = String.Empty; 
 			_packQty = default(decimal); 
 			_defaultPackType = String.Empty; 
-			_defaultWarehouseNum = String.Empty; 
-			_defaultVendorNum = String.Empty; 
+			_defaultWarehouseCode = String.Empty; 
+			_defaultVendorCode = String.Empty; 
 			_poSize = default(decimal); 
 			_minStock = default(decimal); 
 			_salesCost = default(decimal); 
 			_leadTimeDay = default(int); 
 			_productYear = String.Empty; 
+			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_enterBy = String.Empty; 
+			_updateBy = String.Empty; 
             ClearChildren();
             return this;
         }

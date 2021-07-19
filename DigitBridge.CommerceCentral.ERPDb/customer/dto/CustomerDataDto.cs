@@ -25,15 +25,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public partial class CustomerDataDto
     {
         public CustomerDto Customer { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasCustomer => Customer != null;
 
         public IList<CustomerAddressDto> CustomerAddress { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasCustomerAddress => CustomerAddress != null;
 
         public CustomerAttributesDto CustomerAttributes { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasCustomerAttributes => CustomerAttributes != null;
 
     }

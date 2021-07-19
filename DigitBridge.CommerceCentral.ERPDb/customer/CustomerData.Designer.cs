@@ -33,10 +33,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public CustomerData() : base() {}
         public CustomerData(IDataBaseFactory dbFactory): base(dbFactory) {}
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new bool IsNew => Customer.IsNew;
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new string UniqueId => Customer.UniqueId;
 
         #region CRUD Methods

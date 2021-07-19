@@ -150,14 +150,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasCustomerUuid => CustomerUuid != null;
 
 		/// <summary>
-		/// Customer number. use DatabaseNum-CustomerNum too load customer data. <br> Title: Customer Number, Display: true, Editable: true
+		/// Customer number. use DatabaseNum-CustomerCode too load customer data. <br> Title: Customer Number, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Customer number. use DatabaseNum-CustomerNum too load customer data. <br> Title: Customer Number, Display: true, Editable: true")]
-        [StringLength(50, ErrorMessage = "The CustomerNum value cannot exceed 50 characters. ")]
-        public string CustomerNum { get; set; }
+		[OpenApiPropertyDescription("Customer number. use DatabaseNum-CustomerCode too load customer data. <br> Title: Customer Number, Display: true, Editable: true")]
+        [StringLength(50, ErrorMessage = "The CustomerCode value cannot exceed 50 characters. ")]
+        public string CustomerCode { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasCustomerNum => CustomerNum != null;
+        public bool HasCustomerCode => CustomerCode != null;
 
 		/// <summary>
 		/// (Readonly) Customer name, load from customer data. <br> Title: Customer Name, Display: true, Editable: false

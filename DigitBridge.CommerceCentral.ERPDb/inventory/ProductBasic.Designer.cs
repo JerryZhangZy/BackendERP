@@ -56,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			get => CentralProductNum.ToLong();
 			set => CentralProductNum = value.ToLong();
 		}
-		[XmlIgnore, JsonIgnore, IgnoreCompare] 
+		[JsonIgnore, XmlIgnore, IgnoreCompare] 
 		public override bool IsNew => CentralProductNum <= 0; 
         [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
         private int _databaseNum;
@@ -218,6 +218,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(ProductUuid)) 
 				ProductUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual int DatabaseNum
         {
             get
@@ -231,6 +234,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual int MasterAccountNum
         {
             get
@@ -244,6 +250,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
+		/// </summary>
         public virtual int ProfileNum
         {
             get
@@ -257,6 +266,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product SKU. Required. <br> Title: Sku, Display: true, Editable: true
+		/// </summary>
         public virtual string SKU
         {
             get
@@ -270,6 +282,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product FN SKU. <br> Title: FNSku, Display: true, Editable: true
+		/// </summary>
         public virtual string FNSku
         {
             get
@@ -283,6 +298,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product FN SKU. <br> Title: Condition, Display: true, Editable: true
+		/// </summary>
         public virtual bool Condition
         {
             get
@@ -296,6 +314,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Brand. <br> Title: Brand, Display: true, Editable: true
+		/// </summary>
         public virtual string Brand
         {
             get
@@ -309,6 +330,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Manufacturer. <br> Title: Manufacturer, Display: true, Editable: true
+		/// </summary>
         public virtual string Manufacturer
         {
             get
@@ -322,6 +346,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Title. <br> Title: Title, Display: true, Editable: true
+		/// </summary>
         public virtual string ProductTitle
         {
             get
@@ -335,6 +362,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Long Description. <br> Title: Long Description, Display: true, Editable: true
+		/// </summary>
         public virtual string LongDescription
         {
             get
@@ -348,6 +378,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Short Description. <br> Title: Short Description, Display: true, Editable: true
+		/// </summary>
         public virtual string ShortDescription
         {
             get
@@ -361,6 +394,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Subtitle. <br> Title: Subtitle, Display: true, Editable: true
+		/// </summary>
         public virtual string Subtitle
         {
             get
@@ -374,6 +410,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product ASIN. <br> Title: ASIN, Display: true, Editable: true
+		/// </summary>
         public virtual string ASIN
         {
             get
@@ -387,6 +426,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product UPC. <br> Title: UPC, Display: true, Editable: true
+		/// </summary>
         public virtual string UPC
         {
             get
@@ -400,6 +442,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product EAN. <br> Title: EAN, Display: true, Editable: true
+		/// </summary>
         public virtual string EAN
         {
             get
@@ -413,6 +458,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product UPC. <br> Title: ISBN, Display: true, Editable: true
+		/// </summary>
         public virtual string ISBN
         {
             get
@@ -426,6 +474,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product UPC. <br> Title: MPN, Display: true, Editable: true
+		/// </summary>
         public virtual string MPN
         {
             get
@@ -439,6 +490,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product retail price. <br> Title: Default Price, Display: true, Editable: true
+		/// </summary>
         public virtual decimal Price
         {
             get
@@ -452,6 +506,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product display sales cost. <br> Title: Sales Cost, Display: true, Editable: true
+		/// </summary>
         public virtual decimal Cost
         {
             get
@@ -465,6 +522,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Ignore) Product display avg. cost. <br> Title: Sales Cost, Display: true, Editable: true
+		/// </summary>
         public virtual decimal AvgCost
         {
             get
@@ -478,6 +538,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product MAP Price. <br> Title: MAP Price, Display: true, Editable: true
+		/// </summary>
         public virtual decimal MAPPrice
         {
             get
@@ -491,6 +554,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product MSRP Price. <br> Title: MSRP, Display: true, Editable: true
+		/// </summary>
         public virtual decimal MSRP
         {
             get
@@ -504,6 +570,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product is Bundle. None=0 ; BundleItem =1. <br> Title: Bundle, Display: true, Editable: true
+		/// </summary>
         public virtual bool BundleType
         {
             get
@@ -517,6 +586,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Type. <br> Title: Type, Display: true, Editable: true
+		/// </summary>
         public virtual bool ProductType
         {
             get
@@ -530,6 +602,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Variation By Item=0 ; Child =1; Parent =2. <br> Title: VariationBy, Display: true, Editable: true
+		/// </summary>
         public virtual string VariationVaryBy
         {
             get
@@ -543,6 +618,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product info need CopyToChildren. <br> Title: CopyToChildren, Display: true, Editable: true
+		/// </summary>
         public virtual bool CopyToChildren
         {
             get
@@ -556,6 +634,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product include Multiple Quantity. <br> Title: MultipackQuantity, Display: true, Editable: true
+		/// </summary>
         public virtual int MultipackQuantity
         {
             get
@@ -569,6 +650,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Variation Parent SKU. <br> Title: Parent SKU, Display: true, Editable: true
+		/// </summary>
         public virtual string VariationParentSKU
         {
             get
@@ -582,6 +666,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// IsInRelationship. <br> Title: In Relationship, Display: true, Editable: true
+		/// </summary>
         public virtual bool IsInRelationship
         {
             get
@@ -595,6 +682,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Net Weight. <br> Title: Net Weight, Display: true, Editable: true
+		/// </summary>
         public virtual decimal NetWeight
         {
             get
@@ -608,6 +698,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Gross Weight. <br> Title: Gross Weight, Display: true, Editable: true
+		/// </summary>
         public virtual decimal GrossWeight
         {
             get
@@ -621,6 +714,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Unit measure of Weight. <br> Title: Weight Unit, Display: true, Editable: true
+		/// </summary>
         public virtual bool WeightUnit
         {
             get
@@ -634,6 +730,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Height. <br> Title: Height, Display: true, Editable: true
+		/// </summary>
         public virtual decimal ProductHeight
         {
             get
@@ -647,6 +746,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Length. <br> Title: Length, Display: true, Editable: true
+		/// </summary>
         public virtual decimal ProductLength
         {
             get
@@ -660,6 +762,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Width. <br> Title: Width, Display: true, Editable: true
+		/// </summary>
         public virtual decimal ProductWidth
         {
             get
@@ -673,6 +778,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Box Height. <br> Title: Box Height, Display: true, Editable: true
+		/// </summary>
         public virtual decimal BoxHeight
         {
             get
@@ -686,6 +794,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Box Length. <br> Title: Box Length, Display: true, Editable: true
+		/// </summary>
         public virtual decimal BoxLength
         {
             get
@@ -699,6 +810,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Box Width. <br> Title: Box Width, Display: true, Editable: true
+		/// </summary>
         public virtual decimal BoxWidth
         {
             get
@@ -712,6 +826,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Dimension measure unit. <br> Title: Dimension Unit, Display: true, Editable: true
+		/// </summary>
         public virtual bool Unit
         {
             get
@@ -725,6 +842,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// HarmonizedCode. <br> Title: Harmonized, Display: true, Editable: true
+		/// </summary>
         public virtual string HarmonizedCode
         {
             get
@@ -738,6 +858,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// TaxProductCode. <br> Title: Tax Code, Display: true, Editable: true
+		/// </summary>
         public virtual string TaxProductCode
         {
             get
@@ -751,6 +874,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Is Blocked. <br> Title: Blocked, Display: true, Editable: true
+		/// </summary>
         public virtual bool IsBlocked
         {
             get
@@ -764,6 +890,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Warranty. <br> Title: Warranty, Display: true, Editable: true
+		/// </summary>
         public virtual string Warranty
         {
             get
@@ -777,6 +906,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) User who created this product. <br> Title: Created By, Display: true, Editable: false
+		/// </summary>
         public virtual string CreateBy
         {
             get
@@ -790,6 +922,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) User who updated this product. <br> Title: Updated By, Display: true, Editable: false
+		/// </summary>
         public virtual string UpdateBy
         {
             get
@@ -803,6 +938,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Radonly) Created Date time. <br> Title: Created At, Display: true, Editable: false
+		/// </summary>
         public virtual DateTime CreateDate
         {
             get
@@ -816,6 +954,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
+		/// </summary>
         public virtual DateTime UpdateDate
         {
             get
@@ -829,6 +970,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// ClassificationNum. <br> Title: Classification, Display: true, Editable: true
+		/// </summary>
         public virtual long ClassificationNum
         {
             get
@@ -842,6 +986,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// Product Original UPC. <br> Title: Original UPC, Display: true, Editable: true
+		/// </summary>
         public virtual string OriginalUPC
         {
             get
@@ -855,6 +1002,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
+		/// </summary>
         public virtual string ProductUuid
         {
             get
@@ -874,7 +1024,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private InventoryData Parent { get; set; }
 		public InventoryData GetParent() => Parent;
 		public ProductBasic SetParent(InventoryData parent)

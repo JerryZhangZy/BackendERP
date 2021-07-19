@@ -25,19 +25,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public partial class InvoiceDataDto
     {
         public InvoiceHeaderDto InvoiceHeader { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInvoiceHeader => InvoiceHeader != null;
 
         public InvoiceHeaderInfoDto InvoiceHeaderInfo { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInvoiceHeaderInfo => InvoiceHeaderInfo != null;
 
         public InvoiceHeaderAttributesDto InvoiceHeaderAttributes { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInvoiceHeaderAttributes => InvoiceHeaderAttributes != null;
 
         public IList<InvoiceItemsDto> InvoiceItems { get; set; }
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInvoiceItems => InvoiceItems != null;
 
     }

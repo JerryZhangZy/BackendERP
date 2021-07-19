@@ -61,6 +61,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(InventoryUuid)) 
 				InventoryUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// (Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
+		/// </summary>
         public virtual string ProductUuid
         {
             get
@@ -74,6 +77,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Inventory Item Line uuid, load from inventory data. <br> Display: false, Editable: false
+		/// </summary>
         public virtual string InventoryUuid
         {
             get
@@ -87,7 +93,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+		/// <summary>
+		/// (Ignore) JSON string
+		/// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual string JsonFields
         {
             get
@@ -102,9 +111,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         protected CustomAttributes _Fields;
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual CustomAttributes Fields
         {
             get
@@ -124,7 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Methods - Parent
 
-		[XmlIgnore, JsonIgnore, IgnoreCompare]
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		private InventoryData Parent { get; set; }
 		public InventoryData GetParent() => Parent;
 		public InventoryAttributes SetParent(InventoryData parent)
