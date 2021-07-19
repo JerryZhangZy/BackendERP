@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
+using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -31,8 +32,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
             var dbFactory = MyAppHelper.GetDatabase();
+
+            DbUtility.Begin(dbFactory.ConnectionString);
             var svc = new InventoryLogService(dbFactory);
             var list = svc.GetListByUuid(logUuid);
+            DbUtility.CloseConnection();
             return new OkObjectResult(list);
         }
 
@@ -49,8 +53,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
             var dbFactory = MyAppHelper.GetDatabase();
+            DbUtility.Begin(dbFactory.ConnectionString);
             var svc = new InventoryLogService(dbFactory);
             svc.DeleteByLogUuid(logUuid);
+            DbUtility.CloseConnection();
             return new OkResult();
         }
         [FunctionName(nameof(AddInventoryLogs))]
@@ -65,12 +71,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
             var dbFactory = MyAppHelper.GetDatabase();
+            DbUtility.Begin(dbFactory.ConnectionString);
             var svc = new InventoryLogService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             List<InventoryLogDto> dtolist = JsonConvert.DeserializeObject< List<InventoryLogDto>>(requestBody);
 
             svc.AddList(dtolist);
+            DbUtility.CloseConnection();
             return new OkResult();
         }
 
@@ -87,11 +95,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
             log.LogInformation("C# HTTP trigger function processed a request.");
             var dbFactory = MyAppHelper.GetDatabase();
             var svc = new InventoryLogService(dbFactory);
+            DbUtility.Begin(dbFactory.ConnectionString);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             List<InventoryLogDto> dtolist = JsonConvert.DeserializeObject< List<InventoryLogDto>>(requestBody);
 
             svc.UpdateInventoryLogList(dtolist);
+            DbUtility.CloseConnection();
             return new OkResult();
         }
     }

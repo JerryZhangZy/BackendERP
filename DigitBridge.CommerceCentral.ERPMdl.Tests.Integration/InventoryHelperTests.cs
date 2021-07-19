@@ -56,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var inventoryFaker = ERPDb.Tests.Integration.InventoryTests.GetFakerData();
             var inventory = inventoryFaker.Generate(1);
             inventory.SetDataBaseFactory(DataBaseFactory).Save();
-            var result = InventoryHelper.QueryInventoryBySku(inventory[0].MasterAccountNum, inventory[0].SKU);
+            var result = InventoryHelper.QueryInventoryBySku(inventory[0].MasterAccountNum,inventory[0].ProfileNum, inventory[0].SKU);
             Assert.True(result != null);
         }
 

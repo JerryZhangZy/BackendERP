@@ -42,9 +42,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return _mapper.WriteInventoryLogDtoList(list, null);
         }
 
-        private Inventory QueryInventoryBySku(int masterAccountNum,string sku)
+        private Inventory QueryInventoryBySku(int masterAccountNum,int profileNum,string sku)
         {
-            return InventoryHelper.QueryInventoryBySku(masterAccountNum, sku);
+            return InventoryHelper.QueryInventoryBySku(masterAccountNum,profileNum, sku);
         }
 
         public bool AddList(List<InventoryLogDto> dtoList)
@@ -61,7 +61,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             dtoList.ForEach(x =>
             {
                 x.BatchNum = batchNum;
-                var inventory = InventoryHelper.QueryInventoryBySku(x.MasterAccountNum.Value, x.SKU);//svc.GetInventoryBySku(x.DatabaseNum.Value, x.MasterAccountNum.Value, x.ProfileNum.Value, x.SKU);
+                var inventory = InventoryHelper.QueryInventoryBySku(x.MasterAccountNum.Value,x.ProfileNum.Value, x.SKU);//svc.GetInventoryBySku(x.DatabaseNum.Value, x.MasterAccountNum.Value, x.ProfileNum.Value, x.SKU);
                 if (inventory != null)
                 {
                     x.ProductUuid = inventory.ProductUuid;

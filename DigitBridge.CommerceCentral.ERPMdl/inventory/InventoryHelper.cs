@@ -33,15 +33,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public static class InventoryHelper
     {
 
-        public static Inventory QueryInventoryBySku(int masterAccountNum, string sku)
+        public static Inventory QueryInventoryBySku(int masterAccountNum,int profileNum, string sku)
         {
             return SqlQuery.Query<Inventory>(
                         ERPDb.InventoryHelper.SelectAllWhere(
-                            sqlWhere: $"WHERE MasterAccountNum = @masterAccountNum AND Sku=@sku ORDER BY RowNum"
+                            sqlWhere: $"WHERE Sku=@Sku AND MasterAccountNum = @masterAccountNum AND ProfileNum=@profileNum ORDER BY RowNum"
                         ),
                         CommandType.Text,
                         new[] {
                             new SqlParameter("@masterAccountNum", masterAccountNum),
+                            new SqlParameter("@profileNum", profileNum),
                             new SqlParameter("@sku", sku)
                         }).FirstOrDefault();
         }
