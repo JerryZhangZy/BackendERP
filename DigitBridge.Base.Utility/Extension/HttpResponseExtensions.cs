@@ -10,14 +10,17 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.Base.Utility
 {
+    /// <summary>
+    /// override HttpResponse
+    /// </summary>
     public static class HttpResponseExtensions
     {
         /// <summary>
-        /// Get nullable value type data from route datas
+        /// override HttpResponse
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="req"></param>
-        /// <param name="key"></param>
+        /// <param name="response"></param>
+        /// <param name="data">the information which will be displayed to requester</param>
+        /// <param name="statusCode">HttpStatusCode</param>
         /// <returns></returns>
         public async static Task Output(this HttpResponse response, object data, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
         {
