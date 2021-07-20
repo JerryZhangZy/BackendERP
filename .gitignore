@@ -367,3 +367,4 @@ FodyWeavers.xsd
 appsettings.test.json
 local.settings.json
 
+/DigitBridge.CommerceCentral.ERPApi/Properties/launchSettings.json

@@ -13,9 +13,9 @@ using Newtonsoft.Json;
 namespace DigitBridge.CommerceCentral.ERPApi
 {
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 
-    public class CommonAttribute : Attribute, IFunctionInvocationFilter, IFunctionExceptionFilter
+    public class ApiFilterAttribute : Attribute, IFunctionInvocationFilter, IFunctionExceptionFilter
     {
         /// <summary>
         /// mark exception handled 
@@ -38,9 +38,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <returns></returns>
         public async Task OnExecutedAsync(FunctionExecutedContext executedContext, CancellationToken cancellationToken)
         {
-            var req = executedContext.GetContext<HttpRequest>();
-            if (executedContext.FunctionResult.Exception != null && req != null)
+            if (executedContext.FunctionResult.Exception != null)
             {
+                var req = executedContext.GetContext<HttpRequest>();
                 var data = new ResponseResult<Exception>(executedContext.FunctionResult.Exception);
                 var jsonData = JsonConvert.SerializeObject(data);
                 var response = req.HttpContext.Response;
@@ -53,7 +53,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         public Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
-        { 
+        {
             return Task.CompletedTask;
             // todo Authorize  
         }

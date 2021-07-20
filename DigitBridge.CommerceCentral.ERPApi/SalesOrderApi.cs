@@ -17,10 +17,11 @@ using Microsoft.OpenApi.Models;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
-    [CommonAttribute]
+
     /// <summary>
     /// Process salesorder
     /// </summary> 
+    [ApiFilter]
     public static class SalesOrderApi
     {
         /// <summary>
