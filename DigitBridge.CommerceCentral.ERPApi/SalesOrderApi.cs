@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="req"></param>
         /// <param name="log"></param>
         /// <returns></returns>
-        [OpenApiOperation(operationId: "GetSalesOrders", tags: new[] { "SalesOrders" })]
+        [OpenApiOperation(operationId: "GetSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Get one/multiple sales order")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         //[OpenApiParameter(name: "paging", Type = typeof(RequestPaging),Required =false,Explode =true,In =ParameterLocation.Query)]
@@ -40,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<SalesOrderDataDto>))]
-        [FunctionName("GetSalesOrders")]
+        [FunctionName(nameof(GetSalesOrders))]
         public static async Task<IActionResult> GetSalesOrders(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder/{orderNumber}")] HttpRequest req,
             ILogger log)
@@ -49,14 +49,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.GetByOrderNumberAsync(orderNumber);
-            SalesOrderDataDto dto = null;
+            //SalesOrderDataDto dto = null;
             if (success)
             {
-                dto = srv.ToDto(srv.Data);
+                var dto = srv.ToDto(srv.Data);
+                return new Response<SalesOrderDataDto>(dto, success);
             }
-            return new Response<SalesOrderDataDto>(dto, success);
+            return new Response<string>("no record found", success);
         }
-         
+
         /// <summary>
         /// Delete salesorder 
         /// </summary>
