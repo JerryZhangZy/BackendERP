@@ -21,7 +21,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// <summary>
     /// Process salesorder
     /// </summary> 
-    [ApiFilter]
+    [ApiFilter(typeof(SalesOrderApi))]
     public static class SalesOrderApi
     {
         /// <summary>

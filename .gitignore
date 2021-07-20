@@ -369,3 +369,5 @@ local.settings.json
 
 /DigitBridge.CommerceCentral.ERPApi/Properties/launchSettings.json
 /DigitBridge.Base.Utility/Extension/FunctionAttributeExtensions.cs
+/DigitBridge.Base.Utility/Extension/AssemblyExtensions.cs
+/DigitBridge.Base.Utility/Extension/GenericExtensions.cs

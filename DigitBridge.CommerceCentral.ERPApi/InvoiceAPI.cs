@@ -19,7 +19,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// <summary>
     /// Process invoice
     /// </summary> 
-    [ApiFilter]
+    [ApiFilter(typeof(InvoiceAPI))]
     public static class InvoiceAPI
     {
         /// <summary>

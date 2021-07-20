@@ -88,5 +88,25 @@ namespace DigitBridge.Base.Utility
 
             }
         }
+
+        /// <summary>
+        /// Get data from Headers 
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="key"></param> 
+        /// <returns></returns>
+        public static string GetData(this HttpRequest req, string key)
+        {
+            string value = null;
+            if (req.Headers.ContainsKey(key))
+            {
+                value = req.Headers[key].ToString();
+            }
+            else if (req.HttpContext.GetRouteData().Values.ContainsKey(key))
+            {
+                value = req.HttpContext.GetRouteData().Values[key].ToString();
+            } 
+            return value;
+        }
     }
 }
