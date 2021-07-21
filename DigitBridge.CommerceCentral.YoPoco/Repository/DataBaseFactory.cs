@@ -4,25 +4,139 @@ using System.Linq;
 using System.Configuration;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using System.Data;
+using Microsoft.Azure.Services.AppAuthentication;
+using DigitBridge.Base.Utility;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
+    public class ThreadConnections
+    {
+        public TransactionalCache Data { get; }
+        public ThreadConnections()
+        {
+            Data = new TransactionalCache();
+        }
+    }
+
     public class DataBaseFactory : IDataBaseFactory
     {
+        #region static 
+
         public static readonly DateTime _SqlMinDateTime = new DateTime(1753, 1, 1);
         public static readonly int DefaultTimeout = 180;
         public static readonly string TimestampFormat = "yyyy-MM-dd HH:mm:ss";
         public static readonly string DateFormat = "yyyy-MM-dd";
+        //make it public, so the caller can override it.
+        public static string AzureDatabaseTokenUrl = "https://database.windows.net/";
+        public static string DefaultDataBaseFactoryKey = "_DefaultDataBaseFactory_";
+
+        /// <summary>
+        /// Cache DataBaseFactory object for current thread
+        /// </summary>
+        [ThreadStatic] static readonly TransactionalCache _dataBaseFactoryCache = new TransactionalCache();
+
+        public static IDataBaseFactory SetDataBaseFactory(IDataBaseFactory dataBaseFactory) =>
+            _dataBaseFactoryCache.SetData(dataBaseFactory.ConnectionString, dataBaseFactory);
+        public static IDataBaseFactory GetDataBaseFactory(string connectionString) =>
+            _dataBaseFactoryCache.GetData<IDataBaseFactory>(connectionString);
+        public static IDataBaseFactory GetDefaultDataBaseFactory() =>
+            _dataBaseFactoryCache.GetData<IDataBaseFactory>(DefaultDataBaseFactoryKey);
+        public static IDataBaseFactory SetDefaultDataBaseFactory(IDataBaseFactory dataBaseFactory)
+        {
+            _dataBaseFactoryCache.SetData(DefaultDataBaseFactoryKey, dataBaseFactory);
+            _dataBaseFactoryCache.SetData(dataBaseFactory.ConnectionString, dataBaseFactory);
+            return dataBaseFactory;
+        }
+        public static void ClearDataBaseFactoryCache() =>
+            _dataBaseFactoryCache.ClearAll();
+
+        public static IDbConnection CreateConnection(string connectionString = null)
+        {
+            var dbFactory = (string.IsNullOrWhiteSpace(connectionString))
+                ? GetDefaultDataBaseFactory()
+                : GetDataBaseFactory(connectionString);
+
+            if (dbFactory is null)
+                dbFactory = CreateDefault();
+
+            return dbFactory?.Db.Connection;
+        }
+
+        private static SqlCommand CreateCommandDefault(string strCommand, CommandType commandType, params IDataParameter[] parameters)
+        {
+            SqlCommand sqlCommand = new SqlCommand(strCommand)
+            {
+                CommandTimeout = DefaultTimeout,
+                CommandType = commandType
+            };
+
+            if (parameters != null)
+            {
+                foreach (var parameter in parameters)
+                    sqlCommand.Parameters.Add(parameter);
+            }
+
+            return sqlCommand;
+        }
+
+        public static IDbCommand CreateCommand(string strCommand, CommandType commandType, params IDataParameter[] parameters)
+        {
+            SqlCommand sqlCommand = CreateCommandDefault(strCommand, commandType, parameters);
+
+            var dbFactory = GetDefaultDataBaseFactory();
+            if (dbFactory is null)
+                return sqlCommand;
+
+            if (!dbFactory.Db.IsInTransaction)
+                dbFactory.Begin();
+
+            sqlCommand.Transaction = (SqlTransaction)dbFactory.Db.CurrentTransaction;
+            sqlCommand.Connection = (SqlConnection)dbFactory.Db.Connection;
+            return sqlCommand;
+        }
+
 
         public static IDataBaseFactory CreateDefault(string connectionString = null)
         {
-            return new DataBaseFactory(connectionString ?? ConfigurationManager.AppSettings["dsn"]);
+            var dbFactory = string.IsNullOrWhiteSpace(connectionString)
+                ? GetDefaultDataBaseFactory()
+                : GetDataBaseFactory(connectionString);
+            if (dbFactory != null)
+                return dbFactory;
+
+            dbFactory = new DataBaseFactory(connectionString ?? ConfigurationManager.AppSettings["dsn"]);
+            if (string.IsNullOrWhiteSpace(connectionString))
+                SetDefaultDataBaseFactory(dbFactory);
+            else
+                SetDataBaseFactory(dbFactory);
+            return dbFactory;
         }
+
+        public static IDataBaseFactory CreateDefault(DbConnSetting config)
+        {
+            var dbFactory = GetDefaultDataBaseFactory();
+            if (dbFactory != null && dbFactory.ConnectionString.Trim() == config.ConnString.Trim())
+                return dbFactory;
+
+            dbFactory = new DataBaseFactory(config);
+            SetDefaultDataBaseFactory(dbFactory);
+            return dbFactory;
+        }
+
+        #endregion static 
 
         private TransactionalCache Cache { get; } = new TransactionalCache();
         private IList<IDatabase> DbList { get; set; } = new List<IDatabase>();
+        
         private readonly string _ConnectionString;
         public string ConnectionString => _ConnectionString ?? ConfigurationManager.AppSettings["dsn"];
+
+        public bool UseAzureManagedIdentity { get; set; } = false;
+        public string AccessToken { get; set; }
+        public string TokenProviderConnectionString { get; set; }
+        public string TenantId { get; set; }
+        public int DatabaseNum { get; set; }
 
         private readonly SqlConnection _Connection;
         public SqlConnection Connection => _Connection;
@@ -34,12 +148,22 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             _ConnectionString = connectionString;
         }
+        public DataBaseFactory(DbConnSetting config)
+        {
+            _ConnectionString = config.ConnString;
+            UseAzureManagedIdentity = config.UseAzureManagedIdentity;
+            AccessToken = config.AccessToken;
+            TokenProviderConnectionString = config.TokenProviderConnectionString;
+            TenantId = config.TenantId;
+            DatabaseNum = config.DatabaseNum;
+        }
         public DataBaseFactory(MsSqlUniversalDBConfig config)
         {
-            _Connection = new SqlConnection(config.DbConnectionString);
-            if (config.UseAzureManagedIdentity)
-                _Connection.AccessToken = config.AccessToken;
             _ConnectionString = config.DbConnectionString;
+            UseAzureManagedIdentity = config.UseAzureManagedIdentity;
+            AccessToken = config.AccessToken;
+            TokenProviderConnectionString = config.TokenProviderConnectionString;
+            TenantId = config.TenantId;
         }
 
         #region Create and Get Database
@@ -64,10 +188,36 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var db = DbList?.FirstOrDefault(item => item.ConnectionString == connectionString);
             if (db == null) {
                 db = CreateDb(ConnectionString);
+                AddConnectionInterceptor(db);
                 DbList.Add(db);
             }
             return db;
         }
+
+        protected void AddConnectionInterceptor(IDatabase db)
+        {
+            if (db is null)
+                return;
+            if (UseAzureManagedIdentity)
+                db.AddDbConnectionInterceptor(SetConnectionForAzureManagedIdentity);
+            return;
+        }
+
+        public SqlConnection SetConnectionForAzureManagedIdentity(IDbConnection conn)
+        {
+            var sqlConn = (SqlConnection)conn;
+            if (sqlConn is null)
+                return sqlConn;
+
+            if (!UseAzureManagedIdentity)
+                return sqlConn;
+
+            var tokenProvider = new AzureServiceTokenProvider(TokenProviderConnectionString);
+            sqlConn.AccessToken = tokenProvider.GetAccessTokenAsync(AzureDatabaseTokenUrl, TenantId).Result;
+
+            return sqlConn;
+        }
+
         #endregion
 
         #region Transaction Methods
