@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using DigitBridge.Base.Utility;
 
-namespace DigitBridge.CommerceCentral.ERPDb
+namespace DigitBridge.CommerceCentral.ApiCommon
 {
     public class ResponseResult<T>
     {
@@ -83,7 +80,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public async Task ExecuteResultAsync(ActionContext context)
         {
-            await context.HttpContext.Response.Output(this,base.StatusCode);
+            await context.HttpContext.Response.Output(this, base.StatusCode);
         }
     }
 }

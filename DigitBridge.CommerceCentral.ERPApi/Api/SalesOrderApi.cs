@@ -11,11 +11,10 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
-using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
 using DigitBridge.CommerceCentral.YoPoco;
-using DigitBridge.CommerceCentral.ApiCommon;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {

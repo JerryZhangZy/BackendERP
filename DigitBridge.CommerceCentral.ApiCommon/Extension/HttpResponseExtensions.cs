@@ -8,7 +8,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DigitBridge.Base.Utility
+namespace DigitBridge.CommerceCentral.ApiCommon
 {
     /// <summary>
     /// override HttpResponse

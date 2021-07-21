@@ -12,11 +12,12 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DigitBridge.CommerceCentral.ApiCommon;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 
     public class ApiFilterAttribute : Attribute, IFunctionInvocationFilter, IFunctionExceptionFilter
     {
