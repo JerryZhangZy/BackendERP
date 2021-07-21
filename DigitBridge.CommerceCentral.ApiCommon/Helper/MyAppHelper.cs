@@ -1,14 +1,21 @@
-﻿using DigitBridge.CommerceCentral.ApiCommon;
-using DigitBridge.CommerceCentral.YoPoco;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace DigitBridge.CommerceCentral.ERPApi
+using DigitBridge.CommerceCentral.YoPoco;
+
+namespace DigitBridge.CommerceCentral.ApiCommon
 {
-    public class MyAppHelper
+    public static class MyAppHelper
     {
+        public async static Task<IDataBaseFactory> CreateDefaultDatabaseAsync(int masterAccountNum)
+        {
+            var config = await MyCache.GetCommerceCentralDbConnSetting(masterAccountNum).ConfigureAwait(false);
+            return DataBaseFactory.CreateDefault(config);
+        }
+
         public static DataBaseFactory GetDatabase(int masterAccountNum)
         {
             var connectStr = GetConnectionString(masterAccountNum);
