@@ -1,10 +1,9 @@
 ﻿using DigitBridge.Base.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ApiCommon
@@ -85,9 +84,36 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             using (var reader = new StreamReader(req.Body))
             {
                 var json = await reader.ReadToEndAsync();
-                return json.StringToObject<T>(); //JsonConvert.DeserializeObject<SalesOrderDataDto>(json); 
+                return JsonConvert.DeserializeObject<T>(json);
 
             }
+        }
+        public static async Task<object> GetBodyObjectAsync(this HttpRequest req, Type type)
+        {
+            using (var reader = new StreamReader(req.Body))
+            {
+                var json = await reader.ReadToEndAsync();
+                return JsonConvert.DeserializeObject(json, type);
+            }
+        }
+        /// <summary>
+        /// Get data from Headers 
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="key"></param> 
+        /// <returns></returns>
+        public static string GetData(this HttpRequest req, string key)
+        {
+            string value = null;
+            if (req.Headers.ContainsKey(key))
+            {
+                value = req.Headers[key].ToString();
+            }
+            else if (req.HttpContext.GetRouteData().Values.ContainsKey(key))
+            {
+                value = req.HttpContext.GetRouteData().Values[key].ToString();
+            }
+            return value;
         }
     }
 }

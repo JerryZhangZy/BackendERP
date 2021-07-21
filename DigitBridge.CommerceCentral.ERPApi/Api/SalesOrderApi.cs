@@ -1,7 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
+using DigitBridge.CommerceCentral.ApiCommon;
+using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.CommerceCentral.ERPMdl;
+using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -10,19 +10,16 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-
-using DigitBridge.Base.Utility;
-using DigitBridge.CommerceCentral.ERPDb;
-using DigitBridge.CommerceCentral.ERPMdl;
-using DigitBridge.CommerceCentral.YoPoco;
-using DigitBridge.CommerceCentral.ApiCommon;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
-    [CommonAttribute]
+
     /// <summary>
     /// Process salesorder
     /// </summary> 
+    [ApiFilter(typeof(SalesOrderApi))]
     public static class SalesOrderApi
     {
         /// <summary>
@@ -30,8 +27,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         /// <param name="req"></param>
         /// <param name="log"></param>
+        /// <param name="orderNumber"></param>
         /// <returns></returns>
-        [OpenApiOperation(operationId: "GetSalesOrders", tags: new[] { "SalesOrders" })]
+        [OpenApiOperation(operationId: "GetSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Get one/multiple sales order")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         //[OpenApiParameter(name: "paging", Type = typeof(RequestPaging),Required =false,Explode =true,In =ParameterLocation.Query)]
@@ -41,27 +39,29 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<SalesOrderDataDto>))]
-        [FunctionName("GetSalesOrders")]
+        [FunctionName(nameof(GetSalesOrders))]
         public static async Task<IActionResult> GetSalesOrders(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder/{orderNumber}")] HttpRequest req,
-            ILogger log)
+            ILogger log, string orderNumber)
         {
-            var orderNumber = req.GetRouteObject<string>("orderNumber");
+            //var orderNumber = req.GetRouteObject<string>("orderNumber");
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.GetByOrderNumberAsync(orderNumber);
-            SalesOrderDataDto dto = null;
+            //SalesOrderDataDto dto = null;
             if (success)
             {
-                dto = srv.ToDto(srv.Data);
+                var dto = srv.ToDto(srv.Data);
+                return new Response<SalesOrderDataDto>(dto, success);
             }
-            return new Response<SalesOrderDataDto>(dto, success);
+            return new Response<string>("no record found", success);
         }
-         
+
         /// <summary>
         /// Delete salesorder 
         /// </summary>
         /// <param name="req"></param>
+        /// <param name="orderNumber"></param>
         /// <returns></returns>
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
         [OpenApiOperation(operationId: "DeleteSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Delete one sales order")]
@@ -69,9 +69,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [FunctionName("DeleteSalesOrders")]
         public static async Task<IActionResult> DeleteSalesOrders(
            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "salesorder/{orderNumber}")]
-            HttpRequest req)
+            HttpRequest req,
+            string orderNumber)
         {
-            var orderNumber = req.GetRouteObject<string>("orderNumber");
+            //var orderNumber = req.GetRouteObject<string>("orderNumber");
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.DeleteByOrderNumberAsync(orderNumber);
@@ -82,15 +83,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
         ///  Update salesorder 
         /// </summary>
         /// <param name="req"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
         [FunctionName(nameof(UpdateSalesOrders))]
         [OpenApiOperation(operationId: "UpdateSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Update one sales order")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
         public static async Task<IActionResult> UpdateSalesOrders(
-[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesorder")] HttpRequest req)
+[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesorder")] HttpRequest req,
+[FromBodyBinding] SalesOrderDataDto dto)
         {
-            var dto = await req.GetBodyObjectAsync<SalesOrderDataDto>();
+            //var dto = await req.GetBodyObjectAsync<SalesOrderDataDto>();
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.UpdateAsync(dto);
@@ -100,15 +103,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Add sales order
         /// </summary>
         /// <param name="req"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
         [FunctionName(nameof(AddSalesOrders))]
         [OpenApiOperation(operationId: "AddSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Add one sales order")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
         public static async Task<IActionResult> AddSalesOrders(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesorder")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesorder")] HttpRequest req,
+            [FromBodyBinding] SalesOrderDataDto dto)
         {
-            var dto = await req.GetBodyObjectAsync<SalesOrderDataDto>();
+            //var dto = await req.GetBodyObjectAsync<SalesOrderDataDto>();
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.AddAsync(dto);
