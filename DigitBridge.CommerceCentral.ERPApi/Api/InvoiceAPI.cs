@@ -27,6 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         /// <param name="req"></param>
         /// <param name="log"></param>
+        /// <param name="invoiceNumber"></param>
         /// <returns></returns>
         [OpenApiOperation(operationId: "GetInvoices", tags: new[] { "Invoices" }, Summary = "Get one/multiple invoices")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -59,16 +60,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Delete invoice 
         /// </summary>
         /// <param name="req"></param>
-        /// <returns></returns> 
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
         [OpenApiOperation(operationId: "DeleteInvoices", tags: new[] { "Invoices" }, Summary = "Delete one invoice")]
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Sales invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
         [FunctionName(nameof(DeleteInvoices))]
         public static async Task<IActionResult> DeleteInvoices(
            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoices/{invoiceNumber}")]
-            HttpRequest req)
+           string invoiceNumber)
         {
-            var invoiceNumber = req.GetRouteObject<string>("invoiceNumber");
+            //var invoiceNumber = req.GetRouteObject<string>("invoiceNumber");
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
             var srv = new InvoiceService(dataBaseFactory);
             var success = await srv.DeleteByInvoiceNumberAsync(invoiceNumber);
