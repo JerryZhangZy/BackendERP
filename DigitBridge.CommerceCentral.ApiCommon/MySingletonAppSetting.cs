@@ -14,8 +14,19 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                     AddEnvironmentVariables().
                     Build();
 
+        public static bool UseOrchestration
+        {
+            get
+            {
+                string value = GetValueByName("UseOrchestration");
+                return value.Equals("true", StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
         public static string OrchestrationDbConnString => GetValueByName("OrchestrationDbConnString");
 
+        public static string DBConnectionString => GetValueByName("DBConnectionString");
+        public static string DbTenantId => GetValueByName("DbTenantId");
+        
         public static string OrchestrationDbTenantId => GetValueByName("OrchestrationDbTenantId");
 
         public static bool UseAzureManagedIdentity

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -54,9 +55,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
         private DbProviderFactory _factory;
         private IsolationLevel? _isolationLevel;
 
-#endregion
+        #endregion
 
-#region Constructors
+        #region Constructors
 
 #if !NETSTANDARD
         /// <summary>
@@ -302,6 +303,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             _factory = _provider.GetFactory();
 
             _defaultMapper = mapper ?? new ConventionMapper();
+            _connectionInterceptor = null;
         }
 
 #endregion
@@ -326,6 +328,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// <seealso cref="KeepConnectionAlive" />
         public IDbConnection Connection => _sharedConnection;
 
+
+        private Func<IDbConnection, SqlConnection> _connectionInterceptor;
+        public void AddDbConnectionInterceptor(Func<IDbConnection, SqlConnection> connectionInterceptor)
+        {
+            _connectionInterceptor = connectionInterceptor;
+        }
+
         /// <summary>
         ///     Opens a connection that will be used for all subsequent queries.
         /// </summary>
@@ -342,6 +351,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
             {
                 _sharedConnection = _factory.CreateConnection();
                 _sharedConnection.ConnectionString = _connectionString;
+                if (_connectionInterceptor != null)
+                    _sharedConnection = _connectionInterceptor(_sharedConnection);
 
                 if (_sharedConnection.State == ConnectionState.Broken)
                     _sharedConnection.Close();
@@ -441,6 +452,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// <inheritdoc />
         IDbTransaction ITransactionAccessor.Transaction => _transaction;
         public bool IsInTransaction => (_transaction != null) && (_sharedConnection.State != ConnectionState.Closed);
+        public IDbTransaction CurrentTransaction => _transaction;
+
 
         /// <inheritdoc />
         public ITransaction GetTransaction()

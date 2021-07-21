@@ -33,15 +33,10 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         {
             try
             {
-                int databaseNum = 0;
-                DbConnSetting dc = new DbConnSetting();
-
-                if (CacheBase.TryGetValue<int>(GetCommerceCentralKey(masterAccountNum), out databaseNum))
-                {//find the databaseNum in cache
-                    if (CacheBase.TryGetValue<DbConnSetting>(GetDatabaseSettingKey(databaseNum), out dc))
-                    {
+                if (CacheBase.TryGetValue<int>(GetCommerceCentralKey(masterAccountNum), out var databaseNum))
+                {   //find the databaseNum in cache
+                    if (CacheBase.TryGetValue<DbConnSetting>(GetDatabaseSettingKey(databaseNum), out var dc))
                         return dc;
-                    };
                 }
 
                 //neither CommerceCentral cache nor database cache is found, get connection by masterAccountNum
@@ -89,29 +84,42 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         {
             try
             {
-                if (masterAccountNum == 0)
-                    masterAccountNum = 10001;
-
-                MasterAccount ma = await MasterAccount.CreateAsync(MySingletonAppSetting.OrchestrationDbConnString,
-                    MySingletonAppSetting.UseAzureManagedIdentity, MySingletonAppSetting.AzureTokenProviderConnectionString,
-                    MySingletonAppSetting.OrchestrationDbTenantId);
-
-                MasterAccountConnSettingDto maSetting = await ma.GetConnSettingByTargetName(masterAccountNum, "CommerceCentral");
-                if (maSetting is null)
+                if (MySingletonAppSetting.UseOrchestration)
                 {
-                    throw new Exception("Connection Setting for MasterAccount is not set yet. " +
-                        "MasterAccoutNum: " + masterAccountNum);
+                    if (masterAccountNum == 0)
+                        masterAccountNum = 10001;
+
+                    MasterAccount ma = await MasterAccount.CreateAsync(MySingletonAppSetting.OrchestrationDbConnString,
+                        MySingletonAppSetting.UseAzureManagedIdentity, MySingletonAppSetting.AzureTokenProviderConnectionString,
+                        MySingletonAppSetting.OrchestrationDbTenantId);
+
+                    MasterAccountConnSettingDto maSetting = await ma.GetConnSettingByTargetName(masterAccountNum, "CommerceCentral");
+                    if (maSetting is null)
+                    {
+                        throw new Exception("Connection Setting for MasterAccount is not set yet. " +
+                            "MasterAccoutNum: " + masterAccountNum);
+                    }
+
+                    return new DbConnSetting()
+                    {
+                        ConnString = maSetting.ConnectionString,
+                        UseAzureManagedIdentity = maSetting.UseManagementIdentity == 1 ? true : false,
+                        TenantId = maSetting.TenantId,
+                        TokenProviderConnectionString = MySingletonAppSetting.AzureTokenProviderConnectionString,
+                        DatabaseNum = maSetting.DatabaseNum
+                    };
                 }
-
-                DbConnSetting dbConnSetting = new DbConnSetting()
+                else
                 {
-                    ConnString = maSetting.ConnectionString,
-                    UseAzureManagedIdentity = maSetting.UseManagementIdentity == 1 ? true : false,
-                    TenantId = maSetting.TenantId,
-                    DatabaseNum = maSetting.DatabaseNum
-                };
-
-                return dbConnSetting;
+                    return new DbConnSetting()
+                    {
+                        ConnString = MySingletonAppSetting.DBConnectionString,
+                        UseAzureManagedIdentity = MySingletonAppSetting.UseAzureManagedIdentity,
+                        TenantId = MySingletonAppSetting.DbTenantId,
+                        TokenProviderConnectionString = MySingletonAppSetting.AzureTokenProviderConnectionString,
+                        DatabaseNum = 1
+                    };
+                }
             }
             catch (Exception ex)
             {

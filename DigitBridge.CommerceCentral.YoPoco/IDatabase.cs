@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
 using System.Threading;
@@ -137,6 +138,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
         ITransaction GetTransaction();
 
         bool IsInTransaction { get; }
+
+        IDbTransaction CurrentTransaction { get; }
+
+        void AddDbConnectionInterceptor(Func<IDbConnection, SqlConnection> connectionInterceptor);
 
         /// <summary>
         ///     Starts a transaction scope, see GetTransaction() for recommended usage

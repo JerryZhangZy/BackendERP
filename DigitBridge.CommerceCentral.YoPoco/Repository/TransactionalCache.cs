@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.YoPoco
@@ -7,6 +8,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
     public class TransactionalCache
     {
         private readonly Dictionary<string, object> _Cache = new Dictionary<string, object>();
+
+        public int Count => _Cache.Count;
 
         public TransactionalCache()
         {
@@ -45,6 +48,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return default;
 
             return (T)retValue;
+        }
+
+        public T GetFirstData<T>()
+        {
+            return (_Cache == null || _Cache.Count <= 0)
+                ? default
+                : (T)_Cache.ElementAt(0).Value;
         }
 
         public T FromCache<T>(string key, Func<T> create, bool reNew = false, bool useDefault = false)

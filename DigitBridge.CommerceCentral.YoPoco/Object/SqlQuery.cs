@@ -43,7 +43,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         static SqlQuery()
         {
-            DbUtility.OnTransactionEnd(OnTransactionEnd);
         }
 
         private static void OnTransactionEnd(TransactionAction Action)
@@ -72,7 +71,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static void ExecuteNonQuery(string cmd, CommandType commandType, params IDataParameter[] parameters)
         {
-            using var dbCommand = DbUtility.CreateCommand(cmd, commandType, parameters);
+            using var dbCommand = DataBaseFactory.CreateCommand(cmd, commandType, parameters);
             dbCommand.ExecuteNonQuery();
         }
 
@@ -81,7 +80,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task ExecuteNonQueryAsync(string cmd, CommandType commandType, params IDataParameter[] parameters)
         {
-            using var dbCommand = DbUtility.CreateCommand(cmd, commandType, parameters);
+            using var dbCommand = DataBaseFactory.CreateCommand(cmd, commandType, parameters);
             await ((SqlCommand)dbCommand).ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
@@ -90,7 +89,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static IDataReader ExecuteCommand(string commandText, CommandType commandType, params IDataParameter[] parameters)
         {
-            using IDbCommand dbCommand = DbUtility.CreateCommand(commandText, commandType, parameters);
+            using IDbCommand dbCommand = DataBaseFactory.CreateCommand(commandText, commandType, parameters);
             return dbCommand.ExecuteReader();
         }
 
@@ -99,7 +98,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<SqlDataReader> ExecuteCommandAsync(string commandText, CommandType commandType, params IDataParameter[] parameters)
         {
-            using IDbCommand dbCommand = DbUtility.CreateCommand(commandText, commandType, parameters);
+            using IDbCommand dbCommand = DataBaseFactory.CreateCommand(commandText, commandType, parameters);
             return await ((SqlCommand)dbCommand).ExecuteReaderAsync().ConfigureAwait(false);
         }
 

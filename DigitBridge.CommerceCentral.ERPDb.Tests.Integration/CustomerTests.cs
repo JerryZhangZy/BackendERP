@@ -27,6 +27,38 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
     public partial class CustomerTests
     {
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void Add_AzureDb_Test()
+        {
+            var conf = new DbConnSetting()
+            {
+                ConnString = Configuration["DBConnectionString"],
+                UseAzureManagedIdentity = Configuration["UseAzureManagedIdentity"].ToBool(),
+                TenantId = Configuration["DbTenantId"],
+                TokenProviderConnectionString = Configuration["AzureTokenProviderConnectionString"],
+                DatabaseNum = 1
+            };
+            DataBaseFactory = DigitBridge.CommerceCentral.YoPoco.DataBaseFactory.CreateDefault(conf);
+
+            var data = FakerData.Generate();
+            var result = false;
+
+            using (var b = new Benchmark("QueryAzureDb_Test"))
+            {
+
+                data.SetDataBaseFactory(DataBaseFactory);
+                DataBaseFactory.Begin();
+                data.Add();
+                DataBaseFactory.Commit();
+
+                var dataGet = DataBaseFactory.GetFromCacheById<Customer>(data.UniqueId);
+                result = data.Equals(dataGet);
+            }
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
     }
 }
 

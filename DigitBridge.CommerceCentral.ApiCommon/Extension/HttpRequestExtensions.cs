@@ -1,4 +1,5 @@
 ﻿using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
@@ -10,6 +11,17 @@ namespace DigitBridge.CommerceCentral.ApiCommon
 {
     public static class HttpRequestExtensions
     {
+
+        /// <summary>
+        /// Get all request parameter to RequestParameter object, include Header and Query string
+        /// </summary>
+        public static RequestParameter GetRequestParameter(this HttpRequest req)
+        {
+            var param = new RequestParameter();
+            return param;
+        }
+
+        
         /// <summary>
         /// Get nullable value type data from route datas
         /// </summary>
