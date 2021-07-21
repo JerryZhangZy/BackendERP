@@ -45,7 +45,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log, string orderNumber)
         {
             //var orderNumber = req.GetRouteObject<string>("orderNumber");
-            var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
+            //var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.GetByOrderNumberAsync(orderNumber);
             //SalesOrderDataDto dto = null;
