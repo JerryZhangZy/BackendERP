@@ -28,6 +28,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddValidator(new CustomerServiceValidatorDefault());
             return this;
         }
+        public string GetCustomerUuidByCode(int profileNum, string customerCode)
+        {
+            return dbFactory.Db.FirstOrDefault<string>($"select CustomerUuid from Customer where CustomerCode='{customerCode}' and ProfileNum={profileNum}");
+        }
+
+        public CustomerDataDto GetCustomerByCode(int profileNum, string cutomerCode)
+        {
+            var uuid = GetCustomerUuidByCode(profileNum, cutomerCode);
+            GetDataById(uuid);
+            return ToDto();
+        }
+
+        public bool DeleteByCode(int profileNum, string customerCode)
+        {
+            var uuid = GetCustomerUuidByCode(profileNum, customerCode);
+            return Delete(uuid);
+        }
 
 
         /// <summary>
