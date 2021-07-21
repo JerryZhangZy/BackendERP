@@ -41,9 +41,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [FunctionName(nameof(GetSalesOrders))]
         public static async Task<IActionResult> GetSalesOrders(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder/{orderNumber}")] HttpRequest req,
-            ILogger log)
+            ILogger log,string orderNumber)
         {
-            var orderNumber = req.GetRouteObject<string>("orderNumber");
+            //var orderNumber = req.GetRouteObject<string>("orderNumber");
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.GetByOrderNumberAsync(orderNumber);

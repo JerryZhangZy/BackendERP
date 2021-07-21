@@ -39,10 +39,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<InvoiceDataDto>))]
         [FunctionName(nameof(GetInvoices))]
         public static async Task<IActionResult> GetInvoices(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices/{invoiceNumber?}")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices/{invoiceNumber}")] HttpRequest req,
+            ILogger log,
+            string invoiceNumber)
         {
-            var invoiceNumber = req.GetRouteObject<string>("invoiceNumber");
+            //var invoiceNumber = req.GetRouteObject<string>("invoiceNumber");
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
             var srv = new InvoiceService(dataBaseFactory);
             var success = await srv.GetByInvoiceNumberAsync(invoiceNumber);
