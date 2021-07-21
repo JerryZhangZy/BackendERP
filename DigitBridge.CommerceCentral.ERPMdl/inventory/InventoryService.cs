@@ -1,5 +1,5 @@
 
-    
+
 
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class InventoryService
     {
-
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
         /// </summary>
@@ -29,13 +28,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return this;
         }
 
+        public string GetProductUuidBySku(int profileNum, string sku)
+        {
+            return dbFactory.Db.FirstOrDefault<string>($"select ProductUuid from ProductExt where Sku='{sku}' and ProfileNum={profileNum}");
+        }
+
+        public InventoryDataDto GetInventoryBySku(int profileNum, string sku)
+        {
+            var uuid = GetProductUuidBySku(profileNum, sku);
+            GetDataById(uuid);
+            return ToDto();
+        }
+
 
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
         public virtual bool Add(InventoryDataDto dto)
         {
-            if (dto is null) 
+            if (dto is null)
                 return false;
             // set Add mode and clear data
             Add();
@@ -46,6 +57,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return SaveData();
+        }
+
+        public bool DeleteBySku(int profileNum, string sku)
+        {
+            var uuid = GetProductUuidBySku(profileNum, sku);
+            return Delete(uuid);
         }
 
         /// <summary>
