@@ -1,15 +1,24 @@
-﻿using DigitBridge.CommerceCentral.YoPoco;
+﻿using DigitBridge.CommerceCentral.ApiCommon;
+using DigitBridge.CommerceCentral.YoPoco;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Text;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
     public class MyAppHelper
     {
-        public static DataBaseFactory GetDatabase()
+        public static DataBaseFactory GetDatabase(int masterAccountNum)
         {
-            return new DataBaseFactory("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DigitBridgeERP;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            var connectStr = GetConnectionString(masterAccountNum);
+            ConfigurationManager.AppSettings["dsn"] = connectStr;
+            return new DataBaseFactory(connectStr);
+        }
+
+        public static string GetConnectionString(int masterAccountNum)
+        {
+            return ConfigHelper.Dsn;
         }
     }
 }
