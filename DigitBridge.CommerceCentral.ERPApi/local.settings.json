@@ -3,6 +3,6 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "dsn": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DigitBridgeERP;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+    "dsn": "Data Source=DESKTOP-6C6398M;Initial Catalog=digit_data;Persist Security Info=True;User ID=sqldigit;Password=sqldigit;"
   }
 }
