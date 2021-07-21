@@ -367,5 +367,9 @@ FodyWeavers.xsd
 appsettings.test.json
 local.settings.json
 
+/DigitBridge.CommerceCentral.ERPApi/Properties/launchSettings.json
+/DigitBridge.Base.Utility/Extension/FunctionAttributeExtensions.cs
+/DigitBridge.Base.Utility/Extension/AssemblyExtensions.cs
+/DigitBridge.Base.Utility/Extension/GenericExtensions.cs
 /centralerp/DigitBridge.CommerceCentral.ERPDb/DigitBridge.CommerceCentral.ERPDb.xml
 /centralerp/DigitBridge.CommerceCentral.ERPApi/DigitBridge.CommerceCentral.ERPApi.xml

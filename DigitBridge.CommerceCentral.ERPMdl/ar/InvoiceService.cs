@@ -104,6 +104,41 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
+        /// <summary>
+        /// Get invoice with detail by invoiceNumber
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> GetByInvoiceNumberAsync(string invoiceNumber)
+        {
+            if (string.IsNullOrEmpty(invoiceNumber))
+                return false;
+            List();
+            var rowNum = await _data.GetRowNumAsync(invoiceNumber);
+            if (!rowNum.HasValue)
+                return false;
+            var success = await GetDataAsync(rowNum.Value);
+            //if (success) ToDto();
+            return success;
+        }
+        /// <summary>
+        /// Delete invoice by invoiceNumber
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByInvoiceNumberAsync(string invoiceNumber)
+        {
+            if (string.IsNullOrEmpty(invoiceNumber))
+                return false;
+            Delete();
+            var rowNum = await _data.GetRowNumAsync(invoiceNumber);
+            if (!rowNum.HasValue)
+                return false;
+            var success = await GetDataAsync(rowNum.Value);
+            success = success && await DeleteDataAsync();
+            return success;
+        }
+
     }
 }
 
