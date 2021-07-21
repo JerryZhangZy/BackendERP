@@ -87,9 +87,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceDataDto), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
         public static async Task<IActionResult> UpdateInvoices(
-[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "invoices")] HttpRequest req)
+[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "invoices")] HttpRequest req,
+[FromBodyBinding] InvoiceDataDto dto)
         {
-            var dto = await req.GetBodyObjectAsync<InvoiceDataDto>();
+            //var dto = await req.GetBodyObjectAsync<InvoiceDataDto>();
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
             var srv = new InvoiceService(dataBaseFactory);
             var success = await srv.UpdateAsync(dto);
@@ -99,6 +100,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Add invoice
         /// </summary>
         /// <param name="req"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
         [FunctionName(nameof(AddInvoices))]
         [OpenApiOperation(operationId: "AddInvoices", tags: new[] { "Invoices" }, Summary = "Add one invoice")]
@@ -106,7 +108,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
         public static async Task<IActionResult> AddInvoices(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices")] HttpRequest req,
-            [FromBody] dynamic dto)
+            [FromBodyBinding] InvoiceDataDto dto)
         {
             //var dto = await req.GetBodyObjectAsync<InvoiceDataDto>();
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);

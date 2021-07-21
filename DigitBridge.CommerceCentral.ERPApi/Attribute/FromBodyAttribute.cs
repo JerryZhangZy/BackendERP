@@ -4,7 +4,9 @@ using Microsoft.Azure.WebJobs.Description;
 using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Azure.WebJobs.Host.Protocols;
+using Newtonsoft.Json;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApi
@@ -17,12 +19,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
     {
         public void Initialize(ExtensionConfigContext context)
         {
-
             // Creates a rule that links the attribute to the binding
             context.AddBindingRule<FromBodyBindingAttribute>().Bind(new FromBodyBindingProvider());
-            //todo bind to specified type
-            //context.AddBindingRule<FromBodyBindingAttribute>().BindToCollector(attribute => new FromBodyBindingProvider(attribute.InstanceType));
-
         }
     }
 
@@ -31,13 +29,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// </summary>
     public class FromBodyBindingProvider : IBindingProvider
     {
-        private readonly Type _instanceType;
-        public FromBodyBindingProvider(Type type) => _instanceType = type;
-        public FromBodyBindingProvider() { }
         public Task<IBinding> TryCreateAsync(BindingProviderContext context)
         {
-            //var parameter = context.Parameter;
-            IBinding binding = new FromBodyBinding(_instanceType);
+            IBinding binding = new FromBodyBinding(context.Parameter.ParameterType);
             return Task.FromResult(binding);
         }
     }
@@ -70,9 +64,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [Binding]
     public sealed class FromBodyBindingAttribute : Attribute
     {
-        public Type InstanceType { get; }
-        public FromBodyBindingAttribute(Type type) => InstanceType = type;
-        public FromBodyBindingAttribute() { }
     }
 
     public class FromBodyValueProvider : IValueProvider
@@ -86,12 +77,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
             _request = request;
             _instanceType = instanceType;
         }
-
         public async Task<object> GetValueAsync()
         {
             try
             {
-                return _request.GetBodyObjectAsync<object>();
+                return await _request.GetBodyObjectAsync(_instanceType);
             }
             catch (Exception ex)
             {

@@ -88,7 +88,14 @@ namespace DigitBridge.CommerceCentral.ApiCommon
 
             }
         }
-
+        public static async Task<object> GetBodyObjectAsync(this HttpRequest req, Type type)
+        {
+            using (var reader = new StreamReader(req.Body))
+            {
+                var json = await reader.ReadToEndAsync();
+                return JsonConvert.DeserializeObject(json, type);
+            }
+        }
         /// <summary>
         /// Get data from Headers 
         /// </summary>
@@ -105,7 +112,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             else if (req.HttpContext.GetRouteData().Values.ContainsKey(key))
             {
                 value = req.HttpContext.GetRouteData().Values[key].ToString();
-            } 
+            }
             return value;
         }
     }
