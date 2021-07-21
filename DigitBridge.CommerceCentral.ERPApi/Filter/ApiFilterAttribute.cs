@@ -1,18 +1,13 @@
-﻿using DigitBridge.Base.Utility;
+﻿using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Host;
-using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 using System;
 using System.Linq;
-using System.Net;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using DigitBridge.CommerceCentral.ApiCommon;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
