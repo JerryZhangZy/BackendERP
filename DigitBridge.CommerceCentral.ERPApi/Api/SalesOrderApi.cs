@@ -89,9 +89,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
         public static async Task<IActionResult> UpdateSalesOrders(
-[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesorder")] HttpRequest req)
+[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesorder")] HttpRequest req,
+[FromBodyBinding] dynamic dto)
         {
-            var dto = await req.GetBodyObjectAsync<SalesOrderDataDto>();
+            //var dto = await req.GetBodyObjectAsync<SalesOrderDataDto>();
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.UpdateAsync(dto);

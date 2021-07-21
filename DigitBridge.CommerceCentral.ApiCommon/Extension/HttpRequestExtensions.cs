@@ -1,6 +1,7 @@
 ﻿using DigitBridge.Base.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -83,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             using (var reader = new StreamReader(req.Body))
             {
                 var json = await reader.ReadToEndAsync();
-                return json.StringToObject<T>(); //JsonConvert.DeserializeObject<SalesOrderDataDto>(json); 
+                return JsonConvert.DeserializeObject<T>(json);
 
             }
         }

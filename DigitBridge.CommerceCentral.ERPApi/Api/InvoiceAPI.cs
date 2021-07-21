@@ -105,9 +105,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceDataDto), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
         public static async Task<IActionResult> AddInvoices(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices")] HttpRequest req,
+            [FromBody] dynamic dto)
         {
-            var dto = await req.GetBodyObjectAsync<InvoiceDataDto>();
+            //var dto = await req.GetBodyObjectAsync<InvoiceDataDto>();
             var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
             var srv = new InvoiceService(dataBaseFactory);
             var success = await srv.AddAsync(dto);

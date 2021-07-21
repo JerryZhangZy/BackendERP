@@ -19,10 +19,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <summary>
         /// get caller type
         /// </summary>
-        private Type currentType;
+        private Type _currentType;
         public ApiFilterAttribute(Type currentType)
         {
-            this.currentType = currentType;
+            this._currentType = currentType;
         }
         /// <summary>
         /// mark exception handled 
@@ -60,7 +60,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
         public async Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
         {
-            var methodInfo = currentType.GetMethod(executingContext.FunctionName);
+            var methodInfo = _currentType.GetMethod(executingContext.FunctionName);
             var openApiParameterAttributes = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>().Where(i => i.Required);
             if (openApiParameterAttributes != null)
             {
