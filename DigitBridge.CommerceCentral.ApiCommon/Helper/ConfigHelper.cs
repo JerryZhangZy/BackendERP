@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace DigitBridge.Base.Utility
+namespace DigitBridge.CommerceCentral.ApiCommon
 {
     public static class ConfigHelper
     {
