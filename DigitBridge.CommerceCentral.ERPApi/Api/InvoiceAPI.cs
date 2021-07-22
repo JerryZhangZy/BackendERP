@@ -19,8 +19,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// <summary>
     /// Process invoice
     /// </summary> 
-    [ApiFilter(typeof(InvoiceAPI))]
-    public static class InvoiceAPI
+    [ApiFilter(typeof(InvoiceApi))]
+    public static class InvoiceApi
     {
         /// <summary>
         /// Get invoices

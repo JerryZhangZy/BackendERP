@@ -104,6 +104,42 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
+
+        /// <summary>
+        /// Get order shipment with detail by order shipment number
+        /// </summary>
+        /// <param name="orderShipmentNum"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> GetByOrderShipmentNumAsync(string orderShipmentNum)
+        {
+            if (string.IsNullOrEmpty(orderShipmentNum))
+                return false;
+            List();
+            var rowNum = await _data.GetRowNumAsync(orderShipmentNum);
+            if (!rowNum.HasValue)
+                return false;
+            var success = await GetDataAsync(rowNum.Value);
+            //if (success) ToDto();
+            return success;
+        }
+
+        /// <summary>
+        /// Delete order shipment by order shipment number
+        /// </summary>
+        /// <param name="orderShipmentNum"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByOrderShipmentNumAsync(string orderShipmentNum)
+        {
+            if (string.IsNullOrEmpty(orderShipmentNum))
+                return false;
+            Delete();
+            var rowNum = await _data.GetRowNumAsync(orderShipmentNum);
+            if (!rowNum.HasValue)
+                return false;
+            var success = await GetDataAsync(rowNum.Value);
+            success = success && await DeleteDataAsync();
+            return success;
+        }
     }
 }
 
