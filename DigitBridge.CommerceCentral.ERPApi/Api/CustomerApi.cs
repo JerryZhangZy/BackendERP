@@ -38,18 +38,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; ;
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var parameters = req.GetRequestParameter();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
             var spilterIndex = CustomerCode.IndexOf("-");
             var customerCode = CustomerCode;
             if (spilterIndex > 0)
             {
-                profileNum = CustomerCode.Substring(0, spilterIndex).ToInt();
+                parameters.ProfileNum = CustomerCode.Substring(0, spilterIndex).ToInt();
                 customerCode = CustomerCode.Substring(spilterIndex + 1);
             }
             var svc = new CustomerService(dbFactory);
-            var data = svc.GetCustomerByCode(profileNum, customerCode);
+            var data = svc.GetCustomerByCode(parameters.ProfileNum, customerCode);
             return new Response<CustomerDataDto>(data);
         }
 
@@ -65,18 +64,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; 
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var parameters = req.GetRequestParameter();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
             var spilterIndex = CustomerCode.IndexOf("-");
             var customerCode = CustomerCode;
             if (spilterIndex > 0)
             {
-                profileNum = CustomerCode.Substring(0, spilterIndex).ToInt();
+                parameters.ProfileNum = CustomerCode.Substring(0, spilterIndex).ToInt();
                 customerCode = CustomerCode.Substring(spilterIndex + 1);
             }
             var svc = new CustomerService(dbFactory);
-            var result = svc.DeleteByCode(profileNum, customerCode);
+            var result = svc.DeleteByCode(parameters.ProfileNum, customerCode);
             return new Response<string>("Delete customer result", result);
         }
         [FunctionName(nameof(AddCustomer))]
@@ -90,9 +88,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; ;
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var parameters = req.GetRequestParameter();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -113,9 +110,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; ;
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var parameters = req.GetRequestParameter();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();

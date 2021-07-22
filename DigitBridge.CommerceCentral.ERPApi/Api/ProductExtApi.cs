@@ -38,18 +38,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0;
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var parameters = req.GetRequestParameter();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
             var spilterIndex = SKU.IndexOf("-");
             var sku = SKU;
             if (spilterIndex > 0)
             {
-                profileNum = SKU.Substring(0, spilterIndex).ToInt();
+                parameters.ProfileNum = SKU.Substring(0, spilterIndex).ToInt();
                 sku = SKU.Substring(spilterIndex + 1);
             }
             var svc = new InventoryService(dbFactory);
-            var data = svc.GetInventoryBySku(profileNum, sku);
+            var data = svc.GetInventoryBySku(parameters.ProfileNum, sku);
             return new Response<InventoryDataDto>(data);
         }
 
@@ -65,18 +64,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0;
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var parameters = req.GetRequestParameter();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
             var spilterIndex = SKU.IndexOf("-");
             var sku = SKU;
             if (spilterIndex > 0)
             {
-                profileNum = SKU.Substring(0, spilterIndex).ToInt();
+                parameters.ProfileNum = SKU.Substring(0, spilterIndex).ToInt();
                 sku = SKU.Substring(spilterIndex + 1);
             }
             var svc = new InventoryService(dbFactory);
-            var result = svc.DeleteBySku(profileNum, sku);
+            var result = svc.DeleteBySku(parameters.ProfileNum, sku);
             return new Response<string>("Delete productext result", result);
         }
         [FunctionName(nameof(AddProductExt))]
@@ -90,9 +88,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0;
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var parameters = req.GetRequestParameter();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
             var svc = new InventoryService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -113,9 +110,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0;
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var parameters = req.GetRequestParameter();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
             var svc = new InventoryService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
