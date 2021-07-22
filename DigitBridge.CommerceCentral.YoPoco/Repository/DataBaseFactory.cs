@@ -34,7 +34,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// <summary>
         /// Cache DataBaseFactory object for current thread
         /// </summary>
-        [ThreadStatic] static readonly TransactionalCache _dataBaseFactoryCache = new TransactionalCache();
+        static readonly TransactionalCache _dataBaseFactoryCache = new TransactionalCache();
 
         public static IDataBaseFactory SetDataBaseFactory(IDataBaseFactory dataBaseFactory) =>
             _dataBaseFactoryCache.SetData(dataBaseFactory.ConnectionString, dataBaseFactory);

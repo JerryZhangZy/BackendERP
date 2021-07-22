@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
+    [ApiFilter(typeof(CustomerApi))]
     public static class CustomerApi
     {
         [FunctionName(nameof(GetCustomer))]
@@ -39,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             log.LogInformation("C# HTTP trigger function processed a request.");
             var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
             var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; ;
-            var dbFactory = MyAppHelper.GetDatabase(masterAccountNum);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
             var spilterIndex = CustomerCode.IndexOf("-");
             var customerCode = CustomerCode;
             if (spilterIndex > 0)
@@ -65,8 +66,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
             var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; ;
-            var dbFactory = MyAppHelper.GetDatabase(masterAccountNum);
+            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; 
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
             var spilterIndex = CustomerCode.IndexOf("-");
             var customerCode = CustomerCode;
             if (spilterIndex > 0)
@@ -91,7 +92,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             log.LogInformation("C# HTTP trigger function processed a request.");
             var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
             var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; ;
-            var dbFactory = MyAppHelper.GetDatabase(masterAccountNum);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
             var svc = new CustomerService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -114,7 +115,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             log.LogInformation("C# HTTP trigger function processed a request.");
             var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
             var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; ;
-            var dbFactory = MyAppHelper.GetDatabase(masterAccountNum);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
             var svc = new CustomerService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();

@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
+    [ApiFilter(typeof(InventoryLogApi))]
     public static class InventoryLogApi
     {
         [FunctionName(nameof(GetInventoryLogs))]
@@ -33,8 +34,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
             var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0 ;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0;;
-            var dbFactory = MyAppHelper.GetDatabase(masterAccountNum);
+            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; 
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
             var svc = new InventoryLogService(dbFactory);
             var list = svc.GetListByUuid(logUuid);
             return new Response<List<InventoryLogDto>>(list);
@@ -53,8 +54,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
             var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; ;
-            var dbFactory = MyAppHelper.GetDatabase(masterAccountNum);
+            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; 
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
             var svc = new InventoryLogService(dbFactory);
             var deletecount = svc.DeleteByLogUuid(logUuid);
             return new Response<int>(deletecount);
@@ -71,8 +72,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
             var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; ;
-            var dbFactory = MyAppHelper.GetDatabase(masterAccountNum);
+            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0;
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
             var svc = new InventoryLogService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -94,8 +95,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
             var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; ;
-            var dbFactory = MyAppHelper.GetDatabase(masterAccountNum);
+            var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; 
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
             var svc = new InventoryLogService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
