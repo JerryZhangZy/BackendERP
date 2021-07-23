@@ -1,52 +1,37 @@
-﻿using DigitBridge.CommerceCentral.ApiCommon;
+﻿using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.WebJobs.Description;
 using Microsoft.Azure.WebJobs.Host.Bindings;
-using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Azure.WebJobs.Host.Protocols;
-using Newtonsoft.Json;
 using System;
-using System.IO;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using System.Threading.Tasks;
 
-namespace DigitBridge.CommerceCentral.ERPApi
+namespace DigitBridge.CommerceCentral.ApiCommon
 {
-
-    /// <summary>
-    /// register FromBodyAttribute  
-    /// </summary>
-    public class BindingExtensionProvider : IExtensionConfigProvider
-    {
-        public void Initialize(ExtensionConfigContext context)
-        {
-            // Creates a rule that links the attribute to the binding
-            context.AddBindingRule<FromBodyBindingAttribute>().Bind(new FromBodyBindingProvider());
-        }
-    }
-
     /// <summary>
     /// Binding Provider
     /// </summary>
-    public class FromBodyBindingProvider : IBindingProvider
+    public class RequestParameterBindingProvider : IBindingProvider
     {
         public Task<IBinding> TryCreateAsync(BindingProviderContext context)
         {
-            IBinding binding = new FromBodyBinding(context.Parameter.ParameterType);
+            IBinding binding = new RequestParameterBinding(context.Parameter.ParameterType);
             return Task.FromResult(binding);
         }
     }
 
-    public class FromBodyBinding : IBinding
+    public class RequestParameterBinding : IBinding
     {
         private readonly Type _instanceType;
-        public FromBodyBinding(Type type) => _instanceType = type;
+        public RequestParameterBinding(Type type) => _instanceType = type;
 
         public Task<IValueProvider> BindAsync(BindingContext context)
         {
             // Get the HTTP request
             var request = context.BindingData["req"] as HttpRequest;
 
-            return Task.FromResult<IValueProvider>(new FromBodyValueProvider(request, _instanceType));
+            return Task.FromResult<IValueProvider>(new RequestParameterValueProvider(request, _instanceType));
         }
 
         public bool FromAttribute => true;
@@ -59,20 +44,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
         public ParameterDescriptor ToParameterDescriptor() => new ParameterDescriptor();
     }
-
-    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue)]
-    [Binding]
-    public sealed class FromBodyBindingAttribute : Attribute
-    {
-    }
-
-    public class FromBodyValueProvider : IValueProvider
+    public class RequestParameterValueProvider : IValueProvider
     {
         private readonly HttpRequest _request;
         private readonly Type _instanceType;
         public Type Type => _instanceType ?? typeof(object);
 
-        public FromBodyValueProvider(HttpRequest request, Type instanceType)
+        public RequestParameterValueProvider(HttpRequest request, Type instanceType)
         {
             _request = request;
             _instanceType = instanceType;
@@ -81,7 +59,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             try
             {
-                return await _request.GetBodyObjectAsync(_instanceType);
+                return _request.GetRequestParameter(_instanceType);
             }
             catch (Exception ex)
             {
