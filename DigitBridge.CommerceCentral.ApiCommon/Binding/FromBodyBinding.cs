@@ -1,29 +1,12 @@
-﻿using DigitBridge.CommerceCentral.ApiCommon;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Description;
 using Microsoft.Azure.WebJobs.Host.Bindings;
-using Microsoft.Azure.WebJobs.Host.Config;
 using Microsoft.Azure.WebJobs.Host.Protocols;
-using Newtonsoft.Json;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 
-namespace DigitBridge.CommerceCentral.ERPApi
-{
-
-    /// <summary>
-    /// register FromBodyAttribute  
-    /// </summary>
-    public class BindingExtensionProvider : IExtensionConfigProvider
-    {
-        public void Initialize(ExtensionConfigContext context)
-        {
-            // Creates a rule that links the attribute to the binding
-            context.AddBindingRule<FromBodyBindingAttribute>().Bind(new FromBodyBindingProvider());
-        }
-    }
-
+namespace DigitBridge.CommerceCentral.ApiCommon
+{ 
     /// <summary>
     /// Binding Provider
     /// </summary>
@@ -59,13 +42,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
         public ParameterDescriptor ToParameterDescriptor() => new ParameterDescriptor();
     }
-
-    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue)]
-    [Binding]
-    public sealed class FromBodyBindingAttribute : Attribute
-    {
-    }
-
     public class FromBodyValueProvider : IValueProvider
     {
         private readonly HttpRequest _request;

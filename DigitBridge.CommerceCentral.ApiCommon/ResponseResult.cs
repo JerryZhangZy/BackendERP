@@ -31,8 +31,9 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         /// <param name="success"></param> 
         public ResponseResult(T data, bool success = true)
         {
-            this.Success = true;
+            this.Success = success;
             this.Data = data;
+            this.StatusCode = success ? HttpStatusCode.OK : HttpStatusCode.InternalServerError;
         }
         /// <summary>
         /// respone message,default is errro message
@@ -43,14 +44,8 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         {
             this.Success = success;
             this.Message = message;
-        }
-
-        public ResponseResult(Exception ex)
-        {
-            this.Success = false;
-            this.Message = ex?.Message;
-            this.StatusCode = HttpStatusCode.InternalServerError;
-        }
+            this.StatusCode = success ? HttpStatusCode.OK : HttpStatusCode.InternalServerError;
+        } 
     }
     /// <summary>
     /// The result of the request
@@ -64,7 +59,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         /// <param name="success"></param> 
         public Response(T data, bool success = true) : base(data, success)
         {
-            this.Success = true;
+            this.Success = success;
             this.Data = data;
         }
         /// <summary>
