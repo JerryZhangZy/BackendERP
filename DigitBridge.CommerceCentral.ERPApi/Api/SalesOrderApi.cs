@@ -64,14 +64,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<SalesOrderDataDto[]>), Description = "Result is List<SalesOrderDataDto>")]
         [FunctionName(nameof(GetSalesOrderList))]
-        public static async Task<IActionResult> GetSalesOrderList(
+        public static async Task<JsonNetResponse<SalesOrderPayload>> GetSalesOrderList(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder")] HttpRequest req)
         {
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
-            var parameter = req.GetRequestParameter<SalesOrderParameter>();
-            //todo
-            var result = new SalesOrderDataDto[3];
-            return new Response<SalesOrderDataDto[]>(result, true);
+            var payload = req.GetRequestParameter<SalesOrderPayload>();
+            var srv = new SalesOrderService(dataBaseFactory);
+
+            payload = await srv.GetListBySalesOrderUuidsNumberAsync(payload);
+            return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
         /// <summary>

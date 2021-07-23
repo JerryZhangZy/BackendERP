@@ -253,6 +253,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
             _connectionInterceptor = connectionInterceptor;
         }
 
+        private Func<IDbConnection, Task<SqlConnection>> _connectionInterceptorAsync;
+
+        public void AddDbConnectionInterceptorAsync(Func<IDbConnection, Task<SqlConnection>> connectionInterceptor)
+        {
+            _connectionInterceptorAsync = connectionInterceptor;
+        }
+
         /// <summary>
         ///     Opens a connection that will be used for all subsequent queries.
         /// </summary>
@@ -302,6 +309,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
             {
                 _sharedConnection = _factory.CreateConnection();
                 _sharedConnection.ConnectionString = _connectionString;
+                if (_connectionInterceptorAsync != null)
+                    _sharedConnection = await _connectionInterceptorAsync(_sharedConnection);
 
                 if (_sharedConnection.State == ConnectionState.Broken)
                     _sharedConnection.Close();
