@@ -30,8 +30,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$skip", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$skip", Description = "Records to skip. https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "CustomerCode", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "CustomerCode", Description = "CustomerCode = ProfileNumber-CustomerCode ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<CustomerDataDto>), Example = typeof(CustomerDataDto), Description = "The OK response")]
+        [OpenApiParameter(name: "CustomerCodes", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "CustomerCode", Description = "CustomerCode = ProfileNumber-CustomerCode ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<List<CustomerDataDto>>), Example = typeof(List<CustomerDataDto>), Description = "The OK response")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<List<CustomerDataDto>>), Example = typeof(CustomerDto), Description = "The OK response")]
         public static async Task<IActionResult> GetCustomer(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "customers/{CustomerCode?}")] HttpRequest req,
             string CustomerCode,
@@ -49,6 +50,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             }
             var svc = new CustomerService(dbFactory);
             var data = svc.GetCustomerByCode(parameters.ProfileNum, customerCode);
+
             return new Response<CustomerDataDto>(data);
         }
 

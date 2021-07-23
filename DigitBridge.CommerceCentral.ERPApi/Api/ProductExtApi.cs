@@ -30,8 +30,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$skip", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$skip", Description = "Records to skip. https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "SKU", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "SKU", Description = "SKU = ProfileNumber-SKU ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<InventoryDataDto>), Example = typeof(InventoryDataDto), Description = "The OK response")]
+        [OpenApiParameter(name: "SKUs", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "SKU", Description = "SKU = ProfileNumber-SKU ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<InventoryDataDto[]>), Example = typeof(Response<List<InventoryDataDto>>), Description = "The OK response")]
         public static async Task<IActionResult> GetProductExt(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "productExt/{SKU?}")] HttpRequest req,
             string SKU,

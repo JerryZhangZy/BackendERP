@@ -25,8 +25,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "GetInventoryLogs", tags: new[] { "InventoryLogs" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "logUuid", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "logUuid", Description = "Transaction ID ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<List<InventoryLogDto>>), Description = "Result is List<InventoryLogDt0>")]
+        [OpenApiParameter(name: "logUuids", In = ParameterLocation.Path, Required = false, Type = typeof(List<string>), Summary = "logUuids", Description = "Transaction ID Arrays", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<InventoryLogDto>), Description = "Result is List<InventoryLogDt0>")]
         public static async Task<IActionResult> GetInventoryLogs(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "inventoryLogs/{logUuid?}")] HttpRequest req,
             string logUuid,

@@ -42,6 +42,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         CommandType.Text, new SqlParameter("@logUuid", logUuid)
                         ).ToList();
         }
+        public static List<InventoryLog> QueryInventoryLogByUuids(List<string> logUuids)
+        {
+            var uuidsWhere = string.Join(",", logUuids.Select(x => $"'{x}'").ToArray());
+            return SqlQuery.Query<InventoryLog>(
+                        ERPDb.InventoryLogHelper.SelectAllWhere(
+                            sqlWhere: $"WHERE LogUuid in {uuidsWhere} ORDER BY RowNum"
+                        ),CommandType.Text
+                        ).ToList();
+        }
 
         public static List<InventoryLog> QueryInventoryLogByBatchNum(long batchNum)
         {
