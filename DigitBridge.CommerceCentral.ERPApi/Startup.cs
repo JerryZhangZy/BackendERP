@@ -1,4 +1,5 @@
-﻿using DigitBridge.CommerceCentral.ERPApi;
+﻿using DigitBridge.CommerceCentral.ApiCommon;
+using DigitBridge.CommerceCentral.ERPApi;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
 

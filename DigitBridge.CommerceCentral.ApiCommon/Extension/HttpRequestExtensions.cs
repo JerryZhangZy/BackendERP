@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ApiCommon
 {
@@ -15,13 +18,45 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         /// <summary>
         /// Get all request parameter to RequestParameter object, include Header and Query string
         /// </summary>
-        public static RequestParameter GetRequestParameter(this HttpRequest req)
+        public static T GetRequestParameter<T>(this HttpRequest req) where T : RequestParameter
         {
-            var param = new RequestParameter();
-            return param;
+            return (T)req.GetRequestParameter(typeof(T));
+        }
+        /// <summary>
+        /// Get all request parameter to RequestParameter object, include Header and Query string
+        /// </summary>
+        public static object GetRequestParameter(this HttpRequest req, Type instanceType)
+        {
+            var instance = Activator.CreateInstance(instanceType);
+            var properties = instanceType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+            foreach (var property in properties)
+            {
+                var required = property.GetCustomAttribute<RequiredAttribute>();
+                var parameterName = property.GetCustomAttribute<DisplayAttribute>()?.Name;
+                var parameterValue = req.GetData(parameterName);
+                if (required != null && parameterName == null)
+                {
+                    throw new Exception(required.ErrorMessage);
+                }
+                if (parameterValue == null)
+                {
+                    continue;
+                }
+
+                var val = Convert.ChangeType(parameterValue, property.PropertyType);
+                var range = property.GetCustomAttribute<RangeAttribute>();
+                var valid = range?.IsValid(val);
+                if (valid.HasValue && valid.Value)
+                {
+                    throw new Exception(range.ErrorMessage);
+                }
+                property.SetValue(instance, val);
+
+            }
+            return instance;
         }
 
-        
         /// <summary>
         /// Get nullable value type data from route datas
         /// </summary>
@@ -124,6 +159,10 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             else if (req.HttpContext.GetRouteData().Values.ContainsKey(key))
             {
                 value = req.HttpContext.GetRouteData().Values[key].ToString();
+            }
+            else if (req.Query.ContainsKey(key))
+            {
+                value = req.Query[key].ToString();
             }
             return value;
         }
