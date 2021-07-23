@@ -1,8 +1,12 @@
-﻿using DigitBridge.CommerceCentral.ApiCommon;
+﻿
+using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -40,6 +44,20 @@ namespace DigitBridge.CommerceCentral.ERPApi
             }
 
             ((RecoverableException)exceptionContext.ExceptionDispatchInfo.SourceException).Handled = true;
+            if (MySingletonAppSetting.DebugMode)
+            {
+                Exception ex = exceptionContext.Exception;
+                exceptionContext.Logger.Log<object>(LogLevel.Debug, 1, null, exceptionContext.Exception,
+                    (object obj, Exception ex) => ex.ObjectToString()
+                );
+
+                //var text = "Some text"; // text variable
+                //HttpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                //httpContextAccessor.HttpContext.Response.ContentType = "text/html; charset=UTF-8"; // Missing part
+                //httpContextAccessor.HttpContext.Response.Headers.Append("MyHeader", "Foo");
+                //await httpContextAccessor.HttpContext.Response.WriteAsync(text);
+                //httpContextAccessor.HttpContext.Response.ContentLength = text.Length; // Missing part            }
+            }
         }
 
         /// <summary>

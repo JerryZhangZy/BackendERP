@@ -87,16 +87,36 @@ namespace DigitBridge.CommerceCentral.ERPApi
             [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "customers")] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-            var parameters = req.GetRequestParameter();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
-            var svc = new CustomerService(dbFactory);
+            try
+            {
+                log.LogInformation("C# HTTP trigger function processed a request.");
+                var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
+                var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; ;
+                var dbFactory = MyAppHelper.GetDatabase(masterAccountNum);
+                var svc = new CustomerService(dbFactory);
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var dto = JsonConvert.DeserializeObject<CustomerDataDto>(requestBody);
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                var dto = JsonConvert.DeserializeObject<CustomerDataDto>(requestBody);
 
-            var addresult = svc.Add(dto);
-            return new Response<string>("Delete customer result", addresult);
+                var addresult = await svc.AddAsync(dto);
+                return new OkObjectResult("Add customer success");
+                //return new Response<string>("Delete customer result", addresult);
+            }
+            catch (System.Exception ex)
+            {
+                if (MySingletonAppSetting.DebugMode)
+                {
+                    return new ContentResult()
+                    {
+                        Content = ex.ObjectToString(),
+                        ContentType = "application/json",
+                        StatusCode = (int)HttpStatusCode.InternalServerError
+                    };
+                }
+                else
+                    return new BadRequestObjectResult("Server Internal Error");
+
+            }
         }
 
         [FunctionName(nameof(UpdateCustomer))]

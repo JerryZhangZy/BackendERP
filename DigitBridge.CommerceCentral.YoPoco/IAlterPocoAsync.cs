@@ -210,21 +210,21 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Save(string, string, object)" />.
         /// </summary>
-        Task SaveAsync(string tableName, string primaryKeyName, object poco);
+        Task<object> SaveAsync(string tableName, string primaryKeyName, object poco);
 
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Save(string, string, object)" />.
         /// </summary>
-        Task SaveAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco);
+        Task<object> SaveAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco);
 
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Save(object)" />.
         /// </summary>
-        Task SaveAsync(object poco);
+        Task<object> SaveAsync(object poco);
 
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Save(object)" />.
         /// </summary>
-        Task SaveAsync(CancellationToken cancellationToken, object poco);
+        Task<object> SaveAsync(CancellationToken cancellationToken, object poco);
     }
 }
