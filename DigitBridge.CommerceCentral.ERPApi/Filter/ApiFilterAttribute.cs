@@ -55,13 +55,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var exception = executedContext.FunctionResult.Exception;
             if (exception != null)
             {
+                // if it is DebugMode, response Exception detail
                 if (MySingletonAppSetting.DebugMode)
                 {
-                    executedContext.Logger.LogInformation(exception.ObjectToString()); 
+                    executedContext.Logger.LogInformation(exception.ObjectToString());
+
+                    var data = new ResponseResult<Exception>(exception, false);
+                    var req = executedContext.GetContext<HttpRequest>();
+                    await req.HttpContext.Response.Output(data, data.StatusCode);
                 }
-                var data = new ResponseResult<Exception>(exception, false);
-                var req = executedContext.GetContext<HttpRequest>();
-                await req.HttpContext.Response.Output(data, data.StatusCode);
             }
         }
 

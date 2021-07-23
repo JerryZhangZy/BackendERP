@@ -67,6 +67,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<IActionResult> GetSalesOrderList(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder")] HttpRequest req)
         {
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
             var parameter = req.GetRequestParameter<SalesOrderParameter>();
             //todo
             var result = new SalesOrderDataDto[3];

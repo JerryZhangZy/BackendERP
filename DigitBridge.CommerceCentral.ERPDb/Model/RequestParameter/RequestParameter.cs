@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -54,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// Default value: true.
         /// <see cref="https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
         /// </summary> 
-        [Display(Name = "$isQueryTotalCount")]
+        [Display(Name = "$Count")]
         public bool IsQueryTotalCount { get; set; } = true;
 
 
@@ -75,5 +78,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary> 
         [Display(Name = "$filter")]
         public JObject Filter { get; set; }
+
+        public virtual IDictionary<string, Action<string>> GetOtherParameters() => null;
+
     }
 }

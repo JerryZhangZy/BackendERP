@@ -18,44 +18,74 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         /// <summary>
         /// Get all request parameter to RequestParameter object, include Header and Query string
         /// </summary>
-        public static T GetRequestParameter<T>(this HttpRequest req) where T : RequestParameter
+        public static T GetRequestParameter<T>(this HttpRequest req) where T : RequestParameter, new()
         {
-            return (T)req.GetRequestParameter(typeof(T));
-        }
-        /// <summary>
-        /// Get all request parameter to RequestParameter object, include Header and Query string
-        /// </summary>
-        public static object GetRequestParameter(this HttpRequest req, Type instanceType)
-        {
-            var instance = Activator.CreateInstance(instanceType);
-            var properties = instanceType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            //return (T)req.GetRequestParameter(typeof(T));
+            //Activator.CreateInstance(instanceType);
+            var instance = new T();
+            instance.MasterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
+            instance.ProfileNum = req.GetHeaderValue("profileNum").ToInt();
+            instance.Top = req.GetQueryStringValue("$top").ToInt();
+            instance.Skip = req.GetQueryStringValue("$skip").ToInt();
+            instance.IsQueryTotalCount = req.GetQueryStringValue("$Count").ToBool();
+            instance.SortBy = req.GetQueryStringValue("$sortBy");
+            instance.Filter = req.GetQueryStringValue("$filter").ToJObject();
 
-            foreach (var property in properties)
+            var moreParameterFunc = instance.GetOtherParameters();
+            if (moreParameterFunc != null && moreParameterFunc.Count > 0)
             {
-                var required = property.GetCustomAttribute<RequiredAttribute>();
-                var parameterName = property.GetCustomAttribute<DisplayAttribute>()?.Name;
-                var parameterValue = req.GetData(parameterName);
-                if (required != null && parameterName == null)
+                foreach (var item in moreParameterFunc)
                 {
-                    throw new Exception(required.ErrorMessage);
+                    if (string.IsNullOrEmpty(item.Key) || item.Value is null)
+                        continue;
+                    item.Value(req.GetQueryStringValue(item.Key));
                 }
-                if (parameterValue == null)
-                {
-                    continue;
-                }
-
-                var val = Convert.ChangeType(parameterValue, property.PropertyType);
-                var range = property.GetCustomAttribute<RangeAttribute>();
-                var valid = range?.IsValid(val);
-                if (valid.HasValue && valid.Value)
-                {
-                    throw new Exception(range.ErrorMessage);
-                }
-                property.SetValue(instance, val);
-
             }
             return instance;
         }
+
+
+        ///// <summary>
+        ///// Get all request parameter to RequestParameter object, include Header and Query string
+        ///// </summary>
+        //public static T GetRequestParameter<T>(this HttpRequest req) where T : RequestParameter, new()
+        //{
+        //    return (T)req.GetRequestParameter(typeof(T));
+        //}
+        ///// <summary>
+        ///// Get all request parameter to RequestParameter object, include Header and Query string
+        ///// </summary>
+        //public static object GetRequestParameter(this HttpRequest req, Type instanceType)
+        //{
+        //    var instance = Activator.CreateInstance(instanceType);
+        //    var properties = instanceType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+        //    foreach (var property in properties)
+        //    {
+        //        var required = property.GetCustomAttribute<RequiredAttribute>();
+        //        var parameterName = property.GetCustomAttribute<DisplayAttribute>()?.Name;
+        //        var parameterValue = req.GetData(parameterName);
+        //        if (required != null && parameterName == null)
+        //        {
+        //            throw new Exception(required.ErrorMessage);
+        //        }
+        //        if (parameterValue == null)
+        //        {
+        //            continue;
+        //        }
+
+        //        var val = Convert.ChangeType(parameterValue, property.PropertyType);
+        //        var range = property.GetCustomAttribute<RangeAttribute>();
+        //        var valid = range?.IsValid(val);
+        //        if (valid.HasValue && valid.Value)
+        //        {
+        //            throw new Exception(range.ErrorMessage);
+        //        }
+        //        property.SetValue(instance, val);
+
+        //    }
+        //    return instance;
+        //}
 
         /// <summary>
         /// Get nullable value type data from route datas
@@ -92,6 +122,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                 return null;
             }
         }
+
         /// <summary>
         /// Get nullable value type data from context headers
         /// </summary>
@@ -166,5 +197,25 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             }
             return value;
         }
+
+        /// <summary>
+        /// Get value string from context headers
+        /// </summary>
+        /// <returns></returns>
+        public static string GetHeaderValue(this HttpRequest req, string key) =>
+            req.Headers.TryGetValue(key, out var val)
+                ? val.ToString()
+                : string.Empty;
+
+        /// <summary>
+        /// Get value string from context headers
+        /// </summary>
+        /// <returns></returns>
+        public static string GetQueryStringValue(this HttpRequest req, string key) =>
+            req.Query.TryGetValue(key, out var val)
+                ? val.ToString()
+                : string.Empty;
+
+
     }
 }
