@@ -30,8 +30,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return -1;
         }
 
-#if ASYNC
-
         public override async Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database db, IDbCommand cmd, string primaryKeyName)
         {
             if (primaryKeyName != null)
@@ -43,8 +41,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
             await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
             return -1;
         }
-
-#endif
 
         public override string GetExistsSql()
             => "SELECT EXISTS (SELECT 1 FROM {0} WHERE {1})";

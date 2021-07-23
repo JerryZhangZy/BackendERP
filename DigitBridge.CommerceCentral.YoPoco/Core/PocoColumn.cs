@@ -114,6 +114,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual object ChangeType(object val)
         {
             var t = MemberInfo.GetPropertyType();
+            if (val is null)
+                return default;
+
             if (val.GetType().IsValueType && t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>))
                 t = t.GetGenericArguments()[0];
 

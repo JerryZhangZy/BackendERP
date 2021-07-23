@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
-#if ASYNC
     public interface IQueryAsync
     {
         /// <summary>
@@ -434,5 +433,4 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// </summary>
         Task<T> FirstOrDefaultAsync<T>(CancellationToken cancellationToken, Sql sql);
     }
-#endif
 }

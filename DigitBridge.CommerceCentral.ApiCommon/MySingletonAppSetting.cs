@@ -14,6 +14,15 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                     AddEnvironmentVariables().
                     Build();
 
+        public static bool DebugMode
+        {
+            get
+            {
+                string value = GetValueByName("DebugMode");
+                return value.Equals("true", StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
+        
         public static bool UseOrchestration
         {
             get

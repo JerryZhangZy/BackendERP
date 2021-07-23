@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
-#if ASYNC
     public interface IExecuteAsync
     {
         /// <summary>
@@ -46,5 +45,4 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// </summary>
         Task<T> ExecuteScalarAsync<T>(CancellationToken cancellationToken, Sql sql);
     }
-#endif
 }

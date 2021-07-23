@@ -2,10 +2,8 @@
 using System.Data;
 using System.Data.Common;
 
-#if ASYNC
 using System.Threading;
 using System.Threading.Tasks;
-#endif
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
@@ -67,7 +65,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
             cmd.Parameters.Add(param);
             return param;
         }
-#if ASYNC
         public override async Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database db, IDbCommand cmd, string primaryKeyName)
         {
             if (primaryKeyName != null)
@@ -80,6 +77,5 @@ namespace DigitBridge.CommerceCentral.YoPoco
             await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
             return -1;
         }
-#endif
     }
 }
