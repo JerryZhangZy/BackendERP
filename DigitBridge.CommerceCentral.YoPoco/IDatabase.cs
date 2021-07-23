@@ -140,6 +140,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         IDbTransaction CurrentTransaction { get; }
 
         void AddDbConnectionInterceptor(Func<IDbConnection, SqlConnection> connectionInterceptor);
+        void AddDbConnectionInterceptorAsync(Func<IDbConnection, Task<SqlConnection>> connectionInterceptor);
 
         /// <summary>
         ///     Starts a transaction scope, see GetTransaction() for recommended usage

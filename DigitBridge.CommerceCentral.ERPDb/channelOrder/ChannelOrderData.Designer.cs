@@ -28,15 +28,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a ChannelOrderData.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
+    [Serializable()]
     public partial class ChannelOrderData : StructureRepository<ChannelOrderData>
     {
         public ChannelOrderData() : base() {}
         public ChannelOrderData(IDataBaseFactory dbFactory): base(dbFactory) {}
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new bool IsNew => OrderHeader.IsNew;
 
-        [XmlIgnore, JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public new string UniqueId => OrderHeader.UniqueId;
 
         #region CRUD Methods

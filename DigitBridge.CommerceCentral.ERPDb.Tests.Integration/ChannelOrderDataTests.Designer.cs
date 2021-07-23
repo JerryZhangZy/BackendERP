@@ -101,12 +101,11 @@ WHERE itm.cnt > 0
             data.SetDataBaseFactory(DataBaseFactory);
 			data.Save();
 
-            //var dataGet = new ChannelOrderData(DataBaseFactory);
-            //dataGet.GetById(data.UniqueId);
-            //var result = data.Equals(dataGet);
-            var result = true;
+            var dataGet = new ChannelOrderData(DataBaseFactory);
+            dataGet.GetById(data.UniqueId);
+            var result = data.Equals(dataGet);
 
-            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}
 
         [Fact()]
@@ -141,7 +140,6 @@ WHERE itm.cnt > 0
             dataGet.Get(rowNum);
 
             var result = data.Equals(dataGet) && dataGet.Equals(dataGetById);
-            result = true;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }

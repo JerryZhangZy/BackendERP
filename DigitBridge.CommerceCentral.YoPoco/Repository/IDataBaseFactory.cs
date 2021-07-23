@@ -16,6 +16,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         ITransaction GetTransaction(string connectionString = null);
         void Begin(string connectionString = null);
+        void BeginAsync(string connectionString = null);
+        
         bool Commit(string connectionString = null);
         void Abort(string connectionString = null);
 

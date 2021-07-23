@@ -3,7 +3,6 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
@@ -42,22 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             {
                 //todo record
             }
-
             ((RecoverableException)exceptionContext.ExceptionDispatchInfo.SourceException).Handled = true;
-            if (MySingletonAppSetting.DebugMode)
-            {
-                Exception ex = exceptionContext.Exception;
-                exceptionContext.Logger.Log<object>(LogLevel.Debug, 1, null, exceptionContext.Exception,
-                    (object obj, Exception ex) => ex.ObjectToString()
-                );
-
-                //var text = "Some text"; // text variable
-                //HttpContextAccessor.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                //httpContextAccessor.HttpContext.Response.ContentType = "text/html; charset=UTF-8"; // Missing part
-                //httpContextAccessor.HttpContext.Response.Headers.Append("MyHeader", "Foo");
-                //await httpContextAccessor.HttpContext.Response.WriteAsync(text);
-                //httpContextAccessor.HttpContext.Response.ContentLength = text.Length; // Missing part            }
-            }
         }
 
         /// <summary>
@@ -68,11 +52,18 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <returns></returns>
         public async Task OnExecutedAsync(FunctionExecutedContext executedContext, CancellationToken cancellationToken)
         {
-            if (executedContext.FunctionResult.Exception != null)
+            var exception = executedContext.FunctionResult.Exception;
+            if (exception != null)
             {
-                var data = new ResponseResult<Exception>(executedContext.FunctionResult.Exception);
-                var req = executedContext.GetContext<HttpRequest>();
-                await req.HttpContext.Response.Output(data, data.StatusCode);
+                // if it is DebugMode, response Exception detail
+                if (MySingletonAppSetting.DebugMode)
+                {
+                    executedContext.Logger.LogInformation(exception.ObjectToString());
+
+                    var data = new ResponseResult<Exception>(exception, false);
+                    var req = executedContext.GetContext<HttpRequest>();
+                    await req.HttpContext.Response.Output(data, data.StatusCode);
+                }
             }
         }
 
@@ -93,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
                         throw new InvalidParameterException(message);
                     }
                 }
-            } 
+            }
             // todo Authorize  
         }
     }

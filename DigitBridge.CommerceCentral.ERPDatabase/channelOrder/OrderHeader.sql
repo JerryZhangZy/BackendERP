@@ -17,9 +17,7 @@
 	[SellerPrivateNote] Varchar(4500) NULL, --The note from the seller for internal use. Cannot be printed on invoice or packing listing
 	[EndBuyerInstruction] Varchar(4500) NULL, --Usually it is related to shipping instruction
 	[TotalOrderAmount] Money NULL, --Total order amount. Include every charge. Related to VAT. For US orders, tax should not be included. Refer to tax info to find more detail. Reference calculation 
-									--(Sum of all items OrderItems Quantity x OrderItems UnitPrice ) + TotalTaxPrice + Total ShippingPrice + TotalInsurancePrice + TotalGiftOptionPrice + AdditionalCostOrDiscount +PromotionAmount + (Sum of all items OrderItems Promotions Amount + OrderItems Promotions ShippingAmount + OrderItems RecyclingFee)
 	[TotalTaxAmount] Money NULL, --Reference calculation. The real amount is provided by the channel. 
-									--(Sum of all OrderItems TaxPrice) + TotalShippingTaxPrice + TotalGiftOptionTaxPrice
 	[TotalShippingAmount] Money NULL, --Sum of all OrderItems ShippingPrice (Related to VAT. Refer to tax info for more detail) Does not include shipping item-level shipping promotions. 
 	[TotalShippingTaxAmount] Money NULL, --Sum of all OrderItems ShippingTaxPrice. Number generated here is estimate based on tax (VAT) settings in the profile. For representation only. No actual data provided by channels.
 	[TotalShippingDiscount] Money NULL, --Sum of all OrderItems ShippingDiscount Negative. 

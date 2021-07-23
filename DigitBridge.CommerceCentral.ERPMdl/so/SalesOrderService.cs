@@ -103,6 +103,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
+
         /// <summary>
         /// Get sale order with detail by orderNumber
         /// </summary>
@@ -172,6 +173,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && await DeleteDataAsync();
             return success;
         }
+
+        /// <summary>
+        /// Get sale order list by Uuid list
+        /// </summary>
+        public virtual async Task<SalesOrderPayload> GetListBySalesOrderUuidsNumberAsync(SalesOrderPayload salesOrderPayload)
+        {
+            if (salesOrderPayload is null || !salesOrderPayload.HasSalesOrderUuids)
+                return null;
+            var salesOrderUuids = salesOrderPayload.SalesOrderUuids;
+
+            List();
+            var result = new List<SalesOrderDataDto>();
+            foreach (var id in salesOrderUuids)
+            {
+                if (!(await this.GetDataByIdAsync(id)))
+                    continue;
+                result.Add(this.ToDto());
+                this.DetachData(this.Data);
+            }
+            salesOrderPayload.SalesOrders = result;
+            return salesOrderPayload;
+        }
+
     }
 }
 

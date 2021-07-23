@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;

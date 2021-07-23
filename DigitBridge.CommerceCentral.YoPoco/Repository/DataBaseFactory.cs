@@ -37,22 +37,32 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// <summary>
         /// Cache DataBaseFactory object for current thread
         /// </summary>
-        static readonly TransactionalCache _dataBaseFactoryCache = new TransactionalCache();
+        [ThreadStatic] static TransactionalCache _dataBaseFactoryCache = new TransactionalCache();
+        private static TransactionalCache dataBaseFactoryCache
+        {
+            get 
+            {
+                if (_dataBaseFactoryCache is null)
+                    _dataBaseFactoryCache = new TransactionalCache();
+                return _dataBaseFactoryCache;
+            }
+        }
+            
 
         public static IDataBaseFactory SetDataBaseFactory(IDataBaseFactory dataBaseFactory) =>
-            _dataBaseFactoryCache.SetData(dataBaseFactory.ConnectionString, dataBaseFactory);
+            dataBaseFactoryCache.SetData(dataBaseFactory.ConnectionString, dataBaseFactory);
         public static IDataBaseFactory GetDataBaseFactory(string connectionString) =>
-            _dataBaseFactoryCache.GetData<IDataBaseFactory>(connectionString);
+            dataBaseFactoryCache.GetData<IDataBaseFactory>(connectionString);
         public static IDataBaseFactory GetDefaultDataBaseFactory() =>
-            _dataBaseFactoryCache.GetData<IDataBaseFactory>(DefaultDataBaseFactoryKey);
+            dataBaseFactoryCache.GetData<IDataBaseFactory>(DefaultDataBaseFactoryKey);
         public static IDataBaseFactory SetDefaultDataBaseFactory(IDataBaseFactory dataBaseFactory)
         {
-            _dataBaseFactoryCache.SetData(DefaultDataBaseFactoryKey, dataBaseFactory);
-            _dataBaseFactoryCache.SetData(dataBaseFactory.ConnectionString, dataBaseFactory);
+            dataBaseFactoryCache.SetData(DefaultDataBaseFactoryKey, dataBaseFactory);
+            dataBaseFactoryCache.SetData(dataBaseFactory.ConnectionString, dataBaseFactory);
             return dataBaseFactory;
         }
         public static void ClearDataBaseFactoryCache() =>
-            _dataBaseFactoryCache.ClearAll();
+            dataBaseFactoryCache.ClearAll();
 
         public static IDbConnection CreateConnection(string connectionString = null)
         {
@@ -204,7 +214,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (db is null)
                 return;
             if (UseAzureManagedIdentity)
+            {
                 db.AddDbConnectionInterceptor(SetConnectionForAzureManagedIdentity);
+                db.AddDbConnectionInterceptorAsync(SetConnectionForAzureManagedIdentityAsync);
+            }
             return;
         }
 
@@ -218,6 +231,18 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return sqlConn;
 
             sqlConn.AccessToken = GetAzureTokenAsync().Result;
+            return sqlConn;
+        }
+        public async Task<SqlConnection> SetConnectionForAzureManagedIdentityAsync(IDbConnection conn)
+        {
+            var sqlConn = (SqlConnection)conn;
+            if (sqlConn is null)
+                return sqlConn;
+
+            if (!UseAzureManagedIdentity)
+                return sqlConn;
+
+            sqlConn.AccessToken = await GetAzureTokenAsync();
             return sqlConn;
         }
 
@@ -292,6 +317,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             var db = GetDb(connectionString);
             db.BeginTransaction();
+            return;
+        }
+        public virtual async void BeginAsync(string connectionString = null)
+        {
+            var db = GetDb(connectionString);
+            await db.BeginTransactionAsync();
             return;
         }
 
