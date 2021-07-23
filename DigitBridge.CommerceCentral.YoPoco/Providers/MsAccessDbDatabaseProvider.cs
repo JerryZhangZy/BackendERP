@@ -2,10 +2,8 @@
 using System.Data;
 using System.Data.Common;
 
-#if ASYNC
 using System.Threading;
 using System.Threading.Tasks;
-#endif
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
@@ -21,14 +19,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return ExecuteScalarHelper(database, cmd);
         }
 
-#if ASYNC
         public override async Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database database, IDbCommand cmd, string primaryKeyName)
         {
             await ExecuteNonQueryHelperAsync(cancellationToken, database, cmd).ConfigureAwait(false);
             cmd.CommandText = "SELECT @@IDENTITY AS NewID;";
             return await ExecuteScalarHelperAsync(cancellationToken, database, cmd).ConfigureAwait(false);
         }
-#endif
 
         public override string BuildPageQuery(long skip, long take, SQLParts parts, ref object[] args)
             => throw new NotSupportedException("The Access provider does not support paging.");

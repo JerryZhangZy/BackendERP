@@ -11,9 +11,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
     ///     Represents the core functionality of PetaPoco.
     /// </summary>
     public interface IDatabase : IDisposable, IQuery, IAlterPoco, IExecute, ITransactionAccessor, IStoredProc, IConnection
-#if ASYNC
                                  , IQueryAsync, IExecuteAsync, IStoredProcAsync, IAlterPocoAsync
-#endif
     {
         /// <summary>
         ///     Gets the default mapper. (Default is <see cref="ConventionMapper" />)
@@ -197,7 +195,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// </summary>
         event EventHandler<ExceptionEventArgs> ExceptionThrown;
 
-#if ASYNC
         /// <summary>
         ///     Async version of <see cref="BeginTransaction" />.
         /// </summary>
@@ -207,6 +204,5 @@ namespace DigitBridge.CommerceCentral.YoPoco
         ///     Async version of <see cref="BeginTransaction" />.
         /// </summary>
         Task BeginTransactionAsync(CancellationToken cancellationToken);
-#endif
     }
 }

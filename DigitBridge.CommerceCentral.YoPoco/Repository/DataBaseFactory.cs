@@ -5,8 +5,10 @@ using System.Configuration;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using Microsoft.Azure.Services.AppAuthentication;
 using DigitBridge.Base.Utility;
+using Azure.Identity;
+using Azure.Core;
+using System.Threading;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
@@ -30,6 +32,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         //make it public, so the caller can override it.
         public static string AzureDatabaseTokenUrl = "https://database.windows.net/";
         public static string DefaultDataBaseFactoryKey = "_DefaultDataBaseFactory_";
+        private static readonly string[] AzureDatabaseTokenScopes = { "https://database.windows.net/.default" };
 
         /// <summary>
         /// Cache DataBaseFactory object for current thread
@@ -138,6 +141,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public string TenantId { get; set; }
         public int DatabaseNum { get; set; }
 
+        private AccessToken _accessToken;
+
         private readonly SqlConnection _Connection;
         public SqlConnection Connection => _Connection;
 
@@ -212,11 +217,67 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (!UseAzureManagedIdentity)
                 return sqlConn;
 
-            var tokenProvider = new AzureServiceTokenProvider(TokenProviderConnectionString);
-            sqlConn.AccessToken = tokenProvider.GetAccessTokenAsync(AzureDatabaseTokenUrl, TenantId).Result;
-
+            sqlConn.AccessToken = GetAzureTokenAsync().Result;
             return sqlConn;
         }
+
+        protected async Task<string> GetAzureTokenAsync()
+        {
+            var now = DateTime.UtcNow;
+            if (!string.IsNullOrWhiteSpace(_accessToken.Token) && now < _accessToken.ExpiresOn)
+                return _accessToken.Token;
+
+            try
+            {
+                //var tokenProvider = new AzureServiceTokenProvider(TokenProviderConnectionString);
+                //sqlConn.AccessToken = tokenProvider.GetAccessTokenAsync(AzureDatabaseTokenUrl, TenantId).Result;
+
+                //var tokenCredential = new DefaultAzureCredential(
+                //    new DefaultAzureCredentialOptions
+                //    {
+                //        ExcludeEnvironmentCredential = true,
+                //        ExcludeManagedIdentityCredential = true,
+                //        ExcludeSharedTokenCacheCredential = true,
+                //        ExcludeInteractiveBrowserCredential = true,
+                //        //ExcludeAzureCliCredential = true,
+                //        //ExcludeVisualStudioCredential = true,
+                //        ExcludeVisualStudioCodeCredential = true,
+                //        ExcludeAzurePowerShellCredential = true
+
+                //        //VisualStudioCodeTenantId = this.TenantId
+                //    }
+                //);
+
+                var tokenCredential = new VisualStudioCredential(
+                    new VisualStudioCredentialOptions()
+                    {
+                        TenantId = this.TenantId
+                    }
+                );
+
+                //var tokenCredential = new DefaultAzureCredential(new DefaultAzureCredentialOptions
+                //{
+                //    VisualStudioTenantId = this.TenantId,
+
+                //    ExcludeEnvironmentCredential = true,
+                //    ExcludeManagedIdentityCredential = true,
+                //    ExcludeSharedTokenCacheCredential = true,
+                //    ExcludeInteractiveBrowserCredential = true,
+                //    //ExcludeAzureCliCredential = true,
+                //    //ExcludeVisualStudioCredential = true,
+                //    ExcludeVisualStudioCodeCredential = true,
+                //    ExcludeAzurePowerShellCredential = true
+                //});
+
+                _accessToken = await tokenCredential.GetTokenAsync(new TokenRequestContext(AzureDatabaseTokenScopes), CancellationToken.None);
+                return _accessToken.Token;
+            }
+            catch (AuthenticationFailedException ex)
+            {
+                throw;
+            }
+        }
+
 
         #endregion
 
