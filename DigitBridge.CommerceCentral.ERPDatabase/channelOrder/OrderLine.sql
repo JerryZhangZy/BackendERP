@@ -36,11 +36,11 @@
     [DigitBridgeGuid] uniqueidentifier NOT NULL, 
 	[DBChannelOrderLineRowID] VARCHAR(50) NULL, 
 
-    [RowNum]      BIGINT NOT NULL DEFAULT 0,
+    [RowNum]      BIGINT NOT NULL DEFAULT 0, --(Ignore)
     [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for CentralOrder
     [CentralOrderLineUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for CentralOrder line
 
-    CONSTRAINT [PK_OrderLine] PRIMARY KEY CLUSTERED ([CentralOrderLineNum])
+    CONSTRAINT [PK_OrderLine] PRIMARY KEY ([CentralOrderLineNum])
 ) ON [PRIMARY]
 GO
 

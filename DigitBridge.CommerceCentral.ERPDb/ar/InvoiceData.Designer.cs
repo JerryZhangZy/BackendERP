@@ -28,6 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a InvoiceData.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
+    [Serializable()]
     public partial class InvoiceData : StructureRepository<InvoiceData>
     {
         public InvoiceData() : base() {}

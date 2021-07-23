@@ -28,6 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a CustomerData.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
+    [Serializable()]
     public partial class CustomerData : StructureRepository<CustomerData>
     {
         public CustomerData() : base() {}
