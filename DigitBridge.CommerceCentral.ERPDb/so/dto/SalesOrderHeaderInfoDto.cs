@@ -25,6 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a SalesOrderHeaderInfo Dto Class.
     /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
+    [Serializable()]
     public class SalesOrderHeaderInfoDto
     {
         public long? RowNum { get; set; }

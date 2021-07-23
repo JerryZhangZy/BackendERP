@@ -11,13 +11,13 @@
 //-------------------------------------------------------------------------
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Newtonsoft.Json.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
+using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -25,6 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a SalesOrderHeader Dto Class.
     /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
+    [Serializable()]
     public class SalesOrderHeaderDto
     {
         public long? RowNum { get; set; }

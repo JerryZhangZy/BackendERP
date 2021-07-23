@@ -7,7 +7,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// <summary>
     /// Request paging information
     /// </summary>
-    public class InvoiceParameter : RequestParameter
+    public class InvoiceParameter : PayloadBase
     {
     }
 }

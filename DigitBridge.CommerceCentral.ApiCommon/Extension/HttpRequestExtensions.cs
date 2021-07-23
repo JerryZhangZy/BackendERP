@@ -18,7 +18,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         /// <summary>
         /// Get all request parameter to RequestParameter object, include Header and Query string
         /// </summary>
-        public static T GetRequestParameter<T>(this HttpRequest req) where T : RequestParameter, new()
+        public static T GetRequestParameter<T>(this HttpRequest req) where T : PayloadBase, new()
         {
             //return (T)req.GetRequestParameter(typeof(T));
             //Activator.CreateInstance(instanceType);
