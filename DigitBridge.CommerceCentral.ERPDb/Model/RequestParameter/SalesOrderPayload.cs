@@ -1,16 +1,17 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Request paging information
     /// </summary>
+    [Serializable()]
     public class SalesOrderPayload : PayloadBase
     {
         public IList<string> SalesOrderUuids { get; set; } = new List<string>();

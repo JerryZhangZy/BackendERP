@@ -84,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Display(Name = "$sortBy")]
         [DataMember(Name = "$sortBy")]
         public string SortBy { get; set; }
-        [JsonIgnore] public virtual bool HasSortBy => string.IsNullOrEmpty(SortBy);
+        [JsonIgnore] public virtual bool HasSortBy => !string.IsNullOrEmpty(SortBy);
         public bool ShouldSerializeSortBy() => HasSortBy;
 
         /// <summary>

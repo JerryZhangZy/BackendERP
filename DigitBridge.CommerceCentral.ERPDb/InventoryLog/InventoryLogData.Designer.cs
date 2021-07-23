@@ -28,6 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Represents a InventoryLogData.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
+    [Serializable()]
     public partial class InventoryLogData : StructureRepository<InventoryLogData>
     {
         public InventoryLogData() : base() {}

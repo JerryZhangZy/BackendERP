@@ -13,8 +13,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
 using System.Collections.Generic;
-using DigitBridge.CommerceCentral.YoPoco;
 using Newtonsoft.Json;
+using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {

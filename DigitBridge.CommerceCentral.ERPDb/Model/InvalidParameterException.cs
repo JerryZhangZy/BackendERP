@@ -7,6 +7,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// <summary>
     /// Invalid parameter exception
     /// </summary>
+    [Serializable()]
     public class InvalidParameterException : Exception
     {
         /// <summary>
