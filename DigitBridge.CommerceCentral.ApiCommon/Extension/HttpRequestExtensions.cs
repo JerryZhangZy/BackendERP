@@ -46,7 +46,8 @@ namespace DigitBridge.CommerceCentral.ApiCommon
 
                 var val = Convert.ChangeType(parameterValue, property.PropertyType);
                 var range = property.GetCustomAttribute<RangeAttribute>();
-                if (!range.IsValid(val))
+                var valid = range?.IsValid(val);
+                if (valid.HasValue && valid.Value)
                 {
                     throw new Exception(range.ErrorMessage);
                 }

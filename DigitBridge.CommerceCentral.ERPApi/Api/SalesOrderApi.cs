@@ -65,9 +65,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<SalesOrderDataDto[]>), Description = "Result is List<SalesOrderDataDto>")]
         [FunctionName(nameof(GetSalesOrderList))]
         public static async Task<IActionResult> GetSalesOrderList(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder/list")] HttpRequest req
-            )
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder")] HttpRequest req)
         {
+            var parameter = req.GetRequestParameter<SalesOrderParameter>();
             //todo
             var result = new SalesOrderDataDto[3];
             return new Response<SalesOrderDataDto[]>(result, true);

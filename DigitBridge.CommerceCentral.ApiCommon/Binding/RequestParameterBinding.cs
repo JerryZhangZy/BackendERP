@@ -57,14 +57,12 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         }
         public async Task<object> GetValueAsync()
         {
-            try
+            try { return _request.GetRequestParameter(_instanceType); }
+            catch(Exception ex)
             {
-                return _request.GetRequestParameter(_instanceType);
+                throw new Exception("Get parameter error", ex);
             }
-            catch (Exception ex)
-            {
-                throw new Exception("Deserialize http request body to object error", ex);
-            }
+            
         }
         public string ToInvokeString() => string.Empty;
     }
