@@ -13,7 +13,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         {
             // Creates a rule that links the attribute to the binding
             context.AddBindingRule<FromBodyBindingAttribute>().Bind(new FromBodyBindingProvider());
-            context.AddBindingRule<RequestParameterAttribute>().Bind(new RequestParameterBindingProvider());
+            //context.AddBindingRule<RequestParameterAttribute>().Bind(new RequestParameterBindingProvider());
         }
     }
 }

@@ -119,6 +119,8 @@ namespace DigitBridge.Base.Utility
 
         public static string ToJsonString(this Dictionary<string, object> dict) => JObject.FromObject(dict).ToString(Formatting.None);
 
+        public static JObject ToJObject(this string jsonString) => string.IsNullOrEmpty(jsonString) ? new JObject() : JObject.Parse(jsonString);
+
         public static Dictionary<string, object> ToDicationary(this string jsonString)
         {
             if (string.IsNullOrEmpty(jsonString))
