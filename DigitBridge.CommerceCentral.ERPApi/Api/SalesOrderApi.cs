@@ -8,7 +8,6 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Net;
 using System.Threading.Tasks;
@@ -23,27 +22,20 @@ namespace DigitBridge.CommerceCentral.ERPApi
     public static class SalesOrderApi
     {
         /// <summary>
-        /// Get salesorder
+        /// Get one sales order by orderNumber
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="log"></param>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        [OpenApiOperation(operationId: "GetSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Get one/multiple sales order")]
+        [OpenApiOperation(operationId: "GetSalesOrder", tags: new[] { "SalesOrders" }, Summary = "Get one sales order")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "paging", Type = typeof(RequestPaging),Required =false,Explode =true,In =ParameterLocation.Query)]
-        [OpenApiParameter(name: "$top", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "$top", Description = "Page size. Default value is 100. Maximum value is 100.", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "$skip", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$skip", Description = "Records to skip. https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<SalesOrderDataDto>))]
-        [FunctionName(nameof(GetSalesOrders))]
-        public static async Task<IActionResult> GetSalesOrders(
+        [FunctionName(nameof(GetSalesOrder))]
+        public static async Task<IActionResult> GetSalesOrder(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder/{orderNumber}")] HttpRequest req,
-            string orderNumber,
-            [RequestParameter] SalesOrderParameter salesOrderParameter)
+            string orderNumber)
         {
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
             var srv = new SalesOrderService(dataBaseFactory);
@@ -55,6 +47,30 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 return new Response<SalesOrderDataDto>(dto, success);
             }
             return new Response<string>("no record found", success);
+        }
+
+        /// <summary>
+        /// Get sales order list by search criteria
+        /// </summary>
+        /// <param name="req"></param> 
+        /// <param name="salesOrderParameter"></param>
+        /// <returns></returns>
+        [OpenApiOperation(operationId: "GetSalesOrderList", tags: new[] { "SalesOrders" }, Summary = "Get sales order list")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "$top", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "$top", Description = "Page size. Default value is 100. Maximum value is 100.", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "$skip", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$skip", Description = "Records to skip. https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<SalesOrderDataDto[]>), Description = "Result is List<SalesOrderDataDto>")]
+        [FunctionName(nameof(GetSalesOrderList))]
+        public static async Task<IActionResult> GetSalesOrderList(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder/list")] HttpRequest req
+            )
+        {
+            //todo
+            var result = new SalesOrderDataDto[3];
+            return new Response<SalesOrderDataDto[]>(result, true);
         }
 
         /// <summary>
