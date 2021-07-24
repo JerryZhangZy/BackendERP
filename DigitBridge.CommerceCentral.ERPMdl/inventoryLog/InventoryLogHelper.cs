@@ -42,7 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         CommandType.Text, new SqlParameter("@logUuid", logUuid)
                         ).ToList();
         }
-        public static List<InventoryLog> QueryInventoryLogByUuids(List<string> logUuids)
+        public static List<InventoryLog> QueryInventoryLogByUuids(IList<string> logUuids)
         {
             var uuidsWhere = string.Join(",", logUuids.Select(x => $"'{x}'").ToArray());
             return SqlQuery.Query<InventoryLog>(

@@ -68,6 +68,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return _mapper.WriteInventoryLogDtoList(list, null);
         }
 
+        public List<InventoryLogDto> GetListByUuids(IList<string> logUuids)
+        {
+            var list = InventoryLogHelper.QueryInventoryLogByUuids(logUuids);
+            return _mapper.WriteInventoryLogDtoList(list, null);
+        }
+
         public int AddList(List<InventoryLogDto> dtoList)
         {
             if (dtoList == null || dtoList.Count() == 0)

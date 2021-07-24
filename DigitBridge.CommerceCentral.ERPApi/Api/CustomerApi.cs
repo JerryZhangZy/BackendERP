@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$skip", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$skip", Description = "Records to skip. https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "CustomerCodes", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "CustomerCode", Description = "CustomerCode = ProfileNumber-CustomerCode ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "CustomerCodes", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "CustomerCodes", Description = "CustomerCode Array", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<List<CustomerDataDto>>), Example = typeof(List<CustomerDataDto>), Description = "The OK response")]
         //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<List<CustomerDataDto>>), Example = typeof(CustomerDto), Description = "The OK response")]
         public static async Task<IActionResult> GetCustomer(
@@ -39,19 +39,29 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var parameters = req.GetRequestParameter();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
-            var spilterIndex = CustomerCode.IndexOf("-");
-            var customerCode = CustomerCode;
-            if (spilterIndex > 0)
-            {
-                parameters.ProfileNum = CustomerCode.Substring(0, spilterIndex).ToInt();
-                customerCode = CustomerCode.Substring(spilterIndex + 1);
-            }
+            var payload = req.GetRequestParameter<CustomerPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
-            var data = svc.GetCustomerByCode(parameters.ProfileNum, customerCode);
 
-            return new Response<CustomerDataDto>(data);
+            var resultlist = new List<CustomerDataDto>();
+            if (!string.IsNullOrEmpty(CustomerCode))
+            {
+                var spilterIndex = CustomerCode.IndexOf("-");
+                var customerCode = CustomerCode;
+                if (spilterIndex > 0)
+                {
+                    customerCode = CustomerCode.Substring(spilterIndex + 1);
+                }
+                var data = svc.GetCustomerByCode(payload.ProfileNum, customerCode);
+                resultlist.Add(data);
+            }
+
+            if (payload.HasCustomerCodes) {
+                var tlist = svc.GetCustomersByCodeArray(payload.ProfileNum,payload.CustomerCodes);
+                resultlist.AddRange(tlist);
+            }
+
+            return new Response<List<CustomerDataDto>>(resultlist);
         }
 
         [FunctionName(nameof(DeleteCustomer))]
@@ -61,22 +71,21 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "CustomerCode", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "CustomerCode", Description = "CustomerCode = ProfileNumber-CustomerCode ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
         public static async Task<IActionResult> DeleteCustomer(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "customers/{CustomerCode?}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "customers/{CustomerCode}")] HttpRequest req,
             string CustomerCode,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var parameters = req.GetRequestParameter();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
+            var payload = req.GetRequestParameter<CustomerPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var svc = new CustomerService(dbFactory);
             var spilterIndex = CustomerCode.IndexOf("-");
             var customerCode = CustomerCode;
             if (spilterIndex > 0)
             {
-                parameters.ProfileNum = CustomerCode.Substring(0, spilterIndex).ToInt();
                 customerCode = CustomerCode.Substring(spilterIndex + 1);
             }
-            var svc = new CustomerService(dbFactory);
-            var result = svc.DeleteByCode(parameters.ProfileNum, customerCode);
+            var result = svc.DeleteByCode(payload.ProfileNum, customerCode);
             return new Response<string>("Delete customer result", result);
         }
         [FunctionName(nameof(AddCustomer))]
@@ -92,9 +101,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             try
             {
                 log.LogInformation("C# HTTP trigger function processed a request.");
-                var masterAccountNum = req.GetHeaderData<int>("masterAccountNum") ?? 0;
-                var profileNum = req.GetHeaderData<int>("profileNum") ?? 0; ;
-                var dbFactory = MyAppHelper.GetDatabase(masterAccountNum);
+                var payload = req.GetRequestParameter<CustomerPayload>();
+                var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
                 var svc = new CustomerService(dbFactory);
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -132,8 +140,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var parameters = req.GetRequestParameter();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
+            var payload = req.GetRequestParameter<CustomerPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();

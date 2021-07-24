@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$skip", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$skip", Description = "Records to skip. https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "SKUs", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "SKU", Description = "SKU = ProfileNumber-SKU ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "skus", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "skus", Description = "SKU Array", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<InventoryDataDto[]>), Example = typeof(Response<List<InventoryDataDto>>), Description = "The OK response")]
         public static async Task<IActionResult> GetProductExt(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "productExt/{SKU?}")] HttpRequest req,
@@ -38,18 +38,29 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var parameters = req.GetRequestParameter();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
-            var spilterIndex = SKU.IndexOf("-");
-            var sku = SKU;
-            if (spilterIndex > 0)
-            {
-                parameters.ProfileNum = SKU.Substring(0, spilterIndex).ToInt();
-                sku = SKU.Substring(spilterIndex + 1);
-            }
+            var payload = req.GetRequestParameter<ProductExPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryService(dbFactory);
-            var data = svc.GetInventoryBySku(parameters.ProfileNum, sku);
-            return new Response<InventoryDataDto>(data);
+            var resultlist = new List<InventoryDataDto>();
+            if (!string.IsNullOrEmpty(SKU))
+            {
+                var spilterIndex = SKU.IndexOf("-");
+                var sku = SKU;
+                if (spilterIndex > 0)
+                {
+                    sku = SKU.Substring(spilterIndex + 1);
+                }
+                var data = svc.GetInventoryBySku(payload.ProfileNum, sku);
+                resultlist.Add(data);
+            }
+
+            if (payload.HasSkus)
+            {
+                var tlist = svc.GetInventorysBySkuArray(payload.ProfileNum, payload.Skus);
+                resultlist.AddRange(tlist);
+            }
+
+            return new Response<List<InventoryDataDto>>(resultlist);
         }
 
         [FunctionName(nameof(DeleteProductExt))]
@@ -59,22 +70,21 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "SKU", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "SKU", Description = "SKU = ProfileNumber-SKU ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
         public static async Task<IActionResult> DeleteProductExt(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "productExt/{SKU?}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "productExt/{SKU}")] HttpRequest req,
             string SKU,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var parameters = req.GetRequestParameter();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
+            var payload = req.GetRequestParameter<ProductExPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var spilterIndex = SKU.IndexOf("-");
             var sku = SKU;
             if (spilterIndex > 0)
             {
-                parameters.ProfileNum = SKU.Substring(0, spilterIndex).ToInt();
                 sku = SKU.Substring(spilterIndex + 1);
             }
             var svc = new InventoryService(dbFactory);
-            var result = svc.DeleteBySku(parameters.ProfileNum, sku);
+            var result = svc.DeleteBySku(payload.ProfileNum, sku);
             return new Response<string>("Delete productext result", result);
         }
         [FunctionName(nameof(AddProductExt))]
@@ -88,8 +98,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var parameters = req.GetRequestParameter();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
+            var payload = req.GetRequestParameter<ProductExPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -110,8 +120,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var parameters = req.GetRequestParameter();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
+            var payload = req.GetRequestParameter<ProductExPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();

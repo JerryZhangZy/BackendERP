@@ -25,19 +25,32 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "GetInventoryLogs", tags: new[] { "InventoryLogs" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "logUuids", In = ParameterLocation.Path, Required = false, Type = typeof(List<string>), Summary = "logUuids", Description = "Transaction ID Arrays", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<InventoryLogDto>), Description = "Result is List<InventoryLogDt0>")]
+        [OpenApiParameter(name: "logUuids", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "logUuids", Description = "Transaction ID Arrays", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<InventoryLogDto[]>), Description = "Result is List<InventoryLogDt0>")]
         public static async Task<IActionResult> GetInventoryLogs(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "inventoryLogs/{logUuid?}")] HttpRequest req,
             string logUuid,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var parameters = req.GetRequestParameter();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
+            var payload = req.GetRequestParameter<InventoryLogPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryLogService(dbFactory);
             var list = svc.GetListByUuid(logUuid);
-            return new Response<List<InventoryLogDto>>(list);
+
+            var resultlist = new List<InventoryLogDto>();
+            if (!string.IsNullOrEmpty(logUuid))
+            {
+                var data = svc.GetListByUuid( logUuid);
+                resultlist.AddRange(data);
+            }
+            if (payload.HasLogUuids)
+            {
+                var tlist = svc.GetListByUuids(payload.LogUuids);
+                resultlist.AddRange(tlist);
+            }
+
+            return new Response<List<InventoryLogDto>>(resultlist);
         }
 
         [FunctionName(nameof(DeleteInventoryLogs))]
@@ -47,13 +60,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "logUuid", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "logUuid", Description = "Transaction ID ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<int>), Description = "return delete count")]
         public static async Task<IActionResult> DeleteInventoryLogs(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "inventoryLogs/{logUuid?}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "inventoryLogs/{logUuid}")] HttpRequest req,
             string logUuid,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var parameters = req.GetRequestParameter();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
+            var payload = req.GetRequestParameter<InventoryLogPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryLogService(dbFactory);
             var deletecount = svc.DeleteByLogUuid(logUuid);
             return new Response<int>(deletecount);
@@ -69,8 +82,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var parameters = req.GetRequestParameter();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
+            var payload = req.GetRequestParameter<InventoryLogPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryLogService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -91,8 +104,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var parameters = req.GetRequestParameter();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(parameters.MasterAccountNum);
+            var payload = req.GetRequestParameter<InventoryLogPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryLogService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();

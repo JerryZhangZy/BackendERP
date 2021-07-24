@@ -34,13 +34,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return dbFactory.Db.FirstOrDefault<string>($"select CustomerUuid from Customer where CustomerCode='{customerCode}' and ProfileNum={profileNum}");
         }
 
-        public List<string> GetCustomerUuidsByCodeArray(int profileNum, List<string> cutomerCodes)
+        public List<string> GetCustomerUuidsByCodeArray(int profileNum, IList<string> cutomerCodes)
         {
             var customersWhere = string.Join(",", cutomerCodes.Select(x => $"'{x}'").ToArray());
             return dbFactory.Db.Query<string>($"select CustomerUuid from Customer where CustomerCode in ({customersWhere}) and ProfileNum={profileNum}").ToList();
         }
 
-        public List<CustomerDataDto> GetCustomersByCodeArray(int profileNum, List<string> cutomerCodes)
+        public List<CustomerDataDto> GetCustomersByCodeArray(int profileNum, IList<string> cutomerCodes)
         {
             var uuids = GetCustomerUuidsByCodeArray(profileNum, cutomerCodes);
             var list = new List<CustomerDataDto>();
