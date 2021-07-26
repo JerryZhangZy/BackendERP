@@ -23,6 +23,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasInventoryDatas => InventoryDatas != null && InventoryDatas.Count > 0;
         public bool ShouldSerializeInventoryDatas() => HasInventoryDatas;
 
+        public InventoryDataDto InventoryData { get; set; }
+        [JsonIgnore] public virtual bool HasInventoryData => InventoryData != null;
+        public bool ShouldSerializeInventoryData() => HasInventoryData;
+
 
         public override IDictionary<string, Action<string>> GetOtherParameters()
         {

@@ -40,16 +40,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return dbFactory.Db.Query<string>($"select CustomerUuid from Customer where CustomerCode in ({customersWhere}) and ProfileNum={profileNum}").ToList();
         }
 
-        public List<CustomerDataDto> GetCustomersByCodeArray(int profileNum, IList<string> cutomerCodes)
+        public CustomerPayload GetCustomersByCodeArray(CustomerPayload payload)
         {
-            var uuids = GetCustomerUuidsByCodeArray(profileNum, cutomerCodes);
-            var list = new List<CustomerDataDto>();
+            var uuids = GetCustomerUuidsByCodeArray(payload.ProfileNum, payload.CustomerCodes);
+            payload.Customers = new List<CustomerDataDto>();
             uuids.ForEach(x =>
             {
                 if (GetDataById(x))
-                    list.Add(ToDto());
+                    payload.Customers.Add(ToDto());
             });
-            return list;
+            return payload;
         }
         public CustomerDataDto GetCustomerByCode(int profileNum, string cutomerCode)
         {
@@ -58,9 +58,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return ToDto();
         }
 
-        public bool DeleteByCode(int profileNum, string customerCode)
+        public bool DeleteByCode(CustomerPayload payload)
         {
-            var uuid = GetCustomerUuidByCode(profileNum, customerCode);
+            var uuid = GetCustomerUuidByCode(payload.ProfileNum, payload.CustomerCodes.First());
             return Delete(uuid);
         }
 

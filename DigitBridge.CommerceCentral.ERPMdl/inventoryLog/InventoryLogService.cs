@@ -56,23 +56,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var productUuid = FindProductUuidBySku(masterAccountNum, profileNum, sku);
             return GetInventoryById(productUuid);
         }
-        public int DeleteByLogUuid(string logUuid)
+        public InventoryLogPayload DeleteByLogUuid(InventoryLogPayload payload)
         {
-            var list = InventoryLogHelper.QueryInventoryLogByUuid(logUuid);
-            return list.SetDataBaseFactory(dbFactory).Delete();
+            var list = InventoryLogHelper.QueryInventoryLogByUuids(payload.LogUuids);
+            if (list.SetDataBaseFactory(dbFactory).Delete() > 0)
+                payload.InventoryLogs = _mapper.WriteInventoryLogDtoList(list, null);
+            return payload;
         }
 
-        public List<InventoryLogDto> GetListByUuid(string logUuid)
+        public InventoryLogPayload GetListByUuid(InventoryLogPayload payload)
         {
-            var list = InventoryLogHelper.QueryInventoryLogByUuid(logUuid);
-            return _mapper.WriteInventoryLogDtoList(list, null);
+            var list = InventoryLogHelper.QueryInventoryLogByUuids(payload.LogUuids);
+            payload.InventoryLogs= _mapper.WriteInventoryLogDtoList(list, null);
+            return payload;
         }
 
-        public List<InventoryLogDto> GetListByUuids(IList<string> logUuids)
-        {
-            var list = InventoryLogHelper.QueryInventoryLogByUuids(logUuids);
-            return _mapper.WriteInventoryLogDtoList(list, null);
-        }
+        //public List<InventoryLogDto> GetListByUuids(IList<string> logUuids)
+        //{
+        //    var list = InventoryLogHelper.QueryInventoryLogByUuids(logUuids);
+        //    return _mapper.WriteInventoryLogDtoList(list, null);
+        //}
 
         public int AddList(List<InventoryLogDto> dtoList)
         {

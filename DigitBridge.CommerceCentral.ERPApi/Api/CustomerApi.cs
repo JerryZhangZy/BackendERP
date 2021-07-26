@@ -31,9 +31,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "CustomerCodes", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "CustomerCodes", Description = "CustomerCode Array", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<List<CustomerDataDto>>), Example = typeof(List<CustomerDataDto>), Description = "The OK response")]
-        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<List<CustomerDataDto>>), Example = typeof(CustomerDto), Description = "The OK response")]
-        public static async Task<IActionResult> GetCustomer(
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<List<CustomerDataDto>>), Example = typeof(List<CustomerDataDto>), Description = "The OK response")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<CustomerPayload>), Example = typeof(CustomerPayload), Description = "The OK response")]
+        public static async Task<JsonNetResponse<CustomerPayload>> GetCustomer(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "customers/{CustomerCode?}")] HttpRequest req,
             string CustomerCode,
             ILogger log)
@@ -52,16 +52,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 {
                     customerCode = CustomerCode.Substring(spilterIndex + 1);
                 }
-                var data = svc.GetCustomerByCode(payload.ProfileNum, customerCode);
-                resultlist.Add(data);
+                payload.CustomerCodes.Add(customerCode);
             }
+            var result = svc.GetCustomersByCodeArray(payload);
+            return new JsonNetResponse<CustomerPayload>(result);
 
-            if (payload.HasCustomerCodes) {
-                var tlist = svc.GetCustomersByCodeArray(payload.ProfileNum,payload.CustomerCodes);
-                resultlist.AddRange(tlist);
-            }
-
-            return new Response<List<CustomerDataDto>>(resultlist);
         }
 
         [FunctionName(nameof(DeleteCustomer))]
@@ -69,8 +64,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "CustomerCode", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "CustomerCode", Description = "CustomerCode = ProfileNumber-CustomerCode ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
-        public static async Task<IActionResult> DeleteCustomer(
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload), Example = typeof(CustomerPayload), Description = "The OK response")]
+        public static async Task<JsonNetResponse<CustomerPayload>> DeleteCustomer(
             [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "customers/{CustomerCode}")] HttpRequest req,
             string CustomerCode,
             ILogger log)
@@ -85,48 +80,46 @@ namespace DigitBridge.CommerceCentral.ERPApi
             {
                 customerCode = CustomerCode.Substring(spilterIndex + 1);
             }
-            var result = svc.DeleteByCode(payload.ProfileNum, customerCode);
-            return new Response<string>("Delete customer result", result);
+            payload.CustomerCodes.Add(customerCode);
+
+            if( svc.DeleteByCode(payload))
+                payload.Customer = svc.ToDto();
+            return new JsonNetResponse<CustomerPayload>(payload);
         }
         [FunctionName(nameof(AddCustomer))]
         [OpenApiOperation(operationId: "AddCustomer", tags: new[] { "Customers" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerDataDto), Description = "CustomerDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
-        public static async Task<IActionResult> AddCustomer(
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload), Example = typeof(CustomerPayload), Description = "The OK response")]
+        public static async Task<JsonNetResponse<CustomerPayload>> AddCustomer(
             [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "customers")] HttpRequest req,
             ILogger log)
         {
+            log.LogInformation("C# HTTP trigger function processed a request.");
+            var payload = req.GetRequestParameter<CustomerPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var svc = new CustomerService(dbFactory);
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            payload.Customer = JsonConvert.DeserializeObject<CustomerDataDto>(requestBody);
             try
             {
-                log.LogInformation("C# HTTP trigger function processed a request.");
-                var payload = req.GetRequestParameter<CustomerPayload>();
-                var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
-                var svc = new CustomerService(dbFactory);
-
-                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                var dto = JsonConvert.DeserializeObject<CustomerDataDto>(requestBody);
-
-                var addresult = await svc.AddAsync(dto);
-                return new OkObjectResult("Add customer success");
-                //return new Response<string>("Delete customer result", addresult);
+                var addresult = await svc.AddAsync(payload.Customer);
             }
             catch (System.Exception ex)
             {
                 if (MySingletonAppSetting.DebugMode)
                 {
-                    return new ContentResult()
-                    {
-                        Content = ex.ObjectToString(),
-                        ContentType = "application/json",
-                        StatusCode = (int)HttpStatusCode.InternalServerError
-                    };
+                    //return new ContentResult()
+                    //{
+                    //    Content = ex.ObjectToString(),
+                    //    ContentType = "application/json",
+                    //    StatusCode = (int)HttpStatusCode.InternalServerError
+                    //};
                 }
-                else
-                    return new BadRequestObjectResult("Server Internal Error");
-
             }
+            return new JsonNetResponse<CustomerPayload>(payload);
         }
 
         [FunctionName(nameof(UpdateCustomer))]
@@ -134,8 +127,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerDataDto), Description = "CustomerDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
-        public static async Task<IActionResult> UpdateCustomer(
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload), Example = typeof(CustomerPayload), Description = "The OK response")]
+        public static async Task<JsonNetResponse<CustomerPayload>> UpdateCustomer(
             [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "customers")] HttpRequest req,
             ILogger log)
         {
@@ -145,11 +138,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new CustomerService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var dto = JsonConvert.DeserializeObject<CustomerDataDto>(requestBody);
+            payload.Customer = JsonConvert.DeserializeObject<CustomerDataDto>(requestBody);
 
-            var updateresult = svc.Update(dto);
-            DbUtility.CloseConnection();
-            return new Response<string>("Update customer result", updateresult);
+            var updateresult = svc.Update(payload.Customer);
+            return new JsonNetResponse<CustomerPayload>(payload);
         }
     }
 }

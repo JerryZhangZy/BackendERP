@@ -23,12 +23,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasCustomers => Customers != null && Customers.Count > 0;
         public bool ShouldSerializeSalesOrders() => HasCustomers;
 
+        public CustomerDataDto Customer { get; set; }
+        [JsonIgnore] public virtual bool HasCustomer => Customer != null;
+        public bool ShouldSerializeSalesOrder() => HasCustomer;
+
 
         public override IDictionary<string, Action<string>> GetOtherParameters()
         {
             return new Dictionary<string, Action<string>>
             {
-                { "customerCodes", val => CustomerCodes = val.Split(",").ToList() }
+                { "customerCodes", val =>{ CustomerCodes = val.Split(",").ToList(); } }
             };
         }
 

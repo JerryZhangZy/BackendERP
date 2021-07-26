@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var uuidsWhere = string.Join(",", logUuids.Select(x => $"'{x}'").ToArray());
             return SqlQuery.Query<InventoryLog>(
                         ERPDb.InventoryLogHelper.SelectAllWhere(
-                            sqlWhere: $"WHERE LogUuid in {uuidsWhere} ORDER BY RowNum"
+                            sqlWhere: $"WHERE LogUuid in ({uuidsWhere}) ORDER BY RowNum"
                         ),CommandType.Text
                         ).ToList();
         }

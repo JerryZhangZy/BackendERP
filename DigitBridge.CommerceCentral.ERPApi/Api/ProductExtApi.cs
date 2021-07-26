@@ -31,8 +31,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "skus", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "skus", Description = "SKU Array", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<InventoryDataDto[]>), Example = typeof(Response<List<InventoryDataDto>>), Description = "The OK response")]
-        public static async Task<IActionResult> GetProductExt(
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload), Example = typeof(ProductExPayload), Description = "The OK response")]
+        public static async Task<JsonNetResponse<ProductExPayload>> GetProductExt(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "productExt/{SKU?}")] HttpRequest req,
             string SKU,
             ILogger log)
@@ -41,7 +41,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = req.GetRequestParameter<ProductExPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryService(dbFactory);
-            var resultlist = new List<InventoryDataDto>();
             if (!string.IsNullOrEmpty(SKU))
             {
                 var spilterIndex = SKU.IndexOf("-");
@@ -50,17 +49,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 {
                     sku = SKU.Substring(spilterIndex + 1);
                 }
-                var data = svc.GetInventoryBySku(payload.ProfileNum, sku);
-                resultlist.Add(data);
+                payload.Skus.Add(sku);
             }
+            var result = svc.GetInventorysBySkuArray(payload);
 
-            if (payload.HasSkus)
-            {
-                var tlist = svc.GetInventorysBySkuArray(payload.ProfileNum, payload.Skus);
-                resultlist.AddRange(tlist);
-            }
-
-            return new Response<List<InventoryDataDto>>(resultlist);
+            return new JsonNetResponse<ProductExPayload>(result);
         }
 
         [FunctionName(nameof(DeleteProductExt))]
@@ -68,8 +61,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "SKU", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "SKU", Description = "SKU = ProfileNumber-SKU ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
-        public static async Task<IActionResult> DeleteProductExt(
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload))]
+        public static async Task<JsonNetResponse<ProductExPayload>> DeleteProductExt(
             [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "productExt/{SKU}")] HttpRequest req,
             string SKU,
             ILogger log)
@@ -83,17 +76,19 @@ namespace DigitBridge.CommerceCentral.ERPApi
             {
                 sku = SKU.Substring(spilterIndex + 1);
             }
+            payload.Skus.Add(sku);
             var svc = new InventoryService(dbFactory);
-            var result = svc.DeleteBySku(payload.ProfileNum, sku);
-            return new Response<string>("Delete productext result", result);
+            if (svc.DeleteBySku(payload.ProfileNum, sku))
+                payload.InventoryData = svc.ToDto();
+            return new JsonNetResponse<ProductExPayload>(payload);
         }
         [FunctionName(nameof(AddProductExt))]
         [OpenApiOperation(operationId: "AddProductExt", tags: new[] { "ProductExts" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryDataDto), Description = "InventoryDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
-        public static async Task<IActionResult> AddProductExt(
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload))]
+        public static async Task<JsonNetResponse<ProductExPayload>> AddProductExt(
             [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "productExt")] HttpRequest req,
             ILogger log)
         {
@@ -103,10 +98,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new InventoryService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var dto = JsonConvert.DeserializeObject<InventoryDataDto>(requestBody);
+            payload.InventoryData = JsonConvert.DeserializeObject<InventoryDataDto>(requestBody);
 
-            var addresult = svc.Add(dto);
-            return new Response<string>("Delete productext result", addresult);
+            svc.Add(payload.InventoryData);
+            return new JsonNetResponse<ProductExPayload>(payload);
         }
 
         [FunctionName(nameof(UpdateProductExt))]
@@ -114,8 +109,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryDataDto), Description = "InventoryDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
-        public static async Task<IActionResult> UpdateProductExt(
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload))]
+        public static async Task<JsonNetResponse<ProductExPayload>> UpdateProductExt(
             [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "productExt")] HttpRequest req,
             ILogger log)
         {
@@ -125,10 +120,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new InventoryService(dbFactory);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var dto = JsonConvert.DeserializeObject<InventoryDataDto>(requestBody);
+            payload.InventoryData= JsonConvert.DeserializeObject<InventoryDataDto>(requestBody);
 
-            var updateresult = svc.Update(dto);
-            return new Response<string>("Update productext result", updateresult);
+            var updateresult = svc.Update(payload.InventoryData);
+            return new JsonNetResponse<ProductExPayload>(payload);
         }
     }
 }

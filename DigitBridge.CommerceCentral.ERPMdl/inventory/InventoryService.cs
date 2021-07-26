@@ -36,19 +36,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public List<string> GetProductUuidsBySkuArray(int profileNum, IList<string> skus)
         {
             var skusWhere = string.Join(",", skus.Select(x => $"'{x}'").ToArray());
-            return dbFactory.Db.Query<string>($"select ProductUuid from ProductExt where Sku in ({skus}) and ProfileNum={profileNum}").ToList();
+            return dbFactory.Db.Query<string>($"select ProductUuid from ProductExt where Sku in ({skusWhere}) and ProfileNum={profileNum}").ToList();
         }
 
-        public List<InventoryDataDto> GetInventorysBySkuArray(int profileNum, IList<string> skus)
+        public ProductExPayload GetInventorysBySkuArray(ProductExPayload payload)
         {
-            var uuids = GetProductUuidsBySkuArray(profileNum, skus);
-            var list = new List<InventoryDataDto>();
+            var uuids = GetProductUuidsBySkuArray(payload.ProfileNum, payload.Skus);
             uuids.ForEach(x =>
             {
                 if (GetDataById(x))
-                    list.Add(ToDto());
+                    payload.InventoryDatas.Add(ToDto());
             });
-            return list;
+            return payload;
         }
 
         public InventoryDataDto GetInventoryBySku(int profileNum, string sku)
