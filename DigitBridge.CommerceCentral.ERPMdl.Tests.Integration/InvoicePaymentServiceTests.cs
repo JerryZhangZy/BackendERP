@@ -24,14 +24,14 @@ using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
-    public partial class InvoiceTransactionServiceTests
+    public partial class InvoicePaymentServiceTests
     {
 
         [Fact()]
 		//[Fact(Skip = SkipReason)]
 		public void AddDto_Test()
 		{
-            var srv = new InvoiceTransactionService(DataBaseFactory);
+            var srv = new InvoicePaymentService(DataBaseFactory);
             srv.Add();
 
             var mapper = srv.DtoMapper;
@@ -41,7 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             srv.Add(dto);
 
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
+            var srvGet = new InvoicePaymentService(DataBaseFactory);
             //srvGet.Edit();
             srvGet.GetDataById(id);
             var result = srv.Data.Equals(srvGet.Data);
@@ -58,14 +58,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var id = DataBaseFactory.GetValue<InvoiceTransaction, string>(@"
 SELECT TOP 1 ins.TransUuid 
 FROM InvoiceTransaction ins 
-INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
-WHERE itm.cnt > 0
 ");
 
 
-            var srv = new InvoiceTransactionService(DataBaseFactory);
+            var srv = new InvoicePaymentService(DataBaseFactory);
             srv.Edit(id);
             var rowNum = srv.Data.InvoiceTransaction.RowNum;
 
@@ -78,7 +74,7 @@ WHERE itm.cnt > 0
             srv.Clear();
             srv.Update(dto);
 
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
+            var srvGet = new InvoicePaymentService(DataBaseFactory);
             srvGet.Edit();
             srvGet.GetDataById(id);
             var result = srv.Data.Equals(srvGet.Data);
@@ -90,7 +86,7 @@ WHERE itm.cnt > 0
 		//[Fact(Skip = SkipReason)]
 		public async Task AddDtoAsync_Test()
 		{
-            var srv = new InvoiceTransactionService(DataBaseFactory);
+            var srv = new InvoicePaymentService(DataBaseFactory);
             srv.Add();
 
             var mapper = srv.DtoMapper;
@@ -100,7 +96,7 @@ WHERE itm.cnt > 0
 
             await srv.AddAsync(dto);
 
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
+            var srvGet = new InvoicePaymentService(DataBaseFactory);
             srvGet.Edit();
             await srvGet.GetDataByIdAsync(id);
             var result = srv.Data.Equals(srvGet.Data);
@@ -117,14 +113,10 @@ WHERE itm.cnt > 0
             var id = await DataBaseFactory.GetValueAsync<InvoiceTransaction, string>(@"
 SELECT TOP 1 ins.TransUuid 
 FROM InvoiceTransaction ins 
-INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
-WHERE itm.cnt > 0
 ");
 
 
-            var srv = new InvoiceTransactionService(DataBaseFactory);
+            var srv = new InvoicePaymentService(DataBaseFactory);
             await srv.EditAsync(id);
             var rowNum = srv.Data.InvoiceTransaction.RowNum;
 
@@ -137,7 +129,7 @@ WHERE itm.cnt > 0
             srv.Clear();
             await srv.UpdateAsync(dto);
 
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
+            var srvGet = new InvoicePaymentService(DataBaseFactory);
             //srvGet.Edit();
             await srvGet.GetDataByIdAsync(id);
             var result = srv.Data.Equals(srvGet.Data);

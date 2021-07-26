@@ -14,18 +14,18 @@ using DigitBridge.CommerceCentral.ERPDb;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public partial class InvoiceTransactionService
+    public partial class InvoicePaymentService
     {
 
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
         /// </summary>
-        public override InvoiceTransactionService Init()
+        public override InvoicePaymentService Init()
         {
             base.Init();
-            SetDtoMapper(new InvoiceTransactionDataDtoMapperDefault());
-            SetCalculator(new InvoiceTransactionServiceCalculatorDefault());
-            AddValidator(new InvoiceTransactionServiceValidatorDefault());
+            SetDtoMapper(new InvoicePaymentDataDtoMapperDefault());
+            SetCalculator(new InvoicePaymentServiceCalculatorDefault());
+            AddValidator(new InvoicePaymentServiceValidatorDefault());
             return this;
         }
 
@@ -33,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
-        public virtual bool Add(InvoiceTransactionDataDto dto)
+        public virtual bool Add(InvoicePaymentDataDto dto)
         {
             if (dto is null) 
                 return false;
@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
-        public virtual async Task<bool> AddAsync(InvoiceTransactionDataDto dto)
+        public virtual async Task<bool> AddAsync(InvoicePaymentDataDto dto)
         {
             if (dto is null)
                 return false;
@@ -70,7 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual bool Update(InvoiceTransactionDataDto dto)
+        public virtual bool Update(InvoicePaymentDataDto dto)
         {
             if (dto is null || !dto.HasInvoiceTransaction || dto.InvoiceTransaction.RowNum.ToLong() <= 0)
                 return false;
@@ -89,7 +89,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual async Task<bool> UpdateAsync(InvoiceTransactionDataDto dto)
+        public virtual async Task<bool> UpdateAsync(InvoicePaymentDataDto dto)
         {
             if (dto is null || !dto.HasInvoiceTransaction || dto.InvoiceTransaction.RowNum.ToLong() <= 0)
                 return false;
@@ -103,7 +103,40 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
-
+        /// <summary>
+        /// Delete invoice payments by invoice number
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByInvoiceNumberAsync(string invoiceNumber)
+        {
+            if (string.IsNullOrEmpty(invoiceNumber))
+                return false;
+            Delete();
+            var rowNum = await _data.GetRowNumAsync(invoiceNumber);
+            if (!rowNum.HasValue)
+                return false;
+            var success = await GetDataAsync(rowNum.Value);
+            success = success && await DeleteDataAsync();
+            return success;
+        }
+        /// <summary>
+        /// Get invoice payment with detail by invoiceNumber
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> GetByInvoiceNumberAsync(string invoiceNumber)
+        {
+            if (string.IsNullOrEmpty(invoiceNumber))
+                return false;
+            List();
+            var rowNum = await _data.GetRowNumAsync(invoiceNumber);
+            if (!rowNum.HasValue)
+                return false;
+            var success = await GetDataAsync(rowNum.Value);
+            //if (success) ToDto();
+            return success;
+        }
     }
 }
 

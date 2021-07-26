@@ -24,18 +24,18 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a default InvoiceTransactionService Calculator class.
+    /// Represents a default InvoicePaymentService Calculator class.
     /// </summary>
-    public partial class InvoiceTransactionServiceCalculatorDefault : ICalculator<InvoiceTransactionData>
+    public partial class InvoicePaymentServiceCalculatorDefault : ICalculator<InvoicePaymentData>
     {
-        public virtual bool SetDefault(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool SetDefault(InvoicePaymentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             SetDefaultSummary(data, processingMode);
             SetDefaultDetail(data, processingMode);
             return true;
         }
 
-        public virtual bool SetDefaultSummary(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool SetDefaultSummary(InvoicePaymentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
@@ -54,7 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        public virtual bool SetDefaultDetail(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool SetDefaultDetail(InvoicePaymentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
@@ -75,7 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         //TODO: add set default for detail line logic
         /* This is generated sample code
-        protected virtual bool SetDefault(InvoiceItems item, InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        protected virtual bool SetDefault(InvoiceItems item, InvoicePaymentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;
@@ -109,14 +109,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         */
 
 
-        public virtual bool Calculate(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool Calculate(InvoicePaymentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             CalculateDetail(data, processingMode);
             CalculateSummary(data, processingMode);
             return true;
         }
 
-        public virtual bool CalculateSummary(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool CalculateSummary(InvoicePaymentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
@@ -164,7 +164,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        public virtual bool CalculateDetail(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool CalculateDetail(InvoicePaymentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
@@ -203,7 +203,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         //TODO: add set default for detail line logic
         /* This is generated sample code
-        protected virtual bool CalculateDetail(InvoiceItems item, InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        protected virtual bool CalculateDetail(InvoiceItems item, InvoicePaymentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;

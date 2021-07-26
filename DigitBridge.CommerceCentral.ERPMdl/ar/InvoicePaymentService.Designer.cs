@@ -1,4 +1,6 @@
 
+
+              
     
 
 //-------------------------------------------------------------------------
@@ -15,9 +17,6 @@ using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using System.Data;
-using Microsoft.Data.SqlClient;
-
 using Newtonsoft.Json;
 
 using DigitBridge.Base.Utility;
@@ -27,12 +26,13 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a InvoiceTransactionHelper SQL Helper Static Class.
-    /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+    /// Represents a InvoicePaymentService.
+    /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public static class InvoiceTransactionHelper
+    public partial class InvoicePaymentService : ServiceBase<InvoicePaymentService, InvoicePaymentData, InvoicePaymentDataDto>, IInvoicePaymentService
     {
-
+        public InvoicePaymentService() : base() {}
+        public InvoicePaymentService(IDataBaseFactory dbFactory): base(dbFactory) {}
     }
 }
 

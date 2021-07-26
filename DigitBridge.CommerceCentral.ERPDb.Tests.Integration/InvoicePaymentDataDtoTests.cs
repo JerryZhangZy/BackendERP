@@ -26,19 +26,19 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     /// <summary>
-    /// Represents a Tester for InvoiceTransactionService.
+    /// Represents a Tester for InvoicePaymentService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class InvoiceTransactionDataDtoTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class InvoicePaymentDataDtoTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        protected InvoiceTransactionData GetFakerData()
+        protected InvoicePaymentData GetFakerData()
         {
-            return InvoiceTransactionDataTests.GetFakerData();
+            return InvoicePaymentDataTests.GetFakerData();
         }
 
-        protected List<InvoiceTransactionData> GetFakerData(int count)
+        protected List<InvoicePaymentData> GetFakerData(int count)
         {
-            return InvoiceTransactionDataTests.GetFakerData(count);
+            return InvoicePaymentDataTests.GetFakerData(count);
         }
 
         protected const string SkipReason = "Debug Helper Function";
@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public IConfiguration Configuration { get; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public InvoiceTransactionDataDtoTests(TestFixture<StartupTest> fixture) 
+        public InvoicePaymentDataDtoTests(TestFixture<StartupTest> fixture) 
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -67,11 +67,11 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 		//[Fact(Skip = SkipReason)]
 		public void ReadAndWrite_Test()
 		{
-            var mapper = new InvoiceTransactionDataDtoMapperDefault();
+            var mapper = new InvoicePaymentDataDtoMapperDefault();
 
             var data = GetFakerData();
             var dto = mapper.WriteDto(data, null);
-            var data2 = new InvoiceTransactionData();
+            var data2 = new InvoicePaymentData();
             mapper.ReadDto(data2, dto);
 
 

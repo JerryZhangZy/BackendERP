@@ -26,7 +26,7 @@ using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
-    public partial class InvoiceTransactionHelperTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class InvoicePaymentHelperTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug Helper Function";
 
@@ -34,7 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public IConfiguration Configuration { get; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public InvoiceTransactionHelperTests(TestFixture<StartupTest> fixture) 
+        public InvoicePaymentHelperTests(TestFixture<StartupTest> fixture) 
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
