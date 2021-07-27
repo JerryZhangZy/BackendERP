@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DigitBridge.CommerceCentral.YoPoco;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Request paging information
     /// </summary>
     [Serializable()]
-    public class PayloadBase
+    public class PayloadBase : IPayload
     {
         /// <summary>
         /// User MasterAccountNum

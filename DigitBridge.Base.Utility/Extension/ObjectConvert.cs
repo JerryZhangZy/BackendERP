@@ -472,6 +472,73 @@ namespace DigitBridge.Base.Utility
         /// <returns></returns>
         public static TimeSpan MaxValueSql(this TimeSpan netDateTime) => ObjectConvert.MaxTime;
 
+        public static T To<T>(this object input)
+        {
+            if (input is null)
+                return default(T);
+            var obj = ObjectConvert.ConvertObject(input, typeof(T));
+            return (obj is null) ? default(T) : (T) obj;
+        }
+
+        /// <summary>
+        /// Convert string to Enum by name
+        /// </summary>
+        public static T ToEnum<T>(this string value)
+        {
+            if (Enum.IsDefined(typeof(T), value))
+            {
+                return (T)Enum.Parse(typeof(T), value, true);
+            }
+            else
+            {
+                foreach (string nm in Enum.GetNames(typeof(T)))
+                {
+                    if (nm.Equals(value, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return (T)Enum.Parse(typeof(T), nm);
+                    }
+                }
+            }
+            return default(T);
+        }
+        /// <summary>
+        /// Convert string to Enum by name with default
+        /// </summary>
+        public static T ToEnum<T>(this string value, T defaultValue)
+        {
+            if (Enum.IsDefined(typeof(T), value))
+            {
+                return (T)Enum.Parse(typeof(T), value, true);
+            }
+            else
+            {
+                foreach (string nm in Enum.GetNames(typeof(T)))
+                {
+                    if (nm.Equals(value, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return (T)Enum.Parse(typeof(T), nm);
+                    }
+                }
+            }
+            return defaultValue;
+        }
+        /// <summary>
+        /// Convert int to Enum by enum value
+        /// </summary>
+        public static T ToEnum<T>(this int value, T defaultValue) where T : struct
+        {
+            T result;
+            if (Enum.TryParse<T>(value.ToString(), out result))
+            {
+                if (Enum.IsDefined(typeof(T), result))
+                {
+                    return (T)result;
+                }
+            }
+            return defaultValue;
+        }
+
+
         public static string DbToString(this object obj) => (obj == null || obj == DBNull.Value) ? string.Empty : obj.ToString().TrimEnd();
         public static decimal ToDecimal(this object obj) => obj.DbToString().ToDecimal();
 
@@ -499,7 +566,7 @@ namespace DigitBridge.Base.Utility
                         ? r
                         : false;
 
-        /// <summary>
+                /// <summary>
         /// Convert nullable value to its default, non-nullable value when its nullable value is null. 
         /// For example: default(int?) is null, this function will return default(int) is 0;
         /// </summary>
@@ -508,6 +575,15 @@ namespace DigitBridge.Base.Utility
         {
             return value ?? default(T);
         }
+
+        public static DateTime ToDateTime(this object obj) => obj.DbToString().ToDateTime();
+
+        public static DateTime ToDateTime(this string s) =>
+            string.IsNullOrWhiteSpace(s)
+                ? ObjectConvert.MinDatatime
+                : DateTime.TryParse(s, out DateTime r)
+                    ? r
+                    : ObjectConvert.MinDatatime;
 
 
         public static DateTime ToDateTime(this DateTime? input) => (input is null) ? ObjectConvert.MinDatatime : (DateTime)input;

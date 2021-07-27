@@ -67,8 +67,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<SalesOrderPayload>> GetSalesOrderList(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder")] HttpRequest req)
         {
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
             var payload = req.GetRequestParameter<SalesOrderPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
 
             payload = await srv.GetListBySalesOrderUuidsNumberAsync(payload);
@@ -129,12 +129,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
         public static async Task<IActionResult> AddSalesOrders(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesorder")] HttpRequest req,
-            [FromBodyBinding] SalesOrderDataDto dto)
+            [FromBodyBinding] SalesOrderPayload payload)
         {
             //var dto = await req.GetBodyObjectAsync<SalesOrderDataDto>();
-            var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
+            //var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
-            var success = await srv.AddAsync(dto);
+            //await srv.VerfiedAsync(payload.SalesOrder);
+            var success = await srv.AddAsync(payload.SalesOrder);
             return new Response<string>($"new sales order uuid is:{srv.Data.UniqueId}", success);
         }
     }

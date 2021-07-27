@@ -119,7 +119,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return dbFactory;
 
             dbFactory = new DataBaseFactory(connectionString ?? ConfigurationManager.AppSettings["dsn"]);
-            if (string.IsNullOrWhiteSpace(connectionString))
+            if (string.IsNullOrWhiteSpace(connectionString) || GetDefaultDataBaseFactory() == null)
                 SetDefaultDataBaseFactory(dbFactory);
             else
                 SetDataBaseFactory(dbFactory);
@@ -129,7 +129,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public static IDataBaseFactory CreateDefault(DbConnSetting config)
         {
             var dbFactory = GetDefaultDataBaseFactory();
-            if (dbFactory != null && dbFactory.ConnectionString.Trim() == config.ConnString.Trim())
+            if (dbFactory != null && (string.IsNullOrEmpty(config.ConnString) || dbFactory.ConnectionString.Trim() == config.ConnString.Trim()))
                 return dbFactory;
 
             dbFactory = new DataBaseFactory(config);

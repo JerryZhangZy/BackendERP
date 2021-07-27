@@ -64,6 +64,7 @@
     <Folder Include="so" />
     <Folder Include="shipment" />
     <Folder Include="channelOrder" />
+    <Folder Include="dataType" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -157,5 +158,8 @@
     <None Include="so\SalesOrderHeaderInfo.sql" />
     <None Include="so\SalesOrderItems.sql" />
     <None Include="so\SalesOrderItemsAttributes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dataType\ListTableType.sql" />
   </ItemGroup>
 </Project>
