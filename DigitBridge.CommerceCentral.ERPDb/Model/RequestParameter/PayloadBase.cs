@@ -102,5 +102,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual IDictionary<string, Action<string>> GetOtherParameters() => null;
 
+
+        public dynamic ReqeustData { get; set; }
+        [JsonIgnore] public virtual bool HasReqeustData => ReqeustData != null;
+        public bool ShouldSerializeReqeustData() => HasReqeustData;
+
+
+        public dynamic ResponseData { get; set; }
+        [JsonIgnore] public virtual bool HasResponseData => ResponseData != null;
+        public bool ShouldSerializeResponseData() => HasResponseData;
+
     }
 }

@@ -7,6 +7,8 @@
     <DocumentationFile>C:\DigitBridge.CommerceCentral.ERP\centralerp\DigitBridge.CommerceCentral.ERPApi\DigitBridge.CommerceCentral.ERPApi.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Api\ApiDemo.cs" />
+    <Compile Remove="Api\ApiStandardDemo.cs" />
     <Compile Remove="Api\InvoicePaymentApi.cs" />
   </ItemGroup>
   <ItemGroup>
