@@ -76,7 +76,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 var req = executingContext.GetContext<HttpRequest>();
                 foreach (var item in openApiParameterAttributes)
                 {
-                    var parameterValue = req.GetData(item.Name);
+                    var parameterValue = req.GetData(item.Name,Microsoft.OpenApi.Models.ParameterLocation.Header);
                     if (parameterValue == null)
                     {
                         var message = $"parameter {item.Name} is required";

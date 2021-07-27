@@ -19,7 +19,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual bool HasLogUuids => LogUuids != null && LogUuids.Count > 0;
         public bool ShouldSerializeLogUuids() => HasLogUuids;
 
-        public IList<InventoryLogDto> InventoryLogs { get; set; }
+        public IList<InventoryLogDto> InventoryLogs { get; set; } = new List<InventoryLogDto>();
         [JsonIgnore] public virtual bool HasInventoryLogs => InventoryLogs != null && InventoryLogs.Count > 0;
         public bool ShouldSerializeInventoryLogs() => HasInventoryLogs;
 

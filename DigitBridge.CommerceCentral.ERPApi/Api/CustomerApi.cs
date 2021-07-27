@@ -43,7 +43,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
 
-            var resultlist = new List<CustomerDataDto>();
             if (!string.IsNullOrEmpty(CustomerCode))
             {
                 var spilterIndex = CustomerCode.IndexOf("-");
@@ -97,28 +96,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = await req.GetParameters<CustomerPayload>();
+            var payload = await req.GetParameters<CustomerPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            payload.Customer = JsonConvert.DeserializeObject<CustomerDataDto>(requestBody);
-            try
-            {
-                var addresult = await svc.AddAsync(payload.Customer);
-            }
-            catch (System.Exception ex)
-            {
-                if (MySingletonAppSetting.DebugMode)
-                {
-                    //return new ContentResult()
-                    //{
-                    //    Content = ex.ObjectToString(),
-                    //    ContentType = "application/json",
-                    //    StatusCode = (int)HttpStatusCode.InternalServerError
-                    //};
-                }
-            }
+            if (await svc.AddAsync(payload.Customer))
+                payload.Customer = svc.ToDto();
             return new JsonNetResponse<CustomerPayload>(payload);
         }
 
@@ -133,14 +116,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = await req.GetParameters<CustomerPayload>();
+            var payload = await req.GetParameters<CustomerPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            payload.Customer = JsonConvert.DeserializeObject<CustomerDataDto>(requestBody);
-
-            var updateresult = svc.Update(payload.Customer);
+            if (svc.Update(payload.Customer))
+                payload.Customer = svc.ToDto();
             return new JsonNetResponse<CustomerPayload>(payload);
         }
     }

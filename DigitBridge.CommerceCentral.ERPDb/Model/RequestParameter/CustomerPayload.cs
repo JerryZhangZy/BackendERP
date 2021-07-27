@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "customerCodes", val =>{ CustomerCodes = val.Split(",").ToList(); } }
+                { "customerCodes", val =>CustomerCodes = val.Split(",").ToList() }
             };
         }
 

@@ -77,15 +77,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = await req.GetParameters<InventoryLogPayload>();
+            var payload = await req.GetParameters<InventoryLogPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryLogService(dbFactory);
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            payload.InventoryLogs = JsonConvert.DeserializeObject<List<InventoryLogDto>>(requestBody);
-
-            svc.AddList(payload.InventoryLogs.ToList());
-            return new JsonNetResponse<InventoryLogPayload>(payload);
+            var result= svc.AddList(payload);
+            return new JsonNetResponse<InventoryLogPayload>(result);
         }
 
         [FunctionName(nameof(UpdateInventoryLogs))]
@@ -99,16 +96,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = await req.GetParameters<InventoryLogPayload>();
+            var payload = await req.GetParameters<InventoryLogPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryLogService(dbFactory);
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            payload.InventoryLogs = JsonConvert.DeserializeObject<List<InventoryLogDto>>(requestBody);
+            var result= svc.UpdateInventoryLogList(payload);
 
-            svc.UpdateInventoryLogList(payload.InventoryLogs.ToList());
-
-            return new JsonNetResponse<InventoryLogPayload>(payload);
+            return new JsonNetResponse<InventoryLogPayload>(result);
         }
     }
 }

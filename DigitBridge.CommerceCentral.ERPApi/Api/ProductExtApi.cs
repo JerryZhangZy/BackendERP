@@ -93,14 +93,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = await req.GetParameters<ProductExPayload>();
+            var payload = await req.GetParameters<ProductExPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryService(dbFactory);
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            payload.InventoryData = JsonConvert.DeserializeObject<InventoryDataDto>(requestBody);
-
-            svc.Add(payload.InventoryData);
+            if (svc.Add(payload.InventoryData))
+                payload.InventoryData = svc.ToDto();
             return new JsonNetResponse<ProductExPayload>(payload);
         }
 
@@ -115,14 +113,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = await req.GetParameters<ProductExPayload>();
+            var payload = await req.GetParameters<ProductExPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryService(dbFactory);
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            payload.InventoryData= JsonConvert.DeserializeObject<InventoryDataDto>(requestBody);
-
-            var updateresult = svc.Update(payload.InventoryData);
+            if (svc.Update(payload.InventoryData))
+                payload.InventoryData = svc.ToDto();
             return new JsonNetResponse<ProductExPayload>(payload);
         }
     }

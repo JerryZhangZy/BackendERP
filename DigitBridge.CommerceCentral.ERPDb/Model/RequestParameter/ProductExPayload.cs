@@ -19,7 +19,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual bool HasSkus => Skus != null && Skus.Count > 0;
         public bool ShouldSerializeCustomerCodes() => HasSkus;
 
-        public IList<InventoryDataDto> InventoryDatas { get; set; }
+        public IList<InventoryDataDto> InventoryDatas { get; set; } = new List<InventoryDataDto>();
         [JsonIgnore] public virtual bool HasInventoryDatas => InventoryDatas != null && InventoryDatas.Count > 0;
         public bool ShouldSerializeInventoryDatas() => HasInventoryDatas;
 

@@ -77,17 +77,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //    return _mapper.WriteInventoryLogDtoList(list, null);
         //}
 
-        public int AddList(List<InventoryLogDto> dtoList)
+        public InventoryLogPayload AddList(InventoryLogPayload payload)
         {
-            if (dtoList == null || dtoList.Count() == 0)
-                return 0;
-            if (dtoList.Exists(r => string.IsNullOrEmpty(r.SKU)))
-                return 0;
-            if (dtoList.Exists(r => string.IsNullOrEmpty(r.LogUuid)))
-                return 0;
+            if (payload.HasInventoryLogs)
+                return payload;
             var svc = new InventoryData(dbFactory);
             var batchNum = GetBatchNum();
-
+            var dtoList = payload.InventoryLogs.ToList();
             dtoList.ForEach(x =>
             {
                 x.BatchNum = batchNum;
@@ -109,24 +105,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var mapper = new InventoryLogDataDtoMapperDefault();
             var datalist = mapper.ReadInventoryLogDtoList(null, dtoList);
             var addcount = datalist.Count();
-            return datalist.SetDataBaseFactory(dbFactory).Save() ? addcount : 0;
+            datalist.SetDataBaseFactory(dbFactory).Save();
+            datalist = InventoryLogHelper.QueryInventoryLogByBatchNum(batchNum);
+            payload.InventoryLogs = mapper.WriteInventoryLogDtoList(datalist, null);
+            return payload;
             //TODO:Validator验证，Mapper,补充完整Inventory信息进去，调用Dao
         }
 
-        public int UpdateInventoryLogList(List<InventoryLogDto> list)
+        public InventoryLogPayload UpdateInventoryLogList(InventoryLogPayload payload)
         {
-            if (list == null || list.Count() == 0)
-                return 0;
-            var logUuidList = list.Select(r => r.LogUuid).Distinct();
+            if (payload.HasInventoryLogs)
+                return payload;
+            var logUuidList = payload.InventoryLogs.Select(r => r.LogUuid).Distinct();
 
             var dlist = new List<InventoryLog>();
             foreach (var uuid in logUuidList)
             {
                 dlist.AddRange(InventoryLogHelper.QueryInventoryLogByUuid(uuid));
             }
-            var data = _mapper.ReadInventoryLogDtoList(dlist, list).Where(x => x.RowNum > 0).ToList();
+            var data = _mapper.ReadInventoryLogDtoList(dlist, payload.InventoryLogs.ToList()).Where(x => x.RowNum > 0).ToList();
             int result = data.Count();
-            return data.SetDataBaseFactory(dbFactory).Save() ? result : 0;
+            data.SetDataBaseFactory(dbFactory).Save();
+
+            dlist = new List<InventoryLog>();
+            foreach (var uuid in logUuidList)
+            {
+                dlist.AddRange(InventoryLogHelper.QueryInventoryLogByUuid(uuid));
+            }
+            var ulist = payload.InventoryLogs.Select(r => r.UniqueId).ToList();
+            dlist = dlist.Where(r => ulist.Contains(r.UniqueId)).ToList();
+            payload.InventoryLogs = _mapper.WriteInventoryLogDtoList(dlist, null);
+            return payload;
         }
 
 
