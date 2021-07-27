@@ -1,4 +1,4 @@
-﻿using DigitBridge.Base.Utility;
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi.Models;

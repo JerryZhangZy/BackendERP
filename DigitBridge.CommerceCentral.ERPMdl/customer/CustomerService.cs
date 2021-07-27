@@ -28,11 +28,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddValidator(new CustomerServiceValidatorDefault());
             return this;
         }
+
         public string GetCustomerUuidByCode(int profileNum, string customerCode)
         {
             return dbFactory.Db.FirstOrDefault<string>($"select CustomerUuid from Customer where CustomerCode='{customerCode}' and ProfileNum={profileNum}");
         }
 
+        public List<string> GetCustomerUuidsByCodeArray(int profileNum, IList<string> cutomerCodes)
+        {
+            var customersWhere = string.Join(",", cutomerCodes.Select(x => $"'{x}'").ToArray());
+            return dbFactory.Db.Query<string>($"select CustomerUuid from Customer where CustomerCode in ({customersWhere}) and ProfileNum={profileNum}").ToList();
+        }
+
+        public CustomerPayload GetCustomersByCodeArray(CustomerPayload payload)
+        {
+            var uuids = GetCustomerUuidsByCodeArray(payload.ProfileNum, payload.CustomerCodes);
+            payload.Customers = new List<CustomerDataDto>();
+            uuids.ForEach(x =>
+            {
+                if (GetDataById(x))
+                    payload.Customers.Add(ToDto());
+            });
+            return payload;
+        }
         public CustomerDataDto GetCustomerByCode(int profileNum, string cutomerCode)
         {
             var uuid = GetCustomerUuidByCode(profileNum, cutomerCode);
@@ -40,9 +58,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return ToDto();
         }
 
-        public bool DeleteByCode(int profileNum, string customerCode)
+        public bool DeleteByCode(CustomerPayload payload)
         {
-            var uuid = GetCustomerUuidByCode(profileNum, customerCode);
+            var uuid = GetCustomerUuidByCode(payload.ProfileNum, payload.CustomerCodes.First());
             return Delete(uuid);
         }
 

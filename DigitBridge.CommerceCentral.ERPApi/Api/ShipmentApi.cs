@@ -44,7 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "shipments/{orderShipmentNum}")] HttpRequest req,
             ILogger log, string orderShipmentNum)
         {
-            var masterAccountNum = req.GetHeaderData<int>("masterAccountNum").Value;
+            var masterAccountNum = 0;// req.GetHeaderData<int>("masterAccountNum").Value;
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
             var srv = new OrderShipmentService(dataBaseFactory);
             var success = await srv.GetByOrderShipmentNumAsync(orderShipmentNum);
