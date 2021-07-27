@@ -445,6 +445,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return obj;
         }
 
+        public virtual IQueryFilter GetFilter(string name) => QueryFilterList.FirstOrDefault(x => x.Name.EqualsIgnoreSpace(name));
+        public virtual void SetFilterValue(string name, object value) => 
+            QueryFilterList.FirstOrDefault(x => x.Name.EqualsIgnoreSpace(name))?.SetValue(value);
+        public virtual string GetFilterValue(string name) =>
+            QueryFilterList.FirstOrDefault(x => x.Name.EqualsIgnoreSpace(name))?.FilterValueString;
+
     }
 }
  

@@ -62,6 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var qry = new SalesOrderQuery();
             var srv = new SalesOrderList(qry);
+            qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
 
             var result = false;
             StringBuilder sb = new StringBuilder();

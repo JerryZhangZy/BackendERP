@@ -58,5 +58,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
         void ClearAll();
         void LoadRequestParameter(IPayload payload);
         JObject WriteFilterJObject(JObject obj);
+
+        IQueryFilter GetFilter(string name);
+        void SetFilterValue(string name, object value);
+        string GetFilterValue(string name);
+
     }
 }
