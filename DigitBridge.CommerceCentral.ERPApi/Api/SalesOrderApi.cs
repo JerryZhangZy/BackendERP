@@ -111,7 +111,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<SalesOrderPayload>> UpdateSalesOrders(
 [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesorder")] HttpRequest req)
         {
-            var payload = await req.GetParameters<SalesOrderPayload>();
+            var payload = await req.GetParameters<SalesOrderDataDto, SalesOrderPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.UpdateAsync(payload.ReqeustData);
@@ -130,7 +130,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<SalesOrderPayload>> AddSalesOrders(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesorder")] HttpRequest req)
         {
-            var payload = await req.GetParameters<SalesOrderPayload>();
+            var payload = await req.GetParameters<SalesOrderDataDto, SalesOrderPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.AddAsync(payload.ReqeustData);

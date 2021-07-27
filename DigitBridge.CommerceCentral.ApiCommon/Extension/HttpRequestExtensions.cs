@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -26,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         /// <summary>
         /// Get all request parameter to RequestParameter object, include Header and Query string
         /// </summary>
-        public static async Task<TPayload> GetParameters<TPayload, TEntity>(this HttpRequest req)
+        public static async Task<TPayload> GetParameters<TEntity, TPayload>(this HttpRequest req)
             where TPayload : PayloadBase, new()
             where TEntity : class
         {
@@ -67,30 +66,20 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                 {
                     if (string.IsNullOrEmpty(item.Key) || item.Value is null)
                         continue;
-                    var param = req.GetQueryStringValue(item.Key);
-                    if(!string.IsNullOrEmpty(param))
-                        item.Value(param);
+                    item.Value(req.GetQueryStringValue(item.Key));
                 }
             }
             return instance;
         }
 
 
-        private static async Task<T> GetBodyObjectAsync<T>(this HttpRequest req) where T : class
+        public static async Task<T> GetBodyObjectAsync<T>(this HttpRequest req) where T : class
         {
             using (var reader = new StreamReader(req.Body))
             {
                 var json = await reader.ReadToEndAsync();
                 return JsonConvert.DeserializeObject<T>(json);
 
-            }
-        }
-        public static async Task<object> GetBodyObjectAsync(this HttpRequest req, Type type)
-        {
-            using (var reader = new StreamReader(req.Body))
-            {
-                var json = await reader.ReadToEndAsync();
-                return JsonConvert.DeserializeObject(json, type);
             }
         }
 
@@ -140,5 +129,4 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             return value;
         }
     }
-
 }
