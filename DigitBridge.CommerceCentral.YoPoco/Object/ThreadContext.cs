@@ -12,6 +12,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
     public struct ThreadContext<T>
     {
         public ThreadContext(string name) { Name = name; }
+        public ThreadContext(string name, T value) { Name = name; Set(value); }
         public string       Name { get; } 
         public T            Value => (T)CallContext.LogicalGetData(Name);
         public T            Set(T value) { CallContext.LogicalSetData(Name, value); return value; }

@@ -14,11 +14,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
 {
     public class ThreadConnections
     {
-        public TransactionalCache Data { get; }
+        public Dictionary<string, object> Data { get; }
         public ThreadConnections()
         {
-            Data = new TransactionalCache();
+            Data = new Dictionary<string, object>();
         }
+
+        //public TransactionalCache Data { get; }
+        //public ThreadConnections()
+        //{
+        //    Data = new TransactionalCache();
+        //}
     }
 
     public class DataBaseFactory : IDataBaseFactory
@@ -34,19 +40,25 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public static string DefaultDataBaseFactoryKey = "_DefaultDataBaseFactory_";
         private static readonly string[] AzureDatabaseTokenScopes = { "https://database.windows.net/.default" };
 
-        /// <summary>
-        /// Cache DataBaseFactory object for current thread
-        /// </summary>
-        [ThreadStatic] static TransactionalCache _dataBaseFactoryCache = new TransactionalCache();
-        private static TransactionalCache dataBaseFactoryCache
-        {
-            get 
-            {
-                if (_dataBaseFactoryCache is null)
-                    _dataBaseFactoryCache = new TransactionalCache();
-                return _dataBaseFactoryCache;
-            }
-        }
+
+        private static ThreadContext<ThreadConnections> _connectionThreadContext =
+            new ThreadContext<ThreadConnections>("DataBaseFactory._connectionThreadContext", new ThreadConnections());
+
+        public static Dictionary<string, object> dataBaseFactoryCache => _connectionThreadContext.Value?.Data;
+
+        ///// <summary>
+        ///// Cache DataBaseFactory object for current thread
+        ///// </summary>
+        //[ThreadStatic] static TransactionalCache _dataBaseFactoryCache = new TransactionalCache();
+        //private static TransactionalCache dataBaseFactoryCache
+        //{
+        //    get 
+        //    {
+        //        if (_dataBaseFactoryCache is null)
+        //            _dataBaseFactoryCache = new TransactionalCache();
+        //        return _dataBaseFactoryCache;
+        //    }
+        //}
             
 
         public static IDataBaseFactory SetDataBaseFactory(IDataBaseFactory dataBaseFactory) =>
@@ -61,8 +73,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             dataBaseFactoryCache.SetData(dataBaseFactory.ConnectionString, dataBaseFactory);
             return dataBaseFactory;
         }
-        public static void ClearDataBaseFactoryCache() =>
-            dataBaseFactoryCache.ClearAll();
+        public static void ClearDataBaseFactoryCache() => dataBaseFactoryCache.Clear();
 
         public static IDbConnection CreateConnection(string connectionString = null)
         {
@@ -119,7 +130,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return dbFactory;
 
             dbFactory = new DataBaseFactory(connectionString ?? ConfigurationManager.AppSettings["dsn"]);
-            if (string.IsNullOrWhiteSpace(connectionString))
+            if (string.IsNullOrWhiteSpace(connectionString) || GetDefaultDataBaseFactory() == null)
                 SetDefaultDataBaseFactory(dbFactory);
             else
                 SetDataBaseFactory(dbFactory);
@@ -129,7 +140,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public static IDataBaseFactory CreateDefault(DbConnSetting config)
         {
             var dbFactory = GetDefaultDataBaseFactory();
-            if (dbFactory != null && dbFactory.ConnectionString.Trim() == config.ConnString.Trim())
+            if (dbFactory != null && (string.IsNullOrEmpty(config.ConnString) || dbFactory.ConnectionString.Trim() == config.ConnString.Trim()))
                 return dbFactory;
 
             dbFactory = new DataBaseFactory(config);
