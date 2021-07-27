@@ -1,3 +1,4 @@
+using DigitBridge.CommerceCentral.YoPoco;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -11,7 +12,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Request paging information
     /// </summary>
     [Serializable()]
-    public class PayloadBase
+    public class PayloadBase : IPayload
     {
         /// <summary>
         /// User MasterAccountNum
@@ -86,6 +87,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public string SortBy { get; set; }
         [JsonIgnore] public virtual bool HasSortBy => !string.IsNullOrEmpty(SortBy);
         public bool ShouldSerializeSortBy() => HasSortBy;
+
+        /// <summary>
+        /// Load all result rows.
+        /// Optional,
+        /// Default value is false.
+        /// </summary>
+        [Display(Name = "$loadAll")]
+        [DataMember(Name = "$loadAll")]
+        public bool LoadAll { get; set; }
 
         /// <summary>
         /// Filter Json object.

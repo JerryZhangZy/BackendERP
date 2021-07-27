@@ -161,6 +161,48 @@ namespace DigitBridge.Base.Utility
             return selector(item);
         }
 
+
+        public static void RemoveKey(this Dictionary<string, object> dict, string key)
+        {
+            if (!string.IsNullOrEmpty(key) && dict != null && dict.ContainsKey(key))
+                dict.Remove(key);
+        }
+
+        public static T SetData<T>(this Dictionary<string, object> dict, string key, T objValue)
+        {
+            if (string.IsNullOrEmpty(key) || (dict == null))
+                return default;
+
+            dict[key] = objValue;
+            return objValue;
+        }
+
+        public static T GetData<T>(this Dictionary<string, object> dict, string key)
+        {
+            if (dict == null)
+                return default;
+
+            if (!dict.TryGetValue(key, out var retValue))
+                return default;
+
+            return (T)retValue;
+        }
+
+        public static T GetFirstData<T>(this Dictionary<string, object> dict)
+        {
+            return (dict == null || dict.Count <= 0)
+                ? default
+                : (T)dict.ElementAt(0).Value;
+        }
+
+        public static bool HasData(this Dictionary<string, object> dict, string key)
+        {
+            if (dict == null)
+                return false;
+
+            return dict.ContainsKey(key);
+        }
+
     }
 
 }

@@ -22,6 +22,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 _dataBaseFactory.Begin();
             _currentPrincipal = Thread.CurrentPrincipal;
         }
+        public ScopedTransaction(IDataBaseFactory dataBaseFactory, bool withTx = true)
+        {
+            _dataBaseFactory = dataBaseFactory;
+            _withTx = withTx;
+            if (_withTx)
+                _dataBaseFactory.Begin();
+            _currentPrincipal = Thread.CurrentPrincipal;
+        }
 
         public void Commit()
         {

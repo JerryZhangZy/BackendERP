@@ -23,6 +23,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasSalesOrders => SalesOrders != null && SalesOrders.Count > 0;
         public bool ShouldSerializeSalesOrders() => HasSalesOrders;
 
+        public SalesOrderDataDto SalesOrder { get; set; }
+        [JsonIgnore] public virtual bool HasSalesOrder => SalesOrder != null;
+        public bool ShouldSerializeSalesOrder() => HasSalesOrder;
+
 
         public override IDictionary<string, Action<string>> GetOtherParameters()
         {

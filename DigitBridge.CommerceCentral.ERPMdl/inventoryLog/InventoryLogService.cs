@@ -79,7 +79,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public InventoryLogPayload AddList(InventoryLogPayload payload)
         {
-            if (payload.HasInventoryLogs)
+            if (!payload.HasInventoryLogs)
                 return payload;
             var svc = new InventoryData(dbFactory);
             var batchNum = GetBatchNum();
@@ -114,7 +114,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public InventoryLogPayload UpdateInventoryLogList(InventoryLogPayload payload)
         {
-            if (payload.HasInventoryLogs)
+            if (!payload.HasInventoryLogs)
                 return payload;
             var logUuidList = payload.InventoryLogs.Select(r => r.LogUuid).Distinct();
 
@@ -132,8 +132,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 dlist.AddRange(InventoryLogHelper.QueryInventoryLogByUuid(uuid));
             }
-            var ulist = payload.InventoryLogs.Select(r => r.UniqueId).ToList();
-            dlist = dlist.Where(r => ulist.Contains(r.UniqueId)).ToList();
+            var ulist = payload.InventoryLogs.Select(r => r.RowNum).ToList();
+            dlist = dlist.Where(r => ulist.Contains(r.RowNum)).ToList();
             payload.InventoryLogs = _mapper.WriteInventoryLogDtoList(dlist, null);
             return payload;
         }
