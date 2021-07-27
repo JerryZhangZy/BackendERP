@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         /// <summary>
         /// Get all request parameter to RequestParameter object, include Header and Query string
         /// </summary>
-        public static async Task<TPayload> GetParameters<TPayload, TEntity>(this HttpRequest req)
+        public static async Task<TPayload> GetParameters<TEntity, TPayload>(this HttpRequest req)
             where TPayload : PayloadBase, new()
             where TEntity : class
         {
@@ -71,9 +71,9 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             }
             return instance;
         }
-         
 
-        private static async Task<T> GetBodyObjectAsync<T>(this HttpRequest req) where T : class
+
+        public static async Task<T> GetBodyObjectAsync<T>(this HttpRequest req) where T : class
         {
             using (var reader = new StreamReader(req.Body))
             {
@@ -81,7 +81,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                 return JsonConvert.DeserializeObject<T>(json);
 
             }
-        } 
+        }
 
         /// <summary>
         /// Get value string from context headers
