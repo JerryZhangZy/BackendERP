@@ -39,7 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = req.GetRequestParameter<CustomerPayload>();
+            var payload =await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
 
@@ -71,7 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = req.GetRequestParameter<CustomerPayload>();
+            var payload = await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
             var spilterIndex = CustomerCode.IndexOf("-");
@@ -97,7 +97,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = req.GetRequestParameter<CustomerPayload>();
+            var payload = await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
 
@@ -133,7 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = req.GetRequestParameter<CustomerPayload>();
+            var payload = await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
 

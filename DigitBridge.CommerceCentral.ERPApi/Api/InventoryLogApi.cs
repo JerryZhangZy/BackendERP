@@ -34,7 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = req.GetRequestParameter<InventoryLogPayload>();
+            var payload = await req.GetParameters<InventoryLogPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
 
             if (!string.IsNullOrEmpty(logUuid))
@@ -59,9 +59,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = req.GetRequestParameter<InventoryLogPayload>();
-            payload.LogUuids.Add(logUuid);
+            var payload = await req.GetParameters<InventoryLogPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            payload.LogUuids.Add(logUuid);
             var svc = new InventoryLogService(dbFactory);
             var result= svc.DeleteByLogUuid(payload);
             return new JsonNetResponse<InventoryLogPayload>(result);
@@ -77,7 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = req.GetRequestParameter<InventoryLogPayload>();
+            var payload = await req.GetParameters<InventoryLogPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryLogService(dbFactory);
 
@@ -99,7 +99,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var payload = req.GetRequestParameter<InventoryLogPayload>();
+            var payload = await req.GetParameters<InventoryLogPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryLogService(dbFactory);
 
