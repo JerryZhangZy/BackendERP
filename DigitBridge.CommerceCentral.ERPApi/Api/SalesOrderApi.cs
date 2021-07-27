@@ -95,7 +95,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.DeleteByOrderNumberAsync(orderNumber);
-            payload.ResponseData = $"{success} to delete sales order";
+            payload.ResponseData = $"{success} to delete data";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
@@ -103,7 +103,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
         ///  Update salesorder 
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="dto"></param>
         /// <returns></returns>
         [FunctionName(nameof(UpdateSalesOrders))]
         [OpenApiOperation(operationId: "UpdateSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Update one sales order")]
@@ -116,14 +115,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.UpdateAsync(payload.ReqeustData);
-            payload.ResponseData = $"{success} to delete sales order";
+            payload.ResponseData = $"{success} to update data";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
         /// <summary>
         /// Add sales order
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="dto"></param>
         /// <returns></returns>
         [FunctionName(nameof(AddSalesOrders))]
         [OpenApiOperation(operationId: "AddSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Add one sales order")]
@@ -136,7 +134,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.AddAsync(payload.ReqeustData);
-            payload.ResponseData = $"{success} to add sales order, the uuid is:{srv.Data.UniqueId}";
+            payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
     }
