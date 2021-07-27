@@ -237,8 +237,8 @@ namespace DigitBridge.Base.Utility
                 if (value == DBNull.Value)
                     value = null;
 
-                if (type is { })
-                    return value;
+                //if (type is {})
+                //    return value;
 
                 if ((value == null) || ((value is string s) && (type != typeof(string)) && string.IsNullOrEmpty(s)))
                     return (type.IsClass ||

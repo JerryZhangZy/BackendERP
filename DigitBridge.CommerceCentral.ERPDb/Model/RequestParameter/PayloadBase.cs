@@ -89,6 +89,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeSortBy() => HasSortBy;
 
         /// <summary>
+        /// Load all result rows.
+        /// Optional,
+        /// Default value is false.
+        /// </summary>
+        [Display(Name = "$loadAll")]
+        [DataMember(Name = "$loadAll")]
+        public bool LoadAll { get; set; }
+
+        /// <summary>
         /// Filter Json object.
         /// Optional,
         /// Default value: {}.

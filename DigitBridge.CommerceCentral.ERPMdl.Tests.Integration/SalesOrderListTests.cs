@@ -23,6 +23,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -43,8 +44,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         }
         protected void InitForTest()
         {
-            var Seq = 0;
-            dataBaseFactory = DataBaseFactory.CreateDefault(Configuration["dsn"].ToString());
+            try
+            {
+                var Seq = 0;
+                dataBaseFactory = DataBaseFactory.CreateDefault(Configuration["dsn"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
         public void Dispose()
         {
@@ -60,20 +68,35 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ExcuteJsonAsync_Test()
         {
+            var payload = new SalesOrderPayload();
+            payload.LoadAll = true;
+            payload.Filter = new JObject()
+            {
+                { "OrderDateFrom",  DateTime.Today.AddDays(-30) },
+                { "OrderStatus",  "11,18,86" }
+            };
+
             var qry = new SalesOrderQuery();
             var srv = new SalesOrderList(qry);
-            qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
+            srv.LoadRequestParameter(payload);
+            //qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
+            //qry.OrderNumberFrom.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
+            //qry.OrderNumberTo.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
+            //qry.OrderStatus.MultipleFilterValueString = "11,18,86";
 
+            var totalRecords = 0;
             var result = false;
             StringBuilder sb = new StringBuilder();
             try
             {
                 using (var b = new Benchmark("ExcuteJsonAsync_Test"))
                 {
-                    using (var trs = new ScopedTransaction())
-                    {
-                        result = await srv.ExcuteJsonAsync(sb);
-                    }
+                    totalRecords = await srv.CountAsync().ConfigureAwait(false);
+                    result = await srv.ExcuteJsonAsync(sb).ConfigureAwait(false);
+
+                    //using (var trs = new ScopedTransaction())
+                    //{
+                    //}
                 }
             }
             catch (Exception ex)

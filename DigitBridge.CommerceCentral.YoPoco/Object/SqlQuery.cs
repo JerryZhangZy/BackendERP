@@ -8,6 +8,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
@@ -87,6 +88,41 @@ namespace DigitBridge.CommerceCentral.YoPoco
             await ((SqlCommand)dbCommand).ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
+        public static T ExecuteScalar<T>(string commandText, params IDataParameter[] parameters) =>
+            ExecuteScalar<T>(commandText, CommandType.Text, parameters);
+
+        public static T ExecuteScalar<T>(string commandText, CommandType commandType, params IDataParameter[] parameters)
+        {
+            using IDbCommand dbCommand = DataBaseFactory.CreateCommand(commandText, commandType, parameters);
+            var val = dbCommand.ExecuteScalar();
+            if (val == null) return default(T);
+
+            // Handle nullable types
+            var u = Nullable.GetUnderlyingType(typeof(T));
+            if (u != null && (val == null || val == DBNull.Value))
+                return default(T);
+
+            return (T)Convert.ChangeType(val, u == null ? typeof(T) : u);
+        }
+
+        public static async Task<T> ExecuteScalarAsync<T>(string commandText, params IDataParameter[] parameters) =>
+            await ExecuteScalarAsync<T>(commandText, CommandType.Text, parameters).ConfigureAwait(false);
+
+        public static async Task<T> ExecuteScalarAsync<T>(string commandText, CommandType commandType, params IDataParameter[] parameters)
+        {
+            using var dbCommand = DataBaseFactory.CreateCommand(commandText, commandType, parameters) as SqlCommand;
+            var val = await dbCommand.ExecuteScalarAsync();
+            if (val == null) return default(T);
+
+            // Handle nullable types
+            var u = Nullable.GetUnderlyingType(typeof(T));
+            if (u != null && (val == null || val == DBNull.Value))
+                return default(T);
+
+            return (T)Convert.ChangeType(val, u == null ? typeof(T) : u);
+        }
+
+
         public static IDataReader ExecuteCommand(string commandText, params IDataParameter[] parameters) =>
             ExecuteCommand(commandText, CommandType.Text, parameters);
 
@@ -101,8 +137,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<SqlDataReader> ExecuteCommandAsync(string commandText, CommandType commandType, params IDataParameter[] parameters)
         {
-            using IDbCommand dbCommand = DataBaseFactory.CreateCommand(commandText, commandType, parameters);
-            return await ((SqlCommand)dbCommand).ExecuteReaderAsync().ConfigureAwait(false);
+            using var dbCommand = DataBaseFactory.CreateCommand(commandText, commandType, parameters) as SqlCommand;
+            return await dbCommand.ExecuteReaderAsync().ConfigureAwait(false);
         }
 
         #region excute command and return sqlreader value to callback function, upto 20 columns
@@ -966,14 +1002,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static DataTable ToDataTable<T>(this IEnumerable<T> items)
         {
-            if (typeof(T).IsValueType || typeof(T) == typeof(string))
-            {
-                DataTable table = new DataTable();
-                table.Columns.Add(new DataColumn("item", typeof(T)));
-                foreach (var val in items.ToList())
-                    table.Rows.Add(val);
-                return table;
-            }
+            DataTable table = new DataTable();
+            table.Columns.Add(new DataColumn("item", typeof(T)));
+            foreach (var val in items.ToList())
+                table.Rows.Add(val);
+            return table;
             return items.ToDataTableFromObject();
         }
 
@@ -995,6 +1028,23 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 }
                 table.Rows.Add(row);
             };
+            return table;
+        }
+
+        public static DataTable ToEnumDataTable(this Type enumType)
+        {
+            if (!enumType.IsEnum)
+                return null;
+            DataTable table = new DataTable();
+            table.Columns.Add(new DataColumn("num", typeof(int)));
+            table.Columns.Add(new DataColumn("text", typeof(string)));
+            foreach (var item in Enum.GetValues(enumType))
+            {
+                FieldInfo fi = enumType.GetField(item.ToString());
+                var attribute = fi.GetCustomAttributes(typeof(DescriptionAttribute), true).FirstOrDefault();
+                var text = attribute == null ? item.ToString() : ((DescriptionAttribute)attribute).Description;
+                table.Rows.Add((int)item, text);
+            }
             return table;
         }
 
@@ -1023,10 +1073,26 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return sqlParam;
         }
 
+        public static SqlParameter AddEnumListParameters<T>(this SqlParameter sqlParam)
+        {
+            var typeName = "dbo.EnumListTableType";
+            var t = typeof(T);
+
+            sqlParam.TypeName = typeName;
+            sqlParam.Value = t.ToEnumDataTable();
+            return sqlParam;
+        }
+
         public static SqlParameter ToParameter<T>(this IEnumerable<T> values, string name)
         {
             SqlParameter param = new SqlParameter(name.ToParameterName(), SqlDbType.Structured);
             param.AddListParameters<T>(values);
+            return param;
+        }
+        public static SqlParameter ToEnumParameter<T>(this string name) where T: Enum
+        {
+            SqlParameter param = new SqlParameter(name.ToParameterName(), SqlDbType.Structured);
+            param.AddEnumListParameters<T>();
             return param;
         }
 

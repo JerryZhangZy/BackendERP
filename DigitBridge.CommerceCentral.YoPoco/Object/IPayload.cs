@@ -64,6 +64,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
         bool HasSortBy { get; }
 
         /// <summary>
+        /// Load all result rows.
+        /// Optional,
+        /// Default value is false.
+        /// </summary>
+        bool LoadAll { get; set; }
+
+        /// <summary>
         /// Filter Json object.
         /// Optional,
         /// Default value: {}.

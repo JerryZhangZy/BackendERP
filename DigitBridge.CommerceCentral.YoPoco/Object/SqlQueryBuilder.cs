@@ -208,6 +208,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var param = GetSqlParameters();
             SqlQueryResultData result;
 
+            using var trs = new ScopedTransaction();
             if (param == null)
                 result = SqlQuery.QuerySqlQueryResultData(sql, System.Data.CommandType.Text);
             else
@@ -221,6 +222,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var param = GetSqlParameters();
             SqlQueryResultData result;
 
+            using var trs = new ScopedTransaction();
             if (param == null)
                 result = await SqlQuery.QuerySqlQueryResultDataAsync(sql, System.Data.CommandType.Text);
             else
@@ -234,6 +236,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var param = GetSqlParameters();
             var result = false;
 
+            using var trs = new ScopedTransaction();
             if (param == null)
                 result = SqlQuery.QueryJson(sb, sql, System.Data.CommandType.Text);
             else
@@ -247,6 +250,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var param = GetSqlParameters();
             var result = false;
 
+            using var trs = new ScopedTransaction();
             if (!param.Any())
                 result = await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text);
             else
@@ -254,6 +258,33 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return result;
         }
 
+        public virtual int Count()
+        {
+            var sql = GetCommandTextForCount();
+            var param = GetSqlParameters();
+            var result = 0;
+
+            using var trs = new ScopedTransaction();
+            if (param == null)
+                result = SqlQuery.ExecuteScalar<int>(sql, System.Data.CommandType.Text);
+            else
+                result = SqlQuery.ExecuteScalar<int>(sql, System.Data.CommandType.Text, param);
+            return result;
+        }
+
+        public virtual async Task<int> CountAsync()
+        {
+            var sql = GetCommandTextForCount();
+            var param = GetSqlParameters();
+            var result = 0;
+
+            using var trs = new ScopedTransaction();
+            if (param == null)
+                result = await SqlQuery.ExecuteScalarAsync<int>(sql, System.Data.CommandType.Text);
+            else
+                result = await SqlQuery.ExecuteScalarAsync<int>(sql, System.Data.CommandType.Text, param);
+            return result;
+        }
 
     }
 }

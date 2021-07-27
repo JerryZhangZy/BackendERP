@@ -416,6 +416,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return;
             SkipRecords = payload.Skip < 0 ? 0 : payload.Skip;
             PageSize = payload.Top < 1 ? 20 : payload.Top;
+            if (payload.LoadAll)
+                LoadAll = true;
 
             if (payload.HasSortBy)
                 SetOrderBy(payload.SortBy.Split(",").ToList());

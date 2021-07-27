@@ -498,13 +498,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             StringBuilder sb = new StringBuilder();
             var paramName = Name.ToParameterName();
+            var paramNamePre = $"_{Name}";
 
             sb.Append(FilterMode == FilterBy.ne ? "NOT EXISTS " : "EXISTS ")
               .Append("(")
               .Append("SELECT * FROM ")
               .Append(paramName)
+              .Append(' ').Append(paramNamePre)
               .Append(" WHERE ")
-              .Append(paramName)
+              .Append(paramNamePre)
               .Append(".item = ")
               .Append(GetPropertyNameSQL(PropertyName))
               .Append(')');
@@ -702,7 +704,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
                         SetFilterBy(obj["operator"]);
                     break;
                 case JValue val:
-                    if (val.HasValues)
                     SetValue(val.Value);
                     break;
             }
@@ -715,7 +716,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             obj.Add(Name,
                 new JObject()
                 {
-                    { "value", FilterValueString },
+                    { "value", (HasMultipleFilterValue) ? MultipleFilterValueString : FilterValueString },
                     { "operator", FilterModeInt }
                 });
             return;
