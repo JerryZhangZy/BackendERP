@@ -20,7 +20,6 @@ using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
-using Microsoft.Data.SqlClient;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -144,16 +143,7 @@ RTRIM({allies}UpdateBy) AS UpdateBy,
 
             return $"SELECT {SelectAll(tableAllies)} FROM {TableName} {allies} {sqlWhere} {forJsonString}";
         }
-        /// <summary>
-        /// Get row num by order number
-        /// </summary>
-        /// <param name="invoiceNumber"></param>
-        /// <returns></returns>
-        public static async Task DeleteByInvoiceNumberAsync(string invoiceNumber)
-        {
-            await SqlQuery.ExecuteNonQueryAsync($"Delete FROM [InvoiceTransaction] where InvoiceNumber=@InvoiceNumber", new SqlParameter("@InvoiceNumber", invoiceNumber));
 
-        }
     }
 }
 

@@ -25,24 +25,25 @@ using Bogus;
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     /// <summary>
-    /// Represents a Tester for InvoicePaymentData.
+    /// Represents a Tester for InvoiceTransactionData.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class InvoicePaymentDataTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class InvoiceTransactionDataTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        public static InvoicePaymentData GetFakerData()
+        public static InvoiceTransactionData GetFakerData()
         {
-			var InvoicePaymentData = new InvoicePaymentData(); 
-			InvoicePaymentData.InvoiceTransaction = InvoiceTransactionTests.GetFakerData().Generate(); 
-			return InvoicePaymentData; 
+			var InvoiceTransactionData = new InvoiceTransactionData(); 
+			InvoiceTransactionData.InvoiceTransaction = InvoiceTransactionTests.GetFakerData().Generate(); 
+			InvoiceTransactionData.InvoiceReturnItems = InvoiceReturnItemsTests.GetFakerData().Generate(10); 
+			return InvoiceTransactionData; 
         }
 
-        public static List<InvoicePaymentData> GetFakerData(int count)
+        public static List<InvoiceTransactionData> GetFakerData(int count)
         {
-			var InvoicePaymentDatas = new List<InvoicePaymentData>(); 
+			var InvoiceTransactionDatas = new List<InvoiceTransactionData>(); 
 			for (int i = 0; i < count; i++) 
-				InvoicePaymentDatas.Add(GetFakerData()); 
-			return InvoicePaymentDatas; 
+				InvoiceTransactionDatas.Add(GetFakerData()); 
+			return InvoiceTransactionDatas; 
         }
 
         protected const string SkipReason = "Debug Helper Function";
@@ -51,7 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public IConfiguration Configuration { get; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public InvoicePaymentDataTests(TestFixture<StartupTest> fixture) 
+        public InvoiceTransactionDataTests(TestFixture<StartupTest> fixture) 
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -74,10 +75,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             var id = DataBaseFactory.GetValue<InvoiceTransaction, string>(@"
 SELECT TOP 1 ins.TransUuid 
 FROM InvoiceTransaction ins 
+INNER JOIN (
+    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
+) itm ON (itm.TransUuid = ins.TransUuid)
+WHERE itm.cnt > 0
 ");
 
 
-            var data = new InvoicePaymentData(DataBaseFactory);
+            var data = new InvoiceTransactionData(DataBaseFactory);
             data.GetById(id);
 
             var dataClone = data.Clone();
@@ -96,7 +101,7 @@ FROM InvoiceTransaction ins
             data.SetDataBaseFactory(DataBaseFactory);
 			data.Save();
 
-            var dataGet = new InvoicePaymentData(DataBaseFactory);
+            var dataGet = new InvoiceTransactionData(DataBaseFactory);
             dataGet.GetById(data.UniqueId);
             var result = data.Equals(dataGet);
 
@@ -112,10 +117,14 @@ FROM InvoiceTransaction ins
             var id = DataBaseFactory.GetValue<InvoiceTransaction, string>(@"
 SELECT TOP 1 ins.TransUuid 
 FROM InvoiceTransaction ins 
+INNER JOIN (
+    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
+) itm ON (itm.TransUuid = ins.TransUuid)
+WHERE itm.cnt > 0
 ");
 
 
-            var data = new InvoicePaymentData(DataBaseFactory);
+            var data = new InvoiceTransactionData(DataBaseFactory);
             data.GetById(id);
             var rowNum = data.InvoiceTransaction.RowNum;
 
@@ -124,10 +133,10 @@ FROM InvoiceTransaction ins
             data?.CopyFrom(dataUpdate);
             data.Save();
 
-            var dataGetById = new InvoicePaymentData(DataBaseFactory);
+            var dataGetById = new InvoiceTransactionData(DataBaseFactory);
             dataGetById.GetById(id);
 
-            var dataGet = new InvoicePaymentData(DataBaseFactory);
+            var dataGet = new InvoiceTransactionData(DataBaseFactory);
             dataGet.Get(rowNum);
 
             var result = data.Equals(dataGet) && dataGet.Equals(dataGetById);
@@ -144,10 +153,14 @@ FROM InvoiceTransaction ins
             var id = DataBaseFactory.GetValue<InvoiceTransaction, string>(@"
 SELECT TOP 1 ins.TransUuid 
 FROM InvoiceTransaction ins 
+INNER JOIN (
+    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
+) itm ON (itm.TransUuid = ins.TransUuid)
+WHERE itm.cnt > 0
 ");
 
 
-            var data = new InvoicePaymentData(DataBaseFactory);
+            var data = new InvoiceTransactionData(DataBaseFactory);
             data.GetById(id);
 
             DataBaseFactory.Begin();
@@ -173,7 +186,7 @@ FROM InvoiceTransaction ins
             data.SetDataBaseFactory(DataBaseFactory);
 			await data.SaveAsync();
 
-            var dataGet = new InvoicePaymentData(DataBaseFactory);
+            var dataGet = new InvoiceTransactionData(DataBaseFactory);
             await dataGet.GetByIdAsync(data.UniqueId);
             var result = data.Equals(dataGet);
 
@@ -189,10 +202,14 @@ FROM InvoiceTransaction ins
             var id = await DataBaseFactory.GetValueAsync<InvoiceTransaction, string>(@"
 SELECT TOP 1 ins.TransUuid 
 FROM InvoiceTransaction ins 
+INNER JOIN (
+    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
+) itm ON (itm.TransUuid = ins.TransUuid)
+WHERE itm.cnt > 0
 ");
 
 
-            var data = new InvoicePaymentData(DataBaseFactory);
+            var data = new InvoiceTransactionData(DataBaseFactory);
             await data.GetByIdAsync(id);
             var rowNum = data.InvoiceTransaction.RowNum;
 
@@ -201,10 +218,10 @@ FROM InvoiceTransaction ins
             data?.CopyFrom(dataUpdate);
             await data.SaveAsync();
 
-            var dataGetById = new InvoicePaymentData(DataBaseFactory);
+            var dataGetById = new InvoiceTransactionData(DataBaseFactory);
             await dataGetById.GetByIdAsync(id);
 
-            var dataGet = new InvoicePaymentData(DataBaseFactory);
+            var dataGet = new InvoiceTransactionData(DataBaseFactory);
             await dataGet.GetAsync(rowNum);
 
             var result = data.Equals(dataGet) && dataGet.Equals(dataGetById);
@@ -221,10 +238,14 @@ FROM InvoiceTransaction ins
             var id = await DataBaseFactory.GetValueAsync<InvoiceTransaction, string>(@"
 SELECT TOP 1 ins.TransUuid 
 FROM InvoiceTransaction ins 
+INNER JOIN (
+    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
+) itm ON (itm.TransUuid = ins.TransUuid)
+WHERE itm.cnt > 0
 ");
 
 
-            var data = new InvoicePaymentData(DataBaseFactory);
+            var data = new InvoiceTransactionData(DataBaseFactory);
             await data.GetByIdAsync(id);
 
             DataBaseFactory.Begin();

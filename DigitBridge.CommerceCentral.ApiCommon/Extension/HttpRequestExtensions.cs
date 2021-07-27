@@ -44,6 +44,30 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             return instance;
         }
 
+        ///// <summary>
+        ///// Get all request parameter to RequestParameter object, include Header and Query string
+        ///// </summary>
+        //public static async T GetBodyParameter<T>(this HttpRequest req) where T : PayloadBase, new()
+        //{
+        //    //return (T)req.GetRequestParameter(typeof(T));
+        //    //Activator.CreateInstance(instanceType);
+        //    var instance = await  GetBodyObjectAsync<T>();
+        //    instance.MasterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
+        //    instance.ProfileNum = req.GetHeaderValue("profileNum").ToInt();
+            
+
+        //    var moreParameterFunc = instance.GetOtherParameters();
+        //    if (moreParameterFunc != null && moreParameterFunc.Count > 0)
+        //    {
+        //        foreach (var item in moreParameterFunc)
+        //        {
+        //            if (string.IsNullOrEmpty(item.Key) || item.Value is null)
+        //                continue;
+        //            item.Value(req.GetQueryStringValue(item.Key));
+        //        }
+        //    }
+        //    return instance;
+        //}
 
         ///// <summary>
         ///// Get all request parameter to RequestParameter object, include Header and Query string

@@ -24,9 +24,9 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a default InvoicePaymentService Validator class.
+    /// Represents a default InvoiceTransactionService Validator class.
     /// </summary>
-    public partial class InvoicePaymentServiceValidatorDefault : IValidator<InvoicePaymentData>
+    public partial class InvoiceTransactionServiceValidatorDefault : IValidator<InvoiceTransactionData>
     {
         public virtual bool IsValid { get; set; }
         public virtual IList<string> Messages { get; set; }
@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             IsValid = true;
             Messages = new List<string>();
         }
-        public virtual bool Validate(InvoicePaymentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool Validate(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
             if (!ValidateAllMode(data))
@@ -53,7 +53,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 _ => false,
             };
         }
-        protected virtual bool ValidateAllMode(InvoicePaymentData data)
+        protected virtual bool ValidateAllMode(InvoiceTransactionData data)
         {
             var dbFactory = data.dbFactory;
             if (string.IsNullOrEmpty(data.InvoiceTransaction.TransUuid))
@@ -72,7 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        protected virtual bool ValidateAdd(InvoicePaymentData data)
+        protected virtual bool ValidateAdd(InvoiceTransactionData data)
         {
             var dbFactory = data.dbFactory;
             if (data.InvoiceTransaction.RowNum != 0 && dbFactory.Exists<InvoiceTransaction>(data.InvoiceTransaction.RowNum))
@@ -85,7 +85,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        protected virtual bool ValidateEdit(InvoicePaymentData data)
+        protected virtual bool ValidateEdit(InvoiceTransactionData data)
         {
             var dbFactory = data.dbFactory;
             if (data.InvoiceTransaction.RowNum == 0)
@@ -104,7 +104,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        protected virtual bool ValidateDelete(InvoicePaymentData data)
+        protected virtual bool ValidateDelete(InvoiceTransactionData data)
         {
             var dbFactory = data.dbFactory;
             if (data.InvoiceTransaction.RowNum == 0)
@@ -126,7 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Async Methods
 
-        public virtual async Task<bool> ValidateAsync(InvoicePaymentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual async Task<bool> ValidateAsync(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
             if (!(await ValidateAllModeAsync(data).ConfigureAwait(false)))
@@ -144,7 +144,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
         }
 
-        protected virtual async Task<bool> ValidateAllModeAsync(InvoicePaymentData data)
+        protected virtual async Task<bool> ValidateAllModeAsync(InvoiceTransactionData data)
         {
             var dbFactory = data.dbFactory;
             if (string.IsNullOrEmpty(data.InvoiceTransaction.TransUuid))
@@ -163,7 +163,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        protected virtual async Task<bool> ValidateAddAsync(InvoicePaymentData data)
+        protected virtual async Task<bool> ValidateAddAsync(InvoiceTransactionData data)
         {
             var dbFactory = data.dbFactory;
             if (data.InvoiceTransaction.RowNum != 0 && (await dbFactory.ExistsAsync<InvoiceTransaction>(data.InvoiceTransaction.RowNum)))
@@ -176,7 +176,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        protected virtual async Task<bool> ValidateEditAsync(InvoicePaymentData data)
+        protected virtual async Task<bool> ValidateEditAsync(InvoiceTransactionData data)
         {
             var dbFactory = data.dbFactory;
             if (data.InvoiceTransaction.RowNum == 0)
@@ -195,7 +195,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        protected virtual async Task<bool> ValidateDeleteAsync(InvoicePaymentData data)
+        protected virtual async Task<bool> ValidateDeleteAsync(InvoiceTransactionData data)
         {
             var dbFactory = data.dbFactory;
             if (data.InvoiceTransaction.RowNum == 0)

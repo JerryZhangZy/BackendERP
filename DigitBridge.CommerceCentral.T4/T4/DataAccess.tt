@@ -63,7 +63,7 @@
 */
 #>
 
-<#@ include file="SettingForInvoicePayment.ttinclude" #>
+<#@ include file="SettingForInvoiceTransaction.ttinclude" #>
 
 <#      
     // Generate model output

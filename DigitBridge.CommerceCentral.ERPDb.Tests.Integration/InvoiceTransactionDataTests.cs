@@ -23,7 +23,7 @@ using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
-    public partial class InvoicePaymentDataTests
+    public partial class InvoiceTransactionDataTests
     {
 
     }

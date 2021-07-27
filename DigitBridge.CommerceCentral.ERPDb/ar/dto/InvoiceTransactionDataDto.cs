@@ -19,15 +19,19 @@ using DigitBridge.CommerceCentral.YoPoco;
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
-    /// Represents a InvoicePaymentDataDto Class.
+    /// Represents a InvoiceTransactionDataDto Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
     [Serializable()]
-    public partial class InvoicePaymentDataDto
+    public partial class InvoiceTransactionDataDto
     {
         public InvoiceTransactionDto InvoiceTransaction { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasInvoiceTransaction => InvoiceTransaction != null;
+
+        public IList<InvoiceReturnItemsDto> InvoiceReturnItems { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public bool HasInvoiceReturnItems => InvoiceReturnItems != null;
 
     }
 }

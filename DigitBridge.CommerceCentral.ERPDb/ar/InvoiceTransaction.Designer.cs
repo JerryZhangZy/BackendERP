@@ -1,9 +1,4 @@
 
-
-
-
-
-
               
 
               
@@ -829,9 +824,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Methods - Parent
 
 		[JsonIgnore, XmlIgnore, IgnoreCompare]
-		private InvoicePaymentData Parent { get; set; }
-		public InvoicePaymentData GetParent() => Parent;
-		public InvoiceTransaction SetParent(InvoicePaymentData parent)
+		private InvoiceTransactionData Parent { get; set; }
+		public InvoiceTransactionData GetParent() => Parent;
+		public InvoiceTransaction SetParent(InvoiceTransactionData parent)
 		{
 			Parent = parent;
 			return this;
