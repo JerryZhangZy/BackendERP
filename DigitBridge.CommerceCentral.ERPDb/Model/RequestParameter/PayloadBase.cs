@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -110,9 +110,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public dynamic ResponseData { get; set; }
         [JsonIgnore] public virtual bool HasResponseData => ResponseData != null;
-
-        public object ReqeustObject { get; set; }
-
         public bool ShouldSerializeResponseData() => HasResponseData;
 
     }

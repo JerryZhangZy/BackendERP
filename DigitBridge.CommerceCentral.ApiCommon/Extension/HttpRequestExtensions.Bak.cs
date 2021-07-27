@@ -1,4 +1,4 @@
-﻿using DigitBridge.Base.Utility;
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi.Models;
@@ -70,7 +70,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             }
             return null;
         }
-
+        
         public static async Task<object> GetBodyObjectAsync(this HttpRequest req, Type type)
         {
             using (var reader = new StreamReader(req.Body))

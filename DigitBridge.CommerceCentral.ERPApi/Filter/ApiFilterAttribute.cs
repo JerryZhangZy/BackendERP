@@ -1,4 +1,4 @@
-﻿
+
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -41,6 +41,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
             {
                 //todo record
             }
+            if (MySingletonAppSetting.DebugMode)
+            {
+                exceptionContext.Logger.LogInformation(exceptionContext.Exception.ObjectToString());
+            }
             ((RecoverableException)exceptionContext.ExceptionDispatchInfo.SourceException).Handled = true;
         }
 
@@ -54,16 +58,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var exception = executedContext.FunctionResult.Exception;
             if (exception != null)
-            {
-                // if it is DebugMode, response Exception detail
-                if (MySingletonAppSetting.DebugMode)
-                {
-                    executedContext.Logger.LogInformation(exception.ObjectToString());
-
-                    var data = new ResponseResult<Exception>(exception, false);
-                    var req = executedContext.GetContext<HttpRequest>();
-                    await req.HttpContext.Response.Output(data, data.StatusCode);
-                }
+            { 
+                //todo which data detail should be render;
+                var data = new ResponseResult<Exception>(exception, false);
+                var req = executedContext.GetContext<HttpRequest>();
+                await req.HttpContext.Response.Output(data, data.StatusCode);
             }
         }
 
@@ -76,7 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 var req = executingContext.GetContext<HttpRequest>();
                 foreach (var item in openApiParameterAttributes)
                 {
-                    var parameterValue = req.GetData(item.Name,Microsoft.OpenApi.Models.ParameterLocation.Header);
+                    var parameterValue = req.GetData(item.Name, item.In);
                     if (parameterValue == null)
                     {
                         var message = $"parameter {item.Name} is required";
