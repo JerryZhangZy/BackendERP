@@ -1,5 +1,5 @@
 
-    
+
 
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual bool Add(InvoiceTransactionDataDto dto)
         {
-            if (dto is null) 
+            if (dto is null)
                 return false;
             // set Add mode and clear data
             Add();
@@ -103,7 +103,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
-
+        /// <summary>
+        /// Delete invoice payments by invoice number
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByInvoiceNumberAsync(string invoiceNumber)
+        {
+            if (string.IsNullOrEmpty(invoiceNumber))
+                return false;
+            await ERPDb.InvoiceTransactionHelper.DeleteByInvoiceNumberAsync(invoiceNumber);
+            return true;
+        }
+        /// <summary>
+        /// Get invoice payment with detail by invoiceNumber
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<InvoiceTransaction> GetByInvoiceNumberAsync(string invoiceNumber)
+        {
+            List();
+            return await _data.GetByInvoiceNumberAsync(invoiceNumber);
+        }
     }
 }
 

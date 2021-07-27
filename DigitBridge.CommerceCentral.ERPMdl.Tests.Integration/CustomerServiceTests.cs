@@ -50,6 +50,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 		}
 
         [Fact()]
+        public void QueryMultiResult_Test()
+		{
+            var srv = new CustomerService(DataBaseFactory);
+            srv.Add();
+
+            var mapper = srv.DtoMapper;
+            var datas = GetFakerData(100);
+            var profileNum = 101;
+            var ids = new List<string>();
+            datas.ForEach(x =>
+            {
+                x.Customer.ProfileNum = profileNum;
+                var dto = mapper.WriteDto(x, null);
+
+                ids.Add(x.Customer.CustomerCode);
+                srv.Add(dto);
+            });
+
+            var srvGet = new CustomerService(DataBaseFactory);
+            //srvGet.Edit();
+            var resultlist= srvGet.GetCustomersByCodeArray(profileNum, ids);
+            var result = resultlist.Count == 100;
+
+			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+		}
+
+        [Fact()]
 		//[Fact(Skip = SkipReason)]
 		public void UpdateDto_Test()
 		{

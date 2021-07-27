@@ -31,29 +31,30 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<SalesOrderDataDto>))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
         [FunctionName(nameof(GetSalesOrder))]
-        public static async Task<IActionResult> GetSalesOrder(
+        public static async Task<JsonNetResponse<SalesOrderPayload>> GetSalesOrder(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder/{orderNumber}")] HttpRequest req,
             string orderNumber)
         {
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
+            var payload = await req.GetParameters<SalesOrderPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.GetByOrderNumberAsync(orderNumber);
-            //SalesOrderDataDto dto = null;
             if (success)
             {
-                var dto = srv.ToDto(srv.Data);
-                return new Response<SalesOrderDataDto>(dto, success);
+                payload.ResponseData = srv.ToDto(srv.Data);
             }
-            return new Response<string>("no record found", success);
+            else
+                payload.ResponseData = "no record found";
+            return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
         /// <summary>
         /// Get sales order list by search criteria
         /// </summary>
         /// <param name="req"></param> 
-        /// <param name="salesOrderParameter"></param>
+
         /// <returns></returns>
         [OpenApiOperation(operationId: "GetSalesOrderList", tags: new[] { "SalesOrders" }, Summary = "Get sales order list")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -62,12 +63,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$skip", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$skip", Description = "Records to skip. https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<SalesOrderDataDto[]>), Description = "Result is List<SalesOrderDataDto>")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload), Description = "Result is List<SalesOrderDataDto>")]
         [FunctionName(nameof(GetSalesOrderList))]
         public static async Task<JsonNetResponse<SalesOrderPayload>> GetSalesOrderList(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder")] HttpRequest req)
         {
-            var payload = req.GetRequestParameter<SalesOrderPayload>();
+            var payload = await req.GetParameters<SalesOrderPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
 
@@ -81,63 +82,60 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="req"></param>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
         [OpenApiOperation(operationId: "DeleteSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Delete one sales order")]
         [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [FunctionName("DeleteSalesOrders")]
-        public static async Task<IActionResult> DeleteSalesOrders(
+        public static async Task<JsonNetResponse<SalesOrderPayload>> DeleteSalesOrders(
            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "salesorder/{orderNumber}")]
             HttpRequest req,
             string orderNumber)
         {
-            //var orderNumber = req.GetRouteObject<string>("orderNumber");
-            var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
+            var payload = await req.GetParameters<SalesOrderPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.DeleteByOrderNumberAsync(orderNumber);
-            return new Response<string>("Delete sales order result", success);
+            payload.ResponseData = $"{success} to delete data";
+            return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
         /// <summary>
         ///  Update salesorder 
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="dto"></param>
         /// <returns></returns>
         [FunctionName(nameof(UpdateSalesOrders))]
         [OpenApiOperation(operationId: "UpdateSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Update one sales order")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
-        public static async Task<IActionResult> UpdateSalesOrders(
-[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesorder")] HttpRequest req,
-[FromBodyBinding] SalesOrderDataDto dto)
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
+        public static async Task<JsonNetResponse<SalesOrderPayload>> UpdateSalesOrders(
+[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesorder")] HttpRequest req)
         {
-            //var dto = await req.GetBodyObjectAsync<SalesOrderDataDto>();
-            var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
+            var payload = await req.GetParameters<SalesOrderDataDto, SalesOrderPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
-            var success = await srv.UpdateAsync(dto);
-            return new Response<string>("Update sales order result", success);
+            var success = await srv.UpdateAsync(payload.ReqeustData);
+            payload.ResponseData = $"{success} to update data";
+            return new JsonNetResponse<SalesOrderPayload>(payload);
         }
         /// <summary>
         /// Add sales order
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="dto"></param>
         /// <returns></returns>
         [FunctionName(nameof(AddSalesOrders))]
         [OpenApiOperation(operationId: "AddSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Add one sales order")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<string>))]
-        public static async Task<IActionResult> AddSalesOrders(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesorder")] HttpRequest req,
-            [FromBodyBinding] SalesOrderPayload payload)
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
+        public static async Task<JsonNetResponse<SalesOrderPayload>> AddSalesOrders(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesorder")] HttpRequest req)
         {
-            //var dto = await req.GetBodyObjectAsync<SalesOrderDataDto>();
-            //var dataBaseFactory = new DataBaseFactory(ConfigHelper.Dsn);
+            var payload = await req.GetParameters<SalesOrderDataDto, SalesOrderPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
-            //await srv.VerfiedAsync(payload.SalesOrder);
-            var success = await srv.AddAsync(payload.SalesOrder);
-            return new Response<string>($"new sales order uuid is:{srv.Data.UniqueId}", success);
+            var success = await srv.AddAsync(payload.ReqeustData);
+            payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
+            return new JsonNetResponse<SalesOrderPayload>(payload);
         }
     }
 }

@@ -6,7 +6,7 @@ using System;
 using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ApiCommon
-{ 
+{
     /// <summary>
     /// Binding Provider
     /// </summary>
@@ -61,7 +61,9 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             }
             catch (Exception ex)
             {
-                throw new Exception("Deserialize http request body to object error", ex);
+                var data = new ResponseResult<Exception>(new Exception("Deserialize http request body to object error", ex), false);
+                await _request.HttpContext.Response.Output(data, data.StatusCode);
+                return Task.CompletedTask;
             }
         }
         public string ToInvokeString() => string.Empty;
