@@ -162,9 +162,9 @@ namespace DigitBridge.Base.Utility
         }
 
 
-        public static void RemoveKey(this Dictionary<string, object> dict, string key)
+        public static void RemoveKey<K, T>(this IDictionary<K, T> dict, K key)
         {
-            if (!string.IsNullOrEmpty(key) && dict != null && dict.ContainsKey(key))
+            if (!string.IsNullOrEmpty(key.ToString()) && dict != null && dict.ContainsKey(key))
                 dict.Remove(key);
         }
 

@@ -12,7 +12,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         private readonly IDataBaseFactory _dataBaseFactory;
         private readonly bool _withTx;
 
-        public ScopedTransaction(bool withTx=true) : this(string.Empty, withTx) {}
+        // each sql query must specify dbFactory to excute
+        //public ScopedTransaction(bool withTx=true) : this(string.Empty, withTx) {}
         public ScopedTransaction(string dsn, bool withTx = true) : this(new DbConnSetting(dsn), withTx) {}
         public ScopedTransaction(DbConnSetting config, bool withTx = true)
         {
@@ -24,7 +25,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
         public ScopedTransaction(IDataBaseFactory dataBaseFactory, bool withTx = true)
         {
-            _dataBaseFactory = dataBaseFactory;
+            _dataBaseFactory = DataBaseFactory.SetDefaultDataBaseFactory(dataBaseFactory);
             _withTx = withTx;
             if (_withTx)
                 _dataBaseFactory.Begin();

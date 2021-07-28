@@ -79,6 +79,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public JObject Filter { get; set; }
         bool HasFilter { get; }
 
+        IDictionary<string, StringBuilder> ListResults { get; set; }
+        bool HasListResults { get; }
+        void AddListResult(string name, StringBuilder sb);
+        void RemoveListResult(string name);
+        StringBuilder GetListResult(string name);
+
 
         IDictionary<string, Action<string>> GetOtherParameters();
     }

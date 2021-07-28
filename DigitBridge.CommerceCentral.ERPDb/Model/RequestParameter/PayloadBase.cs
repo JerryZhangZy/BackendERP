@@ -1,10 +1,13 @@
-using DigitBridge.CommerceCentral.YoPoco;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Text;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -108,6 +111,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public JObject Filter { get; set; }
         [JsonIgnore] public virtual bool HasFilter => Filter != null && Filter.Count > 0;
         public bool ShouldSerializeFilter() => HasFilter;
+
+
+        /// <summary>
+        /// StringBuilder for JSON result of SQL query.
+        /// Optional,
+        /// </summary> 
+        [Display(Name = "ListResults")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public IDictionary<string, StringBuilder> ListResults { get; set; }
+        [JsonIgnore] public virtual bool HasListResults => ListResults != null && ListResults.Count > 0;
+        public bool ShouldSerializeListResults() => HasListResults;
+        public void AddListResult(string name, StringBuilder sb)
+        {
+            if (ListResults == null)
+                ListResults = new Dictionary<string, StringBuilder>();
+            ListResults.SetValue(name, sb);
+        }
+        public void RemoveListResult(string name) => ListResults?.RemoveKey(name);
+        public StringBuilder GetListResult(string name) => ListResults?.GetValue(name);
 
 
         public virtual IDictionary<string, Action<string>> GetOtherParameters() => null;
