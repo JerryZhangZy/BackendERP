@@ -193,6 +193,18 @@
         public List<string> PropertyAtrributes { get; set; }
         public List<string> DtoAtrributes { get; set; }
 
+        public string[] DescriptionSplit
+        {
+            get 
+            { 
+                var separator = new string[] { "<br>" };
+                //var separator = new char[] { '<', 'b', 'r', '>' };
+                //return Array.ConvertAll<string, string>(Description.Split(separator), item => item.ConvertObject<string>());
+                //return Description.Split(separator);
+                return Description.Split(separator, StringSplitOptions.None);
+            }
+        }
+
         public string PropertyType
         {
             get 
@@ -256,6 +268,60 @@
                 return (t == td || $"{t}?" == td)
                     ? string.Empty
                     : $".To{RemoveNullable(ToCapital(td))}()";
+            }
+        }
+
+        public string JsType
+        {
+            get 
+            { 
+                var reval = "string";
+                switch (Type.ToLower())
+                {
+                    case "float":
+                    case "decimal":
+                    case "bit":
+                    case "int":
+                    case "long":
+                    case "byte":
+                    case "money":
+                    case "short":
+                        reval = "number";
+                        break;
+                    case "byte[]":
+                        reval = "Array";
+                        break;
+                    case "datetime":
+                    case "timespan":
+                        reval = "Date";
+                        break;
+                    case "object":
+                    case "image":
+                        reval = "Object";
+                        break;
+                    default:
+                        reval = "string";
+                        break;
+                }
+                return reval;
+            }
+        }
+
+        public string JsTypeAttr
+        {
+            get 
+            { 
+                var t = Type.ToLower();
+                if (t == "bit" ||
+                    t == "int" ||
+                    t == "long" ||
+                    t == "byte" ||
+                    t == "short")
+                    return "Integer";
+
+                if (hasLength)
+                    return $"MaxLength: {Length}";
+                return "";
             }
         }
 

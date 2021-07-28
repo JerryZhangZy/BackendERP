@@ -24,6 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Required(ErrorMessage = "masterAccountNum is required")]
         [Display(Name = "masterAccountNum")]
         [DataMember(Name = "masterAccountNum")]
+        [JsonIgnore]
         public int MasterAccountNum { get; set; }
         [JsonIgnore] public virtual bool HasMasterAccountNum => MasterAccountNum > 0;
         public bool ShouldSerializeMasterAccountNum() => HasMasterAccountNum;
@@ -35,6 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Required(ErrorMessage = "profileNum is required")]
         [Display(Name = "profileNum")]
         [DataMember(Name = "profileNum")]
+        [JsonIgnore]
         public int ProfileNum { get; set; }
         [JsonIgnore] public virtual bool HasProfileNum => ProfileNum > 0;
         public bool ShouldSerializeProfileNum() => HasProfileNum;
@@ -57,7 +59,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// Records to skip.
         /// Optional,
         /// Default value is 0.
-        /// Maximum value is 500.
         /// <see cref="https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
         /// </summary>
         [Display(Name = "$skip")]
@@ -74,8 +75,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// Default value: true.
         /// <see cref="https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
         /// </summary> 
-        [Display(Name = "$Count")]
-        [DataMember(Name = "$Count")]
+        [Display(Name = "$count")]
+        [DataMember(Name = "$count")]
         public bool IsQueryTotalCount { get; set; } = true;
         [JsonIgnore] public virtual bool HasIsQueryTotalCount => IsQueryTotalCount;
 

@@ -19,9 +19,26 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="T4\DataJavaScript.js">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataJavaScript.tt</DependentUpon>
+    </None>
+    <None Update="T4\DataJavaScript.tt">
+      <LastGenOutput>DataJavaScript.js</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\DataAccess.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>DataAccess.cs</LastGenOutput>
+      <LastGenOutput>JavaScript.cs</LastGenOutput>
+    </None>
+    <None Update="T4\GenerateJsDocRepositoryDto.ttinclude">
+      <LastGenOutput>GenerateJsDocRepositoryDto.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateJsDocPayload.ttinclude">
+      <LastGenOutput>GenerateJsDocPayload.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepositoryHelper.ttinclude">
       <LastGenOutput>GenerateRepositoryHelper.cs</LastGenOutput>
@@ -37,6 +54,10 @@
     </None>
     <None Update="T4\GenerateServiceHelperTest.ttinclude">
       <LastGenOutput>GenerateServiceHelperTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateJsDocStructureDto.ttinclude">
+      <LastGenOutput>GenerateJsDocPayload.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForInventoryLog.ttinclude">
@@ -144,7 +165,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateStructureDto.ttinclude">
-      <LastGenOutput>GenerateStructureDto.cs</LastGenOutput>
+      <LastGenOutput>GenerateJsDocStructureDto.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateStructureOneToManyChildren.ttinclude">
@@ -196,7 +217,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepository.ttinclude">
-      <LastGenOutput>GenerateRepository.cs</LastGenOutput>
+      <LastGenOutput>GenerateJs.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepositoryTest.ttinclude">
@@ -214,15 +235,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="T4\DataAccess.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
+    <Compile Update="T4\DataAccess - Copy.cs">
       <DependentUpon>DataAccess.tt</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateRepository.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\GenerateJsDocStructureDto - Copy.cs">
+      <DependentUpon>GenerateJsDocStructureDto.ttinclude</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\GenerateRepository - Copy.cs">
       <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\GenerateJsDocRepositoryDto.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateJsDocRepositoryDto.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateRepositoryDto.cs">
       <DesignTime>True</DesignTime>
@@ -239,10 +270,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateStructureDto.cs">
+    <Compile Update="T4\GenerateStructureDto - Copy.cs">
+      <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateJsDocPayload.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateJsDocPayload.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>
@@ -253,6 +289,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForInventoryLog.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForSalesOrder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForSalesOrder.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 

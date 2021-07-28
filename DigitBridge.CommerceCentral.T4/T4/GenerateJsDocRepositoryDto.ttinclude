@@ -1,0 +1,44 @@
+﻿<# 
+    WriteLine($" /**");
+    WriteLine($" * @typedef {{Object}} {table.DtoName}");
+    WriteLine(" * ");
+
+    // generate all properties
+    foreach(var col in table.Columns)
+    { 
+        if (col.ignoreGenerate) continue;
+        WriteLine($" * @property {{{col.JsType}}} {col.propertyName} ");
+        if (!string.IsNullOrEmpty(col.JsTypeAttr))
+            WriteLine($" * - {col.JsTypeAttr} ");
+        var desc = col.DescriptionSplit;
+        foreach (var d in desc)
+        {
+            WriteLine($" * - {d.Trim()} ");
+        }
+        WriteLine(" * ");
+    }
+
+    if(table.HasOneToOneChildren)
+    { 
+        foreach(var childTable in table.oneToOneChildren)
+        { 
+            if (childTable == null) continue;
+            WriteLine($" * @property {{{childTable.DtoName}}} {childTable.Name} - {{@link {childTable.DtoName}}}");
+            WriteLine(" * ");
+        }
+    } 
+    else if(table.HasOneToManyChildren)
+    { 
+        indent = 2;
+        foreach(var childTable in table.oneToManyChildren)
+        { 
+            if (childTable == null) continue;
+            WriteLine($" * @property {{{childTable.DtoName}[]}} {childTable.Name} - {{@link {childTable.DtoName}}}");
+            WriteLine(" * ");
+        }
+    } 
+
+    WriteLine($" */");
+#>
+
+
