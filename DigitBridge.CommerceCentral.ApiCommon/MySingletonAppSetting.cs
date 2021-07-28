@@ -72,7 +72,12 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         {
             try
             {
-                string value = _config[name];
+                string value = _config[name]; 
+                if (value == null)
+                {
+                    //local file read from values
+                    value = _config[$"Values:{name}"];
+                }
                 if (value != null)
                 {
                     return value;

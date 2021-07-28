@@ -66,7 +66,9 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                 {
                     if (string.IsNullOrEmpty(item.Key) || item.Value is null)
                         continue;
-                    item.Value(req.GetQueryStringValue(item.Key));
+                    var param = req.GetQueryStringValue(item.Key);
+                    if (!string.IsNullOrEmpty(param))
+                        item.Value(param);
                 }
             }
             return instance;

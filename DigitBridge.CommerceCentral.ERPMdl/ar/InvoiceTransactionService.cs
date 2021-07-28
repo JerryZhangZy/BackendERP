@@ -125,6 +125,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             List();
             return await _data.GetByInvoiceNumberAsync(invoiceNumber);
         }
+
+        /// <summary>
+        /// Get InvoiceHeader by invoiceNumber
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public async Task<InvoiceHeader> GetInvoiceHeaderAsync(string invoiceNumber)
+        {
+            return await new InvoiceHeader(dbFactory).GetByInvoiceNumberAsync(invoiceNumber);
+        }
     }
 }
 

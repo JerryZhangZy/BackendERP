@@ -151,7 +151,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public static IDataBaseFactory CreateDefault(DbConnSetting config)
         {
             var dbFactory = GetDefaultDataBaseFactory();
-            if (dbFactory != null && (string.IsNullOrEmpty(config.ConnString) || dbFactory.ConnectionString.Trim() == config.ConnString.Trim()))
+            if (dbFactory != null&&!string.IsNullOrEmpty(dbFactory.ConnectionString) && (string.IsNullOrEmpty(config.ConnString) || dbFactory.ConnectionString.Trim() == config.ConnString.Trim()))
                 return dbFactory;
 
             dbFactory = new DataBaseFactory(config);

@@ -34,10 +34,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload), Example = typeof(ProductExPayload), Description = "The OK response")]
         public static async Task<JsonNetResponse<ProductExPayload>> GetProductExt(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "productExt/{SKU?}")] HttpRequest req,
-            string SKU,
-            ILogger log)
+            string SKU=null)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
             var payload = await req.GetParameters<ProductExPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryService(dbFactory);
@@ -64,10 +62,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload))]
         public static async Task<JsonNetResponse<ProductExPayload>> DeleteProductExt(
             [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "productExt/{SKU}")] HttpRequest req,
-            string SKU,
-            ILogger log)
+            string SKU)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
             var payload = await req.GetParameters<ProductExPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var spilterIndex = SKU.IndexOf("-");
@@ -89,10 +85,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryDataDto), Description = "InventoryDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload))]
         public static async Task<JsonNetResponse<ProductExPayload>> AddProductExt(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "productExt")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "productExt")] HttpRequest req)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
             var payload = await req.GetParameters<ProductExPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryService(dbFactory);
@@ -109,10 +103,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryDataDto), Description = "InventoryDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload))]
         public static async Task<JsonNetResponse<ProductExPayload>> UpdateProductExt(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "productExt")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "productExt")] HttpRequest req)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
             var payload = await req.GetParameters<ProductExPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryService(dbFactory);
