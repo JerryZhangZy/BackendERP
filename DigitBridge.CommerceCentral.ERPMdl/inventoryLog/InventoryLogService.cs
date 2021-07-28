@@ -106,8 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var datalist = mapper.ReadInventoryLogDtoList(null, dtoList);
             var addcount = datalist.Count();
             datalist.SetDataBaseFactory(dbFactory).Save();
-            datalist = InventoryLogHelper.QueryInventoryLogByBatchNum(batchNum);
-            payload.InventoryLogs = mapper.WriteInventoryLogDtoList(datalist, null);
+            payload.InventoryLogs = dtoList;
             return payload;
             //TODO:Validator验证，Mapper,补充完整Inventory信息进去，调用Dao
         }

@@ -35,10 +35,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<CustomerPayload>), Example = typeof(CustomerPayload), Description = "The OK response")]
         public static async Task<JsonNetResponse<CustomerPayload>> GetCustomer(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "customers/{CustomerCode?}")] HttpRequest req,
-            string CustomerCode,
-            ILogger log)
+            string CustomerCode=null)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
             var payload =await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
@@ -62,14 +60,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "DeleteCustomer", tags: new[] { "Customers" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "CustomerCode", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "CustomerCode", Description = "CustomerCode = ProfileNumber-CustomerCode ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload), Example = typeof(CustomerPayload), Description = "The OK response")]
         public static async Task<JsonNetResponse<CustomerPayload>> DeleteCustomer(
             [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "customers/{CustomerCode}")] HttpRequest req,
-            string CustomerCode,
-            ILogger log)
+            string CustomerCode)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
             var payload = await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
@@ -92,10 +87,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerDataDto), Description = "CustomerDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload), Example = typeof(CustomerPayload), Description = "The OK response")]
         public static async Task<JsonNetResponse<CustomerPayload>> AddCustomer(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "customers")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "customers")] HttpRequest req)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
             var payload = await req.GetParameters<CustomerPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
@@ -112,10 +105,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerDataDto), Description = "CustomerDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload), Example = typeof(CustomerPayload), Description = "The OK response")]
         public static async Task<JsonNetResponse<CustomerPayload>> UpdateCustomer(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "customers")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "customers")] HttpRequest req)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
             var payload = await req.GetParameters<CustomerPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);

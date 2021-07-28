@@ -30,10 +30,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayload), Description = "Result is InventoryLogs")]
         public static async Task<JsonNetResponse<InventoryLogPayload>> GetInventoryLogs(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "inventoryLogs/{logUuid?}")] HttpRequest req,
-            string logUuid,
-            ILogger log)
+            string logUuid)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
             var payload = await req.GetParameters<InventoryLogPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
 
@@ -55,10 +53,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayload), Description = "return delete count")]
         public static async Task<JsonNetResponse<InventoryLogPayload>> DeleteInventoryLogs(
             [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "inventoryLogs/{logUuid}")] HttpRequest req,
-            string logUuid,
-            ILogger log)
+            string logUuid)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
             var payload = await req.GetParameters<InventoryLogPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             payload.LogUuids.Add(logUuid);
@@ -73,10 +69,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(List<InventoryLogDto>), Description = "InventoryLogList ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayload), Description = "return add count")]
         public static async Task<JsonNetResponse<InventoryLogPayload>> AddInventoryLogs(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "inventoryLogs")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "inventoryLogs")] HttpRequest req)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
             var payload = await req.GetParameters<InventoryLogPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryLogService(dbFactory);
@@ -92,10 +86,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(List<InventoryLogDto>), Description = "InventoryLogList ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayload), Description = "return update count")]
         public static async Task<JsonNetResponse<InventoryLogPayload>> UpdateInventoryLogs(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "inventoryLogs")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "inventoryLogs")] HttpRequest req)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
             var payload = await req.GetParameters<InventoryLogPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new InventoryLogService(dbFactory);
