@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -12,13 +13,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public class SalesOrderList : SqlQueryBuilder<SalesOrderQuery>
     {
-        public SalesOrderList() : base()
+        public SalesOrderList(IDataBaseFactory dbFactory) : base(dbFactory)
         {
         }
-        public SalesOrderList(SalesOrderQuery queryObject)
-            : base(queryObject)
+        public SalesOrderList(IDataBaseFactory dbFactory, SalesOrderQuery queryObject)
+            : base(dbFactory, queryObject)
         {
         }
+
+        #region override methods
 
         protected override string GetSQL_select()
         {
@@ -64,6 +67,59 @@ COALESCE(ordst.text, '') OrderStatusText,
             paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
 
             return paramList.ToArray();
+        
+        }
+
+        #endregion override methods
+
+        public virtual SalesOrderPayload GetSalesOrderList(SalesOrderPayload payload)
+        {
+            if (payload == null)
+                payload = new SalesOrderPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            var result = false;
+            try
+            {
+                payload.SalesOrderListCount = Count();
+                result = ExcuteJson(sb);
+                if (result)
+                    payload.SalesOrderList = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.SalesOrderListCount = 0;
+                payload.SalesOrderList = null;
+                return payload;
+                throw;
+            }
+            return payload;
+        }
+
+        public virtual async Task<SalesOrderPayload> GetSalesOrderListAsync(SalesOrderPayload payload)
+        {
+            if (payload == null)
+                payload = new SalesOrderPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            var result = false;
+            try
+            {
+                payload.SalesOrderListCount = await CountAsync().ConfigureAwait(false);
+                result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
+                if (result)
+                    payload.SalesOrderList = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.SalesOrderListCount = 0;
+                payload.SalesOrderList = null;
+                return payload;
+                throw;
+            }
+            return payload;
         }
 
     }

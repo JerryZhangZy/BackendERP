@@ -77,7 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             };
 
             var qry = new SalesOrderQuery();
-            var srv = new SalesOrderList(qry);
+            var srv = new SalesOrderList(dataBaseFactory, qry);
             srv.LoadRequestParameter(payload);
             //qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
             //qry.OrderNumberFrom.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
@@ -91,8 +91,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 using (var b = new Benchmark("ExcuteJsonAsync_Test"))
                 {
-                    totalRecords = await srv.CountAsync().ConfigureAwait(false);
+                    payload.SalesOrderListCount = await srv.CountAsync().ConfigureAwait(false);
                     result = await srv.ExcuteJsonAsync(sb).ConfigureAwait(false);
+                    if (result)
+                        payload.SalesOrderList = sb;
 
                     //using (var trs = new ScopedTransaction())
                     //{
@@ -107,7 +109,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 throw;
             }
 
+            var json = payload.ObjectToString();
+
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetSalesOrderListAsync_Test()
+        {
+            var payload = new SalesOrderPayload();
+            payload.LoadAll = true;
+            payload.Filter = new JObject()
+            {
+                { "OrderDateFrom",  DateTime.Today.AddDays(-30) },
+                { "OrderStatus",  "11,18,86" }
+            };
+
+            using (var b = new Benchmark("GetSalesOrderListAsync_Test"))
+            {
+                var qry = new SalesOrderQuery();
+                var srv = new SalesOrderList(dataBaseFactory, qry);
+                payload = await srv.GetSalesOrderListAsync(payload);
+                var json = payload.ObjectToString();
+            }
+
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
         }
 
         #endregion async methods

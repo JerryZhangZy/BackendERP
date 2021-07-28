@@ -423,7 +423,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 SetOrderBy(payload.SortBy.Split(",").ToList());
 
             // load all filter
-            if (payload.Filter.Count > 0)
+            if (payload.Filter != null && payload.Filter.Count > 0)
             {
                 foreach (var kv in payload.Filter)
                 {

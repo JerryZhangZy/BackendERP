@@ -46,7 +46,30 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public TQueryObject QueryObject { get; set; }
 
-        public SqlQueryBuilder()
+
+        #region DataBase
+        [JsonIgnore]
+        protected IDataBaseFactory _dbFactory;
+
+        [JsonIgnore]
+        public IDataBaseFactory dbFactory
+        {
+            get
+            {
+                if (_dbFactory is null)
+                    _dbFactory = DataBaseFactory.CreateDefault();
+                return _dbFactory;
+            }
+        }
+
+        public void SetDataBaseFactory(IDataBaseFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+            return;
+        }
+        #endregion DataBase
+
+        public SqlQueryBuilder(IDataBaseFactory dbFactory)
         {
             SQL_Select = string.Empty;
             SQL_SelectSummary = string.Empty;
@@ -57,10 +80,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
             DefaultPrefix = string.Empty;
             QueryObject = default(TQueryObject);
         }
-        public SqlQueryBuilder(TQueryObject QueryObject) : this()
+        public SqlQueryBuilder(IDataBaseFactory dbFactory, TQueryObject QueryObject) : this(dbFactory)
         {
+            SetDataBaseFactory(dbFactory);
             this.QueryObject = QueryObject;
         }
+
 
         protected virtual string GetSQL_select()
         {
@@ -208,7 +233,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var param = GetSqlParameters();
             SqlQueryResultData result;
 
-            using var trs = new ScopedTransaction();
+            using var trs = new ScopedTransaction(dbFactory);
             if (param == null)
                 result = SqlQuery.QuerySqlQueryResultData(sql, System.Data.CommandType.Text);
             else
@@ -222,7 +247,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var param = GetSqlParameters();
             SqlQueryResultData result;
 
-            using var trs = new ScopedTransaction();
+            using var trs = new ScopedTransaction(dbFactory);
             if (param == null)
                 result = await SqlQuery.QuerySqlQueryResultDataAsync(sql, System.Data.CommandType.Text);
             else
@@ -236,7 +261,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var param = GetSqlParameters();
             var result = false;
 
-            using var trs = new ScopedTransaction();
+            using var trs = new ScopedTransaction(dbFactory);
             if (param == null)
                 result = SqlQuery.QueryJson(sb, sql, System.Data.CommandType.Text);
             else
@@ -250,7 +275,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var param = GetSqlParameters();
             var result = false;
 
-            using var trs = new ScopedTransaction();
+            using var trs = new ScopedTransaction(dbFactory);
             if (!param.Any())
                 result = await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text);
             else
@@ -264,7 +289,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var param = GetSqlParameters();
             var result = 0;
 
-            using var trs = new ScopedTransaction();
+            using var trs = new ScopedTransaction(dbFactory);
             if (param == null)
                 result = SqlQuery.ExecuteScalar<int>(sql, System.Data.CommandType.Text);
             else
@@ -278,7 +303,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var param = GetSqlParameters();
             var result = 0;
 
-            using var trs = new ScopedTransaction();
+            using var trs = new ScopedTransaction(dbFactory);
             if (param == null)
                 result = await SqlQuery.ExecuteScalarAsync<int>(sql, System.Data.CommandType.Text);
             else

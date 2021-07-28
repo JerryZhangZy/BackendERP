@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using DigitBridge.Base.Utility;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -35,6 +37,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 { "salesOrderUuids", val => SalesOrderUuids = val.Split(",").ToList() }
             };
         }
+
+
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder SalesOrderList { get; set; }
+        [JsonIgnore] public virtual bool HasSalesOrderList => SalesOrderList != null && SalesOrderList.Length > 0;
+        public bool ShouldSerializeSalesOrderList() => HasSalesOrderList;
+
+        public int SalesOrderListCount { get; set; }
+        [JsonIgnore] public virtual bool HasSalesOrderListCount => SalesOrderListCount > 0;
+        public bool ShouldSerializeSalesOrderListCount() => HasSalesOrderListCount;
 
     }
 }

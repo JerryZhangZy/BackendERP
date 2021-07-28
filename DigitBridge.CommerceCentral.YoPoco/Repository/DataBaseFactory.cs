@@ -41,25 +41,34 @@ namespace DigitBridge.CommerceCentral.YoPoco
         private static readonly string[] AzureDatabaseTokenScopes = { "https://database.windows.net/.default" };
 
 
-        private static ThreadContext<ThreadConnections> _connectionThreadContext =
-            new ThreadContext<ThreadConnections>("DataBaseFactory._connectionThreadContext", new ThreadConnections());
+        //private static ThreadContext<ThreadConnections> _connectionThreadContext =
+        //    new ThreadContext<ThreadConnections>("DataBaseFactory._connectionThreadContext", new ThreadConnections());
 
-        public static Dictionary<string, object> dataBaseFactoryCache => _connectionThreadContext.Value?.Data;
-
-        ///// <summary>
-        ///// Cache DataBaseFactory object for current thread
-        ///// </summary>
-        //[ThreadStatic] static TransactionalCache _dataBaseFactoryCache = new TransactionalCache();
-        //private static TransactionalCache dataBaseFactoryCache
+        //public static Dictionary<string, object> dataBaseFactoryCache
         //{
-        //    get 
+        //    get
         //    {
-        //        if (_dataBaseFactoryCache is null)
-        //            _dataBaseFactoryCache = new TransactionalCache();
-        //        return _dataBaseFactoryCache;
+        //        if (_connectionThreadContext.Value == null)
+        //            _connectionThreadContext.Set(new ThreadConnections());
+        //        return _connectionThreadContext.Value?.Data;
         //    }
         //}
-            
+
+
+        /// <summary>
+        /// Cache DataBaseFactory object for current thread
+        /// </summary>
+        [ThreadStatic] static TransactionalCache _dataBaseFactoryCache = new TransactionalCache();
+        private static TransactionalCache dataBaseFactoryCache
+        {
+            get
+            {
+                if (_dataBaseFactoryCache is null)
+                    _dataBaseFactoryCache = new TransactionalCache();
+                return _dataBaseFactoryCache;
+            }
+        }
+
 
         public static IDataBaseFactory SetDataBaseFactory(IDataBaseFactory dataBaseFactory) =>
             dataBaseFactoryCache.SetData(dataBaseFactory.ConnectionString, dataBaseFactory);
@@ -69,11 +78,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
             dataBaseFactoryCache.GetData<IDataBaseFactory>(DefaultDataBaseFactoryKey);
         public static IDataBaseFactory SetDefaultDataBaseFactory(IDataBaseFactory dataBaseFactory)
         {
+            if (GetDefaultDataBaseFactory() == dataBaseFactory)
+                return dataBaseFactory;
             dataBaseFactoryCache.SetData(DefaultDataBaseFactoryKey, dataBaseFactory);
             dataBaseFactoryCache.SetData(dataBaseFactory.ConnectionString, dataBaseFactory);
             return dataBaseFactory;
         }
-        public static void ClearDataBaseFactoryCache() => dataBaseFactoryCache.Clear();
+        public static void ClearDataBaseFactoryCache() => dataBaseFactoryCache.ClearAll();
 
         public static IDbConnection CreateConnection(string connectionString = null)
         {

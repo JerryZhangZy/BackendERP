@@ -13,7 +13,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public override OpenApiInfo Info { get; set; } = new OpenApiInfo()
         {
             Version = "1.0.0",
-            Title = "OpenAPI Document for DigiBridge ERP system",
+            Title = "API Document of DigiBridge ERP System",
             Description = "HTTP APIs that run on Azure Functions using OpenAPI specification.",
             TermsOfService = new Uri("https://github.com/Azure/azure-functions-openapi-extension"),
             Contact = new OpenApiContact()
