@@ -69,9 +69,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             });
 
             var srvGet = new CustomerService(DataBaseFactory);
+            var payload = new CustomerPayload() { ProfileNum = profileNum, CustomerCodes = ids };
             //srvGet.Edit();
-            var resultlist= srvGet.GetCustomersByCodeArray(profileNum, ids);
-            var result = resultlist.Count == 100;
+            var resultlist= srvGet.GetCustomersByCodeArray(payload);
+            var result = payload.HasCustomers && payload.Customers.Count == 100;
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}

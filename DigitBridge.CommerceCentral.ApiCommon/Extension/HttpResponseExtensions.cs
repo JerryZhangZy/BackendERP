@@ -26,5 +26,11 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             response.ContentLength = bytes.Length;
             await response.Body.WriteAsync(bytes, 0, bytes.Length);
         }
+        public static async Task<T> GetBodyObjectAsync<T>(this JsonNetResponse<T> response) where T : class
+        {
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(json);
+
+        }
     }
 }
