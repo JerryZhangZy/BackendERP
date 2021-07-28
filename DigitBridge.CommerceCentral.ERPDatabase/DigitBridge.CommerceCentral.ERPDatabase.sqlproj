@@ -162,4 +162,10 @@
   <ItemGroup>
     <None Include="dataType\ListTableType.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderLine_Update.sql" />
+  </ItemGroup>
 </Project>
