@@ -15,8 +15,8 @@ namespace DigitBridge.Base.Utility
         public static DateTime MinDatatime = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
         public static DateTime MaxDatatime = (DateTime)System.Data.SqlTypes.SqlDateTime.MaxValue;
 
-        public static TimeSpan MinTime = new TimeSpan(0,0,0);
-        public static TimeSpan MaxTime = new TimeSpan(11,59,59);
+        public static TimeSpan MinTime = new TimeSpan(0, 0, 0);
+        public static TimeSpan MaxTime = new TimeSpan(11, 59, 59);
 
         public static int QtyDecimalDigits = 2;
         public static int PriceDecimalDigits = 2;
@@ -24,6 +24,17 @@ namespace DigitBridge.Base.Utility
         public static int AmountDecimalDigits = 2;
         public static int RateDecimalDigits = 3;
 
+        /// <summary>
+        /// Covert input to string,then read it to stream;
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static Stream ToStream(object input)
+        {
+            var inputString = input.ObjectToString();
+            var buffer = Encoding.Default.GetBytes(inputString);
+            return new MemoryStream(buffer);
+        }
 
         /// <summary>
         /// [True, T, Yes, Y, 1] are true, all the others are false.
@@ -284,6 +295,8 @@ namespace DigitBridge.Base.Utility
 
     public static class ObjectExtensions
     {
+        public static Stream ToStream(this object value) => ObjectConvert.ToStream(value);
+
         public static bool EqualsIgnoreSpace(this string source, string target, bool ignoreLeadingSpace = true, bool ignoreCase = true)
         {
             if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(target))
@@ -301,7 +314,7 @@ namespace DigitBridge.Base.Utility
         public static T ConvertObject<T>(this object value, object context = null)
         {
             var obj = ObjectConvert.ConvertObject(value, typeof(T), context);
-            return (obj is null) ? default(T) : (T) obj;
+            return (obj is null) ? default(T) : (T)obj;
         }
 
         /// <summary>
@@ -477,7 +490,7 @@ namespace DigitBridge.Base.Utility
             if (input is null)
                 return default(T);
             var obj = ObjectConvert.ConvertObject(input, typeof(T));
-            return (obj is null) ? default(T) : (T) obj;
+            return (obj is null) ? default(T) : (T)obj;
         }
 
         /// <summary>
@@ -566,7 +579,7 @@ namespace DigitBridge.Base.Utility
                         ? r
                         : false;
 
-                /// <summary>
+        /// <summary>
         /// Convert nullable value to its default, non-nullable value when its nullable value is null. 
         /// For example: default(int?) is null, this function will return default(int) is 0;
         /// </summary>
@@ -765,9 +778,9 @@ namespace DigitBridge.Base.Utility
         /// </summary>
         public static IEnumerable<T> SplitTo<T>(this string input, params char[] separator)
         {
-            if (string.IsNullOrWhiteSpace(input)) 
+            if (string.IsNullOrWhiteSpace(input))
                 return new List<T>();
-            if (separator is null || separator.Length == 0) 
+            if (separator is null || separator.Length == 0)
                 separator = new char[] { ',' };
             return Array.ConvertAll<string, T>(input.Split(separator), item => item.ConvertObject<T>());
         }
@@ -775,16 +788,16 @@ namespace DigitBridge.Base.Utility
         /// <summary>
         /// Convert IList<T> to IList<string>
         /// </summary>
-        public static IList<string> ToStringList<T>(this IEnumerable<T> lst) => 
-            (lst?.Any() != true) 
-                ? new List<string>() 
+        public static IList<string> ToStringList<T>(this IEnumerable<T> lst) =>
+            (lst?.Any() != true)
+                ? new List<string>()
             : lst.Select(x => x.ToString()).ToList();
 
         /// <summary>
         /// Convert IList<T> to IList<string>
         /// </summary>
         public static IList<string> ToStringList<T>(this IEnumerable<T> lst, Func<T, string> selector) =>
-            (lst?.Any() != true) 
+            (lst?.Any() != true)
                 ? new List<string>()
                 : lst.Select(selector).Distinct().ToList();
 
