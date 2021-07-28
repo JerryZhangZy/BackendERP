@@ -17,12 +17,6 @@ BEGIN
 	    [OrderShipmentUuid] ASC,
 	    [PackageID] ASC
     );
-
-    UPDATE spp
-    SET spp.OrderShipmentUuid = sph.OrderShipmentUuid
-    FROM OrderShipmentPackage spp
-    INNER JOIN OrderShipmentHeader sph ON (sph.OrderShipmentNum = spp.OrderShipmentNum);
-
 END					
 
 IF COL_LENGTH('OrderShipmentPackage', 'RowNum') IS NULL					
@@ -34,3 +28,10 @@ IF COL_LENGTH('OrderShipmentPackage', 'DigitBridgeGuid') IS NULL
 BEGIN					
     ALTER TABLE OrderShipmentPackage ADD [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid())
 END					
+
+/*
+    UPDATE spp
+    SET spp.OrderShipmentUuid = sph.OrderShipmentUuid
+    FROM OrderShipmentPackage spp
+    INNER JOIN OrderShipmentHeader sph ON (sph.OrderShipmentNum = spp.OrderShipmentNum);
+*/

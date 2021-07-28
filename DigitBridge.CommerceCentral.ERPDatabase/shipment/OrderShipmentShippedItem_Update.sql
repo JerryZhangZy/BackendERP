@@ -8,11 +8,6 @@ BEGIN
 	    [OrderShipmentUuid] ASC,
 	    [OrderDCAssignmentLineNum] ASC
     );
-
-    UPDATE spi
-    SET spi.OrderShipmentUuid = sph.OrderShipmentUuid
-    FROM OrderShipmentShippedItem spi
-    INNER JOIN OrderShipmentHeader sph ON (sph.OrderShipmentNum = spi.OrderShipmentNum);
 END					
 
 IF COL_LENGTH('OrderShipmentShippedItem', 'OrderShipmentPackageUuid') IS NULL					
@@ -38,3 +33,10 @@ IF COL_LENGTH('OrderShipmentShippedItem', 'DigitBridgeGuid') IS NULL
 BEGIN					
     ALTER TABLE OrderShipmentShippedItem ADD [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid())
 END					
+
+/*
+    UPDATE spi
+    SET spi.OrderShipmentUuid = sph.OrderShipmentUuid
+    FROM OrderShipmentShippedItem spi
+    INNER JOIN OrderShipmentHeader sph ON (sph.OrderShipmentNum = spi.OrderShipmentNum);
+*/

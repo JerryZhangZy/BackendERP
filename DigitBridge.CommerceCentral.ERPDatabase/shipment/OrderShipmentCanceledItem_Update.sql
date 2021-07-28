@@ -8,11 +8,6 @@ BEGIN
 	    [OrderShipmentUuid] ASC,
 	    [OrderDCAssignmentLineNum] ASC
     );
-
-    UPDATE spc
-    SET spc.OrderShipmentUuid = sph.OrderShipmentUuid
-    FROM OrderShipmentCanceledItem spc
-    INNER JOIN OrderShipmentHeader sph ON (sph.OrderShipmentNum = spc.OrderShipmentNum);
 END					
 
 IF COL_LENGTH('OrderShipmentCanceledItem', 'OrderShipmentCanceledItemUuid]') IS NULL					
@@ -36,9 +31,9 @@ END
 
 /* Update script
 
-UPDATE spc
-SET spc.OrderShipmentUuid = sph.OrderShipmentUuid
-FROM OrderShipmentCanceledItem spc
-INNER JOIN OrderShipmentHeader sph ON (sph.OrderShipmentNum = spc.OrderShipmentNum)
+    UPDATE spc
+    SET spc.OrderShipmentUuid = sph.OrderShipmentUuid
+    FROM OrderShipmentCanceledItem spc
+    INNER JOIN OrderShipmentHeader sph ON (sph.OrderShipmentNum = spc.OrderShipmentNum);
 
 */
