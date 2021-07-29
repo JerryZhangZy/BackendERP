@@ -43,12 +43,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public CustomerPayload GetCustomersByCodeArray(CustomerPayload payload)
         {
             var uuids = GetCustomerUuidsByCodeArray(payload.ProfileNum, payload.CustomerCodes);
-            payload.Customers = new List<CustomerDataDto>();
+            var list = new List<CustomerDataDto>();
             uuids.ForEach(x =>
             {
                 if (GetDataById(x))
-                    payload.Customers.Add(ToDto());
+                    list.Add(ToDto());
             });
+            payload.ResponseData = list;
             return payload;
         }
         public CustomerDataDto GetCustomerByCode(int profileNum, string cutomerCode)
