@@ -12,13 +12,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [Serializable()]
     public class InvoicePaymentPayload : PayloadBase
     {
-        public InvoiceTransactionDto InvoiceTransaction { get; set; }
-        [JsonIgnore] public virtual bool HasInvoiceTransaction => InvoiceTransaction != null;
-        public bool ShouldSerializeInvoiceTransaction() => HasInvoiceTransaction;
-
+        public InvoiceTransactionDto Dto { get; set; }
 
         public InvoiceHeaderDto InvoiceHeader { get; set; }
-        [JsonIgnore] public virtual bool HasInvoiceHeader => InvoiceHeader != null;
-        public bool ShouldSerializeInvoiceHeader() => HasInvoiceHeader;
     }
 }

@@ -29,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SwaggerInvoicePayment<InvoiceTransactionDto>))]
         [FunctionName(nameof(GetInvoicePayment))]
         public static async Task<JsonNetResponse<InvoicePaymentPayload>> GetInvoicePayment(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "InvoicePayment/{invoiceNumber}")] HttpRequest req,
@@ -38,7 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePaymentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new InvoiceTransactionService(dataBaseFactory);
-            payload.InvoiceTransaction = await srv.GetByInvoiceNumberAsync(invoiceNumber);
+            payload.Dto = await srv.GetByInvoiceNumberAsync(invoiceNumber);
             payload.InvoiceHeader = await srv.GetInvoiceHeaderAsync(invoiceNumber);
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
@@ -74,7 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <returns></returns>
         [FunctionName(nameof(UpdateInvoicePayments))]
         [OpenApiOperation(operationId: "UpdateInvoicePayments", tags: new[] { "Invoice payments" }, Summary = "Update one invoice payment ")]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceTransactionDataDto), Description = "Request Body in json format")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SwaggerOne<InvoiceTransactionDto>), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -85,7 +85,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePaymentPayload>(true); 
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new InvoiceTransactionService(dataBaseFactory);
-            var dataDto = new InvoiceTransactionDataDto() { InvoiceTransaction = payload.InvoiceTransaction };
+            var dataDto = new InvoiceTransactionDataDto() { InvoiceTransaction = payload.Dto };
             var success = await srv.UpdateAsync(dataDto);
             //payload.ResponseData = $"{success} to update data";
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
@@ -99,7 +99,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <returns></returns>
         [FunctionName(nameof(AddInvoicePayments))]
         [OpenApiOperation(operationId: "AddInvoicePayments", tags: new[] { "Invoice payments" }, Summary = "Add one invoice payment ")]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceTransactionDataDto), Description = "Request Body in json format")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SwaggerOne<InvoiceTransactionDto>), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -109,7 +109,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePaymentPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new InvoiceTransactionService(dataBaseFactory);
-            var dataDto = new InvoiceTransactionDataDto() { InvoiceTransaction = payload.InvoiceTransaction };
+            var dataDto = new InvoiceTransactionDataDto() { InvoiceTransaction = payload.Dto };
             var success = await srv.AddAsync(dataDto);
             //payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
