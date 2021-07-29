@@ -1,9 +1,7 @@
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
-using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
@@ -45,11 +43,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var srv = new InvoiceService(dataBaseFactory);
             var success = await srv.GetByInvoiceNumberAsync(invoiceNumber);
             if (success)
-            {
-                payload.ResponseData = srv.ToDto(srv.Data);
+            { 
+                payload.Invoice = srv.ToDto(srv.Data);
             }
-            else
-                payload.ResponseData = "no record found";
+            //else
+            //    payload.ResponseData = "no record found";
             return new JsonNetResponse<InvoicePayload>(payload);
         }
 
@@ -73,9 +71,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var payload = await req.GetParameters<InvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
-            var srv = new SalesOrderService(dataBaseFactory);
+            var srv = new InvoiceService(dataBaseFactory);
             //todo
-            payload.ReqeustData = "This api isn't implemented";
+            //payload.ReqeustData = "This api isn't implemented";
             //payload = await srv.GetListBySalesOrderUuidsNumberAsync(payload);
             return new JsonNetResponse<InvoicePayload>(payload);
         }
@@ -95,10 +93,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
            string invoiceNumber)
         {
             var payload = await req.GetParameters<InvoicePayload>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum); 
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new InvoiceService(dataBaseFactory);
             var success = await srv.DeleteByInvoiceNumberAsync(invoiceNumber);
-            payload.ResponseData = $"{success} to delete ";
+            //payload.ResponseData = $"{success} to delete ";
             return new JsonNetResponse<InvoicePayload>(payload);
         }
 
@@ -114,11 +112,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<InvoicePayload>> UpdateInvoices(
 [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "invoices")] HttpRequest req)
         {
-            var payload = await req.GetParameters<SalesOrderDataDto, InvoicePayload>();
+            var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
-            var srv = new SalesOrderService(dataBaseFactory);
-            var success = await srv.UpdateAsync(payload.ReqeustData);
-            payload.ResponseData = $"{success} to update data";
+            var srv = new InvoiceService(dataBaseFactory);
+            var success = await srv.UpdateAsync(payload.Invoice);
+            //payload.ResponseData = $"{success} to update data";
             return new JsonNetResponse<InvoicePayload>(payload);
         }
         /// <summary>
@@ -134,11 +132,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<InvoicePayload>> AddInvoices(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices")] HttpRequest req)
         {
-            var payload = await req.GetParameters<SalesOrderDataDto, InvoicePayload>();
+            var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
-            var srv = new SalesOrderService(dataBaseFactory);
-            var success = await srv.AddAsync(payload.ReqeustData);
-            payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
+            var srv = new InvoiceService(dataBaseFactory);
+            var success = await srv.AddAsync(payload.Invoice);
+            //payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
             return new JsonNetResponse<InvoicePayload>(payload);
         }
     }

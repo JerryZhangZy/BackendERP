@@ -1,9 +1,7 @@
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
-using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
@@ -43,10 +41,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var success = await srv.GetByOrderNumberAsync(orderNumber);
             if (success)
             {
-                payload.ResponseData = srv.ToDto(srv.Data);
+                payload.SalesOrder = srv.ToDto(srv.Data);
             }
-            else
-                payload.ResponseData = "no record found";
+            //else
+            //    payload.ResponseData = "no record found";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
@@ -95,7 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.DeleteByOrderNumberAsync(orderNumber);
-            payload.ResponseData = $"{success} to delete data";
+            //payload.ResponseData = $"{success} to delete data";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
@@ -111,11 +109,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<SalesOrderPayload>> UpdateSalesOrders(
 [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesorder")] HttpRequest req)
         {
-            var payload = await req.GetParameters<SalesOrderDataDto, SalesOrderPayload>();
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
-            var success = await srv.UpdateAsync(payload.ReqeustData);
-            payload.ResponseData = $"{success} to update data";
+            var success = await srv.UpdateAsync(payload.SalesOrder);
+            //payload.ResponseData = $"{success} to update data";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
         /// <summary>
@@ -130,11 +128,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<SalesOrderPayload>> AddSalesOrders(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesorder")] HttpRequest req)
         {
-            var payload = await req.GetParameters<SalesOrderDataDto, SalesOrderPayload>();
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
-            var success = await srv.AddAsync(payload.ReqeustData);
-            payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
+            var success = await srv.AddAsync(payload.SalesOrder);
+            //payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
@@ -150,7 +148,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrdersList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesorder/find")] HttpRequest req)
         {
-            var payload = await req.GetBodyObjectAsync<SalesOrderPayload>();
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderList(dataBaseFactory, new SalesOrderQuery());
             payload = await srv.GetSalesOrderListAsync(payload);

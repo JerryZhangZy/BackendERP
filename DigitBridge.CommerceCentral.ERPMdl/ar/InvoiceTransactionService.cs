@@ -120,10 +120,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task<InvoiceTransaction> GetByInvoiceNumberAsync(string invoiceNumber)
+        public virtual async Task<InvoiceTransactionDto> GetByInvoiceNumberAsync(string invoiceNumber)
         {
             List();
-            return await _data.GetByInvoiceNumberAsync(invoiceNumber);
+            var invoiceTransaction = await _data.GetByInvoiceNumberAsync(invoiceNumber);
+            var dto = new InvoiceTransactionDto();
+            new InvoiceTransactionDataDtoMapperDefault().WriteInvoiceTransaction(invoiceTransaction, dto);
+            return dto;
         }
 
         /// <summary>
@@ -131,9 +134,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public async Task<InvoiceHeader> GetInvoiceHeaderAsync(string invoiceNumber)
+        public async Task<InvoiceHeaderDto> GetInvoiceHeaderAsync(string invoiceNumber)
         {
-            return await new InvoiceHeader(dbFactory).GetByInvoiceNumberAsync(invoiceNumber);
+            var invoiceHeader = await new InvoiceHeader(dbFactory).GetByInvoiceNumberAsync(invoiceNumber);
+            var dto = new InvoiceHeaderDto();
+            new InvoiceDataDtoMapperDefault().WriteInvoiceHeader(invoiceHeader, dto);
+            return dto;
         }
     }
 }

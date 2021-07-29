@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -11,5 +12,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [Serializable()]
     public class InvoicePayload : PayloadBase
     {
+        public InvoiceDataDto Invoice { get; set; }
+        [JsonIgnore] public virtual bool HasInvoice => Invoice != null;
+        public bool ShouldSerializeInvoice() => HasInvoice;
+         
     }
 }
