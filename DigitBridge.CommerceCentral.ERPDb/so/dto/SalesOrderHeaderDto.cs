@@ -36,37 +36,40 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 
-		/// <summary>
-		/// (Readonly) Database Number. <br> Display: false, Editable: false.
-		/// </summary>
-		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
+        /// <summary>
+        /// (Readonly) Database Number. <br> Display: false, Editable: false.
+        /// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDatabaseNum => DatabaseNum != null;
 
-		/// <summary>
-		/// (Readonly) Login user account. <br> Display: false, Editable: false.
-		/// </summary>
-		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
+        /// <summary>
+        /// (Readonly) Login user account. <br> Display: false, Editable: false.
+        /// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMasterAccountNum => MasterAccountNum != null;
 
-		/// <summary>
-		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
-		/// </summary>
-		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
+        /// <summary>
+        /// (Readonly) Login user profile. <br> Display: false, Editable: false.
+        /// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasProfileNum => ProfileNum != null;
 
-		/// <summary>
-		/// Order uuid. <br> Display: false, Editable: false.
-		/// </summary>
-		[OpenApiPropertyDescription("Order uuid. <br> Display: false, Editable: false.")]
+        /// <summary>
+        /// Order uuid. <br> Display: false, Editable: false.
+        /// </summary>
+        [OpenApiPropertyDescription("Order uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The SalesOrderUuid value cannot exceed 50 characters. ")]
         public string SalesOrderUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

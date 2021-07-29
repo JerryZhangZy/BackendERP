@@ -19,18 +19,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="T4\DataJavaScript.js">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataJavaScript.tt</DependentUpon>
-    </None>
     <None Update="T4\DataJavaScript.tt">
       <LastGenOutput>DataJavaScript.js</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\DataAccess.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>JavaScript.cs</LastGenOutput>
+      <LastGenOutput>DataAccess.cs</LastGenOutput>
     </None>
     <None Update="T4\GenerateJsDocRepositoryDto.ttinclude">
       <LastGenOutput>GenerateJsDocRepositoryDto.cs</LastGenOutput>
@@ -217,7 +212,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepository.ttinclude">
-      <LastGenOutput>GenerateJs.cs</LastGenOutput>
+      <LastGenOutput>GenerateRepository.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepositoryTest.ttinclude">
@@ -235,11 +230,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="T4\DataAccess - Copy.cs">
-      <DependentUpon>DataAccess.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Update="T4\GenerateJsDocStructureDto - Copy.cs">
       <DependentUpon>GenerateJsDocStructureDto.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -254,6 +244,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateJsDocRepositoryDto.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateRepository.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateRepositoryDto.cs">
       <DesignTime>True</DesignTime>
@@ -285,10 +280,35 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\ReadDtoGrandChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoGrandChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\ReadDtoObjectChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoObjectChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForCustomer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForCustomer.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForInventory.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInventory.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\SettingForInventoryLog.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForInventoryLog.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForInvoice.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInvoice.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\SettingForSalesOrder.cs">
       <DesignTime>True</DesignTime>

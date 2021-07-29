@@ -103,6 +103,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -132,6 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -204,6 +206,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read all grand children object
 
+			data.CheckIntegrity();
 			return;
 		}
 

@@ -889,6 +889,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual InvoiceTransaction CheckIntegrity()
+        {
+            return this;
+        }
+
         public virtual InvoiceTransaction ClearChildren()
         {
             return this;

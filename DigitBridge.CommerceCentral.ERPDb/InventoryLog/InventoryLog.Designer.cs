@@ -791,6 +791,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual InventoryLog CheckIntegrity()
+        {
+            return this;
+        }
+
         public virtual InventoryLog ClearChildren()
         {
             return this;

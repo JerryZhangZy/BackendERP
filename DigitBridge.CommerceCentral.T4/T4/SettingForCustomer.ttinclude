@@ -39,6 +39,9 @@
     var NamespaceServiceTest = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
     var ServiceTesterFolder = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
 
+    var JsModelFolder = $"DigitBridge.CommerceCentral.ERPApi\\JsType\\{processForlderName}";
+    var PayloadName = $"{processName}Payload";
+
 
     // generate repository class for each table
     var generateModel = true;

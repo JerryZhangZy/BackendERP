@@ -1224,6 +1224,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual InvoiceReturnItems CheckIntegrity()
+        {
+            return this;
+        }
+
         public virtual InvoiceReturnItems ClearChildren()
         {
             return this;

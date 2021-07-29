@@ -29,17 +29,12 @@
 
   <ItemGroup>
     <Folder Include="ap\dto\" />
-    <Folder Include="ar\dto\" />
     <Folder Include="Attribute\" />
     <Folder Include="channelOrder\dto\" />
     <Folder Include="CustomDefineCodes\dto\" />
-    <Folder Include="customer\dto\" />
     <Folder Include="DTO\" />
-    <Folder Include="InventoryLog\dto\" />
-    <Folder Include="inventory\dto\" />
     <Folder Include="po\dto\" />
     <Folder Include="shipment\dto\" />
-    <Folder Include="so\dto\" />
     <Folder Include="vendor\dto\" />
   </ItemGroup>
 
