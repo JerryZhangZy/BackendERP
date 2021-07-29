@@ -168,4 +168,10 @@
   <ItemGroup>
     <None Include="channelOrder\OrderLine_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="so\SalesOrderHeaderInfo_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="so\SalesOrderHeader_Update.sql" />
+  </ItemGroup>
 </Project>
