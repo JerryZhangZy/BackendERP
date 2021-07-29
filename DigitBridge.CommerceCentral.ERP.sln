@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPApi.Tests.Integration", "DigitBridge.CommerceCentral.ERPApi.Tests.Integration\DigitBridge.CommerceCentral.ERPApi.Tests.Integration.csproj", "{2A4900CD-47CF-4BCD-A6A1-352DCED9B71E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.Log", "..\log-center\Digitbridge.Log\Digitbridge.Log\DigitBridge.Log.csproj", "{D78F79E6-D4AE-437D-BD43-6554C0FBC689}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.Log", "DigitBridge.Log\DigitBridge.Log.csproj", "{8368AC64-88A8-44E5-BB8F-D1ABE2DD2B9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -102,10 +102,10 @@ Global
 		{2A4900CD-47CF-4BCD-A6A1-352DCED9B71E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A4900CD-47CF-4BCD-A6A1-352DCED9B71E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A4900CD-47CF-4BCD-A6A1-352DCED9B71E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D78F79E6-D4AE-437D-BD43-6554C0FBC689}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D78F79E6-D4AE-437D-BD43-6554C0FBC689}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D78F79E6-D4AE-437D-BD43-6554C0FBC689}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D78F79E6-D4AE-437D-BD43-6554C0FBC689}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8368AC64-88A8-44E5-BB8F-D1ABE2DD2B9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8368AC64-88A8-44E5-BB8F-D1ABE2DD2B9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8368AC64-88A8-44E5-BB8F-D1ABE2DD2B9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8368AC64-88A8-44E5-BB8F-D1ABE2DD2B9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

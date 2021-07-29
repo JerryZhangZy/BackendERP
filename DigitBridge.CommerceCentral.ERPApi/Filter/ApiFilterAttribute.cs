@@ -2,6 +2,7 @@
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Log;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Host;
@@ -39,7 +40,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var isInvalidParameterException = exceptionContext.Exception.InnerException is InvalidParameterException;
             if (!isInvalidParameterException)
             {
-                //todo record
+                //todo wrap exception
+                LogCenter.CaptureException(exceptionContext.Exception);
             }
             if (MySingletonAppSetting.DebugMode)
             {

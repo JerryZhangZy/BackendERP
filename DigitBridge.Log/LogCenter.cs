@@ -8,7 +8,7 @@ namespace DigitBridge.Log
     public class LogCenter
     {
         // defualt disable sentry  
-        private static bool _sentryEnable = true;
+        private static bool _sentryEnable = false;
         private static bool _serilogEnable = true;
         private static bool _writeToConsole = true;
         //private static bool _useSeriSentry = false;
