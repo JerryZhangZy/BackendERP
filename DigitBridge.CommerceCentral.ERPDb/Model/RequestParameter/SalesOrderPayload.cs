@@ -21,12 +21,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual bool HasSalesOrderUuids => SalesOrderUuids != null && SalesOrderUuids.Count > 0;
         public bool ShouldSerializeSalesOrderUuids() => HasSalesOrderUuids;
 
-        public IList<SalesOrderDataDto> Dtos { get; set; }
-        [JsonIgnore] public virtual bool HasSalesOrders => Dtos != null && Dtos.Count > 0;
+        public IList<SalesOrderDataDto> SalesOrders { get; set; }
+        [JsonIgnore] public virtual bool HasSalesOrders => SalesOrders != null && SalesOrders.Count > 0;
         public bool ShouldSerializeSalesOrders() => HasSalesOrders;
 
-        public SalesOrderDataDto Dto { get; set; }
-        [JsonIgnore] public virtual bool HasSalesOrder => Dto != null;
+        public SalesOrderDataDto SalesOrder { get; set; }
+        [JsonIgnore] public virtual bool HasSalesOrder => SalesOrder != null;
         public bool ShouldSerializeSalesOrder() => HasSalesOrder;
 
 

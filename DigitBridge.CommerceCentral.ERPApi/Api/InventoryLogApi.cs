@@ -109,7 +109,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<InventoryLogPayload>> InventoryLogList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "inventoryLogs/find")] HttpRequest req)
         {
-            var payload = await req.GetBodyObjectAsync<InventoryLogPayload>();
+            var payload = await req.GetParameters<InventoryLogPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new InventoryLogList(dataBaseFactory, new InventoryLogQuery());
             payload = await srv.GetInventoryLogListAsync(payload);

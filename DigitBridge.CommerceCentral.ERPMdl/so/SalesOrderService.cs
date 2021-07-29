@@ -192,7 +192,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 result.Add(this.ToDto());
                 this.DetachData(this.Data);
             }
-            salesOrderPayload.Dtos = result;
+            salesOrderPayload.SalesOrders = result;
             return salesOrderPayload;
         }
 

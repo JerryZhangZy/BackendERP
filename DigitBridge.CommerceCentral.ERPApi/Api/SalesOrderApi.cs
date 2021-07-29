@@ -41,7 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var success = await srv.GetByOrderNumberAsync(orderNumber);
             if (success)
             {
-                payload.Dto = srv.ToDto(srv.Data);
+                payload.SalesOrder = srv.ToDto(srv.Data);
             }
             //else
             //    payload.ResponseData = "no record found";
@@ -112,7 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<SalesOrderPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
-            var success = await srv.UpdateAsync(payload.Dto);
+            var success = await srv.UpdateAsync(payload.SalesOrder);
             //payload.ResponseData = $"{success} to update data";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
@@ -131,7 +131,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<SalesOrderPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
-            var success = await srv.AddAsync(payload.Dto);
+            var success = await srv.AddAsync(payload.SalesOrder);
             //payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }

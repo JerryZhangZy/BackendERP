@@ -76,7 +76,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.CustomerCodes.Add(customerCode);
 
             if( svc.DeleteByCode(payload))
-                payload.ResponseData = svc.ToDto();
+                payload.Customer = svc.ToDto();
             return new JsonNetResponse<CustomerPayload>(payload);
         }
         [FunctionName(nameof(AddCustomer))]
@@ -93,7 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new CustomerService(dbFactory);
 
             if (await svc.AddAsync(payload.Customer))
-                payload.ResponseData = svc.ToDto();
+                payload.Customer = svc.ToDto();
             return new JsonNetResponse<CustomerPayload>(payload);
         }
 
@@ -111,7 +111,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new CustomerService(dbFactory);
 
             if (svc.Update(payload.Customer))
-                payload.ResponseData = svc.ToDto();
+                payload.Customer = svc.ToDto();
             return new JsonNetResponse<CustomerPayload>(payload);
         }
 
@@ -127,7 +127,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<CustomerPayload>> CustomersList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "customers/find")] HttpRequest req)
         {
-            var payload = await req.GetBodyObjectAsync<CustomerPayload>();
+            var payload = await req.GetParameters<CustomerPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new CustomerList(dataBaseFactory, new CustomerQuery());
             payload = await srv.GetCustomerListAsync(payload);
