@@ -28,6 +28,7 @@
 #>
 <#@ include file="ReadDtoGrandChildren.ttinclude" #>
 <#
+    WriteLine($"{new String('\t',indent+1)}data.CheckIntegrity();");
     WriteLine($"{new String('\t',indent+1)}return;");
     WriteLine($"{new String('\t',indent)}}}");
 #>

@@ -1395,9 +1395,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual SalesOrderItems CheckIntegrity()
+        {
+			CheckIntegritySalesOrderItemsAttributes();
+            return this;
+        }
+
         public virtual SalesOrderItems ClearChildren()
         {
-			SalesOrderItemsAttributes.Clear();
+			SalesOrderItemsAttributes?.Clear();
             return this;
         }
 

@@ -404,6 +404,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
             try
             {
                 Type type = property.PropertyType;
+                if (!type.IsValueType && type != typeof(string) && type != typeof(byte[]))
+                    return null;
+
                 DynamicMethod dynamicMethod = new DynamicMethod(string.Empty, null,
                     new Type[] { typeof(object), typeof(object) }, property.DeclaringType.Module);
                 ILGenerator ilGenerator = dynamicMethod.GetILGenerator();
@@ -438,6 +441,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
             try
             {
                 Type type = property.PropertyType;
+                if (!type.IsValueType && type != typeof(string) && type != typeof(byte[]))
+                    return null;
 
                 DynamicMethod dynamicMethod = new DynamicMethod(string.Empty, typeof(object),
                     new Type[] { typeof(object) }, property.DeclaringType.Module);

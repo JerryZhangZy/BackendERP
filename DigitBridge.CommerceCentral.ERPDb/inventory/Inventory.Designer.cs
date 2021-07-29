@@ -1295,9 +1295,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual Inventory CheckIntegrity()
+        {
+			CheckIntegrityInventoryAttributes();
+            return this;
+        }
+
         public virtual Inventory ClearChildren()
         {
-			InventoryAttributes.Clear();
+			InventoryAttributes?.Clear();
             return this;
         }
 

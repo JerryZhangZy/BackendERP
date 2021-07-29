@@ -2437,6 +2437,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual OrderHeader CheckIntegrity()
+        {
+            return this;
+        }
+
         public virtual OrderHeader ClearChildren()
         {
             return this;

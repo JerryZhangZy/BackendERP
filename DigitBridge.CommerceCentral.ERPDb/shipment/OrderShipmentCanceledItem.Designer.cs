@@ -427,6 +427,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual OrderShipmentCanceledItem CheckIntegrity()
+        {
+            return this;
+        }
+
         public virtual OrderShipmentCanceledItem ClearChildren()
         {
             return this;

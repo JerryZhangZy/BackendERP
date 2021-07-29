@@ -521,6 +521,32 @@ if(table.HasOneToManyChildren)
             return this;
         }
 
+        public virtual <#= table.Name #> CheckIntegrity()
+        {
+<# // generate one to one children
+            if(table.HasOneToOneChildren)
+            { 
+                indent = 3;
+                foreach(var childTable in table.oneToOneChildren)
+                { 
+                    if (childTable == null) continue;
+                    WriteLine($"{new String('\t',indent)}CheckIntegrity{childTable.Name}();");
+                }
+            } 
+
+            if(table.HasOneToManyChildren)
+            { 
+                indent = 3;
+                foreach(var childTable in table.oneToManyChildren)
+                { 
+                    if (childTable == null) continue;
+                    WriteLine($"{new String('\t',indent)}CheckIntegrity{childTable.Name}();");
+                }
+            } 
+#>
+            return this;
+        }
+
         public virtual <#= table.Name #> ClearChildren()
         {
 <# // generate one to one children
@@ -530,7 +556,7 @@ if(table.HasOneToManyChildren)
                 foreach(var childTable in table.oneToOneChildren)
                 { 
                     if (childTable == null) continue;
-                    WriteLine($"{new String('\t',indent)}{childTable.Name}.Clear();");
+                    WriteLine($"{new String('\t',indent)}{childTable.Name}?.Clear();");
                 }
             } 
 

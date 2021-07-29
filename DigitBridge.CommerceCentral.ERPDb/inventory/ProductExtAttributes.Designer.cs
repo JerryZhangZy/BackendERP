@@ -143,6 +143,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual ProductExtAttributes CheckIntegrity()
+        {
+            return this;
+        }
+
         public virtual ProductExtAttributes ClearChildren()
         {
             return this;

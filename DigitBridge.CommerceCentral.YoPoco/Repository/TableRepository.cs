@@ -124,9 +124,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #endregion Public Static Methods
 
-        public TableRepository() { }
+        public TableRepository() 
+        {
+            Clear();
+        }
 
-        public TableRepository(IDataBaseFactory dbFactory)
+        public TableRepository(IDataBaseFactory dbFactory) : this()
         {
             SetDataBaseFactory(dbFactory);
         }

@@ -163,6 +163,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual InventoryAttributes CheckIntegrity()
+        {
+            return this;
+        }
+
         public virtual InventoryAttributes ClearChildren()
         {
             return this;

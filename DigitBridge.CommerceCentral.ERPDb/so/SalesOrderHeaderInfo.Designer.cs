@@ -1309,6 +1309,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual SalesOrderHeaderInfo CheckIntegrity()
+        {
+            return this;
+        }
+
         public virtual SalesOrderHeaderInfo ClearChildren()
         {
             return this;
