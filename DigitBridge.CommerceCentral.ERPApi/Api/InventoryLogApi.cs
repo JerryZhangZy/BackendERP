@@ -96,6 +96,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             return new JsonNetResponse<InventoryLogPayload>(result);
         }
+
+        /// <summary>
+        /// Load inventorylog list
+        /// </summary>
+        [FunctionName(nameof(InventoryLogList))]
+        [OpenApiOperation(operationId: "InventoryLogList", tags: new[] { "InventoryLogs" }, Summary = "Load inventorylog list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PayloadBase), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayload))]
+        public static async Task<JsonNetResponse<InventoryLogPayload>> InventoryLogList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "inventoryLogs/find")] HttpRequest req)
+        {
+            var payload = await req.GetBodyObjectAsync<InventoryLogPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var srv = new InventoryLogList(dataBaseFactory, new InventoryLogQuery());
+            payload = await srv.GetInventoryLogListAsync(payload);
+            return new JsonNetResponse<InventoryLogPayload>(payload);
+        }
     }
 }
 

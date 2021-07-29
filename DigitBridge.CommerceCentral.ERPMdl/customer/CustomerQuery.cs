@@ -12,7 +12,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         // Table prefix which use in this sql query
         protected static string PREFIX = CustomerHelper.TableAllies;
-        protected static string PREFIX_DETAIL = SalesOrderItemsHelper.TableAllies;
 
         // Filter fields
 
