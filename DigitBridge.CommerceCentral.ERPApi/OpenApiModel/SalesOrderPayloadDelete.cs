@@ -1,5 +1,4 @@
 ﻿using DigitBridge.Base.Utility;
-using DigitBridge.CommerceCentral.ERPDb;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -9,14 +8,13 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace DigitBridge.CommerceCentral.ERPApi
+namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Request paging information
     /// </summary>
     [Serializable()]
-    public class SalesOrderPayloadPatch
+    public class SalesOrderPayloadDelete : PayloadBase
     {
-        public SalesOrderDataDto SalesOrder { get; set; }
     }
 }
