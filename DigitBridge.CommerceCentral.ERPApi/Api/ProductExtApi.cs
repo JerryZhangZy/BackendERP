@@ -75,15 +75,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Skus.Add(sku);
             var svc = new InventoryService(dbFactory);
             if (svc.DeleteBySku(payload.ProfileNum, sku))
-                payload.InventoryData = svc.ToDto();
+                payload.ResponseData = svc.ToDto();
             return new JsonNetResponse<ProductExPayload>(payload);
         }
         [FunctionName(nameof(AddProductExt))]
         [OpenApiOperation(operationId: "AddProductExt", tags: new[] { "ProductExts" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryDataDto), Description = "InventoryDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload))]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ProductExPayloadPatch), Description = "InventoryDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayloadPatch))]
         public static async Task<JsonNetResponse<ProductExPayload>> AddProductExt(
             [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "productExt")] HttpRequest req)
         {
@@ -92,7 +92,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new InventoryService(dbFactory);
 
             if (svc.Add(payload.InventoryData))
-                payload.InventoryData = svc.ToDto();
+                payload.ResponseData = svc.ToDto();
             return new JsonNetResponse<ProductExPayload>(payload);
         }
 
@@ -100,8 +100,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "UpdateProductExt", tags: new[] { "ProductExts" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryDataDto), Description = "InventoryDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload))]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ProductExPayloadPatch), Description = "InventoryDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayloadPatch))]
         public static async Task<JsonNetResponse<ProductExPayload>> UpdateProductExt(
             [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "productExt")] HttpRequest req)
         {
@@ -110,7 +110,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new InventoryService(dbFactory);
 
             if (svc.Update(payload.InventoryData))
-                payload.InventoryData = svc.ToDto();
+                payload.ResponseData = svc.ToDto();
             return new JsonNetResponse<ProductExPayload>(payload);
         }
     }

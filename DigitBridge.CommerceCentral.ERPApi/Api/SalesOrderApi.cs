@@ -145,7 +145,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "SalesOrdersList", tags: new[] { "SalesOrders" }, Summary = "Load sales order list data")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayload), Description = "Request Body in json format")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PayloadBase), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
         public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrdersList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesorder/find")] HttpRequest req)

@@ -37,8 +37,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
         public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
 
-        protected EnumQueryFilter<SalesOrderStatus> _OrderType = new EnumQueryFilter<SalesOrderStatus>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
-        public EnumQueryFilter<SalesOrderStatus> OrderType => _OrderType;
+        protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
+        public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
 
         public SalesOrderQuery() : base()
         {

@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using DigitBridge.Base.Utility;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -31,6 +33,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 { "logUuids", val => LogUuids = val.Split(",").ToList() }
             };
         }
+
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder InventoryLogList { get; set; }
+        [JsonIgnore] public virtual bool HasInventoryLogList => InventoryLogList != null && InventoryLogList.Length > 0;
+        public bool ShouldSerializeInventoryLogList() => HasInventoryLogList;
+
+        public int InventoryLogListCount { get; set; }
+        [JsonIgnore] public virtual bool HasInventoryLogListCount => InventoryLogListCount > 0;
+        public bool ShouldSerializeInventoryLogListCount() => HasInventoryLogListCount;
 
     }
 }
