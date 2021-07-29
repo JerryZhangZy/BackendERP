@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -10,9 +12,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Request paging information
     /// </summary>
     [Serializable()]
-    public class InvoicePayload : PayloadBase
+    public class InventoryLogPayloadPatch
     {
-        public InvoiceDataDto Dto { get; set; } 
-         
+        public IList<InventoryLogDto> InventoryLogs { get; set; } = new List<InventoryLogDto>();
+
     }
 }

@@ -1,0 +1,12 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "SentryEnable": true, //Enable Sentrylog
+    "SeriEnable": true, //Enable Serilog
+    "SentryDsn": "https://3e24ce8fb50b453fb2b611def469bd2d@o852268.ingest.sentry.io/5854208"
+    //"WriteTo": {
+    //  "Console": true //log will write to console   
+    //}
+  }
+}

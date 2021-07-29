@@ -31,8 +31,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "CustomerCodes", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "CustomerCodes", Description = "CustomerCode Array", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<List<CustomerDataDto>>), Example = typeof(List<CustomerDataDto>), Description = "The OK response")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Response<CustomerPayload>), Example = typeof(CustomerPayload), Description = "The OK response")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload))]
         public static async Task<JsonNetResponse<CustomerPayload>> GetCustomer(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "customers/{CustomerCode?}")] HttpRequest req,
             string CustomerCode=null)
@@ -77,15 +76,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.CustomerCodes.Add(customerCode);
 
             if( svc.DeleteByCode(payload))
-                payload.Customer = svc.ToDto();
+                payload.ResponseData = svc.ToDto();
             return new JsonNetResponse<CustomerPayload>(payload);
         }
         [FunctionName(nameof(AddCustomer))]
         [OpenApiOperation(operationId: "AddCustomer", tags: new[] { "Customers" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerDataDto), Description = "CustomerDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload), Example = typeof(CustomerPayload), Description = "The OK response")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerPayloadPatch), Description = "CustomerDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadPatch))]
         public static async Task<JsonNetResponse<CustomerPayload>> AddCustomer(
             [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "customers")] HttpRequest req)
         {
@@ -94,7 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new CustomerService(dbFactory);
 
             if (await svc.AddAsync(payload.Customer))
-                payload.Customer = svc.ToDto();
+                payload.ResponseData = svc.ToDto();
             return new JsonNetResponse<CustomerPayload>(payload);
         }
 
@@ -102,8 +101,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "UpdateCustomer", tags: new[] { "Customers" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerDataDto), Description = "CustomerDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload), Example = typeof(CustomerPayload), Description = "The OK response")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerPayloadPatch), Description = "CustomerDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadPatch))]
         public static async Task<JsonNetResponse<CustomerPayload>> UpdateCustomer(
             [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "customers")] HttpRequest req)
         {
@@ -112,7 +111,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new CustomerService(dbFactory);
 
             if (svc.Update(payload.Customer))
-                payload.Customer = svc.ToDto();
+                payload.ResponseData = svc.ToDto();
+            return new JsonNetResponse<CustomerPayload>(payload);
+        }
+
+        /// <summary>
+        /// Load customer list
+        /// </summary>
+        [FunctionName(nameof(CustomersList))]
+        [OpenApiOperation(operationId: "CustomersList", tags: new[] { "Customers" }, Summary = "Load customer list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PayloadBase), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload))]
+        public static async Task<JsonNetResponse<CustomerPayload>> CustomersList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "customers/find")] HttpRequest req)
+        {
+            var payload = await req.GetBodyObjectAsync<CustomerPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var srv = new CustomerList(dataBaseFactory, new CustomerQuery());
+            payload = await srv.GetCustomerListAsync(payload);
             return new JsonNetResponse<CustomerPayload>(payload);
         }
     }

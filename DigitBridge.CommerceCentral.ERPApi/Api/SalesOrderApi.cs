@@ -1,9 +1,7 @@
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
-using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
@@ -31,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SwaggerOne<SalesOrderDataDto>))]
         [FunctionName(nameof(GetSalesOrder))]
         public static async Task<JsonNetResponse<SalesOrderPayload>> GetSalesOrder(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder/{orderNumber}")] HttpRequest req,
@@ -43,10 +41,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var success = await srv.GetByOrderNumberAsync(orderNumber);
             if (success)
             {
-                payload.ResponseData = srv.ToDto(srv.Data);
+                payload.Dto = srv.ToDto(srv.Data);
             }
-            else
-                payload.ResponseData = "no record found";
+            //else
+            //    payload.ResponseData = "no record found";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
@@ -63,7 +61,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$skip", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$skip", Description = "Records to skip. https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload), Description = "Result is List<SalesOrderDataDto>")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SwaggerList<SalesOrderDataDto[]>), Description = "Result is List<SalesOrderDataDto>")]
         [FunctionName(nameof(GetSalesOrderList))]
         public static async Task<JsonNetResponse<SalesOrderPayload>> GetSalesOrderList(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesorder")] HttpRequest req)
@@ -95,7 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
             var success = await srv.DeleteByOrderNumberAsync(orderNumber);
-            payload.ResponseData = $"{success} to delete data";
+            //payload.ResponseData = $"{success} to delete data";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
@@ -106,16 +104,16 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <returns></returns>
         [FunctionName(nameof(UpdateSalesOrders))]
         [OpenApiOperation(operationId: "UpdateSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Update one sales order")]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadPatch), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadPatch))]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SwaggerOne<SalesOrderDataDto>), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
         public static async Task<JsonNetResponse<SalesOrderPayload>> UpdateSalesOrders(
 [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "salesorder")] HttpRequest req)
         {
-            var payload = await req.GetParameters<SalesOrderDataDto, SalesOrderPayload>();
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
-            var success = await srv.UpdateAsync(payload.ReqeustData);
-            payload.ResponseData = $"{success} to update data";
+            var success = await srv.UpdateAsync(payload.Dto);
+            //payload.ResponseData = $"{success} to update data";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
         /// <summary>
@@ -125,16 +123,16 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <returns></returns>
         [FunctionName(nameof(AddSalesOrders))]
         [OpenApiOperation(operationId: "AddSalesOrders", tags: new[] { "SalesOrders" }, Summary = "Add one sales order")]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderDataDto), Description = "Request Body in json format")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SwaggerOne<SalesOrderDataDto>), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
         public static async Task<JsonNetResponse<SalesOrderPayload>> AddSalesOrders(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesorder")] HttpRequest req)
         {
-            var payload = await req.GetParameters<SalesOrderDataDto, SalesOrderPayload>();
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderService(dataBaseFactory);
-            var success = await srv.AddAsync(payload.ReqeustData);
-            payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
+            var success = await srv.AddAsync(payload.Dto);
+            //payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
@@ -146,11 +144,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayload), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayload))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SwaggerList<SalesOrderDataDto[]>))]
         public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrdersList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesorder/find")] HttpRequest req)
         {
-            var payload = await req.GetBodyObjectAsync<SalesOrderPayload>();
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new SalesOrderList(dataBaseFactory, new SalesOrderQuery());
             payload = await srv.GetSalesOrderListAsync(payload);

@@ -42,11 +42,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public ProductExPayload GetInventorysBySkuArray(ProductExPayload payload)
         {
             var uuids = GetProductUuidsBySkuArray(payload.ProfileNum, payload.Skus);
+            var list = new List<InventoryDataDto>();
             uuids.ForEach(x =>
             {
                 if (GetDataById(x))
-                    payload.InventoryDatas.Add(ToDto());
+                    list.Add(ToDto());
             });
+            payload.ResponseData = list;
             return payload;
         }
 

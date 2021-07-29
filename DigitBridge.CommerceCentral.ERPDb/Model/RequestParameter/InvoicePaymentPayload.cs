@@ -10,9 +10,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Request paging information
     /// </summary>
     [Serializable()]
-    public class InvoicePayload : PayloadBase
+    public class InvoicePaymentPayload : PayloadBase
     {
-        public InvoiceDataDto Dto { get; set; } 
-         
+        public InvoiceTransactionDto Dto { get; set; }
+
+        public InvoiceHeaderDto InvoiceHeader { get; set; }
     }
 }

@@ -381,7 +381,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return dto;
         }
 
-		protected virtual void WriteInvoiceHeader(InvoiceHeader data, InvoiceHeaderDto dto)
+		public virtual void WriteInvoiceHeader(InvoiceHeader data, InvoiceHeaderDto dto)
 		{
 			if (data is null || dto is null)
 				return;
