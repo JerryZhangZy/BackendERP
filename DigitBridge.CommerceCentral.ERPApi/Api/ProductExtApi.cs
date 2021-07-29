@@ -75,7 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Skus.Add(sku);
             var svc = new InventoryService(dbFactory);
             if (svc.DeleteBySku(payload.ProfileNum, sku))
-                payload.ResponseData = svc.ToDto();
+                payload.InventoryData = svc.ToDto();
             return new JsonNetResponse<ProductExPayload>(payload);
         }
         [FunctionName(nameof(AddProductExt))]
@@ -92,7 +92,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new InventoryService(dbFactory);
 
             if (svc.Add(payload.InventoryData))
-                payload.ResponseData = svc.ToDto();
+                payload.InventoryData = svc.ToDto();
             return new JsonNetResponse<ProductExPayload>(payload);
         }
 
@@ -110,7 +110,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new InventoryService(dbFactory);
 
             if (svc.Update(payload.InventoryData))
-                payload.ResponseData = svc.ToDto();
+                payload.InventoryData = svc.ToDto();
             return new JsonNetResponse<ProductExPayload>(payload);
         }
     }

@@ -48,7 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (GetDataById(x))
                     list.Add(ToDto());
             });
-            payload.ResponseData = list;
+            payload.InventoryDatas = list;
             return payload;
         }
 

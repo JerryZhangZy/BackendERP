@@ -49,7 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (GetDataById(x))
                     list.Add(ToDto());
             });
-            payload.ResponseData = list;
+            payload.Customers = list;
             return payload;
         }
         public CustomerDataDto GetCustomerByCode(int profileNum, string cutomerCode)

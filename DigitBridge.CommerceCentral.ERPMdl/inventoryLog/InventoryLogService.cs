@@ -60,14 +60,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var list = InventoryLogHelper.QueryInventoryLogByUuids(payload.LogUuids);
             if (list.SetDataBaseFactory(dbFactory).Delete() > 0)
-                payload.ResponseData = _mapper.WriteInventoryLogDtoList(list, null);
+                payload.InventoryLogs = _mapper.WriteInventoryLogDtoList(list, null);
             return payload;
         }
 
         public InventoryLogPayload GetListByUuid(InventoryLogPayload payload)
         {
             var list = InventoryLogHelper.QueryInventoryLogByUuids(payload.LogUuids);
-            payload.ResponseData= _mapper.WriteInventoryLogDtoList(list, null);
+            payload.InventoryLogs= _mapper.WriteInventoryLogDtoList(list, null);
             return payload;
         }
 
@@ -106,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var datalist = mapper.ReadInventoryLogDtoList(null, dtoList);
             var addcount = datalist.Count();
             datalist.SetDataBaseFactory(dbFactory).Save();
-            payload.ResponseData = dtoList;
+            payload.InventoryLogs = dtoList;
             return payload;
             //TODO:Validator验证，Mapper,补充完整Inventory信息进去，调用Dao
         }
@@ -133,7 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             var ulist = payload.InventoryLogs.Select(r => r.RowNum).ToList();
             dlist = dlist.Where(r => ulist.Contains(r.RowNum)).ToList();
-            payload.ResponseData = _mapper.WriteInventoryLogDtoList(dlist, null);
+            payload.InventoryLogs = _mapper.WriteInventoryLogDtoList(dlist, null);
             return payload;
         }
 
