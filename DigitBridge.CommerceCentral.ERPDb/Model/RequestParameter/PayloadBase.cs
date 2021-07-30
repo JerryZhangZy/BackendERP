@@ -42,6 +42,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeProfileNum() => HasProfileNum;
 
         /// <summary>
+        /// User ProfileNum
+        /// Required, from header
+        /// </summary>
+        [Required(ErrorMessage = "databaseNum is required")]
+        [Display(Name = "databaseNum")]
+        [DataMember(Name = "databaseNum")]
+        [JsonIgnore]
+        public int DatabaseNum { get; set; }
+        [JsonIgnore] public virtual bool HasDatabaseNum => DatabaseNum > 0;
+        public bool ShouldSerializeDatabaseNum() => HasDatabaseNum;
+
+        /// <summary>
         /// Page size to load.
         /// Optional,
         /// Default value is 100.

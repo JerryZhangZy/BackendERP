@@ -25,6 +25,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
         bool HasProfileNum { get; }
 
         /// <summary>
+        /// User ProfileNum
+        /// Required, from header
+        /// </summary>
+        int DatabaseNum { get; set; }
+        bool HasDatabaseNum { get; }
+
+        /// <summary>
         /// Page size to load.
         /// Optional,
         /// Default value is 100.

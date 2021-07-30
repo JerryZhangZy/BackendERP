@@ -72,9 +72,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#region read all not null properties
 
-			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
-			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+			//if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
+			//if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			//if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
 			if (dto.HasOrderNumber) data.OrderNumber = dto.OrderNumber;
 			if (dto.HasOrderType) data.OrderType = dto.OrderType.ToInt();
@@ -112,7 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasLotCost) data.LotCost = dto.LotCost.ToDecimal();
 			if (dto.HasOrderSourceCode) data.OrderSourceCode = dto.OrderSourceCode;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
-			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
+			//if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
 			#endregion read properties

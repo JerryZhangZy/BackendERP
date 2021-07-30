@@ -265,6 +265,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryPartialClass.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateServiceValidator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceValidator.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructure.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

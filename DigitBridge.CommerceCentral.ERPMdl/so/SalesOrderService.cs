@@ -66,6 +66,47 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync().ConfigureAwait(false);
         }
 
+        public virtual bool Add(SalesOrderPayload payload)
+        {
+            if (payload is null || !payload.HasSalesOrder)
+                return false;
+
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(payload.SalesOrder);
+
+            if (!ValidatePayload(payload))
+                return false;
+
+            // validate data for Add processing
+            if (!Validate())
+                return false;
+
+            return SaveData();
+        }
+
+        public virtual async Task<bool> AddAsync(SalesOrderPayload payload)
+        {
+            if (payload is null || !payload.HasSalesOrder)
+                return false;
+
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(payload.SalesOrder);
+
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+
+            return await SaveDataAsync().ConfigureAwait(false);
+        }
+
+
         /// <summary>
         /// Update data from Dto object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
@@ -105,6 +146,54 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
+        /// Update data from Dto object.
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
+        /// </summary>
+        public virtual bool Update(SalesOrderPayload payload)
+        {
+            if (payload is null || !payload.HasSalesOrder || payload.SalesOrder.SalesOrderHeader.RowNum.ToLong() <= 0)
+                return false;
+            // set Add mode and clear data
+            Edit(payload.SalesOrder.SalesOrderHeader.RowNum.ToLong());
+
+            if (!ValidatePayload(payload))
+                return false;
+
+            // load data from dto
+            FromDto(payload.SalesOrder);
+            // validate data for Add processing
+            if (!Validate())
+                return false;
+
+            return SaveData();
+        }
+
+        /// <summary>
+        /// Update data from Dto object
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
+        /// </summary>
+        public virtual async Task<bool> UpdateAsync(SalesOrderPayload payload)
+        {
+            if (payload is null || !payload.HasSalesOrder || payload.SalesOrder.SalesOrderHeader.RowNum.ToLong() <= 0)
+                return false;
+            // set Add mode and clear data
+            await EditAsync(payload.SalesOrder.SalesOrderHeader.RowNum.ToLong()).ConfigureAwait(false);
+
+            // validate data for Add processing
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            // load data from dto
+            FromDto(payload.SalesOrder);
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+
+            return await SaveDataAsync();
+        }
+
+
+        /// <summary>
         /// Get sale order with detail by orderNumber
         /// </summary>
         /// <param name="orderNumber"></param>
@@ -140,6 +229,52 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
+        /// Get sale order with detail by orderNumber
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> GetByOrderNumberAsync(SalesOrderPayload payload, string orderNumber)
+        {
+            if (string.IsNullOrEmpty(orderNumber))
+                return false;
+            List();
+            var rowNum = await _data.GetRowNumAsync(orderNumber);
+            if (!rowNum.HasValue)
+                return false;
+            var success = await GetDataAsync(rowNum.Value);
+
+            // validate data for Add processing
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            //if (success) ToDto();
+            return success;
+        }
+        /// <summary>
+        /// Get sale order with detail by orderNumber
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual bool GetByOrderNumber(SalesOrderPayload payload, string orderNumber)
+        {
+            if (string.IsNullOrEmpty(orderNumber))
+                return false;
+            List();
+            var rowNum = _data.GetRowNum(orderNumber);
+            if (!rowNum.HasValue)
+                return false;
+            var success = GetData(rowNum.Value);
+
+            // validate data for Add processing
+            if (!ValidatePayload(payload))
+                return false;
+
+            //if (success) ToDto();
+            return success;
+        }
+
+
+        /// <summary>
         /// Delete salesorder by order number
         /// </summary>
         /// <param name="orderNumber"></param>
@@ -173,6 +308,52 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && await DeleteDataAsync();
             return success;
         }
+
+        /// <summary>
+        /// Delete salesorder by order number
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual bool DeleteByOrderNumber(SalesOrderPayload payload, string orderNumber)
+        {
+            if (string.IsNullOrEmpty(orderNumber))
+                return false;
+            Delete();
+            var rowNum = _data.GetRowNum(orderNumber);
+            if (!rowNum.HasValue)
+                return false;
+            var success = GetData(rowNum.Value);
+
+            // validate data for Add processing
+            if (!ValidatePayload(payload))
+                return false;
+
+            success = success && DeleteData();
+            return success;
+        }
+        /// <summary>
+        /// Delete salesorder by order number
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByOrderNumberAsync(SalesOrderPayload payload, string orderNumber)
+        {
+            if (string.IsNullOrEmpty(orderNumber))
+                return false;
+            Delete();
+            var rowNum = await _data.GetRowNumAsync(orderNumber);
+            if (!rowNum.HasValue)
+                return false;
+            var success = await GetDataAsync(rowNum.Value);
+
+            // validate data for Add processing
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            success = success && await DeleteDataAsync();
+            return success;
+        }
+
 
         /// <summary>
         /// Get sale order list by Uuid list

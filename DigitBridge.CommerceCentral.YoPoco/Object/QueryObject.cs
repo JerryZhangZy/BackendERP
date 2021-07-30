@@ -24,8 +24,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
     public abstract partial class QueryObject<TQueryObject> : IQueryObject
         where TQueryObject : QueryObject<TQueryObject>
     {
+        protected string _PREFIX = string.Empty;
+        protected QueryFilter<int> _MasterAccountNum = new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", "", FilterBy.eq, -1, Enable: true);
+        protected QueryFilter<int> _ProfileNum = new QueryFilter<int>("ProfileNum", "ProfileNum", "", FilterBy.eq, -1, Enable: true);
+
         public QueryObject() 
         {
+            AddFilter(_MasterAccountNum);
+            AddFilter(_ProfileNum);
             InitQueryFilter();
         }
 
@@ -414,6 +420,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             if (payload == null)
                 return;
+
+            _MasterAccountNum.prefix = _PREFIX;
+            _MasterAccountNum.FilterValue = payload.MasterAccountNum;
+            _ProfileNum.prefix = _PREFIX;
+            _ProfileNum.FilterValue = payload.ProfileNum;
+
             SkipRecords = payload.Skip < 0 ? 0 : payload.Skip;
             PageSize = payload.Top < 1 ? 20 : payload.Top;
             if (payload.LoadAll)
