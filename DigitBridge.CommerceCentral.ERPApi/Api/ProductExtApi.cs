@@ -121,6 +121,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload = await svc.UpdateAsync(payload);
             return new JsonNetResponse<ProductExPayload>(payload);
         }
+
+        /// <summary>
+        /// Load customer list
+        /// </summary>
+        [FunctionName(nameof(ProductExList))]
+        [OpenApiOperation(operationId: "ProductExList", tags: new[] { "ProductExts" }, Summary = "Load productex list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PayloadBase), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload))]
+        public static async Task<JsonNetResponse<ProductExPayload>> ProductExList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "productExt/find")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<ProductExPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InventoryList(dataBaseFactory, new InventoryQuery());
+            payload = await srv.GetIProductListAsync(payload);
+            return new JsonNetResponse<ProductExPayload>(payload);
+        }
     }
 }
 

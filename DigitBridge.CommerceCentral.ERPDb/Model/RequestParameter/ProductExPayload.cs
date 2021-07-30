@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using DigitBridge.Base.Utility;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -35,6 +37,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 { "skus", val => Skus = val.Split(",").ToList() }
             };
         }
+
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder ProductList { get; set; }
+        [JsonIgnore] public virtual bool HasIProductList => ProductList != null && ProductList.Length > 0;
+        public bool ShouldSerializeProductList() => HasIProductList;
+
+        public int ProductListCount { get; set; }
+        [JsonIgnore] public virtual bool HasProductListCount => ProductListCount > 0;
+        public bool ShouldSerializeProductListCountCount() => HasProductListCount;
 
     }
 }
