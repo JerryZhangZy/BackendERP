@@ -173,6 +173,18 @@
 #>
 <# } #>
 
+<#@ include file="GenerateServicePayload.ttinclude" #>
+<# 
+        dir = Path.Combine(path,StructureFolder);
+        SaveOutputNotExists(dir, $"{PayloadName}.cs");
+#>
+
+<#@ include file="GenerateServicePayloadOpenApi.ttinclude" #>
+<# 
+        dir = Path.Combine(path,OpenApiPayloadFolder);
+        SaveOutputNotExists(dir, $"{OpenApiPayloadName}.cs");
+#>
+
 <#      
     // Generate structure repository class
 	if (generateStructureTester && StructureClass != null)
