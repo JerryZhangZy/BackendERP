@@ -64,6 +64,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var uuid = GetCustomerUuidByCode(payload.ProfileNum, payload.CustomerCodes.First());
             return Delete(uuid);
         }
+        public async Task<CustomerPayload> DeleteByCodeAsync(CustomerPayload payload)
+        {
+            var uuid = GetCustomerUuidByCode(payload.ProfileNum, payload.CustomerCodes.First());
+            if(await DeleteAsync(uuid))
+            {
+                payload.Customer = ToDto();
+            }
+            return payload;
+        }
+
+        public async Task<CustomerPayload> AddAsync(CustomerPayload payload)
+        {
+            if (await AddAsync(payload.Customer))
+                payload.Customer = ToDto();
+            return payload;
+        }
+
+        public CustomerPayload Add(CustomerPayload payload)
+        {
+            if (Add(payload.Customer))
+            {
+                payload.Customer = ToDto();
+            }
+            return payload;
+        }
 
 
         /// <summary>
@@ -119,6 +144,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return SaveData();
+        }
+
+        public CustomerPayload Update(CustomerPayload payload)
+        {
+            if (Update(payload.Customer))
+                payload.Customer = ToDto();
+            return payload;
+        }
+
+        public async Task<CustomerPayload> UpdateAsync(CustomerPayload payload)
+        {
+            if (await UpdateAsync(payload.Customer))
+                payload.Customer = ToDto();
+            return payload;
         }
 
         /// <summary>
