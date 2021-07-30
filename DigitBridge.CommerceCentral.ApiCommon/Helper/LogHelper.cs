@@ -12,12 +12,12 @@ namespace DigitBridge.CommerceCentral.ApiCommon
      /// </summary>
      /// <param name="req"></param>
      /// <returns></returns>
-        public static async Task<Dictionary<string, object>> GetRequestInfo(HttpRequest req, string name)
+        public static async Task<Dictionary<string, object>> GetRequestInfo(HttpRequest req, string functionName)
         {
             var requestInfos = new Dictionary<string, object>();
             requestInfos.Add("method", req.Method);
 
-            #region header  
+            #region Append header to requestInfos 
             var headers = new List<object>();
             foreach (var itemkey in req.Headers.Keys)
             {
@@ -31,7 +31,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             requestInfos.Add("header", headers);
             #endregion
 
-            #region url and query
+            #region Append url and query to requestInfos 
             var querys = new List<object>();
             foreach (var itemkey in req.Query.Keys)
             {
@@ -60,7 +60,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             });
             #endregion
 
-            #region body
+            #region prepare body and wrapped as postman format
 
             //if (bodyType != null)
             //    requestInfos.Add("body", new
@@ -68,23 +68,49 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             //        mode = "raw",
             //        raw = await req.GetBodyObjectAsync(bodyType)
             //    }); 
-
-            requestInfos.Add("body", new
+            var bodyJsonString = await req.GetBodyStringAsync();
+            var wrapObject_WithBody = new
+            {
+                mode = "raw",
+                raw = bodyJsonString
+            };
+            var wrapObject_WithoutBody = new
             {
                 mode = "raw",
                 raw = "please put request body here."
-            });
+            };
+            //var body_limit_length = 5000;//reffer to db_varchar_max is 8000
+
 
             #endregion
 
-            #region final object which will be written to log center 
-            var result = new Dictionary<string, object>();
-            result.Add("name", name);
-            result.Add("request", requestInfos);
             // due to the body may be too long to store in db
-            var postman_request_no_body = JsonConvert.SerializeObject(result);
-            result.Add("postman request", postman_request_no_body);
-            result.Add("request body", await req.GetBodyStringAsync());
+            // default put empty wrapped body to requestInfos
+            requestInfos.Add("body", wrapObject_WithoutBody);
+            var without_Body_Object = new
+            { 
+                name = functionName,
+                request= requestInfos
+            };
+            var without_Body_JsonString = JsonConvert.SerializeObject(without_Body_Object);
+
+            requestInfos["body"] = wrapObject_WithBody;
+            var with_Body_Object = new
+            {
+                name = functionName,
+                request = requestInfos
+            };
+            var with_Body_JsonString = JsonConvert.SerializeObject(with_Body_Object);
+
+            #region final object which will be written to log center 
+            requestInfos["body"] = wrapObject_WithoutBody;
+            var result = new Dictionary<string, object>();
+            result.Add("request name", functionName);
+            result.Add("request ", requestInfos);
+            result.Add("request body", await req.GetBodyStringAsync()); 
+             
+            result.Add("postman request with body", with_Body_JsonString);
+            result.Add("postman request without body", without_Body_JsonString); 
             #endregion
             return result;
         }
