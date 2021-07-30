@@ -10,6 +10,13 @@ namespace DigitBridge.CommerceCentral.ApiCommon
 {
     public static class MyAppHelper
     {
+        public async static Task<IDataBaseFactory> CreateDefaultDatabaseAsync(IPayload payload)
+        {
+            var config = await MyCache.GetCommerceCentralDbConnSetting(payload.MasterAccountNum).ConfigureAwait(false);
+            payload.DatabaseNum = config.DatabaseNum;
+            return DataBaseFactory.CreateDefault(config);
+        }
+
         public async static Task<IDataBaseFactory> CreateDefaultDatabaseAsync(int masterAccountNum)
         {
             var config = await MyCache.GetCommerceCentralDbConnSetting(masterAccountNum).ConfigureAwait(false);

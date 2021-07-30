@@ -42,6 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public SalesOrderQuery() : base()
         {
+            _PREFIX = PREFIX;
             AddFilter(_OrderNumberFrom);
             AddFilter(_OrderNumberTo);
             AddFilter(_CustomerCode);
@@ -53,7 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override void InitQueryFilter()
         {
             _OrderDateFrom.FilterValue = DateTime.Today;
-            _OrderDateTo.FilterValue = DateTime.Today;
+            _OrderDateTo.FilterValue = DateTime.Today.AddDays(7);
         }
 
     }

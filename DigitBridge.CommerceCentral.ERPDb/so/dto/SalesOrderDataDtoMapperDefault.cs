@@ -72,15 +72,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#region read all not null properties
 
-			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
-			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+			//if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
+			//if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			//if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
 			if (dto.HasOrderNumber) data.OrderNumber = dto.OrderNumber;
 			if (dto.HasOrderType) data.OrderType = dto.OrderType.ToInt();
 			if (dto.HasOrderStatus) data.OrderStatus = dto.OrderStatus.ToInt();
 			if (dto.HasOrderDate) data.OrderDate = dto.OrderDate.ToDateTime();
 			if (dto.HasOrderTime) data.OrderTime = dto.OrderTime.ToTimeSpan();
+			if (dto.HasShipDate) data.ShipDate = dto.ShipDate;
 			if (dto.HasDueDate) data.DueDate = dto.DueDate;
 			if (dto.HasBillDate) data.BillDate = dto.BillDate;
 			if (dto.HasCustomerUuid) data.CustomerUuid = dto.CustomerUuid;
@@ -111,7 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasLotCost) data.LotCost = dto.LotCost.ToDecimal();
 			if (dto.HasOrderSourceCode) data.OrderSourceCode = dto.OrderSourceCode;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
-			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
+			//if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
 			#endregion read properties
@@ -186,6 +187,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasBillToEmail) data.BillToEmail = dto.BillToEmail;
 			if (dto.HasBillToDaytimePhone) data.BillToDaytimePhone = dto.BillToDaytimePhone;
 			if (dto.HasBillToNightPhone) data.BillToNightPhone = dto.BillToNightPhone;
+			if (dto.HasNotes) data.Notes = dto.Notes;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -396,6 +398,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.OrderStatus = data.OrderStatus;
 			dto.OrderDate = data.OrderDate;
 			dto.OrderTime = data.OrderTime.ToDateTime();
+			dto.ShipDate = data.ShipDate;
 			dto.DueDate = data.DueDate;
 			dto.BillDate = data.BillDate;
 			dto.CustomerUuid = data.CustomerUuid;
@@ -502,6 +505,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.BillToEmail = data.BillToEmail;
 			dto.BillToDaytimePhone = data.BillToDaytimePhone;
 			dto.BillToNightPhone = data.BillToNightPhone;
+			dto.Notes = data.Notes;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;

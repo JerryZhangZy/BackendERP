@@ -230,6 +230,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="T4\DataAccess.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataAccess.tt</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateJsDocStructureDto - Copy.cs">
       <DependentUpon>GenerateJsDocStructureDto.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -259,6 +264,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryPartialClass.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateServiceValidator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceValidator.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateStructure.cs">
       <DesignTime>True</DesignTime>

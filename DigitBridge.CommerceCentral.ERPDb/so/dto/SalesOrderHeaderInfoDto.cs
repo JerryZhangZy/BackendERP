@@ -612,6 +612,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToNightPhone => BillToNightPhone != null;
 
 		/// <summary>
+		/// Order notes. <br> Title: Notes, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Order notes. <br> Title: Notes, Display: true, Editable: true")]
+        [StringLength(1000, ErrorMessage = "The Notes value cannot exceed 1000 characters. ")]
+        public string Notes { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasNotes => Notes != null;
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
 		[OpenApiPropertyDescription("(Ignore)")]

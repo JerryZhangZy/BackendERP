@@ -258,6 +258,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
+        public virtual bool ValidatePayload(IPayload payload)
+        {
+            if (Data is null || Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!validator.ValidatePayload(Data, payload, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+        public virtual async Task<bool> ValidatePayloadAsync(IPayload payload)
+        {
+            if (Data is null || Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!validator.ValidatePayload(Data, payload, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+
         #endregion Methods
 
         #region CRUD Methods

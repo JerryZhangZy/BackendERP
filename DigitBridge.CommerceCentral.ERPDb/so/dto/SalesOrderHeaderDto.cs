@@ -36,40 +36,40 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 
-        /// <summary>
-        /// (Readonly) Database Number. <br> Display: false, Editable: false.
-        /// </summary>
+		/// <summary>
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
+		/// </summary>
         [JsonIgnore, XmlIgnore, IgnoreCompare]
-        [OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
+		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDatabaseNum => DatabaseNum != null;
 
-        /// <summary>
-        /// (Readonly) Login user account. <br> Display: false, Editable: false.
-        /// </summary>
+		/// <summary>
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
+		/// </summary>
         [JsonIgnore, XmlIgnore, IgnoreCompare]
-        [OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
+		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMasterAccountNum => MasterAccountNum != null;
 
-        /// <summary>
-        /// (Readonly) Login user profile. <br> Display: false, Editable: false.
-        /// </summary>
+		/// <summary>
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
+		/// </summary>
         [JsonIgnore, XmlIgnore, IgnoreCompare]
-        [OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
+		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasProfileNum => ProfileNum != null;
 
-        /// <summary>
-        /// Order uuid. <br> Display: false, Editable: false.
-        /// </summary>
-        [OpenApiPropertyDescription("Order uuid. <br> Display: false, Editable: false.")]
+		/// <summary>
+		/// Order uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Order uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The SalesOrderUuid value cannot exceed 50 characters. ")]
         public string SalesOrderUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -123,6 +123,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderTime => OrderTime != null;
+
+		/// <summary>
+		/// Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true")]
+        [DataType(DataType.DateTime)]
+        public DateTime? ShipDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasShipDate => ShipDate != null;
 
 		/// <summary>
 		/// (Ignore) Order due date. <br> Display: false, Editable: false

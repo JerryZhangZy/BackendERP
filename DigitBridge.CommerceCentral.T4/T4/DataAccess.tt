@@ -63,7 +63,7 @@
 */
 #>
 
-<#@ include file="SettingForChannelOrder.ttinclude" #>
+<#@ include file="SettingForSalesOrder.ttinclude" #>
 
 <#      
     // Generate model output

@@ -14,6 +14,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         IList<string> Messages { get; set; }
         void Clear();
 
+        bool ValidatePayload(TEntity data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit);
+
         bool Validate(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
         Task<bool> ValidateAsync(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
     }
