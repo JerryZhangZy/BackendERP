@@ -21,7 +21,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                 return await req.GetBodyParameters<TPayload>();
             else
                 return req.GetNoneBodyParameters<TPayload>();
-        } 
+        }
         private static async Task<TPayload> GetBodyParameters<TPayload>(this HttpRequest req)
             where TPayload : PayloadBase, new()
         {
@@ -64,12 +64,14 @@ namespace DigitBridge.CommerceCentral.ApiCommon
 
         private static async Task<T> GetBodyObjectAsync<T>(this HttpRequest req) where T : class
         {
-            using (var reader = new StreamReader(req.Body))
-            {
-                var json = await reader.ReadToEndAsync();
-                return JsonConvert.DeserializeObject<T>(json);
-
-            }
+            var json = await req.GetBodyStringAsync();
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+        public static async Task<string> GetBodyStringAsync(this HttpRequest req)
+        {
+            req.Body.Seek(0, SeekOrigin.Begin);
+            var reader = new StreamReader(req.Body);
+            return await reader.ReadToEndAsync();
         }
 
         /// <summary>
