@@ -72,6 +72,7 @@
                 return (col == null) ? "string" : col.PropertyType;
             }
         }
+        public string UniqueKeyParameterName { get {return $"{UniqueKey.First().ToString().ToLower()}{UniqueKey.Substring(1)}"; } }
 
         public SqlColumnInfo GetColumn(string name)
         {

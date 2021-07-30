@@ -171,7 +171,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion write to dto from data
 
 
-        public List<InventoryLog> ReadInventoryLogDtoList(List<InventoryLog> dataList, List<InventoryLogDto> dtoList)
+        public IList<InventoryLog> ReadInventoryLogDtoList(IList<InventoryLog> dataList, IList<InventoryLogDto> dtoList)
         {
             if (dataList == null)
                 dataList = new List<InventoryLog>();
@@ -196,7 +196,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return dataList;
         }
 
-        public List<InventoryLogDto> WriteInventoryLogDtoList(List<InventoryLog> dataList, List<InventoryLogDto> dtoList)
+        public IList<InventoryLogDto> WriteInventoryLogDtoList(IList<InventoryLog> dataList, IList<InventoryLogDto> dtoList)
         {
             if (dtoList == null)
                 dtoList = new List<InventoryLogDto>();

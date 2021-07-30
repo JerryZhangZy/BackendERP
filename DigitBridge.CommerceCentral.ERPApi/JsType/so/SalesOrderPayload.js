@@ -79,23 +79,23 @@
  * - Get multiple SalesOrder Data by SalesOrderUuid array.
  * 
  * @property {SalesOrderDataDto[]} SalesOrders {@link SalesOrderDataDto}
- * - Responce Data
+ * - Response Data
  * - API:  GET /SalesOrder
  * - Multiple SalesOrder Data by SalesOrderUuid array.
  *
  * @property {SalesOrderDataDto} SalesOrder {@link SalesOrderDataDto}
- * - Request data or Responce Data
+ * - Request data or Response Data
  * - API:  GET /SalesOrder/SalesOrderNumber
  * - One SalesOrder Data Object.
  *
  * @property {Array} SalesOrderList
- * - Responce Data
+ * - Response Data
  * - API:  POST /SalesOrder/Find
  * - Load SalesOrder List Data by Filter.
  *
  * @property {number} SalesOrderListCount
  * - Integer
- * - Responce Data
+ * - Response Data
  * - API:  POST /SalesOrder/Find
  * - SalesOrder List Row count.
  */
@@ -128,7 +128,7 @@
  * @typedef {Object} Get single SalesOrder Payload
  *
  * @property {SalesOrderDataDto} SalesOrder {@link SalesOrderDataDto}
- * - Responce data
+ * - Response data
  * - one salesorder data object.
  *
  */
@@ -150,7 +150,7 @@
  * - Get multiple SalesOrder Data by SalesOrderUuid array.
  *
  * @property {SalesOrderDataDto[]} SalesOrders {@link SalesOrderDataDto}
- * - Responce Data
+ * - Response Data
  * - Multiple SalesOrder Data by SalesOrderUuid array.
  *
  */
@@ -197,13 +197,13 @@
  * - Filter json object
  *
  * @property {Array} SalesOrderList
- * - Responce Data
+ * - Response Data
  * - API:  POST /SalesOrder/Find
  * - Load SalesOrder List Data by Filter.
  *
  * @property {number} SalesOrderListCount
  * - Integer
- * - Responce Data
+ * - Response Data
  * - API:  POST /SalesOrder/Find
  * - SalesOrder List Row count.
  */

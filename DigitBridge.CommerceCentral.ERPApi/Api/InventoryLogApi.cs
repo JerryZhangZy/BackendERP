@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             if (!string.IsNullOrEmpty(logUuid))
             {
-                payload.LogUuids.Add(logUuid);
+                payload.InventoryLogUuids.Add(logUuid);
             }
             var svc = new InventoryLogService(dbFactory);
             var result = svc.GetListByUuid(payload);
@@ -57,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var payload = await req.GetParameters<InventoryLogPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
-            payload.LogUuids.Add(logUuid);
+            payload.InventoryLogUuids.Add(logUuid);
             var svc = new InventoryLogService(dbFactory);
             var result= svc.DeleteByLogUuid(payload);
             return new JsonNetResponse<InventoryLogPayload>(result);
@@ -66,8 +66,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "AddInventoryLogs", tags: new[] { "InventoryLogs" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryLogPayloadPatch), Description = "InventoryLogList ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayloadPatch), Description = "return add count")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryLogPayloadAdd), Description = "InventoryLogList ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayloadAdd), Description = "return add count")]
         public static async Task<JsonNetResponse<InventoryLogPayload>> AddInventoryLogs(
             [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "inventoryLogs")] HttpRequest req)
         {
@@ -83,8 +83,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "UpdateInventoryLogs", tags: new[] { "InventoryLogs" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryLogPayloadPatch), Description = "InventoryLogList ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayloadPatch), Description = "return update count")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryLogPayloadUpdate), Description = "InventoryLogList ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayloadUpdate), Description = "return update count")]
         public static async Task<JsonNetResponse<InventoryLogPayload>> UpdateInventoryLogs(
             [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "inventoryLogs")] HttpRequest req)
         {

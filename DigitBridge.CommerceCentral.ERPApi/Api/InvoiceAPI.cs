@@ -44,7 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var success = await srv.GetByInvoiceNumberAsync(invoiceNumber);
             if (success)
             { 
-                payload.Dto = srv.ToDto(srv.Data);
+                payload.Invoice = srv.ToDto(srv.Data);
             }
             //else
             //    payload.ResponseData = "no record found";
@@ -115,7 +115,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new InvoiceService(dataBaseFactory);
-            var success = await srv.UpdateAsync(payload.Dto);
+            var success = await srv.UpdateAsync(payload.Invoice);
             //payload.ResponseData = $"{success} to update data";
             return new JsonNetResponse<InvoicePayload>(payload);
         }
@@ -135,7 +135,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var srv = new InvoiceService(dataBaseFactory);
-            var success = await srv.AddAsync(payload.Dto);
+            var success = await srv.AddAsync(payload.Invoice);
             //payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
             return new JsonNetResponse<InvoicePayload>(payload);
         }
