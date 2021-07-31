@@ -122,5 +122,70 @@ COALESCE(ordst.text, '') OrderStatusText,
             return payload;
         }
 
+        public virtual async Task<IList<SalesOrderData>> GetSalesOrderDatasAsync(SalesOrderQuery queryObject)
+        {
+            this.QueryObject = queryObject;
+
+            //SetSecurityParameter(1, 1);
+            //this.LoadRequestParameter(payload);
+            var sqlWhere = QueryObject.GetSQLWithPrefixBySqlParameter(SalesOrderHeaderHelper.TableAllies);
+            var sql = $@"
+SELECT {SalesOrderHeaderHelper.TableAllies}.*,
+(SELECT * FROM SalesOrderHeaderInfo i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON AUTO) AS SalesOrderHeaderInfoJson,
+(SELECT * FROM SalesOrderHeaderAttributes i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON AUTO) AS SalesOrderHeaderAttributesJson,
+(SELECT * FROM SalesOrderItems i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON AUTO) AS SalesOrderItemsJson,
+(SELECT * FROM SalesOrderItemsAttributes i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON AUTO) AS SalesOrderItemsAttributesJson
+FROM SalesOrderHeader {SalesOrderHeaderHelper.TableAllies}
+WHERE {sqlWhere}
+FOR JSON AUTO
+";
+            var param = QueryObject.GetSqlParametersWithPrefix(SalesOrderHeaderHelper.TableAllies);
+
+            StringBuilder sb = new StringBuilder();
+            var result = false;
+            try
+            {
+                result = await ExcuteJsonAsync(sb, sql, param);
+                if (result)
+                {
+                    var datas = new List<SalesOrderData>();
+                    var headers = sb.ToString().JsonToObject<IList<SalesOrderHeader>>();
+                    foreach (var h in headers)
+                    {
+                        var data = new SalesOrderData(dbFactory);
+                        data.Clear();
+                        data.SalesOrderHeader = h;
+                        if (h.HasSalesOrderHeaderInfoJson)
+                        {
+                            data.SalesOrderHeaderInfo = h.SalesOrderHeaderInfoJson[0];
+                            h.SalesOrderHeaderInfoJson = null;
+                        }
+                        if (h.HasSalesOrderHeaderAttributesJson)
+                        {
+                            data.SalesOrderHeaderAttributes = h.SalesOrderHeaderAttributesJson[0];
+                            h.SalesOrderHeaderAttributesJson = null;
+                        }
+                        if (h.HasSalesOrderItemsJson)
+                        {
+                            data.SalesOrderItems = h.SalesOrderItemsJson;
+                            h.SalesOrderItemsJson = null;
+                        }
+                        if (h.HasSalesOrderItemsAttributesJson)
+                        {
+                            data.SalesOrderItemsAttributes = h.SalesOrderItemsAttributesJson;
+                            h.SalesOrderItemsAttributesJson = null;
+                        }
+                        datas.Add(data);
+                    }
+                    return datas;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

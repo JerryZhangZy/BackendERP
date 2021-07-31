@@ -361,6 +361,29 @@ WHERE itm.cnt > 0
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetBenchmarkAsync_Test()
+        {
+            var srv = new SalesOrderService(DataBaseFactory);
+            var list = new List<SalesOrderData>();
+
+            using (var b = new Benchmark("GetBenchmark_Test"))
+            {
+                for (long rowNum = 450; rowNum < 521; rowNum++)
+                {
+                    if ((await srv.GetDataAsync(rowNum)))
+                    {
+                        list.Add(srv.Data);
+                        srv.DetachData(srv.Data);
+                    }
+                }
+            }
+
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
     }
 }
 

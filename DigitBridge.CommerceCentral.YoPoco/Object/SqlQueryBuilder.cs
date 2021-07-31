@@ -269,6 +269,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return result;
         }
 
+        public virtual bool ExcuteJson(StringBuilder sb, string sql, params IDataParameter[] param)
+        {
+            var result = false;
+            using var trs = new ScopedTransaction(dbFactory);
+            if (param == null)
+                result = SqlQuery.QueryJson(sb, sql, System.Data.CommandType.Text);
+            else
+                result = SqlQuery.QueryJson(sb, sql, System.Data.CommandType.Text, param);
+            return result;
+        }
+
         public virtual async Task<bool> ExcuteJsonAsync(StringBuilder sb)
         {
             var sql = GetCommandText();
@@ -282,7 +293,16 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 result = await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text, param);
             return result;
         }
-
+        public virtual async Task<bool> ExcuteJsonAsync(StringBuilder sb, string sql, params IDataParameter[] param)
+        {
+            var result = false;
+            using var trs = new ScopedTransaction(dbFactory);
+            if (!param.Any())
+                result = await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text);
+            else
+                result = await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text, param);
+            return result;
+        }
         public virtual int Count()
         {
             var sql = GetCommandTextForCount();

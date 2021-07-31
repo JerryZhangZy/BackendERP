@@ -18,6 +18,39 @@ namespace DigitBridge.Base.Utility
         /// calling JsonConvert.DeserializeObject in a timer trigger Azure directly will
         /// gernerate exception
         /// </summary>
+        public static void PopulateToObject<T>(this string jsonInput, T obj, bool ignoreNull = true)
+        {
+            if (string.IsNullOrWhiteSpace(jsonInput)) return;
+            var setting = new JsonSerializerSettings
+            {
+                NullValueHandling = ignoreNull ? NullValueHandling.Ignore : NullValueHandling.Include
+            };
+            jsonInput.PopulateToObject<T>(obj, setting);
+        }
+        /// <summary>
+        /// Use Json.Net convert string to object instance.
+        /// Use custom JsonSerializerSettings
+        /// </summary>
+        public static void PopulateToObject<T>(this string jsonInput, T obj, JsonSerializerSettings setting)
+        {
+            if (string.IsNullOrWhiteSpace(jsonInput)) return;
+            try
+            {
+                JsonConvert.PopulateObject(jsonInput, obj, setting);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Exception. Location: JsonConvertExtension.PopulateToObject() ", ex);
+            }
+        }
+
+        /// <summary>
+        /// Use Json.Net convert string to object instance.
+        /// Use default JsonSerializerSettings
+        /// This function was created because it was reported that 
+        /// calling JsonConvert.DeserializeObject in a timer trigger Azure directly will
+        /// gernerate exception
+        /// </summary>
         public static T JsonToObject<T>(this string jsonInput, bool ignoreNull = true, bool withType = false)
         {
             if (string.IsNullOrWhiteSpace(jsonInput)) return default(T);
