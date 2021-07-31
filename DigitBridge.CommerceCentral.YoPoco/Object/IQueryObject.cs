@@ -56,6 +56,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         void InitQueryFilter();
         void ClearAll();
+
+        void SetSecurityParameter(int masterAccountNum, int profileNum);
         void LoadRequestParameter(IPayload payload);
         JObject WriteFilterJObject(JObject obj);
 

@@ -623,7 +623,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         // grand children
         protected IList<SalesOrderItemsAttributes> _SalesOrderItemsAttributes;
 
-        protected IList<SalesOrderItemsAttributes> SalesOrderItemsAttributes 
+        public IList<SalesOrderItemsAttributes> SalesOrderItemsAttributes 
         { 
             get 
             {

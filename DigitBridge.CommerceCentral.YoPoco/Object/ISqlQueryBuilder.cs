@@ -45,6 +45,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
         bool ExcuteJson(StringBuilder sb);
         Task<bool> ExcuteJsonAsync(StringBuilder sb);
 
+        bool ExcuteJson(StringBuilder sb, string sql, params IDataParameter[] param);
+        Task<bool> ExcuteJsonAsync(StringBuilder sb, string sql, params IDataParameter[] param);
+
         int Count();
         Task<int> CountAsync();
 

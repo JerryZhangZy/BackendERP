@@ -416,6 +416,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #endregion
 
+        public virtual void SetSecurityParameter(int masterAccountNum, int profileNum)
+        {
+            _MasterAccountNum.prefix = _PREFIX;
+            _MasterAccountNum.FilterValue = masterAccountNum;
+            _ProfileNum.prefix = _PREFIX;
+            _ProfileNum.FilterValue = profileNum;
+        }
+
         public virtual void LoadRequestParameter(IPayload payload)
         {
             if (payload == null)
