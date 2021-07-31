@@ -58,16 +58,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public InventoryLogPayload DeleteByLogUuid(InventoryLogPayload payload)
         {
-            var list = InventoryLogHelper.QueryInventoryLogByUuids(payload.LogUuids);
-            if (list.SetDataBaseFactory(dbFactory).Delete() > 0)
-                payload.InventoryLogs = _mapper.WriteInventoryLogDtoList(list, null);
+            // TODO, change to load and delete by InventoryLogData, but not InventoryLog
+            // In future we may add more related tables into InventoryLogData
+            // This function only delete one table.
+
+            //var list = InventoryLogHelper.QueryInventoryLogByUuids(payload.InventoryLogUuids);
+            //if (list.SetDataBaseFactory(dbFactory).Delete() > 0)
+            //    foreach (var item in list)
+            //        payload.InventoryLogs.Add(_mapper.WriteDto(item, null));
             return payload;
         }
 
         public InventoryLogPayload GetListByUuid(InventoryLogPayload payload)
         {
-            var list = InventoryLogHelper.QueryInventoryLogByUuids(payload.LogUuids);
-            payload.InventoryLogs= _mapper.WriteInventoryLogDtoList(list, null);
+            // TODO, change to load whole InventoryLogData, but not InventoryLog
+            // In future we may add more related tables into InventoryLogData
+            // This function only load one table.
+
+            //var list = InventoryLogHelper.QueryInventoryLogByUuids(payload.InventoryLogUuids);
+            //payload.InventoryLogs= _mapper.WriteInventoryLogDtoList(list, null);
             return payload;
         }
 
@@ -81,32 +90,36 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!payload.HasInventoryLogs)
                 return payload;
-            var svc = new InventoryData(dbFactory);
-            var batchNum = GetBatchNum();
-            var dtoList = payload.InventoryLogs.ToList();
-            dtoList.ForEach(x =>
-            {
-                x.BatchNum = batchNum;
-                x.RowNum = 0;
-                x.InventoryLogUuid = Guid.NewGuid().ToString();
-                var inventoryData = GetInventoryBySku(x.MasterAccountNum.Value, x.ProfileNum.Value, x.SKU);//svc.GetInventoryBySku(x.DatabaseNum.Value, x.MasterAccountNum.Value, x.ProfileNum.Value, x.SKU);
-                if (inventoryData != null)
-                {
-                    var inventory = inventoryData.Inventory.First();
-                    x.ProductUuid = inventory.ProductUuid;
-                    x.InventoryUuid = inventory.InventoryUuid;
-                    x.WarehouseCode = inventory.WarehouseCode;
-                    x.BeforeInstock = inventory.Instock;
-                    x.BeforeBaseCost = inventory.BaseCost;
-                    x.BeforeUnitCost = inventory.UnitCost;
-                    x.BeforeAvgCost = inventory.AvgCost;
-                }
-            });
-            var mapper = new InventoryLogDataDtoMapperDefault();
-            var datalist = mapper.ReadInventoryLogDtoList(null, dtoList);
-            var addcount = datalist.Count();
-            datalist.SetDataBaseFactory(dbFactory).Save();
-            payload.InventoryLogs = dtoList;
+            // TODO, use whole InventoryLogData, but not InventoryLog
+            // In future we may add more related tables into InventoryLogData
+            // This function only load one table.
+
+            //var svc = new InventoryData(dbFactory);
+            //var batchNum = GetBatchNum();
+            //var dtoList = payload.InventoryLogs.ToList();
+            //dtoList.ForEach(x =>
+            //{
+            //    x.BatchNum = batchNum;
+            //    x.RowNum = 0;
+            //    x.InventoryLogUuid = Guid.NewGuid().ToString();
+            //    var inventoryData = GetInventoryBySku(x.MasterAccountNum.Value, x.ProfileNum.Value, x.SKU);//svc.GetInventoryBySku(x.DatabaseNum.Value, x.MasterAccountNum.Value, x.ProfileNum.Value, x.SKU);
+            //    if (inventoryData != null)
+            //    {
+            //        var inventory = inventoryData.Inventory.First();
+            //        x.ProductUuid = inventory.ProductUuid;
+            //        x.InventoryUuid = inventory.InventoryUuid;
+            //        x.WarehouseCode = inventory.WarehouseCode;
+            //        x.BeforeInstock = inventory.Instock;
+            //        x.BeforeBaseCost = inventory.BaseCost;
+            //        x.BeforeUnitCost = inventory.UnitCost;
+            //        x.BeforeAvgCost = inventory.AvgCost;
+            //    }
+            //});
+            //var mapper = new InventoryLogDataDtoMapperDefault();
+            //var datalist = mapper.ReadInventoryLogDtoList(null, dtoList);
+            //var addcount = datalist.Count();
+            //datalist.SetDataBaseFactory(dbFactory).Save();
+            //payload.InventoryLogs = dtoList;
             return payload;
             //TODO:Validator验证，Mapper,补充完整Inventory信息进去，调用Dao
         }
@@ -115,25 +128,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!payload.HasInventoryLogs)
                 return payload;
-            var logUuidList = payload.InventoryLogs.Select(r => r.LogUuid).Distinct();
 
-            var dlist = new List<InventoryLog>();
-            foreach (var uuid in logUuidList)
-            {
-                dlist.AddRange(InventoryLogHelper.QueryInventoryLogByUuid(uuid));
-            }
-            var data = _mapper.ReadInventoryLogDtoList(dlist, payload.InventoryLogs.ToList()).Where(x => x.RowNum > 0).ToList();
-            int result = data.Count();
-            data.SetDataBaseFactory(dbFactory).Save();
+            // TODO, use whole InventoryLogData, but not InventoryLog
+            // In future we may add more related tables into InventoryLogData
+            // This function only load one table.
 
-            dlist = new List<InventoryLog>();
-            foreach (var uuid in logUuidList)
-            {
-                dlist.AddRange(InventoryLogHelper.QueryInventoryLogByUuid(uuid));
-            }
-            var ulist = payload.InventoryLogs.Select(r => r.RowNum).ToList();
-            dlist = dlist.Where(r => ulist.Contains(r.RowNum)).ToList();
-            payload.InventoryLogs = _mapper.WriteInventoryLogDtoList(dlist, null);
+            //var logUuidList = payload.InventoryLogs.Select(r => r.LogUuid).Distinct();
+
+            //var dlist = new List<InventoryLog>();
+            //foreach (var uuid in logUuidList)
+            //{
+            //    dlist.AddRange(InventoryLogHelper.QueryInventoryLogByUuid(uuid));
+            //}
+            //var data = _mapper.ReadInventoryLogDtoList(dlist, payload.InventoryLogs.ToList()).Where(x => x.RowNum > 0).ToList();
+            //int result = data.Count();
+            //data.SetDataBaseFactory(dbFactory).Save();
+
+            //dlist = new List<InventoryLog>();
+            //foreach (var uuid in logUuidList)
+            //{
+            //    dlist.AddRange(InventoryLogHelper.QueryInventoryLogByUuid(uuid));
+            //}
+            //var ulist = payload.InventoryLogs.Select(r => r.RowNum).ToList();
+            //dlist = dlist.Where(r => ulist.Contains(r.RowNum)).ToList();
+            //payload.InventoryLogs = _mapper.WriteInventoryLogDtoList(dlist, null);
             return payload;
         }
 

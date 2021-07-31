@@ -8,8 +8,10 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,6 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             this._currentType = currentType;
         }
+
         /// <summary>
         /// mark exception handled 
         /// todo:write log 
@@ -37,18 +40,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <returns></returns>
         public async Task OnExceptionAsync(FunctionExceptionContext exceptionContext, CancellationToken cancellationToken)
         {
-            var isInvalidParameterException = exceptionContext.Exception.InnerException is InvalidParameterException;
-            if (!isInvalidParameterException)
-            {
-                //todo wrap exception
-                LogCenter.CaptureException(exceptionContext.Exception);
-            }
             if (MySingletonAppSetting.DebugMode)
             {
                 exceptionContext.Logger.LogInformation(exceptionContext.Exception.ObjectToString());
             }
             ((RecoverableException)exceptionContext.ExceptionDispatchInfo.SourceException).Handled = true;
         }
+        //Dictionary<Guid, HttpRequest> exceptionReqs = new Dictionary<Guid, HttpRequest>();
 
         /// <summary>
         /// override exception respone
@@ -60,11 +58,30 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var exception = executedContext.FunctionResult.Exception;
             if (exception != null)
-            { 
-                //todo which data detail should be render;
-                var data = new ResponseResult<Exception>(exception, false);
+            {
+                //exceptionReqs.Add(executedContext.FunctionInstanceId, executedContext.GetContext<HttpRequest>()); 
+
                 var req = executedContext.GetContext<HttpRequest>();
-                await req.HttpContext.Response.Output(data, data.StatusCode);
+                var isInvalidParameterException = exception.InnerException is InvalidParameterException;
+                if (!isInvalidParameterException)
+                {
+
+                    //var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
+                    //var bodyType = methodInfo?.GetCustomAttribute<OpenApiRequestBodyAttribute>()?.BodyType; 
+                    //var parameters = await req.ToDictionary(executedContext.FunctionName, bodyType);
+
+                    // write log to log center
+                    var reqInfo = await LogHelper.GetRequestInfo(req, executedContext.FunctionName);
+                    var excepitonMessageID = LogCenter.CaptureException(exception, reqInfo);
+                    var data = new ResponseResult<string>($"A general error occured. Error ID: {excepitonMessageID}", false);
+                    await req.HttpContext.Response.Output(data);
+                }
+                else
+                {
+                    var data = new ResponseResult<Exception>(exception, false);
+                    await req.HttpContext.Response.Output(data);
+                }
+
             }
         }
 

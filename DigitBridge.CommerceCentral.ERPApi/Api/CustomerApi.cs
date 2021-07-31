@@ -97,8 +97,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "AddCustomer", tags: new[] { "Customers" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerPayloadPatch), Description = "CustomerDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadPatch))]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerPayloadAdd), Description = "CustomerDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadAdd))]
         public static async Task<JsonNetResponse<CustomerPayload>> AddCustomer(
             [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "customers")] HttpRequest req)
         {
@@ -113,8 +113,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "UpdateCustomer", tags: new[] { "Customers" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerPayloadPatch), Description = "CustomerDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadPatch))]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerPayloadUpdate), Description = "CustomerDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadUpdate))]
         public static async Task<JsonNetResponse<CustomerPayload>> UpdateCustomer(
             [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "customers")] HttpRequest req)
         {

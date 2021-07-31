@@ -137,6 +137,43 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetSalesOrderDatasAsync_Test()
+        {
+            var qry = new SalesOrderQuery();
+            var srv = new SalesOrderList(dataBaseFactory, qry);
+            qry.SetSecurityParameter(1, 1);
+            qry.OrderDateFrom.Enable = false;
+            qry.OrderDateTo.Enable = false;
+            //qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
+            //qry.OrderNumberFrom.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
+            //qry.OrderNumberTo.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
+            //qry.OrderStatus.MultipleFilterValueString = "11,18,86";
+
+            IList<SalesOrderData> result;
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                using (var b = new Benchmark("GetSalesOrderDatasAsync_Test"))
+                {
+                    result = await srv.GetSalesOrderDatasAsync(qry).ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                //Cannot open server 'bobotestsql' requested by the login. Client with IP address '174.81.9.150' is not allowed to access the server.
+                //To enable access, use the Windows Azure Management Portal or run sp_set_firewall_rule on the master database to create a firewall rule
+                //for this IP address or address range.  It may take up to five minutes for this change to take effect.
+                throw;
+            }
+
+            var json = result.ObjectToString();
+
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+
         #endregion async methods
 
     }

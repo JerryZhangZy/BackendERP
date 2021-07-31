@@ -145,6 +145,148 @@ WHERE itm.cnt > 0
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void AddPayload_Test()
+        {
+            var srv = new SalesOrderService(DataBaseFactory);
+            srv.Add();
+
+            var mapper = srv.DtoMapper;
+            var data = GetFakerData();
+            var dto = mapper.WriteDto(data, null);
+            var id = data.UniqueId;
+
+            var payload = new SalesOrderPayload();
+            payload.SalesOrder = dto;
+            payload.MasterAccountNum = 1;
+            payload.ProfileNum = 1;
+            payload.DatabaseNum = 1;
+
+            srv.Add(payload);
+
+            var srvGet = new SalesOrderService(DataBaseFactory);
+            //srvGet.Edit();
+            srvGet.GetDataById(id);
+            var result = srv.Data.Equals(srvGet.Data);
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void UpdatePayload_Test()
+        {
+            SaveData_Test();
+
+            var id = DataBaseFactory.GetValue<SalesOrderHeader, string>(@"
+SELECT TOP 1 ins.SalesOrderUuid 
+FROM SalesOrderHeader ins 
+INNER JOIN (
+    SELECT it.SalesOrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.SalesOrderUuid
+) itm ON (itm.SalesOrderUuid = ins.SalesOrderUuid)
+WHERE itm.cnt > 0
+");
+
+
+            var srv = new SalesOrderService(DataBaseFactory);
+            srv.Edit(id);
+            var rowNum = srv.Data.SalesOrderHeader.RowNum;
+
+            var mapper = srv.DtoMapper;
+            var data = GetFakerData();
+            var dto = mapper.WriteDto(data, null);
+            dto.SalesOrderHeader.RowNum = rowNum;
+            dto.SalesOrderHeader.SalesOrderUuid = id;
+
+            var payload = new SalesOrderPayload();
+            payload.SalesOrder = dto;
+            payload.MasterAccountNum = srv.Data.SalesOrderHeader.MasterAccountNum;
+            payload.ProfileNum = srv.Data.SalesOrderHeader.ProfileNum;
+            payload.DatabaseNum = srv.Data.SalesOrderHeader.DatabaseNum;
+
+            srv.Clear();
+            srv.Update(payload);
+
+            var srvGet = new SalesOrderService(DataBaseFactory);
+            srvGet.Edit();
+            srvGet.GetDataById(id);
+            var result = srv.Data.Equals(srvGet.Data);
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task AddPayloadAsync_Test()
+        {
+            var srv = new SalesOrderService(DataBaseFactory);
+            srv.Add();
+
+            var mapper = srv.DtoMapper;
+            var data = GetFakerData();
+            var dto = mapper.WriteDto(data, null);
+            var id = data.UniqueId;
+
+            var payload = new SalesOrderPayload();
+            payload.SalesOrder = dto;
+            payload.MasterAccountNum = 1;
+            payload.ProfileNum = 1;
+            payload.DatabaseNum = 1;
+
+            await srv.AddAsync(payload);
+
+            var srvGet = new SalesOrderService(DataBaseFactory);
+            srvGet.Edit();
+            await srvGet.GetDataByIdAsync(id);
+            var result = srv.Data.Equals(srvGet.Data);
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdatePayloadAsync_Test()
+        {
+            await SaveDataAsync_Test();
+
+            var id = await DataBaseFactory.GetValueAsync<SalesOrderHeader, string>(@"
+SELECT TOP 1 ins.SalesOrderUuid 
+FROM SalesOrderHeader ins 
+INNER JOIN (
+    SELECT it.SalesOrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.SalesOrderUuid
+) itm ON (itm.SalesOrderUuid = ins.SalesOrderUuid)
+WHERE itm.cnt > 0
+");
+
+
+            var srv = new SalesOrderService(DataBaseFactory);
+            await srv.EditAsync(id);
+            var rowNum = srv.Data.SalesOrderHeader.RowNum;
+
+            var mapper = srv.DtoMapper;
+            var data = GetFakerData();
+            var dto = mapper.WriteDto(data, null);
+            dto.SalesOrderHeader.RowNum = rowNum;
+            dto.SalesOrderHeader.SalesOrderUuid = id;
+
+            var payload = new SalesOrderPayload();
+            payload.SalesOrder = dto;
+            payload.MasterAccountNum = srv.Data.SalesOrderHeader.MasterAccountNum;
+            payload.ProfileNum = srv.Data.SalesOrderHeader.ProfileNum;
+            payload.DatabaseNum = srv.Data.SalesOrderHeader.DatabaseNum;
+
+            srv.Clear();
+            await srv.UpdateAsync(payload);
+
+            var srvGet = new SalesOrderService(DataBaseFactory);
+            //srvGet.Edit();
+            await srvGet.GetDataByIdAsync(id);
+            var result = srv.Data.Equals(srvGet.Data);
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
@@ -217,6 +359,29 @@ WHERE itm.cnt > 0
             var success = srv_deleted.GetByOrderNumber(orderNumber);
             var result = !success || srv_deleted.Data == null || srv_deleted.Data.UniqueId == null;
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetBenchmarkAsync_Test()
+        {
+            var srv = new SalesOrderService(DataBaseFactory);
+            var list = new List<SalesOrderData>();
+
+            using (var b = new Benchmark("GetBenchmark_Test"))
+            {
+                for (long rowNum = 450; rowNum < 521; rowNum++)
+                {
+                    if ((await srv.GetDataAsync(rowNum)))
+                    {
+                        list.Add(srv.Data);
+                        srv.DetachData(srv.Data);
+                    }
+                }
+            }
+
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
         }
 
     }

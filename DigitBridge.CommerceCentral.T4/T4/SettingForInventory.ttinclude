@@ -44,6 +44,9 @@
     var JsModelFolder = $"DigitBridge.CommerceCentral.ERPApi\\JsType\\{processForlderName}";
     var PayloadName = $"{processName}Payload";
 
+    var OpenApiPayloadFolder = $"DigitBridge.CommerceCentral.ERPApi\\OpenApiModel";
+    var OpenApiPayloadName = $"{PayloadName}OpenApi";
+
     // generate repository class for each table
     var generateModel = true;
     var generateDto = true;
