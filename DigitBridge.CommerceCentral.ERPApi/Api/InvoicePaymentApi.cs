@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             string invoiceNumber)
         {
             var payload = await req.GetParameters<InvoicePaymentPayload>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceTransactionService(dataBaseFactory);
             payload.Dto = await srv.GetByInvoiceNumberAsync(invoiceNumber);
             payload.InvoiceHeader = await srv.GetInvoiceHeaderAsync(invoiceNumber);
@@ -60,7 +60,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             string invoiceNumber)
         {
             var payload = await req.GetParameters<InvoicePaymentPayload>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceTransactionService(dataBaseFactory);
             var success = await srv.DeleteByInvoiceNumberAsync(invoiceNumber);
             //payload.ResponseData = $"{success} to delete ";
@@ -82,7 +82,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "InvoicePayment")] HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePaymentPayload>(true); 
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceTransactionService(dataBaseFactory);
             var dataDto = new InvoiceTransactionDataDto() { InvoiceTransaction = payload.Dto };
             var success = await srv.UpdateAsync(dataDto);
@@ -106,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "InvoicePayment")] HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePaymentPayload>(true);
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceTransactionService(dataBaseFactory);
             var dataDto = new InvoiceTransactionDataDto() { InvoiceTransaction = payload.Dto };
             var success = await srv.AddAsync(dataDto);

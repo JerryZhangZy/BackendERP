@@ -39,7 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             string invoiceNumber)
         {
             var payload = await req.GetParameters<InvoicePayload>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
             var success = await srv.GetByInvoiceNumberAsync(invoiceNumber);
             if (success)
@@ -70,7 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices")] HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
             //todo
             //payload.ReqeustData = "This api isn't implemented";
@@ -93,7 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
            string invoiceNumber)
         {
             var payload = await req.GetParameters<InvoicePayload>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
             var success = await srv.DeleteByInvoiceNumberAsync(invoiceNumber);
             //payload.ResponseData = $"{success} to delete ";
@@ -113,7 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "invoices")] HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>(true);
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
             var success = await srv.UpdateAsync(payload.Invoice);
             //payload.ResponseData = $"{success} to update data";
@@ -133,7 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices")] HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>(true);
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
             var success = await srv.AddAsync(payload.Invoice);
             //payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";

@@ -38,7 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             ILogger log, string orderShipmentNum)
         {
             var payload = await req.GetParameters<ShipmentPayload>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
             var success = await srv.GetByOrderShipmentNumAsync(orderShipmentNum);
             if (success)
@@ -64,7 +64,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             string orderShipmentNum)
         {
             var payload = await req.GetParameters<ShipmentPayload>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory); 
             var success = await srv.DeleteByOrderShipmentNumAsync(orderShipmentNum);
             //return new Response<string>("Delete order shipment result", success);
@@ -84,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "shipments")] HttpRequest req)
         {
             var payload = await req.GetParameters<ShipmentPayload>(true);
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
             var success = await srv.UpdateAsync(payload.Dto);
             return new JsonNetResponse<ShipmentPayload>(payload);
@@ -103,7 +103,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "shipments")] HttpRequest req)
         {
             var payload = await req.GetParameters<ShipmentPayload>(true);
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
             var success = await srv.AddAsync(payload.Dto);
             return new JsonNetResponse<ShipmentPayload>(payload);
