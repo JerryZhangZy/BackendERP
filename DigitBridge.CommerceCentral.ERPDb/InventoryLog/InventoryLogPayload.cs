@@ -37,6 +37,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             };
         }
 
+        [JsonIgnore]
+        public long BatchNum { get; set; }
+
 
         #region multiple Dto list
 
@@ -53,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// (Response Data) Array of InventoryLog entity object which load by uuid array.
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) Array of entity object which load by uuid array.")]
-        public IList<InventoryLogDataDto> InventoryLogs { get; set; }
+        public IList<InventoryLogDataDto> InventoryLogs { get; set; } = new List<InventoryLogDataDto>();
         [JsonIgnore] public virtual bool HasInventoryLogs => InventoryLogs != null && InventoryLogs.Count > 0;
         public bool ShouldSerializeInventoryLogs() => HasInventoryLogs;
 
