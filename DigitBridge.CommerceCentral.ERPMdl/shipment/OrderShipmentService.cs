@@ -66,6 +66,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync().ConfigureAwait(false);
         }
 
+        public virtual async Task<bool> AddAsync(OrderShipmentPayload payload)
+        {
+            if (payload is null || !payload.HasOrderShipment)
+                return false;
+
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(payload.OrderShipment);
+
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+
+            return await SaveDataAsync().ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Update data from Dto object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
@@ -103,7 +123,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
+        /// <summary>
+        /// Update data from Dto object
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
+        /// </summary>
+        public virtual async Task<bool> UpdateAsync(OrderShipmentPayload payload)
+        {
+            if (payload is null || !payload.HasOrderShipment || payload.OrderShipment.OrderShipmentHeader.RowNum.ToLong() <= 0)
+                return false;
+            // set Add mode and clear data
+            await EditAsync(payload.OrderShipment.OrderShipmentHeader.RowNum.ToLong()).ConfigureAwait(false);
 
+            // validate data for Add processing
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            // load data from dto
+            FromDto(payload.OrderShipment);
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+
+            return await SaveDataAsync();
+        }
 
         /// <summary>
         /// Get order shipment with detail by order shipment number
@@ -126,17 +168,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Delete order shipment by order shipment number
         /// </summary>
-        /// <param name="orderShipmentNum"></param>
+        /// <param name="orderShipmentUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByOrderShipmentNumAsync(string orderShipmentNum)
+        public virtual async Task<bool> DeleteByOrderShipmentUuidAsync(string orderShipmentUuid,OrderShipmentPayload payload)
         {
-            if (string.IsNullOrEmpty(orderShipmentNum))
+            if (string.IsNullOrEmpty(orderShipmentUuid))
                 return false;
-            Delete();
-            var rowNum = await _data.GetRowNumAsync(orderShipmentNum);
-            if (!rowNum.HasValue)
-                return false;
-            var success = await GetDataAsync(rowNum.Value);
+            Delete(); 
+            //todo validate 
+            var success = await GetDataByIdAsync(orderShipmentUuid);
             success = success && await DeleteDataAsync();
             return success;
         }

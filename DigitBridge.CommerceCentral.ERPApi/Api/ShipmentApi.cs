@@ -52,23 +52,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Delete order shipment 
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="orderShipmentNum"></param>
+        /// <param name="orderShipmentUuid"></param>
         /// <returns></returns>
         [FunctionName(nameof(DeleteShipments))]
         [OpenApiOperation(operationId: "DeleteShipments", tags: new[] { "Shipments" }, Summary = "Delete one order shipment")]
-        [OpenApiParameter(name: "orderShipmentNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderShipmentNum", Description = "Order shipment number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderShipmentUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderShipmentUuid", Description = "Order shipment uuid. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ShipmentPayload))]
-        public static async Task<JsonNetResponse<ShipmentPayload>> DeleteShipments(
-           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "shipments/{orderShipmentNum}")]
+        public static async Task<JsonNetResponse<OrderShipmentPayload>> DeleteShipments(
+           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "shipments/{orderShipmentUuid}")]
             HttpRequest req,
-            string orderShipmentNum)
+            string orderShipmentUuid)
         {
-            var payload = await req.GetParameters<ShipmentPayload>();
+            var payload = await req.GetParameters<OrderShipmentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory); 
-            var success = await srv.DeleteByOrderShipmentNumAsync(orderShipmentNum);
+            var success = await srv.DeleteByOrderShipmentUuidAsync(orderShipmentUuid, payload);
             //return new Response<string>("Delete order shipment result", success);
-            return new JsonNetResponse<ShipmentPayload>(payload);
+            return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
 
         /// <summary>
@@ -78,16 +80,18 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <returns></returns>
         [FunctionName(nameof(UpdateShipments))]
         [OpenApiOperation(operationId: "UpdateShipments", tags: new[] { "Shipments" }, Summary = "Update one order shipment")]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SwaggerOne<OrderShipmentDataDto>), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ShipmentPayload))]
-        public static async Task<JsonNetResponse<ShipmentPayload>> UpdateShipments(
+        public static async Task<JsonNetResponse<OrderShipmentPayload>> UpdateShipments(
 [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "shipments")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ShipmentPayload>(true);
+            var payload = await req.GetParameters<OrderShipmentPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
-            var success = await srv.UpdateAsync(payload.Dto);
-            return new JsonNetResponse<ShipmentPayload>(payload);
+            var success = await srv.UpdateAsync(payload);
+            return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
         /// <summary>
         /// Add order shipment
@@ -97,16 +101,18 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <returns></returns>
         [FunctionName(nameof(AddShipments))]
         [OpenApiOperation(operationId: "AddShipments", tags: new[] { "Shipments" }, Summary = "Add one order shipment")]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SwaggerOne<OrderShipmentDataDto>), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ShipmentPayload))]
-        public static async Task<JsonNetResponse<ShipmentPayload>> AddShipments(
+        public static async Task<JsonNetResponse<OrderShipmentPayload>> AddShipments(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "shipments")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ShipmentPayload>(true);
+            var payload = await req.GetParameters<OrderShipmentPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
-            var success = await srv.AddAsync(payload.Dto);
-            return new JsonNetResponse<ShipmentPayload>(payload);
+            var success = await srv.AddAsync(payload);
+            return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
     }
 }

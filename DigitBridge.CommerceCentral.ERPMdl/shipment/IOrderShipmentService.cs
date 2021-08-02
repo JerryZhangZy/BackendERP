@@ -32,10 +32,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         bool Add(OrderShipmentDataDto dto);
         Task<bool> AddAsync(OrderShipmentDataDto dto);
-
+        Task<bool> AddAsync(OrderShipmentPayload payload);
         bool Update(OrderShipmentDataDto dto);
         Task<bool> UpdateAsync(OrderShipmentDataDto dto);
-
+        Task<bool> UpdateAsync(OrderShipmentPayload payload);
         /// <summary>
         /// Get order shipment with detail by order shipment number
         /// </summary>
@@ -49,7 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="orderShipmentNum"></param>
         /// <returns></returns>
-        Task<bool> DeleteByOrderShipmentNumAsync(string orderShipmentNum);
+        Task<bool> DeleteByOrderShipmentUuidAsync(string orderShipmentUuid, OrderShipmentPayload payload);
 
     }
 }
