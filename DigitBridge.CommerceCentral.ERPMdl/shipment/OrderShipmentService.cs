@@ -1,5 +1,5 @@
 
-    
+
 
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual bool Add(OrderShipmentDataDto dto)
         {
-            if (dto is null) 
+            if (dto is null)
                 return false;
             // set Add mode and clear data
             Add();
@@ -145,36 +145,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return await SaveDataAsync();
-        }
-
-        /// <summary>
-        /// Get order shipment with detail by order shipment number
-        /// </summary>
-        /// <param name="orderShipmentNum"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> GetByOrderShipmentNumAsync(string orderShipmentNum)
-        {
-            if (string.IsNullOrEmpty(orderShipmentNum))
-                return false;
-            List();
-            var rowNum = await _data.GetRowNumAsync(orderShipmentNum);
-            if (!rowNum.HasValue)
-                return false;
-            var success = await GetDataAsync(rowNum.Value);
-            //if (success) ToDto();
-            return success;
-        }
+        } 
 
         /// <summary>
         /// Delete order shipment by order shipment number
         /// </summary>
         /// <param name="orderShipmentUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByOrderShipmentUuidAsync(string orderShipmentUuid,OrderShipmentPayload payload)
+        public virtual async Task<bool> DeleteByOrderShipmentUuidAsync(string orderShipmentUuid, OrderShipmentPayload payload)
         {
             if (string.IsNullOrEmpty(orderShipmentUuid))
                 return false;
-            Delete(); 
+            Delete();
             //todo validate 
             var success = await GetDataByIdAsync(orderShipmentUuid);
             success = success && await DeleteDataAsync();

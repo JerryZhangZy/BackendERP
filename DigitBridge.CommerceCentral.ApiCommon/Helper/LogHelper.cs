@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,21 +14,25 @@ namespace DigitBridge.CommerceCentral.ApiCommon
      /// </summary>
      /// <param name="req"></param>
      /// <returns></returns>
-        public static async Task<Dictionary<string, object>> GetRequestInfo(HttpRequest req, string functionName)
+        public static async Task<Dictionary<string, object>> GetRequestInfo(HttpRequest req, string functionName, IEnumerable<OpenApiParameterAttribute> parameters)
         {
             var requestInfos = new Dictionary<string, object>();
             requestInfos.Add("method", req.Method);
 
-            #region Append header to requestInfos 
+            #region Append header to requestInfos，prepare all headers 
             var headers = new List<object>();
+            var allHeaders = new List<object>();
             foreach (var itemkey in req.Headers.Keys)
             {
-                headers.Add(new
+                var header = new
                 {
                     key = itemkey,
                     value = req.Headers[itemkey].ToString(),
                     type = "text"
-                });
+                };
+                allHeaders.Add(header);
+                if (parameters.Where(i => i.Name == itemkey && i.In == ParameterLocation.Header).Count() > 0)
+                    headers.Add(header);
             }
             requestInfos.Add("header", headers);
             #endregion
@@ -35,11 +41,12 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             var querys = new List<object>();
             foreach (var itemkey in req.Query.Keys)
             {
-                querys.Add(new
+                var query = new
                 {
                     key = itemkey,
                     value = req.Query[itemkey].ToString()
-                });
+                };
+                querys.Add(query);
             }
 
             requestInfos.Add("url", new
@@ -88,9 +95,9 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             // default put empty wrapped body to requestInfos
             requestInfos.Add("body", wrapObject_WithoutBody);
             var without_Body_Object = new
-            { 
+            {
                 name = functionName,
-                request= requestInfos
+                request = requestInfos
             };
             var without_Body_JsonString = JsonConvert.SerializeObject(without_Body_Object);
 
@@ -107,10 +114,11 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             var result = new Dictionary<string, object>();
             result.Add("request name", functionName);
             result.Add("request ", requestInfos);
-            result.Add("request body", await req.GetBodyStringAsync()); 
-             
+            result.Add("request body", await req.GetBodyStringAsync());
+            result.Add("request header", allHeaders);
+
             result.Add("postman request with body", with_Body_JsonString);
-            result.Add("postman request without body", without_Body_JsonString); 
+            result.Add("postman request without body", without_Body_JsonString);
             #endregion
             return result;
         }

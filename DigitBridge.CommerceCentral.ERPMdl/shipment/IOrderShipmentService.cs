@@ -35,14 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         Task<bool> AddAsync(OrderShipmentPayload payload);
         bool Update(OrderShipmentDataDto dto);
         Task<bool> UpdateAsync(OrderShipmentDataDto dto);
-        Task<bool> UpdateAsync(OrderShipmentPayload payload);
-        /// <summary>
-        /// Get order shipment with detail by order shipment number
-        /// </summary>
-        /// <param name="orderShipmentNum"></param>
-        /// <returns></returns>
-        Task<bool> GetByOrderShipmentNumAsync(string orderShipmentNum);
-
+        Task<bool> UpdateAsync(OrderShipmentPayload payload); 
 
         /// <summary>
         /// Delete order shipment by order shipment number

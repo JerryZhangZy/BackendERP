@@ -15,7 +15,8 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class InvoicePaymentService : InvoiceTransactionService
-    { 
+    {
+        public InvoicePaymentService(IDataBaseFactory dbFactory) : base(dbFactory) { }
         //todo
     }
 }
