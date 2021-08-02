@@ -105,7 +105,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request Response payload for FIND API
     /// </summary>
     [Serializable()]
-    public class CustomerPayloadFind : PayloadBase
+    public class CustomerPayloadFind : FilterPayloadBase<CustomerFilter>
     {
         /// <summary>
         /// (Response) List result which load by filter and paging.
@@ -120,5 +120,18 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     }
 
+
+    public class CustomerFilter
+    {
+        public IList<string> CustomerCode { get; set; }
+
+        public string CustomerName { get; set; }
+
+        public string Area { get; set; }
+
+        public string Region { get; set; }
+
+        public string ShippingCarrier { get; set; }
+    }
 }
 

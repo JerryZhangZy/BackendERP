@@ -40,24 +40,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool ValidatePayload(InventoryData data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
-            var pl = payload as SalesOrderPayload;
+            var pl = payload as ProductExPayload;
             if (processingMode == ProcessingMode.Add)
             {
                 //TODO set MasterAccountNum, ProfileNum and DatabaseNum from payload
-                //data.SalesOrderHeader.MasterAccountNum = pl.MasterAccountNum;
-                //data.SalesOrderHeader.ProfileNum = pl.ProfileNum;
-                //data.SalesOrderHeader.DatabaseNum = pl.DatabaseNum;
+                data.ProductBasic.MasterAccountNum = pl.MasterAccountNum;
+                data.ProductBasic.ProfileNum = pl.ProfileNum;
+                data.ProductBasic.DatabaseNum = pl.DatabaseNum;
             }
             else
             {
                 //TODO check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
-                //if (
-                //    data.SalesOrderHeader.MasterAccountNum != pl.MasterAccountNum ||
-                //    data.SalesOrderHeader.ProfileNum != pl.ProfileNum
-                //)
-                //    IsValid = false;
-                //this.Messages.Add($"Sales Order not found.");
-                //return IsValid;
+                if (
+                    data.ProductBasic.MasterAccountNum != pl.MasterAccountNum ||
+                    data.ProductBasic.ProfileNum != pl.ProfileNum
+                )
+                    IsValid = false;
+                this.Messages.Add($"Sales Order not found.");
+                return IsValid;
             }
             return true;
         }

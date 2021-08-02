@@ -18,7 +18,6 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
-
 namespace DigitBridge.CommerceCentral.ERPApi
 {
     /// <summary>
@@ -99,7 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request Response payload for FIND API
     /// </summary>
     [Serializable()]
-    public class SalesOrderPayloadFind : PayloadBase
+    public class SalesOrderPayloadFind  : FilterPayloadBase<SalesOrderFilter>
     {
         /// <summary>
         /// (Response) List result which load by filter and paging.
@@ -112,6 +111,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         public int SalesOrderListCount { get; set; }
 
+    }
+
+    public class SalesOrderFilter
+    {
+        public DateTime OrderNumberFrom { get; set; }
+
+        public DateTime OrderNumberTo { get; set; }
+
+        public string CustomerCode { get; set; }
+
+        public string CustomerName { get; set; }
+
+        public DateTime OrderDateFrom { get; set; }
+
+        public DateTime OrderDateTo { get; set; }
+
+        public string OrderStatus { get; set; }
+
+        public string OrderType { get; set; }
     }
 
 }
