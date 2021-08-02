@@ -33,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             string CustomerCode=null)
         {
             var payload =await req.GetParameters<CustomerPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new CustomerService(dbFactory);
 
             if (!string.IsNullOrEmpty(CustomerCode))
