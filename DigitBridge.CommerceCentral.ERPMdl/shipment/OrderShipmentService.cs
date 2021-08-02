@@ -1,5 +1,5 @@
 
-    
+
 
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual bool Add(OrderShipmentDataDto dto)
         {
-            if (dto is null) 
+            if (dto is null)
                 return false;
             // set Add mode and clear data
             Add();
@@ -59,6 +59,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Add();
             // load data from dto
             FromDto(dto);
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+
+            return await SaveDataAsync().ConfigureAwait(false);
+        }
+
+        public virtual async Task<bool> AddAsync(OrderShipmentPayload payload)
+        {
+            if (payload is null || !payload.HasOrderShipment)
+                return false;
+
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(payload.OrderShipment);
+
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
                 return false;
@@ -103,40 +123,42 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
-
-
         /// <summary>
-        /// Get order shipment with detail by order shipment number
+        /// Update data from Dto object
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        /// <param name="orderShipmentNum"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> GetByOrderShipmentNumAsync(string orderShipmentNum)
+        public virtual async Task<bool> UpdateAsync(OrderShipmentPayload payload)
         {
-            if (string.IsNullOrEmpty(orderShipmentNum))
+            if (payload is null || !payload.HasOrderShipment || payload.OrderShipment.OrderShipmentHeader.RowNum.ToLong() <= 0)
                 return false;
-            List();
-            var rowNum = await _data.GetRowNumAsync(orderShipmentNum);
-            if (!rowNum.HasValue)
+            // set Add mode and clear data
+            await EditAsync(payload.OrderShipment.OrderShipmentHeader.RowNum.ToLong()).ConfigureAwait(false);
+
+            // validate data for Add processing
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
                 return false;
-            var success = await GetDataAsync(rowNum.Value);
-            //if (success) ToDto();
-            return success;
-        }
+
+            // load data from dto
+            FromDto(payload.OrderShipment);
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+
+            return await SaveDataAsync();
+        } 
 
         /// <summary>
         /// Delete order shipment by order shipment number
         /// </summary>
-        /// <param name="orderShipmentNum"></param>
+        /// <param name="orderShipmentUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByOrderShipmentNumAsync(string orderShipmentNum)
+        public virtual async Task<bool> DeleteByOrderShipmentUuidAsync(string orderShipmentUuid, OrderShipmentPayload payload)
         {
-            if (string.IsNullOrEmpty(orderShipmentNum))
+            if (string.IsNullOrEmpty(orderShipmentUuid))
                 return false;
             Delete();
-            var rowNum = await _data.GetRowNumAsync(orderShipmentNum);
-            if (!rowNum.HasValue)
-                return false;
-            var success = await GetDataAsync(rowNum.Value);
+            //todo validate 
+            var success = await GetDataByIdAsync(orderShipmentUuid);
             success = success && await DeleteDataAsync();
             return success;
         }

@@ -14,15 +14,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class OrderShipmentData
     {
-        /// <summary>
-        /// Get row num by order shipment number
-        /// </summary>
-        /// <param name="orderShipmentNum"></param>
-        /// <returns></returns>
-        public virtual async Task<long?> GetRowNumAsync(string orderShipmentNum)
-        {
-            return await dbFactory.GetValueAsync<OrderShipmentHeader, long?>($"SELECT TOP 1 RowNum FROM OrderShipmentHeader where OrderShipmentNum='{orderShipmentNum}'");
-        } 
+         
     }
 }
 

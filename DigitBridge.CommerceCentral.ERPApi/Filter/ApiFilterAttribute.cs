@@ -71,7 +71,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
                     //var parameters = await req.ToDictionary(executedContext.FunctionName, bodyType);
 
                     // write log to log center
-                    var reqInfo = await LogHelper.GetRequestInfo(req, executedContext.FunctionName);
+                    var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
+                    var parmeters = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>();  
+                    var reqInfo = await LogHelper.GetRequestInfo(req, executedContext.FunctionName, parmeters);
                     var excepitonMessageID = LogCenter.CaptureException(exception, reqInfo);
                     var data = new ResponseResult<string>($"A general error occured. Error ID: {excepitonMessageID}", false);
                     await req.HttpContext.Response.Output(data);
