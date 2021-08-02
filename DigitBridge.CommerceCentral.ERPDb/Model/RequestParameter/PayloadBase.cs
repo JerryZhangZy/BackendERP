@@ -63,6 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Display(Name = "$top")]
         [Range(1, 500, ErrorMessage = "Invalid $top")]
         [DataMember(Name = "$top")]
+        [JsonProperty("$top")]
         public int Top { get; set; } = 1;
         [JsonIgnore] public virtual bool HasTop => Top > 0;
         public bool ShouldSerializeTop() => HasTop;
@@ -76,6 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Display(Name = "$skip")]
         [Range(0, int.MaxValue, ErrorMessage = "Invalid $skip.")]
         [DataMember(Name = "$skip")]
+        [JsonProperty("$skip")]
         public int Skip { get; set; }
         [JsonIgnore] public virtual bool HasSkip => Skip >= 0;
         public bool ShouldSerializeSkip() => HasSkip;
@@ -89,6 +91,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary> 
         [Display(Name = "$count")]
         [DataMember(Name = "$count")]
+        [JsonProperty("$count")]
         public bool IsQueryTotalCount { get; set; } = true;
         [JsonIgnore] public virtual bool HasIsQueryTotalCount => IsQueryTotalCount;
 
@@ -100,6 +103,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         [Display(Name = "$sortBy")]
         [DataMember(Name = "$sortBy")]
+        [JsonProperty("$sortBy")]
         public string SortBy { get; set; }
         [JsonIgnore] public virtual bool HasSortBy => !string.IsNullOrEmpty(SortBy);
         public bool ShouldSerializeSortBy() => HasSortBy;
@@ -111,6 +115,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         [Display(Name = "$loadAll")]
         [DataMember(Name = "$loadAll")]
+        [JsonProperty("$loadAll")]
         public bool LoadAll { get; set; }
 
         /// <summary>
@@ -121,28 +126,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary> 
         [Display(Name = "$filter")]
         [DataMember(Name = "$filter")]
+        [JsonProperty("$filter")]
         public JObject Filter { get; set; }
         [JsonIgnore] public virtual bool HasFilter => Filter != null && Filter.Count > 0;
         public bool ShouldSerializeFilter() => HasFilter;
 
 
-        /// <summary>
-        /// StringBuilder for JSON result of SQL query.
-        /// Optional,
-        /// </summary> 
-        [Display(Name = "ListResults")]
-        [JsonConverter(typeof(StringBuilderConverter))]
-        public IDictionary<string, StringBuilder> ListResults { get; set; }
-        [JsonIgnore] public virtual bool HasListResults => ListResults != null && ListResults.Count > 0;
-        public bool ShouldSerializeListResults() => HasListResults;
-        public void AddListResult(string name, StringBuilder sb)
-        {
-            if (ListResults == null)
-                ListResults = new Dictionary<string, StringBuilder>();
-            ListResults.SetValue(name, sb);
-        }
-        public void RemoveListResult(string name) => ListResults?.RemoveKey(name);
-        public StringBuilder GetListResult(string name) => ListResults?.GetValue(name);
+        ///// <summary>
+        ///// StringBuilder for JSON result of SQL query.
+        ///// Optional,
+        ///// </summary> 
+        //[Display(Name = "ListResults")]
+        //[JsonConverter(typeof(StringBuilderConverter))]
+        //public IDictionary<string, StringBuilder> ListResults { get; set; }
+        //[JsonIgnore] public virtual bool HasListResults => ListResults != null && ListResults.Count > 0;
+        //public bool ShouldSerializeListResults() => HasListResults;
+        //public void AddListResult(string name, StringBuilder sb)
+        //{
+        //    if (ListResults == null)
+        //        ListResults = new Dictionary<string, StringBuilder>();
+        //    ListResults.SetValue(name, sb);
+        //}
+        //public void RemoveListResult(string name) => ListResults?.RemoveKey(name);
+        //public StringBuilder GetListResult(string name) => ListResults?.GetValue(name);
 
 
         public virtual IDictionary<string, Action<string>> GetOtherParameters() => null; 
