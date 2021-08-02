@@ -23,6 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Display(Name = "$top")]
         [Range(1, 500, ErrorMessage = "Invalid $top")]
         [DataMember(Name = "$top")]
+        [JsonProperty("$top")]
         public int Top { get; set; } = 1;
 
         /// <summary>
@@ -34,6 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Display(Name = "$skip")]
         [Range(0, int.MaxValue, ErrorMessage = "Invalid $skip.")]
         [DataMember(Name = "$skip")]
+        [JsonProperty("$skip")]
         public int Skip { get; set; }
 
         /// <summary>
@@ -45,6 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary> 
         [Display(Name = "$count")]
         [DataMember(Name = "$count")]
+        [JsonProperty("$count")]
         public bool IsQueryTotalCount { get; set; } = true;
 
         /// <summary>
@@ -55,6 +58,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         [Display(Name = "$sortBy")]
         [DataMember(Name = "$sortBy")]
+        [JsonProperty("$sortBy")]
         public string SortBy { get; set; }
 
         /// <summary>
@@ -64,6 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         [Display(Name = "$loadAll")]
         [DataMember(Name = "$loadAll")]
+        [JsonProperty("$loadAll")]
         public bool LoadAll { get; set; }
 
         /// <summary>
@@ -74,6 +79,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary> 
         [Display(Name = "$filter")]
         [DataMember(Name = "$filter")]
+        [JsonProperty("$filter")]
         public virtual T Filter { get; set; }
     }
 }
