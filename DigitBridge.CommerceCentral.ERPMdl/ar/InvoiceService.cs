@@ -65,7 +65,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync().ConfigureAwait(false);
         }
+        public virtual async Task<bool> AddAsync(InvoicePayload payload)
+        {
+            if (payload is null || !payload.HasInvoice)
+                return false;
 
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(payload.Invoice);
+
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+
+            return await SaveDataAsync().ConfigureAwait(false);
+        }
         /// <summary>
         /// Update data from Dto object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
@@ -103,7 +121,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
+        /// <summary>
+        /// Update data from Dto object
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
+        /// </summary>
+        public virtual async Task<bool> UpdateAsync(InvoicePayload payload)
+        {
+            if (payload is null || !payload.HasInvoice || payload.Invoice.InvoiceHeader.RowNum.ToLong() <= 0)
+                return false;
+            // set Add mode and clear data
+            await EditAsync(payload.Invoice.InvoiceHeader.RowNum.ToLong()).ConfigureAwait(false);
 
+            // validate data for Add processing
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            // load data from dto
+            FromDto(payload.Invoice);
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+
+            return await SaveDataAsync();
+        }
         /// <summary>
         /// Get invoice with detail by invoiceNumber
         /// </summary>
@@ -122,19 +162,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
         /// <summary>
-        /// Delete invoice by invoiceNumber
+        /// Delete invoice by invoiceUuid
         /// </summary>
-        /// <param name="invoiceNumber"></param>
+        /// <param name="invoiceUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByInvoiceNumberAsync(string invoiceNumber)
+        public virtual async Task<bool> DeleteByInvoiceUuidAsync(string invoiceUuid, InvoicePayload payload)
         {
-            if (string.IsNullOrEmpty(invoiceNumber))
+            if (string.IsNullOrEmpty(invoiceUuid))
                 return false;
-            Delete();
-            var rowNum = await _data.GetRowNumAsync(invoiceNumber);
-            if (!rowNum.HasValue)
-                return false;
-            var success = await GetDataAsync(rowNum.Value);
+            Delete(); 
+            //todo validate
+            var success = await GetDataByIdAsync(invoiceUuid);
             success = success && await DeleteDataAsync();
             return success;
         }

@@ -25,13 +25,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request and Response payload object for Add API
     /// </summary>
     [Serializable()]
-    public class InventoryPayloadAdd
+    public class ProductExPayloadAdd
     {
         /// <summary>
-        /// (Request Data) Inventory object to add.
-        /// (Response Data) Inventory object which has been added.
+        /// (Request Data) ProductEx object to add.
+        /// (Response Data) ProductEx object which has been added.
         /// </summary>
-        [OpenApiPropertyDescription("(Request and Response) Inventory object to add.")]
+        [OpenApiPropertyDescription("(Request and Response) ProductEx object to add.")]
         public InventoryDataDto InventoryData { get; set; }
     }
 
@@ -40,13 +40,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request and Response payload object for Patch API
     /// </summary>
     [Serializable()]
-    public class InventoryPayloadUpdate
+    public class ProductExPayloadUpdate
     {
         /// <summary>
-        /// (Request Data) Inventory object to update.
-        /// (Response Data) Inventory object which has been updated.
+        /// (Request Data) ProductEx object to update.
+        /// (Response Data) ProductEx object which has been updated.
         /// </summary>
-        [OpenApiPropertyDescription("(Request and Response) Inventory object to update.")]
+        [OpenApiPropertyDescription("(Request and Response) ProductEx object to update.")]
         public InventoryDataDto InventoryData { get; set; }
     }
 
@@ -56,13 +56,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Response payload object for GET single API
     /// </summary>
     [Serializable()]
-    public class InventoryPayloadGetSingle
+    public class ProductExPayloadGetSingle
     {
         /// <summary>
-        /// (Response Data) Inventory object.
+        /// (Response Data) ProductEx object.
         /// </summary>
-        [OpenApiPropertyDescription("(Response) Inventory object to get.")]
-        public InventoryDataDto Inventory { get; set; }
+        [OpenApiPropertyDescription("(Response) ProductEx object to get.")]
+        public InventoryDataDto InventoryData { get; set; }
     }
 
 
@@ -70,19 +70,19 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request and Response payload object for GET multiple API
     /// </summary>
     [Serializable()]
-    public class InventoryPayloadGetMultiple
+    public class ProductExPayloadGetMultiple
     {
         /// <summary>
-        /// (Request) Array of uuid to get multiple Inventorys.
+        /// (Request) Array of uuid to get multiple ProductExs.
         /// </summary>
-        [OpenApiPropertyDescription("(Request) Array of uuid to get multiple Inventorys.")]
-        public IList<string> skus { get; set; }
+        [OpenApiPropertyDescription("(Request) Array of uuid to get multiple ProductExs.")]
+        public IList<string> Skus { get; set; }
 
         /// <summary>
-        /// (Response) Array of Inventory which get by uuid array.
+        /// (Response) Array of ProductEx which get by uuid array.
         /// </summary>
-        [OpenApiPropertyDescription("(Response) Array of Inventory which get by uuid array.")]
-        public IList<InventoryDataDto> ProductExPayloadAdd { get; set; }
+        [OpenApiPropertyDescription("(Response) Array of ProductEx which get by uuid array.")]
+        public IList<InventoryDataDto> InventoryDatas { get; set; }
     }
 
 
@@ -90,8 +90,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Response payload object for DELETE API
     /// </summary>
     [Serializable()]
-    public class InventoryPayloadDelete
+    public class ProductExPayloadDelete
     {
+        /// <summary>
+        /// (Response Data) ProductEx object.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response) ProductEx object to get.")]
+        public InventoryDataDto InventoryData { get; set; }
     }
 
 
@@ -99,23 +104,23 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request Response payload for FIND API
     /// </summary>
     [Serializable()]
-    public class InventoryPayloadFind : FilterPayloadBase<InventoryFilter>
+    public class ProductExPayloadFind : FilterPayloadBase<ProductExFilter>
     {
         /// <summary>
         /// (Response) List result which load by filter and paging.
         /// </summary>
         [OpenApiPropertyDescription("(Response) List result which load by filter and paging.")]
-        public IList<Object> ProductList { get; set; }
+        public IList<Object> ProductExList { get; set; }
 
         /// <summary>
         /// (Response) List result count which load by filter and paging.
         /// </summary>
-        public int ProductListCount { get; set; }
+        public int ProductExListCount { get; set; }
 
     }
 
     [Serializable()]
-    public class InventoryFilter
+    public class ProductExFilter
     {
         public string Brand { get; set; }
 

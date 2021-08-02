@@ -69,7 +69,8 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         }
         public static async Task<string> GetBodyStringAsync(this HttpRequest req)
         {
-            req.Body.Seek(0, SeekOrigin.Begin);
+            if (req.Body.CanSeek)
+                req.Body.Seek(0, SeekOrigin.Begin);
             var reader = new StreamReader(req.Body);
             return await reader.ReadToEndAsync();
         }

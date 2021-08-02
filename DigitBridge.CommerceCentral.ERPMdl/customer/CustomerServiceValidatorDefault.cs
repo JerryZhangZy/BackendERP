@@ -44,20 +44,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //TODO set MasterAccountNum, ProfileNum and DatabaseNum from payload
-                //data.SalesOrderHeader.MasterAccountNum = pl.MasterAccountNum;
-                //data.SalesOrderHeader.ProfileNum = pl.ProfileNum;
-                //data.SalesOrderHeader.DatabaseNum = pl.DatabaseNum;
+                data.Customer.MasterAccountNum = pl.MasterAccountNum;
+                data.Customer.ProfileNum = pl.ProfileNum;
+                data.Customer.DatabaseNum = pl.DatabaseNum;
             }
             else
             {
                 //TODO check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
-                //if (
-                //    data.SalesOrderHeader.MasterAccountNum != pl.MasterAccountNum ||
-                //    data.SalesOrderHeader.ProfileNum != pl.ProfileNum
-                //)
-                //    IsValid = false;
-                //this.Messages.Add($"Sales Order not found.");
-                //return IsValid;
+                if (
+                    data.Customer.MasterAccountNum != pl.MasterAccountNum ||
+                    data.Customer.ProfileNum != pl.ProfileNum
+                )
+                    IsValid = false;
+                this.Messages.Add($"Sales Order not found.");
+                return IsValid;
             }
             return true;
         }

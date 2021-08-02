@@ -29,11 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "logUuids", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "logUuids", Description = "Transaction ID Arrays", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayload), Description = "Result is InventoryLogs")]
         public static async Task<JsonNetResponse<InventoryLogPayload>> GetInventoryLogs(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "inventoryLogs/{logUuid?}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "inventoryLogs/{logUuid}")] HttpRequest req,
             string logUuid)
         {
             var payload = await req.GetParameters<InventoryLogPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
 
             if (!string.IsNullOrEmpty(logUuid))
             {
@@ -72,7 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "inventoryLogs")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryLogPayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryLogService(dbFactory);
 
             var result= svc.AddList(payload);
@@ -89,7 +89,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "inventoryLogs")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryLogPayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryLogService(dbFactory);
 
             var result= svc.UpdateInventoryLogList(payload);
@@ -110,7 +110,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "inventoryLogs/find")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryLogPayload>(true);
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InventoryLogList(dataBaseFactory, new InventoryLogQuery());
             payload = await srv.GetInventoryLogListAsync(payload);
             return new JsonNetResponse<InventoryLogPayload>(payload);

@@ -59,6 +59,50 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return ToDto();
         }
 
+        public ProductExPayload Add(ProductExPayload payload)
+        {
+            if (payload is null || !payload.HasInventoryData)
+                return payload;
+
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(payload.InventoryData);
+
+            if (!ValidatePayload(payload))
+                return payload;
+
+            // validate data for Add processing
+            if (!Validate())
+                return payload;
+
+            if (SaveData())
+                payload.InventoryData = ToDto();
+            return payload;
+        }
+
+        public async Task<ProductExPayload> AddAsync(ProductExPayload payload)
+        {
+            if (payload is null || !payload.HasInventoryData)
+                return payload;
+
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(payload.InventoryData);
+
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return payload;
+
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return payload;
+
+            if (await SaveDataAsync().ConfigureAwait(false))
+                payload.InventoryData = ToDto();
+            return payload;
+        }
+
 
         /// <summary>
         /// Add new data from Dto object
@@ -82,6 +126,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var uuid = GetProductUuidBySku(profileNum, sku);
             return Delete(uuid);
+        }
+        public async Task<ProductExPayload> DeleteBySkuAsync(ProductExPayload payload)
+        {
+            var uuid = GetProductUuidBySku(payload.ProfileNum, payload.Skus.First());
+            if(await DeleteAsync(uuid)){
+                payload.InventoryData = ToDto();
+            }
+            return payload;
         }
 
         /// <summary>
@@ -119,6 +171,50 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return SaveData();
+        }
+
+        public ProductExPayload Update(ProductExPayload payload)
+        {
+            if (payload is null || !payload.HasInventoryData || payload.InventoryData.ProductBasic.RowNum.ToLong() <= 0)
+                return payload;
+            // set Add mode and clear data
+            Edit(payload.InventoryData.ProductBasic.RowNum.ToLong());
+
+            if (!ValidatePayload(payload))
+                return payload;
+
+            // load data from dto
+            FromDto(payload.InventoryData);
+            // validate data for Add processing
+            if (!Validate())
+                return payload;
+
+            if (SaveData())
+                payload.InventoryData = ToDto();
+            return payload;
+        }
+
+        public async Task<ProductExPayload> UpdateAsync(ProductExPayload payload)
+        {
+
+            if (payload is null || !payload.HasInventoryData || payload.InventoryData.ProductBasic.RowNum.ToLong() <= 0)
+                return payload;
+            // set Add mode and clear data
+            await EditAsync(payload.InventoryData.ProductBasic.RowNum.ToLong()).ConfigureAwait(false);
+
+            // validate data for Add processing
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return payload;
+
+            // load data from dto
+            FromDto(payload.InventoryData);
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return payload;
+
+            if (await SaveDataAsync())
+                payload.InventoryData = ToDto();
+            return payload;
         }
 
         /// <summary>
