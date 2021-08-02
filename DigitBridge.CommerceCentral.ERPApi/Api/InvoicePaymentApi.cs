@@ -25,12 +25,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="req"></param>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
+        [FunctionName(nameof(GetInvoicePayment))]
         [OpenApiOperation(operationId: "GetInvoicePayment", tags: new[] { "Invoice payments" }, Summary = "Get one invoice payment")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SwaggerInvoicePayment<InvoiceTransactionDto>))]
-        [FunctionName(nameof(GetInvoicePayment))]
         public static async Task<JsonNetResponse<InvoicePaymentPayload>> GetInvoicePayment(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "InvoicePayment/{invoiceNumber}")] HttpRequest req,
             string invoiceNumber)
@@ -50,10 +50,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="req"></param>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
+        [FunctionName(nameof(DeleteInvoicePayments))]
         [OpenApiOperation(operationId: "DeleteInvoicePayments", tags: new[] { "Invoice payments" }, Summary = "Delete one invoice payment ")]
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "invoice Number. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [FunctionName(nameof(DeleteInvoicePayments))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
         public static async Task<JsonNetResponse<InvoicePaymentPayload>> DeleteInvoicePayments(
            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "InvoicePayment/{invoiceNumber}")]
             HttpRequest req,
@@ -74,11 +74,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <returns></returns>
         [FunctionName(nameof(UpdateInvoicePayments))]
         [OpenApiOperation(operationId: "UpdateInvoicePayments", tags: new[] { "Invoice payments" }, Summary = "Update one invoice payment ")]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SwaggerOne<InvoiceTransactionDto>), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SwaggerOne<InvoiceTransactionDto>), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
         public static async Task<JsonNetResponse<InvoicePaymentPayload>> UpdateInvoicePayments(
 [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "InvoicePayment")] HttpRequest req)
         {
@@ -99,10 +98,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <returns></returns>
         [FunctionName(nameof(AddInvoicePayments))]
         [OpenApiOperation(operationId: "AddInvoicePayments", tags: new[] { "Invoice payments" }, Summary = "Add one invoice payment ")]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SwaggerOne<InvoiceTransactionDto>), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SwaggerOne<InvoiceTransactionDto>), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
         public static async Task<JsonNetResponse<InvoicePaymentPayload>> AddInvoicePayments(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "InvoicePayment")] HttpRequest req)
         {

@@ -27,17 +27,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="log"></param>
         /// <param name="orderShipmentNum"></param>
         /// <returns></returns>
+        [FunctionName(nameof(GetShipments))]
         [OpenApiOperation(operationId: "GetShipments", tags: new[] { "Shipments" }, Summary = "Get one/multiple order shipment")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "paging", Type = typeof(RequestPaging),Required =false,Explode =true,In =ParameterLocation.Query)]
-        //[OpenApiParameter(name: "$top", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "$top", Description = "Page size. Default value is 100. Maximum value is 100.", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "$skip", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$skip", Description = "Records to skip. https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "orderShipmentNum", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "orderShipmentNum", Description = "Order shipment number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SwaggerOne<OrderShipmentDataDto>))]
-        [FunctionName(nameof(GetShipments))]
         public static async Task<JsonNetResponse<ShipmentPayload>> GetShipments(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "shipments/{orderShipmentNum}")] HttpRequest req,
             ILogger log, string orderShipmentNum)
@@ -59,10 +54,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="req"></param>
         /// <param name="orderShipmentNum"></param>
         /// <returns></returns>
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ShipmentPayload))]
+        [FunctionName(nameof(DeleteShipments))]
         [OpenApiOperation(operationId: "DeleteShipments", tags: new[] { "Shipments" }, Summary = "Delete one order shipment")]
         [OpenApiParameter(name: "orderShipmentNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderShipmentNum", Description = "Order shipment number. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [FunctionName(nameof(DeleteShipments))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ShipmentPayload))]
         public static async Task<JsonNetResponse<ShipmentPayload>> DeleteShipments(
            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "shipments/{orderShipmentNum}")]
             HttpRequest req,

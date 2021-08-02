@@ -27,12 +27,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="log"></param>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
+        [FunctionName(nameof(GetInvoice))]
         [OpenApiOperation(operationId: "GetInvoice", tags: new[] { "Invoices" }, Summary = "Get one/multiple invoices")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SwaggerOne<InvoiceDataDto>))]
-        [FunctionName(nameof(GetInvoice))]
         public static async Task<JsonNetResponse<InvoicePayload>> GetInvoice(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices/{invoiceNumber}")] HttpRequest req,
             ILogger log,
@@ -57,6 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="req"></param> 
 
         /// <returns></returns>
+        [FunctionName(nameof(GetInvoiceList))]
         [OpenApiOperation(operationId: "GetInvoiceList", tags: new[] { "Invoices" }, Summary = "Get list")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -65,7 +66,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SwaggerList<InvoiceDataDto>), Description = "Result is List<SalesOrderDataDto>")]
-        [FunctionName(nameof(GetInvoiceList))]
         public static async Task<JsonNetResponse<InvoicePayload>> GetInvoiceList(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices")] HttpRequest req)
         {
@@ -84,10 +84,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="req"></param>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
+        [FunctionName(nameof(DeleteInvoices))]
         [OpenApiOperation(operationId: "DeleteInvoices", tags: new[] { "Invoices" }, Summary = "Delete one invoice")]
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Sales invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayload))]
-        [FunctionName(nameof(DeleteInvoices))]
         public static async Task<JsonNetResponse<InvoicePayload>> DeleteInvoices(
            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoices/{invoiceNumber}")] HttpRequest req,
            string invoiceNumber)
