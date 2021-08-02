@@ -61,14 +61,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public ProductExPayload Add(ProductExPayload payload)
         {
-            if (Add(payload.InventoryData))
+            if (payload is null || !payload.HasInventoryData)
+                return payload;
+
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(payload.InventoryData);
+
+            if (!ValidatePayload(payload))
+                return payload;
+
+            // validate data for Add processing
+            if (!Validate())
+                return payload;
+
+            if (SaveData())
                 payload.InventoryData = ToDto();
             return payload;
         }
 
         public async Task<ProductExPayload> AddAsync(ProductExPayload payload)
         {
-            if (await AddAsync(payload.InventoryData))
+            if (payload is null || !payload.HasInventoryData)
+                return payload;
+
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(payload.InventoryData);
+
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return payload;
+
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return payload;
+
+            if (await SaveDataAsync().ConfigureAwait(false))
                 payload.InventoryData = ToDto();
             return payload;
         }
@@ -145,14 +175,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public ProductExPayload Update(ProductExPayload payload)
         {
-            if (Update(payload.InventoryData))
+            if (payload is null || !payload.HasInventoryData || payload.InventoryData.ProductBasic.RowNum.ToLong() <= 0)
+                return payload;
+            // set Add mode and clear data
+            Edit(payload.InventoryData.ProductBasic.RowNum.ToLong());
+
+            if (!ValidatePayload(payload))
+                return payload;
+
+            // load data from dto
+            FromDto(payload.InventoryData);
+            // validate data for Add processing
+            if (!Validate())
+                return payload;
+
+            if (SaveData())
                 payload.InventoryData = ToDto();
             return payload;
         }
 
         public async Task<ProductExPayload> UpdateAsync(ProductExPayload payload)
         {
-            if (await UpdateAsync(payload.InventoryData))
+
+            if (payload is null || !payload.HasInventoryData || payload.InventoryData.ProductBasic.RowNum.ToLong() <= 0)
+                return payload;
+            // set Add mode and clear data
+            await EditAsync(payload.InventoryData.ProductBasic.RowNum.ToLong()).ConfigureAwait(false);
+
+            // validate data for Add processing
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return payload;
+
+            // load data from dto
+            FromDto(payload.InventoryData);
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return payload;
+
+            if (await SaveDataAsync())
                 payload.InventoryData = ToDto();
             return payload;
         }
