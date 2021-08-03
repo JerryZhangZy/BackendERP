@@ -40,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<OrderShipmentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
-            var success = await srv.GetDataAsync(orderShipmentNum);
+            var success = await srv.GetDataAsync(orderShipmentNum,payload);
             if (success)
             {
                 payload.OrderShipment = srv.ToDto(srv.Data);
@@ -98,7 +98,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Add order shipment
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="dto"></param>
         /// <returns></returns>
         [FunctionName(nameof(AddShipments))]
         [OpenApiOperation(operationId: "AddShipments", tags: new[] { "Shipments" }, Summary = "Add one order shipment")]

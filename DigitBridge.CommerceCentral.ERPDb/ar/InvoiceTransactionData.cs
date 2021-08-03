@@ -14,16 +14,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class InvoiceTransactionData
     {
-        /// <summary>
-        /// Get invoiceTransaction by invoice number
-        /// </summary>
-        /// <param name="invoiceNumber"></param>
-        /// <returns></returns> 
-        public virtual async Task<InvoiceTransaction> GetByInvoiceNumberAsync(string invoiceNumber)
-        {
-            return (await dbFactory.FindAsync<InvoiceTransaction>($"SELECT TOP 1 * FROM InvoiceTransaction where InvoiceNumber='{invoiceNumber}'")).FirstOrDefault();
-        }
+       
 
+        
     }
 }
 
