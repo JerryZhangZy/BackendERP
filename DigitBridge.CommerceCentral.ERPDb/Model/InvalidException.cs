@@ -18,4 +18,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         { }
 
     }
+
+    public class NoContentException : Exception
+    {
+        /// <summary>
+        /// Initializes a new instance of the InvalidParameterException class with a specified
+        /// </summary>
+        /// <param name="message">The message that describes the error.</param>
+        public NoContentException(string message) : base(message)
+        { }
+
+    }
 }

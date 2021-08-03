@@ -156,10 +156,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (string.IsNullOrEmpty(orderShipmentUuid))
                 return false;
-            Delete();
-            //todo validate 
+            Delete(); 
             var success = await GetDataByIdAsync(orderShipmentUuid);
+            // validate before deleting
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
             success = success && await DeleteDataAsync();
+            return success;
+        }
+        public virtual async Task<bool> GetDataAsync(long orderShipmentNum, OrderShipmentPayload payload)
+        {
+            if (orderShipmentNum < 0)
+                return false;
+            var orderShipmentNum_db = await _data.GetOrderShipmentNumAsync(orderShipmentNum, payload.ProfileNum, payload.MasterAccountNum);
+            if (!orderShipmentNum_db.HasValue)
+                return false;
+            var success = await GetDataAsync(orderShipmentNum);
+            //if (success) ToDto();
             return success;
         }
     }

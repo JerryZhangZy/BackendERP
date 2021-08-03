@@ -39,6 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         Task<bool> UpdateAsync(InvoicePayload payload);
 
         Task<bool> DeleteByInvoiceUuidAsync(string invoiceUuid, InvoicePayload payload);
+        Task<bool> GetByInvoiceNumberAsync(string invoiceNumber, InvoicePayload payload);
 
     }
 }

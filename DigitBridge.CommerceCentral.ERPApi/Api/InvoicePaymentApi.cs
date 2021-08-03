@@ -38,8 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePaymentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
-            payload.InvoiceTransaction = await srv.GetByInvoiceNumberAsync(invoiceNumber);
-            payload.InvoiceHeader = await srv.GetInvoiceHeaderAsync(invoiceNumber);
+            await srv.GetPaymentWithInvoiceHeaderAsync(invoiceNumber, payload);
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
 
@@ -61,9 +60,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var payload = await req.GetParameters<InvoicePaymentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new InvoicePaymentService(dataBaseFactory);
-            //todo
-            //var success = await srv.DeleteByInvoiceNumberAsync(transUuid);
+            var srv = new InvoiceTransactionService(dataBaseFactory);
+            var success = await srv.DeleteByTransUuidAsync(transUuid, payload);
             //payload.ResponseData = $"{success} to delete ";
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
@@ -82,11 +80,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<InvoicePaymentPayload>> UpdateInvoicePayments(
 [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "InvoicePayment")] HttpRequest req)
         {
-            var payload = await req.GetParameters<InvoicePaymentPayload>(true); 
+            var payload = await req.GetParameters<InvoicePaymentPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
-            //var dataDto = new InvoiceTransactionDataDto() { InvoiceTransaction = payload.Dto };
-            //var success = await srv.UpdateAsync(dataDto);
+            var success = await srv.UpdateAsync(payload);
             //payload.ResponseData = $"{success} to update data";
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
@@ -109,9 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePaymentPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
-            //todo
-            //var dataDto = new InvoiceTransactionDataDto() { InvoiceTransaction = payload.Dto };
-            //var success = await srv.AddAsync(dataDto);
+            //var success = await srv.AddAsync(payload);
             //payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }

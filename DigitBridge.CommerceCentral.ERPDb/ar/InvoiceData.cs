@@ -19,9 +19,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task<long?> GetRowNumAsync(string invoiceNumber)
+        public virtual async Task<long?> GetRowNumAsync(string invoiceNumber,int profileNum,int masterAccountNum)
         {
-            return await dbFactory.GetValueAsync<InvoiceHeader, long?>($"SELECT TOP 1 RowNum FROM InvoiceHeader where InvoiceNumber='{invoiceNumber}'");
+            return await dbFactory.GetValueAsync<InvoiceHeader, long?>($"SELECT TOP 1 RowNum FROM InvoiceHeader where InvoiceNumber='{invoiceNumber}' and profileNum={profileNum} and masterAccountNum={masterAccountNum}");
         } 
     }
 }

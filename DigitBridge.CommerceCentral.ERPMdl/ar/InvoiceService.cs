@@ -149,12 +149,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> GetByInvoiceNumberAsync(string invoiceNumber)
+        public virtual async Task<bool> GetByInvoiceNumberAsync(string invoiceNumber, InvoicePayload payload)
         {
             if (string.IsNullOrEmpty(invoiceNumber))
                 return false;
             List();
-            var rowNum = await _data.GetRowNumAsync(invoiceNumber);
+            var rowNum = await _data.GetRowNumAsync(invoiceNumber,payload.ProfileNum,payload.MasterAccountNum);
             if (!rowNum.HasValue)
                 return false;
             var success = await GetDataAsync(rowNum.Value);
@@ -170,9 +170,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (string.IsNullOrEmpty(invoiceUuid))
                 return false;
-            Delete(); 
-            //todo validate
+            Delete();  
             var success = await GetDataByIdAsync(invoiceUuid);
+            // validate before deleting
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
             success = success && await DeleteDataAsync();
             return success;
         }
