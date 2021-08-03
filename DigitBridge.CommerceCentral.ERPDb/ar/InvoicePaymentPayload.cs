@@ -40,7 +40,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public InvoiceHeaderDto InvoiceHeader { get; set; }
 
         #endregion single Dto object
-         
+
+        #region list service
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder InvoiceTransactionList { get; set; }
+        [JsonIgnore] public virtual bool HasInvoiceTransactionList => InvoiceTransactionList != null && InvoiceTransactionList.Length > 0;
+        public bool ShouldSerializeInvoiceTransactionList() => HasInvoiceTransactionList;
+
+        /// <summary>
+        /// (Response Data) List result count which load filter and paging.
+        /// </summary>
+        public int InvoiceTransactionListCount { get; set; }
+        [JsonIgnore] public virtual bool HasInvoiceTransactionListCount => InvoiceTransactionListCount > 0;
+        public bool ShouldSerializeInvoiceTransactionListCount() => HasInvoiceTransactionListCount;
+
+        #endregion list service
     }
 }
 
