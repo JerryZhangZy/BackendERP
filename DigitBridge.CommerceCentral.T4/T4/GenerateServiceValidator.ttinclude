@@ -27,15 +27,52 @@ namespace <#= NamespaceService #>
     /// <summary>
     /// Represents a default <#= ServiceName #> Validator class.
     /// </summary>
-    public partial class <#= ServiceName #>ValidatorDefault : IValidator<<#= StructureClass.ClassName #>>
+    public partial class <#= ServiceName #>ValidatorDefault : IValidator<<#= StructureClass.ClassName #>>, IMessage
     {
         public virtual bool IsValid { get; set; }
-        public virtual IList<string> Messages { get; set; }
+        public <#= ServiceName #>ValidatorDefault() { }
+        public <#= ServiceName #>ValidatorDefault(IMessage serviceMessage) { ServiceMessage = serviceMessage; }
+
+        #region message
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages 
+        { 
+            get
+            {
+                if (ServiceMessage != null)
+                    return ServiceMessage.Messages;
+
+                if (_Messages == null)
+                    _Messages = new List<MessageClass>();
+                return _Messages;
+            }
+            set
+            {
+                if (ServiceMessage != null)
+                    ServiceMessage.Messages = value;
+                else
+                    _Messages = value;
+            }
+        }
+        protected IList<MessageClass> _Messages;
+        public IMessage ServiceMessage { get; set; }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddInfo(message, code) : Messages.AddInfo(message, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddWarning(message, code) : Messages.AddWarning(message, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddError(message, code) : Messages.AddError(message, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddFatal(message, code) : Messages.AddFatal(message, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddDebug(message, code) : Messages.AddDebug(message, code);
+
+        #endregion message
 
         public virtual void Clear()
         {
             IsValid = true;
-            Messages = new List<string>();
+            Messages = new List<MessageClass>();
         }
 
         public virtual bool ValidatePayload(<#= StructureClass.ClassName #> data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -57,7 +94,7 @@ namespace <#= NamespaceService #>
                 //    data.SalesOrderHeader.ProfileNum != pl.ProfileNum
                 //)
                 //    IsValid = false;
-                //this.Messages.Add($"Sales Order not found.");
+                //AddError($"Sales Order not found.");
                 //return IsValid;
             }
             return true;
@@ -86,13 +123,13 @@ namespace <#= NamespaceService #>
             if (string.IsNullOrEmpty(data.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>))
             {
                 IsValid = false;
-                this.Messages.Add($"Unique Id cannot be empty.");
+                AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.<#= StructureClass.MainTable.Name #>.CustomerUuid))
             //{
             //    IsValid = false;
-            //    this.Messages.Add($"Customer cannot be empty.");
+            //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
             return true;
@@ -105,7 +142,7 @@ namespace <#= NamespaceService #>
             if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && dbFactory.Exists<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} is duplicate.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -118,14 +155,14 @@ namespace <#= NamespaceService #>
             if (data.<#= StructureClass.MainTable.Name #>.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && !dbFactory.Exists<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -137,14 +174,14 @@ namespace <#= NamespaceService #>
             if (data.<#= StructureClass.MainTable.Name #>.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && !dbFactory.Exists<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -177,13 +214,13 @@ namespace <#= NamespaceService #>
             if (string.IsNullOrEmpty(data.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>))
             {
                 IsValid = false;
-                this.Messages.Add($"Unique Id cannot be empty.");
+                AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.<#= StructureClass.MainTable.Name #>.CustomerUuid))
             //{
             //    IsValid = false;
-            //    this.Messages.Add($"Customer cannot be empty.");
+            //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
             return true;
@@ -196,7 +233,7 @@ namespace <#= NamespaceService #>
             if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && (await dbFactory.ExistsAsync<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} is duplicate.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -209,14 +246,14 @@ namespace <#= NamespaceService #>
             if (data.<#= StructureClass.MainTable.Name #>.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && !(await dbFactory.ExistsAsync<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -228,14 +265,14 @@ namespace <#= NamespaceService #>
             if (data.<#= StructureClass.MainTable.Name #>.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.<#= StructureClass.MainTable.Name #>.RowNum != 0 && !(await dbFactory.ExistsAsync<<#= StructureClass.MainTable.Name #>>(data.<#= StructureClass.MainTable.Name #>.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
+                AddError($"RowNum: {data.<#= StructureClass.MainTable.Name #>.RowNum} not found.");
                 return IsValid;
             }
             return true;

@@ -67,7 +67,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <see cref="https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
         /// </summary>
         [DataMember(Name = "errors", EmitDefaultValue = false)]
-        public IList<ErrorClass> Errors { get; set; }
+        public IList<MessageClass> Errors { get; set; }
 
         public PagingClass() { }
 

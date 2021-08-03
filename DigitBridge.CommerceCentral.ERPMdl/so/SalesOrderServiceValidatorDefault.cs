@@ -26,15 +26,53 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default SalesOrderService Validator class.
     /// </summary>
-    public partial class SalesOrderServiceValidatorDefault : IValidator<SalesOrderData>
+    public partial class SalesOrderServiceValidatorDefault : IValidator<SalesOrderData>, IMessage
     {
         public virtual bool IsValid { get; set; }
-        public virtual IList<string> Messages { get; set; }
+
+        public SalesOrderServiceValidatorDefault() { }
+        public SalesOrderServiceValidatorDefault(IMessage serviceMessage) { ServiceMessage = serviceMessage; }
+
+        #region message
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages 
+        { 
+            get
+            {
+                if (ServiceMessage != null)
+                    return ServiceMessage.Messages;
+
+                if (_Messages == null)
+                    _Messages = new List<MessageClass>();
+                return _Messages;
+            }
+            set
+            {
+                if (ServiceMessage != null)
+                    ServiceMessage.Messages = value;
+                else
+                    _Messages = value;
+            }
+        }
+        protected IList<MessageClass> _Messages;
+        public IMessage ServiceMessage { get; set; }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddInfo(message, code) : Messages.AddInfo(message, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddWarning(message, code) : Messages.AddWarning(message, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddError(message, code) : Messages.AddError(message, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddFatal(message, code) : Messages.AddFatal(message, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddDebug(message, code) : Messages.AddDebug(message, code);
+
+        #endregion message
 
         public virtual void Clear()
         {
             IsValid = true;
-            Messages = new List<string>();
+            Messages = new List<MessageClass>();
         }
 
         public virtual bool ValidatePayload(SalesOrderData data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -56,7 +94,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     data.SalesOrderHeader.ProfileNum != pl.ProfileNum
                 )
                 IsValid = false;
-                this.Messages.Add($"Sales Order not found.");
+                AddError($"Sales Order not found.");
                 return IsValid;
             }
             return true;
@@ -85,13 +123,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesOrderUuid))
             {
                 IsValid = false;
-                this.Messages.Add($"Unique Id cannot be empty.");
+                AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
             //{
             //    IsValid = false;
-            //    this.Messages.Add($"Customer cannot be empty.");
+            //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
             return true;
@@ -104,7 +142,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.SalesOrderHeader.RowNum != 0 && dbFactory.Exists<SalesOrderHeader>(data.SalesOrderHeader.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} is duplicate.");
+                AddError($"RowNum: {data.SalesOrderHeader.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -117,14 +155,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.SalesOrderHeader.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.SalesOrderHeader.RowNum != 0 && !dbFactory.Exists<SalesOrderHeader>(data.SalesOrderHeader.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -136,14 +174,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.SalesOrderHeader.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.SalesOrderHeader.RowNum != 0 && !dbFactory.Exists<SalesOrderHeader>(data.SalesOrderHeader.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -176,13 +214,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesOrderUuid))
             {
                 IsValid = false;
-                this.Messages.Add($"Unique Id cannot be empty.");
+                AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
             //{
             //    IsValid = false;
-            //    this.Messages.Add($"Customer cannot be empty.");
+            //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
             return true;
@@ -195,7 +233,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.SalesOrderHeader.RowNum != 0 && (await dbFactory.ExistsAsync<SalesOrderHeader>(data.SalesOrderHeader.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} is duplicate.");
+                AddError($"RowNum: {data.SalesOrderHeader.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -208,14 +246,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.SalesOrderHeader.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.SalesOrderHeader.RowNum != 0 && !(await dbFactory.ExistsAsync<SalesOrderHeader>(data.SalesOrderHeader.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -227,14 +265,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.SalesOrderHeader.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.SalesOrderHeader.RowNum != 0 && !(await dbFactory.ExistsAsync<SalesOrderHeader>(data.SalesOrderHeader.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
+                AddError($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
             return true;

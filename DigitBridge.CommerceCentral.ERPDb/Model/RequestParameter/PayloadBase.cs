@@ -131,25 +131,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasFilter => Filter != null && Filter.Count > 0;
         public bool ShouldSerializeFilter() => HasFilter;
 
+        /// <summary>
+        /// Request success
+        /// </summary>
+        [Display(Name = "success")]
+        [DataMember(Name = "success")]
+        public bool Success { get; set; } = true;
 
-        ///// <summary>
-        ///// StringBuilder for JSON result of SQL query.
-        ///// Optional,
-        ///// </summary> 
-        //[Display(Name = "ListResults")]
-        //[JsonConverter(typeof(StringBuilderConverter))]
-        //public IDictionary<string, StringBuilder> ListResults { get; set; }
-        //[JsonIgnore] public virtual bool HasListResults => ListResults != null && ListResults.Count > 0;
-        //public bool ShouldSerializeListResults() => HasListResults;
-        //public void AddListResult(string name, StringBuilder sb)
-        //{
-        //    if (ListResults == null)
-        //        ListResults = new Dictionary<string, StringBuilder>();
-        //    ListResults.SetValue(name, sb);
-        //}
-        //public void RemoveListResult(string name) => ListResults?.RemoveKey(name);
-        //public StringBuilder GetListResult(string name) => ListResults?.GetValue(name);
-
+        /// <summary>
+        /// Message list for this request
+        /// </summary>
+        [Display(Name = "messages")]
+        [DataMember(Name = "messages")]
+        public IList<MessageClass> Messages { get; set; }
 
         public virtual IDictionary<string, Action<string>> GetOtherParameters() => null; 
     }

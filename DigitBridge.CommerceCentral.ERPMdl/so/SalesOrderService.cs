@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             base.Init();
             SetDtoMapper(new SalesOrderDataDtoMapperDefault());
             SetCalculator(new SalesOrderServiceCalculatorDefault());
-            AddValidator(new SalesOrderServiceValidatorDefault());
+            AddValidator(new SalesOrderServiceValidatorDefault(this));
             return this;
         }
 
