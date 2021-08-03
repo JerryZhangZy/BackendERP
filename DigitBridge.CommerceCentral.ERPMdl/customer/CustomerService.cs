@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             base.Init();
             SetDtoMapper(new CustomerDataDtoMapperDefault());
             SetCalculator(new CustomerServiceCalculatorDefault());
-            AddValidator(new CustomerServiceValidatorDefault());
+            AddValidator(new CustomerServiceValidatorDefault(this));
             return this;
         }
 

@@ -7,6 +7,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.YoPoco;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Utility;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -39,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// }
     /// </code>
     /// </example>
-    public abstract partial class ServiceBase<TService, TEntity, TDto> : IService<TService, TEntity, TDto>
+    public abstract partial class ServiceBase<TService, TEntity, TDto> : IService<TService, TEntity, TDto>, IMessage
         where TService : ServiceBase<TService, TEntity, TDto>
         where TEntity : StructureRepository<TEntity>, new()
         where TDto : class, new()
@@ -139,6 +140,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion Event Callback Methods
 
+        #region Messages
+        protected IList<MessageClass> _messages;
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get 
+            {
+                if (_messages is null)
+                    _messages = new List<MessageClass>();
+                return _messages;
+            }
+            set { _messages = value; }
+        }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             Messages.Add(message, MessageLevel.Info, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Warning, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Error, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Fatal, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Debug, code);
+
+        #endregion Messages
+
         #region Methods
 
         public virtual void AddValidator(IValidator<TEntity> validator)
@@ -169,6 +196,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             _ProcessMode = ProcessingMode.List;
             ClearData();
+            Messages.Clear();
             return (TService)this;
         }
 
@@ -176,11 +204,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             _data = data;
             InitDataObject();
+            Messages.Clear();
             return (TService)this;
         }
         public virtual TService DetachData(TEntity data)
         {
             _data = null;
+            Messages.Clear();
             return (TService)this;
         }
         public virtual TService NewData()

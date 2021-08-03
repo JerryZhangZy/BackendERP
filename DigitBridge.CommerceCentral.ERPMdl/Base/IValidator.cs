@@ -1,4 +1,5 @@
 ﻿using DigitBridge.Base.Common;
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         where TEntity : StructureRepository<TEntity>, new()
     {
         bool IsValid { get; set; }
-        IList<string> Messages { get; set; }
         void Clear();
 
         bool ValidatePayload(TEntity data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit);

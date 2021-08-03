@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             base.Init();
             SetDtoMapper(new InvoiceTransactionDataDtoMapperDefault());
             SetCalculator(new InvoiceTransactionServiceCalculatorDefault());
-            AddValidator(new InvoiceTransactionServiceValidatorDefault());
+            AddValidator(new InvoiceTransactionServiceValidatorDefault(this));
             return this;
         }
 

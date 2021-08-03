@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -34,7 +36,8 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             var setting = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
-                Formatting = Formatting.None
+                Formatting = Formatting.None,
+                Converters = new List<JsonConverter> { new StringEnumConverter { CamelCaseText = false } }
             };
             return setting;
         }
