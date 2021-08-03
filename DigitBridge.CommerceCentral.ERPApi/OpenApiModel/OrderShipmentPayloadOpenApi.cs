@@ -99,7 +99,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request Response payload for FIND API
     /// </summary>
     [Serializable()]
-    public class OrderShipmentPayloadFind : PayloadBase
+    public class OrderShipmentPayloadFind : FilterPayloadBase<OrderShipmentFilter>
     {
         /// <summary>
         /// (Response) List result which load by filter and paging.
@@ -112,6 +112,32 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         public int OrderShipmentListCount { get; set; }
 
+    }
+
+    [Serializable()]
+    public class OrderShipmentFilter
+    {
+        public int ChannelNum { get; set; }
+
+        public int ChannelAccountNum { get; set; }
+
+        public long OrderDCAssigmentNum { get; set; }
+
+        public long CentralOrderNum { get; set; }
+
+        public long ChannelOrderID { get; set; }
+
+        public string ShipmentID { get; set; }
+
+        public string WarehouseID { get; set; }
+
+        public int ShipmentType { get; set; }
+
+        public string MainTrackingNumber { get; set; }
+
+        public string MainReturnTrackingNumber { get; set; }
+
+        public int ProcessStatus { get; set; }
     }
 
 }

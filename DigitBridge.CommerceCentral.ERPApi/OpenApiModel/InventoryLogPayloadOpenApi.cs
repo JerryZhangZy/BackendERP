@@ -99,7 +99,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request Response payload for FIND API
     /// </summary>
     [Serializable()]
-    public class InventoryLogPayloadFind : PayloadBase
+    public class InventoryLogPayloadFind : FilterPayloadBase<InventoryLogFilter>
     {
         /// <summary>
         /// (Response) List result which load by filter and paging.
@@ -112,6 +112,31 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         public int InventoryLogListCount { get; set; }
 
+    }
+
+    [Serializable()]
+    public class InventoryLogFilter
+    {
+
+        public string ProductUuid { get; set; }
+
+        public string SKU { get; set; }
+
+        public string Brand { get; set; }
+
+        public string Manufacturer { get; set; }
+
+        public string ProductTitle { get; set; }
+
+        public string FNSku { get; set; }
+
+        public string UPC { get; set; }
+
+        public string WarehouseCode { get; set; }
+
+        public string LotNum { get; set; }
+
+        public string LpnNum { get; set; }
     }
 
 }
