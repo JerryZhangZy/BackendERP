@@ -40,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool ValidatePayload(InventoryLogData data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
-            var pl = payload as SalesOrderPayload;
+            var pl = payload as InventoryLogPayload;
             if (processingMode == ProcessingMode.Add)
             {
                 //TODO set MasterAccountNum, ProfileNum and DatabaseNum from payload

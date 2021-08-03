@@ -115,6 +115,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var success = await srv.AddAsync(payload);
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
+
+        /// <summary>
+        /// Load customer list
+        /// </summary>
+        [FunctionName(nameof(ShipmentsList))]
+        [OpenApiOperation(operationId: "ShipmentsList", tags: new[] { "Shipments" }, Summary = "Load shipment list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(OrderShipmentPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadFind))]
+        public static async Task<JsonNetResponse<OrderShipmentPayload>> ShipmentsList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "shipments/find")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<OrderShipmentPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new OrderShipmentList(dataBaseFactory, new OrderShipmentQuery());
+            payload = await srv.GetOrderShipmentListAsync(payload);
+            return new JsonNetResponse<OrderShipmentPayload>(payload);
+        }
     }
 }
 
