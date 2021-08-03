@@ -104,43 +104,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
         /// <summary>
-        /// Delete invoice payments by invoice number
+        /// Delete invoice by transaction uuid
         /// </summary>
-        /// <param name="invoiceNumber"></param>
+        /// <param name="invoiceUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByInvoiceNumberAsync(string invoiceNumber)
+        public virtual async Task<bool> DeleteByTransUuidAsync(string transUuid, PayloadBase payloadBase)
         {
-            if (string.IsNullOrEmpty(invoiceNumber))
+            if (string.IsNullOrEmpty(transUuid))
                 return false;
-            await ERPDb.InvoiceTransactionHelper.DeleteByInvoiceNumberAsync(invoiceNumber);
-            return true;
-        }
-        /// <summary>
-        /// Get invoice payment with detail by invoiceNumber
-        /// </summary>
-        /// <param name="invoiceNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<InvoiceTransactionDto> GetByInvoiceNumberAsync(string invoiceNumber)
-        {
-            List();
-            var invoiceTransaction = await _data.GetByInvoiceNumberAsync(invoiceNumber);
-            var dto = new InvoiceTransactionDto();
-            new InvoiceTransactionDataDtoMapperDefault().WriteInvoiceTransaction(invoiceTransaction, dto);
-            return dto;
+            Delete();
+            var success = await GetDataByIdAsync(transUuid);
+            // validate before deleting
+            if (!(await ValidatePayloadAsync(payloadBase).ConfigureAwait(false)))
+                return false;
+            success = success && await DeleteDataAsync();
+            return success;
         }
 
-        /// <summary>
-        /// Get InvoiceHeader by invoiceNumber
-        /// </summary>
-        /// <param name="invoiceNumber"></param>
-        /// <returns></returns>
-        public async Task<InvoiceHeaderDto> GetInvoiceHeaderAsync(string invoiceNumber)
-        {
-            var invoiceHeader = await new InvoiceHeader(dbFactory).GetByInvoiceNumberAsync(invoiceNumber);
-            var dto = new InvoiceHeaderDto();
-            new InvoiceDataDtoMapperDefault().WriteInvoiceHeader(invoiceHeader, dto);
-            return dto;
-        }
     }
 }
 

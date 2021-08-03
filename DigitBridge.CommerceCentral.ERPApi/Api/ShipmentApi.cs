@@ -40,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<OrderShipmentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
-            var success = await srv.GetDataAsync(orderShipmentNum);
+            var success = await srv.GetDataAsync(orderShipmentNum,payload);
             if (success)
             {
                 payload.OrderShipment = srv.ToDto(srv.Data);
@@ -98,7 +98,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Add order shipment
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="dto"></param>
         /// <returns></returns>
         [FunctionName(nameof(AddShipments))]
         [OpenApiOperation(operationId: "AddShipments", tags: new[] { "Shipments" }, Summary = "Add one order shipment")]
@@ -113,6 +112,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
             var success = await srv.AddAsync(payload);
+            return new JsonNetResponse<OrderShipmentPayload>(payload);
+        }
+
+        /// <summary>
+        /// Load customer list
+        /// </summary>
+        [FunctionName(nameof(ShipmentsList))]
+        [OpenApiOperation(operationId: "ShipmentsList", tags: new[] { "Shipments" }, Summary = "Load shipment list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(OrderShipmentPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadFind))]
+        public static async Task<JsonNetResponse<OrderShipmentPayload>> ShipmentsList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "shipments/find")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<OrderShipmentPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new OrderShipmentList(dataBaseFactory, new OrderShipmentQuery());
+            payload = await srv.GetOrderShipmentListAsync(payload);
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
     }

@@ -53,7 +53,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return data;
         }
 
-		protected virtual void ReadInvoiceTransaction(InvoiceTransaction data, InvoiceTransactionDto dto)
+		public virtual void ReadInvoiceTransaction(InvoiceTransaction data, InvoiceTransactionDto dto)
 		{
 			if (data is null || dto is null)
 				return;

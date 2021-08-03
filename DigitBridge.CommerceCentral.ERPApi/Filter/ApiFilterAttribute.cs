@@ -62,8 +62,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 //exceptionReqs.Add(executedContext.FunctionInstanceId, executedContext.GetContext<HttpRequest>()); 
 
                 var req = executedContext.GetContext<HttpRequest>();
-                var isInvalidParameterException = exception.InnerException is InvalidParameterException;
-                if (!isInvalidParameterException)
+                var needLog = !(exception.InnerException is InvalidParameterException
+                    || exception.InnerException is NoContentException);
+                if (needLog)
                 {
 
                     //var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
@@ -72,7 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
                     // write log to log center
                     var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
-                    var parmeters = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>();  
+                    var parmeters = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>();
                     var reqInfo = await LogHelper.GetRequestInfo(req, executedContext.FunctionName, parmeters);
                     var excepitonMessageID = LogCenter.CaptureException(exception, reqInfo);
                     var data = new ResponseResult<string>($"A general error occured. Error ID: {excepitonMessageID}", false);

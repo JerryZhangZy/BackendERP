@@ -99,7 +99,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request Response payload for FIND API
     /// </summary>
     [Serializable()]
-    public class InvoicePayloadFind : PayloadBase
+    public class InvoicePayloadFind : FilterPayloadBase<InvoiceFilter>
     {
         /// <summary>
         /// (Response) List result which load by filter and paging.
@@ -112,6 +112,27 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         public int InvoiceListCount { get; set; }
 
+    }
+
+    public class InvoiceFilter
+    {
+        public string InvoiceNumber { get; set; }
+
+        public int InvoiceType { get; set; }
+
+        public int InvoiceStatus { get; set; }
+
+        public DateTime InvoiceDateFrom { get; set; }
+
+        public DateTime InvoiceDateTo { get; set; }
+
+        public string CustomerCode { get; set; }
+
+        public string CustomerName { get; set; }
+
+        public string ShippingCarrier { get; set; }
+
+        public string WarehouseCode { get; set; }
     }
 
 }

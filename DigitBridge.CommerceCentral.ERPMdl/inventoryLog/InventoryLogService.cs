@@ -74,7 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             foreach (var rowNum in rowNumList)
             {
-
+                Delete();
                 if (GetData(rowNum) && DeleteData())
                     payload.InventoryLogs.Add(ToDto());
 
@@ -287,7 +287,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual bool Update(InventoryLogPayload payload)
         {
-            if (payload is null || !payload.HasInventoryLog || payload.InventoryLog.InventoryLog.ToLong() <= 0)
+            if (payload is null || !payload.HasInventoryLog || payload.InventoryLog.InventoryLog.RowNum.ToLong() <= 0)
                 return false;
             // set Add mode and clear data
             Edit(payload.InventoryLog.InventoryLog.RowNum.ToLong());

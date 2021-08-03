@@ -75,6 +75,46 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [Serializable()]
     public class InvoicePaymentPayloadDelete
     {
-    } 
+    }
+
+    /// <summary>
+    /// Request Response payload for FIND API
+    /// </summary>
+    [Serializable()]
+    public class InvoicePaymentPayloadFind : FilterPayloadBase<InvoicePaymentFilter>
+    {
+        /// <summary>
+        /// (Response) List result which load by filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response) List result which load by filter and paging.")]
+        public IList<Object> InvoiceTransactionList { get; set; }
+
+        /// <summary>
+        /// (Response) List result count which load by filter and paging.
+        /// </summary>
+        public int InvoiceTransactionListCount { get; set; }
+
+    }
+
+    public class InvoicePaymentFilter
+    {
+        public string InvoiceNumber { get; set; }
+
+        public int InvoiceType { get; set; }
+
+        public int InvoiceStatus { get; set; }
+
+        public DateTime InvoiceDateFrom { get; set; }
+
+        public DateTime InvoiceDateTo { get; set; }
+
+        public string CustomerCode { get; set; }
+
+        public string CustomerName { get; set; }
+
+        public string ShippingCarrier { get; set; }
+
+        public string WarehouseCode { get; set; }
+    }
 }
 

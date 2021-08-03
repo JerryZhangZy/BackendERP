@@ -20,9 +20,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task<InvoiceHeader> GetByInvoiceNumberAsync(string invoiceNumber)
+        public virtual async Task<InvoiceHeader> GetByInvoiceNumberAsync(string invoiceNumber, int masterAccountNum, int profileNum)
         {
-            return (await dbFactory.FindAsync<InvoiceHeader>($"SELECT TOP 1 * FROM InvoiceHeader where InvoiceNumber='{invoiceNumber}'")).FirstOrDefault();
+            return (await dbFactory.FindAsync<InvoiceHeader>($"SELECT TOP 1 * FROM InvoiceHeader where InvoiceNumber='{invoiceNumber}' and masterAccountNum={masterAccountNum} and profileNum={profileNum}")).FirstOrDefault();
         }
     }
 }

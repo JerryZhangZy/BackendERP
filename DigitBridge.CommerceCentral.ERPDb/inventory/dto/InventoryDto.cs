@@ -29,7 +29,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [Serializable()]
     public class InventoryDto
     {
+        [JsonIgnore]
         public long? RowNum { get; set; }
+
+        [JsonIgnore]
         public string UniqueId { get; set; }
         public DateTime? EnterDateUtc { get; set; }
         public Guid DigitBridgeGuid { get; set; }
