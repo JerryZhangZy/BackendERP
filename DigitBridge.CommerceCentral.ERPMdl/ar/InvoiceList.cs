@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.SQL_Select = $@"
 SELECT 
 {Helper.TableAllies}.*, 
-{InfoHelper.TableAllies}.*,
+{InfoHelper.TableAllies}.*
 ";
             return this.SQL_Select;
         }
@@ -39,7 +39,7 @@ SELECT
         {
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
-LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.CustomerUuid = {InfoHelper.TableAllies}.CustomerUuid)
+LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.InvoiceUuid = {InfoHelper.TableAllies}.InvoiceUuid)
  LEFT JOIN @InvoiceStatus ist ON ({Helper.TableAllies}.InvoiceStatus = ist.num)
  LEFT JOIN @InvoiceType itt ON ({Helper.TableAllies}.InvoiceType = itt.num)
 ";

@@ -52,7 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public override void InitQueryFilter()
         {
-            _TransDateFrom.FilterValue = DateTime.Today;
+            _TransDateFrom.FilterValue = DateTime.Today.AddDays(-30);
            _TransDateTo.FilterValue = DateTime.Today.AddDays(7);
         }
 
