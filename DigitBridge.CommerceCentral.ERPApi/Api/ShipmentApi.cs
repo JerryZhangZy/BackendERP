@@ -45,6 +45,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             {
                 payload.OrderShipment = srv.ToDto(srv.Data);
             }
+            else
+                payload.Messages = srv.Messages;
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
 
@@ -68,8 +70,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<OrderShipmentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory); 
-            var success = await srv.DeleteByOrderShipmentUuidAsync(orderShipmentUuid, payload);
-            //return new Response<string>("Delete order shipment result", success);
+            payload.Success = await srv.DeleteByOrderShipmentUuidAsync(orderShipmentUuid, payload);
+            payload.Messages = srv.Messages;
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
 
@@ -90,8 +92,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<OrderShipmentPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
-            var success = await srv.UpdateAsync(payload);
-            //todo where to display success(eg masterAccountNum is not matched the dto masterAccountNum )
+            payload.Success = await srv.UpdateAsync(payload);
+            payload.Messages = srv.Messages;
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
         /// <summary>
@@ -111,7 +113,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<OrderShipmentPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
-            var success = await srv.AddAsync(payload);
+            payload.Success = await srv.AddAsync(payload);
+            payload.Messages = srv.Messages;
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
 
