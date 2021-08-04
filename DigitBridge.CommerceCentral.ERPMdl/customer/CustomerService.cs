@@ -71,6 +71,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 payload.Customer = ToDto();
             }
+            else
+            {
+                payload.Messages = Messages;
+                payload.Success = false;
+            }
             return payload;
         }
 
@@ -78,6 +83,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (await AddAsync(payload.Customer))
                 payload.Customer = ToDto();
+            else
+            {
+                payload.Messages = Messages;
+                payload.Success = false;
+            }
             return payload;
         }
 
@@ -86,6 +96,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (Add(payload.Customer))
             {
                 payload.Customer = ToDto();
+            }
+            else
+            {
+                payload.Messages = Messages;
+                payload.Success = false;
             }
             return payload;
         }
@@ -150,6 +165,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (Update(payload.Customer))
                 payload.Customer = ToDto();
+            else
+            {
+                payload.Messages = Messages;
+                payload.Success = false;
+            }
             return payload;
         }
 
@@ -157,6 +177,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (await UpdateAsync(payload.Customer))
                 payload.Customer = ToDto();
+            else
+            {
+                payload.Messages = Messages;
+                payload.Success = false;
+            }
             return payload;
         }
 

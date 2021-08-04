@@ -443,6 +443,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
             ProductExt.SetParent(this);
             if (ProductExt.ProductUuid != ProductBasic.ProductUuid)
                 ProductExt.ProductUuid = ProductBasic.ProductUuid;
+            if (ProductExt.DatabaseNum != ProductBasic.DatabaseNum)
+                ProductExt.DatabaseNum = ProductBasic.DatabaseNum;
+            if (ProductExt.MasterAccountNum != ProductBasic.MasterAccountNum)
+                ProductExt.MasterAccountNum = ProductBasic.MasterAccountNum;
+            if (ProductExt.ProfileNum != ProductBasic.ProfileNum)
+                ProductExt.ProfileNum = ProductBasic.ProfileNum;
             return ProductExt;
         }
 
@@ -609,6 +615,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.ProductUuid != ProductBasic.ProductUuid)
                     child.ProductUuid = ProductBasic.ProductUuid;
+                if (child.DatabaseNum != ProductBasic.DatabaseNum)
+                    child.DatabaseNum = ProductBasic.DatabaseNum;
+                if (child.MasterAccountNum != ProductBasic.MasterAccountNum)
+                    child.MasterAccountNum = ProductBasic.MasterAccountNum;
+                if (child.ProfileNum != ProductBasic.ProfileNum)
+                    child.ProfileNum = ProductBasic.ProfileNum;
             }
             return children;
         }

@@ -29,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "SKU", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "sku", Description = "SKU", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload), Example = typeof(ProductExPayload), Description = "The OK response")]
         public static async Task<JsonNetResponse<ProductExPayload>> GetProductExt(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "productExt/{SKU}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExt/{SKU}")] HttpRequest req,
             string SKU = null)
         {
             var payload = await req.GetParameters<ProductExPayload>();
@@ -57,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "skus", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "skus", Description = "SKU Array", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayloadGetMultiple), Example = typeof(ProductExPayloadGetMultiple), Description = "The OK response")]
         public static async Task<JsonNetResponse<ProductExPayload>> GetMultiProductExt(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "productExt")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExt")] HttpRequest req)
         {
             var payload = await req.GetParameters<ProductExPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -74,7 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "SKU", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "SKU", Description = "SKU = ProfileNumber-SKU ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayloadDelete))]
         public static async Task<JsonNetResponse<ProductExPayload>> DeleteProductExt(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "productExt/{SKU}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "productExt/{SKU}")] HttpRequest req,
             string SKU)
         {
             var payload = await req.GetParameters<ProductExPayload>();
@@ -97,7 +97,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ProductExPayloadAdd), Description = "InventoryDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayloadAdd))]
         public static async Task<JsonNetResponse<ProductExPayload>> AddProductExt(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "productExt")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExt")] HttpRequest req)
         {
             var payload = await req.GetParameters<ProductExPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -113,7 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ProductExPayloadUpdate), Description = "InventoryDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayloadUpdate))]
         public static async Task<JsonNetResponse<ProductExPayload>> UpdateProductExt(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "productExt")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "productExt")] HttpRequest req)
         {
             var payload = await req.GetParameters<ProductExPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
