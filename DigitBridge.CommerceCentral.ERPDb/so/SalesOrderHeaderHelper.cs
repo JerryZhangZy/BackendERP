@@ -48,6 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string OrderStatus(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderStatus AS {name ?? "OrderStatus"} ";
         public static string OrderDate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderDate AS {name ?? "OrderDate"} ";
         public static string OrderTime(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.OrderTime AS {name ?? "OrderTime"} ";
+        public static string ShipDate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ShipDate AS {name ?? "ShipDate"} ";
         public static string DueDate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DueDate AS {name ?? "DueDate"} ";
         public static string BillDate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.BillDate AS {name ?? "BillDate"} ";
         public static string CustomerUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CustomerUuid) AS {name ?? "CustomerUuid"} ";
@@ -99,6 +100,7 @@ RTRIM({allies}OrderNumber) AS OrderNumber,
 {allies}OrderStatus AS OrderStatus,
 {allies}OrderDate AS OrderDate,
 {allies}OrderTime AS OrderTime,
+{allies}ShipDate AS ShipDate,
 {allies}DueDate AS DueDate,
 {allies}BillDate AS BillDate,
 RTRIM({allies}CustomerUuid) AS CustomerUuid,

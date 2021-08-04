@@ -293,6 +293,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateJsDocPayload.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateStructureGrandChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureGrandChildren.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

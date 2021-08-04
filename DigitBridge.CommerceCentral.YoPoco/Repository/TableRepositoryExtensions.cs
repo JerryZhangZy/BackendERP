@@ -253,7 +253,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             IList<TEntity> lstMatch)
             where TEntity : TableRepository<TEntity, long>, new()
         {
-            return lst.Where(x => x.RowNum > 0 && !lstMatch.Any(m => m.RowNum == x.RowNum)).ToList();
+            return lst.Where(x => x != null && x.RowNum > 0 && !lstMatch.Any(m => m.RowNum == x.RowNum)).ToList();
         }
 
         public static TEntity FindBy<TEntity>(this IList<TEntity> lst, Func<TEntity, bool> predicate)
@@ -304,7 +304,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
         public static IList<TEntity> RemoveEmpty<TEntity>(this IList<TEntity> lst)
             where TEntity : TableRepository<TEntity, long>, new()
-            => lst.RemoveBy<TEntity, long>(x => x.IsEmpty);
+            => lst.RemoveBy<TEntity, long>(x => x == null || x.IsEmpty);
 
         public static bool EqualsList<TEntity>(this IList<TEntity> lst, IList<TEntity> listOther)
             where TEntity : TableRepository<TEntity, long>, new()
