@@ -35,9 +35,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //TODO set MasterAccountNum, ProfileNum and DatabaseNum from payload
-                data.InvoiceTransaction.MasterAccountNum = pl.MasterAccountNum;
-                data.InvoiceTransaction.ProfileNum = pl.ProfileNum;
-                data.InvoiceTransaction.DatabaseNum = pl.DatabaseNum;
+                //data.InvoiceTransaction.MasterAccountNum = pl.MasterAccountNum;
+                //data.InvoiceTransaction.ProfileNum = pl.ProfileNum;
+                //data.InvoiceTransaction.DatabaseNum = pl.DatabaseNum;
             }
             else
             {
