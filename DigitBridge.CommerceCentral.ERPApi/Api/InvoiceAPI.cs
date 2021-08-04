@@ -43,11 +43,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var srv = new InvoiceService(dataBaseFactory);
             var success = await srv.GetByInvoiceNumberAsync(invoiceNumber, payload);
             if (success)
-            { 
+            {
                 payload.Invoice = srv.ToDto(srv.Data);
             }
-            //else
-            //    payload.ResponseData = "no record found";
+            else
+                payload.Messages = srv.Messages;
             return new JsonNetResponse<InvoicePayload>(payload);
         }
 
@@ -97,8 +97,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
-            var success = await srv.DeleteByInvoiceUuidAsync(invoiceUuid,payload);
-            //payload.ResponseData = $"{success} to delete ";
+            payload.Success = await srv.DeleteByInvoiceUuidAsync(invoiceUuid,payload);
+            payload.Messages = srv.Messages;
             return new JsonNetResponse<InvoicePayload>(payload);
         }
 
@@ -119,7 +119,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
-            var success = await srv.UpdateAsync(payload); 
+            payload.Success = await srv.UpdateAsync(payload);
+            payload.Messages = srv.Messages;
             return new JsonNetResponse<InvoicePayload>(payload);
         }
         /// <summary>
@@ -140,7 +141,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
-            var success = await srv.AddAsync(payload); 
+            payload.Success= await srv.AddAsync(payload);
+            payload.Messages = srv.Messages;
             return new JsonNetResponse<InvoicePayload>(payload);
         }
 
