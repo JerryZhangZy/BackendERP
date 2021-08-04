@@ -62,29 +62,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 //exceptionReqs.Add(executedContext.FunctionInstanceId, executedContext.GetContext<HttpRequest>()); 
 
                 var req = executedContext.GetContext<HttpRequest>();
-                var needLog = !(exception.InnerException is InvalidParameterException
+                var hasException = !(exception.InnerException is InvalidParameterException
                     || exception.InnerException is NoContentException);
-                if (needLog)
+                if (hasException)
                 {
+                    if (MySingletonAppSetting.DebugMode)
+                        await req.HttpContext.Response.Output(new ResponseResult<Exception>(exception, false));
+                    else
+                    {
+                        //var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
+                        //var bodyType = methodInfo?.GetCustomAttribute<OpenApiRequestBodyAttribute>()?.BodyType; 
+                        //var parameters = await req.ToDictionary(executedContext.FunctionName, bodyType);
 
-                    //var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
-                    //var bodyType = methodInfo?.GetCustomAttribute<OpenApiRequestBodyAttribute>()?.BodyType; 
-                    //var parameters = await req.ToDictionary(executedContext.FunctionName, bodyType);
-
-                    // write log to log center
-                    var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
-                    var parmeters = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>();
-                    var reqInfo = await LogHelper.GetRequestInfo(req, executedContext.FunctionName, parmeters);
-                    var excepitonMessageID = LogCenter.CaptureException(exception, reqInfo);
-                    var data = new ResponseResult<string>($"A general error occured. Error ID: {excepitonMessageID}", false);
-                    await req.HttpContext.Response.Output(data);
+                        // write log to log center
+                        var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
+                        var parmeters = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>();
+                        var reqInfo = await LogHelper.GetRequestInfo(req, executedContext.FunctionName, parmeters);
+                        var excepitonMessageID = LogCenter.CaptureException(exception, reqInfo);
+                        var data = new ResponseResult<string>($"A general error occured. Error ID: {excepitonMessageID}", false);
+                    }
                 }
-                else
-                {
-                    var data = new ResponseResult<Exception>(exception, false);
-                    await req.HttpContext.Response.Output(data);
-                }
-
             }
         }
 
