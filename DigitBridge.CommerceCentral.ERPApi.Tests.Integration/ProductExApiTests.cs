@@ -42,9 +42,9 @@ namespace DigitBridge.CommerceCentral.ERPApi.Tests.Integration
         public async void GetProductEx_Test()
         {
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
-            var inventory = dbFactory.Db.Query<ProductExt>(@"
+            var inventory = dbFactory.Db.Query<ProductBasic>(@"
 SELECT TOP 1 * 
-FROM ProductExt 
+FROM ProductBasic 
 ", System.Data.CommandType.Text).First();
             var reqestInfo = new RequestInfo<ProductExPayload>()
             {
@@ -67,9 +67,9 @@ FROM ProductExt
         public async void DeleteProductEx_Test()
         {
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
-            var inventory = dbFactory.Db.Query<ProductExt>(@"
+            var inventory = dbFactory.Db.Query<ProductBasic>(@"
 SELECT TOP 1 * 
-FROM ProductExt 
+FROM ProductBasic 
 ", System.Data.CommandType.Text).First();
             var reqestInfo = new RequestInfo<ProductExPayload>()
             {
@@ -91,20 +91,20 @@ FROM ProductExt
         public async void UpdateProductEx_Test()
         {
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
-            var inventory = dbFactory.Db.Query<Inventory>(@"
+            var product = dbFactory.Db.Query<ProductBasic>(@"
 SELECT TOP 1 * 
-FROM Inventory 
+FROM ProductBasic 
 ", System.Data.CommandType.Text).First();
             var svc = new InventoryService(dbFactory);
-            svc.GetData(inventory.RowNum);
+            svc.GetData(product.RowNum);
             var dto = svc.ToDto();
-            dto.ProductExt.Remark = Guid.NewGuid().ToString("N");
+            dto.ProductBasic.ShortDescription = Guid.NewGuid().ToString("N");
             var reqestInfo = new RequestInfo<ProductExPayload>()
             {
                 RequestHeader = new RequestHeader()
                 {
-                    ProfileNum = inventory.ProfileNum,
-                    MasterAccountNum = inventory.MasterAccountNum
+                    ProfileNum = product.ProfileNum,
+                    MasterAccountNum = product.MasterAccountNum
                 },
                 RequestBody = new ProductExPayload() { InventoryData=dto}
             };
