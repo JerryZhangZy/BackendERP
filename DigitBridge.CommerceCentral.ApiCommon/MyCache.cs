@@ -15,8 +15,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
     public static class MyCache
     {
         public static string GetCommerceCentralKey(int masterAccountNum)
-        {
-            try { } catch { }
+        { 
             return "CommerceCentral-" + masterAccountNum;
         }
 
