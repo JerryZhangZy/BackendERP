@@ -78,6 +78,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (SaveData())
                 payload.InventoryData = ToDto();
+            else
+            {
+                payload.Messages = Messages;
+                payload.Success = false;
+            }
             return payload;
         }
 
@@ -100,6 +105,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (await SaveDataAsync().ConfigureAwait(false))
                 payload.InventoryData = ToDto();
+            else
+            {
+                payload.Messages = Messages;
+                payload.Success = false;
+            }
             return payload;
         }
 
@@ -132,6 +142,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var uuid = GetProductUuidBySku(payload.ProfileNum, payload.Skus.First());
             if(await DeleteAsync(uuid)){
                 payload.InventoryData = ToDto();
+            }
+            else
+            {
+                payload.Messages = Messages;
+                payload.Success = false;
             }
             return payload;
         }
@@ -191,6 +206,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (SaveData())
                 payload.InventoryData = ToDto();
+            else
+            {
+                payload.Messages = Messages;
+                payload.Success = false;
+            }
             return payload;
         }
 
@@ -214,6 +234,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (await SaveDataAsync())
                 payload.InventoryData = ToDto();
+            else
+            {
+                payload.Messages = Messages;
+                payload.Success = false;
+            }
             return payload;
         }
 

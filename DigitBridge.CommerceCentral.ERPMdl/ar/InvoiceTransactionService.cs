@@ -65,7 +65,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync().ConfigureAwait(false);
         }
+        public virtual async Task<bool> AddAsync(InvoiceTransactionPayload payload)
+        {
+            if (payload is null || !payload.HasInvoiceTransaction)
+                return false;
 
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(payload.InvoiceTransaction);
+
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+
+            return await SaveDataAsync().ConfigureAwait(false);
+        }
         /// <summary>
         /// Update data from Dto object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
@@ -97,6 +115,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await EditAsync(dto.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
             // load data from dto
             FromDto(dto);
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+
+            return await SaveDataAsync();
+        }
+        /// <summary>
+        /// Update data from Dto object
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
+        /// </summary>
+        public virtual async Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
+        {
+            if (payload.InvoiceTransaction is null || !payload.HasInvoiceTransaction || payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong() <= 0)
+                return false;
+            // set Add mode and clear data
+            await EditAsync(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
+            // load data from dto
+            FromDto(payload.InvoiceTransaction);
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
                 return false;

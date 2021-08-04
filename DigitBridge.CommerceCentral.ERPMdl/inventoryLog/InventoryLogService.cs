@@ -71,14 +71,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 rowNumList.AddRange(GetRowNumsByUuids(logUuid));
             }
-
+            var msgList = new List<MessageClass>();
             foreach (var rowNum in rowNumList)
             {
                 Delete();
                 if (GetData(rowNum) && DeleteData())
                     payload.InventoryLogs.Add(ToDto());
-
+                else
+                    msgList.AddRange(Messages);
             }
+            if (msgList.Count > 0)
+                payload.Messages = msgList;
 
             return payload;
         }
@@ -111,15 +114,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return payload;
             payload.BatchNum = GetBatchNum();
             var succList = new List<InventoryLogDataDto>();
+            var msgList = new List<MessageClass>();
             foreach(var log in payload.InventoryLogs)
             {
                 payload.InventoryLog = log;
                 if (Add(payload))
                     succList.Add(ToDto());
+                else
+                    msgList.AddRange(Messages);
             }
             payload.InventoryLog = null;
             payload.InventoryLogs = succList;
-
+            if (msgList.Count > 0)
+                payload.Messages = msgList;
             return payload;
             //TODO:Validator验证，Mapper,补充完整Inventory信息进去，调用Dao
         }
@@ -130,14 +137,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return payload;
 
             var succList = new List<InventoryLogDataDto>();
+            var msgList = new List<MessageClass>();
             foreach (var log in payload.InventoryLogs)
             {
                 payload.InventoryLog = log;
                 if (Update(payload))
                     succList.Add(ToDto());
+                else
+                    payload.Messages = Messages;
             }
             payload.InventoryLog = null;
             payload.InventoryLogs = succList;
+            if (msgList.Count > 0)
+                payload.Messages = msgList;
             return payload;
         }
 

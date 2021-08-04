@@ -29,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "CustomerCode", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "CustomerCode", Description = "CustomerCode", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload))]
         public static async Task<JsonNetResponse<CustomerPayload>> GetCustomer(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "customers/{CustomerCode}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "customers/{CustomerCode}")] HttpRequest req,
             string CustomerCode=null)
         {
             var payload =await req.GetParameters<CustomerPayload>();
@@ -61,7 +61,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "CustomerCodes", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "CustomerCodes", Description = "CustomerCode Array", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload))]
         public static async Task<JsonNetResponse<CustomerPayload>> GetMultiCustomers(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "customers")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "customers")] HttpRequest req)
         {
             var payload =await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
@@ -77,7 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload), Example = typeof(CustomerPayload), Description = "The OK response")]
         public static async Task<JsonNetResponse<CustomerPayload>> DeleteCustomer(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "customers/{CustomerCode}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "customers/{CustomerCode}")] HttpRequest req,
             string CustomerCode)
         {
             var payload = await req.GetParameters<CustomerPayload>();
@@ -100,7 +100,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerPayloadAdd), Description = "CustomerDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadAdd))]
         public static async Task<JsonNetResponse<CustomerPayload>> AddCustomer(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "customers")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customers")] HttpRequest req)
         {
             var payload = await req.GetParameters<CustomerPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -116,7 +116,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerPayloadUpdate), Description = "CustomerDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadUpdate))]
         public static async Task<JsonNetResponse<CustomerPayload>> UpdateCustomer(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "customers")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "customers")] HttpRequest req)
         {
             var payload = await req.GetParameters<CustomerPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
