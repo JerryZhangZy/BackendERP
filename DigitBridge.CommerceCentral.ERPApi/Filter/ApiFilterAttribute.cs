@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,8 +31,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         /// <summary>
-        /// mark exception handled 
-        /// todo:write log 
+        /// Mark exception handled 
         /// </summary>
         /// <param name="exceptionContext"></param>
         /// <param name="cancellationToken"></param>
@@ -59,51 +57,57 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var exception = executedContext.FunctionResult.Exception;
             if (exception != null)
             {
-                //exceptionReqs.Add(executedContext.FunctionInstanceId, executedContext.GetContext<HttpRequest>()); 
-
                 var req = executedContext.GetContext<HttpRequest>();
-                var hasException = !(exception.InnerException is InvalidParameterException
-                    || exception.InnerException is NoContentException);
-                if (hasException)
-                {
-                    if (MySingletonAppSetting.DebugMode)
-                        await req.HttpContext.Response.Output(new ResponseResult<Exception>(exception, false));
-                    else
-                    {
-                        //var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
-                        //var bodyType = methodInfo?.GetCustomAttribute<OpenApiRequestBodyAttribute>()?.BodyType; 
-                        //var parameters = await req.ToDictionary(executedContext.FunctionName, bodyType);
+                var needLog = !(exception.InnerException is InvalidParameterException
+                    || exception.InnerException is NoContentException
+                    || MySingletonAppSetting.DebugMode);
 
-                        // write log to log center
-                        var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
-                        var parmeters = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>();
-                        var reqInfo = await LogHelper.GetRequestInfo(req, executedContext.FunctionName, parmeters);
-                        var excepitonMessageID = LogCenter.CaptureException(exception, reqInfo);
-                        var data = new ResponseResult<string>($"A general error occured. Error ID: {excepitonMessageID}", false);
-                    }
-                }
+                var data = needLog
+                    ? await WriteLog(executedContext.FunctionName, exception, req)
+                    : new ResponseResult<Exception>(exception, false); 
+                // anyway write response
+                await req.HttpContext.Response.Output(data);
             }
         }
 
         public async Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
         {
+            // todo Authorize  
+
             var methodInfo = _currentType.GetMethod(executingContext.FunctionName);
             var openApiParameterAttributes = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>().Where(i => i.Required);
+            var messages = new List<string>();
+            var req = executingContext.GetContext<HttpRequest>();
             if (openApiParameterAttributes != null)
             {
-                var req = executingContext.GetContext<HttpRequest>();
                 foreach (var item in openApiParameterAttributes)
                 {
                     var parameterValue = req.GetData(item.Name, item.In);
                     if (parameterValue == null)
                     {
-                        var message = $"parameter {item.Name} is required";
-                        await req.HttpContext.Response.Output(message);
-                        throw new InvalidParameterException(message);
+                        messages.Add($"parameter {item.Name} is required");
                     }
                 }
             }
-            // todo Authorize  
+            if (messages.Count > 0)
+            {
+                await req.HttpContext.Response.Output(messages);
+                //interrupt function call
+                throw new InvalidParameterException();
+            }
+        }
+        private async Task<object> WriteLog(string functionName, Exception exception, HttpRequest req)
+        {
+            //var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
+            //var bodyType = methodInfo?.GetCustomAttribute<OpenApiRequestBodyAttribute>()?.BodyType; 
+            //var parameters = await req.ToDictionary(executedContext.FunctionName, bodyType);
+
+            // write log to log center
+            var methodInfo = _currentType.GetMethod(functionName);
+            var parmeters = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>();
+            var reqInfo = await LogHelper.GetRequestInfo(req, functionName, parmeters);
+            var logID = LogCenter.CaptureException(exception, reqInfo);
+            return new ResponseResult<string>($"A general error occured. Error ID: {logID}", false);
         }
     }
 }
