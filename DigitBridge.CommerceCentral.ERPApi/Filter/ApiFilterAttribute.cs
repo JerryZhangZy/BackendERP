@@ -64,7 +64,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
                 var data = needLog
                     ? await WriteLog(executedContext.FunctionName, exception, req)
-                    : new ResponseResult<Exception>(exception, false); 
+                    : exception;
+
                 // anyway write response
                 await req.HttpContext.Response.Output(data);
             }
@@ -87,6 +88,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
                     {
                         messages.Add($"parameter {item.Name} is required");
                     }
+                    else if ((item.Name == Consts.MasterAccountNum || item.Name == Consts.ProfileNum)
+                        && parameterValue.ToInt() <= 0)
+                    {
+                        messages.Add($"parameter {item.Name} is invalid");
+                    }
                 }
             }
             if (messages.Count > 0)
@@ -107,7 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var parmeters = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>();
             var reqInfo = await LogHelper.GetRequestInfo(req, functionName, parmeters);
             var logID = LogCenter.CaptureException(exception, reqInfo);
-            return new ResponseResult<string>($"A general error occured. Error ID: {logID}", false);
+            return $"A general error occured. Error ID: {logID}";
         }
     }
 }
