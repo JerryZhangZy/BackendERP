@@ -174,8 +174,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual async Task<bool> UpdateAsync(SalesOrderPayload payload)
         {
-            if (payload is null || !payload.HasSalesOrder || payload.SalesOrder.SalesOrderHeader.RowNum.ToLong() <= 0)
+            if (payload is null || !payload.HasSalesOrder  )
                 return false;
+            if (!payload.SalesOrder.SalesOrderHeader.RowNum.HasValue)
+            {
+                AddError("SalesOrderHeader.RowNum is required.");
+                return false;
+            }
+            if (payload.SalesOrder.SalesOrderHeader.RowNum.ToLong() <= 0)
+            {
+                AddError("SalesOrderHeader.RowNum is invalid.");
+                return false;
+            } 
             // set Add mode and clear data
             await EditAsync(payload.SalesOrder.SalesOrderHeader.RowNum.ToLong()).ConfigureAwait(false);
 

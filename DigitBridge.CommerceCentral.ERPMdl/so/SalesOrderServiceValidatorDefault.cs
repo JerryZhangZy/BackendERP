@@ -132,6 +132,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 isValid = false;
                 AddError($"SalesOrderHeader.OrderNumber cannot be empty.");
             }
+            if (data.SalesOrderItemsUuids != null && data.SalesOrderItemsUuids.Count(i => string.IsNullOrEmpty(i.Trim())) > 0)
+            {
+                isValid = false;
+                AddError($"SalesOrderItems.SalesOrderItemsUuid cannot be empty.");
+            }
             this.IsValid = isValid;
             return isValid;
 
@@ -146,6 +151,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 isValid = false;
                 AddError($"RowNum: {data.SalesOrderHeader.RowNum} is duplicate.");
             }
+
             if (dbFactory.Exists<SalesOrderHeader>($" SalesOrderUuid='{data.SalesOrderHeader.SalesOrderUuid}'"))
             {
                 isValid = false;
@@ -154,9 +160,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (dbFactory.Exists<SalesOrderHeader>($" ProfileNum={data.SalesOrderHeader.ProfileNum} and OrderNumber='{data.SalesOrderHeader.OrderNumber}'"))
             {
                 isValid = false;
-                AddError($"[SalesOrderHeader.ProfileNum: {data.SalesOrderHeader.ProfileNum},[SalesOrderHeader.SalesOrderUuid: {data.SalesOrderHeader.SalesOrderUuid} ]is duplicate.");
+                AddError($"SalesOrderHeader.OrderNumber: {data.SalesOrderHeader.OrderNumber} ]is duplicate.");
             }
-
+            var itemUuidsInDB = data.DuplicateItemUuids();
+            if (!string.IsNullOrEmpty(itemUuidsInDB))
+            {
+                isValid = false;
+                AddError($"{itemUuidsInDB} is duplicate.");
+            }
             IsValid = isValid;
             return isValid;
         }
@@ -194,18 +205,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return IsValid;
             }
 
-            if (dbFactory.Exists<SalesOrderHeader>($" SalesOrderUuid='{data.SalesOrderHeader.SalesOrderUuid}'"))
-            {
-                IsValid = false;
-                AddError($"SalesOrderHeader.SalesOrderUuid: {data.SalesOrderHeader.SalesOrderUuid} is duplicate.");
-                return IsValid;
-            }
-            if (dbFactory.Exists<SalesOrderHeader>($" ProfileNum={data.SalesOrderHeader.ProfileNum} and OrderNumber='{data.SalesOrderHeader.OrderNumber}'"))
-            {
-                IsValid = false;
-                AddError($"[SalesOrderHeader.ProfileNum: {data.SalesOrderHeader.ProfileNum},[SalesOrderHeader.SalesOrderUuid: {data.SalesOrderHeader.SalesOrderUuid} ]is duplicate.");
-                return IsValid;
-            }
+            //if (dbFactory.Exists<SalesOrderHeader>($" SalesOrderUuid='{data.SalesOrderHeader.SalesOrderUuid}'"))
+            //{
+            //    IsValid = false;
+            //    AddError($"SalesOrderHeader.SalesOrderUuid: {data.SalesOrderHeader.SalesOrderUuid} is duplicate.");
+            //    return IsValid;
+            //}
+            //if (dbFactory.Exists<SalesOrderHeader>($" ProfileNum={data.SalesOrderHeader.ProfileNum} and OrderNumber='{data.SalesOrderHeader.OrderNumber}'"))
+            //{
+            //    IsValid = false;
+            //    AddError($"[SalesOrderHeader.ProfileNum: {data.SalesOrderHeader.ProfileNum},[SalesOrderHeader.SalesOrderUuid: {data.SalesOrderHeader.SalesOrderUuid} ]is duplicate.");
+            //    return IsValid;
+            //}
             return true;
         }
 
@@ -255,7 +266,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesOrderUuid))
             {
                 IsValid = false;
-                AddError($"Unique Id cannot be empty.");
+                AddError($"SalesOrderHeader.SalesOrderUuid cannot be empty.");
+                return IsValid;
+            }
+            if (data.SalesOrderItemsUuids != null && data.SalesOrderItemsUuids.Count(i => string.IsNullOrEmpty(i.Trim())) > 0)
+            {
+                IsValid = false;
+                AddError($"SalesOrderItems.SalesOrderItemsUuid cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
@@ -285,7 +302,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (await dbFactory.ExistsAsync<SalesOrderHeader>($" ProfileNum={data.SalesOrderHeader.ProfileNum} and OrderNumber='{data.SalesOrderHeader.OrderNumber}'"))
             {
                 isValid = false;
-                AddError($"[SalesOrderHeader.ProfileNum: {data.SalesOrderHeader.ProfileNum},[SalesOrderHeader.SalesOrderUuid: {data.SalesOrderHeader.SalesOrderUuid} ]is duplicate.");
+                AddError($"SalesOrderHeader.OrderNumber: {data.SalesOrderHeader.OrderNumber} ]is duplicate.");
+            }
+            var itemUuidsInDB = await data.DuplicateItemUuidsAsync();
+            if (!string.IsNullOrEmpty(itemUuidsInDB))
+            {
+                isValid = false;
+                AddError($"{itemUuidsInDB} is duplicate.");
             }
 
             IsValid = isValid;
@@ -309,18 +332,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return IsValid;
             }
 
-            if (await dbFactory.ExistsAsync<SalesOrderHeader>($" SalesOrderUuid='{data.SalesOrderHeader.SalesOrderUuid}'"))
-            {
-                IsValid = false;
-                AddError($"SalesOrderHeader.SalesOrderUuid: {data.SalesOrderHeader.SalesOrderUuid} is duplicate.");
-                return IsValid;
-            }
-            if (await dbFactory.ExistsAsync<SalesOrderHeader>($" ProfileNum={data.SalesOrderHeader.ProfileNum} and OrderNumber='{data.SalesOrderHeader.OrderNumber}'"))
-            {
-                IsValid = false;
-                AddError($"[SalesOrderHeader.ProfileNum: {data.SalesOrderHeader.ProfileNum},[SalesOrderHeader.SalesOrderUuid: {data.SalesOrderHeader.SalesOrderUuid} ]is duplicate.");
-                return IsValid;
-            }
+            //if (await dbFactory.ExistsAsync<SalesOrderHeader>($" SalesOrderUuid='{data.SalesOrderHeader.SalesOrderUuid}'"))
+            //{
+            //    IsValid = false;
+            //    AddError($"SalesOrderHeader.SalesOrderUuid: {data.SalesOrderHeader.SalesOrderUuid} is duplicate.");
+            //    return IsValid;
+            //}
+            //if (await dbFactory.ExistsAsync<SalesOrderHeader>($" ProfileNum={data.SalesOrderHeader.ProfileNum} and OrderNumber='{data.SalesOrderHeader.OrderNumber}'"))
+            //{
+            //    IsValid = false;
+            //    AddError($"SalesOrderHeader.OrderNumber: {data.SalesOrderHeader.OrderNumber} ]is duplicate.");
+            //    return IsValid;
+            //}
 
             return true;
         }
