@@ -59,10 +59,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return ToDto();
         }
 
-        public ProductExPayload Add(ProductExPayload payload)
+        public bool Add(ProductExPayload payload)
         {
             if (payload is null || !payload.HasInventoryData)
-                return payload;
+                return false;
 
             // set Add mode and clear data
             Add();
@@ -70,26 +70,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             FromDto(payload.InventoryData);
 
             if (!ValidatePayload(payload))
-                return payload;
+                return false;
 
             // validate data for Add processing
             if (!Validate())
-                return payload;
-
-            if (SaveData())
-                payload.InventoryData = ToDto();
-            else
-            {
-                payload.Messages = Messages;
-                payload.Success = false;
-            }
-            return payload;
+                return false;
+            return SaveData();
         }
 
-        public async Task<ProductExPayload> AddAsync(ProductExPayload payload)
+        public async Task<bool> AddAsync(ProductExPayload payload)
         {
             if (payload is null || !payload.HasInventoryData)
-                return payload;
+                return false;
 
             // set Add mode and clear data
             Add();
@@ -97,20 +89,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             FromDto(payload.InventoryData);
 
             if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
-                return payload;
+                return false;
 
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
-                return payload;
+                return false;
 
-            if (await SaveDataAsync().ConfigureAwait(false))
-                payload.InventoryData = ToDto();
-            else
-            {
-                payload.Messages = Messages;
-                payload.Success = false;
-            }
-            return payload;
+            return await SaveDataAsync().ConfigureAwait(false);
         }
 
 
@@ -188,58 +173,43 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return SaveData();
         }
 
-        public ProductExPayload Update(ProductExPayload payload)
+        public bool Update(ProductExPayload payload)
         {
             if (payload is null || !payload.HasInventoryData || payload.InventoryData.ProductBasic.RowNum.ToLong() <= 0)
-                return payload;
+                return false;
             // set Add mode and clear data
             Edit(payload.InventoryData.ProductBasic.RowNum.ToLong());
 
             if (!ValidatePayload(payload))
-                return payload;
+                return false;
 
             // load data from dto
             FromDto(payload.InventoryData);
             // validate data for Add processing
             if (!Validate())
-                return payload;
-
-            if (SaveData())
-                payload.InventoryData = ToDto();
-            else
-            {
-                payload.Messages = Messages;
-                payload.Success = false;
-            }
-            return payload;
+                return false;
+            return SaveData();
         }
 
-        public async Task<ProductExPayload> UpdateAsync(ProductExPayload payload)
+        public async Task<bool> UpdateAsync(ProductExPayload payload)
         {
 
             if (payload is null || !payload.HasInventoryData || payload.InventoryData.ProductBasic.RowNum.ToLong() <= 0)
-                return payload;
+                return false;
             // set Add mode and clear data
             await EditAsync(payload.InventoryData.ProductBasic.RowNum.ToLong()).ConfigureAwait(false);
 
             // validate data for Add processing
             if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
-                return payload;
+                return false;
 
             // load data from dto
             FromDto(payload.InventoryData);
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
-                return payload;
+                return false;
 
-            if (await SaveDataAsync())
-                payload.InventoryData = ToDto();
-            else
-            {
-                payload.Messages = Messages;
-                payload.Success = false;
-            }
-            return payload;
+            return await SaveDataAsync();
         }
 
         /// <summary>

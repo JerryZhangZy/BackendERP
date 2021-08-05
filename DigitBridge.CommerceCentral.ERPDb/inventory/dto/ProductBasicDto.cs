@@ -30,6 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class ProductBasicDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
         public DateTime? EnterDateUtc { get; set; }
         public Guid DigitBridgeGuid { get; set; }

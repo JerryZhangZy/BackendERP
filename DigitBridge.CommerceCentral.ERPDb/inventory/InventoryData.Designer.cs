@@ -449,6 +449,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 ProductExt.MasterAccountNum = ProductBasic.MasterAccountNum;
             if (ProductExt.ProfileNum != ProductBasic.ProfileNum)
                 ProductExt.ProfileNum = ProductBasic.ProfileNum;
+            if (ProductExt.SKU != ProductBasic.SKU)
+                ProductExt.SKU = ProductBasic.SKU;
             return ProductExt;
         }
 
@@ -621,6 +623,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     child.MasterAccountNum = ProductBasic.MasterAccountNum;
                 if (child.ProfileNum != ProductBasic.ProfileNum)
                     child.ProfileNum = ProductBasic.ProfileNum;
+                if (child.SKU != ProductBasic.SKU)
+                    child.SKU = ProductBasic.SKU;
             }
             return children;
         }

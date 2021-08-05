@@ -102,7 +102,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<ProductExPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryService(dbFactory);
-            payload = await svc.AddAsync(payload);
+            if (await svc.AddAsync(payload))
+                payload.InventoryData = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
             return new JsonNetResponse<ProductExPayload>(payload);
         }
 
@@ -118,7 +124,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<ProductExPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryService(dbFactory);
-            payload = await svc.UpdateAsync(payload);
+            if (await svc.UpdateAsync(payload))
+                payload.InventoryData = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
             return new JsonNetResponse<ProductExPayload>(payload);
         }
 
