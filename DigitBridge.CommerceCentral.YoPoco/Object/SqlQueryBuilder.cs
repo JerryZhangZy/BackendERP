@@ -115,6 +115,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
         protected virtual string GetSQL_orderBy()
         {
+            this.SQL_OrderBy = (QueryObject != null) ? QueryObject.GetOrderBySql() : string.Empty;
             return this.SQL_OrderBy;
         }
         protected virtual string GetSQL_select_summary()
@@ -123,8 +124,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
         protected virtual void AddDefaultOrderBy()
         {
-            //if (!QueryObject.HasOrderBy())
-            //    QueryObject.AddOrderBy("invs_dt desc", "invs_num desc");
+            if (!QueryObject.HasOrderBy)
+                QueryObject.AddOrderBy("RowNum");
         }
 
 
@@ -136,6 +137,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             this.SQL_WithoutOrder = $"{this.SQL_Select} {this.SQL_From} {this.SQL_Where} ";
             // set default order by
             this.AddDefaultOrderBy();
+            this.GetSQL_orderBy();
         }
 
         public virtual string GetCommandText()
@@ -158,7 +160,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             sb.AppendLine(SQL_Where);
             sb.AppendLine(SQL_OrderBy);
             if (this.LoadJson)
-                sb.AppendLine(" FOR JSON AUTO ");
+                sb.AppendLine(" FOR JSON PATH ");
             return sb.ToString();
         }
 
@@ -173,7 +175,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             sb.AppendLine(SQL_OrderBy);
             sb.AppendLine(SQL_Paging);
             if (this.LoadJson)
-                sb.AppendLine(" FOR JSON AUTO ");
+                sb.AppendLine(" FOR JSON PATH ");
             return sb.ToString();
         }
 

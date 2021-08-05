@@ -51,7 +51,7 @@ COALESCE(ordst.text, '') OrderStatusText,
 {SalesOrderHeaderInfoHelper.ChannelNum()},
 {SalesOrderHeaderInfoHelper.ChannelOrderID()},
 {SalesOrderHeaderInfoHelper.BillToEmail()},
-{SalesOrderHeaderInfoHelper.ShipToName()},
+{SalesOrderHeaderInfoHelper.ShipToName()}
 
 ";
             return this.SQL_Select;
@@ -140,13 +140,13 @@ COALESCE(ordst.text, '') OrderStatusText,
             var sqlWhere = QueryObject.GetSQLWithPrefixBySqlParameter(SalesOrderHeaderHelper.TableAllies);
             var sql = $@"
 SELECT {SalesOrderHeaderHelper.TableAllies}.*,
-(SELECT * FROM SalesOrderHeaderInfo i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON AUTO) AS SalesOrderHeaderInfoJson,
-(SELECT * FROM SalesOrderHeaderAttributes i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON AUTO) AS SalesOrderHeaderAttributesJson,
-(SELECT * FROM SalesOrderItems i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON AUTO) AS SalesOrderItemsJson,
-(SELECT * FROM SalesOrderItemsAttributes i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON AUTO) AS SalesOrderItemsAttributesJson
+(SELECT * FROM SalesOrderHeaderInfo i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderHeaderInfoJson,
+(SELECT * FROM SalesOrderHeaderAttributes i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderHeaderAttributesJson,
+(SELECT * FROM SalesOrderItems i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderItemsJson,
+(SELECT * FROM SalesOrderItemsAttributes i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderItemsAttributesJson
 FROM SalesOrderHeader {SalesOrderHeaderHelper.TableAllies}
 WHERE {sqlWhere}
-FOR JSON AUTO
+FOR JSON PATH
 ";
             var param = QueryObject.GetSqlParametersWithPrefix(SalesOrderHeaderHelper.TableAllies);
 
