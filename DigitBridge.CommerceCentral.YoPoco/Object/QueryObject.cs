@@ -42,7 +42,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 i.Clear();
             _orderByList = new List<string>();
             LoadJson = true;
-            LoadAll = true;
+            LoadAll = false;
             SkipRecords = 0;
             PageSize = 20;
             TotalRecords = 0;
@@ -74,7 +74,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// Load all records or Load by page
         /// </summary>
         [XmlIgnore, JsonIgnore, IgnoreDataMember]
-        public virtual bool LoadAll { get; set; } = true;
+        public virtual bool LoadAll { get; set; } = false;
 
         /// <summary>
         /// Skip records 
@@ -393,24 +393,28 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return OrderByList;
         }
 
-        public virtual string GetOrderBySql(string prefix)
+        public virtual string GetOrderBySql(string prefix = null)
         {
             if (OrderByList.Count <= 0)
                 return string.Empty;
 
             var sb = new StringBuilder();
             var isFirst = true;
+            var pre = !string.IsNullOrEmpty(prefix)
+                    ? $"{prefix.Trim()}."
+                    : !string.IsNullOrEmpty(_PREFIX)
+                        ? $"{_PREFIX}."
+                        : string.Empty;
             foreach (string item in _orderByList)
             {
                 if (string.IsNullOrWhiteSpace(item))
                     continue;
                 var sep = (isFirst) ? string.Empty : ", ";
-                var pre = string.IsNullOrWhiteSpace(prefix) ? string.Empty : $"{prefix.Trim()}.";
                 sb.Append($"{sep}{pre}{item.Trim()}");
                 isFirst = false;
             }
             return (sb.Length > 1)
-                ? sb.ToString()
+                ? $" ORDER BY {sb.ToString()} "
                 : string.Empty;
         }
 
