@@ -135,6 +135,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
 
         }
+        protected virtual bool ValidateAddData(InvoiceData data)
+        {
+            var dbFactory = data.dbFactory;
+            #region Valid InvoiceHeader
+            if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM InvoiceHeader WHERE InvoiceUuid='{data.InvoiceHeader.InvoiceUuid}'") > 0)
+            {
+                IsValid = false;
+                AddError($"InvoiceUuid must be empty or unique.");
+            }
+            if (string.IsNullOrEmpty(data.InvoiceHeader.InvoiceNumber) || dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM InvoiceHeader WHERE InvoiceNumber='{data.InvoiceHeader.InvoiceNumber}' AND ProfileNum={data.InvoiceHeader.ProfileNum}") > 0)
+            {
+                IsValid = false;
+                AddError($"InvoiceNumber required and must be unique.Parameter should pass ProfileNum-OrderNumber.");
+            }
+            #endregion
+
+            #region Valid InvoiceItems
+            if (data.InvoiceItems != null && data.InvoiceItems.Count > 0)
+            {
+                var addressList = data.InvoiceItems.ToList();
+                foreach (var inv in data.InvoiceItems)
+                {
+                    if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM InvoiceItems WHERE InvoiceItemsUuid='{inv.InvoiceItemsUuid}'") > 0)
+                    {
+                        IsValid = false;
+                        AddError($"InvoiceItems.InvoiceItemsUuid must be empty or unique.");
+                    }
+                }
+            }
+            #endregion
+            return IsValid;
+        }
 
         protected virtual bool ValidateAdd(InvoiceData data)
         {
@@ -143,10 +175,42 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.InvoiceHeader.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            ValidateAddData(data);
+            return IsValid;
 
+        }
+        protected virtual bool ValidateEditData(InvoiceData data)
+        {
+            var dbFactory = data.dbFactory;
+            #region Valid InvoiceHeader
+            if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM InvoiceHeader WHERE InvoiceUuid='{data.InvoiceHeader.InvoiceUuid}' AND RowNum<>{data.InvoiceHeader.RowNum}") > 0)
+            {
+                IsValid = false;
+                AddError($"InvoiceUuid must be unique.");
+            }
+            if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM InvoiceHeader WHERE  InvoiceNumber='{data.InvoiceHeader.InvoiceNumber}' AND ProfileNum={data.InvoiceHeader.ProfileNum} AND RowNum<>{data.InvoiceHeader.RowNum}") > 0)
+            {
+                IsValid = false;
+                AddError($"InvoiceNumber must be unique.");
+            }
+            #endregion
+
+            #region Valid InvoiceItems
+            if (data.InvoiceItems != null && data.InvoiceItems.Count > 0)
+            {
+                var addressList = data.InvoiceItems.ToList();
+                foreach (var inv in data.InvoiceItems)
+                {
+                    if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM InvoiceItems WHERE InvoiceItemsUuid='{inv.InvoiceItemsUuid}' AND RowNum<>{data.InvoiceHeader.RowNum}") > 0)
+                    {
+                        IsValid = false;
+                        AddError($"InvoiceItems.InvoiceItemsUuid must be empty or unique.");
+                    }
+                }
+            }
+            #endregion
+            return IsValid;
         }
 
         protected virtual bool ValidateEdit(InvoiceData data)
@@ -234,9 +298,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.InvoiceHeader.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            ValidateAddData(data);
+            return IsValid;
 
         }
 

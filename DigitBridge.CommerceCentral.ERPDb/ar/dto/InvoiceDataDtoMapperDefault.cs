@@ -72,9 +72,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#region read all not null properties
 
-			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
-			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+			//if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
+			//if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			//if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
 			if (dto.HasInvoiceNumber) data.InvoiceNumber = dto.InvoiceNumber;
 			if (dto.HasInvoiceType) data.InvoiceType = dto.InvoiceType.ToInt();

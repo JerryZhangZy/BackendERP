@@ -168,10 +168,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (orderShipmentNum < 0)
                 return false;
-            var orderShipmentNum_db = await _data.GetOrderShipmentNumAsync(orderShipmentNum, payload.ProfileNum, payload.MasterAccountNum);
-            if (!orderShipmentNum_db.HasValue)
-                return false;
+            List();
+            //var orderShipmentNum_db = await _data.GetOrderShipmentNumAsync(orderShipmentNum, payload.ProfileNum, payload.MasterAccountNum);
+            //if (!orderShipmentNum_db.HasValue)
+            //    return false;
             var success = await GetDataAsync(orderShipmentNum);
+
+            // validate data for Add processing
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
             //if (success) ToDto();
             return success;
         }

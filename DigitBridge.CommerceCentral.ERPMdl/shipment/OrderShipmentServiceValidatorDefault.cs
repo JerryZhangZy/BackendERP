@@ -123,7 +123,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"Unique Id cannot be empty.");
-                return IsValid;
             }
             //if (string.IsNullOrEmpty(data.OrderShipmentHeader.CustomerUuid))
             //{
@@ -131,8 +130,89 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
-            return true;
+            ValidateAddData(data);
+            return IsValid;
 
+        }
+
+        protected virtual bool ValidateAddData(OrderShipmentData data)
+        {
+            var dbFactory = data.dbFactory;
+            #region Valid OrderShipmentHeader
+            if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM OrderShipmentHeader WHERE OrderShipmentUuid='{data.OrderShipmentHeader.OrderShipmentUuid}'") > 0)
+            {
+                IsValid = false;
+                AddError($"OrderShipmentUuid must be empty or unique.");
+            }
+            #endregion
+
+            #region Valid OrderShipmentPackage
+            if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
+            {
+                var packList = data.OrderShipmentPackage.ToList();
+                foreach (var inv in data.OrderShipmentPackage)
+                {
+                    if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM OrderShipmentPackage WHERE OrderShipmentPackageUuid='{inv.OrderShipmentPackageUuid}'") > 0)
+                    {
+                        IsValid = false;
+                        AddError($"OrderShipmentPackage.OrderShipmentPackageUuid must be empty or unique.");
+                    }
+                    if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM OrderShipmentPackage WHERE OrderShipmentPackageNum={inv.OrderShipmentPackageNum}") > 0)
+                    {
+                        IsValid = false;
+                        AddError($"OrderShipmentPackage.OrderShipmentPackageNum must be unique.");
+                    }
+                    if (inv.OrderShipmentPackageNum<=0|| packList.Count(r => r.OrderShipmentPackageNum == inv.OrderShipmentPackageNum) > 1)
+                    {
+                        IsValid = false;
+                        AddError($"OrderShipmentPackage.OrderShipmentPackageNum must be greater than zero and unique.");
+                    }
+                    if (inv.OrderShipmentShippedItem != null && inv.OrderShipmentShippedItem.Count > 0)
+                    {
+                        var itemList = inv.OrderShipmentShippedItem.ToList();
+                        foreach (var item in inv.OrderShipmentShippedItem)
+                        {
+                            if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM OrderShipmentShippedItem WHERE OrderShipmentShippedItemNum='{item.OrderShipmentShippedItemNum}'") > 0)
+                            {
+                                IsValid = false;
+                                AddError($"OrderShipmentShippedItem.OrderShipmentShippedItemNum must be greater than zero and unique.");
+                            }
+                            if (item.OrderShipmentShippedItemNum <= 0 || itemList.Count(r => r.OrderShipmentShippedItemNum == item.OrderShipmentShippedItemNum) > 1)
+                            {
+                                IsValid = false;
+                                AddError($"OrderShipmentShippedItem.OrderShipmentShippedItemNum must be greater than zero and unique.");
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Valid OrderShipmentCanceledItem
+            if (data.OrderShipmentCanceledItem != null && data.OrderShipmentCanceledItem.Count > 0)
+            {
+                var cancelList = data.OrderShipmentCanceledItem.ToList();
+                foreach (var inv in data.OrderShipmentCanceledItem)
+                {
+                    if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM OrderShipmentCanceledItem WHERE OrderShipmentCanceledItemUuid='{inv.OrderShipmentCanceledItemUuid}'") > 0)
+                    {
+                        IsValid = false;
+                        AddError($"OrderShipmentCanceledItem.OrderShipmentCanceledItemUuid must be empty or unique.");
+                    }
+                    if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM OrderShipmentCanceledItem WHERE OrderShipmentCanceledItemNum={inv.OrderShipmentCanceledItemNum}") > 0)
+                    {
+                        IsValid = false;
+                        AddError($"OrderShipmentCanceledItem.OrderShipmentCanceledItemNum must be unique.");
+                    }
+                    if (inv.OrderShipmentCanceledItemNum <= 0 || cancelList.Count(r => r.OrderShipmentCanceledItemNum == inv.OrderShipmentCanceledItemNum) > 1)
+                    {
+                        IsValid = false;
+                        AddError($"OrderShipmentCanceledItem.OrderShipmentCanceledItemNum must be greater than zero and unique.");
+                    }
+                }
+            }
+            #endregion
+            return IsValid;
         }
 
         protected virtual bool ValidateAdd(OrderShipmentData data)
@@ -142,10 +222,82 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.OrderShipmentHeader.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            return IsValid;
+        }
+        protected virtual bool ValidateEditData(OrderShipmentData data)
+        {
+            var dbFactory = data.dbFactory;
+            #region Valid OrderShipmentHeader
+            if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM OrderShipmentHeader WHERE OrderShipmentUuid='{data.OrderShipmentHeader.OrderShipmentUuid}'  AND OrderShipmentNum<>{data.OrderShipmentHeader.OrderShipmentNum}") > 0)
+            {
+                IsValid = false;
+                AddError($"OrderShipmentUuid must be unique.");
+            }
+            #endregion
 
+            #region Valid OrderShipmentPackage
+            if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
+            {
+                var packList = data.OrderShipmentPackage.ToList();
+                foreach (var inv in data.OrderShipmentPackage)
+                {
+                    if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM OrderShipmentPackage WHERE OrderShipmentPackageUuid='{inv.OrderShipmentPackageUuid}' AND OrderShipmentPackageNum<>{inv.OrderShipmentPackageNum}") > 0)
+                    {
+                        IsValid = false;
+                        AddError($"OrderShipmentPackage.OrderShipmentPackageUuid must beunique.");
+                    }
+                    if (inv.OrderShipmentPackageNum <= 0 || packList.Count(r => r.OrderShipmentPackageNum == inv.OrderShipmentPackageNum) > 1)
+                    {
+                        IsValid = false;
+                        AddError($"OrderShipmentPackage.OrderShipmentPackageNum must be greater than zero unique.");
+                    }
+                    if (inv.OrderShipmentShippedItem != null && inv.OrderShipmentShippedItem.Count > 0)
+                    {
+                        var itemList = inv.OrderShipmentShippedItem.ToList();
+                        foreach (var item in inv.OrderShipmentShippedItem)
+                        {
+                            //if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM OrderShipmentShippedItem WHERE OrderShipmentShippedItemNum={item.OrderShipmentShippedItemNum} AND RowNum<>{item.RowNum}") > 0)
+                            //{
+                            //    IsValid = false;
+                            //    AddError($"OrderShipmentShippedItem.OrderShipmentShippedItemNum must be unique.");
+                            //}
+                            if (item.OrderShipmentShippedItemNum <= 0 || itemList.Count(r => r.OrderShipmentShippedItemNum == item.OrderShipmentShippedItemNum) > 1)
+                            {
+                                IsValid = false;
+                                AddError($"OrderShipmentShippedItem.OrderShipmentShippedItemNum must be greater than zero unique.");
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region Valid OrderShipmentCanceledItem
+            if (data.OrderShipmentCanceledItem != null && data.OrderShipmentCanceledItem.Count > 0)
+            {
+                var cancelList = data.OrderShipmentCanceledItem.ToList();
+                foreach (var inv in data.OrderShipmentCanceledItem)
+                {
+                    if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM OrderShipmentCanceledItem WHERE OrderShipmentCanceledItemUuid='{inv.OrderShipmentCanceledItemUuid}' AND OrderShipmentCanceledItemNum<>{inv.OrderShipmentCanceledItemNum}") > 0)
+                    {
+                        IsValid = false;
+                        AddError($"OrderShipmentCanceledItem.OrderShipmentCanceledItemUuid must be empty or unique.");
+                    }
+                    //if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM OrderShipmentCanceledItem WHERE OrderShipmentCanceledItemNum={inv.OrderShipmentCanceledItemNum} AND RowNum<>{inv.RowNum}") > 0)
+                    //{
+                    //    IsValid = false;
+                    //    AddError($"OrderShipmentCanceledItem.OrderShipmentCanceledItemNum must be unique.");
+                    //}
+                    if (inv.OrderShipmentCanceledItemNum <= 0 || cancelList.Count(r => r.OrderShipmentCanceledItemNum == inv.OrderShipmentCanceledItemNum) > 1)
+                    {
+                        IsValid = false;
+                        AddError($"OrderShipmentCanceledItem.OrderShipmentCanceledItemNum must be greater than zero unique.");
+                    }
+                }
+            }
+            #endregion
+            return IsValid;
         }
 
         protected virtual bool ValidateEdit(OrderShipmentData data)
@@ -155,16 +307,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.OrderShipmentHeader.RowNum} not found.");
-                return IsValid;
             }
 
             if (data.OrderShipmentHeader.RowNum != 0 && !dbFactory.Exists<OrderShipmentHeader>(data.OrderShipmentHeader.RowNum))
             {
                 IsValid = false;
                 AddError($"RowNum: {data.OrderShipmentHeader.RowNum} not found.");
-                return IsValid;
             }
-            return true;
+            ValidateEditData(data);
+            return IsValid;
         }
 
         protected virtual bool ValidateDelete(OrderShipmentData data)
@@ -233,9 +384,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.OrderShipmentHeader.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            ValidateAddData(data);
+            return IsValid;
 
         }
 
@@ -246,16 +397,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.OrderShipmentHeader.RowNum} not found.");
-                return IsValid;
             }
 
             if (data.OrderShipmentHeader.RowNum != 0 && !(await dbFactory.ExistsAsync<OrderShipmentHeader>(data.OrderShipmentHeader.RowNum)))
             {
                 IsValid = false;
                 AddError($"RowNum: {data.OrderShipmentHeader.RowNum} not found.");
-                return IsValid;
             }
-            return true;
+            ValidateEditData(data);
+            return IsValid;
         }
 
         protected virtual async Task<bool> ValidateDeleteAsync(OrderShipmentData data)
