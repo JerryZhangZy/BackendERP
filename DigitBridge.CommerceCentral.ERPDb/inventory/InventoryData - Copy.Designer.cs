@@ -29,10 +29,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
     [Serializable()]
-    public partial class InventoryData : StructureRepository<InventoryData>
+    public partial class InventoryDatabak : StructureRepository<InventoryData>
     {
-        public InventoryData() : base() {}
-        public InventoryData(IDataBaseFactory dbFactory): base(dbFactory) {}
+        public InventoryDatabak() : base() {}
+        public InventoryDatabak(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         [JsonIgnore, XmlIgnore]
         public new bool IsNew => ProductBasic.IsNew;
@@ -74,7 +74,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
         public virtual InventoryData CheckIntegrity()
         {
@@ -84,7 +83,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckIntegrityProductExtAttributes(); 
 			CheckIntegrityInventory(); 
 			CheckIntegrityInventoryAttributes(); 
-			CheckIntegrityOthers(); 
             return this;
         }
 
@@ -445,6 +443,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
             ProductExt.SetParent(this);
             if (ProductExt.ProductUuid != ProductBasic.ProductUuid)
                 ProductExt.ProductUuid = ProductBasic.ProductUuid;
+            if (ProductExt.DatabaseNum != ProductBasic.DatabaseNum)
+                ProductExt.DatabaseNum = ProductBasic.DatabaseNum;
+            if (ProductExt.MasterAccountNum != ProductBasic.MasterAccountNum)
+                ProductExt.MasterAccountNum = ProductBasic.MasterAccountNum;
+            if (ProductExt.ProfileNum != ProductBasic.ProfileNum)
+                ProductExt.ProfileNum = ProductBasic.ProfileNum;
+            if (ProductExt.SKU != ProductBasic.SKU)
+                ProductExt.SKU = ProductBasic.SKU;
             return ProductExt;
         }
 
@@ -611,6 +617,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.ProductUuid != ProductBasic.ProductUuid)
                     child.ProductUuid = ProductBasic.ProductUuid;
+                if (child.DatabaseNum != ProductBasic.DatabaseNum)
+                    child.DatabaseNum = ProductBasic.DatabaseNum;
+                if (child.MasterAccountNum != ProductBasic.MasterAccountNum)
+                    child.MasterAccountNum = ProductBasic.MasterAccountNum;
+                if (child.ProfileNum != ProductBasic.ProfileNum)
+                    child.ProfileNum = ProductBasic.ProfileNum;
+                if (child.SKU != ProductBasic.SKU)
+                    child.SKU = ProductBasic.SKU;
             }
             return children;
         }
@@ -623,7 +637,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         // grand children
         protected IList<InventoryAttributes> _InventoryAttributes;
 
-        public IList<InventoryAttributes> InventoryAttributes 
+        protected IList<InventoryAttributes> InventoryAttributes 
         { 
             get 
             {

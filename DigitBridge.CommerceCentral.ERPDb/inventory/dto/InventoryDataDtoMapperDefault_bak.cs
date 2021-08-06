@@ -72,12 +72,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#region read all not null properties
 
-			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
-			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+			//if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
+			//if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			//if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasSKU) data.SKU = dto.SKU;
 			if (dto.HasFNSku) data.FNSku = dto.FNSku;
-			if (dto.HasCondition) data.Condition = dto.Condition.ToByte();
+			if (dto.HasCondition) data.Condition = dto.Condition.ToBool();
 			if (dto.HasBrand) data.Brand = dto.Brand;
 			if (dto.HasManufacturer) data.Manufacturer = dto.Manufacturer;
 			if (dto.HasProductTitle) data.ProductTitle = dto.ProductTitle;
@@ -94,26 +94,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasAvgCost) data.AvgCost = dto.AvgCost.ToDecimal();
 			if (dto.HasMAPPrice) data.MAPPrice = dto.MAPPrice.ToDecimal();
 			if (dto.HasMSRP) data.MSRP = dto.MSRP.ToDecimal();
-			if (dto.HasBundleType) data.BundleType = dto.BundleType.ToByte();
-			if (dto.HasProductType) data.ProductType = dto.ProductType.ToByte();
+			if (dto.HasBundleType) data.BundleType = dto.BundleType.ToBool();
+			if (dto.HasProductType) data.ProductType = dto.ProductType.ToBool();
 			if (dto.HasVariationVaryBy) data.VariationVaryBy = dto.VariationVaryBy;
-			if (dto.HasCopyToChildren) data.CopyToChildren = dto.CopyToChildren.ToByte();
+			if (dto.HasCopyToChildren) data.CopyToChildren = dto.CopyToChildren.ToBool();
 			if (dto.HasMultipackQuantity) data.MultipackQuantity = dto.MultipackQuantity.ToInt();
 			if (dto.HasVariationParentSKU) data.VariationParentSKU = dto.VariationParentSKU;
-			if (dto.HasIsInRelationship) data.IsInRelationship = dto.IsInRelationship.ToByte();
+			if (dto.HasIsInRelationship) data.IsInRelationship = dto.IsInRelationship.ToBool();
 			if (dto.HasNetWeight) data.NetWeight = dto.NetWeight.ToDecimal();
 			if (dto.HasGrossWeight) data.GrossWeight = dto.GrossWeight.ToDecimal();
-			if (dto.HasWeightUnit) data.WeightUnit = dto.WeightUnit.ToByte();
+			if (dto.HasWeightUnit) data.WeightUnit = dto.WeightUnit.ToBool();
 			if (dto.HasProductHeight) data.ProductHeight = dto.ProductHeight.ToDecimal();
 			if (dto.HasProductLength) data.ProductLength = dto.ProductLength.ToDecimal();
 			if (dto.HasProductWidth) data.ProductWidth = dto.ProductWidth.ToDecimal();
 			if (dto.HasBoxHeight) data.BoxHeight = dto.BoxHeight.ToDecimal();
 			if (dto.HasBoxLength) data.BoxLength = dto.BoxLength.ToDecimal();
 			if (dto.HasBoxWidth) data.BoxWidth = dto.BoxWidth.ToDecimal();
-			if (dto.HasDimensionUnit) data.DimensionUnit = dto.DimensionUnit.ToByte();
+			if (dto.HasUnit) data.Unit = dto.Unit.ToBool();
 			if (dto.HasHarmonizedCode) data.HarmonizedCode = dto.HarmonizedCode;
 			if (dto.HasTaxProductCode) data.TaxProductCode = dto.TaxProductCode;
-			if (dto.HasIsBlocked) data.IsBlocked = dto.IsBlocked.ToByte();
+			if (dto.HasIsBlocked) data.IsBlocked = dto.IsBlocked.ToBool();
 			if (dto.HasWarranty) data.Warranty = dto.Warranty;
 			if (dto.HasCreateBy) data.CreateBy = dto.CreateBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -219,9 +219,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#region read all not null properties
 
-			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
-			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+			//if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
+			//if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			//if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasProductUuid) data.ProductUuid = dto.ProductUuid;
 			if (dto.HasInventoryUuid) data.InventoryUuid = dto.InventoryUuid;
 			if (dto.HasStyleCode) data.StyleCode = dto.StyleCode;
@@ -384,7 +384,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ProfileNum = data.ProfileNum;
 			dto.SKU = data.SKU;
 			dto.FNSku = data.FNSku;
-			dto.Condition = data.Condition.ToInt();
+			dto.Condition = data.Condition;
 			dto.Brand = data.Brand;
 			dto.Manufacturer = data.Manufacturer;
 			dto.ProductTitle = data.ProductTitle;
@@ -401,26 +401,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.AvgCost = data.AvgCost;
 			dto.MAPPrice = data.MAPPrice;
 			dto.MSRP = data.MSRP;
-			dto.BundleType = data.BundleType.ToInt();
-			dto.ProductType = data.ProductType.ToInt();
+			dto.BundleType = data.BundleType;
+			dto.ProductType = data.ProductType;
 			dto.VariationVaryBy = data.VariationVaryBy;
-			dto.CopyToChildren = data.CopyToChildren.ToInt();
+			dto.CopyToChildren = data.CopyToChildren;
 			dto.MultipackQuantity = data.MultipackQuantity;
 			dto.VariationParentSKU = data.VariationParentSKU;
-			dto.IsInRelationship = data.IsInRelationship.ToInt();
+			dto.IsInRelationship = data.IsInRelationship;
 			dto.NetWeight = data.NetWeight;
 			dto.GrossWeight = data.GrossWeight;
-			dto.WeightUnit = data.WeightUnit.ToInt();
+			dto.WeightUnit = data.WeightUnit;
 			dto.ProductHeight = data.ProductHeight;
 			dto.ProductLength = data.ProductLength;
 			dto.ProductWidth = data.ProductWidth;
 			dto.BoxHeight = data.BoxHeight;
 			dto.BoxLength = data.BoxLength;
 			dto.BoxWidth = data.BoxWidth;
-			dto.DimensionUnit = data.DimensionUnit.ToInt();
+			dto.Unit = data.Unit;
 			dto.HarmonizedCode = data.HarmonizedCode;
 			dto.TaxProductCode = data.TaxProductCode;
-			dto.IsBlocked = data.IsBlocked.ToInt();
+			dto.IsBlocked = data.IsBlocked;
 			dto.Warranty = data.Warranty;
 			dto.CreateBy = data.CreateBy;
 			dto.UpdateBy = data.UpdateBy;

@@ -12,6 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="inventory\dto\InventoryDataDtoMapperDefault_bak.cs" />
+    <Compile Remove="inventory\InventoryData - Copy.Designer.cs" />
     <Compile Remove="Model\RequestParameter.cs" />
   </ItemGroup>
 
