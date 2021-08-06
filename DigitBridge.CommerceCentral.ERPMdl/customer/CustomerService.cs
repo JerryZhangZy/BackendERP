@@ -52,6 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Customers = list;
             return payload;
         }
+
         public CustomerDataDto GetCustomerByCode(int profileNum, string cutomerCode)
         {
             var uuid = GetCustomerUuidByCode(profileNum, cutomerCode);
@@ -62,47 +63,77 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public bool DeleteByCode(CustomerPayload payload)
         {
             var uuid = GetCustomerUuidByCode(payload.ProfileNum, payload.CustomerCodes.First());
-            return Delete(uuid);
+
+            if (string.IsNullOrEmpty(uuid))
+                return false;
+
+            Delete();
+            var success = GetDataById(uuid);
+
+            // validate data for Add processing
+            if (!ValidatePayload(payload))
+                return false;
+
+            success = success && DeleteData();
+            return success;
         }
-        public async Task<CustomerPayload> DeleteByCodeAsync(CustomerPayload payload)
+        public async Task<bool> DeleteByCodeAsync(CustomerPayload payload)
         {
             var uuid = GetCustomerUuidByCode(payload.ProfileNum, payload.CustomerCodes.First());
-            if(await DeleteAsync(uuid))
+
+            if (string.IsNullOrEmpty(uuid))
             {
-                payload.Customer = ToDto();
+                AddError($"Customer not found.");
+                return false;
             }
-            else
-            {
-                payload.Messages = Messages;
-                payload.Success = false;
-            }
-            return payload;
+
+            Delete();
+            var success =await GetDataByIdAsync(uuid);
+
+            // validate data for Add processing
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            success = success &&await DeleteDataAsync();
+            return success;
         }
 
-        public async Task<CustomerPayload> AddAsync(CustomerPayload payload)
+        public async Task<bool> AddAsync(CustomerPayload payload)
         {
-            if (await AddAsync(payload.Customer))
-                payload.Customer = ToDto();
-            else
-            {
-                payload.Messages = Messages;
-                payload.Success = false;
-            }
-            return payload;
+            if (payload is null || !payload.HasCustomer)
+                return false;
+
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(payload.Customer);
+
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+            return await SaveDataAsync();
         }
 
-        public CustomerPayload Add(CustomerPayload payload)
+        public bool Add(CustomerPayload payload)
         {
-            if (Add(payload.Customer))
-            {
-                payload.Customer = ToDto();
-            }
-            else
-            {
-                payload.Messages = Messages;
-                payload.Success = false;
-            }
-            return payload;
+            if (payload is null || !payload.HasCustomer)
+                return false;
+
+            // set Add mode and clear data
+            Add();
+            // load data from dto
+            FromDto(payload.Customer);
+
+            if (!ValidatePayload(payload))
+                return false;
+
+            // validate data for Add processing
+            if (!Validate())
+                return false;
+            return SaveData();
         }
 
 
@@ -161,28 +192,43 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return SaveData();
         }
 
-        public CustomerPayload Update(CustomerPayload payload)
+        public bool Update(CustomerPayload payload)
         {
-            if (Update(payload.Customer))
-                payload.Customer = ToDto();
-            else
-            {
-                payload.Messages = Messages;
-                payload.Success = false;
-            }
-            return payload;
+            if (payload is null || !payload.HasCustomer)
+                return false;
+
+            // set Add mode and clear data
+            Edit(payload.Customer.Customer.RowNum.ToLong());
+            // load data from dto
+            FromDto(payload.Customer);
+
+            if (!ValidatePayload(payload))
+                return false;
+
+            // validate data for Add processing
+            if (!Validate())
+                return false;
+            return SaveData();
         }
 
-        public async Task<CustomerPayload> UpdateAsync(CustomerPayload payload)
+        public async Task<bool> UpdateAsync(CustomerPayload payload)
         {
-            if (await UpdateAsync(payload.Customer))
-                payload.Customer = ToDto();
-            else
-            {
-                payload.Messages = Messages;
-                payload.Success = false;
-            }
-            return payload;
+            if (payload is null || !payload.HasCustomer)
+                return false;
+
+            // set Add mode and clear data
+            Edit(payload.Customer.Customer.RowNum.ToLong());
+            // load data from dto
+            FromDto(payload.Customer);
+            // set Add mode and clear data
+
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            // validate data for Add processing
+            if (!(await ValidateAsync().ConfigureAwait(false)))
+                return false;
+            return await SaveDataAsync();
         }
 
         /// <summary>

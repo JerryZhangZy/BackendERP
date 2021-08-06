@@ -65,7 +65,7 @@ SELECT
 {Helper.BoxHeight()}, 
 {Helper.BoxLength()}, 
 {Helper.BoxWidth()}, 
-{Helper.Unit()},
+{Helper.DimensionUnit()},
 {Helper.TaxProductCode()},
 {Helper.Warranty()},
 {ExHelper.StyleCode()},

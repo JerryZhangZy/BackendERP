@@ -130,7 +130,7 @@ foreach(var col in table.Columns)
                 if (col.isString) {
                     WriteLine($"{new String('\t',indent)}return {col.privateName}?.TrimEnd(); ");
                 }
-                else if (col.isByte) {
+                else if (col.isByte && table.ConvertByteToBool) {
                     WriteLine($"{new String('\t',indent)}return ({col.privateName} == 1); ");
                 }
                 else {

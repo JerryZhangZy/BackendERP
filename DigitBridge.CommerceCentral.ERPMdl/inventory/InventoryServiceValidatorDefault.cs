@@ -144,18 +144,84 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 IsValid = false;
                 AddError($"RowNum: {data.ProductBasic.RowNum} is duplicate.");
             }
-            if (dbFactory.ExistUniqueId<ProductBasic>(data.ProductBasic.UniqueId))
-            {
-                IsValid = false;
-                AddError($"ProductUuid: {data.ProductBasic.RowNum} is duplicate.");
-            }
-            if (dbFactory.Exists<ProductBasic>($"select * from ProductBasice where SKU='{data.ProductBasic.SKU}' and "))
-            {
-                IsValid = false;
-                AddError($"ProductUuid: {data.ProductBasic.RowNum} is duplicate.");
-            }
+            ValidateAddData(data);
             return IsValid;
 
+        }
+        protected virtual bool ValidateAddData(InventoryData data)
+        {
+            var dbFactory = data.dbFactory;
+            #region Valid ProductBasic
+            if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM ProductBasic WHERE ProductUuid='{data.ProductBasic.ProductUuid}'") > 0)
+            {
+                IsValid = false;
+                AddError($"ProductUuid must be empty or unique.");
+            }
+            if (string.IsNullOrEmpty(data.ProductBasic.SKU) || dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM ProductBasic WHERE SKU='{data.ProductBasic.SKU}' AND MasterAccountNum={data.ProductBasic.MasterAccountNum} AND ProfileNum={data.ProductBasic.ProfileNum}") > 0)
+            {
+                IsValid = false;
+                AddError($"SKU must be unique.");
+            }
+            #endregion
+
+            #region Valid Inventory
+            if (data.Inventory != null && data.Inventory.Count > 0)
+            {
+                var addressList = data.Inventory.ToList();
+                foreach (var inv in data.Inventory)
+                {
+                    if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM Inventory WHERE InventoryUuid='{inv.InventoryUuid}'") > 0)
+                    {
+                        IsValid = false;
+                        AddError($"Inventory.InventoryUuid must be empty or unique.");
+                    }
+                    if (string.IsNullOrEmpty(inv.InventoryUuid) || addressList.Count(r => r.InventoryUuid == inv.InventoryUuid) > 1)
+                    {
+                        IsValid = false;
+                        AddError($"Inventory.InventoryUuid cannot be empty and must be unique.");
+                    }
+                }
+            }
+            #endregion
+            return IsValid;
+        }
+
+        protected virtual bool ValidateEditData(InventoryData data)
+        {
+            var dbFactory = data.dbFactory;
+            #region Valid Customer
+            if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM ProductBasic WHERE ProductUuid='{data.ProductBasic.ProductUuid}' AND RowNum<>{data.ProductBasic.RowNum}") > 0)
+            {
+                IsValid = false;
+                AddError($"ProductUuid must be unique.");
+            }
+            if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM Customer WHERE  SKU='{data.ProductBasic.SKU}' AND MasterAccountNum={data.ProductBasic.MasterAccountNum} AND ProfileNum={data.ProductBasic.ProfileNum} AND RowNum<>{data.ProductBasic.RowNum}") > 0)
+            {
+                IsValid = false;
+                AddError($"SKU must be unique.");
+            }
+            #endregion
+
+            //#region Valid Inventory
+            //if (data.Inventory != null && data.Inventory.Count > 0)
+            //{
+            //    var addressList = data.Inventory.ToList();
+            //    foreach (var inv in data.Inventory)
+            //    {
+            //        if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM Inventory WHERE InventoryUuid='{inv.InventoryUuid}' AND RowNum<>{data.ProductBasic.RowNum}") > 0)
+            //        {
+            //            IsValid = false;
+            //            AddError($"Inventory.InventoryUuid must be empty or unique.");
+            //        }
+            //        if (string.IsNullOrEmpty(inv.InventoryUuid) || addressList.Count(r => r.InventoryUuid == inv.InventoryUuid) > 1)
+            //        {
+            //            IsValid = false;
+            //            AddError($"Inventory.InventoryUuid cannot be empty and must be unique.");
+            //        }
+            //    }
+            //}
+            //#endregion
+            return IsValid;
         }
 
         protected virtual bool ValidateEdit(InventoryData data)
@@ -165,16 +231,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.ProductBasic.RowNum} not found.");
-                return IsValid;
             }
 
             if (data.ProductBasic.RowNum != 0 && !dbFactory.Exists<ProductBasic>(data.ProductBasic.RowNum))
             {
                 IsValid = false;
                 AddError($"RowNum: {data.ProductBasic.RowNum} not found.");
-                return IsValid;
             }
-            return true;
+            ValidateAddData(data);
+            return IsValid;
+
         }
 
         protected virtual bool ValidateDelete(InventoryData data)
@@ -243,9 +309,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.ProductBasic.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            ValidateAddData(data);
+            return IsValid;
+
 
         }
 
@@ -263,9 +330,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.ProductBasic.RowNum} not found.");
-                return IsValid;
             }
-            return true;
+            ValidateEditData(data);
+            return IsValid;
+
         }
 
         protected virtual async Task<bool> ValidateDeleteAsync(InventoryData data)

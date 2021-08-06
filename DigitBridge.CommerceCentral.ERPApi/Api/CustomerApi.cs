@@ -26,13 +26,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "GetCustomer", tags: new[] { "Customers" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "CustomerCode", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "CustomerCode", Description = "CustomerCode", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "CustomerCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "CustomerCode", Description = "CustomerCode", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload))]
         public static async Task<JsonNetResponse<CustomerPayload>> GetCustomer(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "customers/{CustomerCode}")] HttpRequest req,
-            string CustomerCode=null)
+            string CustomerCode = null)
         {
-            var payload =await req.GetParameters<CustomerPayload>();
+            var payload = await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new CustomerService(dbFactory);
 
@@ -46,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 }
                 payload.CustomerCodes.Add(customerCode);
             }
-            payload= svc.GetCustomersByCodeArray(payload);
+            payload = svc.GetCustomersByCodeArray(payload);
             return new JsonNetResponse<CustomerPayload>(payload);
 
         }
@@ -63,7 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<CustomerPayload>> GetMultiCustomers(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "customers")] HttpRequest req)
         {
-            var payload =await req.GetParameters<CustomerPayload>();
+            var payload = await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
             payload = svc.GetCustomersByCodeArray(payload);
@@ -75,6 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "DeleteCustomer", tags: new[] { "Customers" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "CustomerCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "CustomerCode", Description = "CustomerCode", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload), Example = typeof(CustomerPayload), Description = "The OK response")]
         public static async Task<JsonNetResponse<CustomerPayload>> DeleteCustomer(
             [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "customers/{CustomerCode}")] HttpRequest req,
@@ -90,9 +91,16 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 customerCode = CustomerCode.Substring(spilterIndex + 1);
             }
             payload.CustomerCodes.Add(customerCode);
-            payload = await svc.DeleteByCodeAsync(payload);
+            if (await svc.DeleteByCodeAsync(payload))
+                payload.Customer = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
             return new JsonNetResponse<CustomerPayload>(payload);
         }
+
         [FunctionName(nameof(AddCustomer))]
         [OpenApiOperation(operationId: "AddCustomer", tags: new[] { "Customers" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -105,7 +113,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<CustomerPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new CustomerService(dbFactory);
-            payload = await svc.AddAsync(payload);
+            if (await svc.AddAsync(payload))
+                payload.Customer = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
             return new JsonNetResponse<CustomerPayload>(payload);
         }
 
@@ -121,7 +135,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<CustomerPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new CustomerService(dbFactory);
-            payload = await svc.UpdateAsync(payload);
+            if (await svc.UpdateAsync(payload))
+                payload.Customer = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
             return new JsonNetResponse<CustomerPayload>(payload);
         }
 

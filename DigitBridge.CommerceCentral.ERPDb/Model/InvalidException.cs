@@ -16,6 +16,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <param name="message">The message that describes the error.</param>
         public InvalidParameterException(string message) : base(message)
         { }
+        public InvalidParameterException() : base()
+        { }
 
     }
 
@@ -27,6 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <param name="message">The message that describes the error.</param>
         public NoContentException(string message) : base(message)
         { }
-
+        public NoContentException() : base()
+        { }
     }
 }
