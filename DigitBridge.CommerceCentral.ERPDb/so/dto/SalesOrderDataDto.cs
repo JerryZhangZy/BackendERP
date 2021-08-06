@@ -15,6 +15,7 @@ using System.Xml.Serialization;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using DigitBridge.CommerceCentral.YoPoco;
+using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -41,6 +42,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasSalesOrderItems => SalesOrderItems != null;
 
+        #region property
+        /// <summary>
+        /// Return all nonNull item uuids
+        /// </summary>
+        [JsonIgnore, XmlIgnore]
+        public virtual IList<string> SalesOrderItemsUuids
+        {
+            get
+            {
+                var uuids = new List<string>();
+                if (this.SalesOrderItems != null && this.SalesOrderItems.Count > 0)
+                {
+                    uuids = this.SalesOrderItems.Select(i => i.SalesOrderItemsUuid).ToList();
+                }
+                return uuids;
+            }
+        }
+
+        #endregion
     }
 }
 

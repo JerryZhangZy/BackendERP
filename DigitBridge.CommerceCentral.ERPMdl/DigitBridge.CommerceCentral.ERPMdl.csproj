@@ -5,6 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ar\InvoiceTransactionService - Copy.cs" />
+    <Compile Remove="ar\InvoiceTransactionService - Copy.Designer.cs" />
+    <Compile Remove="ar\InvoiceTransactionServiceValidatorDefault - Copy %282%29.cs" />
+    <Compile Remove="ar\InvoiceTransactionServiceValidatorDefault - Copy.cs" />
+    <Compile Remove="so\SalesOrderService - Copy.cs" />
+    <Compile Remove="so\SalesOrderService - Copy.Designer.cs" />
+    <Compile Remove="so\SalesOrderServiceValidatorDefault - Copy.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
   </ItemGroup>

@@ -67,20 +67,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public virtual async Task<bool> AddAsync(InvoiceTransactionPayload payload)
         {
-            if (payload is null || !payload.HasInvoiceTransaction)
-                return false;
-
             // set Add mode and clear data
             Add();
+            // validate before data loaded.  //TODO Add interface to servicebase
+            new InvoiceTransactionServiceValidatorDefault().Validating(payload, ProcessMode, dbFactory);
             // load data from dto
             FromDto(payload.InvoiceTransaction);
-
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
-                return false;
-
-            // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
-                return false;
+            // validate after data loaded //TODO Add interface to servicebase
+            new InvoiceTransactionServiceValidatorDefault().Validated(this.Data, payload, ProcessMode);
 
             return await SaveDataAsync().ConfigureAwait(false);
         }
@@ -127,15 +121,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual async Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
         {
-            if (payload.InvoiceTransaction is null || !payload.HasInvoiceTransaction || payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong() <= 0)
-                return false;
-            // set Add mode and clear data
-            await EditAsync(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
+            // set edit mode
+            Edit();
+
+            // validate before data loaded.  //TODO Add interface to servicebase
+            new InvoiceTransactionServiceValidatorDefault().Validating(payload, ProcessMode, dbFactory);
+
+            // load data from db
+            await GetDataAsync(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
+
+            // validate after data loaded //TODO Add interface to servicebase
+            new InvoiceTransactionServiceValidatorDefault().Validated(this.Data, payload, ProcessMode);
+
             // load data from dto
             FromDto(payload.InvoiceTransaction);
-            // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
-                return false;
 
             return await SaveDataAsync();
         }
@@ -144,15 +143,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByTransUuidAsync(string transUuid, PayloadBase payloadBase)
+        public virtual async Task<bool> DeleteByTransUuidAsync(string transUuid, PayloadBase payload)
         {
             if (string.IsNullOrEmpty(transUuid))
                 return false;
+            // set mode to delete
             Delete();
             var success = await GetDataByIdAsync(transUuid);
-            // validate before deleting
-            if (!(await ValidatePayloadAsync(payloadBase).ConfigureAwait(false)))
-                return false;
+            /// validate after data loaded //TODO Add interface to servicebase
+            new InvoiceTransactionServiceValidatorDefault().Validated(this.Data, payload, ProcessMode);
+
             success = success && await DeleteDataAsync();
             return success;
         }
