@@ -258,30 +258,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateJsDocRepositoryDto.ttinclude</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateRepository.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateRepositoryDto.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateRepositoryPartialClass.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryPartialClass.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateServiceValidator.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateServiceValidator.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateStructure.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateStructureDto - Copy.cs">
       <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>
@@ -292,11 +272,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateJsDocPayload.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateStructureGrandChildren.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructureGrandChildren.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>
