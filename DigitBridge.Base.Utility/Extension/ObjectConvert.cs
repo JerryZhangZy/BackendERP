@@ -399,6 +399,16 @@ namespace DigitBridge.Base.Utility
         }
 
         /// <summary>
+        /// Convert string to Camel case
+        /// </summary>
+        /// <returns></returns>
+        public static string ToCamelCase(this string str, bool toCamelCase = true) =>
+            string.IsNullOrWhiteSpace(str) || !toCamelCase
+                ? str
+                : $"{Char.ToLowerInvariant(str[0])}{str.Substring(1)}";
+
+
+        /// <summary>
         /// Get Datetime for sql server date range
         /// </summary>
         /// <returns></returns>

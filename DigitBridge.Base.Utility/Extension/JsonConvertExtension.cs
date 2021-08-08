@@ -5,12 +5,29 @@ using System.Text;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace DigitBridge.Base.Utility
 {
     
     public static class JsonConvertExtension
     {
+        public static JsonSerializerSettings DefaultJsonSerializerSettings(this bool ignoreNull)
+        {
+            return new JsonSerializerSettings
+            {
+                NullValueHandling = ignoreNull ? NullValueHandling.Ignore : NullValueHandling.Include,
+                Formatting = Formatting.None,
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy
+                    {
+                        OverrideSpecifiedNames = false
+                    }
+                }
+            };
+        }
+
         /// <summary>
         /// Use Json.Net convert string to object instance.
         /// Use default JsonSerializerSettings
@@ -21,10 +38,7 @@ namespace DigitBridge.Base.Utility
         public static void PopulateToObject<T>(this string jsonInput, T obj, bool ignoreNull = true)
         {
             if (string.IsNullOrWhiteSpace(jsonInput)) return;
-            var setting = new JsonSerializerSettings
-            {
-                NullValueHandling = ignoreNull ? NullValueHandling.Ignore : NullValueHandling.Include
-            };
+            var setting = ignoreNull.DefaultJsonSerializerSettings();
             jsonInput.PopulateToObject<T>(obj, setting);
         }
         /// <summary>
@@ -54,10 +68,7 @@ namespace DigitBridge.Base.Utility
         public static T JsonToObject<T>(this string jsonInput, bool ignoreNull = true, bool withType = false)
         {
             if (string.IsNullOrWhiteSpace(jsonInput)) return default(T);
-            var setting = new JsonSerializerSettings
-            {
-                NullValueHandling = ignoreNull ? NullValueHandling.Ignore : NullValueHandling.Include
-            };
+            var setting = ignoreNull.DefaultJsonSerializerSettings();
 
             if (withType)
                 setting.TypeNameHandling = TypeNameHandling.All;
@@ -88,11 +99,7 @@ namespace DigitBridge.Base.Utility
         {
             if (obj == null) return string.Empty;
 
-            var setting = new JsonSerializerSettings
-            {
-                NullValueHandling = ignoreNull ? NullValueHandling.Ignore : NullValueHandling.Include,
-                Formatting = Formatting.None
-            };
+            var setting = ignoreNull.DefaultJsonSerializerSettings();
 
             if (!string.IsNullOrEmpty(dateFormat))
                 setting.DateFormatString = dateFormat;
