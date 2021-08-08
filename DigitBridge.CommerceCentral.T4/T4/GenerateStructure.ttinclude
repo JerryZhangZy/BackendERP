@@ -69,6 +69,7 @@ namespace <#= NamespaceStructure #>
             return true;
         }
 
+        partial void CheckIntegrityOthers();
         // Check Children table Integrity
         public virtual <#= StructureClass.ClassName #> CheckIntegrity()
         {
@@ -84,6 +85,7 @@ namespace <#= NamespaceStructure #>
 
                 WriteLine($"{new String('\t',indent)}CheckIntegrity{child.Table.Name}(); ");
             }
+            WriteLine($"{new String('\t',indent)}CheckIntegrityOthers(); ");
 #>
             return this;
         }

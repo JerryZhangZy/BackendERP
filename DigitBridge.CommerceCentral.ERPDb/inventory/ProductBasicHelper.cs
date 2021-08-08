@@ -77,7 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string BoxHeight(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.BoxHeight AS {name ?? "BoxHeight"} ";
         public static string BoxLength(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.BoxLength AS {name ?? "BoxLength"} ";
         public static string BoxWidth(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.BoxWidth AS {name ?? "BoxWidth"} ";
-        public static string Unit(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Unit AS {name ?? "Unit"} ";
+        public static string DimensionUnit(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DimensionUnit AS {name ?? "DimensionUnit"} ";
         public static string HarmonizedCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.HarmonizedCode) AS {name ?? "HarmonizedCode"} ";
         public static string TaxProductCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.TaxProductCode) AS {name ?? "TaxProductCode"} ";
         public static string IsBlocked(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.IsBlocked AS {name ?? "IsBlocked"} ";
@@ -138,7 +138,7 @@ RTRIM({allies}VariationParentSKU) AS VariationParentSKU,
 {allies}BoxHeight AS BoxHeight,
 {allies}BoxLength AS BoxLength,
 {allies}BoxWidth AS BoxWidth,
-{allies}Unit AS Unit,
+{allies}DimensionUnit AS DimensionUnit,
 RTRIM({allies}HarmonizedCode) AS HarmonizedCode,
 RTRIM({allies}TaxProductCode) AS TaxProductCode,
 {allies}IsBlocked AS IsBlocked,

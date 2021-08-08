@@ -39,7 +39,7 @@
     [BoxHeight] DECIMAL(6, 2) NOT NULL DEFAULT 0, --Box Height. <br> Title: Box Height, Display: true, Editable: true
     [BoxLength] DECIMAL(6, 2) NOT NULL DEFAULT 0, --Box Length. <br> Title: Box Length, Display: true, Editable: true
     [BoxWidth] DECIMAL(6, 2) NOT NULL DEFAULT 0, --Box Width. <br> Title: Box Width, Display: true, Editable: true
-    [Unit] TINYINT NOT NULL DEFAULT 0, --Dimension measure unit. <br> Title: Dimension Unit, Display: true, Editable: true
+    [DimensionUnit] TINYINT NOT NULL DEFAULT 0, --Dimension measure unit. <br> Title: Dimension Unit, Display: true, Editable: true
     [HarmonizedCode] NVARCHAR(20) NOT NULL DEFAULT '', --HarmonizedCode. <br> Title: Harmonized, Display: true, Editable: true
     [TaxProductCode] NVARCHAR(25) NOT NULL DEFAULT '', --TaxProductCode. <br> Title: Tax Code, Display: true, Editable: true
     [IsBlocked] TINYINT NOT NULL DEFAULT 0, --Product Is Blocked. <br> Title: Blocked, Display: true, Editable: true
