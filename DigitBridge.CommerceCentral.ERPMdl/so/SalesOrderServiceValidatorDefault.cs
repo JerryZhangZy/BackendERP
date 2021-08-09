@@ -340,12 +340,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Edit)
             {
+                if (!dto.SalesOrderHeader.RowNum.HasValue)
+                {
+                    isValid = false;
+                    AddError("SalesOrderHeader.RowNum is required.");
+                }
+                if (dto.SalesOrderHeader.RowNum.ToLong() <= 0)
+                {
+                    isValid = false;
+                    AddError("SalesOrderHeader.RowNum is invalid."); 
+                }
                 // This property should not be changed.
                 dto.SalesOrderHeader.MasterAccountNum = null;
                 dto.SalesOrderHeader.ProfileNum = null;
                 dto.SalesOrderHeader.DatabaseNum = null;
+                dto.SalesOrderHeader.SalesOrderUuid = null;
                 // TODO 
-                //dto.SalesOrderHeader.SalesOrderUuid = null;
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
             else
@@ -419,6 +429,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Edit)
             {
+                if (!dto.SalesOrderHeader.RowNum.HasValue)
+                {
+                    isValid = false;
+                    AddError("SalesOrderHeader.RowNum is required.");
+                }
+                if (dto.SalesOrderHeader.RowNum.ToLong() <= 0)
+                {
+                    isValid = false;
+                    AddError("SalesOrderHeader.RowNum is invalid."); 
+                }
                 // This property should not be changed.
                 dto.SalesOrderHeader.MasterAccountNum = null;
                 dto.SalesOrderHeader.ProfileNum = null;

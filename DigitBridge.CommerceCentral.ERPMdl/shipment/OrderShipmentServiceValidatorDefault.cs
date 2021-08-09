@@ -285,13 +285,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = (OrderShipmentPayload)payload;
-            var dto = pl.OrderShipment;
-            //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
-            dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
-            dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
-            isValid = Validate(dto, dbFactory, processingMode);
+            //TODO 
+            //var pl = (OrderShipmentHeaderPayload)payload;
+            //if (pl is null || !pl.Has OrderShipmentHeader)
+            //{
+            //    isValid = false;
+            //    AddError($"No data found");
+            //}
+            //else
+            //{
+            //    var dto = pl.SalesOrder;
+            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
+            //    dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
+            //    dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
+            //    isValid = Validate(dto, dbFactory, processingMode);
+            //}
             return isValid;
         }
         /// <summary>
@@ -303,7 +312,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual bool Validate(OrderShipmentDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true; 
+            var isValid = true;
             if (dto is null)
             {
                 isValid = false;
@@ -331,12 +340,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Edit)
             {
+                if (!dto.OrderShipmentHeader.RowNum.HasValue)
+                {
+                    isValid = false;
+                    AddError("OrderShipmentHeader.RowNum is required.");
+                }
+                if (dto.OrderShipmentHeader.RowNum.ToLong() <= 0)
+                {
+                    isValid = false;
+                    AddError("OrderShipmentHeader.RowNum is invalid."); 
+                }
                 // This property should not be changed.
                 dto.OrderShipmentHeader.MasterAccountNum = null;
                 dto.OrderShipmentHeader.ProfileNum = null;
                 dto.OrderShipmentHeader.DatabaseNum = null;
+                dto.OrderShipmentHeader.OrderShipmentUuid = null;
                 // TODO 
-                //dto.OrderShipmentHeader.SalesOrderUuid = null;
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
             else
@@ -358,14 +377,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true;
-            var pl = (OrderShipmentPayload)payload;
-            var dto = pl.OrderShipment;
-            //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
-            dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
-            dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
-            isValid =await ValidateAsync(dto, dbFactory, processingMode);
+            var isValid = true; 
+            //TODO 
+            //var pl = (OrderShipmentHeaderPayload)payload;
+            //if (pl is null || !pl.Has OrderShipmentHeader)
+            //{
+            //    isValid = false;
+            //    AddError($"No data found");
+            //}
+            //else
+            //{
+            //    var dto = pl.SalesOrder;
+            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
+            //    dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
+            //    dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
+            //    isValid =await ValidateAsync(dto, dbFactory, processingMode);
+            //}
             return isValid;
         }
         /// <summary>
@@ -385,20 +413,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                //Init property
-                //if (string.IsNullOrEmpty(dto.OrderShipmentHeader.OrderShipmentUuid))
-                //{
-                    dto.OrderShipmentHeader.OrderShipmentUuid = new Guid().ToString();
-                //} 
+                //Init property 
+                  dto.OrderShipmentHeader.OrderShipmentUuid = new Guid().ToString(); 
                 
                 if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
                 {
                     foreach (var detailItem in dto.OrderShipmentPackage)
-                    {
-                        //if (string.IsNullOrEmpty(detailItem.OrderShipmentPackageUuid))
-                        //{
-                            detailItem.OrderShipmentPackageUuid = new Guid().ToString();
-                        //}
+                    { 
+                        detailItem.OrderShipmentPackageUuid = new Guid().ToString();
                     }
                 }
                   
@@ -407,6 +429,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Edit)
             {
+                if (!dto.OrderShipmentHeader.RowNum.HasValue)
+                {
+                    isValid = false;
+                    AddError("OrderShipmentHeader.RowNum is required.");
+                }
+                if (dto.OrderShipmentHeader.RowNum.ToLong() <= 0)
+                {
+                    isValid = false;
+                    AddError("OrderShipmentHeader.RowNum is invalid."); 
+                }
                 // This property should not be changed.
                 dto.OrderShipmentHeader.MasterAccountNum = null;
                 dto.OrderShipmentHeader.ProfileNum = null;
