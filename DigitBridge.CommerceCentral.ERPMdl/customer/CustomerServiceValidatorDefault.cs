@@ -329,12 +329,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Edit)
             {
+                if (!dto.Customer.RowNum.HasValue)
+                {
+                    isValid = false;
+                    AddError("Customer.RowNum is required.");
+                }
+                if (dto.Customer.RowNum.ToLong() <= 0)
+                {
+                    isValid = false;
+                    AddError("Customer.RowNum is invalid."); 
+                }
                 // This property should not be changed.
                 dto.Customer.MasterAccountNum = null;
                 dto.Customer.ProfileNum = null;
                 dto.Customer.DatabaseNum = null;
+                dto.Customer.CustomerUuid = null;
                 // TODO 
-                //dto.Customer.SalesOrderUuid = null;
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
             else
@@ -400,6 +410,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Edit)
             {
+                if (!dto.Customer.RowNum.HasValue)
+                {
+                    isValid = false;
+                    AddError("Customer.RowNum is required.");
+                }
+                if (dto.Customer.RowNum.ToLong() <= 0)
+                {
+                    isValid = false;
+                    AddError("Customer.RowNum is invalid."); 
+                }
                 // This property should not be changed.
                 dto.Customer.MasterAccountNum = null;
                 dto.Customer.ProfileNum = null;

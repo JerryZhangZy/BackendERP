@@ -344,12 +344,22 @@ namespace <#= NamespaceService #>
             }
             if (processingMode == ProcessingMode.Edit)
             {
+                if (!dto.<#= StructureClass.MainTable.Name #>.RowNum.HasValue)
+                {
+                    isValid = false;
+                    AddError("<#= StructureClass.MainTable.Name #>.RowNum is required.");
+                }
+                if (dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong() <= 0)
+                {
+                    isValid = false;
+                    AddError("<#= StructureClass.MainTable.Name #>.RowNum is invalid."); 
+                }
                 // This property should not be changed.
                 dto.<#= StructureClass.MainTable.Name #>.MasterAccountNum = null;
                 dto.<#= StructureClass.MainTable.Name #>.ProfileNum = null;
                 dto.<#= StructureClass.MainTable.Name #>.DatabaseNum = null;
+                dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = null;
                 // TODO 
-                //dto.<#= StructureClass.MainTable.Name #>.SalesOrderUuid = null;
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
             else
@@ -426,6 +436,16 @@ namespace <#= NamespaceService #>
             }
             if (processingMode == ProcessingMode.Edit)
             {
+                if (!dto.<#= StructureClass.MainTable.Name #>.RowNum.HasValue)
+                {
+                    isValid = false;
+                    AddError("<#= StructureClass.MainTable.Name #>.RowNum is required.");
+                }
+                if (dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong() <= 0)
+                {
+                    isValid = false;
+                    AddError("<#= StructureClass.MainTable.Name #>.RowNum is invalid."); 
+                }
                 // This property should not be changed.
                 dto.<#= StructureClass.MainTable.Name #>.MasterAccountNum = null;
                 dto.<#= StructureClass.MainTable.Name #>.ProfileNum = null;

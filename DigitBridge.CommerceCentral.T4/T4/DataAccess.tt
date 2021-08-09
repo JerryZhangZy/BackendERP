@@ -62,8 +62,15 @@
         7. Service Class Tester - will generate srevice class tester.
 */
 #>
-
-<#@ include file="SettingForShipment.ttinclude" #>
+//SettingForChannelOrder
+//SettingForCustomer
+//SettingForInventory
+//SettingForInventoryLog
+//SettingForInvoice
+//SettingForInvoiceTransaction
+//SettingForSalesOrder
+//SettingForShipment
+<#@ include file="SettingForChannelOrder.ttinclude" #>
 
 <#      
     // Generate model output
