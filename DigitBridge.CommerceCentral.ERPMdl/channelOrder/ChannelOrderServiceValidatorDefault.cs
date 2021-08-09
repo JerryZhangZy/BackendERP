@@ -285,14 +285,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            //TODO
-            //var pl = (ChannelOrderServicePayload)payload;
-            //var dto = pl.;
-            ////No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            //dto.OrderHeader.MasterAccountNum = pl.MasterAccountNum;
-            //dto.OrderHeader.ProfileNum = pl.ProfileNum;
-            //dto.OrderHeader.DatabaseNum = pl.DatabaseNum;
-            //isValid = Validate(dto, dbFactory, processingMode);
+            //TODO 
+            //var pl = (OrderHeaderPayload)payload;
+            //if (pl is null || !pl.Has OrderHeader)
+            //{
+            //    isValid = false;
+            //    AddError($"No data found");
+            //}
+            //else
+            //{
+            //    var dto = pl.SalesOrder;
+            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    dto.OrderHeader.MasterAccountNum = pl.MasterAccountNum;
+            //    dto.OrderHeader.ProfileNum = pl.ProfileNum;
+            //    dto.OrderHeader.DatabaseNum = pl.DatabaseNum;
+            //    isValid = Validate(dto, dbFactory, processingMode);
+            //}
             return isValid;
         }
         /// <summary>
@@ -305,6 +313,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Validate(ChannelOrderDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"No data found");
+            }
             if (processingMode == ProcessingMode.Add)
             {
                 //Init property
@@ -354,15 +367,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true;
-            //TODO
-            //var pl = (SalesOrderPayload)payload;
-            //var dto = pl.SalesOrder;
-            ////No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            //dto.OrderHeader.MasterAccountNum = pl.MasterAccountNum;
-            //dto.OrderHeader.ProfileNum = pl.ProfileNum;
-            //dto.OrderHeader.DatabaseNum = pl.DatabaseNum;
-            //isValid =await ValidateAsync(dto, dbFactory, processingMode);
+            var isValid = true; 
+            //TODO 
+            //var pl = (OrderHeaderPayload)payload;
+            //if (pl is null || !pl.Has OrderHeader)
+            //{
+            //    isValid = false;
+            //    AddError($"No data found");
+            //}
+            //else
+            //{
+            //    var dto = pl.SalesOrder;
+            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    dto.OrderHeader.MasterAccountNum = pl.MasterAccountNum;
+            //    dto.OrderHeader.ProfileNum = pl.ProfileNum;
+            //    dto.OrderHeader.DatabaseNum = pl.DatabaseNum;
+            //    isValid =await ValidateAsync(dto, dbFactory, processingMode);
+            //}
             return isValid;
         }
         /// <summary>
@@ -375,22 +396,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> ValidateAsync(ChannelOrderDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"No data found");
+            }
             if (processingMode == ProcessingMode.Add)
             {
-                //Init property
-                //if (string.IsNullOrEmpty(dto.OrderHeader.CentralOrderUuid))
-                //{
-                    dto.OrderHeader.CentralOrderUuid = new Guid().ToString();
-                //} 
+                //Init property 
+                  dto.OrderHeader.CentralOrderUuid = new Guid().ToString(); 
                 
                 if (dto.OrderLine != null && dto.OrderLine.Count > 0)
                 {
                     foreach (var detailItem in dto.OrderLine)
-                    {
-                        //if (string.IsNullOrEmpty(detailItem.CentralOrderLineUuid))
-                        //{
-                            detailItem.CentralOrderLineUuid = new Guid().ToString();
-                        //}
+                    { 
+                        detailItem.CentralOrderLineUuid = new Guid().ToString();
                     }
                 }
                   

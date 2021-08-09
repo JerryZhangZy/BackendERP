@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default InvoiceTransactionService Validator class.
     /// </summary>
-    public partial class InvoiceTransactionServiceValidatorDefault : IValidator<InvoiceTransactionData, InvoiceTransactionDataDto>, IMessage
+    public partial class InvoiceTransactionServiceValidatorDefault : IValidator<InvoiceTransactionData,InvoiceTransactionDataDto>, IMessage
     {
         public virtual bool IsValid { get; set; }
         public InvoiceTransactionServiceValidatorDefault() { }
@@ -285,13 +285,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = (InvoiceTransactionPayload)payload;
-            var dto = pl.InvoiceTransaction;
-            //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            dto.InvoiceTransaction.MasterAccountNum = pl.MasterAccountNum;
-            dto.InvoiceTransaction.ProfileNum = pl.ProfileNum;
-            dto.InvoiceTransaction.DatabaseNum = pl.DatabaseNum;
-            isValid = Validate(dto, dbFactory, processingMode);
+            //TODO 
+            //var pl = (InvoiceTransactionPayload)payload;
+            //if (pl is null || !pl.Has InvoiceTransaction)
+            //{
+            //    isValid = false;
+            //    AddError($"No data found");
+            //}
+            //else
+            //{
+            //    var dto = pl.SalesOrder;
+            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    dto.InvoiceTransaction.MasterAccountNum = pl.MasterAccountNum;
+            //    dto.InvoiceTransaction.ProfileNum = pl.ProfileNum;
+            //    dto.InvoiceTransaction.DatabaseNum = pl.DatabaseNum;
+            //    isValid = Validate(dto, dbFactory, processingMode);
+            //}
             return isValid;
         }
         /// <summary>
@@ -304,6 +313,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Validate(InvoiceTransactionDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"No data found");
+            }
             if (processingMode == ProcessingMode.Add)
             {
                 //Init property
@@ -353,14 +367,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true;
-            var pl = (InvoiceTransactionPayload)payload;
-            var dto = pl.InvoiceTransaction;
-            //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            dto.InvoiceTransaction.MasterAccountNum = pl.MasterAccountNum;
-            dto.InvoiceTransaction.ProfileNum = pl.ProfileNum;
-            dto.InvoiceTransaction.DatabaseNum = pl.DatabaseNum;
-            isValid =await ValidateAsync(dto, dbFactory, processingMode);
+            var isValid = true; 
+            //TODO 
+            //var pl = (InvoiceTransactionPayload)payload;
+            //if (pl is null || !pl.Has InvoiceTransaction)
+            //{
+            //    isValid = false;
+            //    AddError($"No data found");
+            //}
+            //else
+            //{
+            //    var dto = pl.SalesOrder;
+            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    dto.InvoiceTransaction.MasterAccountNum = pl.MasterAccountNum;
+            //    dto.InvoiceTransaction.ProfileNum = pl.ProfileNum;
+            //    dto.InvoiceTransaction.DatabaseNum = pl.DatabaseNum;
+            //    isValid =await ValidateAsync(dto, dbFactory, processingMode);
+            //}
             return isValid;
         }
         /// <summary>
@@ -373,22 +396,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> ValidateAsync(InvoiceTransactionDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"No data found");
+            }
             if (processingMode == ProcessingMode.Add)
             {
-                //Init property
-                //if (string.IsNullOrEmpty(dto.InvoiceTransaction.TransUuid))
-                //{
-                    dto.InvoiceTransaction.TransUuid = new Guid().ToString();
-                //} 
+                //Init property 
+                  dto.InvoiceTransaction.TransUuid = new Guid().ToString(); 
                 
                 if (dto.InvoiceReturnItems != null && dto.InvoiceReturnItems.Count > 0)
                 {
                     foreach (var detailItem in dto.InvoiceReturnItems)
-                    {
-                        //if (string.IsNullOrEmpty(detailItem.ReturnItemUuid))
-                        //{
-                            detailItem.ReturnItemUuid = new Guid().ToString();
-                        //}
+                    { 
+                        detailItem.ReturnItemUuid = new Guid().ToString();
                     }
                 }
                   
@@ -411,16 +433,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             IsValid=isValid;
             return isValid;
-        }
-
-        public bool Validate(InvoiceTransactionDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> ValidateAsync(InvoiceTransactionDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }

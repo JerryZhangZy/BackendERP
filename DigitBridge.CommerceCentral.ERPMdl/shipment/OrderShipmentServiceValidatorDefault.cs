@@ -303,7 +303,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual bool Validate(OrderShipmentDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true;
+            var isValid = true; 
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"No data found");
+            }
             if (processingMode == ProcessingMode.Add)
             {
                 //Init property
@@ -373,6 +378,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> ValidateAsync(OrderShipmentDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"No data found");
+            }
             if (processingMode == ProcessingMode.Add)
             {
                 //Init property

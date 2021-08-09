@@ -87,12 +87,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         public virtual async Task<bool> AddAsync(SalesOrderPayload payload)
-        {
-            if (payload is null || !payload.HasSalesOrder)
-                return false;
-
+        { 
             // set Add mode and clear data
             Add();
+
+            //validate payload before data loaded
+            if (!(await ValidateAsync(payload).ConfigureAwait(false)))
+                return false;
+
             // load data from dto
             FromDto(payload.SalesOrder);
 
@@ -174,20 +176,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual async Task<bool> UpdateAsync(SalesOrderPayload payload)
         {
-            if (payload is null || !payload.HasSalesOrder  )
+            //set edit mode
+            Edit();
+
+            // validate data before data loaded
+            if (!(await ValidateAsync(payload).ConfigureAwait(false)))
                 return false;
-            if (!payload.SalesOrder.SalesOrderHeader.RowNum.HasValue)
-            {
-                AddError("SalesOrderHeader.RowNum is required.");
-                return false;
-            }
-            if (payload.SalesOrder.SalesOrderHeader.RowNum.ToLong() <= 0)
-            {
-                AddError("SalesOrderHeader.RowNum is invalid.");
-                return false;
-            } 
-            // set Add mode and clear data
-            await EditAsync(payload.SalesOrder.SalesOrderHeader.RowNum.ToLong()).ConfigureAwait(false);
+
+            // load data;
+            await GetDataAsync(payload.SalesOrder.SalesOrderHeader.RowNum.ToInt()).ConfigureAwait(false);
+            
 
             // validate data for Add processing
             if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))

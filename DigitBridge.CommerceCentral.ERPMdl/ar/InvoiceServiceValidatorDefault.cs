@@ -285,13 +285,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = (InvoicePayload)payload;
-            var dto = pl.Invoice;
-            //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            dto.InvoiceHeader.MasterAccountNum = pl.MasterAccountNum;
-            dto.InvoiceHeader.ProfileNum = pl.ProfileNum;
-            dto.InvoiceHeader.DatabaseNum = pl.DatabaseNum;
-            isValid = Validate(dto, dbFactory, processingMode);
+            //TODO 
+            //var pl = (InvoiceHeaderPayload)payload;
+            //if (pl is null || !pl.Has InvoiceHeader)
+            //{
+            //    isValid = false;
+            //    AddError($"No data found");
+            //}
+            //else
+            //{
+            //    var dto = pl.SalesOrder;
+            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    dto.InvoiceHeader.MasterAccountNum = pl.MasterAccountNum;
+            //    dto.InvoiceHeader.ProfileNum = pl.ProfileNum;
+            //    dto.InvoiceHeader.DatabaseNum = pl.DatabaseNum;
+            //    isValid = Validate(dto, dbFactory, processingMode);
+            //}
             return isValid;
         }
         /// <summary>
@@ -304,6 +313,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Validate(InvoiceDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"No data found");
+            }
             if (processingMode == ProcessingMode.Add)
             {
                 //Init property
@@ -353,14 +367,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true;
-            var pl = (InvoicePayload)payload;
-            var dto = pl.Invoice;
-            //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            dto.InvoiceHeader.MasterAccountNum = pl.MasterAccountNum;
-            dto.InvoiceHeader.ProfileNum = pl.ProfileNum;
-            dto.InvoiceHeader.DatabaseNum = pl.DatabaseNum;
-            isValid =await ValidateAsync(dto, dbFactory, processingMode);
+            var isValid = true; 
+            //TODO 
+            //var pl = (InvoiceHeaderPayload)payload;
+            //if (pl is null || !pl.Has InvoiceHeader)
+            //{
+            //    isValid = false;
+            //    AddError($"No data found");
+            //}
+            //else
+            //{
+            //    var dto = pl.SalesOrder;
+            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    dto.InvoiceHeader.MasterAccountNum = pl.MasterAccountNum;
+            //    dto.InvoiceHeader.ProfileNum = pl.ProfileNum;
+            //    dto.InvoiceHeader.DatabaseNum = pl.DatabaseNum;
+            //    isValid =await ValidateAsync(dto, dbFactory, processingMode);
+            //}
             return isValid;
         }
         /// <summary>
@@ -373,22 +396,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> ValidateAsync(InvoiceDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"No data found");
+            }
             if (processingMode == ProcessingMode.Add)
             {
-                //Init property
-                //if (string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceUuid))
-                //{
-                    dto.InvoiceHeader.InvoiceUuid = new Guid().ToString();
-                //} 
+                //Init property 
+                  dto.InvoiceHeader.InvoiceUuid = new Guid().ToString(); 
                 
                 if (dto.InvoiceItems != null && dto.InvoiceItems.Count > 0)
                 {
                     foreach (var detailItem in dto.InvoiceItems)
-                    {
-                        //if (string.IsNullOrEmpty(detailItem.InvoiceItemsUuid))
-                        //{
-                            detailItem.InvoiceItemsUuid = new Guid().ToString();
-                        //}
+                    { 
+                        detailItem.InvoiceItemsUuid = new Guid().ToString();
                     }
                 }
                   
