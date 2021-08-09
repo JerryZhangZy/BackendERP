@@ -73,6 +73,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // set Add mode and clear data
             Add();
+            if (!(await ValidateAsync(payload.OrderShipment).ConfigureAwait(false)))
+                return false;
             // load data from dto
             FromDto(payload.OrderShipment);
 
@@ -133,6 +135,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             // set Add mode and clear data
             await EditAsync(payload.OrderShipment.OrderShipmentHeader.RowNum.ToLong()).ConfigureAwait(false);
+
+            if (!(await ValidateAsync(payload.OrderShipment).ConfigureAwait(false)))
+                return false;
 
             // validate data for Add processing
             if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
