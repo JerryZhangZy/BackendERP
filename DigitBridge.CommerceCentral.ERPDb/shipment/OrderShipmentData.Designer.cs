@@ -487,6 +487,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.OrderShipmentUuid != OrderShipmentHeader.OrderShipmentUuid)
                     child.OrderShipmentUuid = OrderShipmentHeader.OrderShipmentUuid;
+                if (child.MasterAccountNum != OrderShipmentHeader.MasterAccountNum)
+                    child.MasterAccountNum = OrderShipmentHeader.MasterAccountNum;
+                if (child.ProfileNum != OrderShipmentHeader.ProfileNum)
+                    child.ProfileNum = OrderShipmentHeader.ProfileNum;
+                if (child.DatabaseNum != OrderShipmentHeader.DatabaseNum)
+                    child.DatabaseNum = OrderShipmentHeader.DatabaseNum;
             }
             return children;
         }
@@ -599,6 +605,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.OrderShipmentUuid != OrderShipmentHeader.OrderShipmentUuid)
                     child.OrderShipmentUuid = OrderShipmentHeader.OrderShipmentUuid;
+                if (child.MasterAccountNum != OrderShipmentHeader.MasterAccountNum)
+                    child.MasterAccountNum = OrderShipmentHeader.MasterAccountNum;
+                if (child.ProfileNum != OrderShipmentHeader.ProfileNum)
+                    child.ProfileNum = OrderShipmentHeader.ProfileNum;
+                if (child.DatabaseNum != OrderShipmentHeader.DatabaseNum)
+                    child.DatabaseNum = OrderShipmentHeader.DatabaseNum;
             }
             return children;
         }
@@ -686,6 +698,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.OrderShipmentUuid != OrderShipmentHeader.OrderShipmentUuid)
                     child.OrderShipmentUuid = OrderShipmentHeader.OrderShipmentUuid;
+                if (child.MasterAccountNum != OrderShipmentHeader.MasterAccountNum)
+                    child.MasterAccountNum = OrderShipmentHeader.MasterAccountNum;
+                if (child.ProfileNum != OrderShipmentHeader.ProfileNum)
+                    child.ProfileNum = OrderShipmentHeader.ProfileNum;
+                if (child.DatabaseNum != OrderShipmentHeader.DatabaseNum)
+                    child.DatabaseNum = OrderShipmentHeader.DatabaseNum;
             }
             return children;
         }

@@ -102,9 +102,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasCustomer)
                 return false;
-
-            // set Add mode and clear data
             Add();
+            if (!(await ValidateAsync(payload.Customer).ConfigureAwait(false)))
+                return false;
+            // set Add mode and clear data
             // load data from dto
             FromDto(payload.Customer);
 
@@ -124,6 +125,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // set Add mode and clear data
             Add();
+
+            if (!Validate(payload.Customer))
+                return false;
+
             // load data from dto
             FromDto(payload.Customer);
 
@@ -199,11 +204,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // set Add mode and clear data
             Edit(payload.Customer.Customer.RowNum.ToLong());
-            // load data from dto
-            FromDto(payload.Customer);
+
+            if (!Validate(payload.Customer))
+                return false;
 
             if (!ValidatePayload(payload))
                 return false;
+            // load data from dto
+            FromDto(payload.Customer);
 
             // validate data for Add processing
             if (!Validate())
@@ -218,13 +226,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // set Add mode and clear data
             Edit(payload.Customer.Customer.RowNum.ToLong());
-            // load data from dto
-            FromDto(payload.Customer);
-            // set Add mode and clear data
+
+            if (!(await ValidateAsync(payload.Customer).ConfigureAwait(false)))
+                return false;
 
             if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
                 return false;
-
+            // load data from dto
+            FromDto(payload.Customer);
+            // set Add mode and clear data
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
                 return false;

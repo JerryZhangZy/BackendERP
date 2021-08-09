@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default OrderShipmentService Validator class.
     /// </summary>
-    public partial class OrderShipmentServiceValidatorDefault : IValidator<OrderShipmentData>, IMessage
+    public partial class OrderShipmentServiceValidatorDefault : IValidator<OrderShipmentData,OrderShipmentDataDto>, IMessage
     {
         public virtual bool IsValid { get; set; }
         public OrderShipmentServiceValidatorDefault() { }
@@ -34,8 +34,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region message
         [XmlIgnore, JsonIgnore]
-        public virtual IList<MessageClass> Messages
-        {
+        public virtual IList<MessageClass> Messages 
+        { 
             get
             {
                 if (ServiceMessage != null)
@@ -75,28 +75,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         public virtual bool ValidatePayload(OrderShipmentData data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            Clear();
-            var pl = payload as OrderShipmentPayload;
+        { 
+            var isValid = true;
+            var pl = payload as SalesOrderPayload;//TODO replace SalesOrderPayload to your payload
             if (processingMode == ProcessingMode.Add)
             {
-                //TODO set MasterAccountNum, ProfileNum and DatabaseNum from payload
-                data.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
-                data.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
-                data.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
+                //TODO 
             }
             else
             {
-                //TODO check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
-                if (
-                    data.OrderShipmentHeader.MasterAccountNum != pl.MasterAccountNum ||
-                    data.OrderShipmentHeader.ProfileNum != pl.ProfileNum
-                )
-                    IsValid = false;
-                AddError($"IsValid request.");
-                return IsValid;
+                //check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
+                if (data.OrderShipmentHeader.MasterAccountNum != pl.MasterAccountNum ||
+                    data.OrderShipmentHeader.ProfileNum != pl.ProfileNum)
+                    isValid = false;
+                AddError($"Invalid request.");
             }
-            return true;
+            IsValid=isValid;
+            return isValid;
         }
 
         public virtual bool Validate(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -278,6 +273,188 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion Async Methods
+
+        #region Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            //TODO 
+            //var pl = (OrderShipmentHeaderPayload)payload;
+            //if (pl is null || !pl.Has OrderShipmentHeader)
+            //{
+            //    isValid = false;
+            //    AddError($"No data found");
+            //}
+            //else
+            //{
+            //    var dto = pl.SalesOrder;
+            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
+            //    dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
+            //    dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
+            //    isValid = Validate(dto, dbFactory, processingMode);
+            //}
+            return isValid;
+        }
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual bool Validate(OrderShipmentDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"No data found");
+            }
+            if (processingMode == ProcessingMode.Add)
+            {
+                //Init property
+                //if (string.IsNullOrEmpty(dto.OrderShipmentHeader.OrderShipmentUuid))
+                //{
+                    dto.OrderShipmentHeader.OrderShipmentUuid = new Guid().ToString();
+                //} 
+                
+                if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
+                {
+                    foreach (var detailItem in dto.OrderShipmentPackage)
+                    {
+                        //if (string.IsNullOrEmpty(detailItem.OrderShipmentPackageUuid))
+                        //{
+                            detailItem.OrderShipmentPackageUuid = new Guid().ToString();
+                        //}
+                    }
+                }
+                  
+            }
+            if (processingMode == ProcessingMode.Edit)
+            {
+                if (!dto.OrderShipmentHeader.RowNum.HasValue)
+                {
+                    isValid = false;
+                    AddError("OrderShipmentHeader.RowNum is required.");
+                }
+                if (dto.OrderShipmentHeader.RowNum.ToLong() <= 0)
+                {
+                    isValid = false;
+                    AddError("OrderShipmentHeader.RowNum is invalid."); 
+                }
+                // This property should not be changed.
+                dto.OrderShipmentHeader.MasterAccountNum = null;
+                dto.OrderShipmentHeader.ProfileNum = null;
+                dto.OrderShipmentHeader.DatabaseNum = null;
+                dto.OrderShipmentHeader.OrderShipmentUuid = null;
+                // TODO 
+                //dto.SalesOrderHeader.OrderNumber = null;
+            }
+            else
+            {
+                //TODO
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
+
+        #region Validate dto async (invoke this before data loaded)
+        /// <summary>
+        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true; 
+            //TODO 
+            //var pl = (OrderShipmentHeaderPayload)payload;
+            //if (pl is null || !pl.Has OrderShipmentHeader)
+            //{
+            //    isValid = false;
+            //    AddError($"No data found");
+            //}
+            //else
+            //{
+            //    var dto = pl.SalesOrder;
+            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
+            //    dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
+            //    dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
+            //    isValid =await ValidateAsync(dto, dbFactory, processingMode);
+            //}
+            return isValid;
+        }
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(OrderShipmentDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"No data found");
+            }
+            if (processingMode == ProcessingMode.Add)
+            {
+                //Init property 
+                  dto.OrderShipmentHeader.OrderShipmentUuid = new Guid().ToString(); 
+                
+                if (dto.OrderShipmentPackage != null && dto.OrderShipmentPackage.Count > 0)
+                {
+                    foreach (var detailItem in dto.OrderShipmentPackage)
+                    { 
+                        detailItem.OrderShipmentPackageUuid = new Guid().ToString();
+                    }
+                }
+                  
+ 
+                
+            }
+            if (processingMode == ProcessingMode.Edit)
+            {
+                if (!dto.OrderShipmentHeader.RowNum.HasValue)
+                {
+                    isValid = false;
+                    AddError("OrderShipmentHeader.RowNum is required.");
+                }
+                if (dto.OrderShipmentHeader.RowNum.ToLong() <= 0)
+                {
+                    isValid = false;
+                    AddError("OrderShipmentHeader.RowNum is invalid."); 
+                }
+                // This property should not be changed.
+                dto.OrderShipmentHeader.MasterAccountNum = null;
+                dto.OrderShipmentHeader.ProfileNum = null;
+                dto.OrderShipmentHeader.DatabaseNum = null;
+                dto.OrderShipmentHeader.OrderShipmentUuid = null;
+                //TODO set uuid to null 
+                //dto.OrderShipmentHeader.OrderNumber = null;
+            }
+            else
+            {
+                //TODO
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
     }
 }
 

@@ -1,4 +1,12 @@
 
+
+
+
+
+              
+
+
+
               
     
 
@@ -25,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
     /// Represents a ProductBasic SQL Helper Static Class.
-    /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
+    /// NOTE: This class is generated from a T4 template Once - you want re-generate it, you need delete cs file and generate again
     /// </summary>
     public static class ProductBasicHelper
     {
@@ -38,60 +46,60 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region - static SQL fileds statement
 
-        public static string CentralProductNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.CentralProductNum AS {name ?? "CentralProductNum"} ";
-        public static string DatabaseNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DatabaseNum AS {name ?? "DatabaseNum"} ";
-        public static string MasterAccountNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.MasterAccountNum AS {name ?? "MasterAccountNum"} ";
-        public static string ProfileNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum"} ";
-        public static string SKU(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.SKU) AS {name ?? "SKU"} ";
-        public static string FNSku(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.FNSku) AS {name ?? "FNSku"} ";
-        public static string Condition(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Condition AS {name ?? "Condition"} ";
-        public static string Brand(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Brand) AS {name ?? "Brand"} ";
-        public static string Manufacturer(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Manufacturer) AS {name ?? "Manufacturer"} ";
-        public static string ProductTitle(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ProductTitle) AS {name ?? "ProductTitle"} ";
-        public static string LongDescription(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.LongDescription) AS {name ?? "LongDescription"} ";
-        public static string ShortDescription(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ShortDescription) AS {name ?? "ShortDescription"} ";
-        public static string Subtitle(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Subtitle) AS {name ?? "Subtitle"} ";
-        public static string ASIN(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ASIN) AS {name ?? "ASIN"} ";
-        public static string UPC(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.UPC) AS {name ?? "UPC"} ";
-        public static string EAN(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.EAN) AS {name ?? "EAN"} ";
-        public static string ISBN(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ISBN) AS {name ?? "ISBN"} ";
-        public static string MPN(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.MPN) AS {name ?? "MPN"} ";
-        public static string Price(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Price AS {name ?? "Price"} ";
-        public static string Cost(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.Cost AS {name ?? "Cost"} ";
-        public static string AvgCost(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.AvgCost AS {name ?? "AvgCost"} ";
-        public static string MAPPrice(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.MAPPrice AS {name ?? "MAPPrice"} ";
-        public static string MSRP(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.MSRP AS {name ?? "MSRP"} ";
-        public static string BundleType(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.BundleType AS {name ?? "BundleType"} ";
-        public static string ProductType(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ProductType AS {name ?? "ProductType"} ";
-        public static string VariationVaryBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.VariationVaryBy) AS {name ?? "VariationVaryBy"} ";
-        public static string CopyToChildren(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.CopyToChildren AS {name ?? "CopyToChildren"} ";
-        public static string MultipackQuantity(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.MultipackQuantity AS {name ?? "MultipackQuantity"} ";
-        public static string VariationParentSKU(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.VariationParentSKU) AS {name ?? "VariationParentSKU"} ";
-        public static string IsInRelationship(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.IsInRelationship AS {name ?? "IsInRelationship"} ";
-        public static string NetWeight(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.NetWeight AS {name ?? "NetWeight"} ";
-        public static string GrossWeight(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.GrossWeight AS {name ?? "GrossWeight"} ";
-        public static string WeightUnit(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.WeightUnit AS {name ?? "WeightUnit"} ";
-        public static string ProductHeight(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ProductHeight AS {name ?? "ProductHeight"} ";
-        public static string ProductLength(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ProductLength AS {name ?? "ProductLength"} ";
-        public static string ProductWidth(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ProductWidth AS {name ?? "ProductWidth"} ";
-        public static string BoxHeight(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.BoxHeight AS {name ?? "BoxHeight"} ";
-        public static string BoxLength(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.BoxLength AS {name ?? "BoxLength"} ";
-        public static string BoxWidth(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.BoxWidth AS {name ?? "BoxWidth"} ";
-        public static string DimensionUnit(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DimensionUnit AS {name ?? "DimensionUnit"} ";
-        public static string HarmonizedCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.HarmonizedCode) AS {name ?? "HarmonizedCode"} ";
-        public static string TaxProductCode(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.TaxProductCode) AS {name ?? "TaxProductCode"} ";
-        public static string IsBlocked(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.IsBlocked AS {name ?? "IsBlocked"} ";
-        public static string Warranty(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.Warranty) AS {name ?? "Warranty"} ";
-        public static string CreateBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.CreateBy) AS {name ?? "CreateBy"} ";
-        public static string UpdateBy(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy"} ";
-        public static string CreateDate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.CreateDate AS {name ?? "CreateDate"} ";
-        public static string UpdateDate(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.UpdateDate AS {name ?? "UpdateDate"} ";
-        public static string ClassificationNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.ClassificationNum AS {name ?? "ClassificationNum"} ";
-        public static string RowNum(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum"} ";
-        public static string OriginalUPC(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.OriginalUPC) AS {name ?? "OriginalUPC"} ";
-        public static string ProductUuid(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.ProductUuid) AS {name ?? "ProductUuid"} ";
-        public static string EnterDateUtc(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc"} ";
-        public static string DigitBridgeGuid(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid"} ";
+        public static string CentralProductNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CentralProductNum AS {name ?? "CentralProductNum".ToCamelCase(camelCase)} ";
+        public static string DatabaseNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DatabaseNum AS {name ?? "DatabaseNum".ToCamelCase(camelCase)} ";
+        public static string MasterAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MasterAccountNum AS {name ?? "MasterAccountNum".ToCamelCase(camelCase)} ";
+        public static string ProfileNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum".ToCamelCase(camelCase)} ";
+        public static string SKU(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SKU) AS {name ?? "SKU".ToCamelCase(camelCase)} ";
+        public static string FNSku(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.FNSku) AS {name ?? "FNSku".ToCamelCase(camelCase)} ";
+        public static string Condition(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Condition AS {name ?? "Condition".ToCamelCase(camelCase)} ";
+        public static string Brand(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Brand) AS {name ?? "Brand".ToCamelCase(camelCase)} ";
+        public static string Manufacturer(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Manufacturer) AS {name ?? "Manufacturer".ToCamelCase(camelCase)} ";
+        public static string ProductTitle(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ProductTitle) AS {name ?? "ProductTitle".ToCamelCase(camelCase)} ";
+        public static string LongDescription(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.LongDescription) AS {name ?? "LongDescription".ToCamelCase(camelCase)} ";
+        public static string ShortDescription(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShortDescription) AS {name ?? "ShortDescription".ToCamelCase(camelCase)} ";
+        public static string Subtitle(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Subtitle) AS {name ?? "Subtitle".ToCamelCase(camelCase)} ";
+        public static string ASIN(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ASIN) AS {name ?? "ASIN".ToCamelCase(camelCase)} ";
+        public static string UPC(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.UPC) AS {name ?? "UPC".ToCamelCase(camelCase)} ";
+        public static string EAN(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EAN) AS {name ?? "EAN".ToCamelCase(camelCase)} ";
+        public static string ISBN(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ISBN) AS {name ?? "ISBN".ToCamelCase(camelCase)} ";
+        public static string MPN(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.MPN) AS {name ?? "MPN".ToCamelCase(camelCase)} ";
+        public static string Price(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Price AS {name ?? "Price".ToCamelCase(camelCase)} ";
+        public static string Cost(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Cost AS {name ?? "Cost".ToCamelCase(camelCase)} ";
+        public static string AvgCost(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.AvgCost AS {name ?? "AvgCost".ToCamelCase(camelCase)} ";
+        public static string MAPPrice(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MAPPrice AS {name ?? "MAPPrice".ToCamelCase(camelCase)} ";
+        public static string MSRP(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MSRP AS {name ?? "MSRP".ToCamelCase(camelCase)} ";
+        public static string BundleType(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.BundleType AS {name ?? "BundleType".ToCamelCase(camelCase)} ";
+        public static string ProductType(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProductType AS {name ?? "ProductType".ToCamelCase(camelCase)} ";
+        public static string VariationVaryBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VariationVaryBy) AS {name ?? "VariationVaryBy".ToCamelCase(camelCase)} ";
+        public static string CopyToChildren(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CopyToChildren AS {name ?? "CopyToChildren".ToCamelCase(camelCase)} ";
+        public static string MultipackQuantity(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MultipackQuantity AS {name ?? "MultipackQuantity".ToCamelCase(camelCase)} ";
+        public static string VariationParentSKU(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VariationParentSKU) AS {name ?? "VariationParentSKU".ToCamelCase(camelCase)} ";
+        public static string IsInRelationship(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.IsInRelationship AS {name ?? "IsInRelationship".ToCamelCase(camelCase)} ";
+        public static string NetWeight(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.NetWeight AS {name ?? "NetWeight".ToCamelCase(camelCase)} ";
+        public static string GrossWeight(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.GrossWeight AS {name ?? "GrossWeight".ToCamelCase(camelCase)} ";
+        public static string WeightUnit(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.WeightUnit AS {name ?? "WeightUnit".ToCamelCase(camelCase)} ";
+        public static string ProductHeight(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProductHeight AS {name ?? "ProductHeight".ToCamelCase(camelCase)} ";
+        public static string ProductLength(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProductLength AS {name ?? "ProductLength".ToCamelCase(camelCase)} ";
+        public static string ProductWidth(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProductWidth AS {name ?? "ProductWidth".ToCamelCase(camelCase)} ";
+        public static string BoxHeight(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.BoxHeight AS {name ?? "BoxHeight".ToCamelCase(camelCase)} ";
+        public static string BoxLength(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.BoxLength AS {name ?? "BoxLength".ToCamelCase(camelCase)} ";
+        public static string BoxWidth(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.BoxWidth AS {name ?? "BoxWidth".ToCamelCase(camelCase)} ";
+        public static string DimensionUnit(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DimensionUnit AS {name ?? "DimensionUnit".ToCamelCase(camelCase)} ";
+        public static string HarmonizedCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.HarmonizedCode) AS {name ?? "HarmonizedCode".ToCamelCase(camelCase)} ";
+        public static string TaxProductCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.TaxProductCode) AS {name ?? "TaxProductCode".ToCamelCase(camelCase)} ";
+        public static string IsBlocked(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.IsBlocked AS {name ?? "IsBlocked".ToCamelCase(camelCase)} ";
+        public static string Warranty(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Warranty) AS {name ?? "Warranty".ToCamelCase(camelCase)} ";
+        public static string CreateBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CreateBy) AS {name ?? "CreateBy".ToCamelCase(camelCase)} ";
+        public static string UpdateBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy".ToCamelCase(camelCase)} ";
+        public static string CreateDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CreateDate AS {name ?? "CreateDate".ToCamelCase(camelCase)} ";
+        public static string UpdateDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.UpdateDate AS {name ?? "UpdateDate".ToCamelCase(camelCase)} ";
+        public static string ClassificationNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ClassificationNum AS {name ?? "ClassificationNum".ToCamelCase(camelCase)} ";
+        public static string RowNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum".ToCamelCase(camelCase)} ";
+        public static string OriginalUPC(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.OriginalUPC) AS {name ?? "OriginalUPC".ToCamelCase(camelCase)} ";
+        public static string ProductUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ProductUuid) AS {name ?? "ProductUuid".ToCamelCase(camelCase)} ";
+        public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
+        public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";
 
         #endregion - static SQL fileds statement
 

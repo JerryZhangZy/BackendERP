@@ -32,4 +32,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public NoContentException() : base()
         { }
     }
+    public class InvalidRequestException : Exception
+    {
+        /// <summary>
+        /// Initializes a new instance of the InvalidParameterException class with a specified
+        /// </summary>
+        /// <param name="message">The message that describes the error.</param>
+        public InvalidRequestException(string message = "Invalid request.") : base(message)
+        { }
+    }
 }
