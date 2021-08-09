@@ -32,6 +32,69 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public static class SalesOrderHelper
     {
+        public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM SalesOrderHeader tbl
+WHERE tbl.MasterAccountNum = @masterAccountNum
+AND tbl.ProfileNum = @profileNum
+AND tbl.OrderNumber = @number
+";
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+            return result > 0;
+        }
+
+        public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM SalesOrderHeader tbl
+WHERE tbl.MasterAccountNum = @masterAccountNum
+AND tbl.ProfileNum = @profileNum
+AND tbl.OrderNumber = @number
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+            return result > 0;
+        }
+
+        public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM SalesOrderHeader tbl
+WHERE tbl.MasterAccountNum = @masterAccountNum
+AND tbl.ProfileNum = @profileNum
+AND tbl.SalesOrderUuid = @uuid
+";
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                uuid.ToSqlParameter("uuid")
+            );
+            return result > 0;
+        }
+
+        public static async Task<bool> ExistIdAsync(string uuid, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM SalesOrderHeader tbl
+WHERE tbl.MasterAccountNum = @masterAccountNum
+AND tbl.ProfileNum = @profileNum
+AND tbl.SalesOrderUuid = @uuid
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                uuid.ToSqlParameter("uuid")
+            );
+            return result > 0;
+        }
 
     }
 }

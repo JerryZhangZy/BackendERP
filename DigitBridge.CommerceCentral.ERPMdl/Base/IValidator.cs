@@ -15,18 +15,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         bool IsValid { get; set; }
         void Clear();
 
-        bool ValidatePayload(TEntity data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit);
+        bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit);
+        Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit);
 
         bool Validate(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
         Task<bool> ValidateAsync(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit); 
-         
-        bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit);
 
-        bool Validate(TDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit);
-        
-        Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit);
-        
-        Task<bool> ValidateAsync(TDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit);
+        bool Validate(TDto dto, ProcessingMode processingMode = ProcessingMode.Edit);
+        Task<bool> ValidateAsync(TDto dto, ProcessingMode processingMode = ProcessingMode.Edit);
           
     }
 }
