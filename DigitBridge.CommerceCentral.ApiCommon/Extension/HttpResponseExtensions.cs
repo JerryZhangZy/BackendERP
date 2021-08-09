@@ -20,9 +20,10 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         /// <returns></returns>
         public async static Task Output(this HttpResponse response, object data, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
         {
+            var strData = (data is string) ? data.ToString() : JsonConvert.SerializeObject(data);
             response.ContentType = "application/json;charset=utf-8;";
             response.StatusCode = (int)statusCode;
-            var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data));
+            var bytes = Encoding.UTF8.GetBytes(strData);
             response.ContentLength = bytes.Length;
             await response.Body.WriteAsync(bytes, 0, bytes.Length);
         }

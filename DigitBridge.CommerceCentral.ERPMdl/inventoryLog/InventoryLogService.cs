@@ -219,6 +219,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // set Add mode and clear data
             Add();
+
+            if (!Validate(payload.InventoryLog))
+                return false;
+
             // load data from dto
             FromDto(payload.InventoryLog);
 
@@ -242,6 +246,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // set Add mode and clear data
             Add();
+            if (!(await ValidateAsync(payload.InventoryLog).ConfigureAwait(false)))
+                return false;
+
             // load data from dto
             FromDto(payload.InventoryLog);
 
@@ -304,6 +311,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // set Add mode and clear data
             Edit(payload.InventoryLog.InventoryLog.RowNum.ToLong());
 
+            if (!Validate(payload.InventoryLog))
+                return false;
+
             if (!ValidatePayload(payload))
                 return false;
 
@@ -325,18 +335,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasInventoryLog || payload.InventoryLog.InventoryLog.RowNum.ToLong() <= 0)
                 return false;
             // set Add mode and clear data
-            Edit(payload.InventoryLog.InventoryLog.RowNum.ToLong());
+            await EditAsync(payload.InventoryLog.InventoryLog.RowNum.ToLong()).ConfigureAwait(false);
 
-            if (!ValidatePayload(payload))
+            if (!(await ValidateAsync(payload.InventoryLog).ConfigureAwait(false)))
+                return false;
+
+            // validate data for Add processing
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
                 return false;
 
             // load data from dto
             FromDto(payload.InventoryLog);
             // validate data for Add processing
-            if (!Validate())
+            if (!(await ValidateAsync().ConfigureAwait(false)))
                 return false;
 
-            return SaveData();
+            return await SaveDataAsync();
         }
 
     }

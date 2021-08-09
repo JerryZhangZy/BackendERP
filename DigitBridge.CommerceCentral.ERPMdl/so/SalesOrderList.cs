@@ -34,9 +34,9 @@ SELECT
 {SalesOrderHeaderHelper.SalesOrderUuid()}, 
 {SalesOrderHeaderHelper.OrderNumber()}, 
 {SalesOrderHeaderHelper.OrderType()}, 
-COALESCE(ordtp.text, '') orderTypeText, 
+COALESCE(ordtp.text, '') OrderTypeText, 
 {SalesOrderHeaderHelper.OrderStatus()}, 
-COALESCE(ordst.text, '') orderStatusText, 
+COALESCE(ordst.text, '') OrderStatusText, 
 {SalesOrderHeaderHelper.OrderDate()}, 
 {SalesOrderHeaderHelper.ShipDate()}, 
 {SalesOrderHeaderHelper.OrderTime()}, 
@@ -61,7 +61,7 @@ COALESCE(ordst.text, '') orderStatusText,
         {
             this.SQL_From = $@"
  FROM {SalesOrderHeaderHelper.TableName} {SalesOrderHeaderHelper.TableAllies} 
- LEFT JOIN {SalesOrderHeaderInfoHelper.TableName} {SalesOrderHeaderInfoHelper.TableAllies} ON ({SalesOrderHeaderInfoHelper.TableAllies}.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid)
+ LEFT JOIN {SalesOrderHeaderInfoHelper.TableName} {SalesOrderHeaderInfoHelper.TableAllies} ON ({SalesOrderHeaderInfoHelper.TableAllies}.SalesOrderUuid = {SalesOrderHeaderInfoHelper.TableAllies}.SalesOrderUuid)
  LEFT JOIN {CustomerHelper.TableName} {CustomerHelper.TableAllies} ON ({CustomerHelper.TableAllies}.CustomerUuid = {SalesOrderHeaderHelper.TableAllies}.CustomerUuid)
  LEFT JOIN @SalesOrderStatus ordst ON ({SalesOrderHeaderHelper.TableAllies}.OrderStatus = ordst.num)
  LEFT JOIN @SalesOrderType ordtp ON ({SalesOrderHeaderHelper.TableAllies}.OrderType = ordtp.num)

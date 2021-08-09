@@ -29,8 +29,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         ICalculator<TEntity> Calculator { get; }
         void SetCalculator(ICalculator<TEntity> calculator);
 
-        IList<IValidator<TEntity>> Validators { get; }
-        void AddValidator(IValidator<TEntity> validator);
+        IList<IValidator<TEntity,TDto>> Validators { get; }
+        void AddValidator(IValidator<TEntity,TDto> validator);
 
         void OnClear(TEntity data);
         bool OnAfterLoad(TEntity data);
@@ -62,6 +62,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         bool ValidatePayload(IPayload payload);
         Task<bool> ValidatePayloadAsync(IPayload payload);
+
+        bool Validate(IPayload payload);
+
+        bool Validate(TDto dto);
+
+        Task<bool> ValidateAsync(IPayload payload);
+
+        Task<bool> ValidateAsync(TDto dto);
+
 
         bool GetData(long RowNum);
         bool GetDataById(string id);

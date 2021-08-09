@@ -58,13 +58,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
             if (exception != null)
             {
                 var req = executedContext.GetContext<HttpRequest>();
-                var needLog = !(exception.InnerException is InvalidParameterException
-                    || exception.InnerException is NoContentException
-                    || MySingletonAppSetting.DebugMode);
+                var hasException = !(exception is InvalidParameterException
+                    || exception is NoContentException
+                    || exception is InvalidRequestException);
+                var needLog = hasException && !MySingletonAppSetting.DebugMode;
+                var logMessage = string.Empty;
+                if (needLog)
+                {
+                    logMessage = await WriteLog(executedContext.FunctionName, exception, req);
+                }
 
-                var data = needLog
-                    ? await WriteLog(executedContext.FunctionName, exception, req)
-                    : exception;
+                var data = needLog ? logMessage : (hasException ? exception.ObjectToString() : exception.Message);
 
                 // anyway write response
                 await req.HttpContext.Response.Output(data);
@@ -97,12 +101,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             }
             if (messages.Count > 0)
             {
-                await req.HttpContext.Response.Output(messages);
+                await req.HttpContext.Response.Output(messages.ObjectToString());
                 //interrupt function call
                 throw new InvalidParameterException();
             }
         }
-        private async Task<object> WriteLog(string functionName, Exception exception, HttpRequest req)
+        private async Task<string> WriteLog(string functionName, Exception exception, HttpRequest req)
         {
             //var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
             //var bodyType = methodInfo?.GetCustomAttribute<OpenApiRequestBodyAttribute>()?.BodyType; 
