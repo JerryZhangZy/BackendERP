@@ -66,7 +66,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
         public virtual CustomerData CheckIntegrity()
         {
@@ -74,7 +73,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			Customer.CheckUniqueId(); 
 			CheckIntegrityCustomerAddress(); 
 			CheckIntegrityCustomerAttributes(); 
-			CheckIntegrityOthers(); 
             return this;
         }
 

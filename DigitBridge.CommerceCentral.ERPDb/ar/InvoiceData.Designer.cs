@@ -74,7 +74,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
         public virtual InvoiceData CheckIntegrity()
         {
@@ -84,7 +83,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckIntegrityInvoiceHeaderAttributes(); 
 			CheckIntegrityInvoiceItems(); 
 			CheckIntegrityInvoiceItemsAttributes(); 
-			CheckIntegrityOthers(); 
             return this;
         }
 
@@ -625,7 +623,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         // grand children
         protected IList<InvoiceItemsAttributes> _InvoiceItemsAttributes;
 
-        public IList<InvoiceItemsAttributes> InvoiceItemsAttributes 
+        protected IList<InvoiceItemsAttributes> InvoiceItemsAttributes 
         { 
             get 
             {
