@@ -285,24 +285,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             IsValid = true;
-            //var pl = (InvoiceTransactionPayload)payload;
-            //if (pl is null || !pl.InvoiceTransaction)
-            //{
-            //    IsValid = false;
-            //    AddError($"No data found");
-            //    return IsValid;
-            //}
+            var pl = (InvoiceTransactionPayload)payload;
+            if (pl is null || !pl.HasInvoiceTransaction)
+            {
+                IsValid = false;
+                AddError($"No data found");
+                return IsValid;
+            }
 
-            //var dto = pl.InvoiceTransaction;
-            //if (processingMode == ProcessingMode.Add)
-            //{
-            //    //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            //    dto.InvoiceTransaction.MasterAccountNum = pl.MasterAccountNum;
-            //    dto.InvoiceTransaction.ProfileNum = pl.ProfileNum;
-            //    dto.InvoiceTransaction.DatabaseNum = pl.DatabaseNum;
-            //}
+            var dto = pl.InvoiceTransaction;
+            if (processingMode == ProcessingMode.Add)
+            {
+                //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.InvoiceTransaction.MasterAccountNum = pl.MasterAccountNum;
+                dto.InvoiceTransaction.ProfileNum = pl.ProfileNum;
+                dto.InvoiceTransaction.DatabaseNum = pl.DatabaseNum;
+            }
 
-            //IsValid= Validate(dto, dbFactory, processingMode);
+            IsValid = Validate(dto, dbFactory, processingMode);
             return IsValid;
         }
         /// <summary>
@@ -370,24 +370,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             IsValid = true;
-            //var pl = (InvoiceTransactionPayload)payload;
-            //if (pl is null || !pl.InvoiceTransaction)
-            //{
-            //    IsValid = false;
-            //    AddError($"No data found");
-            //    return IsValid;
-            //}
+            var pl = (InvoiceTransactionPayload)payload;
+            if (pl is null || !pl.HasInvoiceTransaction)
+            {
+                IsValid = false;
+                AddError($"No data found");
+                return IsValid;
+            }
 
-            //var dto = pl.InvoiceTransaction;
-            //if (processingMode == ProcessingMode.Add)
-            //{
-            //    //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            //    dto.InvoiceTransaction.MasterAccountNum = pl.MasterAccountNum;
-            //    dto.InvoiceTransaction.ProfileNum = pl.ProfileNum;
-            //    dto.InvoiceTransaction.DatabaseNum = pl.DatabaseNum;
-            //}
+            var dto = pl.InvoiceTransaction;
+            if (processingMode == ProcessingMode.Add)
+            {
+                //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.InvoiceTransaction.MasterAccountNum = pl.MasterAccountNum;
+                dto.InvoiceTransaction.ProfileNum = pl.ProfileNum;
+                dto.InvoiceTransaction.DatabaseNum = pl.DatabaseNum;
+            }
 
-            //IsValid= await ValidateAsync(dto, dbFactory, processingMode);
+            IsValid = await ValidateAsync(dto, dbFactory, processingMode);
             return IsValid;
         }
         /// <summary>

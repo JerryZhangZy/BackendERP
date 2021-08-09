@@ -69,8 +69,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             // set Add mode and clear data
             Add();
-            // validate before data loaded.  //TODO Add interface to servicebase
-            //new InvoiceTransactionServiceValidatorDefault().Validating(payload, ProcessMode, dbFactory);
+            // validate before data loaded. 
+            if (!(await ValidateAsync(payload).ConfigureAwait(false)))
+                return false;
             // load data from dto
             FromDto(payload.InvoiceTransaction);
             // validate after data loaded //TODO Add interface to servicebase
@@ -124,15 +125,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // set edit mode
             Edit();
 
-            // validate before data loaded.  //TODO Add interface to servicebase
-            //new InvoiceTransactionServiceValidatorDefault().Validating(payload, ProcessMode, dbFactory);
+            // validate before data loaded.
+            if (!(await ValidateAsync(payload).ConfigureAwait(false)))
+            return false;
 
             // load data from db
             await GetDataAsync(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
 
-            // validate after data loaded //TODO Add interface to servicebase
-            //new InvoiceTransactionServiceValidatorDefault().Validated(this.Data, payload, ProcessMode);
-
+            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+                return false;
             // load data from dto
             FromDto(payload.InvoiceTransaction);
 

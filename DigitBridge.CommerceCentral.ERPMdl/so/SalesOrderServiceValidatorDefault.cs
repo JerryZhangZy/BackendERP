@@ -285,24 +285,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             IsValid = true;
-            //var pl = (SalesOrderHeaderPayload)payload;
-            //if (pl is null || !pl.SalesOrderHeader)
-            //{
-            //    IsValid = false;
-            //    AddError($"No data found");
-            //    return IsValid;
-            //}
+            var pl = (SalesOrderPayload)payload;
+            if (pl is null || !pl.HasSalesOrder)
+            {
+                IsValid = false;
+                AddError($"No data found");
+                return IsValid;
+            }
 
-            //var dto = pl.SalesOrderHeader;
-            //if (processingMode == ProcessingMode.Add)
-            //{
-            //    //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            //    dto.SalesOrderHeader.MasterAccountNum = pl.MasterAccountNum;
-            //    dto.SalesOrderHeader.ProfileNum = pl.ProfileNum;
-            //    dto.SalesOrderHeader.DatabaseNum = pl.DatabaseNum;
-            //}
+            var dto = pl.SalesOrder;
+            if (processingMode == ProcessingMode.Add)
+            {
+                //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.SalesOrderHeader.MasterAccountNum = pl.MasterAccountNum;
+                dto.SalesOrderHeader.ProfileNum = pl.ProfileNum;
+                dto.SalesOrderHeader.DatabaseNum = pl.DatabaseNum;
+            }
 
-            //IsValid= Validate(dto, dbFactory, processingMode);
+            IsValid = Validate(dto, dbFactory, processingMode);
             return IsValid;
         }
         /// <summary>
@@ -351,8 +351,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.SalesOrderHeader.ProfileNum = null;
                 dto.SalesOrderHeader.DatabaseNum = null;
                 dto.SalesOrderHeader.SalesOrderUuid = null;
-                // TODO 
-                //dto.SalesOrderHeader.OrderNumber = null;
+                dto.SalesOrderHeader.OrderNumber = null;
             }
             IsValid=isValid;
             return isValid;
