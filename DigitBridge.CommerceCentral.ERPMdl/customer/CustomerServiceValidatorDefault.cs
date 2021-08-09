@@ -284,24 +284,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true;
-            //TODO 
+            IsValid = true;
             //var pl = (CustomerPayload)payload;
-            //if (pl is null || !pl.Has Customer)
+            //if (pl is null || !pl.Customer)
             //{
-            //    isValid = false;
+            //    IsValid = false;
             //    AddError($"No data found");
+            //    return IsValid;
             //}
-            //else
+
+            //var dto = pl.Customer;
+            //if (processingMode == ProcessingMode.Add)
             //{
-            //    var dto = pl.SalesOrder;
-            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
             //    dto.Customer.MasterAccountNum = pl.MasterAccountNum;
             //    dto.Customer.ProfileNum = pl.ProfileNum;
             //    dto.Customer.DatabaseNum = pl.DatabaseNum;
-            //    isValid = Validate(dto, dbFactory, processingMode);
             //}
-            return isValid;
+
+            //IsValid= Validate(dto, dbFactory, processingMode);
+            return IsValid;
         }
         /// <summary>
         /// Validate dto.
@@ -321,13 +323,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //Init property
-                //if (string.IsNullOrEmpty(dto.Customer.CustomerUuid))
-                //{
-                    dto.Customer.CustomerUuid = new Guid().ToString();
-                //} 
+                dto.Customer.CustomerUuid = new Guid().ToString(); 
                   
-            }
-            if (processingMode == ProcessingMode.Edit)
+            } 
+            else
             {
                 if (!dto.Customer.RowNum.HasValue)
                 {
@@ -347,10 +346,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
-            else
-            {
-                //TODO
-            }
             IsValid=isValid;
             return isValid;
         }
@@ -366,24 +361,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true; 
-            //TODO 
+            IsValid = true;
             //var pl = (CustomerPayload)payload;
-            //if (pl is null || !pl.Has Customer)
+            //if (pl is null || !pl.Customer)
             //{
-            //    isValid = false;
+            //    IsValid = false;
             //    AddError($"No data found");
+            //    return IsValid;
             //}
-            //else
+
+            //var dto = pl.Customer;
+            //if (processingMode == ProcessingMode.Add)
             //{
-            //    var dto = pl.SalesOrder;
-            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
             //    dto.Customer.MasterAccountNum = pl.MasterAccountNum;
             //    dto.Customer.ProfileNum = pl.ProfileNum;
             //    dto.Customer.DatabaseNum = pl.DatabaseNum;
-            //    isValid =await ValidateAsync(dto, dbFactory, processingMode);
             //}
-            return isValid;
+
+            //IsValid= await ValidateAsync(dto, dbFactory, processingMode);
+            return IsValid;
         }
         /// <summary>
         /// Validate dto.
@@ -407,8 +404,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                   
  
                 
-            }
-            if (processingMode == ProcessingMode.Edit)
+            } 
+            else
             {
                 if (!dto.Customer.RowNum.HasValue)
                 {
@@ -427,10 +424,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.Customer.CustomerUuid = null;
                 //TODO set uuid to null 
                 //dto.Customer.OrderNumber = null;
-            }
-            else
-            {
-                //TODO
             }
             IsValid=isValid;
             return isValid;

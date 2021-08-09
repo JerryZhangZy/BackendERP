@@ -284,24 +284,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true;
-            //TODO 
+            IsValid = true;
             //var pl = (InventoryLogPayload)payload;
-            //if (pl is null || !pl.Has InventoryLog)
+            //if (pl is null || !pl.InventoryLog)
             //{
-            //    isValid = false;
+            //    IsValid = false;
             //    AddError($"No data found");
+            //    return IsValid;
             //}
-            //else
+
+            //var dto = pl.InventoryLog;
+            //if (processingMode == ProcessingMode.Add)
             //{
-            //    var dto = pl.SalesOrder;
-            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
             //    dto.InventoryLog.MasterAccountNum = pl.MasterAccountNum;
             //    dto.InventoryLog.ProfileNum = pl.ProfileNum;
             //    dto.InventoryLog.DatabaseNum = pl.DatabaseNum;
-            //    isValid = Validate(dto, dbFactory, processingMode);
             //}
-            return isValid;
+
+            //IsValid= Validate(dto, dbFactory, processingMode);
+            return IsValid;
         }
         /// <summary>
         /// Validate dto.
@@ -321,13 +323,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //Init property
-                //if (string.IsNullOrEmpty(dto.InventoryLog.InventoryLogUuid))
-                //{
-                    dto.InventoryLog.InventoryLogUuid = new Guid().ToString();
-                //} 
+                dto.InventoryLog.InventoryLogUuid = new Guid().ToString(); 
                   
-            }
-            if (processingMode == ProcessingMode.Edit)
+            } 
+            else
             {
                 if (!dto.InventoryLog.RowNum.HasValue)
                 {
@@ -347,10 +346,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
-            else
-            {
-                //TODO
-            }
             IsValid=isValid;
             return isValid;
         }
@@ -366,24 +361,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true; 
-            //TODO 
+            IsValid = true;
             //var pl = (InventoryLogPayload)payload;
-            //if (pl is null || !pl.Has InventoryLog)
+            //if (pl is null || !pl.InventoryLog)
             //{
-            //    isValid = false;
+            //    IsValid = false;
             //    AddError($"No data found");
+            //    return IsValid;
             //}
-            //else
+
+            //var dto = pl.InventoryLog;
+            //if (processingMode == ProcessingMode.Add)
             //{
-            //    var dto = pl.SalesOrder;
-            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
             //    dto.InventoryLog.MasterAccountNum = pl.MasterAccountNum;
             //    dto.InventoryLog.ProfileNum = pl.ProfileNum;
             //    dto.InventoryLog.DatabaseNum = pl.DatabaseNum;
-            //    isValid =await ValidateAsync(dto, dbFactory, processingMode);
             //}
-            return isValid;
+
+            //IsValid= await ValidateAsync(dto, dbFactory, processingMode);
+            return IsValid;
         }
         /// <summary>
         /// Validate dto.
@@ -407,8 +404,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                   
  
                 
-            }
-            if (processingMode == ProcessingMode.Edit)
+            } 
+            else
             {
                 if (!dto.InventoryLog.RowNum.HasValue)
                 {
@@ -427,10 +424,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.InventoryLog.InventoryLogUuid = null;
                 //TODO set uuid to null 
                 //dto.InventoryLog.OrderNumber = null;
-            }
-            else
-            {
-                //TODO
             }
             IsValid=isValid;
             return isValid;

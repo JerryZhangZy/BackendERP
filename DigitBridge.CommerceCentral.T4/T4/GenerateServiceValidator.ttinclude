@@ -285,24 +285,26 @@ namespace <#= NamespaceService #>
         /// <returns></returns>
         public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true;
-            //TODO 
+            IsValid = true;
             //var pl = (<#= StructureClass.MainTable.Name #>Payload)payload;
-            //if (pl is null || !pl.Has <#= StructureClass.MainTable.Name #>)
+            //if (pl is null || !pl.<#=StructureClass.MainTable.Name #>)
             //{
-            //    isValid = false;
+            //    IsValid = false;
             //    AddError($"No data found");
+            //    return IsValid;
             //}
-            //else
+
+            //var dto = pl.<#= StructureClass.MainTable.Name #>;
+            //if (processingMode == ProcessingMode.Add)
             //{
-            //    var dto = pl.SalesOrder;
-            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
             //    dto.<#= StructureClass.MainTable.Name #>.MasterAccountNum = pl.MasterAccountNum;
             //    dto.<#= StructureClass.MainTable.Name #>.ProfileNum = pl.ProfileNum;
             //    dto.<#= StructureClass.MainTable.Name #>.DatabaseNum = pl.DatabaseNum;
-            //    isValid = Validate(dto, dbFactory, processingMode);
             //}
-            return isValid;
+
+            //IsValid= Validate(dto, dbFactory, processingMode);
+            return IsValid;
         }
         /// <summary>
         /// Validate dto.
@@ -322,10 +324,7 @@ namespace <#= NamespaceService #>
             if (processingMode == ProcessingMode.Add)
             {
                 //Init property
-                //if (string.IsNullOrEmpty(dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>))
-                //{
-                    dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = new Guid().ToString();
-                //} 
+                dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = new Guid().ToString(); 
                 <#  if (StructureClass.DetailTable != null)
                     { 
                 #>
@@ -334,15 +333,12 @@ namespace <#= NamespaceService #>
                 {
                     foreach (var detailItem in dto.<#= StructureClass.DetailTable.Name #>)
                     {
-                        //if (string.IsNullOrEmpty(detailItem.<#= StructureClass.DetailTable.UniqueKey #>))
-                        //{
-                            detailItem.<#= StructureClass.DetailTable.UniqueKey #> = new Guid().ToString();
-                        //}
+                        detailItem.<#= StructureClass.DetailTable.UniqueKey #> = new Guid().ToString();
                     }
                 }
                 <# } #>  
-            }
-            if (processingMode == ProcessingMode.Edit)
+            } 
+            else
             {
                 if (!dto.<#= StructureClass.MainTable.Name #>.RowNum.HasValue)
                 {
@@ -362,10 +358,6 @@ namespace <#= NamespaceService #>
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
-            else
-            {
-                //TODO
-            }
             IsValid=isValid;
             return isValid;
         }
@@ -381,24 +373,26 @@ namespace <#= NamespaceService #>
         /// <returns></returns>
         public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true; 
-            //TODO 
+            IsValid = true;
             //var pl = (<#= StructureClass.MainTable.Name #>Payload)payload;
-            //if (pl is null || !pl.Has <#= StructureClass.MainTable.Name #>)
+            //if (pl is null || !pl.<#=StructureClass.MainTable.Name #>)
             //{
-            //    isValid = false;
+            //    IsValid = false;
             //    AddError($"No data found");
+            //    return IsValid;
             //}
-            //else
+
+            //var dto = pl.<#= StructureClass.MainTable.Name #>;
+            //if (processingMode == ProcessingMode.Add)
             //{
-            //    var dto = pl.SalesOrder;
-            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
             //    dto.<#= StructureClass.MainTable.Name #>.MasterAccountNum = pl.MasterAccountNum;
             //    dto.<#= StructureClass.MainTable.Name #>.ProfileNum = pl.ProfileNum;
             //    dto.<#= StructureClass.MainTable.Name #>.DatabaseNum = pl.DatabaseNum;
-            //    isValid =await ValidateAsync(dto, dbFactory, processingMode);
             //}
-            return isValid;
+
+            //IsValid= await ValidateAsync(dto, dbFactory, processingMode);
+            return IsValid;
         }
         /// <summary>
         /// Validate dto.
@@ -433,8 +427,8 @@ namespace <#= NamespaceService #>
                 <# } #>  
  
                 
-            }
-            if (processingMode == ProcessingMode.Edit)
+            } 
+            else
             {
                 if (!dto.<#= StructureClass.MainTable.Name #>.RowNum.HasValue)
                 {
@@ -453,10 +447,6 @@ namespace <#= NamespaceService #>
                 dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = null;
                 //TODO set uuid to null 
                 //dto.<#= StructureClass.MainTable.Name #>.OrderNumber = null;
-            }
-            else
-            {
-                //TODO
             }
             IsValid=isValid;
             return isValid;

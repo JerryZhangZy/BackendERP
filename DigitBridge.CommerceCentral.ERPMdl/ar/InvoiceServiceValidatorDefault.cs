@@ -284,24 +284,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true;
-            //TODO 
+            IsValid = true;
             //var pl = (InvoiceHeaderPayload)payload;
-            //if (pl is null || !pl.Has InvoiceHeader)
+            //if (pl is null || !pl.InvoiceHeader)
             //{
-            //    isValid = false;
+            //    IsValid = false;
             //    AddError($"No data found");
+            //    return IsValid;
             //}
-            //else
+
+            //var dto = pl.InvoiceHeader;
+            //if (processingMode == ProcessingMode.Add)
             //{
-            //    var dto = pl.SalesOrder;
-            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
             //    dto.InvoiceHeader.MasterAccountNum = pl.MasterAccountNum;
             //    dto.InvoiceHeader.ProfileNum = pl.ProfileNum;
             //    dto.InvoiceHeader.DatabaseNum = pl.DatabaseNum;
-            //    isValid = Validate(dto, dbFactory, processingMode);
             //}
-            return isValid;
+
+            //IsValid= Validate(dto, dbFactory, processingMode);
+            return IsValid;
         }
         /// <summary>
         /// Validate dto.
@@ -321,24 +323,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //Init property
-                //if (string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceUuid))
-                //{
-                    dto.InvoiceHeader.InvoiceUuid = new Guid().ToString();
-                //} 
+                dto.InvoiceHeader.InvoiceUuid = new Guid().ToString(); 
                 
                 if (dto.InvoiceItems != null && dto.InvoiceItems.Count > 0)
                 {
                     foreach (var detailItem in dto.InvoiceItems)
                     {
-                        //if (string.IsNullOrEmpty(detailItem.InvoiceItemsUuid))
-                        //{
-                            detailItem.InvoiceItemsUuid = new Guid().ToString();
-                        //}
+                        detailItem.InvoiceItemsUuid = new Guid().ToString();
                     }
                 }
                   
-            }
-            if (processingMode == ProcessingMode.Edit)
+            } 
+            else
             {
                 if (!dto.InvoiceHeader.RowNum.HasValue)
                 {
@@ -358,10 +354,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
-            else
-            {
-                //TODO
-            }
             IsValid=isValid;
             return isValid;
         }
@@ -377,24 +369,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var isValid = true; 
-            //TODO 
+            IsValid = true;
             //var pl = (InvoiceHeaderPayload)payload;
-            //if (pl is null || !pl.Has InvoiceHeader)
+            //if (pl is null || !pl.InvoiceHeader)
             //{
-            //    isValid = false;
+            //    IsValid = false;
             //    AddError($"No data found");
+            //    return IsValid;
             //}
-            //else
+
+            //var dto = pl.InvoiceHeader;
+            //if (processingMode == ProcessingMode.Add)
             //{
-            //    var dto = pl.SalesOrder;
-            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    //copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
             //    dto.InvoiceHeader.MasterAccountNum = pl.MasterAccountNum;
             //    dto.InvoiceHeader.ProfileNum = pl.ProfileNum;
             //    dto.InvoiceHeader.DatabaseNum = pl.DatabaseNum;
-            //    isValid =await ValidateAsync(dto, dbFactory, processingMode);
             //}
-            return isValid;
+
+            //IsValid= await ValidateAsync(dto, dbFactory, processingMode);
+            return IsValid;
         }
         /// <summary>
         /// Validate dto.
@@ -426,8 +420,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                   
  
                 
-            }
-            if (processingMode == ProcessingMode.Edit)
+            } 
+            else
             {
                 if (!dto.InvoiceHeader.RowNum.HasValue)
                 {
@@ -446,10 +440,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.InvoiceHeader.InvoiceUuid = null;
                 //TODO set uuid to null 
                 //dto.InvoiceHeader.OrderNumber = null;
-            }
-            else
-            {
-                //TODO
             }
             IsValid=isValid;
             return isValid;
