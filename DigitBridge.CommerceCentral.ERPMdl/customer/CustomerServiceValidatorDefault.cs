@@ -77,10 +77,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool ValidatePayload(CustomerData data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
         { 
             var isValid = true;
-            var pl = payload as SalesOrderPayload;//TODO replace SalesOrderPayload to your payload
+            var pl = payload as CustomerPayload;//TODO replace SalesOrderPayload to your payload
             if (processingMode == ProcessingMode.Add)
             {
                 //TODO 
+                data.Customer.DatabaseNum = pl.DatabaseNum;
+                data.Customer.MasterAccountNum = pl.MasterAccountNum;
+                data.Customer.ProfileNum = pl.ProfileNum;
             }
             else
             {
@@ -137,10 +140,36 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.Customer.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            ValidateAddData(data);
+            return IsValid;
+        }
+        protected virtual bool ValidateAddData(CustomerData data)
+        {
+            var dbFactory = data.dbFactory;
+            #region Valid Customer
+            if (string.IsNullOrEmpty(data.Customer.CustomerCode) || dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM Customer WHERE CustomerCode='{data.Customer.CustomerCode}'") > 0)
+            {
+                IsValid = false;
+                AddError($"CustomerCode required and must be unique.");
+            }
+            #endregion
 
+            #region Valid CustomerAddress
+            if (data.CustomerAddress != null && data.CustomerAddress.Count > 0)
+            {
+                var addressList = data.CustomerAddress.ToList();
+                foreach (var addr in data.CustomerAddress)
+                {
+                    if (string.IsNullOrEmpty(addr.AddressCode) || addressList.Count(r => r.AddressCode == addr.AddressCode) > 1)
+                    {
+                        IsValid = false;
+                        AddError($"CustomerAddress.AddressCode required must be unique.");
+                    }
+                }
+            }
+            #endregion
+            return IsValid;
         }
 
         protected virtual bool ValidateEdit(CustomerData data)
@@ -150,16 +179,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.Customer.RowNum} not found.");
-                return IsValid;
             }
 
             if (data.Customer.RowNum != 0 && !dbFactory.Exists<Customer>(data.Customer.RowNum))
             {
                 IsValid = false;
                 AddError($"RowNum: {data.Customer.RowNum} not found.");
-                return IsValid;
             }
-            return true;
+            return IsValid;
         }
 
         protected virtual bool ValidateDelete(CustomerData data)
@@ -228,9 +255,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.Customer.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            ValidateAddData(data);
+            return IsValid;
 
         }
 
@@ -241,16 +268,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.Customer.RowNum} not found.");
-                return IsValid;
             }
 
             if (data.Customer.RowNum != 0 && !(await dbFactory.ExistsAsync<Customer>(data.Customer.RowNum)))
             {
                 IsValid = false;
                 AddError($"RowNum: {data.Customer.RowNum} not found.");
-                return IsValid;
             }
-            return true;
+            return IsValid;
         }
 
         protected virtual async Task<bool> ValidateDeleteAsync(CustomerData data)
@@ -323,7 +348,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //Init property
-                dto.Customer.CustomerUuid = new Guid().ToString(); 
+                //if (string.IsNullOrEmpty(dto.Customer.CustomerUuid))
+                //{
+                    dto.Customer.CustomerUuid = new Guid().ToString();
+                dto.Customer.RowNum = 0;
+                //} 
                   
             } 
             else
@@ -345,6 +374,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.Customer.CustomerUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
+                dto.Customer.CustomerCode = null;
+                if (dto.HasCustomerAddress)
+                {
+                    foreach(var addr in dto.CustomerAddress)
+                    {
+                        addr.AddressCode = null;
+                        addr.AddressUuid = null;
+                    }
+                }
             }
             IsValid=isValid;
             return isValid;
@@ -424,6 +462,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.Customer.CustomerUuid = null;
                 //TODO set uuid to null 
                 //dto.Customer.OrderNumber = null;
+                dto.Customer.CustomerCode = null;
+                if (dto.HasCustomerAddress)
+                {
+                    foreach (var addr in dto.CustomerAddress)
+                    {
+                        addr.AddressCode = null;
+                    }
+                }
             }
             IsValid=isValid;
             return isValid;
