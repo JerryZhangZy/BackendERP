@@ -45,13 +45,13 @@ foreach(var col in table.Columns)
     if (col.isString)
     {
 #>
-        public static string <#= col.Name #>(string tableAllies = null, string name = null) => $"RTRIM({tableAllies ?? TableAllies}.<#= col.Name #>) AS {name ?? "<#= col.Name #>"} ";
+        public static string <#= col.Name #>(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.<#= col.Name #>) AS {name ?? "<#= col.Name #>".ToCamelCase(camelCase)} ";
 <# 
     }
     else 
     { 
 #>
-        public static string <#= col.Name #>(string tableAllies = null, string name = null) => $"{tableAllies ?? TableAllies}.<#= col.Name #> AS {name ?? "<#= col.Name #>"} ";
+        public static string <#= col.Name #>(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.<#= col.Name #> AS {name ?? "<#= col.Name #>".ToCamelCase(camelCase)} ";
 <#  } #>
 <# 
 } 
