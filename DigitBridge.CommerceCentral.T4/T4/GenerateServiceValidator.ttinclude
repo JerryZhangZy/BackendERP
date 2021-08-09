@@ -27,7 +27,7 @@ namespace <#= NamespaceService #>
     /// <summary>
     /// Represents a default <#= ServiceName #> Validator class.
     /// </summary>
-    public partial class <#= ServiceName #>ValidatorDefault : IValidator<<#= StructureClass.ClassName #>>, IMessage
+    public partial class <#= ServiceName #>ValidatorDefault : IValidator<<#= StructureClass.ClassName #>,<#= StructureDtoName #>>, IMessage
     {
         public virtual bool IsValid { get; set; }
         public <#= ServiceName #>ValidatorDefault() { }
@@ -76,28 +76,23 @@ namespace <#= NamespaceService #>
         }
 
         public virtual bool ValidatePayload(<#= StructureClass.ClassName #> data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            Clear();
-
+        { 
+            var isValid = true;
+            var pl = payload as SalesOrderPayload;//TODO replace SalesOrderPayload to your payload
             if (processingMode == ProcessingMode.Add)
             {
-                //TODO set MasterAccountNum, ProfileNum and DatabaseNum from payload
-                //data.SalesOrderHeader.MasterAccountNum = pl.MasterAccountNum;
-                //data.SalesOrderHeader.ProfileNum = pl.ProfileNum;
-                //data.SalesOrderHeader.DatabaseNum = pl.DatabaseNum;
+                //TODO 
             }
             else
             {
-                //TODO check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
-                //if (
-                //    data.SalesOrderHeader.MasterAccountNum != pl.MasterAccountNum ||
-                //    data.SalesOrderHeader.ProfileNum != pl.ProfileNum
-                //)
-                //    IsValid = false;
-                //AddError($"Sales Order not found.");
-                //return IsValid;
+                //check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
+                if (data.<#= StructureClass.MainTable.Name #>.MasterAccountNum != pl.MasterAccountNum ||
+                    data.<#= StructureClass.MainTable.Name #>.ProfileNum != pl.ProfileNum)
+                    isValid = false;
+                AddError($"Invalid request.");
             }
-            return true;
+            IsValid=isValid;
+            return isValid;
         }
 
         public virtual bool Validate(<#= StructureClass.ClassName #> data, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -279,6 +274,174 @@ namespace <#= NamespaceService #>
         }
 
         #endregion Async Methods
+
+        #region Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            //TODO 
+            //var pl = (<#= StructureClass.MainTable.Name #>Payload)payload;
+            //if (pl is null || !pl.Has <#= StructureClass.MainTable.Name #>)
+            //{
+            //    isValid = false;
+            //    AddError($"No data found");
+            //}
+            //else
+            //{
+            //    var dto = pl.SalesOrder;
+            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    dto.<#= StructureClass.MainTable.Name #>.MasterAccountNum = pl.MasterAccountNum;
+            //    dto.<#= StructureClass.MainTable.Name #>.ProfileNum = pl.ProfileNum;
+            //    dto.<#= StructureClass.MainTable.Name #>.DatabaseNum = pl.DatabaseNum;
+            //    isValid = Validate(dto, dbFactory, processingMode);
+            //}
+            return isValid;
+        }
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual bool Validate(<#= StructureDtoName #> dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"No data found");
+            }
+            if (processingMode == ProcessingMode.Add)
+            {
+                //Init property
+                //if (string.IsNullOrEmpty(dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>))
+                //{
+                    dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = new Guid().ToString();
+                //} 
+                <#  if (StructureClass.DetailTable != null)
+                    { 
+                #>
+
+                if (dto.<#= StructureClass.DetailTable.Name #> != null && dto.<#= StructureClass.DetailTable.Name #>.Count > 0)
+                {
+                    foreach (var detailItem in dto.<#= StructureClass.DetailTable.Name #>)
+                    {
+                        //if (string.IsNullOrEmpty(detailItem.<#= StructureClass.DetailTable.UniqueKey #>))
+                        //{
+                            detailItem.<#= StructureClass.DetailTable.UniqueKey #> = new Guid().ToString();
+                        //}
+                    }
+                }
+                <# } #>  
+            }
+            if (processingMode == ProcessingMode.Edit)
+            {
+                // This property should not be changed.
+                dto.<#= StructureClass.MainTable.Name #>.MasterAccountNum = null;
+                dto.<#= StructureClass.MainTable.Name #>.ProfileNum = null;
+                dto.<#= StructureClass.MainTable.Name #>.DatabaseNum = null;
+                // TODO 
+                //dto.<#= StructureClass.MainTable.Name #>.SalesOrderUuid = null;
+                //dto.SalesOrderHeader.OrderNumber = null;
+            }
+            else
+            {
+                //TODO
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
+
+        #region Validate dto async (invoke this before data loaded)
+        /// <summary>
+        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true; 
+            //TODO 
+            //var pl = (<#= StructureClass.MainTable.Name #>Payload)payload;
+            //if (pl is null || !pl.Has <#= StructureClass.MainTable.Name #>)
+            //{
+            //    isValid = false;
+            //    AddError($"No data found");
+            //}
+            //else
+            //{
+            //    var dto = pl.SalesOrder;
+            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            //    dto.<#= StructureClass.MainTable.Name #>.MasterAccountNum = pl.MasterAccountNum;
+            //    dto.<#= StructureClass.MainTable.Name #>.ProfileNum = pl.ProfileNum;
+            //    dto.<#= StructureClass.MainTable.Name #>.DatabaseNum = pl.DatabaseNum;
+            //    isValid =await ValidateAsync(dto, dbFactory, processingMode);
+            //}
+            return isValid;
+        }
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(<#= StructureDtoName #> dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"No data found");
+            }
+            if (processingMode == ProcessingMode.Add)
+            {
+                //Init property 
+                  dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = new Guid().ToString(); 
+                <#  if (StructureClass.DetailTable != null)
+                    { 
+                #>
+
+                if (dto.<#= StructureClass.DetailTable.Name #> != null && dto.<#= StructureClass.DetailTable.Name #>.Count > 0)
+                {
+                    foreach (var detailItem in dto.<#= StructureClass.DetailTable.Name #>)
+                    { 
+                        detailItem.<#= StructureClass.DetailTable.UniqueKey #> = new Guid().ToString();
+                    }
+                }
+                <# } #>  
+ 
+                
+            }
+            if (processingMode == ProcessingMode.Edit)
+            {
+                // This property should not be changed.
+                dto.<#= StructureClass.MainTable.Name #>.MasterAccountNum = null;
+                dto.<#= StructureClass.MainTable.Name #>.ProfileNum = null;
+                dto.<#= StructureClass.MainTable.Name #>.DatabaseNum = null;
+                dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = null;
+                //TODO set uuid to null 
+                //dto.<#= StructureClass.MainTable.Name #>.OrderNumber = null;
+            }
+            else
+            {
+                //TODO
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
     }
 }
 

@@ -60,7 +60,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             IDataBaseFactory dbFactory,
             IDtoMapper<TEntity, TDto> dtoMapper,
             ICalculator<TEntity> calculator,
-            IList<IValidator<TEntity>> validators) : this(dbFactory)
+            IList<IValidator<TEntity,TDto>> validators) : this(dbFactory)
         {
             _DtoMapper = dtoMapper;
             _Calculator = calculator;
@@ -120,9 +120,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual ICalculator<TEntity> Calculator => _Calculator;
         public virtual void SetCalculator(ICalculator<TEntity> calculator) => _Calculator = calculator;
 
-        protected IList<IValidator<TEntity>> _Validators;
+        protected IList<IValidator<TEntity,TDto>> _Validators;
         [XmlIgnore, JsonIgnore]
-        public virtual IList<IValidator<TEntity>> Validators => _Validators;
+        public virtual IList<IValidator<TEntity,TDto>> Validators => _Validators;
 
         #endregion Properties
 
@@ -168,10 +168,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Methods
 
-        public virtual void AddValidator(IValidator<TEntity> validator)
+        public virtual void AddValidator(IValidator<TEntity,TDto> validator)
         {
             if (_Validators == null)
-                _Validators = new List<IValidator<TEntity>>();
+                _Validators = new List<IValidator<TEntity,TDto>>();
             _Validators.Add(validator);
         }
 
@@ -310,6 +310,76 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return true;
         }
+
+        #region Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
+        /// </summary>
+        /// <param name="payload"></param> 
+        /// <returns></returns>
+        public virtual bool Validate(IPayload payload)
+        {
+            if (payload is null || Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!validator.Validate(payload, dbFactory, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param> 
+        /// <returns></returns>
+        public virtual bool Validate(TDto dto)
+        {
+            if (dto is null || Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!validator.Validate(dto, dbFactory, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region Validate dto async (invoke this before data loaded)
+        /// <summary>
+        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
+        /// </summary>
+        /// <param name="payload"></param> 
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(IPayload payload)
+        {
+            if (payload is null || Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!validator.Validate(payload, dbFactory, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param> 
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(TDto dto)
+        {
+            if (dto is null || Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!validator.Validate(dto, dbFactory, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+        #endregion
 
         #endregion Methods
 

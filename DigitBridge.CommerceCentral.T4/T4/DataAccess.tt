@@ -63,7 +63,7 @@
 */
 #>
 
-<#@ include file="SettingForSalesOrder.ttinclude" #>
+<#@ include file="SettingForShipment.ttinclude" #>
 
 <#      
     // Generate model output
