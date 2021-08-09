@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default InvoiceService Validator class.
     /// </summary>
-    public partial class InvoiceServiceValidatorDefault : IValidator<InvoiceData>, IMessage
+    public partial class InvoiceServiceValidatorDefault : IValidator<InvoiceData,InvoiceDataDto>, IMessage
     {
         public virtual bool IsValid { get; set; }
         public InvoiceServiceValidatorDefault() { }
@@ -34,8 +34,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region message
         [XmlIgnore, JsonIgnore]
-        public virtual IList<MessageClass> Messages
-        {
+        public virtual IList<MessageClass> Messages 
+        { 
             get
             {
                 if (ServiceMessage != null)
@@ -75,30 +75,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         public virtual bool ValidatePayload(InvoiceData data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            Clear();
-            var pl = payload as InvoicePayload;
+        { 
+            var isValid = true;
+            var pl = payload as SalesOrderPayload;//TODO replace SalesOrderPayload to your payload
             if (processingMode == ProcessingMode.Add)
             {
-                //TODO set MasterAccountNum, ProfileNum and DatabaseNum from payload
-                data.InvoiceHeader.MasterAccountNum = pl.MasterAccountNum;
-                data.InvoiceHeader.ProfileNum = pl.ProfileNum;
-                data.InvoiceHeader.DatabaseNum = pl.DatabaseNum;
+                //TODO 
             }
-            else 
+            else
             {
-                //TODO check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
-                if (
-                    data.InvoiceHeader.MasterAccountNum != pl.MasterAccountNum ||
-                    data.InvoiceHeader.ProfileNum != pl.ProfileNum
-                )
-                    IsValid = false;
-                AddError($"Invoice not found.");
-                return IsValid;
+                //check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
+                if (data.InvoiceHeader.MasterAccountNum != pl.MasterAccountNum ||
+                    data.InvoiceHeader.ProfileNum != pl.ProfileNum)
+                    isValid = false;
+                AddError($"Invalid request.");
             }
-            return true;
+            IsValid=isValid;
+            return isValid;
         }
-
 
         public virtual bool Validate(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
@@ -135,38 +129,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
 
         }
-        protected virtual bool ValidateAddData(InvoiceData data)
-        {
-            var dbFactory = data.dbFactory;
-            #region Valid InvoiceHeader
-            if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM InvoiceHeader WHERE InvoiceUuid='{data.InvoiceHeader.InvoiceUuid}'") > 0)
-            {
-                IsValid = false;
-                AddError($"InvoiceUuid must be empty or unique.");
-            }
-            if (string.IsNullOrEmpty(data.InvoiceHeader.InvoiceNumber) || dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM InvoiceHeader WHERE InvoiceNumber='{data.InvoiceHeader.InvoiceNumber}' AND ProfileNum={data.InvoiceHeader.ProfileNum}") > 0)
-            {
-                IsValid = false;
-                AddError($"InvoiceNumber required and must be unique.Parameter should pass ProfileNum-OrderNumber.");
-            }
-            #endregion
-
-            #region Valid InvoiceItems
-            if (data.InvoiceItems != null && data.InvoiceItems.Count > 0)
-            {
-                var addressList = data.InvoiceItems.ToList();
-                foreach (var inv in data.InvoiceItems)
-                {
-                    if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM InvoiceItems WHERE InvoiceItemsUuid='{inv.InvoiceItemsUuid}'") > 0)
-                    {
-                        IsValid = false;
-                        AddError($"InvoiceItems.InvoiceItemsUuid must be empty or unique.");
-                    }
-                }
-            }
-            #endregion
-            return IsValid;
-        }
 
         protected virtual bool ValidateAdd(InvoiceData data)
         {
@@ -175,42 +137,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.InvoiceHeader.RowNum} is duplicate.");
+                return IsValid;
             }
-            ValidateAddData(data);
-            return IsValid;
+            return true;
 
-        }
-        protected virtual bool ValidateEditData(InvoiceData data)
-        {
-            var dbFactory = data.dbFactory;
-            #region Valid InvoiceHeader
-            if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM InvoiceHeader WHERE InvoiceUuid='{data.InvoiceHeader.InvoiceUuid}' AND RowNum<>{data.InvoiceHeader.RowNum}") > 0)
-            {
-                IsValid = false;
-                AddError($"InvoiceUuid must be unique.");
-            }
-            if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM InvoiceHeader WHERE  InvoiceNumber='{data.InvoiceHeader.InvoiceNumber}' AND ProfileNum={data.InvoiceHeader.ProfileNum} AND RowNum<>{data.InvoiceHeader.RowNum}") > 0)
-            {
-                IsValid = false;
-                AddError($"InvoiceNumber must be unique.");
-            }
-            #endregion
-
-            #region Valid InvoiceItems
-            if (data.InvoiceItems != null && data.InvoiceItems.Count > 0)
-            {
-                var addressList = data.InvoiceItems.ToList();
-                foreach (var inv in data.InvoiceItems)
-                {
-                    if (dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM InvoiceItems WHERE InvoiceItemsUuid='{inv.InvoiceItemsUuid}' AND RowNum<>{data.InvoiceHeader.RowNum}") > 0)
-                    {
-                        IsValid = false;
-                        AddError($"InvoiceItems.InvoiceItemsUuid must be empty or unique.");
-                    }
-                }
-            }
-            #endregion
-            return IsValid;
         }
 
         protected virtual bool ValidateEdit(InvoiceData data)
@@ -298,9 +228,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.InvoiceHeader.RowNum} is duplicate.");
+                return IsValid;
             }
-            ValidateAddData(data);
-            return IsValid;
+            return true;
 
         }
 
@@ -343,6 +273,146 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion Async Methods
+
+        #region Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            var pl = (InvoicePayload)payload;
+            var dto = pl.Invoice;
+            //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            dto.InvoiceHeader.MasterAccountNum = pl.MasterAccountNum;
+            dto.InvoiceHeader.ProfileNum = pl.ProfileNum;
+            dto.InvoiceHeader.DatabaseNum = pl.DatabaseNum;
+            isValid = Validate(dto, dbFactory, processingMode);
+            return isValid;
+        }
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual bool Validate(InvoiceDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (processingMode == ProcessingMode.Add)
+            {
+                //Init property
+                //if (string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceUuid))
+                //{
+                    dto.InvoiceHeader.InvoiceUuid = new Guid().ToString();
+                //} 
+                
+                if (dto.InvoiceItems != null && dto.InvoiceItems.Count > 0)
+                {
+                    foreach (var detailItem in dto.InvoiceItems)
+                    {
+                        //if (string.IsNullOrEmpty(detailItem.InvoiceItemsUuid))
+                        //{
+                            detailItem.InvoiceItemsUuid = new Guid().ToString();
+                        //}
+                    }
+                }
+                  
+            }
+            if (processingMode == ProcessingMode.Edit)
+            {
+                // This property should not be changed.
+                dto.InvoiceHeader.MasterAccountNum = null;
+                dto.InvoiceHeader.ProfileNum = null;
+                dto.InvoiceHeader.DatabaseNum = null;
+                // TODO 
+                //dto.InvoiceHeader.SalesOrderUuid = null;
+                //dto.SalesOrderHeader.OrderNumber = null;
+            }
+            else
+            {
+                //TODO
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
+
+        #region Validate dto async (invoke this before data loaded)
+        /// <summary>
+        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            var pl = (InvoicePayload)payload;
+            var dto = pl.Invoice;
+            //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+            dto.InvoiceHeader.MasterAccountNum = pl.MasterAccountNum;
+            dto.InvoiceHeader.ProfileNum = pl.ProfileNum;
+            dto.InvoiceHeader.DatabaseNum = pl.DatabaseNum;
+            isValid =await ValidateAsync(dto, dbFactory, processingMode);
+            return isValid;
+        }
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(InvoiceDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (processingMode == ProcessingMode.Add)
+            {
+                //Init property
+                //if (string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceUuid))
+                //{
+                    dto.InvoiceHeader.InvoiceUuid = new Guid().ToString();
+                //} 
+                
+                if (dto.InvoiceItems != null && dto.InvoiceItems.Count > 0)
+                {
+                    foreach (var detailItem in dto.InvoiceItems)
+                    {
+                        //if (string.IsNullOrEmpty(detailItem.InvoiceItemsUuid))
+                        //{
+                            detailItem.InvoiceItemsUuid = new Guid().ToString();
+                        //}
+                    }
+                }
+                  
+ 
+                
+            }
+            if (processingMode == ProcessingMode.Edit)
+            {
+                // This property should not be changed.
+                dto.InvoiceHeader.MasterAccountNum = null;
+                dto.InvoiceHeader.ProfileNum = null;
+                dto.InvoiceHeader.DatabaseNum = null;
+                dto.InvoiceHeader.InvoiceUuid = null;
+                //TODO set uuid to null 
+                //dto.InvoiceHeader.OrderNumber = null;
+            }
+            else
+            {
+                //TODO
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
     }
 }
 
