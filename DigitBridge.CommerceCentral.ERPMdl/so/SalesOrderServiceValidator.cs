@@ -27,7 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default SalesOrderService Validator class.
     /// </summary>
-    public partial class SalesOrderServiceValidatorDefault : IValidator<SalesOrderData>, IMessage
+    public partial class SalesOrderServiceValidatorDefault : IValidator<SalesOrderData,SalesOrderDataDto>, IMessage
     {
         #region Validating
         public void Validating(IPayload payload, ProcessingMode processingMode, IDataBaseFactory dbFactory)

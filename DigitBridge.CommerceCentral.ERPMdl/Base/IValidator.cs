@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public interface IValidator<TEntity>
+    public interface IValidator<TEntity, TDto>
         where TEntity : StructureRepository<TEntity>, new()
+        where TDto : class, new()
     {
         bool IsValid { get; set; }
         void Clear();
@@ -17,6 +18,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         bool ValidatePayload(TEntity data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit);
 
         bool Validate(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
-        Task<bool> ValidateAsync(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
+        Task<bool> ValidateAsync(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit); 
+         
+        bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit);
+
+        bool Validate(TDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit);
+        
+        Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit);
+        
+        Task<bool> ValidateAsync(TDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit);
+          
     }
 }

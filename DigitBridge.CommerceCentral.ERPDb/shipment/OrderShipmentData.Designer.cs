@@ -70,6 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
+        partial void CheckIntegrityOthers();
         // Check Children table Integrity
         public virtual OrderShipmentData CheckIntegrity()
         {
@@ -78,6 +79,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckIntegrityOrderShipmentCanceledItem(); 
 			CheckIntegrityOrderShipmentPackage(); 
 			CheckIntegrityOrderShipmentShippedItem(); 
+			CheckIntegrityOthers(); 
             return this;
         }
 
@@ -611,7 +613,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         // grand children
         protected IList<OrderShipmentShippedItem> _OrderShipmentShippedItem;
 
-        protected IList<OrderShipmentShippedItem> OrderShipmentShippedItem 
+        public IList<OrderShipmentShippedItem> OrderShipmentShippedItem 
         { 
             get 
             {

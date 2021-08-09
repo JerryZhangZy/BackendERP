@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default InvoiceService Validator class.
     /// </summary>
-    public partial class InvoiceServiceValidatorDefault : IValidator<InvoiceData,InvoiceDataDto>, IMessage
+    public partial class InvoiceServiceValidatorDefault : IValidator<InvoiceData>, IMessage
     {
         public virtual bool IsValid { get; set; }
         public InvoiceServiceValidatorDefault() { }
@@ -34,8 +34,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region message
         [XmlIgnore, JsonIgnore]
-        public virtual IList<MessageClass> Messages 
-        { 
+        public virtual IList<MessageClass> Messages
+        {
             get
             {
                 if (ServiceMessage != null)
@@ -75,24 +75,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         public virtual bool ValidatePayload(InvoiceData data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
-        { 
-            var isValid = true;
-            var pl = payload as SalesOrderPayload;//TODO replace SalesOrderPayload to your payload
+        {
+            Clear();
+            var pl = payload as InvoicePayload;
             if (processingMode == ProcessingMode.Add)
             {
-                //TODO 
+                //TODO set MasterAccountNum, ProfileNum and DatabaseNum from payload
+                data.InvoiceHeader.MasterAccountNum = pl.MasterAccountNum;
+                data.InvoiceHeader.ProfileNum = pl.ProfileNum;
+                data.InvoiceHeader.DatabaseNum = pl.DatabaseNum;
             }
-            else
+            else 
             {
-                //check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
-                if (data.InvoiceHeader.MasterAccountNum != pl.MasterAccountNum ||
-                    data.InvoiceHeader.ProfileNum != pl.ProfileNum)
-                    isValid = false;
-                AddError($"Invalid request.");
+                //TODO check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
+                if (
+                    data.InvoiceHeader.MasterAccountNum != pl.MasterAccountNum ||
+                    data.InvoiceHeader.ProfileNum != pl.ProfileNum
+                )
+                    IsValid = false;
+                AddError($"Invoice not found.");
+                return IsValid;
             }
-            IsValid=isValid;
-            return isValid;
+            return true;
         }
+
 
         public virtual bool Validate(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
@@ -273,146 +279,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion Async Methods
-
-        #region Validate dto (invoke this before data loaded)
-        /// <summary>
-        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
-        /// </summary>
-        /// <param name="payload"></param>
-        /// <param name="dbFactory"></param>
-        /// <param name="processingMode"></param>
-        /// <returns></returns>
-        public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            var isValid = true;
-            var pl = (InvoicePayload)payload;
-            var dto = pl.Invoice;
-            //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            dto.InvoiceHeader.MasterAccountNum = pl.MasterAccountNum;
-            dto.InvoiceHeader.ProfileNum = pl.ProfileNum;
-            dto.InvoiceHeader.DatabaseNum = pl.DatabaseNum;
-            isValid = Validate(dto, dbFactory, processingMode);
-            return isValid;
-        }
-        /// <summary>
-        /// Validate dto.
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <param name="dbFactory"></param>
-        /// <param name="processingMode"></param>
-        /// <returns></returns>
-        public virtual bool Validate(InvoiceDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            var isValid = true;
-            if (processingMode == ProcessingMode.Add)
-            {
-                //Init property
-                //if (string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceUuid))
-                //{
-                    dto.InvoiceHeader.InvoiceUuid = new Guid().ToString();
-                //} 
-                
-                if (dto.InvoiceItems != null && dto.InvoiceItems.Count > 0)
-                {
-                    foreach (var detailItem in dto.InvoiceItems)
-                    {
-                        //if (string.IsNullOrEmpty(detailItem.InvoiceItemsUuid))
-                        //{
-                            detailItem.InvoiceItemsUuid = new Guid().ToString();
-                        //}
-                    }
-                }
-                  
-            }
-            if (processingMode == ProcessingMode.Edit)
-            {
-                // This property should not be changed.
-                dto.InvoiceHeader.MasterAccountNum = null;
-                dto.InvoiceHeader.ProfileNum = null;
-                dto.InvoiceHeader.DatabaseNum = null;
-                // TODO 
-                //dto.InvoiceHeader.SalesOrderUuid = null;
-                //dto.SalesOrderHeader.OrderNumber = null;
-            }
-            else
-            {
-                //TODO
-            }
-            IsValid=isValid;
-            return isValid;
-        }
-        #endregion
-
-        #region Validate dto async (invoke this before data loaded)
-        /// <summary>
-        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
-        /// </summary>
-        /// <param name="payload"></param>
-        /// <param name="dbFactory"></param>
-        /// <param name="processingMode"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            var isValid = true;
-            var pl = (InvoicePayload)payload;
-            var dto = pl.Invoice;
-            //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            dto.InvoiceHeader.MasterAccountNum = pl.MasterAccountNum;
-            dto.InvoiceHeader.ProfileNum = pl.ProfileNum;
-            dto.InvoiceHeader.DatabaseNum = pl.DatabaseNum;
-            isValid =await ValidateAsync(dto, dbFactory, processingMode);
-            return isValid;
-        }
-        /// <summary>
-        /// Validate dto.
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <param name="dbFactory"></param>
-        /// <param name="processingMode"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> ValidateAsync(InvoiceDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            var isValid = true;
-            if (processingMode == ProcessingMode.Add)
-            {
-                //Init property
-                //if (string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceUuid))
-                //{
-                    dto.InvoiceHeader.InvoiceUuid = new Guid().ToString();
-                //} 
-                
-                if (dto.InvoiceItems != null && dto.InvoiceItems.Count > 0)
-                {
-                    foreach (var detailItem in dto.InvoiceItems)
-                    {
-                        //if (string.IsNullOrEmpty(detailItem.InvoiceItemsUuid))
-                        //{
-                            detailItem.InvoiceItemsUuid = new Guid().ToString();
-                        //}
-                    }
-                }
-                  
- 
-                
-            }
-            if (processingMode == ProcessingMode.Edit)
-            {
-                // This property should not be changed.
-                dto.InvoiceHeader.MasterAccountNum = null;
-                dto.InvoiceHeader.ProfileNum = null;
-                dto.InvoiceHeader.DatabaseNum = null;
-                dto.InvoiceHeader.InvoiceUuid = null;
-                //TODO set uuid to null 
-                //dto.InvoiceHeader.OrderNumber = null;
-            }
-            else
-            {
-                //TODO
-            }
-            IsValid=isValid;
-            return isValid;
-        }
-        #endregion
     }
 }
 

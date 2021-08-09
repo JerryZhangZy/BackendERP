@@ -5,10 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ar\InvoiceServiceValidatorDefault - Copy.cs" />
     <Compile Remove="ar\InvoiceTransactionService - Copy.cs" />
     <Compile Remove="ar\InvoiceTransactionService - Copy.Designer.cs" />
     <Compile Remove="ar\InvoiceTransactionServiceValidatorDefault - Copy %282%29.cs" />
     <Compile Remove="ar\InvoiceTransactionServiceValidatorDefault - Copy.cs" />
+    <Compile Remove="channelOrder\ChannelOrderServiceValidatorDefault - Copy.cs" />
+    <Compile Remove="customer\CustomerServiceValidatorDefault - Copy.cs" />
+    <Compile Remove="shipment\OrderShipmentServiceValidatorDefault - Copy.cs" />
     <Compile Remove="so\SalesOrderService - Copy.cs" />
     <Compile Remove="so\SalesOrderService - Copy.Designer.cs" />
     <Compile Remove="so\SalesOrderServiceValidatorDefault - Copy.cs" />
@@ -22,8 +26,6 @@
   <ItemGroup>
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="ap\" />
-    <Folder Include="channelOrder\" />
-    <Folder Include="shipment\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />
   </ItemGroup>
