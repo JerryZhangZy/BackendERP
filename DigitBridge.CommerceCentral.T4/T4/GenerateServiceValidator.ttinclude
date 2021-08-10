@@ -103,6 +103,7 @@ namespace <#= NamespaceService #>
                         isValid = SalesOrderHelper.ExistId(dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>, pl.MasterAccountNum, pl.ProfileNum);
                     else
                         isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                    isValid = <#= ServiceHelperName #>.ExistRowNum(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -132,7 +133,8 @@ namespace <#= NamespaceService #>
                     if (number == null)
                         isValid = await SalesOrderHelper.ExistIdAsync(dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                     else
-                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                       isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                   isValid = await <#= ServiceHelperName #>.ExistRowNumAsync(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -354,9 +356,9 @@ namespace <#= NamespaceService #>
                 }
 <#          } #>  
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
+                if (dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("<#= StructureClass.MainTable.Name #>.RowNum is required.");
@@ -368,10 +370,15 @@ namespace <#= NamespaceService #>
                 dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
-            }
-            else
-            {
-                //TODO
+<#          if (StructureClass.DetailTable != null)
+            { 
+#>
+                if (dto.<#= StructureClass.DetailTable.Name #> != null && dto.<#= StructureClass.DetailTable.Name #>.Count > 0)
+                {
+                    foreach (var detailItem in dto.<#= StructureClass.DetailTable.Name #>)
+                        detailItem.<#= StructureClass.DetailTable.UniqueKey #> = null;
+                }
+<#          } #>
             }
             IsValid=isValid;
             return isValid;
@@ -408,9 +415,9 @@ namespace <#= NamespaceService #>
                 }
 <#          } #>  
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
+                if (dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("<#= StructureClass.MainTable.Name #>.RowNum is required.");
@@ -422,10 +429,15 @@ namespace <#= NamespaceService #>
                 dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
-            }
-            else
-            {
-                //TODO
+<#          if (StructureClass.DetailTable != null)
+            { 
+#>
+                if (dto.<#= StructureClass.DetailTable.Name #> != null && dto.<#= StructureClass.DetailTable.Name #>.Count > 0)
+                {
+                    foreach (var detailItem in dto.<#= StructureClass.DetailTable.Name #>)
+                        detailItem.<#= StructureClass.DetailTable.UniqueKey #> = null;
+                }
+<#          } #>  
             }
             IsValid=isValid;
             return isValid;

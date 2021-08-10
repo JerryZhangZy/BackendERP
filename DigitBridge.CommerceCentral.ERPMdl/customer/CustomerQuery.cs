@@ -11,7 +11,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public class CustomerQuery : QueryObject<CustomerQuery>
     {
         // Table prefix which use in this sql query
-        protected static string PREFIX = CustomerHelper.TableAllies;
+        protected static string PREFIX = ERPDb.CustomerHelper.TableAllies;
 
         // Filter fields
 

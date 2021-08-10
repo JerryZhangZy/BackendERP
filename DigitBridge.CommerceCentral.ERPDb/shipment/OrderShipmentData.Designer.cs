@@ -70,6 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
+        partial void CheckIntegrityOthers();
         // Check Children table Integrity
         public virtual OrderShipmentData CheckIntegrity()
         {
@@ -78,6 +79,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckIntegrityOrderShipmentCanceledItem(); 
 			CheckIntegrityOrderShipmentPackage(); 
 			CheckIntegrityOrderShipmentShippedItem(); 
+			CheckIntegrityOthers(); 
             return this;
         }
 
@@ -487,12 +489,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.OrderShipmentUuid != OrderShipmentHeader.OrderShipmentUuid)
                     child.OrderShipmentUuid = OrderShipmentHeader.OrderShipmentUuid;
-                if (child.MasterAccountNum != OrderShipmentHeader.MasterAccountNum)
-                    child.MasterAccountNum = OrderShipmentHeader.MasterAccountNum;
-                if (child.ProfileNum != OrderShipmentHeader.ProfileNum)
-                    child.ProfileNum = OrderShipmentHeader.ProfileNum;
-                if (child.DatabaseNum != OrderShipmentHeader.DatabaseNum)
-                    child.DatabaseNum = OrderShipmentHeader.DatabaseNum;
             }
             return children;
         }
@@ -605,12 +601,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.OrderShipmentUuid != OrderShipmentHeader.OrderShipmentUuid)
                     child.OrderShipmentUuid = OrderShipmentHeader.OrderShipmentUuid;
-                if (child.MasterAccountNum != OrderShipmentHeader.MasterAccountNum)
-                    child.MasterAccountNum = OrderShipmentHeader.MasterAccountNum;
-                if (child.ProfileNum != OrderShipmentHeader.ProfileNum)
-                    child.ProfileNum = OrderShipmentHeader.ProfileNum;
-                if (child.DatabaseNum != OrderShipmentHeader.DatabaseNum)
-                    child.DatabaseNum = OrderShipmentHeader.DatabaseNum;
             }
             return children;
         }
@@ -623,7 +613,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         // grand children
         protected IList<OrderShipmentShippedItem> _OrderShipmentShippedItem;
 
-        protected IList<OrderShipmentShippedItem> OrderShipmentShippedItem 
+        public IList<OrderShipmentShippedItem> OrderShipmentShippedItem 
         { 
             get 
             {
@@ -698,12 +688,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.OrderShipmentUuid != OrderShipmentHeader.OrderShipmentUuid)
                     child.OrderShipmentUuid = OrderShipmentHeader.OrderShipmentUuid;
-                if (child.MasterAccountNum != OrderShipmentHeader.MasterAccountNum)
-                    child.MasterAccountNum = OrderShipmentHeader.MasterAccountNum;
-                if (child.ProfileNum != OrderShipmentHeader.ProfileNum)
-                    child.ProfileNum = OrderShipmentHeader.ProfileNum;
-                if (child.DatabaseNum != OrderShipmentHeader.DatabaseNum)
-                    child.DatabaseNum = OrderShipmentHeader.DatabaseNum;
             }
             return children;
         }

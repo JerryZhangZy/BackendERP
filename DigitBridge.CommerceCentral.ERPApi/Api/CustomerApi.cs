@@ -36,17 +36,20 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new CustomerService(dbFactory);
 
+            var customerCode = CustomerCode;
             if (!string.IsNullOrEmpty(CustomerCode))
             {
                 var spilterIndex = CustomerCode.IndexOf("-");
-                var customerCode = CustomerCode;
                 if (spilterIndex > 0)
                 {
                     customerCode = CustomerCode.Substring(spilterIndex + 1);
                 }
                 payload.CustomerCodes.Add(customerCode);
             }
-            payload = svc.GetCustomersByCodeArray(payload);
+            if (await svc.GetCustomerByCustomerCodeAsync(payload, customerCode))
+                payload.Customer = svc.ToDto();
+            else
+                payload.Messages = svc.Messages;
             return new JsonNetResponse<CustomerPayload>(payload);
 
         }
@@ -66,7 +69,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
-            payload = svc.GetCustomersByCodeArray(payload);
+            payload =await svc.GetCustomersByCodeArrayAsync(payload);
             return new JsonNetResponse<CustomerPayload>(payload);
 
         }
@@ -91,7 +94,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 customerCode = CustomerCode.Substring(spilterIndex + 1);
             }
             payload.CustomerCodes.Add(customerCode);
-            if (await svc.DeleteByCodeAsync(payload))
+            if (await svc.DeleteByCodeAsync(payload,customerCode))
                 payload.Customer = svc.ToDto();
             else
             {

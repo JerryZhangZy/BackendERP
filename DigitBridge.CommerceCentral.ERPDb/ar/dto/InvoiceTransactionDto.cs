@@ -40,6 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -49,6 +50,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -58,6 +60,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -68,6 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// </summary>
 		[OpenApiPropertyDescription("Invoice Transaction uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The TransUuid value cannot exceed 50 characters. ")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public string TransUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]

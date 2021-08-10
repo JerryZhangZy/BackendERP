@@ -142,8 +142,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate(dto))
                 return false;
 
-            // set Add mode and clear data
-            Edit(dto.SalesOrderHeader.RowNum.ToLong());
+            // load data 
+            GetData(dto.SalesOrderHeader.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
@@ -167,8 +167,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync(dto).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(dto.SalesOrderHeader.RowNum.ToLong()).ConfigureAwait(false);
+            // load data 
+            await GetDataAsync(dto.SalesOrderHeader.RowNum.ToLong()).ConfigureAwait(false);
 
             // load data from dto
             FromDto(dto);
@@ -196,8 +196,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate(payload.SalesOrder))
                 return false;
 
-            // set Add mode and clear data
-            Edit(payload.SalesOrder.SalesOrderHeader.RowNum.ToLong());
+            // load data 
+            GetData(payload.SalesOrder.SalesOrderHeader.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.SalesOrder);
@@ -217,6 +217,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasSalesOrder)
                 return false;
+            //set edit mode before validate
+            Edit();
 
             if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
@@ -224,8 +226,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync(payload.SalesOrder).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(payload.SalesOrder.SalesOrderHeader.RowNum.ToLong()).ConfigureAwait(false);
+            // load data 
+            await GetDataAsync(payload.SalesOrder.SalesOrderHeader.RowNum.ToLong()).ConfigureAwait(false);
 
             // load data from dto
             FromDto(payload.SalesOrder);
@@ -236,40 +238,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
-
-
         /// <summary>
-        /// Get sale order with detail by orderNumber
+        /// Delete salesorder by order number
         /// </summary>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> GetByOrderNumberAsync(string orderNumber)
+        public virtual async Task<bool> DeleteByRowNumAsync(SalesOrderPayload payload, long rowNum)
         {
-            if (string.IsNullOrEmpty(orderNumber))
+            payload.SalesOrder = new SalesOrderDataDto();
+            payload.SalesOrder.SalesOrderHeader = new SalesOrderHeaderDto();
+            payload.SalesOrder.SalesOrderHeader.RowNum = rowNum;
+
+            //set delete mode
+            Delete();
+
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
-            List();
-            var rowNum = await _data.GetRowNumAsync(orderNumber);
-            if (!rowNum.HasValue)
-                return false;
-            var success = await GetDataAsync(rowNum.Value);
-            //if (success) ToDto();
-            return success;
-        }
-        /// <summary>
-        /// Get sale order with detail by orderNumber
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual bool GetByOrderNumber(string orderNumber)
-        {
-            if (string.IsNullOrEmpty(orderNumber))
-                return false;
-            List();
-            var rowNum = _data.GetRowNum(orderNumber);
-            if (!rowNum.HasValue)
-                return false;
-            var success = GetData(rowNum.Value);
-            //if (success) ToDto();
+
+            //load data
+            var success = await GetDataAsync(rowNum.ToLong());
+            //delete salesorder and its sub items
+            success = success && DeleteData();
             return success;
         }
 
@@ -283,123 +272,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(orderNumber))
                 return false;
             List();
-            var rowNum = await _data.GetRowNumAsync(orderNumber);
+            if (!(await ValidateAccountAsync(payload,orderNumber).ConfigureAwait(false)))
+                return false;
+            var rowNum = await _data.GetRowNumAsync(orderNumber,payload.MasterAccountNum,payload.ProfileNum);
             if (!rowNum.HasValue)
                 return false;
             var success = await GetDataAsync(rowNum.Value);
-
-            // validate data for Add processing
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
-                return false;
-
             //if (success) ToDto();
             return success;
         }
-        /// <summary>
-        /// Get sale order with detail by orderNumber
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual bool GetByOrderNumber(SalesOrderPayload payload, string orderNumber)
-        {
-            if (string.IsNullOrEmpty(orderNumber))
-                return false;
-            List();
-            var rowNum = _data.GetRowNum(orderNumber);
-            if (!rowNum.HasValue)
-                return false;
-            var success = GetData(rowNum.Value);
-
-            // validate data for Add processing
-            if (!ValidateAccount(payload))
-                return false;
-
-            //if (success) ToDto();
-            return success;
-        }
-
-
-        /// <summary>
-        /// Delete salesorder by order number
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual bool DeleteByOrderNumber(string orderNumber)
-        {
-            if (string.IsNullOrEmpty(orderNumber))
-                return false;
-            Delete();
-            var rowNum = _data.GetRowNum(orderNumber);
-            if (!rowNum.HasValue)
-                return false;
-            var success = GetData(rowNum.Value);
-            success = success && DeleteData();
-            return success;
-        }
-        /// <summary>
-        /// Delete salesorder by order number
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> DeleteByOrderNumberAsync(string orderNumber)
-        {
-            if (string.IsNullOrEmpty(orderNumber))
-                return false;
-            Delete();
-            var rowNum = await _data.GetRowNumAsync(orderNumber);
-            if (!rowNum.HasValue)
-                return false;
-            var success = await GetDataAsync(rowNum.Value);
-            success = success && await DeleteDataAsync();
-            return success;
-        }
-
-        /// <summary>
-        /// Delete salesorder by order number
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual bool DeleteByOrderNumber(SalesOrderPayload payload, string orderNumber)
-        {
-            if (string.IsNullOrEmpty(orderNumber))
-                return false;
-            Delete();
-            var rowNum = _data.GetRowNum(orderNumber);
-            if (!rowNum.HasValue)
-                return false;
-            var success = GetData(rowNum.Value);
-
-            // validate data for Add processing
-            if (!ValidateAccount(payload))
-                return false;
-
-            success = success && DeleteData();
-            return success;
-        }
-        /// <summary>
-        /// Delete salesorder by order number
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> DeleteByOrderNumberAsync(SalesOrderPayload payload, string orderNumber)
-        {
-            if (string.IsNullOrEmpty(orderNumber))
-                return false;
-            Delete();
-            var rowNum = await _data.GetRowNumAsync(orderNumber);
-            if (!rowNum.HasValue)
-                return false;
-            var success = await GetDataAsync(rowNum.Value);
-
-            // validate data for Add processing
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
-                return false;
-
-            success = success && await DeleteDataAsync();
-            return success;
-        }
-
-
         /// <summary>
         /// Get sale order list by Uuid list
         /// </summary>
@@ -421,7 +302,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             salesOrderPayload.SalesOrders = result;
             return salesOrderPayload;
         }
-
     }
 }
 
