@@ -16,6 +16,7 @@
     <None Remove="T4\DataAccess - order.tt" />
     <None Remove="T4\DataAccess -Inventory.tt" />
     <None Remove="T4\DataAccess -InventoryLog.tt" />
+    <None Remove="T4\GenerateServiceValidator - Copy.ttinclude" />
   </ItemGroup>
 
   <ItemGroup>
