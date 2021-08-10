@@ -288,46 +288,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        public virtual bool ValidatePayload(IPayload payload)
+        public virtual bool ValidateAccount(IPayload payload, string number = null)
         {
             if (Data is null || Validators is null || Validators.Count == 0)
                 return false;
             foreach (var validator in Validators)
             {
-                if (!validator.ValidatePayload(Data, payload, ProcessMode))
+                if (!validator.ValidateAccount(payload, number, ProcessMode))
                     return false;
             }
             return true;
         }
-        public virtual async Task<bool> ValidatePayloadAsync(IPayload payload)
+        public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null)
         {
             if (Data is null || Validators is null || Validators.Count == 0)
                 return false;
             foreach (var validator in Validators)
             {
-                if (!validator.ValidatePayload(Data, payload, ProcessMode))
+                if (!(await validator.ValidateAccountAsync(payload, number, ProcessMode)))
                     return false;
             }
             return true;
         }
 
         #region Validate dto (invoke this before data loaded)
-        /// <summary>
-        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
-        /// </summary>
-        /// <param name="payload"></param> 
-        /// <returns></returns>
-        public virtual bool Validate(IPayload payload)
-        {
-            if (payload is null || Validators is null || Validators.Count == 0)
-                return false;
-            foreach (var validator in Validators)
-            {
-                if (!validator.Validate(payload, dbFactory, ProcessMode))
-                    return false;
-            }
-            return true;
-        }
         /// <summary>
         /// Validate dto.
         /// </summary>
@@ -339,7 +323,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             foreach (var validator in Validators)
             {
-                if (!validator.Validate(dto, dbFactory, ProcessMode))
+                if (!validator.Validate(dto, ProcessMode))
                     return false;
             }
             return true;
@@ -347,22 +331,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
         #region Validate dto async (invoke this before data loaded)
-        /// <summary>
-        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
-        /// </summary>
-        /// <param name="payload"></param> 
-        /// <returns></returns>
-        public virtual async Task<bool> ValidateAsync(IPayload payload)
-        {
-            if (payload is null || Validators is null || Validators.Count == 0)
-                return false;
-            foreach (var validator in Validators)
-            {
-                if (!validator.Validate(payload, dbFactory, ProcessMode))
-                    return false;
-            }
-            return true;
-        }
         /// <summary>
         /// Validate dto.
         /// </summary>
@@ -374,7 +342,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             foreach (var validator in Validators)
             {
-                if (!validator.Validate(dto, dbFactory, ProcessMode))
+                if (!validator.Validate(dto, ProcessMode))
                     return false;
             }
             return true;
