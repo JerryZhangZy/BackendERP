@@ -15,9 +15,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected static string PREFIX_INFO = InvoiceHeaderInfoHelper.TableAllies;
         protected static string PREFIX_DETAIL = InvoiceItemsHelper.TableAllies;
 
-        protected QueryFilter<int> _RMasterAccountNum = new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", PREFIX, FilterBy.eq, -1, Enable: true);
-        protected QueryFilter<int> _RProfileNum = new QueryFilter<int>("ProfileNum", "ProfileNum", PREFIX, FilterBy.eq, -1, Enable: true);
-
         // Filter fields
 
         protected QueryFilter<string> _InvoiceNumber = new QueryFilter<string>("InvoiceNumber", "InvoiceNumber", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
@@ -52,8 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public InvoiceQuery() : base()
         {
-            RemoveFilter(_MasterAccountNum);
-            RemoveFilter(_ProfileNum);
+            _PREFIX = PREFIX;
             AddFilter(_InvoiceNumber);
             AddFilter(_InvoiceType);
             AddFilter(_InvoiceStatus);
@@ -63,8 +59,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_CustomerName);
             AddFilter(_ShippingCarrier);
             AddFilter(_WarehouseCode);
-            AddFilter(_RMasterAccountNum);
-            AddFilter(_RProfileNum);
         }
         public override void InitQueryFilter()
         {

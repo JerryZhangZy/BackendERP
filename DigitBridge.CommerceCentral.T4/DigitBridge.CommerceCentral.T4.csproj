@@ -64,6 +64,10 @@
       <LastGenOutput>GenerateServicePayloadOpenApi.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForDistributionCenter.ttinclude">
+      <LastGenOutput>SettingForDistributionCenter.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForInventoryLog.ttinclude">
       <LastGenOutput>SettingForInventoryLog.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -293,6 +297,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ReadDtoObjectChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForDistributionCenter.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForDistributionCenter.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 

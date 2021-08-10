@@ -26,8 +26,8 @@ using Bogus;
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     /// <summary>
-    /// Represents a Tester for Customer.
-    /// NOTE: This class is generated from a T4 template - you should not modify it manually.
+    /// Represents a Tester for Customer Helper.
+    /// NOTE: This class is generated from a T4 template Once - you want re-generate it, you need delete cs file and generate again
     /// </summary>
     public partial class CustomerHelperTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
@@ -72,16 +72,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 var result = false;
                 using (var b = new Benchmark("QueryByJson_Test"))
                 {
-                    var rowNum = 0;
-                    var dataGet = SqlQuery.QueryJson<Customer>(
-                        CustomerHelper.SelectAllWhere(
-                            sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
-                            forJson: true
-                        ),
-                        CommandType.Text,
-                        new SqlParameter("@rowNum", rowNum)
-                    ).ToList();
-                    result = dataGet.Count.Equals(10);
+                    using (var trs = new ScopedTransaction(DataBaseFactory))
+                    {
+                        var rowNum = 0;
+                        var dataGet = SqlQuery.QueryJson<Customer>(
+                            CustomerHelper.SelectAllWhere(
+                                sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
+                                forJson: true
+                            ),
+                            CommandType.Text,
+                            new SqlParameter("@rowNum", rowNum)
+                        ).ToList();
+                        result = dataGet.Count.Equals(10);
+                    }
                 }
 
                 Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -102,16 +105,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 var result = false;
                 using (var b = new Benchmark("QueryByAsync_Test"))
                 {
-                    var rowNum = 0;
-                    var dataGet = SqlQuery.Query<Customer>(
-                        CustomerHelper.SelectAllWhere(
-                            sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
-                            forJson: false
-                        ),
-                        CommandType.Text,
-                        new SqlParameter("@rowNum", rowNum)
-                    ).ToList();
-                    result = dataGet.Count.Equals(10);
+                    using (var trs = new ScopedTransaction(DataBaseFactory))
+                    {
+                        var rowNum = 0;
+                        var dataGet = SqlQuery.Query<Customer>(
+                            CustomerHelper.SelectAllWhere(
+                                sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
+                                forJson: false
+                            ),
+                            CommandType.Text,
+                            new SqlParameter("@rowNum", rowNum)
+                        ).ToList();
+                        result = dataGet.Count.Equals(10);
+                    }
                 }
 
                 Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -142,16 +148,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 var result = false;
                 using (var b = new Benchmark("QueryByJsonAsync_Test"))
                 {
-                    var rowNum = 0;
-                    var dataGet = (await SqlQuery.QueryJsonAsync<Customer>(
-                        CustomerHelper.SelectAllWhere(
-                            sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
-                            forJson: true
-                        ),
-                        CommandType.Text,
-                        new SqlParameter("@rowNum", rowNum)
-                    )).ToList();
-                    result = dataGet.Count.Equals(10);
+                    using (var trs = new ScopedTransaction(DataBaseFactory))
+                    {
+                        var rowNum = 0;
+                        var dataGet = (await SqlQuery.QueryJsonAsync<Customer>(
+                            CustomerHelper.SelectAllWhere(
+                                sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
+                                forJson: true
+                            ),
+                            CommandType.Text,
+                            new SqlParameter("@rowNum", rowNum)
+                        )).ToList();
+                        result = dataGet.Count.Equals(10);
+                    }
                 }
 
                 Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -172,16 +181,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 var result = false;
                 using (var b = new Benchmark("QueryByAsync_Test"))
                 {
-                    var rowNum = 0;
-                    var dataGet = (await SqlQuery.QueryAsync<Customer>(
-                        CustomerHelper.SelectAllWhere(
-                            sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
-                            forJson: false
-                        ),
-                        CommandType.Text,
-                        new SqlParameter("@rowNum", rowNum)
-                    )).ToList();
-                    result = dataGet.Count.Equals(10);
+                    using (var trs = new ScopedTransaction(DataBaseFactory))
+                    {
+                        var rowNum = 0;
+                        var dataGet = (await SqlQuery.QueryAsync<Customer>(
+                            CustomerHelper.SelectAllWhere(
+                                sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
+                                forJson: false
+                            ),
+                            CommandType.Text,
+                            new SqlParameter("@rowNum", rowNum)
+                        )).ToList();
+                        result = dataGet.Count.Equals(10);
+                    }
                 }
 
                 Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");

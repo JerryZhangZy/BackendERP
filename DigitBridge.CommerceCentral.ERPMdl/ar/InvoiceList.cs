@@ -29,8 +29,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*, 
-{InfoHelper.TableAllies}.*
+{Helper.RowNum()}, 
+{Helper.InvoiceUuid()}, 
+{Helper.InvoiceNumber()}, 
+{Helper.SalesOrderUuid()}, 
+{Helper.OrderNumber()}, 
+{Helper.InvoiceType()}, 
+COALESCE(itt.text, '') invoiceTypeText, 
+{Helper.InvoiceStatus()}, 
+COALESCE(ist.text, '') invoiceStatusText, 
+{Helper.InvoiceDate()}, 
+{Helper.DueDate()}, 
+{Helper.InvoiceTime()}, 
+{Helper.CustomerUuid()}, 
+{Helper.CustomerCode()}, 
+{Helper.CustomerName()}, 
+{Helper.Terms()}, 
+{Helper.TermsDays()}, 
+{Helper.SubTotalAmount()},
+{Helper.TotalAmount()},
+{InfoHelper.CentralOrderNum()},
+{InfoHelper.ChannelNum()},
+{InfoHelper.ChannelOrderID()},
+{InfoHelper.BillToEmail()},
+{InfoHelper.ShipToName()}
 ";
             return this.SQL_Select;
         }
