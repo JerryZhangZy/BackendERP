@@ -127,7 +127,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // validate before data loaded.
             if (!(await ValidateAsync(payload).ConfigureAwait(false)))
-            return false;
+                return false;
 
             // load data from db
             await GetDataAsync(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
@@ -159,6 +159,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
+        protected virtual async Task<bool> GetDataAsync(string invoiceNumber, int masterAccountNum, int profileNum, bool loadOthers = true)
+        {
+            if (string.IsNullOrEmpty(invoiceNumber))
+                return false;
+            return await _data.GetAsync(invoiceNumber, masterAccountNum, profileNum, loadOthers).ConfigureAwait(false);
+        }
     }
 }
 

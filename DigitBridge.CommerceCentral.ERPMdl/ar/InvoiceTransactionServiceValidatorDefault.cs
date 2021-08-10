@@ -77,7 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool ValidatePayload(InvoiceTransactionData data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
         { 
             var isValid = true;
-            var pl = payload as SalesOrderPayload;//TODO replace SalesOrderPayload to your payload
+            var pl = payload as InvoiceTransactionPayload;//TODO replace SalesOrderPayload to your payload
             if (processingMode == ProcessingMode.Add)
             {
                 //TODO 
@@ -322,14 +322,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
+                dto.InvoiceTransaction.RowNum = null;
                 //Init property
-                dto.InvoiceTransaction.TransUuid = new Guid().ToString(); 
+                dto.InvoiceTransaction.TransUuid = Guid.NewGuid().ToString(); 
                 
                 if (dto.InvoiceReturnItems != null && dto.InvoiceReturnItems.Count > 0)
                 {
                     foreach (var detailItem in dto.InvoiceReturnItems)
                     {
-                        detailItem.ReturnItemUuid = new Guid().ToString();
+                        detailItem.ReturnItemUuid = Guid.NewGuid().ToString();
                     }
                 }
                   
@@ -351,8 +352,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.InvoiceTransaction.ProfileNum = null;
                 dto.InvoiceTransaction.DatabaseNum = null;
                 dto.InvoiceTransaction.TransUuid = null;
-                // TODO 
-                //dto.SalesOrderHeader.OrderNumber = null;
+                dto.InvoiceTransaction.TransType = null;
+                dto.InvoiceTransaction.TransNum = null; 
             }
             IsValid=isValid;
             return isValid;
@@ -417,9 +418,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         detailItem.ReturnItemUuid = new Guid().ToString();
                     }
                 }
-                  
- 
-                
             } 
             else
             {

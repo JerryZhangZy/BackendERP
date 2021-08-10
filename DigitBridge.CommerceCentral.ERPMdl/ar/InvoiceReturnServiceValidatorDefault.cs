@@ -26,26 +26,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default InvoiceTransactionService Validator class.
     /// </summary>
-    public partial class InvoicePaymentServiceValidatorDefault : InvoiceTransactionServiceValidatorDefault
+    public partial class InvoiceReturnServiceValidatorDefault : InvoiceTransactionServiceValidatorDefault
     {
         public override bool Validate(InvoiceTransactionDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (processingMode == ProcessingMode.Add)
             {
-                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
+                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
             }
             return base.Validate(dto, dbFactory, processingMode);
-        }
-        public override bool ValidatePayload(InvoiceTransactionData data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            if (processingMode != ProcessingMode.Add)
-            {
-                //check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
-                if (data.InvoiceTransaction.TransType != (int)TransTypeEnum.Payment)
-                { AddError($"Invalid request."); }
-                return false;
-            }
-            return base.ValidatePayload(data, payload, processingMode);
         }
     }
 }
