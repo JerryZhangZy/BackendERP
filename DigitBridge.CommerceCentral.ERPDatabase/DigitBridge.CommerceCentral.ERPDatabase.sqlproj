@@ -65,6 +65,7 @@
     <Folder Include="shipment" />
     <Folder Include="channelOrder" />
     <Folder Include="dataType" />
+    <Folder Include="inventoryUpdate" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -176,5 +177,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ar\InvoiceHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventoryUpdate\InventoryUpdateHeader.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventoryUpdate\InventoryUpdateItems.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\DistributionCenter.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\DistributionCenter_Update.sql" />
   </ItemGroup>
 </Project>

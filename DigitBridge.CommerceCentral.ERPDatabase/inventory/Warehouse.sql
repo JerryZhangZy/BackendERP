@@ -15,7 +15,7 @@
     [WarehouseStatus] INT NULL DEFAULT 0, --Warehouse status
     [Priority] INT NULL DEFAULT 0, --Warehouse Priority
 
-	[WarehouseNum] VARCHAR(50) NULL, --Warehouse Code
+	[WarehouseCode] VARCHAR(50) NULL, --Warehouse Code
 	[WarehouseName] NVARCHAR(200) NULL, --Warehouse Name
 	[CustomerUuid] VARCHAR(50) NULL, --Customer Guid
 	[VendorUuid] VARCHAR(50) NULL, --Vendor Guid
@@ -82,10 +82,19 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_Warehouse_WarehouseUuid] ON [dbo].[Warehous
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Warehouse]') AND name = N'FK_Warehouse_DistributionCenterNum')
-CREATE UNIQUE NONCLUSTERED INDEX [FK_Warehouse_DistributionCenterNum] ON [dbo].[Warehouse]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_Warehouse_DistributionCenterNum] ON [dbo].[Warehouse]
 (
 	[DistributionCenterNum] ASC,
 	[Priority] ASC
+) ON [PRIMARY]
+GO
+
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Warehouse]') AND name = N'FK_Warehouse_DistributionCenterNum')
+CREATE UNIQUE NONCLUSTERED INDEX [UI_Warehouse_DistributionCenterNum] ON [dbo].[Warehouse]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[WarehouseCode] ASC
 ) ON [PRIMARY]
 GO
 

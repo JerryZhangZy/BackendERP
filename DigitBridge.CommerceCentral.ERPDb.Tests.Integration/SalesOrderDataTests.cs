@@ -42,7 +42,7 @@ WHERE itm.cnt > 0
 
 
             var data = new SalesOrderData(DataBaseFactory);
-            var rowNum = data.GetRowNum(orderNumber);
+            var rowNum = data.GetRowNum(orderNumber, 10001, 10001);
             data.Get(rowNum.ToLong());
             var result = data.SalesOrderHeader.OrderNumber.Equals(orderNumber);
 
@@ -65,7 +65,7 @@ WHERE itm.cnt > 0
 
 
             var data = new SalesOrderData(DataBaseFactory);
-            var rowNum=await data.GetRowNumAsync(orderNumber);
+            var rowNum=await data.GetRowNumAsync(orderNumber, 10001, 10001);
             await data.GetAsync(rowNum.ToLong());
 
             var result = data.SalesOrderHeader.OrderNumber.Equals(orderNumber);

@@ -40,6 +40,28 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
+        public virtual long? GetRowNum(string orderNumber, int masterAccountNum, int profileNum)
+        {
+            var sql = @"
+SELECT TOP 1 RowNum FROM SalesOrderHeader tbl
+WHERE MasterAccountNum = @0
+AND ProfileNum = @1
+AND OrderNumber = @2";
+            var paras = new SqlParameter[]
+            {
+                new SqlParameter("@0",masterAccountNum),
+                new SqlParameter("@1",profileNum),
+                new SqlParameter("@2",orderNumber)
+            };
+
+            return dbFactory.GetValue<SalesOrderHeader, long?>(sql, paras);
+        }
+
+        /// <summary>
+        /// Get row num by order number
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
         public virtual async Task<long?> GetRowNumAsync(string orderNumber, int masterAccountNum, int profileNum)
         {
             var sql = @"
