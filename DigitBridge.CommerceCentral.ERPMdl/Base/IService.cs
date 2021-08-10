@@ -60,17 +60,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         bool Validate();
         Task<bool> ValidateAsync();
 
-        bool ValidatePayload(IPayload payload);
-        Task<bool> ValidatePayloadAsync(IPayload payload);
-
-        bool Validate(IPayload payload);
+        bool ValidateAccount(IPayload payload, string number = null);
+        Task<bool> ValidateAccountAsync(IPayload payload, string number = null);
 
         bool Validate(TDto dto);
-
-        Task<bool> ValidateAsync(IPayload payload);
-
         Task<bool> ValidateAsync(TDto dto);
-
 
         bool GetData(long RowNum);
         bool GetDataById(string id);
