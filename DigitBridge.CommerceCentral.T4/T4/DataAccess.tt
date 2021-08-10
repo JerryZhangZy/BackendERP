@@ -72,7 +72,7 @@
 //SettingForSalesOrder
 //SettingForShipment
 #>
-<#@ include file="SettingForSalesOrder.ttinclude" #>
+<#@ include file="SettingForInvoice.ttinclude" #>
 
 <#      
     // Generate model output
