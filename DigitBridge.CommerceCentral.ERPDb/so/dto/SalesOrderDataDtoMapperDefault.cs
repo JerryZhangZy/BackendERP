@@ -70,12 +70,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (data is null || dto is null)
 				return;
 
-			#region read all not null properties
+            #region read all not null properties
 
-			//if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			//if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
-			//if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
-			if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
+            if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
+            if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+            if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+            if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
 			if (dto.HasOrderNumber) data.OrderNumber = dto.OrderNumber;
 			if (dto.HasOrderType) data.OrderType = dto.OrderType.ToInt();
 			if (dto.HasOrderStatus) data.OrderStatus = dto.OrderStatus.ToInt();

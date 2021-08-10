@@ -34,7 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
-/*
+
             var sql = $@"
 SELECT COUNT(1) FROM SalesOrderHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
@@ -46,14 +46,12 @@ AND OrderNumber = @number
                 profileNum.ToSqlParameter("profileNum"),
                 number.ToSqlParameter("number")
             );
-            return result > 0;
-*/
-            return true;
+            return result > 0; 
         }
 
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
-/*
+
             var sql = $@"
 SELECT COUNT(1) FROM SalesOrderHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
@@ -66,8 +64,36 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
+        }
+
+        public static bool ExistNumber(string number, int profileNum)
+        {
+
+            var sql = $@"
+SELECT COUNT(1) FROM SalesOrderHeader tbl
+WHERE ProfileNum = @profileNum
+AND OrderNumber = @number
+";
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+            return result > 0;
+        }
+
+        public static async Task<bool> ExistNumberAsync(string number, int profileNum)
+        {
+
+            var sql = $@"
+SELECT COUNT(1) FROM SalesOrderHeader tbl
+WHERE ProfileNum = @profileNum
+AND OrderNumber = @number
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+            return result > 0;
         }
 
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)

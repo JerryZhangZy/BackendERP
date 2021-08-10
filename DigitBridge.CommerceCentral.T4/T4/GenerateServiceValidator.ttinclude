@@ -356,9 +356,9 @@ namespace <#= NamespaceService #>
                 }
 <#          } #>  
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
+                if (dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("<#= StructureClass.MainTable.Name #>.RowNum is required.");
@@ -370,6 +370,15 @@ namespace <#= NamespaceService #>
                 dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
+<#          if (StructureClass.DetailTable != null)
+            { 
+#>
+                if (dto.<#= StructureClass.DetailTable.Name #> != null && dto.<#= StructureClass.DetailTable.Name #>.Count > 0)
+                {
+                    foreach (var detailItem in dto.<#= StructureClass.DetailTable.Name #>)
+                        detailItem.<#= StructureClass.DetailTable.UniqueKey #> = null;
+                }
+<#          } #>
             }
             IsValid=isValid;
             return isValid;
@@ -406,9 +415,9 @@ namespace <#= NamespaceService #>
                 }
 <#          } #>  
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
+                if (dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("<#= StructureClass.MainTable.Name #>.RowNum is required.");
@@ -420,6 +429,15 @@ namespace <#= NamespaceService #>
                 dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #> = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
+<#          if (StructureClass.DetailTable != null)
+            { 
+#>
+                if (dto.<#= StructureClass.DetailTable.Name #> != null && dto.<#= StructureClass.DetailTable.Name #>.Count > 0)
+                {
+                    foreach (var detailItem in dto.<#= StructureClass.DetailTable.Name #>)
+                        detailItem.<#= StructureClass.DetailTable.UniqueKey #> = null;
+                }
+<#          } #>  
             }
             IsValid=isValid;
             return isValid;
