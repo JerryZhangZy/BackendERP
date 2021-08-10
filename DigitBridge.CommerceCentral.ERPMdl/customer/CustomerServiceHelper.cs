@@ -27,19 +27,19 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a InventoryHelper SQL Helper Static Class.
+    /// Represents a CustomerHelper SQL Helper Static Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public static class InventoryHelper
+    public static class CustomerServiceHelper
     {
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
 
             var sql = $@"
-SELECT COUNT(1) FROM ProductBasic tbl
+SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND SKU = @number
+AND CustomerCode = @number
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -52,10 +52,10 @@ AND SKU = @number
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM ProductBasic tbl
+SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND SKU = @number
+AND CustomerCode = @number
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -68,10 +68,10 @@ AND SKU = @number
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM ProductBasic tbl
+SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND ProductUuid = @uuid
+AND CustomerUuid = @uuid
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -84,10 +84,10 @@ AND ProductUuid = @uuid
         public static async Task<bool> ExistIdAsync(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM ProductBasic tbl
+SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND ProductUuid = @uuid
+AND CustomerUuid = @uuid
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -100,10 +100,10 @@ AND ProductUuid = @uuid
         public static bool ExistRowNum(long rowNum, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM ProductBasic tbl
+SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND CentralProductNum= @rowNum
+AND RowNum= @rowNum
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -116,10 +116,10 @@ AND CentralProductNum= @rowNum
         public static async Task<bool> ExistRowNumAsync(long rowNum, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM ProductBasic tbl
+SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND CentralProductNum= @rowNum
+AND RowNum= @rowNum
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -129,38 +129,39 @@ AND CentralProductNum= @rowNum
             return result > 0;
         }
 
-        public static long GetRowNumBySku(string sku, int masterAccountNum, int profileNum)
+        public static long GetRowNumByCustomerCode(string customerCode, int masterAccountNum, int profileNum)
         {
 
             var sql = $@"
-SELECT Top 1 CentralProductNum FROM ProductBasic tbl
+SELECT Top 1 RowNum FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND SKU = @sku
+AND CustomerCode = @customerCode
 ";
-            var result = SqlQuery.ExecuteScalar<long>(sql, CommandType.Text,
+            var result = SqlQuery.ExecuteScalar<long>(sql,CommandType.Text,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"),
-                sku.ToSqlParameter("sku")
+                customerCode.ToSqlParameter("customerCode")
             );
             return result;
         }
 
-        public static async Task<long> GetRowNumBySkuAsync(string sku, int masterAccountNum, int profileNum)
+        public static async Task<long> GetRowNumByCustomerCodeAsync(string customerCode, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT Top 1 CentralProductNum FROM ProductBasic tbl
+SELECT Top 1 RowNum FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND SKU = @sku
+AND CustomerCode = @customerCode
 ";
-            var result = await SqlQuery.ExecuteScalarAsync<long>(sql, CommandType.Text,
+            var result = await SqlQuery.ExecuteScalarAsync<long>(sql,CommandType.Text,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"),
-                sku.ToSqlParameter("sku")
+                customerCode.ToSqlParameter("customerCode")
             );
             return result;
         }
+
     }
 }
 

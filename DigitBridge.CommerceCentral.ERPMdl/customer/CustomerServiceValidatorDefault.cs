@@ -99,9 +99,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = CustomerHelper.ExistId(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = CustomerServiceHelper.ExistId(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum);
                     else
-                        isValid = CustomerHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = CustomerServiceHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -129,9 +129,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = await CustomerHelper.ExistIdAsync(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        isValid = await CustomerServiceHelper.ExistIdAsync(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                     else
-                        isValid = await CustomerHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        isValid = await CustomerServiceHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
