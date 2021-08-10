@@ -7,6 +7,16 @@
 //     Copyright (c) DigitBridge Inc.  All rights reserved.
 // </copyright>
 //-------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Threading.Tasks;
+
+using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.YoPoco;
+using DigitBridge.CommerceCentral.ERPDb;
 
 namespace <#= NamespaceService #>
 {
@@ -21,7 +31,7 @@ namespace <#= NamespaceService #>
             base.Init();
             SetDtoMapper(new <#= StructureClass.ClassName #>DtoMapperDefault());
             SetCalculator(new <#= ServiceName #>CalculatorDefault());
-            AddValidator(new <#= ServiceName #>ValidatorDefault());
+            AddValidator(new <#= ServiceName #>ValidatorDefault(this, this.dbFactory));
             return this;
         }
 
@@ -35,8 +45,13 @@ namespace <#= NamespaceService #>
                 return false;
             // set Add mode and clear data
             Add();
+
+            if (!Validate(dto))
+                return false;
+
             // load data from dto
             FromDto(dto);
+
             // validate data for Add processing
             if (!Validate())
                 return false;
@@ -53,8 +68,13 @@ namespace <#= NamespaceService #>
                 return false;
             // set Add mode and clear data
             Add();
+
+            if (!(await ValidateAsync(dto).ConfigureAwait(false)))
+                return false;
+
             // load data from dto
             FromDto(dto);
+
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
                 return false;
@@ -69,11 +89,15 @@ namespace <#= NamespaceService #>
 
             // set Add mode and clear data
             Add();
+
+            if (!ValidateAccount(payload))
+                return false;
+
+            if (!Validate(payload.<#= processName #>))
+                return false;
+
             // load data from dto
             FromDto(payload.<#= processName #>);
-
-            if (!ValidatePayload(payload))
-                return false;
 
             // validate data for Add processing
             if (!Validate())
@@ -89,11 +113,15 @@ namespace <#= NamespaceService #>
 
             // set Add mode and clear data
             Add();
+
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            if (!(await ValidateAsync(payload.<#= processName #>).ConfigureAwait(false)))
+                return false;
+
             // load data from dto
             FromDto(payload.<#= processName #>);
-
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
-                return false;
 
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
@@ -108,12 +136,18 @@ namespace <#= NamespaceService #>
         /// </summary>
         public virtual bool Update(<#= StructureDtoName #> dto)
         {
-            if (dto is null || !dto.Has<#= StructureClass.MainTable.Name #> || dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong() <= 0)
+            if (dto is null || !dto.Has<#= StructureClass.MainTable.Name #>)
                 return false;
+
+            if (!Validate(dto))
+                return false;
+
             // set Add mode and clear data
             Edit(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong());
+
             // load data from dto
             FromDto(dto);
+
             // validate data for Add processing
             if (!Validate())
                 return false;
@@ -127,12 +161,18 @@ namespace <#= NamespaceService #>
         /// </summary>
         public virtual async Task<bool> UpdateAsync(<#= StructureDtoName #> dto)
         {
-            if (dto is null || !dto.Has<#= StructureClass.MainTable.Name #> || dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong() <= 0)
+            if (dto is null || !dto.Has<#= StructureClass.MainTable.Name #>)
                 return false;
+
+            if (!(await ValidateAsync(dto).ConfigureAwait(false)))
+                return false;
+
             // set Add mode and clear data
             await EditAsync(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong()).ConfigureAwait(false);
+
             // load data from dto
             FromDto(dto);
+
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
                 return false;
@@ -148,14 +188,20 @@ namespace <#= NamespaceService #>
         {
             if (payload is null || !payload.Has<#= processName #> || payload.<#= processName #>.<#= StructureClass.MainTable.Name #>.RowNum.ToLong() <= 0)
                 return false;
+
+
+            if (!ValidateAccount(payload))
+                return false;
+
+            if (!Validate(payload.<#= processName #>))
+                return false;
+
             // set Add mode and clear data
             Edit(payload.<#= processName #>.<#= StructureClass.MainTable.Name #>.RowNum.ToLong());
 
-            if (!ValidatePayload(payload))
-                return false;
-
             // load data from dto
-            FromDto(payload.SalesOrder);
+            FromDto(payload.<#= processName #>);
+
             // validate data for Add processing
             if (!Validate())
                 return false;
@@ -169,17 +215,21 @@ namespace <#= NamespaceService #>
         /// </summary>
         public virtual async Task<bool> UpdateAsync(<#= PayloadName #> payload)
         {
-            if (payload is null || !payload.Has<#= processName #> || payload.<#= processName #>.<#= StructureClass.MainTable.Name #>.RowNum.ToLong() <= 0)
+            if (payload is null || !payload.Has<#= processName #>)
                 return false;
+
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            if (!(await ValidateAsync(payload.<#= processName #>).ConfigureAwait(false)))
+                return false;
+
             // set Add mode and clear data
             await EditAsync(payload.<#= processName #>.<#= StructureClass.MainTable.Name #>.RowNum.ToLong()).ConfigureAwait(false);
 
-            // validate data for Add processing
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
-                return false;
-
             // load data from dto
-            FromDto(payload.SalesOrder);
+            FromDto(payload.<#= processName #>);
+
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
                 return false;
