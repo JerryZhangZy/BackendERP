@@ -89,7 +89,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                                 continue;
 
                             var val = reader.GetValue(i);
-                            if (val is null)
+                            if (val is null || val == DBNull.Value)
                                 continue;
 
                             // Get the PocoColumn for this db column, ignore if not known

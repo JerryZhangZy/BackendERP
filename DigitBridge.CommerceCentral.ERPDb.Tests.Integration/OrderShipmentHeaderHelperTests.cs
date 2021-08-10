@@ -26,8 +26,8 @@ using Bogus;
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     /// <summary>
-    /// Represents a Tester for OrderShipmentHeader.
-    /// NOTE: This class is generated from a T4 template - you should not modify it manually.
+    /// Represents a Tester for OrderShipmentHeader Helper.
+    /// NOTE: This class is generated from a T4 template Once - you want re-generate it, you need delete cs file and generate again
     /// </summary>
     public partial class OrderShipmentHeaderHelperTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
@@ -66,22 +66,24 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             DataBaseFactory.Begin();
             data.Save();
             DataBaseFactory.Commit();
-
             try
             {
                 var result = false;
                 using (var b = new Benchmark("QueryByJson_Test"))
                 {
-                    var rowNum = 0;
-                    var dataGet = SqlQuery.QueryJson<OrderShipmentHeader>(
-                        OrderShipmentHeaderHelper.SelectAllWhere(
-                            sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
-                            forJson: true
-                        ),
-                        CommandType.Text,
-                        new SqlParameter("@rowNum", rowNum)
-                    ).ToList();
-                    result = dataGet.Count.Equals(10);
+                    using (var trs = new ScopedTransaction(DataBaseFactory))
+                    {
+                        var OrderShipmentNum = 0;
+                        var dataGet = SqlQuery.QueryJson<OrderShipmentHeader>(
+                            OrderShipmentHeaderHelper.SelectAllWhere(
+                                sqlWhere: $"WHERE OrderShipmentNum >= @OrderShipmentNum ORDER BY OrderShipmentNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
+                                forJson: true
+                            ),
+                            CommandType.Text,
+                            new SqlParameter("@OrderShipmentNum", OrderShipmentNum)
+                        ).ToList();
+                        result = dataGet.Count.Equals(10);
+                    }
                 }
 
                 Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -102,16 +104,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 var result = false;
                 using (var b = new Benchmark("QueryByAsync_Test"))
                 {
-                    var rowNum = 0;
-                    var dataGet = SqlQuery.Query<OrderShipmentHeader>(
-                        OrderShipmentHeaderHelper.SelectAllWhere(
-                            sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
-                            forJson: false
-                        ),
-                        CommandType.Text,
-                        new SqlParameter("@rowNum", rowNum)
-                    ).ToList();
-                    result = dataGet.Count.Equals(10);
+                    using (var trs = new ScopedTransaction(DataBaseFactory))
+                    {
+                        var OrderShipmentNum = 0;
+                        var dataGet = SqlQuery.Query<OrderShipmentHeader>(
+                            OrderShipmentHeaderHelper.SelectAllWhere(
+                                sqlWhere: $"WHERE OrderShipmentNum >= @OrderShipmentNum ORDER BY OrderShipmentNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
+                                forJson: false
+                            ),
+                            CommandType.Text,
+                            new SqlParameter("@OrderShipmentNum", OrderShipmentNum)
+                        ).ToList();
+                        result = dataGet.Count.Equals(10);
+                    }
                 }
 
                 Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -142,16 +147,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 var result = false;
                 using (var b = new Benchmark("QueryByJsonAsync_Test"))
                 {
-                    var rowNum = 0;
-                    var dataGet = (await SqlQuery.QueryJsonAsync<OrderShipmentHeader>(
-                        OrderShipmentHeaderHelper.SelectAllWhere(
-                            sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
-                            forJson: true
-                        ),
-                        CommandType.Text,
-                        new SqlParameter("@rowNum", rowNum)
-                    )).ToList();
-                    result = dataGet.Count.Equals(10);
+                    using (var trs = new ScopedTransaction(DataBaseFactory))
+                    {
+                        var OrderShipmentNum = 0;
+                        var dataGet = (await SqlQuery.QueryJsonAsync<OrderShipmentHeader>(
+                            OrderShipmentHeaderHelper.SelectAllWhere(
+                                sqlWhere: $"WHERE OrderShipmentNum >= @OrderShipmentNum ORDER BY OrderShipmentNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
+                                forJson: true
+                            ),
+                            CommandType.Text,
+                            new SqlParameter("@OrderShipmentNum", OrderShipmentNum)
+                        )).ToList();
+                        result = dataGet.Count.Equals(10);
+                    }
                 }
 
                 Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -172,16 +180,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 var result = false;
                 using (var b = new Benchmark("QueryByAsync_Test"))
                 {
-                    var rowNum = 0;
-                    var dataGet = (await SqlQuery.QueryAsync<OrderShipmentHeader>(
-                        OrderShipmentHeaderHelper.SelectAllWhere(
-                            sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
-                            forJson: false
-                        ),
-                        CommandType.Text,
-                        new SqlParameter("@rowNum", rowNum)
-                    )).ToList();
-                    result = dataGet.Count.Equals(10);
+                    using (var trs = new ScopedTransaction(DataBaseFactory))
+                    {
+                        var OrderShipmentNum = 0;
+                        var dataGet = (await SqlQuery.QueryAsync<OrderShipmentHeader>(
+                            OrderShipmentHeaderHelper.SelectAllWhere(
+                                sqlWhere: $"WHERE OrderShipmentNum >= @OrderShipmentNum ORDER BY OrderShipmentNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
+                                forJson: false
+                            ),
+                            CommandType.Text,
+                            new SqlParameter("@OrderShipmentNum", OrderShipmentNum)
+                        )).ToList();
+                        result = dataGet.Count.Equals(10);
+                    }
                 }
 
                 Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");

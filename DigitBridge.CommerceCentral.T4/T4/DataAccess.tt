@@ -73,7 +73,7 @@
 //SettingForShipment
 //SettingForDistributionCenter
 #>
-<#@ include file="SettingForDistributionCenter.ttinclude" #>
+<#@ include file="SettingForInvoiceTransaction.ttinclude" #>
 
 <#      
     // Generate model output

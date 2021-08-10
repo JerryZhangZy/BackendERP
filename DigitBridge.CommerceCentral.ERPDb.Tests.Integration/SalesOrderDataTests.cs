@@ -31,8 +31,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
             Save_Test();
 
-            var orderNumber = DataBaseFactory.GetValue<SalesOrderHeader, string>(@"
-SELECT TOP 1 ins.OrderNumber 
+            var data2 = DataBaseFactory.GetBy<SalesOrderHeader>(@"
+SELECT TOP 1 ins.OrderNumber, ins.MasterAccountNum, ins.ProfileNum
 FROM SalesOrderHeader ins 
 INNER JOIN (
     SELECT it.SalesOrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.SalesOrderUuid
@@ -42,9 +42,9 @@ WHERE itm.cnt > 0
 
 
             var data = new SalesOrderData(DataBaseFactory);
-            var rowNum = data.GetRowNum(orderNumber, 10001, 10001);
+            var rowNum = data.GetRowNum(data2.OrderNumber, data2.MasterAccountNum, data2.ProfileNum);
             data.Get(rowNum.ToLong());
-            var result = data.SalesOrderHeader.OrderNumber.Equals(orderNumber);
+            var result = data.SalesOrderHeader.OrderNumber.Equals(data2.OrderNumber);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -54,8 +54,8 @@ WHERE itm.cnt > 0
         {
             await SaveAsync_Test();
 
-            var orderNumber = DataBaseFactory.GetValue<SalesOrderHeader, string>(@"
-SELECT TOP 1 ins.OrderNumber 
+            var data2 = await DataBaseFactory.GetByAsync<SalesOrderHeader>(@"
+SELECT TOP 1 ins.OrderNumber, ins.MasterAccountNum, ins.ProfileNum
 FROM SalesOrderHeader ins 
 INNER JOIN (
     SELECT it.SalesOrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.SalesOrderUuid
@@ -63,12 +63,11 @@ INNER JOIN (
 WHERE itm.cnt > 0
 ");
 
-
             var data = new SalesOrderData(DataBaseFactory);
-            var rowNum=await data.GetRowNumAsync(orderNumber, 10001, 10001);
+            var rowNum=await data.GetRowNumAsync(data2.OrderNumber, data2.MasterAccountNum, data2.ProfileNum);
             await data.GetAsync(rowNum.ToLong());
 
-            var result = data.SalesOrderHeader.OrderNumber.Equals(orderNumber);
+            var result = data.SalesOrderHeader.OrderNumber.Equals(data2.OrderNumber);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }

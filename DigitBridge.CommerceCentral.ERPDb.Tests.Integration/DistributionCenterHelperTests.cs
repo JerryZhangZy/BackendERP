@@ -74,14 +74,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 {
                     using (var trs = new ScopedTransaction(DataBaseFactory))
                     {
-                        var rowNum = 0;
+                        var DistributionCenterNum = 0;
                         var dataGet = SqlQuery.QueryJson<DistributionCenter>(
                             DistributionCenterHelper.SelectAllWhere(
-                                sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
+                                sqlWhere: $"WHERE DistributionCenterNum >= @DistributionCenterNum ORDER BY DistributionCenterNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
                                 forJson: true
                             ),
                             CommandType.Text,
-                            new SqlParameter("@rowNum", rowNum)
+                            new SqlParameter("@DistributionCenterNum", DistributionCenterNum)
                         ).ToList();
                         result = dataGet.Count.Equals(10);
                     }
@@ -107,14 +107,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 {
                     using (var trs = new ScopedTransaction(DataBaseFactory))
                     {
-                        var rowNum = 0;
+                        var DistributionCenterNum = 0;
                         var dataGet = SqlQuery.Query<DistributionCenter>(
                             DistributionCenterHelper.SelectAllWhere(
-                                sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
+                                sqlWhere: $"WHERE DistributionCenterNum >= @DistributionCenterNum ORDER BY DistributionCenterNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
                                 forJson: false
                             ),
                             CommandType.Text,
-                            new SqlParameter("@rowNum", rowNum)
+                            new SqlParameter("@DistributionCenterNum", DistributionCenterNum)
                         ).ToList();
                         result = dataGet.Count.Equals(10);
                     }
@@ -150,14 +150,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 {
                     using (var trs = new ScopedTransaction(DataBaseFactory))
                     {
-                        var rowNum = 0;
+                        var DistributionCenterNum = 0;
                         var dataGet = (await SqlQuery.QueryJsonAsync<DistributionCenter>(
                             DistributionCenterHelper.SelectAllWhere(
-                                sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
+                                sqlWhere: $"WHERE DistributionCenterNum >= @DistributionCenterNum ORDER BY DistributionCenterNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
                                 forJson: true
                             ),
                             CommandType.Text,
-                            new SqlParameter("@rowNum", rowNum)
+                            new SqlParameter("@DistributionCenterNum", DistributionCenterNum)
                         )).ToList();
                         result = dataGet.Count.Equals(10);
                     }
@@ -183,14 +183,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 {
                     using (var trs = new ScopedTransaction(DataBaseFactory))
                     {
-                        var rowNum = 0;
+                        var DistributionCenterNum = 0;
                         var dataGet = (await SqlQuery.QueryAsync<DistributionCenter>(
                             DistributionCenterHelper.SelectAllWhere(
-                                sqlWhere: $"WHERE RowNum >= @rowNum ORDER BY RowNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
+                                sqlWhere: $"WHERE DistributionCenterNum >= @DistributionCenterNum ORDER BY DistributionCenterNum OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY",
                                 forJson: false
                             ),
                             CommandType.Text,
-                            new SqlParameter("@rowNum", rowNum)
+                            new SqlParameter("@DistributionCenterNum", DistributionCenterNum)
                         )).ToList();
                         result = dataGet.Count.Equals(10);
                     }

@@ -94,6 +94,7 @@ FROM DistributionCenter ins
 		{
 			var data = GetFakerData();
             data.SetDataBaseFactory(DataBaseFactory);
+            data.DistributionCenter.DistributionCenterNum = 0;
 			data.Save();
 
             var dataGet = new WarehouseData(DataBaseFactory);
@@ -171,6 +172,7 @@ FROM DistributionCenter ins
 		{
 			var data = GetFakerData();
             data.SetDataBaseFactory(DataBaseFactory);
+            data.DistributionCenter.DistributionCenterNum = 0;
 			await data.SaveAsync();
 
             var dataGet = new WarehouseData(DataBaseFactory);
