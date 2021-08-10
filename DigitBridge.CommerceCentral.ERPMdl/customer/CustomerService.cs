@@ -250,7 +250,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             long rowNum = 0;
             using (var tx = new ScopedTransaction(dbFactory))
             {
-                rowNum = await CustomerHelper.GetRowNumByCustomerCodeAsync(customerCode, payload.MasterAccountNum, payload.ProfileNum);
+                rowNum = await CustomerServiceHelper.GetRowNumByCustomerCodeAsync(customerCode, payload.MasterAccountNum, payload.ProfileNum);
             }
             var success=await GetDataAsync(rowNum);
             return success && (await DeleteDataAsync());
@@ -283,7 +283,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             long rowNum = 0;
             using (var tx = new ScopedTransaction(dbFactory))
             {
-                rowNum =await CustomerHelper.GetRowNumByCustomerCodeAsync(customerCode,payload.MasterAccountNum,payload.ProfileNum);
+                rowNum =await CustomerServiceHelper.GetRowNumByCustomerCodeAsync(customerCode,payload.MasterAccountNum,payload.ProfileNum);
             }
             return await GetDataAsync(rowNum);
         }

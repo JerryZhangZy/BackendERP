@@ -77,6 +77,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			//if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
 			if (dto.HasInvoiceNumber) data.InvoiceNumber = dto.InvoiceNumber;
+			if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
+			if (dto.HasOrderNumber) data.OrderNumber = dto.OrderNumber;
 			if (dto.HasInvoiceType) data.InvoiceType = dto.InvoiceType.ToInt();
 			if (dto.HasInvoiceStatus) data.InvoiceStatus = dto.InvoiceStatus.ToInt();
 			if (dto.HasInvoiceDate) data.InvoiceDate = dto.InvoiceDate.ToDateTime();
@@ -394,6 +396,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ProfileNum = data.ProfileNum;
 			dto.InvoiceUuid = data.InvoiceUuid;
 			dto.InvoiceNumber = data.InvoiceNumber;
+			dto.SalesOrderUuid = data.SalesOrderUuid;
+			dto.OrderNumber = data.OrderNumber;
 			dto.InvoiceType = data.InvoiceType;
 			dto.InvoiceStatus = data.InvoiceStatus;
 			dto.InvoiceDate = data.InvoiceDate;

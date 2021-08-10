@@ -1,20 +1,4 @@
 
-
-
-
-//SettingForChannelOrder
-//SettingForCustomer
-//SettingForInventory
-//SettingForInventoryLog
-//SettingForInvoice
-//SettingForInvoiceTransaction
-//SettingForSalesOrder
-//SettingForShipment
-
-              
-
-
-
               
     
 
@@ -60,6 +44,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ProfileNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum".ToCamelCase(camelCase)} ";
         public static string InvoiceUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceUuid) AS {name ?? "InvoiceUuid".ToCamelCase(camelCase)} ";
         public static string InvoiceNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceNumber) AS {name ?? "InvoiceNumber".ToCamelCase(camelCase)} ";
+        public static string SalesOrderUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderUuid) AS {name ?? "SalesOrderUuid".ToCamelCase(camelCase)} ";
+        public static string OrderNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.OrderNumber) AS {name ?? "OrderNumber".ToCamelCase(camelCase)} ";
         public static string InvoiceType(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.InvoiceType AS {name ?? "InvoiceType".ToCamelCase(camelCase)} ";
         public static string InvoiceStatus(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.InvoiceStatus AS {name ?? "InvoiceStatus".ToCamelCase(camelCase)} ";
         public static string InvoiceDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.InvoiceDate AS {name ?? "InvoiceDate".ToCamelCase(camelCase)} ";
@@ -111,6 +97,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {allies}ProfileNum AS ProfileNum,
 RTRIM({allies}InvoiceUuid) AS InvoiceUuid,
 RTRIM({allies}InvoiceNumber) AS InvoiceNumber,
+RTRIM({allies}SalesOrderUuid) AS SalesOrderUuid,
+RTRIM({allies}OrderNumber) AS OrderNumber,
 {allies}InvoiceType AS InvoiceType,
 {allies}InvoiceStatus AS InvoiceStatus,
 {allies}InvoiceDate AS InvoiceDate,

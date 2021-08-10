@@ -174,4 +174,7 @@
   <ItemGroup>
     <None Include="so\SalesOrderHeader_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ar\InvoiceHeader_Update.sql" />
+  </ItemGroup>
 </Project>

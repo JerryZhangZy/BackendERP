@@ -61,6 +61,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("InvoiceNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _invoiceNumber;
 
+        [Column("SalesOrderUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesOrderUuid;
+
+        [Column("OrderNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _orderNumber;
+
         [Column("InvoiceType",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _invoiceType;
 
@@ -256,6 +262,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_invoiceNumber = value.TruncateTo(50); 
 				OnPropertyChanged("InvoiceNumber", value);
+            }
+        }
+
+		/// <summary>
+		/// Link to Order uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string SalesOrderUuid
+        {
+            get
+            {
+				return _salesOrderUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_salesOrderUuid = value.TruncateTo(50); 
+				OnPropertyChanged("SalesOrderUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Link to order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: false
+		/// </summary>
+        public virtual string OrderNumber
+        {
+            get
+            {
+				return _orderNumber?.TrimEnd(); 
+            }
+            set
+            {
+				_orderNumber = value.TruncateTo(50); 
+				OnPropertyChanged("OrderNumber", value);
             }
         }
 
@@ -883,6 +921,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_profileNum = default(int); 
 			_invoiceUuid = String.Empty; 
 			_invoiceNumber = String.Empty; 
+			_salesOrderUuid = String.Empty; 
+			_orderNumber = String.Empty; 
 			_invoiceType = default(int); 
 			_invoiceStatus = default(int); 
 			_invoiceDate = new DateTime().MinValueSql(); 
