@@ -28,14 +28,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public partial class InvoiceReturnServiceValidatorDefault : InvoiceTransactionServiceValidatorDefault
     {
-        public override bool Validate(InvoiceTransactionDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            if (processingMode == ProcessingMode.Add)
-            {
-                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
-            }
-            return base.Validate(dto, dbFactory, processingMode);
-        }
+        //public override bool Validate(InvoiceTransactionDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        //{
+        //    if (processingMode == ProcessingMode.Add)
+        //    {
+        //        dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
+        //    }
+        //    return base.Validate(dto, dbFactory, processingMode);
+        //}
     }
 }
 
