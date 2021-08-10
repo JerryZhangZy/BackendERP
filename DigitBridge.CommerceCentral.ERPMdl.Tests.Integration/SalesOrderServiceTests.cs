@@ -305,7 +305,7 @@ WHERE itm.cnt > 0
 
 
             var srv = new SalesOrderService(DataBaseFactory);
-            //todo 
+            //TODO merge
             //srv.GetByOrderNumber(orderNumber);
             var dto = srv.ToDto();
             var result = dto != null && dto.SalesOrderHeader.OrderNumber.Equals(orderNumber);
@@ -330,7 +330,7 @@ WHERE itm.cnt > 0
 
 
             var srv = new SalesOrderService(DataBaseFactory);
-            //TODO merge
+            //todo merge
             //await srv.GetByOrderNumberAsync(orderNumber);
             var dto = srv.ToDto();
             var result = dto != null && dto.HasSalesOrderHeader && dto.SalesOrderHeader.OrderNumber.Equals(orderNumber);
@@ -356,14 +356,12 @@ WHERE itm.cnt > 0
 
 
             var srv = new SalesOrderService(DataBaseFactory);
-            //TODO merge
-            //srv.DeleteByOrderNumber(orderNumber);
-            var srv_deleted = new SalesOrderService(DataBaseFactory);
-            //TODO
-            //var success = srv_deleted.GetByOrderNumber(orderNumber);
-            var success = true;
-            var result = !success || srv_deleted.Data == null || srv_deleted.Data.UniqueId == null;
-            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+            //todo Merge
+            ////srv.DeleteByOrderNumber(orderNumber);
+            ////var srv_deleted = new SalesOrderService(DataBaseFactory);
+            ////var success = srv_deleted.GetByOrderNumber(orderNumber);
+            //var result = !success || srv_deleted.Data == null || srv_deleted.Data.UniqueId == null;
+            //Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
 
