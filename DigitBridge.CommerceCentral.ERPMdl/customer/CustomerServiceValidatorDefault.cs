@@ -99,9 +99,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = SalesOrderHelper.ExistId(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = CustomerHelper.ExistId(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum);
                     else
-                        isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = CustomerHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -129,9 +129,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = await SalesOrderHelper.ExistIdAsync(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        isValid = await CustomerHelper.ExistIdAsync(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                     else
-                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        isValid = await CustomerHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -185,10 +185,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.Customer.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            ValidateAddData(data);
+            return IsValid;
 
+        }
+        protected virtual bool ValidateAddData(CustomerData data)
+        {
+            var dbFactory = data.dbFactory;
+            #region Valid Customer
+            if (string.IsNullOrEmpty(data.Customer.CustomerCode) || dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM Customer WHERE CustomerCode='{data.Customer.CustomerCode}'") > 0)
+            {
+                IsValid = false;
+                AddError($"CustomerCode required and must be unique.");
+            }
+            #endregion
+
+            #region Valid CustomerAddress
+            if (data.CustomerAddress != null && data.CustomerAddress.Count > 0)
+            {
+                var addressList = data.CustomerAddress.ToList();
+                foreach (var addr in data.CustomerAddress)
+                {
+                    if (string.IsNullOrEmpty(addr.AddressCode) || addressList.Count(r => r.AddressCode == addr.AddressCode) > 1)
+                    {
+                        IsValid = false;
+                        AddError($"CustomerAddress.AddressCode required must be unique.");
+                    }
+                }
+            }
+            #endregion
+            return IsValid;
         }
 
         protected virtual bool ValidateEdit(CustomerData data)
@@ -277,9 +304,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.Customer.RowNum} is duplicate.");
-                return IsValid;
+                //return IsValid;
             }
-            return true;
+            ValidateAddData(data);
+            return IsValid;
 
         }
 
@@ -343,6 +371,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 //for Add mode, always reset uuid
                 dto.Customer.CustomerUuid = Guid.NewGuid().ToString();
+                if (dto.HasCustomerAddress)
+                {
+                    foreach (var addr in dto.CustomerAddress)
+                        addr.AddressUuid = Guid.NewGuid().ToString();
+                }
   
             }
             if (processingMode == ProcessingMode.Edit)

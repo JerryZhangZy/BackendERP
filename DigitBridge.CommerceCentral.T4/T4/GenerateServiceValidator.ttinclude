@@ -103,6 +103,7 @@ namespace <#= NamespaceService #>
                         isValid = SalesOrderHelper.ExistId(dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>, pl.MasterAccountNum, pl.ProfileNum);
                     else
                         isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                    isValid = <#= ServiceHelperName #>.ExistRowNum(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -132,7 +133,8 @@ namespace <#= NamespaceService #>
                     if (number == null)
                         isValid = await SalesOrderHelper.ExistIdAsync(dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                     else
-                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                       isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                   isValid = await <#= ServiceHelperName #>.ExistRowNumAsync(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");

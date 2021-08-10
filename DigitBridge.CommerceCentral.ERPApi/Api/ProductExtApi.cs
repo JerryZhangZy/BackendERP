@@ -42,7 +42,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 sku = SKU.Substring(spilterIndex + 1);
             }
             payload.Skus.Add(sku);
-            payload = svc.GetInventorysBySkuArray(payload);
+            if (await svc.GetInventoryBySkuAsync(payload, sku))
+                payload.InventoryData = svc.ToDto();
+            else
+                payload.Messages = svc.Messages;
 
             return new JsonNetResponse<ProductExPayload>(payload);
         }
@@ -62,7 +65,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<ProductExPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryService(dbFactory);
-            payload = svc.GetInventorysBySkuArray(payload);
+            payload =await svc.GetInventoryBySkuArrayAsync(payload);
 
             return new JsonNetResponse<ProductExPayload>(payload);
         }
@@ -87,7 +90,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
             }
             payload.Skus.Add(sku);
             var svc = new InventoryService(dbFactory);
-            payload = await svc.DeleteBySkuAsync(payload);
+            if (await svc.DeleteBySkuAsync(payload,sku))
+                payload.InventoryData = svc.ToDto();
+            else
+                payload.Messages = svc.Messages;
             return new JsonNetResponse<ProductExPayload>(payload);
         }
         [FunctionName(nameof(AddProductExt))]

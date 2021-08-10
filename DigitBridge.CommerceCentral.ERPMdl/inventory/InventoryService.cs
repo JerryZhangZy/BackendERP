@@ -258,41 +258,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync().ConfigureAwait(false);
         }
 
-        public ProductExPayload GetInventorysBySkuArray(ProductExPayload payload)
+        public async Task<bool> DeleteBySkuAsync(ProductExPayload payload,string sku)
         {
-            var uuids = GetProductUuidsBySkuArray(payload.ProfileNum, payload.Skus);
-            var list = new List<InventoryDataDto>();
-            uuids.ForEach(x =>
+            if (string.IsNullOrEmpty(sku))
+                return false;
+            Delete();
+            if (!(await ValidateAccountAsync(payload, sku).ConfigureAwait(false)))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
             {
-                if (GetDataById(x))
-                    list.Add(ToDto());
-            });
-            payload.InventoryDatas = list;
-            return payload;
-        }
-        public List<string> GetProductUuidsBySkuArray(int profileNum, IList<string> skus)
-        {
-            var skusWhere = string.Join(",", skus.Select(x => $"'{x}'").ToArray());
-            return dbFactory.Db.Query<string>($"select ProductUuid from ProductBasic where Sku in ({skusWhere}) and ProfileNum={profileNum}").ToList();
-        }
-
-        public async Task<ProductExPayload> DeleteBySkuAsync(ProductExPayload payload)
-        {
-            var uuid = GetProductUuidBySku(payload.ProfileNum, payload.Skus.First());
-            if (await DeleteAsync(uuid))
-            {
-                payload.InventoryData = ToDto();
+                rowNum = await InventoryHelper.GetRowNumBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
             }
-            else
-            {
-                payload.Messages = Messages;
-                payload.Success = false;
-            }
-            return payload;
-        }
-        public string GetProductUuidBySku(int profileNum, string sku)
-        {
-            return dbFactory.Db.FirstOrDefault<string>($"select ProductUuid from ProductBasic where Sku='{sku}' and ProfileNum={profileNum}");
+            var success = await GetDataAsync(rowNum);
+            return success && (await DeleteDataAsync());
         }
 
         public async Task<bool> UpdateAsync(ProductExPayload payload)
@@ -318,6 +297,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return await SaveDataAsync();
+        }
+
+        public async Task<ProductExPayload> GetInventoryBySkuArrayAsync(ProductExPayload payload)
+        {
+            if (!payload.HasSkus)
+                return payload;
+            var list = new List<InventoryDataDto>();
+            var msglist = new List<MessageClass>();
+            foreach (var code in payload.Skus)
+            {
+                if (await GetInventoryBySkuAsync(payload, code))
+                    list.Add(ToDto());
+                else
+                    msglist.AddError($"ProductSku:{code} no found");
+            }
+            payload.InventoryDatas = list;
+            payload.Messages = msglist;
+            return payload;
+        }
+
+        public async Task<bool> GetInventoryBySkuAsync(ProductExPayload payload, string sku)
+        {
+            if (string.IsNullOrEmpty(sku))
+                return false;
+            List();
+            if (!(await ValidateAccountAsync(payload, sku).ConfigureAwait(false)))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await InventoryHelper.GetRowNumBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return await GetDataAsync(rowNum);
         }
     }
 }

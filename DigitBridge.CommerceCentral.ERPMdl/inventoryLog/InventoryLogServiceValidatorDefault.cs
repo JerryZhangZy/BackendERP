@@ -99,9 +99,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = SalesOrderHelper.ExistId(dto.InventoryLog.InventoryLogUuid, pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = InventoryLogHelper.ExistId(dto.InventoryLog.InventoryLogUuid, pl.MasterAccountNum, pl.ProfileNum);
                     else
-                        isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = InventoryLogHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -129,9 +129,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = await SalesOrderHelper.ExistIdAsync(dto.InventoryLog.InventoryLogUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        isValid = await InventoryLogHelper.ExistIdAsync(dto.InventoryLog.InventoryLogUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                     else
-                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        isValid = await InventoryLogHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
