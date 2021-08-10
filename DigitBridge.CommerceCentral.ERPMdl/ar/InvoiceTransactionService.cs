@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             base.Init();
             SetDtoMapper(new InvoiceTransactionDataDtoMapperDefault());
             SetCalculator(new InvoiceTransactionServiceCalculatorDefault());
-            AddValidator(new InvoiceTransactionServiceValidatorDefault(this));
+            AddValidator(new InvoiceTransactionServiceValidatorDefault(this, dbFactory));
             return this;
         }
 
@@ -151,7 +151,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Delete();
             var success = await GetDataByIdAsync(transUuid);
             /// validate after data loaded 
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             success = success && await DeleteDataAsync();

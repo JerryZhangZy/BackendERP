@@ -27,43 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected override string GetSQL_select()
         {
             this.SQL_Select = $@"
-SELECT 
-{Helper.RowNum()}, 
-{Helper.DatabaseNum()}, 
-{Helper.MasterAccountNum()}, 
-{Helper.ProfileNum()}, 
-{Helper.InventoryLogUuid()}, 
-{Helper.ProductUuid()}, 
-{Helper.BatchNum()}, 
-{Helper.LogType()}, 
-{Helper.LogUuid()}, 
-{Helper.LogNumber()}, 
-{Helper.LogItemUuid()}, 
-{Helper.LogStatus()}, 
-{Helper.LogDate()}, 
-{Helper.LogTime()}, 
-{Helper.LogBy()}, 
-{Helper.SKU()}, 
-{Helper.Description()}, 
-{Helper.WarehouseCode()}, 
-{Helper.LotNum()}, 
-{Helper.LotInDate()}, 
-{Helper.LotExpDate()}, 
-{Helper.LpnNum()}, 
-{Helper.StyleCode()}, 
-{Helper.ColorPatternCode()}, 
-{Helper.SizeCode()}, 
-{Helper.WidthCode()}, 
-{Helper.LengthCode()}, 
-{Helper.UOM()}, 
-{Helper.LogQty()}, 
-{Helper.BeforeInstock()}, 
-{Helper.BeforeBaseCost()}, 
-{Helper.BeforeUnitCost()}, 
-{Helper.BeforeAvgCost()}, 
-{Helper.EnterBy()}, 
-{Helper.EnterDateUtc()}, 
-{Helper.DigitBridgeGuid()}
+SELECT {Helper.SelectAll()}
 ";
             return this.SQL_Select;
         }

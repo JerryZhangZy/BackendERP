@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             base.Init();
             SetDtoMapper(new InventoryDataDtoMapperDefault());
             SetCalculator(new InventoryServiceCalculatorDefault());
-            AddValidator(new InventoryServiceValidatorDefault(this));
+            AddValidator(new InventoryServiceValidatorDefault(this, dbFactory));
             return this;
         }
 
@@ -72,7 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.InventoryData);
 
-            if (!ValidatePayload(payload))
+            if (!ValidateAccount(payload))
                 return false;
 
             // validate data for Add processing
@@ -93,7 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.InventoryData);
 
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             // validate data for Add processing
@@ -188,7 +188,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate(payload.InventoryData))
                 return false;
 
-            if (!ValidatePayload(payload))
+            if (!ValidateAccount(payload))
                 return false;
 
             // load data from dto
@@ -211,7 +211,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // validate data for Add processing
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             // load data from dto

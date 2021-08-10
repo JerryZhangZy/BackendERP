@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             base.Init();
             SetDtoMapper(new CustomerDataDtoMapperDefault());
             SetCalculator(new CustomerServiceCalculatorDefault());
-            AddValidator(new CustomerServiceValidatorDefault(this));
+            AddValidator(new CustomerServiceValidatorDefault(this,dbFactory));
             return this;
         }
 
@@ -71,7 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = GetDataById(uuid);
 
             // validate data for Add processing
-            if (!ValidatePayload(payload))
+            if (!ValidateAccount(payload))
                 return false;
 
             success = success && DeleteData();
@@ -91,7 +91,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success =await GetDataByIdAsync(uuid);
 
             // validate data for Add processing
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             success = success &&await DeleteDataAsync();
@@ -109,7 +109,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.Customer);
 
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             // validate data for Add processing
@@ -132,7 +132,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.Customer);
 
-            if (!ValidatePayload(payload))
+            if (!ValidateAccount(payload))
                 return false;
 
             // validate data for Add processing
@@ -208,7 +208,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate(payload.Customer))
                 return false;
 
-            if (!ValidatePayload(payload))
+            if (!ValidateAccount(payload))
                 return false;
             // load data from dto
             FromDto(payload.Customer);
@@ -230,7 +230,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync(payload.Customer).ConfigureAwait(false)))
                 return false;
 
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
             // load data from dto
             FromDto(payload.Customer);

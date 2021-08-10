@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             base.Init();
             SetDtoMapper(new OrderShipmentDataDtoMapperDefault());
             SetCalculator(new OrderShipmentServiceCalculatorDefault());
-            AddValidator(new OrderShipmentServiceValidatorDefault(this));
+            AddValidator(new OrderShipmentServiceValidatorDefault(this, dbFactory));
             return this;
         }
 
@@ -78,7 +78,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.OrderShipment);
 
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             // validate data for Add processing
@@ -140,7 +140,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // validate data for Add processing
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             // load data from dto
@@ -164,7 +164,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Delete(); 
             var success = await GetDataByIdAsync(orderShipmentUuid);
             // validate before deleting
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
             success = success && await DeleteDataAsync();
             return success;

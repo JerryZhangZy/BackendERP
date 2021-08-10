@@ -27,16 +27,16 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a InvoiceHelper SQL Helper Static Class.
+    /// Represents a CustomerHelper SQL Helper Static Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public static class InvoiceHelper
+    public static class CustomerHelper
     {
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
 /*
             var sql = $@"
-SELECT COUNT(1) FROM InvoiceHeader tbl
+SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND OrderNumber = @number
@@ -55,7 +55,7 @@ AND OrderNumber = @number
         {
 /*
             var sql = $@"
-SELECT COUNT(1) FROM InvoiceHeader tbl
+SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND OrderNumber = @number
@@ -73,10 +73,10 @@ AND OrderNumber = @number
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM InvoiceHeader tbl
+SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND InvoiceUuid = @uuid
+AND CustomerUuid = @uuid
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -89,10 +89,10 @@ AND InvoiceUuid = @uuid
         public static async Task<bool> ExistIdAsync(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM InvoiceHeader tbl
+SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND InvoiceUuid = @uuid
+AND CustomerUuid = @uuid
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -105,7 +105,7 @@ AND InvoiceUuid = @uuid
         public static bool ExistRowNum(long rowNum, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM InvoiceHeader tbl
+SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND RowNum= @rowNum
@@ -121,7 +121,7 @@ AND RowNum= @rowNum
         public static async Task<bool> ExistRowNumAsync(long rowNum, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM InvoiceHeader tbl
+SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND RowNum= @rowNum

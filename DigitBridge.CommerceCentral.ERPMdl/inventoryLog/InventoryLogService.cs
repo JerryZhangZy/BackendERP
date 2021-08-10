@@ -100,7 +100,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             foreach(var rowNum in rowNumList)
             {
 
-                if (GetData(rowNum)&& ValidatePayload(payload))
+                if (GetData(rowNum)&& ValidateAccount(payload))
                     payload.InventoryLogs.Add(ToDto());
 
             }
@@ -226,7 +226,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.InventoryLog);
 
-            if (!ValidatePayload(payload))
+            if (!ValidateAccount(payload))
                 return false;
 
             // validate data for Add processing
@@ -252,7 +252,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.InventoryLog);
 
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             // validate data for Add processing
@@ -314,7 +314,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate(payload.InventoryLog))
                 return false;
 
-            if (!ValidatePayload(payload))
+            if (!ValidateAccount(payload))
                 return false;
 
             // load data from dto
@@ -341,7 +341,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // validate data for Add processing
-            if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             // load data from dto
