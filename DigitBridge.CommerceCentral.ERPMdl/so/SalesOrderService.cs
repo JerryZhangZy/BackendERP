@@ -142,8 +142,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate(dto))
                 return false;
 
-            // set Add mode and clear data
-            Edit(dto.SalesOrderHeader.RowNum.ToLong());
+            // load data 
+            GetData(dto.SalesOrderHeader.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
@@ -167,8 +167,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync(dto).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(dto.SalesOrderHeader.RowNum.ToLong()).ConfigureAwait(false);
+            // load data 
+            await GetDataAsync(dto.SalesOrderHeader.RowNum.ToLong()).ConfigureAwait(false);
 
             // load data from dto
             FromDto(dto);
@@ -196,8 +196,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate(payload.SalesOrder))
                 return false;
 
-            // set Add mode and clear data
-            Edit(payload.SalesOrder.SalesOrderHeader.RowNum.ToLong());
+            // load data 
+            GetData(payload.SalesOrder.SalesOrderHeader.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.SalesOrder);
@@ -217,6 +217,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasSalesOrder)
                 return false;
+            //set edit mode before validate
+            Edit();
 
             if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
@@ -224,8 +226,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync(payload.SalesOrder).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(payload.SalesOrder.SalesOrderHeader.RowNum.ToLong()).ConfigureAwait(false);
+            // load data 
+            await GetDataAsync(payload.SalesOrder.SalesOrderHeader.RowNum.ToLong()).ConfigureAwait(false);
 
             // load data from dto
             FromDto(payload.SalesOrder);
@@ -243,6 +245,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> DeleteByRowNumAsync(SalesOrderPayload payload, long rowNum)
         {
+            payload.SalesOrder = new SalesOrderDataDto();
             payload.SalesOrder.SalesOrderHeader = new SalesOrderHeaderDto();
             payload.SalesOrder.SalesOrderHeader.RowNum = rowNum;
 
@@ -269,7 +272,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(orderNumber))
                 return false;
             List();
-            var rowNum = await _data.GetRowNumAsync(orderNumber);
+            if (!(await ValidateAccountAsync(payload,orderNumber).ConfigureAwait(false)))
+                return false;
+            var rowNum = await _data.GetRowNumAsync(orderNumber,payload.MasterAccountNum,payload.ProfileNum);
             if (!rowNum.HasValue)
                 return false;
             var success = await GetDataAsync(rowNum.Value);

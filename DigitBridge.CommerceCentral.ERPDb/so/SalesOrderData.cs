@@ -8,7 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using DigitBridge.Base.Utility;
-
+using DigitBridge.CommerceCentral.YoPoco;
+using Microsoft.Data.SqlClient;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -39,19 +40,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public virtual async Task<long?> GetRowNumAsync(string orderNumber)
+        public virtual async Task<long?> GetRowNumAsync(string orderNumber, int masterAccountNum, int profileNum)
         {
-            return await dbFactory.GetValueAsync<SalesOrderHeader, long?>($"SELECT TOP 1 RowNum FROM SalesOrderHeader where OrderNumber='{orderNumber}'");
-        }
-        /// <summary>
-        /// Get row num by order number
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual long? GetRowNum(string orderNumber)
-        {
-            return dbFactory.GetValue<SalesOrderHeader, long?>($"SELECT TOP 1 RowNum FROM SalesOrderHeader where OrderNumber='{orderNumber}'");
-        }
+            var sql = @"
+SELECT TOP 1 RowNum FROM SalesOrderHeader tbl
+WHERE MasterAccountNum = @0
+AND ProfileNum = @1
+AND OrderNumber = @2";
+            var paras = new SqlParameter[]
+            {
+                new SqlParameter("@0",masterAccountNum),
+                new SqlParameter("@1",profileNum),
+                new SqlParameter("@2",orderNumber)
+            };
+
+            return await dbFactory.GetValueAsync<SalesOrderHeader, long?>(sql, paras);
+        } 
 
         /// <summary>
         /// Return all salesOrderItemsUuids existed in table SalesOrderItems

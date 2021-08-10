@@ -60,7 +60,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             IDataBaseFactory dbFactory,
             IDtoMapper<TEntity, TDto> dtoMapper,
             ICalculator<TEntity> calculator,
-            IList<IValidator<TEntity,TDto>> validators) : this(dbFactory)
+            IList<IValidator<TEntity, TDto>> validators) : this(dbFactory)
         {
             _DtoMapper = dtoMapper;
             _Calculator = calculator;
@@ -120,9 +120,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual ICalculator<TEntity> Calculator => _Calculator;
         public virtual void SetCalculator(ICalculator<TEntity> calculator) => _Calculator = calculator;
 
-        protected IList<IValidator<TEntity,TDto>> _Validators;
+        protected IList<IValidator<TEntity, TDto>> _Validators;
         [XmlIgnore, JsonIgnore]
-        public virtual IList<IValidator<TEntity,TDto>> Validators => _Validators;
+        public virtual IList<IValidator<TEntity, TDto>> Validators => _Validators;
 
         #endregion Properties
 
@@ -145,7 +145,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         [XmlIgnore, JsonIgnore]
         public virtual IList<MessageClass> Messages
         {
-            get 
+            get
             {
                 if (_messages is null)
                     _messages = new List<MessageClass>();
@@ -168,10 +168,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Methods
 
-        public virtual void AddValidator(IValidator<TEntity,TDto> validator)
+        public virtual void AddValidator(IValidator<TEntity, TDto> validator)
         {
             if (_Validators == null)
-                _Validators = new List<IValidator<TEntity,TDto>>();
+                _Validators = new List<IValidator<TEntity, TDto>>();
             _Validators.Add(validator);
         }
 
@@ -290,7 +290,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual bool ValidateAccount(IPayload payload, string number = null)
         {
-            if (Data is null || Validators is null || Validators.Count == 0)
+            if (Validators is null || Validators.Count == 0)
                 return false;
             foreach (var validator in Validators)
             {
@@ -301,7 +301,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null)
         {
-            if (Data is null || Validators is null || Validators.Count == 0)
+            if (Validators is null || Validators.Count == 0)
                 return false;
             foreach (var validator in Validators)
             {
@@ -342,7 +342,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             foreach (var validator in Validators)
             {
-                if (!validator.Validate(dto, ProcessMode))
+                if (!await validator.ValidateAsync(dto, ProcessMode))
                     return false;
             }
             return true;
