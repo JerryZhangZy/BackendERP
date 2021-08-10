@@ -102,7 +102,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         isValid = SalesOrderHelper.ExistId(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum);
                     else
                         isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
-                    isValid = CustomerHelper.ExistRowNum(dto.Customer.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -132,8 +131,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (number == null)
                         isValid = await SalesOrderHelper.ExistIdAsync(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                     else
-                       isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
-                   isValid = await CustomerHelper.ExistRowNumAsync(dto.Customer.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -362,10 +360,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
-            else
-            {
-                //TODO
-            }
             IsValid=isValid;
             return isValid;
         }
@@ -407,10 +401,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.Customer.CustomerUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
-            }
-            else
-            {
-                //TODO
             }
             IsValid=isValid;
             return isValid;

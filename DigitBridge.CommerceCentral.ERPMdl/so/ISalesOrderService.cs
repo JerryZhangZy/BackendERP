@@ -32,28 +32,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         bool Add(SalesOrderDataDto dto);
         Task<bool> AddAsync(SalesOrderDataDto dto);
-        bool Add(SalesOrderPayload payload);
-        Task<bool> AddAsync(SalesOrderPayload payload);
-
-
+        
         bool Update(SalesOrderDataDto dto);
         Task<bool> UpdateAsync(SalesOrderDataDto dto);
-        bool Update(SalesOrderPayload payload);
-        Task<bool> UpdateAsync(SalesOrderPayload payload);
 
-
-        Task<bool> GetByOrderNumberAsync(string orderNumber);
-        bool GetByOrderNumber(string orderNumber);
-        Task<bool> GetByOrderNumberAsync(SalesOrderPayload payload, string orderNumber);
-        bool GetByOrderNumber(SalesOrderPayload payload, string orderNumber);
-
-
-        bool DeleteByOrderNumber(string orderNumber);
-        Task<bool> DeleteByOrderNumberAsync(string orderNumber);
-        bool DeleteByOrderNumber(SalesOrderPayload payload, string orderNumber);
-        Task<bool> DeleteByOrderNumberAsync(SalesOrderPayload payload, string orderNumber);
-
-        Task<SalesOrderPayload> GetListBySalesOrderUuidsNumberAsync(SalesOrderPayload salesOrderPayload);
     }
 }
 

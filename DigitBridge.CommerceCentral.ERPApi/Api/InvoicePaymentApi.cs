@@ -131,24 +131,24 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
 
-        /// <summary>
-        /// Load customer list
-        /// </summary>
-        [FunctionName(nameof(InvoiceReturnsList))]
-        [OpenApiOperation(operationId: "InvoiceReturnsList", tags: new[] { "Invoice returns" }, Summary = "Load invoice  return list data")]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceTransactionPayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceTransactionPayloadFind))]
-        public static async Task<JsonNetResponse<InvoiceTransactionPayload>> InvoiceReturnsList(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "InvoiceReturn/find")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<InvoiceTransactionPayload>(true);
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new InvoiceReturnList(dataBaseFactory, new InvoiceReturnQuery());
-            payload = await srv.GetInvoiceReturnListAsync(payload);
-            return new JsonNetResponse<InvoiceTransactionPayload>(payload);
-        }
+        ///// <summary>
+        ///// Load customer list
+        ///// </summary>
+        //[FunctionName(nameof(InvoiceReturnsList))]
+        //[OpenApiOperation(operationId: "InvoiceReturnsList", tags: new[] { "Invoice returns" }, Summary = "Load invoice  return list data")]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceTransactionPayloadFind), Description = "Request Body in json format")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceTransactionPayloadFind))]
+        //public static async Task<JsonNetResponse<InvoiceTransactionPayload>> InvoiceReturnsList(
+        //    [HttpTrigger(AuthorizationLevel.Function, "post", Route = "InvoiceReturn/find")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<InvoiceTransactionPayload>(true);
+        //    var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var srv = new InvoiceReturnList(dataBaseFactory, new InvoiceReturnQuery());
+        //    payload = await srv.GetInvoiceReturnListAsync(payload);
+        //    return new JsonNetResponse<InvoiceTransactionPayload>(payload);
+        //}
     }
 }
 
