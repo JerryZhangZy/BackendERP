@@ -34,12 +34,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
-/*
+
             var sql = $@"
 SELECT COUNT(1) FROM ProductBasic tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
+AND SKU = @number
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -47,18 +47,15 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT COUNT(1) FROM ProductBasic tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
+AND SKU = @number
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -66,8 +63,6 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
@@ -134,6 +129,38 @@ AND CentralProductNum= @rowNum
             return result > 0;
         }
 
+        public static long GetRowNumBySku(string sku, int masterAccountNum, int profileNum)
+        {
+
+            var sql = $@"
+SELECT Top 1 CentralProductNum FROM ProductBasic tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND SKU = @sku
+";
+            var result = SqlQuery.ExecuteScalar<long>(sql, CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                sku.ToSqlParameter("sku")
+            );
+            return result;
+        }
+
+        public static async Task<long> GetRowNumBySkuAsync(string sku, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT Top 1 CentralProductNum FROM ProductBasic tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND SKU = @sku
+";
+            var result = await SqlQuery.ExecuteScalarAsync<long>(sql, CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                sku.ToSqlParameter("sku")
+            );
+            return result;
+        }
     }
 }
 

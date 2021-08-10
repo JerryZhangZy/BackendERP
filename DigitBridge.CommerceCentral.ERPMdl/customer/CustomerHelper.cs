@@ -34,12 +34,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
-/*
+
             var sql = $@"
 SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
+AND CustomerCode = @number
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -47,18 +47,15 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT COUNT(1) FROM Customer tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
+AND CustomerCode = @number
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -66,8 +63,6 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
@@ -132,6 +127,39 @@ AND RowNum= @rowNum
                 rowNum.ToSqlParameter("rowNum")
             );
             return result > 0;
+        }
+
+        public static long GetRowNumByCustomerCode(string customerCode, int masterAccountNum, int profileNum)
+        {
+
+            var sql = $@"
+SELECT Top 1 RowNum FROM Customer tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND CustomerCode = @customerCode
+";
+            var result = SqlQuery.ExecuteScalar<long>(sql,CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                customerCode.ToSqlParameter("customerCode")
+            );
+            return result;
+        }
+
+        public static async Task<long> GetRowNumByCustomerCodeAsync(string customerCode, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT Top 1 RowNum FROM Customer tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND CustomerCode = @customerCode
+";
+            var result = await SqlQuery.ExecuteScalarAsync<long>(sql,CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                customerCode.ToSqlParameter("customerCode")
+            );
+            return result;
         }
 
     }

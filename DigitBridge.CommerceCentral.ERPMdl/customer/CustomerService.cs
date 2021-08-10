@@ -240,43 +240,52 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             return dbFactory.Db.FirstOrDefault<string>($"select CustomerUuid from Customer where CustomerCode='{customerCode}' and ProfileNum={profileNum}");
         }
-        public async Task<bool> DeleteByCodeAsync(CustomerPayload payload)
+        public async Task<bool> DeleteByCodeAsync(CustomerPayload payload,string customerCode)
         {
-            var uuid = GetCustomerUuidByCode(payload.ProfileNum, payload.CustomerCodes.First());
-
-            if (string.IsNullOrEmpty(uuid))
-            {
-                AddError($"Customer not found.");
+            if (string.IsNullOrEmpty(customerCode))
                 return false;
-            }
-
             Delete();
-            var success = await GetDataByIdAsync(uuid);
-
-            // validate data for Add processing
-            //TODO merge
-            //if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
-            //    return false;
-
-            success = success && await DeleteDataAsync();
-            return success;
-        }
-        public List<string> GetCustomerUuidsByCodeArray(int profileNum, IList<string> cutomerCodes)
-        {
-            var customersWhere = string.Join(",", cutomerCodes.Select(x => $"'{x}'").ToArray());
-            return dbFactory.Db.Query<string>($"select CustomerUuid from Customer where CustomerCode in ({customersWhere}) and ProfileNum={profileNum}").ToList();
-        }
-        public CustomerPayload GetCustomersByCodeArray(CustomerPayload payload)
-        {
-            var uuids = GetCustomerUuidsByCodeArray(payload.ProfileNum, payload.CustomerCodes);
-            var list = new List<CustomerDataDto>();
-            uuids.ForEach(x =>
+            if (!(await ValidateAccountAsync(payload, customerCode).ConfigureAwait(false)))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
             {
-                if (GetDataById(x))
+                rowNum = await CustomerHelper.GetRowNumByCustomerCodeAsync(customerCode, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            var success=await GetDataAsync(rowNum);
+            return success && (await DeleteDataAsync());
+        }
+        public async Task<CustomerPayload> GetCustomersByCodeArrayAsync(CustomerPayload payload)
+        {
+            if (!payload.HasCustomerCodes)
+                return payload;
+            var list = new List<CustomerDataDto>();
+            var msglist = new List<MessageClass>();
+            foreach(var code in payload.CustomerCodes)
+            {
+                if (await GetCustomerByCustomerCodeAsync(payload, code))
                     list.Add(ToDto());
-            });
+                else
+                    msglist.AddError($"CustomerCode:{code} no found");
+            }
             payload.Customers = list;
+            payload.Messages = msglist;
             return payload;
+        }
+
+        public async Task<bool> GetCustomerByCustomerCodeAsync(CustomerPayload payload,string customerCode)
+        {
+            if (string.IsNullOrEmpty(customerCode))
+                return false;
+            List();
+            if (!(await ValidateAccountAsync(payload, customerCode).ConfigureAwait(false)))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum =await CustomerHelper.GetRowNumByCustomerCodeAsync(customerCode,payload.MasterAccountNum,payload.ProfileNum);
+            }
+            return await GetDataAsync(rowNum);
         }
     }
 }

@@ -83,8 +83,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = payload as InventoryPayload;
-            var dto = pl.Inventory;
+            var pl = payload as ProductExPayload;
+            var dto = pl.InventoryData;
 
             if (processingMode == ProcessingMode.Add)
             {
@@ -99,9 +99,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = SalesOrderHelper.ExistId(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = InventoryHelper.ExistId(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum);
                     else
-                        isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = InventoryHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -113,8 +113,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = payload as InventoryPayload;
-            var dto = pl.Inventory;
+            var pl = payload as ProductExPayload;
+            var dto = pl.InventoryData;
 
             if (processingMode == ProcessingMode.Add)
             {
@@ -129,9 +129,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = await SalesOrderHelper.ExistIdAsync(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        isValid = await InventoryHelper.ExistIdAsync(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                     else
-                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        isValid = await InventoryHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -185,11 +185,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.ProductBasic.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            ValidateAddData(data);
+            return IsValid;
 
         }
+        protected virtual bool ValidateAddData(InventoryData data)
+        {
+            var dbFactory = data.dbFactory;
+            #region Valid ProductBasic
+            if (string.IsNullOrEmpty(data.ProductBasic.SKU) || dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM ProductBasic WHERE SKU='{data.ProductBasic.SKU}' AND MasterAccountNum={data.ProductBasic.MasterAccountNum} AND ProfileNum={data.ProductBasic.ProfileNum}") > 0)
+            {
+                IsValid = false;
+                AddError($"SKU must be unique.");
+            }
+            #endregion
+
+            #region Valid Inventory
+            if (data.Inventory != null && data.Inventory.Count > 0)
+            {
+                var addressList = data.Inventory.ToList();
+                foreach (var inv in data.Inventory)
+                {
+                    if (string.IsNullOrEmpty(inv.InventoryUuid) || addressList.Count(r => r.InventoryUuid == inv.InventoryUuid) > 1)
+                    {
+                        IsValid = false;
+                        AddError($"Inventory.InventoryUuid cannot be empty and must be unique.");
+                    }
+                }
+            }
+            #endregion
+            return IsValid;
+        }
+
 
         protected virtual bool ValidateEdit(InventoryData data)
         {
@@ -277,10 +305,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.ProductBasic.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
-
+            ValidateAddData(data);
+            return IsValid;
         }
 
         protected virtual async Task<bool> ValidateEditAsync(InventoryData data)
@@ -364,6 +391,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.ProductBasic.ProductUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
+                if (dto.Inventory != null && dto.Inventory.Count > 0)
+                {
+                    foreach (var detailItem in dto.Inventory)
+                        detailItem.InventoryUuid = null;
+                }
             }
             IsValid=isValid;
             return isValid;
@@ -411,6 +443,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.ProductBasic.ProductUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
+                if (dto.Inventory != null && dto.Inventory.Count > 0)
+                {
+                    foreach (var detailItem in dto.Inventory)
+                        detailItem.InventoryUuid = null;
+                }
             }
             IsValid=isValid;
             return isValid;
