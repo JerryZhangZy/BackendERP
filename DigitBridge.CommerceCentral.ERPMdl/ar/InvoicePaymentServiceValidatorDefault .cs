@@ -28,30 +28,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public partial class InvoicePaymentServiceValidatorDefault : InvoiceTransactionServiceValidatorDefault
     {
-        public virtual bool ValidatePayload(InvoiceTransactionData data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            Clear();
-            var pl = payload as SalesOrderPayload;
-            if (processingMode == ProcessingMode.Add)
-            {
-                //TODO set MasterAccountNum, ProfileNum and DatabaseNum from payload
-                //data.InvoiceTransaction.MasterAccountNum = pl.MasterAccountNum;
-                //data.InvoiceTransaction.ProfileNum = pl.ProfileNum;
-                //data.InvoiceTransaction.DatabaseNum = pl.DatabaseNum;
-            }
-            else
-            {
-                //TODO check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
-                //if (
-                //    data.SalesOrderHeader.MasterAccountNum != pl.MasterAccountNum ||
-                //    data.SalesOrderHeader.ProfileNum != pl.ProfileNum
-                //)
-                //    IsValid = false;
-                //AddError($"Sales Order not found.");
-                //return IsValid;
-            }
-            return true;
-        }
+        //public override bool Validate(InvoiceTransactionDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        //{
+        //    if (processingMode == ProcessingMode.Add)
+        //    {
+        //        dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
+        //    }
+        //    return base.Validate(dto, dbFactory, processingMode);
+        //}
+        //public override bool ValidatePayload(InvoiceTransactionData data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
+        //{
+        //    if (processingMode != ProcessingMode.Add)
+        //    {
+        //        //check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
+        //        if (data.InvoiceTransaction.TransType != (int)TransTypeEnum.Payment)
+        //        { AddError($"Invalid request."); }
+        //        return false;
+        //    }
+        //    return base.ValidatePayload(data, payload, processingMode);
+        //}
     }
 }
 

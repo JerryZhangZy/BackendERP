@@ -32,6 +32,107 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public static class InvoiceHelper
     {
+        public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
+        {
+/*
+            var sql = $@"
+SELECT COUNT(1) FROM InvoiceHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND OrderNumber = @number
+";
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+            return result > 0;
+*/
+            return true;
+        }
+
+        public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
+        {
+/*
+            var sql = $@"
+SELECT COUNT(1) FROM InvoiceHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND OrderNumber = @number
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+            return result > 0;
+*/
+            return true;
+        }
+
+        public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM InvoiceHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND InvoiceUuid = @uuid
+";
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                uuid.ToSqlParameter("uuid")
+            );
+            return result > 0;
+        }
+
+        public static async Task<bool> ExistIdAsync(string uuid, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM InvoiceHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND InvoiceUuid = @uuid
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                uuid.ToSqlParameter("uuid")
+            );
+            return result > 0;
+        }
+
+        public static bool ExistRowNum(long rowNum, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM InvoiceHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND RowNum= @rowNum
+";
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                rowNum.ToSqlParameter("rowNum")
+            );
+            return result > 0;
+        }
+
+        public static async Task<bool> ExistRowNumAsync(long rowNum, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM InvoiceHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND RowNum= @rowNum
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                rowNum.ToSqlParameter("rowNum")
+            );
+            return result > 0;
+        }
 
     }
 }

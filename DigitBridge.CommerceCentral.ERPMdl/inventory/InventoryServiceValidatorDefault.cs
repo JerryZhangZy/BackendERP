@@ -30,7 +30,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public virtual bool IsValid { get; set; }
         public InventoryServiceValidatorDefault() { }
-        public InventoryServiceValidatorDefault(IMessage serviceMessage) { ServiceMessage = serviceMessage; }
+        public InventoryServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) 
+        { 
+            this.ServiceMessage = serviceMessage; 
+            this.dbFactory = dbFactory;
+        }
+
+        protected IDataBaseFactory dbFactory { get; set; }
 
         #region message
         [XmlIgnore, JsonIgnore]
@@ -74,28 +80,67 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Messages = new List<MessageClass>();
         }
 
-        public virtual bool ValidatePayload(InventoryData data, IPayload payload, ProcessingMode processingMode = ProcessingMode.Edit)
-        { 
+        public virtual bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
             var isValid = true;
-            var pl = payload as ProductExPayload;
+            var pl = payload as InventoryPayload;
+            var dto = pl.Inventory;
+
             if (processingMode == ProcessingMode.Add)
             {
-                //TODO set MasterAccountNum, ProfileNum and DatabaseNum from payload
-                data.ProductBasic.MasterAccountNum = pl.MasterAccountNum;
-                data.ProductBasic.ProfileNum = pl.ProfileNum;
-                data.ProductBasic.DatabaseNum = pl.DatabaseNum;
+                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.ProductBasic.MasterAccountNum = pl.MasterAccountNum;
+                dto.ProductBasic.ProfileNum = pl.ProfileNum;
+                dto.ProductBasic.DatabaseNum = pl.DatabaseNum;
             }
             else
             {
-                //check MasterAccountNum, ProfileNum and DatabaseNum between data and payload
-                if (data.ProductBasic.MasterAccountNum != pl.MasterAccountNum ||
-                    data.ProductBasic.ProfileNum != pl.ProfileNum)
-                    isValid = false;
-                AddError($"Invalid request.");
+                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (number == null)
+                        isValid = SalesOrderHelper.ExistId(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum);
+                    else
+                        isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                }
+                if (!isValid)
+                    AddError($"Data not found.");
             }
-            IsValid=isValid;
+            IsValid = isValid;
             return isValid;
         }
+
+        public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            var pl = payload as InventoryPayload;
+            var dto = pl.Inventory;
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.ProductBasic.MasterAccountNum = pl.MasterAccountNum;
+                dto.ProductBasic.ProfileNum = pl.ProfileNum;
+                dto.ProductBasic.DatabaseNum = pl.DatabaseNum;
+            }
+            else
+            {
+                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (number == null)
+                        isValid = await SalesOrderHelper.ExistIdAsync(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                    else
+                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                }
+                if (!isValid)
+                    AddError($"Data not found.");
+            }
+            IsValid = isValid;
+            return isValid;
+        }
+
+        #region validate data
 
         public virtual bool Validate(InventoryData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
@@ -136,42 +181,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual bool ValidateAdd(InventoryData data)
         {
             var dbFactory = data.dbFactory;
-            IsValid = true;
             if (data.ProductBasic.RowNum != 0 && dbFactory.Exists<ProductBasic>(data.ProductBasic.RowNum))
             {
                 IsValid = false;
                 AddError($"RowNum: {data.ProductBasic.RowNum} is duplicate.");
+                return IsValid;
             }
-            ValidateAddData(data);
-            return IsValid;
-        }
+            return true;
 
-        protected virtual bool ValidateAddData(InventoryData data)
-        {
-            var dbFactory = data.dbFactory;
-            #region Valid ProductBasic
-            if (string.IsNullOrEmpty(data.ProductBasic.SKU) || dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM ProductBasic WHERE SKU='{data.ProductBasic.SKU}' AND MasterAccountNum={data.ProductBasic.MasterAccountNum} AND ProfileNum={data.ProductBasic.ProfileNum}") > 0)
-            {
-                IsValid = false;
-                AddError($"SKU must be unique.");
-            }
-            #endregion
-
-            #region Valid Inventory
-            if (data.Inventory != null && data.Inventory.Count > 0)
-            {
-                var addressList = data.Inventory.ToList();
-                foreach (var inv in data.Inventory)
-                {
-                    if (string.IsNullOrEmpty(inv.InventoryUuid) || addressList.Count(r => r.InventoryUuid == inv.InventoryUuid) > 1)
-                    {
-                        IsValid = false;
-                        AddError($"Inventory.InventoryUuid cannot be empty and must be unique.");
-                    }
-                }
-            }
-            #endregion
-            return IsValid;
         }
 
         protected virtual bool ValidateEdit(InventoryData data)
@@ -212,8 +229,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
+        #endregion
 
-        #region Async Methods
+        #region Async validate data
 
         public virtual async Task<bool> ValidateAsync(InventoryData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
@@ -259,9 +277,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.ProductBasic.RowNum} is duplicate.");
+                return IsValid;
             }
-            ValidateAddData(data);
-            return IsValid;
+            return true;
 
         }
 
@@ -303,37 +321,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        #endregion Async Methods
+        #endregion Async validate data
 
         #region Validate dto (invoke this before data loaded)
-        /// <summary>
-        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
-        /// </summary>
-        /// <param name="payload"></param>
-        /// <param name="dbFactory"></param>
-        /// <param name="processingMode"></param>
-        /// <returns></returns>
-        public virtual bool Validate(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            var isValid = true;
-            //TODO 
-            //var pl = (ProductBasicPayload)payload;
-            //if (pl is null || !pl.Has ProductBasic)
-            //{
-            //    isValid = false;
-            //    AddError($"No data found");
-            //}
-            //else
-            //{
-            //    var dto = pl.SalesOrder;
-            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            //    dto.ProductBasic.MasterAccountNum = pl.MasterAccountNum;
-            //    dto.ProductBasic.ProfileNum = pl.ProfileNum;
-            //    dto.ProductBasic.DatabaseNum = pl.DatabaseNum;
-            //    isValid = Validate(dto, dbFactory, processingMode);
-            //}
-            return isValid;
-        }
         /// <summary>
         /// Validate dto.
         /// </summary>
@@ -341,104 +331,46 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="dbFactory"></param>
         /// <param name="processingMode"></param>
         /// <returns></returns>
-        public virtual bool Validate(InventoryDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool Validate(InventoryDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
             if (dto is null)
             {
                 isValid = false;
-                AddError($"No data found");
+                AddError($"Data not found");
             }
             if (processingMode == ProcessingMode.Add)
             {
-                //Init property
-                //if (string.IsNullOrEmpty(dto.ProductBasic.ProductUuid))
-                //{
-                    dto.ProductBasic.ProductUuid = new Guid().ToString();
-                //} 
-                
+                //for Add mode, always reset uuid
+                dto.ProductBasic.ProductUuid = Guid.NewGuid().ToString();
                 if (dto.Inventory != null && dto.Inventory.Count > 0)
                 {
                     foreach (var detailItem in dto.Inventory)
-                    {
-                        //if (string.IsNullOrEmpty(detailItem.InventoryUuid))
-                        //{
-                            detailItem.InventoryUuid = new Guid().ToString();
-                        //}
-                    }
+                        detailItem.InventoryUuid = Guid.NewGuid().ToString();
                 }
-                  
+  
             }
             if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.ProductBasic.RowNum.HasValue)
+                if (!dto.ProductBasic.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("ProductBasic.RowNum is required.");
-                }
-                if (dto.ProductBasic.RowNum.ToLong() <= 0)
-                {
-                    isValid = false;
-                    AddError("ProductBasic.RowNum is invalid."); 
                 }
                 // This property should not be changed.
                 dto.ProductBasic.MasterAccountNum = null;
                 dto.ProductBasic.ProfileNum = null;
                 dto.ProductBasic.DatabaseNum = null;
                 dto.ProductBasic.ProductUuid = null;
-                dto.ProductBasic.SKU = null;
-                if (dto.HasProductExt)
-                {
-                    dto.ProductExt.CentralProductNum = null;
-                }
-                if (dto.HasInventory)
-                {
-                    foreach(var inv in dto.Inventory)
-                    {
-                        inv.WarehouseUuid = null;
-                    }
-                }
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
-            }
-            else
-            {
-                //TODO
             }
             IsValid=isValid;
             return isValid;
         }
         #endregion
 
-        #region Validate dto async (invoke this before data loaded)
-        /// <summary>
-        /// Copy MasterAccountNum, ProfileNum and DatabaseNum to dto, then validate dto.
-        /// </summary>
-        /// <param name="payload"></param>
-        /// <param name="dbFactory"></param>
-        /// <param name="processingMode"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> ValidateAsync(IPayload payload, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            var isValid = true; 
-            //TODO 
-            //var pl = (ProductBasicPayload)payload;
-            //if (pl is null || !pl.Has ProductBasic)
-            //{
-            //    isValid = false;
-            //    AddError($"No data found");
-            //}
-            //else
-            //{
-            //    var dto = pl.SalesOrder;
-            //    //No matter what processingMode is,copy MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-            //    dto.ProductBasic.MasterAccountNum = pl.MasterAccountNum;
-            //    dto.ProductBasic.ProfileNum = pl.ProfileNum;
-            //    dto.ProductBasic.DatabaseNum = pl.DatabaseNum;
-            //    isValid =await ValidateAsync(dto, dbFactory, processingMode);
-            //}
-            return isValid;
-        }
+        #region async Validate dto (invoke this before data loaded)
         /// <summary>
         /// Validate dto.
         /// </summary>
@@ -446,53 +378,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="dbFactory"></param>
         /// <param name="processingMode"></param>
         /// <returns></returns>
-        public virtual async Task<bool> ValidateAsync(InventoryDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual async Task<bool> ValidateAsync(InventoryDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
             if (dto is null)
             {
                 isValid = false;
-                AddError($"No data found");
+                AddError($"Data not found");
             }
             if (processingMode == ProcessingMode.Add)
             {
-                //Init property 
-                  dto.ProductBasic.ProductUuid = new Guid().ToString(); 
-                
+                //for Add mode, always reset uuid
+                dto.ProductBasic.ProductUuid = Guid.NewGuid().ToString();
                 if (dto.Inventory != null && dto.Inventory.Count > 0)
                 {
                     foreach (var detailItem in dto.Inventory)
-                    { 
-                        detailItem.InventoryUuid = new Guid().ToString();
-                    }
+                        detailItem.InventoryUuid = Guid.NewGuid().ToString();
                 }
-                  
- 
-                
+  
             }
             if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.ProductBasic.RowNum.HasValue)
+                if (!dto.ProductBasic.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("ProductBasic.RowNum is required.");
-                }
-                if (dto.ProductBasic.RowNum.ToLong() <= 0)
-                {
-                    isValid = false;
-                    AddError("ProductBasic.RowNum is invalid."); 
                 }
                 // This property should not be changed.
                 dto.ProductBasic.MasterAccountNum = null;
                 dto.ProductBasic.ProfileNum = null;
                 dto.ProductBasic.DatabaseNum = null;
                 dto.ProductBasic.ProductUuid = null;
-                //TODO set uuid to null 
-                //dto.ProductBasic.OrderNumber = null;
-            }
-            else
-            {
-                //TODO
+                // TODO 
+                //dto.SalesOrderHeader.OrderNumber = null;
             }
             IsValid=isValid;
             return isValid;
