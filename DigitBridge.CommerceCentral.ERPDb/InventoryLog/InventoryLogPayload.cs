@@ -33,7 +33,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "InventoryLogUuids", val => InventoryLogUuids = val.Split(",").ToList() }
+                { "InventoryLogUuids", val => InventoryLogUuids = val.Split(",").ToList() },
+                { "LogUuids", val => LogUuids = val.Split(",").ToList() },
             };
         }
 
@@ -50,7 +51,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public IList<string> InventoryLogUuids { get; set; } = new List<string>();
         [JsonIgnore] 
         public virtual bool HasInventoryLogUuids => InventoryLogUuids != null && InventoryLogUuids.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasInventoryLogUuids;
+        public bool ShouldSerializeInventoryLogUuids() => HasInventoryLogUuids;
+        /// <summary>
+        /// (Request Parameter) Array of uuid to load multiple InventoryLog dto data.
+        /// </summary>
+        [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple InventoryLog dto data.")]
+        public IList<string> LogUuids { get; set; } = new List<string>();
+        [JsonIgnore] 
+        public virtual bool HasLogUuids => LogUuids != null && LogUuids.Count > 0;
+        public bool ShouldSerializeLogUuids() => HasLogUuids;
 
         /// <summary>
         /// (Response Data) Array of InventoryLog entity object which load by uuid array.

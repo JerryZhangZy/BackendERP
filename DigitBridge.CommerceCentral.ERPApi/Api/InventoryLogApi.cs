@@ -29,18 +29,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "logUuids", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "logUuids", Description = "Transaction ID Arrays", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayload), Description = "Result is InventoryLogs")]
         public static async Task<JsonNetResponse<InventoryLogPayload>> GetInventoryLogs(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "inventoryLogs/{logUuid}")] HttpRequest req,
-            string logUuid)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "inventoryLogs")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryLogPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
 
-            if (!string.IsNullOrEmpty(logUuid))
-            {
-                payload.InventoryLogUuids.Add(logUuid);
-            }
             var svc = new InventoryLogService(dbFactory);
-            var result = svc.GetListByUuid(payload);
+            var result =await svc.GetListByLogUuidAsync(payload);
 
             return new JsonNetResponse<InventoryLogPayload>(result);
         }
@@ -57,9 +52,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var payload = await req.GetParameters<InventoryLogPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
-            payload.InventoryLogUuids.Add(logUuid);
+            payload.LogUuids.Add(logUuid);
             var svc = new InventoryLogService(dbFactory);
-            var result= svc.DeleteByLogUuid(payload);
+            var result=await svc.DeleteByLogUuidAsync(payload);
             return new JsonNetResponse<InventoryLogPayload>(result);
         }
         [FunctionName(nameof(AddInventoryLogs))]
@@ -75,7 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryLogService(dbFactory);
 
-            var result= svc.AddList(payload);
+            var result=await svc.AddListAsync(payload);
             return new JsonNetResponse<InventoryLogPayload>(result);
         }
 
@@ -92,7 +87,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryLogService(dbFactory);
 
-            var result= svc.UpdateInventoryLogList(payload);
+            var result=await svc.UpdateInventoryLogListAsync(payload);
 
             return new JsonNetResponse<InventoryLogPayload>(result);
         }

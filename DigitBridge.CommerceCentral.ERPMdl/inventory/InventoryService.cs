@@ -139,6 +139,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (dto is null || !dto.HasProductBasic)
                 return false;
 
+            //set edit mode before validate
+            Edit();
+
             if (!Validate(dto))
                 return false;
 
@@ -163,6 +166,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasProductBasic)
                 return false;
+
+            //set edit mode before validate
+            Edit();
 
             if (!(await ValidateAsync(dto).ConfigureAwait(false)))
                 return false;
@@ -189,6 +195,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasInventory || payload.Inventory.ProductBasic.RowNum.ToLong() <= 0)
                 return false;
 
+            //set edit mode before validate
+            Edit();
 
             if (!ValidateAccount(payload))
                 return false;
@@ -218,10 +226,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasInventory)
                 return false;
 
+            //set edit mode before validate
+            Edit();
+
             if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
-
-            Edit();
 
             if (!(await ValidateAsync(payload.Inventory).ConfigureAwait(false)))
                 return false;

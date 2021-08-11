@@ -139,6 +139,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (dto is null || !dto.HasCustomer)
                 return false;
 
+            //set edit mode before validate
+            Edit();
+
             if (!Validate(dto))
                 return false;
 
@@ -163,6 +166,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasCustomer)
                 return false;
+
+            //set edit mode before validate
+            Edit();
 
             if (!(await ValidateAsync(dto).ConfigureAwait(false)))
                 return false;
@@ -189,11 +195,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasCustomer || payload.Customer.Customer.RowNum.ToLong() <= 0)
                 return false;
 
+            //set edit mode before validate
+            Edit();
 
             if (!ValidateAccount(payload))
                 return false;
-
-            Edit();
 
             if (!Validate(payload.Customer))
                 return false;
@@ -220,10 +226,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasCustomer)
                 return false;
 
+            //set edit mode before validate
+            Edit();
+
             if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
-
-            Edit();
 
             if (!(await ValidateAsync(payload.Customer).ConfigureAwait(false)))
                 return false;
@@ -244,21 +251,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             return dbFactory.Db.FirstOrDefault<string>($"select CustomerUuid from Customer where CustomerCode='{customerCode}' and ProfileNum={profileNum}");
         }
-        public async Task<bool> DeleteByCodeAsync(CustomerPayload payload,string customerCode)
-        {
-            if (string.IsNullOrEmpty(customerCode))
-                return false;
-            Delete();
-            if (!(await ValidateAccountAsync(payload, customerCode).ConfigureAwait(false)))
-                return false;
-            long rowNum = 0;
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                rowNum = await CustomerServiceHelper.GetRowNumByCustomerCodeAsync(customerCode, payload.MasterAccountNum, payload.ProfileNum);
-            }
-            var success=await GetDataAsync(rowNum);
-            return success && (await DeleteDataAsync());
-        }
+
         public async Task<CustomerPayload> GetCustomersByCodeArrayAsync(CustomerPayload payload)
         {
             if (!payload.HasCustomerCodes)
@@ -290,6 +283,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 rowNum =await CustomerServiceHelper.GetRowNumByCustomerCodeAsync(customerCode,payload.MasterAccountNum,payload.ProfileNum);
             }
             return await GetDataAsync(rowNum);
+        }
+
+        public async Task<bool> DeleteByCodeAsync(CustomerPayload payload, string customerCode)
+        {
+            if (string.IsNullOrEmpty(customerCode))
+                return false;
+            Delete();
+            if (!(await ValidateAccountAsync(payload, customerCode).ConfigureAwait(false)))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await CustomerServiceHelper.GetRowNumByCustomerCodeAsync(customerCode, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            var success = await GetDataAsync(rowNum);
+            return success && (await DeleteDataAsync());
         }
     }
 }
