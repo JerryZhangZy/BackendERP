@@ -378,9 +378,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
   
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.Customer.RowNum.IsZero())
+                if (dto.Customer.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("Customer.RowNum is required.");
@@ -418,7 +418,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 //for Add mode, always reset uuid
                 dto.Customer.CustomerUuid = Guid.NewGuid().ToString();
-  
+                if (dto.HasCustomerAddress)
+                {
+                    foreach (var addr in dto.CustomerAddress)
+                        addr.AddressUuid = Guid.NewGuid().ToString();
+                }
+
             }
             if (processingMode == ProcessingMode.Edit)
             {
