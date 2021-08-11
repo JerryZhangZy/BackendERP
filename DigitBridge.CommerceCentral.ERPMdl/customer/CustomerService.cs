@@ -193,6 +193,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!ValidateAccount(payload))
                 return false;
 
+            Edit();
+
             if (!Validate(payload.Customer))
                 return false;
 
@@ -220,6 +222,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
+
+            Edit();
 
             if (!(await ValidateAsync(payload.Customer).ConfigureAwait(false)))
                 return false;
