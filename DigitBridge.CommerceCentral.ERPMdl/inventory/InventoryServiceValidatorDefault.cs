@@ -83,8 +83,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = payload as ProductExPayload;
-            var dto = pl.InventoryData;
+            var pl = payload as InventoryPayload;
+            var dto = pl.Inventory;
 
             if (processingMode == ProcessingMode.Add)
             {
@@ -113,8 +113,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = payload as ProductExPayload;
-            var dto = pl.InventoryData;
+            var pl = payload as InventoryPayload;
+            var dto = pl.Inventory;
 
             if (processingMode == ProcessingMode.Add)
             {
@@ -377,9 +377,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
   
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.ProductBasic.RowNum.IsZero())
+                if (dto.ProductBasic.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("ProductBasic.RowNum is required.");
@@ -429,9 +429,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
   
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.ProductBasic.RowNum.IsZero())
+                if (dto.ProductBasic.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("ProductBasic.RowNum is required.");

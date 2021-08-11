@@ -87,50 +87,50 @@ LEFT JOIN {ExHelper.TableName} {ExHelper.TableAllies} ON ({Helper.TableAllies}.P
 
         #endregion override methods
 
-        public virtual ProductExPayload GetProductList(ProductExPayload payload)
+        public virtual InventoryPayload GetProductList(InventoryPayload payload)
         {
             if (payload == null)
-                payload = new ProductExPayload();
+                payload = new InventoryPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.ProductListCount = Count();
+                payload.InventoryListCount = Count();
                 result = ExcuteJson(sb);
                 if (result)
-                    payload.ProductList = sb;
+                    payload.InventoryList = sb;
             }
             catch (Exception ex)
             {
-                payload.ProductListCount = 0;
-                payload.ProductList = null;
+                payload.InventoryListCount = 0;
+                payload.InventoryList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<ProductExPayload> GetIProductListAsync(ProductExPayload payload)
+        public virtual async Task<InventoryPayload> GetIProductListAsync(InventoryPayload payload)
         {
             if (payload == null)
-                payload = new ProductExPayload();
+                payload = new InventoryPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.ProductListCount = await CountAsync().ConfigureAwait(false);
+                payload.InventoryListCount = await CountAsync().ConfigureAwait(false);
                 result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
                 if (result)
-                    payload.ProductList = sb;
+                    payload.InventoryList = sb;
             }
             catch (Exception ex)
             {
-                payload.ProductListCount = 0;
-                payload.ProductList = null;
+                payload.InventoryListCount = 0;
+                payload.InventoryList = null;
                 return payload;
                 throw;
             }

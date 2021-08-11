@@ -139,6 +139,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (dto is null || !dto.HasInventoryLog)
                 return false;
 
+            //set edit mode before validate
+            Edit();
+
             if (!Validate(dto))
                 return false;
 
@@ -163,6 +166,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasInventoryLog)
                 return false;
+
+            //set edit mode before validate
+            Edit();
 
             if (!(await ValidateAsync(dto).ConfigureAwait(false)))
                 return false;
@@ -189,6 +195,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasInventoryLog || payload.InventoryLog.InventoryLog.RowNum.ToLong() <= 0)
                 return false;
 
+            //set edit mode before validate
+            Edit();
 
             if (!ValidateAccount(payload))
                 return false;
@@ -218,6 +226,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasInventoryLog)
                 return false;
 
+            //set edit mode before validate
+            Edit();
+
             if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
@@ -236,6 +247,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
+
         public InventoryLogPayload UpdateInventoryLogList(InventoryLogPayload payload)
         {
             if (!payload.HasInventoryLogs)
@@ -246,71 +258,178 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             foreach (var log in payload.InventoryLogs)
             {
                 payload.InventoryLog = log;
+                //Use Default Method Validate and Update
                 if (Update(payload))
                     succList.Add(ToDto());
                 else
-                    payload.Messages = Messages;
+                    msgList.AddRange(Messages);
             }
+            //clear temp log;
             payload.InventoryLog = null;
             payload.InventoryLogs = succList;
-            if (msgList.Count > 0)
-                payload.Messages = msgList;
+            payload.Messages = msgList;
             return payload;
         }
-        public IList<long> GetRowNumsByUuids(string logUuid)
+
+        public async Task<InventoryLogPayload> UpdateInventoryLogListAsync(InventoryLogPayload payload)
         {
-            return dbFactory.Db.Fetch<long>($"select RowNum from InventoryLog Where LogUuid='{logUuid}'");
+            if (!payload.HasInventoryLogs)
+                return payload;
+
+            var succList = new List<InventoryLogDataDto>();
+            var msgList = new List<MessageClass>();
+            foreach (var log in payload.InventoryLogs)
+            {
+                payload.InventoryLog = log;
+                //Use Default Method Validate and Update
+                if (await UpdateAsync(payload))
+                    succList.Add(ToDto());
+                else
+                    msgList.AddRange(Messages);
+            }
+            //clear temp log;
+            payload.InventoryLog = null;
+            payload.InventoryLogs = succList;
+            payload.Messages = msgList;
+            return payload;
         }
+
         public InventoryLogPayload DeleteByLogUuid(InventoryLogPayload payload)
         {
-            if (!payload.HasInventoryLogUuids)
+            if (!payload.HasLogUuids)
                 return payload;
 
             var rowNumList = new List<long>();
-            foreach (var logUuid in payload.InventoryLogUuids)
-            {
-                rowNumList.AddRange(GetRowNumsByUuids(logUuid));
-            }
             var msgList = new List<MessageClass>();
+            foreach (var logUuid in payload.LogUuids)
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    // add validated rownumlist;
+                    rowNumList.AddRange(InventoryLogServiceHelper.GetRowNumsByLogUuid(logUuid, payload.MasterAccountNum, payload.ProfileNum));
+                }
+            }
             foreach (var rowNum in rowNumList)
             {
+                // set deleted mode
                 Delete();
+
+                //use default get and delete
                 if (GetData(rowNum) && DeleteData())
                     payload.InventoryLogs.Add(ToDto());
                 else
                     msgList.AddRange(Messages);
             }
-            if (msgList.Count > 0)
-                payload.Messages = msgList;
+            payload.Messages = msgList;
 
             return payload;
         }
-        public InventoryLogPayload GetListByUuid(InventoryLogPayload payload)
+
+        public async Task<InventoryLogPayload> DeleteByLogUuidAsync(InventoryLogPayload payload)
         {
-            if (!payload.HasInventoryLogUuids)
+            if (!payload.HasLogUuids)
                 return payload;
 
             var rowNumList = new List<long>();
-            foreach (var logUuid in payload.InventoryLogUuids)
+            var msgList = new List<MessageClass>();
+            foreach (var logUuid in payload.LogUuids)
             {
-                rowNumList.AddRange(GetRowNumsByUuids(logUuid));
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    // add validated rownumlist;
+                    rowNumList.AddRange(await InventoryLogServiceHelper.GetRowNumsByLogUuidAsync(logUuid, payload.MasterAccountNum, payload.ProfileNum));
+                }
             }
-
             foreach (var rowNum in rowNumList)
             {
-                //TODO merge
-                //if (GetData(rowNum) && ValidatePayload(payload))
+                // set deleted mode
+                Delete();
+
+                //use default get and delete
+                if (await GetDataAsync(rowNum) &&await DeleteDataAsync())
+                    payload.InventoryLogs.Add(ToDto());
+                else
+                    msgList.AddRange(Messages);
+            }
+            payload.Messages = msgList;
+
+            return payload;
+        }
+
+        public bool GetInventoryLogByInventoryLogUuid(InventoryLogPayload payload, string inventoryLogUuid)
+        {
+            if (string.IsNullOrEmpty(inventoryLogUuid))
+                return false;
+            var isValid = true;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                //Validate Account
+                isValid = InventoryLogServiceHelper.ExistId(inventoryLogUuid, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return isValid&& GetDataById(inventoryLogUuid);
+        }
+        public async Task<bool> GetInventoryLogByInventoryLogUuidAsync(InventoryLogPayload payload, string inventoryLogUuid)
+        {
+            if (string.IsNullOrEmpty(inventoryLogUuid))
+                return false;
+            var isValid = true;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                //Validate Account
+                isValid = await InventoryLogServiceHelper.ExistIdAsync(inventoryLogUuid, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return isValid&& await GetDataByIdAsync(inventoryLogUuid);
+        }
+
+        public InventoryLogPayload GetListByLogUuid(InventoryLogPayload payload)
+        {
+            if (!payload.HasLogUuids)
+                return payload;
+
+            var rowNumList = new List<long>();
+            foreach (var logUuid in payload.LogUuids)
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    //Get RowNum and Validate Account
+                    rowNumList.AddRange(InventoryLogServiceHelper.GetRowNumsByLogUuid(logUuid,payload.MasterAccountNum,payload.ProfileNum));
+                }
+            }
+            foreach (var rowNum in rowNumList)
+            {
                 if (GetData(rowNum))
                     payload.InventoryLogs.Add(ToDto());
-
             }
+            return payload;
+        }
 
+        public async Task<InventoryLogPayload> GetListByLogUuidAsync(InventoryLogPayload payload)
+        {
+            if (!payload.HasLogUuids)
+                return payload;
+
+            var rowNumList = new List<long>();
+            foreach (var logUuid in payload.LogUuids)
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    //Get RowNum and Validate Account
+                    rowNumList.AddRange(await InventoryLogServiceHelper.GetRowNumsByLogUuidAsync(logUuid,payload.MasterAccountNum,payload.ProfileNum));
+                }
+            }
+            foreach (var rowNum in rowNumList)
+            {
+                //used default method get and valid
+                if (await GetDataAsync(rowNum))
+                    payload.InventoryLogs.Add(ToDto());
+            }
             return payload;
         }
         public long GetBatchNum()
         {
             return dbFactory.Db.ExecuteScalar<long>("select max(BatchNum) as maxBatchNum from InventoryLog;") + 1;
         }
+
         public InventoryLogPayload AddList(InventoryLogPayload payload)
         {
             if (!payload.HasInventoryLogs)
@@ -321,16 +440,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             foreach (var log in payload.InventoryLogs)
             {
                 payload.InventoryLog = log;
+                //used default method add and validated
                 if (Add(payload))
                     succList.Add(ToDto());
                 else
                     msgList.AddRange(Messages);
             }
+            //clear temp data;
             payload.InventoryLog = null;
+
             payload.InventoryLogs = succList;
-            if (msgList.Count > 0)
-                payload.Messages = msgList;
-            return payload; 
+            payload.Messages = msgList;
+
+            return payload;
+        }
+
+        public async Task<InventoryLogPayload> AddListAsync(InventoryLogPayload payload)
+        {
+            if (!payload.HasInventoryLogs)
+                return payload;
+            payload.BatchNum = GetBatchNum();
+            var succList = new List<InventoryLogDataDto>();
+            var msgList = new List<MessageClass>();
+            foreach (var log in payload.InventoryLogs)
+            {
+                payload.InventoryLog = log;
+                //used default method add and validated
+                if (await AddAsync(payload))
+                    succList.Add(ToDto());
+                else
+                    msgList.AddRange(Messages);
+            }
+            //clear temp data;
+            payload.InventoryLog = null;
+
+            payload.InventoryLogs = succList;
+            payload.Messages = msgList;
+
+            return payload;
         }
     }
 }

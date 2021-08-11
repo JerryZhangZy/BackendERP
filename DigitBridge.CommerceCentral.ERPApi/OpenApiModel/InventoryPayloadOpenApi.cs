@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// (Response Data) Inventory object which has been added.
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) Inventory object to add.")]
-        public InventoryDataDto InventoryData { get; set; }
+        public InventoryDataDto Inventory { get; set; }
     }
 
 
@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// (Response Data) Inventory object which has been updated.
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) Inventory object to update.")]
-        public InventoryDataDto InventoryData { get; set; }
+        public InventoryDataDto Inventory { get; set; }
     }
 
 
@@ -82,7 +82,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// (Response) Array of Inventory which get by uuid array.
         /// </summary>
         [OpenApiPropertyDescription("(Response) Array of Inventory which get by uuid array.")]
-        public IList<InventoryDataDto> ProductExPayloadAdd { get; set; }
+        public IList<InventoryDataDto> Inventorys { get; set; }
     }
 
 
@@ -105,12 +105,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// (Response) List result which load by filter and paging.
         /// </summary>
         [OpenApiPropertyDescription("(Response) List result which load by filter and paging.")]
-        public IList<Object> ProductList { get; set; }
+        public IList<Object> InventoryList { get; set; }
 
         /// <summary>
         /// (Response) List result count which load by filter and paging.
         /// </summary>
-        public int ProductListCount { get; set; }
+        public int InventoryListCount { get; set; }
 
     }
 
