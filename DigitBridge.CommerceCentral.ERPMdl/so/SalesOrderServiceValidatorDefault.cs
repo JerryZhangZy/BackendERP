@@ -362,9 +362,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
 
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.SalesOrderHeader.RowNum.IsZero())
+                if (dto.SalesOrderHeader.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("SalesOrderHeader.RowNum is required.");
@@ -425,7 +425,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
 
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
                 if (dto.SalesOrderHeader.RowNum.IsZero())
                 {
