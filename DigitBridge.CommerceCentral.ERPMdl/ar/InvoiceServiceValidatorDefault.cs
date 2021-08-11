@@ -96,13 +96,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             else
             {
                 //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    if (number == null)
-                        isValid = SalesOrderHelper.ExistId(dto.InvoiceHeader.InvoiceUuid, pl.MasterAccountNum, pl.ProfileNum);
-                    else
-                        isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
-                }
+                if (!string.IsNullOrEmpty(number))
+                    isValid = InvoiceHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum,dbFactory);
+                else if(!dto.InvoiceHeader.RowNum.IsZero())
+                    isValid = InvoiceHelper.ExistRowNum(dto.InvoiceHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum,dbFactory); 
                 if (!isValid)
                     AddError($"Data not found.");
             }
@@ -126,13 +123,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             else
             {
                 //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    if (number == null)
-                        isValid = await SalesOrderHelper.ExistIdAsync(dto.InvoiceHeader.InvoiceUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
-                    else
-                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
-                }
+                if (!string.IsNullOrEmpty(number))
+                    isValid =await InvoiceHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum,dbFactory);
+                else if(!dto.InvoiceHeader.RowNum.IsZero())
+                    isValid =await InvoiceHelper.ExistRowNumAsync(dto.InvoiceHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum,dbFactory); 
                 if (!isValid)
                     AddError($"Data not found.");
             }
@@ -341,6 +335,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
+                if(!string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceNumber)&&
+                    InvoiceHelper.ExistNumber(dto.InvoiceHeader.InvoiceNumber, dto.InvoiceHeader.ProfileNum.ToInt(),dbFactory)
+                    )
+                {
+                    isValid = false;
+                    AddError("InvoiceHeader.InvoiceNumber exist.");
+                }
                 //for Add mode, always reset uuid
                 dto.InvoiceHeader.InvoiceUuid = Guid.NewGuid().ToString();
                 if (dto.InvoiceItems != null && dto.InvoiceItems.Count > 0)
@@ -350,9 +351,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
   
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.InvoiceHeader.RowNum.IsZero())
+                if (dto.InvoiceHeader.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("InvoiceHeader.RowNum is required.");
@@ -364,6 +365,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.InvoiceHeader.InvoiceUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
+                if (dto.InvoiceItems != null && dto.InvoiceItems.Count > 0)
+                {
+                    foreach (var detailItem in dto.InvoiceItems)
+                        detailItem.InvoiceItemsUuid = null;
+                }
             }
             IsValid=isValid;
             return isValid;
@@ -388,6 +394,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
+                if (!string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceNumber) &&
+                   await InvoiceHelper.ExistNumberAsync(dto.InvoiceHeader.InvoiceNumber, dto.InvoiceHeader.ProfileNum.ToInt(), dbFactory)
+                    )
+                {
+                    isValid = false;
+                    AddError("InvoiceHeader.InvoiceNumber exist.");
+                }
                 //for Add mode, always reset uuid
                 dto.InvoiceHeader.InvoiceUuid = Guid.NewGuid().ToString();
                 if (dto.InvoiceItems != null && dto.InvoiceItems.Count > 0)
@@ -397,9 +410,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
   
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.InvoiceHeader.RowNum.IsZero())
+                if (dto.InvoiceHeader.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("InvoiceHeader.RowNum is required.");
@@ -411,6 +424,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.InvoiceHeader.InvoiceUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
+                if (dto.InvoiceItems != null && dto.InvoiceItems.Count > 0)
+                {
+                    foreach (var detailItem in dto.InvoiceItems)
+                        detailItem.InvoiceItemsUuid = null;
+                }
+  
             }
             IsValid=isValid;
             return isValid;

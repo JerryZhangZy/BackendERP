@@ -96,13 +96,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             else
             {
                 //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    if (number == null)
-                        isValid = SalesOrderHelper.ExistId(dto.InvoiceTransaction.TransUuid, pl.MasterAccountNum, pl.ProfileNum);
-                    else
-                        isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
-                }
+                if (!string.IsNullOrEmpty(number))
+                    isValid = InvoiceTransactionHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum,dbFactory);
+                else if(!dto.InvoiceTransaction.RowNum.IsZero())
+                    isValid = InvoiceTransactionHelper.ExistRowNum(dto.InvoiceTransaction.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum,dbFactory); 
                 if (!isValid)
                     AddError($"Data not found.");
             }
@@ -126,13 +123,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             else
             {
                 //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    if (number == null)
-                        isValid = await SalesOrderHelper.ExistIdAsync(dto.InvoiceTransaction.TransUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
-                    else
-                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
-                }
+                if (!string.IsNullOrEmpty(number))
+                    isValid =await InvoiceTransactionHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum,dbFactory);
+                else if(!dto.InvoiceTransaction.RowNum.IsZero())
+                    isValid =await InvoiceTransactionHelper.ExistRowNumAsync(dto.InvoiceTransaction.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum,dbFactory); 
                 if (!isValid)
                     AddError($"Data not found.");
             }
@@ -350,9 +344,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
   
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.InvoiceTransaction.RowNum.IsZero())
+                if (dto.InvoiceTransaction.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("InvoiceTransaction.RowNum is required.");
@@ -364,6 +358,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.InvoiceTransaction.TransUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
+                if (dto.InvoiceReturnItems != null && dto.InvoiceReturnItems.Count > 0)
+                {
+                    foreach (var detailItem in dto.InvoiceReturnItems)
+                        detailItem.ReturnItemUuid = null;
+                }
             }
             IsValid=isValid;
             return isValid;
@@ -397,9 +396,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
   
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.InvoiceTransaction.RowNum.IsZero())
+                if (dto.InvoiceTransaction.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("InvoiceTransaction.RowNum is required.");
@@ -411,6 +410,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.InvoiceTransaction.TransUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
+                if (dto.InvoiceReturnItems != null && dto.InvoiceReturnItems.Count > 0)
+                {
+                    foreach (var detailItem in dto.InvoiceReturnItems)
+                        detailItem.ReturnItemUuid = null;
+                }
+  
             }
             IsValid=isValid;
             return isValid;

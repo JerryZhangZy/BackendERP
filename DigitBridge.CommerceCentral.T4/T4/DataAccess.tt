@@ -73,7 +73,12 @@
 //SettingForShipment
 //SettingForDistributionCenter
 #>
-<#@ include file="SettingForInvoiceTransaction.ttinclude" #>
+<# 
+//set it to empty if you want to override original file
+var suffix_ServiceName="";
+var suffix_ServiceValidatorName="";
+#>
+<#@ include file="SettingForShipment.ttinclude" #>
 
 <#      
     // Generate model output
@@ -256,7 +261,7 @@
 <#@ include file="GenerateServicePartial.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceFolder);
-        SaveOutputNotExists(dir, $"{ServiceName}.cs");
+        SaveOutputNotExists(dir, $"{ServiceName}{suffix_ServiceName}.cs");
 #>
 
 <#@ include file="GenerateServiceHelper.ttinclude" #>
@@ -278,7 +283,7 @@
 <#@ include file="GenerateServiceValidator.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceFolder);
-        SaveOutputNotExists(dir, $"{ServiceName}ValidatorDefault.cs");
+        SaveOutputNotExists(dir, $"{ServiceName}ValidatorDefault{suffix_ServiceValidatorName}.cs");
 #>
 <# } #>
 

@@ -82,22 +82,22 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Delete invoice 
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="invoiceUuid"></param>
+        /// <param name="rowNum"></param>
         /// <returns></returns>
         [FunctionName(nameof(DeleteInvoices))]
         [OpenApiOperation(operationId: "DeleteInvoices", tags: new[] { "Invoices" }, Summary = "Delete one invoice")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "invoiceUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoice uuid", Description = "Sales invoice uuid. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "rowNum", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "invoice rowNum", Description = "Sales invoice rowNum. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadDelete))]
         public static async Task<JsonNetResponse<InvoicePayload>> DeleteInvoices(
-           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoices/{invoiceUuid}")] HttpRequest req,
-           string invoiceUuid)
+           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoices/{rowNum}")] HttpRequest req,
+           long rowNum)
         {
             var payload = await req.GetParameters<InvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
-            payload.Success = await srv.DeleteByInvoiceUuidAsync(invoiceUuid,payload);
+            payload.Success = await srv.DeleteByInvoiceUuidAsync(payload, rowNum);
             payload.Messages = srv.Messages;
             return new JsonNetResponse<InvoicePayload>(payload);
         }
@@ -141,7 +141,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
-            payload.Success= await srv.AddAsync(payload);
+            payload.Success = await srv.AddAsync(payload);
             payload.Messages = srv.Messages;
             return new JsonNetResponse<InvoicePayload>(payload);
         }

@@ -124,7 +124,6 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 		{
 			var data = FakerData.Generate();
             data.SetDataBaseFactory(DataBaseFactory);
-            data.DistributionCenterNum = 0;
             DataBaseFactory.Begin();
 			data.Add();
             DataBaseFactory.Commit();
@@ -187,7 +186,6 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
 	        var dataNew = FakerData.Generate();
             dataNew.SetDataBaseFactory(DataBaseFactory);
-            dataNew.DistributionCenterNum = 0;
             DataBaseFactory.Begin();
             dataNew.Save();
             DataBaseFactory.Commit();
@@ -276,7 +274,6 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
             var data = FakerData.Generate();
             data.SetDataBaseFactory(DataBaseFactory);
-            data.DistributionCenterNum = 0;
             DataBaseFactory.Begin();
             await data.AddAsync();
             DataBaseFactory.Commit();
@@ -339,7 +336,6 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
             var dataNew = FakerData.Generate();
             dataNew.SetDataBaseFactory(DataBaseFactory);
-            dataNew.DistributionCenterNum = 0;
             DataBaseFactory.Begin();
             await dataNew.SaveAsync();
             DataBaseFactory.Commit();

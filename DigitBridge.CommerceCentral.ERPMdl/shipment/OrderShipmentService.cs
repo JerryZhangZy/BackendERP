@@ -138,12 +138,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasOrderShipmentHeader)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!Validate(dto))
                 return false;
 
-            // set Add mode and clear data
-            Edit(dto.OrderShipmentHeader.RowNum.ToLong());
+            // load data 
+            GetData(dto.OrderShipmentHeader.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
@@ -163,12 +164,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasOrderShipmentHeader)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!(await ValidateAsync(dto).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(dto.OrderShipmentHeader.RowNum.ToLong()).ConfigureAwait(false);
+            // load data 
+            await GetDataAsync(dto.OrderShipmentHeader.RowNum.ToLong()).ConfigureAwait(false);
 
             // load data from dto
             FromDto(dto);
@@ -188,7 +190,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasOrderShipment || payload.OrderShipment.OrderShipmentHeader.RowNum.ToLong() <= 0)
                 return false;
-
+            //set edit mode before validate
+            Edit();
 
             if (!ValidateAccount(payload))
                 return false;
@@ -196,8 +199,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate(payload.OrderShipment))
                 return false;
 
-            // set Add mode and clear data
-            Edit(payload.OrderShipment.OrderShipmentHeader.RowNum.ToLong());
+            // load data 
+            GetData(payload.OrderShipment.OrderShipmentHeader.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.OrderShipment);
@@ -217,15 +220,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasOrderShipment)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             if (!(await ValidateAsync(payload.OrderShipment).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(payload.OrderShipment.OrderShipmentHeader.RowNum.ToLong()).ConfigureAwait(false);
+            // load data 
+            await GetDataAsync(payload.OrderShipment.OrderShipmentHeader.RowNum.ToLong()).ConfigureAwait(false);
 
             // load data from dto
             FromDto(payload.OrderShipment);
@@ -237,33 +241,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
+
         /// <summary>
         /// Delete order shipment by order shipment number
         /// </summary>
         /// <param name="orderShipmentUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByOrderShipmentUuidAsync(string orderShipmentUuid, OrderShipmentPayload payload)
-        {
-            if (string.IsNullOrEmpty(orderShipmentUuid))
-                return false;
+        public virtual async Task<bool> DeleteByOrderShipmentUuidAsync( OrderShipmentPayload payload,long rowNum)
+        { 
+            payload.OrderShipment = new OrderShipmentDataDto();
+            payload.OrderShipment.OrderShipmentHeader = new OrderShipmentHeaderDto();
+            payload.OrderShipment.OrderShipmentHeader.RowNum = rowNum;
+
+            //set delete mode
             Delete();
-            var success = await GetDataByIdAsync(orderShipmentUuid);
-            // validate before deleting
-            
-            //TODO
-            //if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
-                //return false;
-            success = success && await DeleteDataAsync();
+
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            //load data
+            var success = await GetDataAsync(rowNum);
+            //delete salesorder and its sub items
+            success = success && DeleteData();
             return success;
         }
 
         public virtual async Task<bool> GetDataAsync(long orderShipmentNum, OrderShipmentPayload payload)
         {
-            if (orderShipmentNum < 0)
+            if (orderShipmentNum <= 0)
                 return false;
-            var orderShipmentNum_db = await _data.GetOrderShipmentNumAsync(orderShipmentNum, payload.ProfileNum, payload.MasterAccountNum);
-            if (!orderShipmentNum_db.HasValue)
+
+            payload.OrderShipment = new OrderShipmentDataDto();
+            payload.OrderShipment.OrderShipmentHeader = new OrderShipmentHeaderDto();
+            payload.OrderShipment.OrderShipmentHeader.RowNum = orderShipmentNum;
+            
+            List();
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
+            
             var success = await GetDataAsync(orderShipmentNum);
             //if (success) ToDto();
             return success;
