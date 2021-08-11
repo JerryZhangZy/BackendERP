@@ -33,7 +33,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "ProductUuids", val => ProductUuids = val.Split(",").ToList() }
+                { "ProductUuids", val => ProductUuids = val.Split(",").ToList() },
+                { "skus", val => Skus = val.Split(",").ToList() }
             };
         }
 
@@ -48,6 +49,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] 
         public virtual bool HasProductUuids => ProductUuids != null && ProductUuids.Count > 0;
         public bool ShouldSerializeSalesOrderUuids() => HasProductUuids;
+
+        public IList<string> Skus { get; set; } = new List<string>();
+        [JsonIgnore]
+        public virtual bool HasSkus => Skus != null && Skus.Count > 0;
+        public bool ShouldSerializeSkus() => HasSkus;
 
         /// <summary>
         /// (Response Data) Array of Inventory entity object which load by uuid array.

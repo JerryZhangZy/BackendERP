@@ -30,16 +30,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a InventoryLogHelper SQL Helper Static Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public static class InventoryLogHelper
+    public static class InventoryLogServiceHelper
     {
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT COUNT(1) FROM InventoryLog tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
+AND LogUuid = @number
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -47,18 +46,15 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT COUNT(1) FROM InventoryLog tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
+AND LogUuid = @number
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -66,8 +62,6 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
@@ -132,6 +126,75 @@ AND RowNum= @rowNum
                 rowNum.ToSqlParameter("rowNum")
             );
             return result > 0;
+        }
+
+        public static IList<long> GetRowNumsByLogUuid(string logUuid, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT RowNum FROM InventoryLog tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND LogUuid = @logUuid
+";
+            var numList = new List<long>();
+            using var reader = SqlQuery.ExecuteCommand(sql, CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                logUuid.ToSqlParameter("logUuid")
+            );
+            while (reader.Read())
+                numList.Add(reader.GetInt64(0));
+            return numList;
+        }
+
+        public static async Task<IList<long>> GetRowNumsByLogUuidAsync(string logUuid, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT RowNum FROM InventoryLog tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND LogUuid = @logUuid
+";
+            var numList = new List<long>();
+            using var reader= await SqlQuery.ExecuteCommandAsync(sql,CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                logUuid.ToSqlParameter("logUuid")
+            );
+            while (await reader.ReadAsync())
+                numList.Add(reader.GetInt64(0));
+            return numList;
+        }
+        public static long GetRowNumByInventoryLogUuid(string logUuid, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT Top 1 RowNum FROM InventoryLog tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND InventoryLogUuid = @logUuid
+";
+            var result = SqlQuery.ExecuteScalar<long>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                logUuid.ToSqlParameter("logUuid")
+            );
+            return result;
+        }
+
+        public static async Task<long> GetRowNumByInventoryLogUuidAsync(string inventoryLogUuid, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT Top 1 RowNum FROM InventoryLog tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND InventoryLogUuid = @inventoryLogUuid
+";
+            var result = await SqlQuery.ExecuteScalarAsync<long>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                inventoryLogUuid.ToSqlParameter("inventoryLogUuid")
+            );
+            return result;
         }
 
     }
