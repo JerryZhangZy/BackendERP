@@ -11,13 +11,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using DigitBridge.Base.Utility;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Resolvers;
+
 using DigitBridge.CommerceCentral.ERPDb;
+using Newtonsoft.Json.Serialization;
+
 namespace DigitBridge.CommerceCentral.ERPApi
 {
     /// <summary>
@@ -32,8 +33,32 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) SalesOrder object to add.")]
         public SalesOrderDataDto SalesOrder { get; set; }
+
+        public static SalesOrderPayloadAdd GetSampleData()
+        {
+            var data = new SalesOrderPayloadAdd();
+            data.SalesOrder = new SalesOrderDataDto().GetFakerData();
+            return data;
+        }
     }
 
+    //[Serializable()]
+    //public class SalesOrderPayloadAddExample : OpenApiExample<SalesOrderPayloadAdd>
+    //{
+    //    public override IOpenApiExample<SalesOrderPayloadAdd> Build(NamingStrategy namingStrategy = null)
+    //    {
+    //        var data = new SalesOrderPayloadAdd();
+    //        data.SalesOrder = new SalesOrderDataDto().GetFakerData();
+    //        this.Examples.Add(
+    //            OpenApiExampleResolver.Resolve(
+    //                "SalesOrderPayloadAddExample",
+    //                data,
+    //                namingStrategy
+    //            ));
+
+    //        return this;
+    //    }
+    //}
 
     /// <summary>
     /// Request and Response payload object for Patch API
