@@ -30,16 +30,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a WarehouseHelper SQL Helper Static Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public static class WarehouseHelper
+    public static class WarehouseServiceHelper
     {
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT COUNT(1) FROM DistributionCenter tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
+AND DistributionCenterCode = @number
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -47,18 +46,15 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT COUNT(1) FROM DistributionCenter tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
+AND DistributionCenterCode = @number
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -66,8 +62,6 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
@@ -132,6 +126,38 @@ AND DistributionCenterNum= @rowNum
                 rowNum.ToSqlParameter("rowNum")
             );
             return result > 0;
+        }
+
+        public static long GetRowNumByWarehouseCode(string warehouseCode, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT Top 1 RowNum FROM DistributionCenter tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND DistributionCenterCode = @warehouseCode
+";
+            var result = SqlQuery.ExecuteScalar<long>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                warehouseCode.ToSqlParameter("warehouseCode")
+            );
+            return result;
+        }
+
+        public static async Task<long> GetRowNumByWarehouseCodeAsync(string warehouseCode, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT Top 1 RowNum FROM DistributionCenter tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND DistributionCenterCode = @warehouseCode
+";
+            var result = await SqlQuery.ExecuteScalarAsync<long>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                warehouseCode.ToSqlParameter("warehouseCode")
+            );
+            return result ;
         }
 
     }
