@@ -20,18 +20,18 @@ using DigitBridge.CommerceCentral.YoPoco;
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
-    /// Represents a SalesOrderDataDtoMapperDefault Class.
+    /// Represents a InvoiceDataDtoMapperDefault Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public static class SalesOrderDataDtoExtension
+    public static class InvoiceDataDtoExtension
     {
         /// <summary>
-        /// Merge SalesOrderDataDto header objects to one dynamic object
+        /// Merge InvoiceDataDto header objects to one dynamic object
         /// </summary>
-        /// <param name="dto">SalesOrderDataDto object to merge data</param>
+        /// <param name="dto">InvoiceDataDto object to merge data</param>
         /// <param name="withHeaderText">Add header text line at first</param>
         /// <returns>Single dynamic object include all properties of Dto header objects</returns>
-        public static IEnumerable<dynamic> MergeHeaderRecord(this SalesOrderDataDto dto, bool withHeaderText = false)
+        public static IEnumerable<dynamic> MergeHeaderRecord(this InvoiceDataDto dto, bool withHeaderText = false)
         {
             var result = new List<dynamic>();
             //TODO change to merge Dto children object
@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <param name="dto">SalesOrderDataDto object to merge data</param>
         /// <param name="withHeaderText">Add header text line at first</param>
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
-        public static IEnumerable<dynamic> MergeDetailRecord(this SalesOrderDataDto dto, bool withHeaderText = false)
+        public static IEnumerable<dynamic> MergeDetailRecord(this InvoiceDataDto dto, bool withHeaderText = false)
         {
             return null;
             //TODO change to merge Dto children object
@@ -74,10 +74,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <param name="dto">SalesOrderDataDto object</param>
         /// <param name="count">Generate multiple fake data</param>
         /// <returns>list for Fake data</returns>
-        public static IList<SalesOrderDataDto> GetFakerData(this SalesOrderDataDto dto, int count)
+        public static IList<InvoiceDataDto> GetFakerData(this InvoiceDataDto dto, int count)
         {
-            var obj = new SalesOrderDataDto();
-            var datas = new List<SalesOrderDataDto>();
+            var obj = new InvoiceDataDto();
+            var datas = new List<InvoiceDataDto>();
             for (int i = 0; i < count; i++)
                 datas.Add(obj.GetFakerData());
             return datas;
@@ -88,38 +88,42 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         /// <param name="dto">SalesOrderDataDto object</param>
         /// <returns>single Fake data</returns>
-        public static SalesOrderDataDto GetFakerData(this SalesOrderDataDto dto)
+        public static InvoiceDataDto GetFakerData(this InvoiceDataDto dto)
         {
-            var data = new SalesOrderDataDto();
-			data.SalesOrderHeader = new SalesOrderHeaderDto().GetFaker().Generate();
-			data.SalesOrderHeaderInfo = new SalesOrderHeaderInfoDto().GetFaker().Generate();
-			data.SalesOrderHeaderAttributes = new SalesOrderHeaderAttributesDto().GetFaker().Generate();
-			data.SalesOrderItems = new SalesOrderItemsDto().GetFaker().Generate(3);
-			foreach (var ln in data.SalesOrderItems)
-				ln.SalesOrderItemsAttributes = new SalesOrderItemsAttributesDto().GetFaker().Generate();
+            var data = new InvoiceDataDto();
+			data.InvoiceHeader = new InvoiceHeaderDto().GetFaker().Generate();
+			data.InvoiceHeaderInfo = new InvoiceHeaderInfoDto().GetFaker().Generate();
+			data.InvoiceHeaderAttributes = new InvoiceHeaderAttributesDto().GetFaker().Generate();
+			data.InvoiceItems = new InvoiceItemsDto().GetFaker().Generate(3);
+			foreach (var ln in data.InvoiceItems)
+				ln.InvoiceItemsAttributes = new InvoiceItemsAttributesDto().GetFaker().Generate();
             return data;
         }
 
 
 		/// <summary>
-		/// Get faker object for SalesOrderHeaderDto
+		/// Get faker object for InvoiceHeaderDto
 		/// </summary>
-		/// <param name="dto">SalesOrderHeaderDto</param>
+		/// <param name="dto">InvoiceHeaderDto</param>
 		/// <returns>Faker object use to generate data</returns>
-		public static Faker<SalesOrderHeaderDto> GetFaker(this SalesOrderHeaderDto dto)
+		public static Faker<InvoiceHeaderDto> GetFaker(this InvoiceHeaderDto dto)
 		{
 			#region faker data rules
-			return new Faker<SalesOrderHeaderDto>()
+			return new Faker<InvoiceHeaderDto>()
 				.RuleFor(u => u.DatabaseNum, f => null)
 				.RuleFor(u => u.MasterAccountNum, f => null)
 				.RuleFor(u => u.ProfileNum, f => null)
-				.RuleFor(u => u.SalesOrderUuid, f => null)
+				.RuleFor(u => u.InvoiceUuid, f => null)
+				.RuleFor(u=>u.EnterDateUtc,f=>null)
+				.RuleFor(u => u.DigitBridgeGuid, f => new Guid())
+				.RuleFor(u => u.RowNum, f => null)
+				.RuleFor(u => u.InvoiceNumber, f => f.Random.Int(1,100).ToString())
+				.RuleFor(u => u.SalesOrderUuid, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.OrderNumber, f => f.Random.Int(1,100).ToString())
-				.RuleFor(u => u.OrderType, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.OrderStatus, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.OrderDate, f => f.Date.Past(0).Date)
-				.RuleFor(u => u.OrderTime, f => f.Date.Timespan().ToDateTime())
-				.RuleFor(u => u.ShipDate, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.InvoiceType, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.InvoiceStatus, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.InvoiceDate, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.InvoiceTime, f => f.Date.Timespan().ToDateTime())
 				.RuleFor(u => u.DueDate, f => f.Date.Past(0).Date)
 				.RuleFor(u => u.BillDate, f => f.Date.Past(0).Date)
 				.RuleFor(u => u.CustomerUuid, f => f.Random.Guid().ToString())
@@ -148,7 +152,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.UnitCost, f => f.Random.Decimal(1, 1000, 2))
 				.RuleFor(u => u.AvgCost, f => f.Random.Decimal(1, 1000, 2))
 				.RuleFor(u => u.LotCost, f => f.Random.Decimal(1, 1000, 2))
-				.RuleFor(u => u.OrderSourceCode, f => null)
+				.RuleFor(u => u.InvoiceSourceCode, f => f.Lorem.Word())
 				.RuleFor(u => u.UpdateDateUtc, f => null)
 				.RuleFor(u => u.EnterBy, f => null)
 				.RuleFor(u => u.UpdateBy, f => null)
@@ -156,16 +160,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#endregion faker data rules
 		}
 		/// <summary>
-		/// Get faker object for SalesOrderHeaderInfoDto
+		/// Get faker object for InvoiceHeaderInfoDto
 		/// </summary>
-		/// <param name="dto">SalesOrderHeaderInfoDto</param>
+		/// <param name="dto">InvoiceHeaderInfoDto</param>
 		/// <returns>Faker object use to generate data</returns>
-		public static Faker<SalesOrderHeaderInfoDto> GetFaker(this SalesOrderHeaderInfoDto dto)
+		public static Faker<InvoiceHeaderInfoDto> GetFaker(this InvoiceHeaderInfoDto dto)
 		{
 			#region faker data rules
-			return new Faker<SalesOrderHeaderInfoDto>()
-				.RuleFor(u => u.SalesOrderUuid, f => String.Empty)
+			return new Faker<InvoiceHeaderInfoDto>()
+				.RuleFor(u => u.DigitBridgeGuid, f => new Guid())
+				.RuleFor(u => u.InvoiceUuid, f => String.Empty)
 				.RuleFor(u => u.CentralFulfillmentNum, f => default(long))
+				.RuleFor(u => u.OrderShipmentNum, f => default(long))
+				.RuleFor(u => u.OrderShipmentUuid, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.ShippingCarrier, f => f.Random.AlphaNumeric(50))
 				.RuleFor(u => u.ShippingClass, f => f.Random.AlphaNumeric(50))
 				.RuleFor(u => u.DistributionCenterNum, f => f.Random.Int(1, 100))
@@ -179,13 +186,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.WarehouseCode, f => f.Lorem.Word())
 				.RuleFor(u => u.RefNum, f => f.Lorem.Sentence().TruncateTo(100))
 				.RuleFor(u => u.CustomerPoNum, f => f.Lorem.Sentence().TruncateTo(100))
-				.RuleFor(u => u.EndBuyerUserID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.EndBuyerUserId, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.EndBuyerName, f => f.Name.FullName())
 				.RuleFor(u => u.EndBuyerEmail, f => f.Internet.Email())
 				.RuleFor(u => u.ShipToName, f => f.Name.FullName())
 				.RuleFor(u => u.ShipToFirstName, f => f.Name.FirstName())
 				.RuleFor(u => u.ShipToLastName, f => f.Name.LastName())
-				.RuleFor(u => u.ShipToSuffix, f => f.Company.CompanySuffix())
+				.RuleFor(u => u.ShipToSuffix, f => f.Name.Suffix())
 				.RuleFor(u => u.ShipToCompany, f => f.Company.CompanyName())
 				.RuleFor(u => u.ShipToCompanyJobTitle, f => f.Lorem.Sentence().TruncateTo(100))
 				.RuleFor(u => u.ShipToAttention, f => f.Lorem.Sentence().TruncateTo(100))
@@ -222,7 +229,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.BillToEmail, f => f.Internet.Email())
 				.RuleFor(u => u.BillToDaytimePhone, f => f.Phone.PhoneNumber())
 				.RuleFor(u => u.BillToNightPhone, f => f.Phone.PhoneNumber())
-				.RuleFor(u => u.Notes, f => f.Lorem.Sentence().TruncateTo(1000))
 				.RuleFor(u => u.UpdateDateUtc, f => null)
 				.RuleFor(u => u.EnterBy, f => null)
 				.RuleFor(u => u.UpdateBy, f => null)
@@ -230,33 +236,33 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#endregion faker data rules
 		}
 		/// <summary>
-		/// Get faker object for SalesOrderHeaderAttributesDto
+		/// Get faker object for InvoiceHeaderAttributesDto
 		/// </summary>
-		/// <param name="dto">SalesOrderHeaderAttributesDto</param>
+		/// <param name="dto">InvoiceHeaderAttributesDto</param>
 		/// <returns>Faker object use to generate data</returns>
-		public static Faker<SalesOrderHeaderAttributesDto> GetFaker(this SalesOrderHeaderAttributesDto dto)
+		public static Faker<InvoiceHeaderAttributesDto> GetFaker(this InvoiceHeaderAttributesDto dto)
 		{
 			#region faker data rules
-			return new Faker<SalesOrderHeaderAttributesDto>()
-				.RuleFor(u => u.SalesOrderUuid, f => String.Empty)
+			return new Faker<InvoiceHeaderAttributesDto>()
+				.RuleFor(u => u.InvoiceUuid, f => String.Empty)
 				.RuleFor(u => u.Fields, f => f.Random.JObject())
 				;
 			#endregion faker data rules
 		}
 		/// <summary>
-		/// Get faker object for SalesOrderItemsDto
+		/// Get faker object for InvoiceItemsDto
 		/// </summary>
-		/// <param name="dto">SalesOrderItemsDto</param>
+		/// <param name="dto">InvoiceItemsDto</param>
 		/// <returns>Faker object use to generate data</returns>
-		public static Faker<SalesOrderItemsDto> GetFaker(this SalesOrderItemsDto dto)
+		public static Faker<InvoiceItemsDto> GetFaker(this InvoiceItemsDto dto)
 		{
 			#region faker data rules
-			return new Faker<SalesOrderItemsDto>()
-				.RuleFor(u => u.SalesOrderItemsUuid, f => null)
-				.RuleFor(u => u.SalesOrderUuid, f => null)
+			return new Faker<InvoiceItemsDto>()
+				.RuleFor(u => u.InvoiceItemsUuid, f => null)
+				.RuleFor(u => u.InvoiceUuid, f => null)
 				.RuleFor(u => u.Seq, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.OrderItemType, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.SalesOrderItemstatus, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.InvoiceItemType, f => f.PickRandom(FakerExtension.InvoiceItemType))
+				.RuleFor(u => u.InvoiceItemStatus, f => f.PickRandom(FakerExtension.InvoiceItemStatus))
 				.RuleFor(u => u.ItemDate, f => f.Date.Past(0).Date)
 				.RuleFor(u => u.ItemTime, f => f.Date.Timespan().ToDateTime())
 				.RuleFor(u => u.ShipDate, f => f.Date.Past(0).Date)
@@ -297,7 +303,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.MiscTaxAmount, f => f.Random.Decimal(1, 1000, 2))
 				.RuleFor(u => u.ChargeAndAllowanceAmount, f => f.Random.Decimal(1, 1000, 2))
 				.RuleFor(u => u.ItemTotalAmount, f => f.Random.Decimal(1, 1000, 2))
-				.RuleFor(u => u.ShipAmount, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.OrderAmount, f => f.Random.Decimal(1, 1000, 2))
 				.RuleFor(u => u.CancelledAmount, f => f.Random.Decimal(1, 1000, 2))
 				.RuleFor(u => u.OpenAmount, f => f.Random.Decimal(1, 1000, 2))
 				.RuleFor(u => u.Stockable, f => f.Random.Bool())
@@ -317,16 +323,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#endregion faker data rules
 		}
 		/// <summary>
-		/// Get faker object for SalesOrderItemsAttributesDto
+		/// Get faker object for InvoiceItemsAttributesDto
 		/// </summary>
-		/// <param name="dto">SalesOrderItemsAttributesDto</param>
+		/// <param name="dto">InvoiceItemsAttributesDto</param>
 		/// <returns>Faker object use to generate data</returns>
-		public static Faker<SalesOrderItemsAttributesDto> GetFaker(this SalesOrderItemsAttributesDto dto)
+		public static Faker<InvoiceItemsAttributesDto> GetFaker(this InvoiceItemsAttributesDto dto)
 		{
 			#region faker data rules
-			return new Faker<SalesOrderItemsAttributesDto>()
-				.RuleFor(u => u.SalesOrderItemsUuid, f => String.Empty)
-				.RuleFor(u => u.SalesOrderUuid, f => f.Random.Guid().ToString())
+			return new Faker<InvoiceItemsAttributesDto>()
+				.RuleFor(u => u.InvoiceItemsUuid, f => String.Empty)
+				.RuleFor(u => u.InvoiceUuid, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.Fields, f => f.Random.JObject())
 				;
 			#endregion faker data rules

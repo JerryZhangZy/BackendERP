@@ -138,12 +138,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasOrderHeader)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!Validate(dto))
                 return false;
 
-            // set Add mode and clear data
-            Edit(dto.OrderHeader.RowNum.ToLong());
+            // load data 
+            GetData(dto.OrderHeader.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
@@ -163,12 +164,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasOrderHeader)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!(await ValidateAsync(dto).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(dto.OrderHeader.RowNum.ToLong()).ConfigureAwait(false);
+            // load data 
+            await GetDataAsync(dto.OrderHeader.RowNum.ToLong()).ConfigureAwait(false);
 
             // load data from dto
             FromDto(dto);
@@ -188,7 +190,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasChannelOrder || payload.ChannelOrder.OrderHeader.RowNum.ToLong() <= 0)
                 return false;
-
+            //set edit mode before validate
+            Edit();
 
             if (!ValidateAccount(payload))
                 return false;
@@ -196,8 +199,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate(payload.ChannelOrder))
                 return false;
 
-            // set Add mode and clear data
-            Edit(payload.ChannelOrder.OrderHeader.RowNum.ToLong());
+            // load data 
+            GetData(payload.ChannelOrder.OrderHeader.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.ChannelOrder);
@@ -217,15 +220,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasChannelOrder)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             if (!(await ValidateAsync(payload.ChannelOrder).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(payload.ChannelOrder.OrderHeader.RowNum.ToLong()).ConfigureAwait(false);
+            // load data 
+            await GetDataAsync(payload.ChannelOrder.OrderHeader.RowNum.ToLong()).ConfigureAwait(false);
 
             // load data from dto
             FromDto(payload.ChannelOrder);

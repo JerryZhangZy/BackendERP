@@ -82,7 +82,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync().ConfigureAwait(false);
         }
 
-        public virtual bool Add(InvoiceTransactionPayload payload)
+        public virtual bool Add(InvoiceReturnPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
                 return false;
@@ -106,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return SaveData();
         }
 
-        public virtual async Task<bool> AddAsync(InvoiceTransactionPayload payload)
+        public virtual async Task<bool> AddAsync(InvoiceReturnPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
                 return false;
@@ -138,12 +138,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasInvoiceTransaction)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!Validate(dto))
                 return false;
 
-            // set Add mode and clear data
-            Edit(dto.InvoiceTransaction.RowNum.ToLong());
+            // load data 
+            GetData(dto.InvoiceTransaction.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
@@ -163,12 +164,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasInvoiceTransaction)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!(await ValidateAsync(dto).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(dto.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
+            // load data 
+            await GetDataAsync(dto.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
 
             // load data from dto
             FromDto(dto);
@@ -184,11 +186,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Payload object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual bool Update(InvoiceTransactionPayload payload)
+        public virtual bool Update(InvoiceReturnPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction || payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong() <= 0)
                 return false;
-
+            //set edit mode before validate
+            Edit();
 
             if (!ValidateAccount(payload))
                 return false;
@@ -196,8 +199,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate(payload.InvoiceTransaction))
                 return false;
 
-            // set Add mode and clear data
-            Edit(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong());
+            // load data 
+            GetData(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.InvoiceTransaction);
@@ -213,19 +216,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual async Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
+        public virtual async Task<bool> UpdateAsync(InvoiceReturnPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             if (!(await ValidateAsync(payload.InvoiceTransaction).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
+            // load data 
+            await GetDataAsync(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
 
             // load data from dto
             FromDto(payload.InvoiceTransaction);

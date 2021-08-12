@@ -97,14 +97,10 @@ namespace <#= NamespaceService #>
             else
             {
                 //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    if (number == null)
-                        isValid = SalesOrderHelper.ExistId(dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>, pl.MasterAccountNum, pl.ProfileNum);
-                    else
-                        isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
-                    isValid = <#= ServiceHelperName #>.ExistRowNum(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
-                }
+                if (!string.IsNullOrEmpty(number))
+                    isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum,dbFactory);
+                else if(!dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
+                    isValid = SalesOrderHelper.ExistRowNum(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum,dbFactory); 
                 if (!isValid)
                     AddError($"Data not found.");
             }
@@ -128,14 +124,10 @@ namespace <#= NamespaceService #>
             else
             {
                 //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    if (number == null)
-                        isValid = await SalesOrderHelper.ExistIdAsync(dto.<#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
-                    else
-                       isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
-                   isValid = await <#= ServiceHelperName #>.ExistRowNumAsync(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
-                }
+                if (!string.IsNullOrEmpty(number))
+                    isValid =await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum,dbFactory);
+                else if(!dto.<#= StructureClass.MainTable.Name #>.RowNum.IsZero())
+                    isValid =await SalesOrderHelper.ExistRowNumAsync(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum,dbFactory); 
                 if (!isValid)
                     AddError($"Data not found.");
             }

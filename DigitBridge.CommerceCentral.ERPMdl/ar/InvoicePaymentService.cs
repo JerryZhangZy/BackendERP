@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual async Task<bool> AddAsync(InvoicePaymentPayload payload)
         {
-            var invoiceTransactionPayload = new InvoiceTransactionPayload
+            var invoiceTransactionPayload = new InvoiceReturnPayload
             {
                 InvoiceTransaction = new InvoiceTransactionDataDto()
                 {
@@ -79,7 +79,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual async Task<bool> UpdateAsync(InvoicePaymentPayload payload)
         {
-            var invoiceTransactionPayload = new InvoiceTransactionPayload
+            var invoiceTransactionPayload = new InvoiceReturnPayload
             {
                 InvoiceTransaction = new InvoiceTransactionDataDto()
                 {

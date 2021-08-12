@@ -60,17 +60,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "DeleteShipments", tags: new[] { "Shipments" }, Summary = "Delete one order shipment")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "orderShipmentUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderShipmentUuid", Description = "Order shipment uuid. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "rowNum", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "rowNum", Description = "rowNum. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadDelete))]
         public static async Task<JsonNetResponse<OrderShipmentPayload>> DeleteShipments(
-           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "shipments/{orderShipmentUuid}")]
+           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "shipments/{rowNum}")]
             HttpRequest req,
-            string orderShipmentUuid)
+            long rowNum)
         {
             var payload = await req.GetParameters<OrderShipmentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory); 
-            payload.Success = await srv.DeleteByOrderShipmentUuidAsync(orderShipmentUuid, payload);
+            payload.Success = await srv.DeleteByOrderShipmentUuidAsync(payload, rowNum);
             payload.Messages = srv.Messages;
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }

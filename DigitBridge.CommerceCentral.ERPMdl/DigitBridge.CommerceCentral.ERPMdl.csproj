@@ -16,8 +16,6 @@
   <ItemGroup>
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="ap\" />
-    <Folder Include="channelOrder\" />
-    <Folder Include="shipment\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />
   </ItemGroup>

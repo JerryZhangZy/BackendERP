@@ -138,12 +138,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasInvoiceHeader)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!Validate(dto))
                 return false;
 
-            // set Add mode and clear data
-            Edit(dto.InvoiceHeader.RowNum.ToLong());
+            // load data 
+            GetData(dto.InvoiceHeader.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
@@ -163,12 +164,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasInvoiceHeader)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!(await ValidateAsync(dto).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(dto.InvoiceHeader.RowNum.ToLong()).ConfigureAwait(false);
+            // load data 
+            await GetDataAsync(dto.InvoiceHeader.RowNum.ToLong()).ConfigureAwait(false);
 
             // load data from dto
             FromDto(dto);
@@ -188,7 +190,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasInvoice || payload.Invoice.InvoiceHeader.RowNum.ToLong() <= 0)
                 return false;
-
+            //set edit mode before validate
+            Edit();
 
             if (!ValidateAccount(payload))
                 return false;
@@ -196,8 +199,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate(payload.Invoice))
                 return false;
 
-            // set Add mode and clear data
-            Edit(payload.Invoice.InvoiceHeader.RowNum.ToLong());
+            // load data 
+            GetData(payload.Invoice.InvoiceHeader.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.Invoice);
@@ -217,15 +220,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasInvoice)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
             if (!(await ValidateAsync(payload.Invoice).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(payload.Invoice.InvoiceHeader.RowNum.ToLong()).ConfigureAwait(false);
+            // load data 
+            await GetDataAsync(payload.Invoice.InvoiceHeader.RowNum.ToLong()).ConfigureAwait(false);
 
             // load data from dto
             FromDto(payload.Invoice);
@@ -260,17 +264,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByInvoiceUuidAsync(string invoiceUuid, InvoicePayload payload)
+        public virtual async Task<bool> DeleteByInvoiceUuidAsync( InvoicePayload payload, long rowNum)
         {
-            if (string.IsNullOrEmpty(invoiceUuid))
-                return false;
+            payload.Invoice = new InvoiceDataDto();
+            payload.Invoice.InvoiceHeader = new InvoiceHeaderDto();
+            payload.Invoice.InvoiceHeader.RowNum = rowNum;
+
+            //set delete mode
             Delete();
-            var success = await GetDataByIdAsync(invoiceUuid);
-            // validate before deleting
-            //TODO merge
-            //if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
-            //    return false;
-            success = success && await DeleteDataAsync();
+
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            //load data
+            var success = await GetDataAsync(rowNum.ToLong());
+            //delete salesorder and its sub items
+            success = success && DeleteData();
             return success;
         }
     }

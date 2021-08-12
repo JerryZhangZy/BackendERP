@@ -20,7 +20,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             AddValidator(new InvoiceReturnServiceValidatorDefault());
         }
-        public async Task<bool> GetDataAsync(string invoiceNumber, InvoiceTransactionPayload payload)
+        public async Task<bool> GetDataAsync(string invoiceNumber, InvoiceReturnPayload payload)
         {
             var success = await base.GetDataAsync(invoiceNumber, payload.MasterAccountNum, payload.ProfileNum, true);
             if (success && Data.InvoiceTransaction.TransType != (int)TransTypeEnum.Return)

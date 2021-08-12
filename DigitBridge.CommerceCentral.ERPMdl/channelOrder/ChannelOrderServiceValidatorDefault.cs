@@ -95,16 +95,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
-                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    if (number == null)
-                        isValid = SalesOrderHelper.ExistId(dto.OrderHeader.CentralOrderUuid, pl.MasterAccountNum, pl.ProfileNum);
-                    else
+                    //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                    if (!string.IsNullOrEmpty(number))
                         isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                    else if (!dto.OrderHeader.RowNum.IsZero())
+                        isValid = SalesOrderHelper.ExistRowNum(dto.OrderHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                    if (!isValid)
+                        AddError($"Data not found.");
                 }
-                if (!isValid)
-                    AddError($"Data not found.");
             }
             IsValid = isValid;
             return isValid;
@@ -125,16 +125,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
-                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    if (number == null)
-                        isValid = await SalesOrderHelper.ExistIdAsync(dto.OrderHeader.CentralOrderUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
-                    else
-                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                    //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                    if (!string.IsNullOrEmpty(number))
+                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
+                    else if (!dto.OrderHeader.RowNum.IsZero())
+                        isValid = await SalesOrderHelper.ExistRowNumAsync(dto.OrderHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                    if (!isValid)
+                        AddError($"Data not found.");
                 }
-                if (!isValid)
-                    AddError($"Data not found.");
             }
             IsValid = isValid;
             return isValid;
@@ -350,9 +350,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
   
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.OrderHeader.RowNum.IsZero())
+                if (dto.OrderHeader.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("OrderHeader.RowNum is required.");
@@ -364,6 +364,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.OrderHeader.CentralOrderUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
+                if (dto.OrderLine != null && dto.OrderLine.Count > 0)
+                {
+                    foreach (var detailItem in dto.OrderLine)
+                        detailItem.CentralOrderLineUuid = null;
+                }
             }
             IsValid=isValid;
             return isValid;
@@ -397,9 +402,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
   
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.OrderHeader.RowNum.IsZero())
+                if (dto.OrderHeader.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("OrderHeader.RowNum is required.");
@@ -411,6 +416,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.OrderHeader.CentralOrderUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
+                if (dto.OrderLine != null && dto.OrderLine.Count > 0)
+                {
+                    foreach (var detailItem in dto.OrderLine)
+                        detailItem.CentralOrderLineUuid = null;
+                }
+  
             }
             IsValid=isValid;
             return isValid;

@@ -16,7 +16,6 @@
     <None Remove="T4\DataAccess - order.tt" />
     <None Remove="T4\DataAccess -Inventory.tt" />
     <None Remove="T4\DataAccess -InventoryLog.tt" />
-    <None Remove="T4\GenerateServiceValidator - Copy.ttinclude" />
   </ItemGroup>
 
   <ItemGroup>
@@ -68,6 +67,10 @@
       <LastGenOutput>GenerateServicePayloadOpenApi.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\GenerateServiceValidator.ttinclude">
+      <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForDistributionCenter.ttinclude">
       <LastGenOutput>SettingForDistributionCenter.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -106,10 +109,6 @@
     </None>
     <None Update="T4\GenerateRepositoryDto.ttinclude">
       <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="T4\GenerateServiceValidator.ttinclude">
-      <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateServiceCalculator.ttinclude">
@@ -247,11 +246,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="T4\DataAccess.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataAccess.tt</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateJsDocStructureDto - Copy.cs">
       <DependentUpon>GenerateJsDocStructureDto.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
