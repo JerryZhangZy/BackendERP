@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public static class InvoiceTransactionHelper
     {
-        public static bool ExistNumber(string number, int masterAccountNum, int profileNum, IDataBaseFactory dbFactory = null)
+        public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
 /*
             var sql = $@"
@@ -41,14 +41,17 @@ WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND OrderNumber = @number
 ";
-            return ExecuteScalar(sql, dbFactory, masterAccountNum.ToSqlParameter("masterAccountNum"),
-                 profileNum.ToSqlParameter("profileNum"),
-                 number.ToSqlParameter("number"));
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+            return result > 0;
 */
             return true;
         }
 
-        public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum, IDataBaseFactory dbFactory = null)
+        public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
 /*
             var sql = $@"
@@ -57,42 +60,17 @@ WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND OrderNumber = @number
 ";
-           return await ExecuteScalarAsync(sql, dbFactory, masterAccountNum.ToSqlParameter("masterAccountNum"),
-                 profileNum.ToSqlParameter("profileNum"),
-                 number.ToSqlParameter("number"));
-*/
-            return true;
-        }
-        public static bool ExistNumber(string number, int profileNum, IDataBaseFactory dbFactory = null)
-        {
-/*
-            var sql = $@"
-SELECT COUNT(1) FROM InvoiceTransaction tbl
-WHERE ProfileNum = @profileNum
-AND OrderNumber = @number
-";
-            return ExecuteScalar(sql, dbFactory,
-                 profileNum.ToSqlParameter("profileNum"),
-                 number.ToSqlParameter("number"));
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+            return result > 0;
 */
             return true;
         }
 
-        public static async Task<bool> ExistNumberAsync(string number, int profileNum, IDataBaseFactory dbFactory = null)
-        {
-/*
-            var sql = $@"
-SELECT COUNT(1) FROM InvoiceTransaction tbl
-WHERE  ProfileNum = @profileNum
-AND OrderNumber = @number
-";
-           return await ExecuteScalarAsync(sql, dbFactory,
-                 profileNum.ToSqlParameter("profileNum"),
-                 number.ToSqlParameter("number"));
-*/
-            return true;
-        }
-        public static bool ExistId(string uuid, int masterAccountNum, int profileNum, IDataBaseFactory dbFactory = null)
+        public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"
 SELECT COUNT(1) FROM InvoiceTransaction tbl
@@ -100,12 +78,15 @@ WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND TransUuid = @uuid
 ";
-            return ExecuteScalar(sql, dbFactory, masterAccountNum.ToSqlParameter("masterAccountNum"),
-                 profileNum.ToSqlParameter("profileNum"),
-                 uuid.ToSqlParameter("uuid"));
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                uuid.ToSqlParameter("uuid")
+            );
+            return result > 0;
         }
 
-        public static async Task<bool> ExistIdAsync(string uuid, int masterAccountNum, int profileNum, IDataBaseFactory dbFactory = null)
+        public static async Task<bool> ExistIdAsync(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"
 SELECT COUNT(1) FROM InvoiceTransaction tbl
@@ -113,12 +94,15 @@ WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND TransUuid = @uuid
 ";
-           return await ExecuteScalarAsync(sql, dbFactory, masterAccountNum.ToSqlParameter("masterAccountNum"),
-                 profileNum.ToSqlParameter("profileNum"),
-                 uuid.ToSqlParameter("uuid"));
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                uuid.ToSqlParameter("uuid")
+            );
+            return result > 0;
         }
 
-        public static bool ExistRowNum(long rowNum, int masterAccountNum, int profileNum, IDataBaseFactory dbFactory = null)
+        public static bool ExistRowNum(long rowNum, int masterAccountNum, int profileNum)
         {
             var sql = $@"
 SELECT COUNT(1) FROM InvoiceTransaction tbl
@@ -126,12 +110,15 @@ WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND RowNum= @rowNum
 ";
-            return ExecuteScalar(sql, dbFactory, masterAccountNum.ToSqlParameter("masterAccountNum"),
-                 profileNum.ToSqlParameter("profileNum"),
-                 rowNum.ToSqlParameter("rowNum"));
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                rowNum.ToSqlParameter("rowNum")
+            );
+            return result > 0;
         }
 
-        public static async Task<bool> ExistRowNumAsync(long rowNum, int masterAccountNum, int profileNum, IDataBaseFactory dbFactory = null)
+        public static async Task<bool> ExistRowNumAsync(long rowNum, int masterAccountNum, int profileNum)
         {
             var sql = $@"
 SELECT COUNT(1) FROM InvoiceTransaction tbl
@@ -139,38 +126,14 @@ WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND RowNum= @rowNum
 ";
-            return await ExecuteScalarAsync(sql, dbFactory, masterAccountNum.ToSqlParameter("masterAccountNum"),
-                 profileNum.ToSqlParameter("profileNum"),
-                 rowNum.ToSqlParameter("rowNum"));
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                rowNum.ToSqlParameter("rowNum")
+            );
+            return result > 0;
         }
-        private static bool ExecuteScalar(string sql, IDataBaseFactory dbFactory, params IDataParameter[] parameters)
-        {
-            if (dbFactory == null)
-            {
-                return SqlQuery.ExecuteScalar<int>(sql, parameters) > 0;
-            }
-            else
-            {
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    return SqlQuery.ExecuteScalar<int>(sql, parameters) > 0;
-                }
-            }
-        }
-        private static async Task<bool> ExecuteScalarAsync(string sql, IDataBaseFactory dbFactory, params IDataParameter[] parameters)
-        {
-            if (dbFactory == null)
-            {
-                return await SqlQuery.ExecuteScalarAsync<int>(sql, parameters) > 0;
-            }
-            else
-            {
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    return await SqlQuery.ExecuteScalarAsync<int>(sql, parameters) > 0;
-                }
-            }
-        }
+
     }
 }
 

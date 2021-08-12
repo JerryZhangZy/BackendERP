@@ -95,13 +95,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
-                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                //if (!string.IsNullOrEmpty(number))
-                //    isValid = OrderShipmentHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum,dbFactory);
-                if (!dto.OrderShipmentHeader.RowNum.IsZero())
-                    isValid = OrderShipmentHelper.ExistRowNum(dto.OrderShipmentHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum, dbFactory);
-                if (!isValid)
-                    AddError($"Data not found.");
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (!dto.OrderShipmentHeader.RowNum.IsZero())
+                        isValid = OrderShipmentHelper.ExistRowNum(dto.OrderShipmentHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                    if (!isValid)
+                        AddError($"Data not found.");
+                }
             }
             IsValid = isValid;
             return isValid;
@@ -122,13 +122,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
-                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                //if (!string.IsNullOrEmpty(number))
-                //    isValid =await OrderShipmentHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum,dbFactory);
-                if (!dto.OrderShipmentHeader.RowNum.IsZero())
-                    isValid = await OrderShipmentHelper.ExistRowNumAsync(dto.OrderShipmentHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum, dbFactory);
-                if (!isValid)
-                    AddError($"Data not found.");
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (!dto.OrderShipmentHeader.RowNum.IsZero())
+                        isValid = await OrderShipmentHelper.ExistRowNumAsync(dto.OrderShipmentHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                    if (!isValid)
+                        AddError($"Data not found.");
+                }
             }
             IsValid = isValid;
             return isValid;

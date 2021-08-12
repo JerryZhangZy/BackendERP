@@ -95,13 +95,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
-                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                if (!string.IsNullOrEmpty(number))
-                    isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum, dbFactory);
-                else if (!dto.SalesOrderHeader.RowNum.IsZero())
-                    isValid = SalesOrderHelper.ExistRowNum(dto.SalesOrderHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum, dbFactory);
-                if (!isValid)
-                    AddError($"Data not found.");
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                    if (!string.IsNullOrEmpty(number))
+                        isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                    else if (!dto.SalesOrderHeader.RowNum.IsZero())
+                        isValid = SalesOrderHelper.ExistRowNum(dto.SalesOrderHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                    if (!isValid)
+                        AddError($"Data not found.");
+                }
             }
             IsValid = isValid;
             return isValid;
@@ -122,13 +125,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
-                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                if (!string.IsNullOrEmpty(number))
-                    isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum, dbFactory);
-                else if (!dto.SalesOrderHeader.RowNum.IsZero())
-                    isValid = await SalesOrderHelper.ExistRowNumAsync(dto.SalesOrderHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum, dbFactory);
-                if (!isValid)
-                    AddError($"Data not found.");
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                    if (!string.IsNullOrEmpty(number))
+                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
+                    else if (!dto.SalesOrderHeader.RowNum.IsZero())
+                        isValid = await SalesOrderHelper.ExistRowNumAsync(dto.SalesOrderHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                    if (!isValid)
+                        AddError($"Data not found.");
+                }
             }
             IsValid = isValid;
             return isValid;
@@ -335,11 +341,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber)
-                    && SalesOrderHelper.ExistNumber(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt(), dbFactory))
+                using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    isValid = false;
-                    AddError("SalesOrderHeader.OrderNumber exist.");
+                    if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber)
+                    && SalesOrderHelper.ExistNumber(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
+                    {
+                        isValid = false;
+                        AddError("SalesOrderHeader.OrderNumber exist.");
+                    }
                 }
                 //for Add mode, always reset uuid
                 dto.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();
@@ -392,11 +401,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber)
-                    && await SalesOrderHelper.ExistNumberAsync(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt(), dbFactory))
+                using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    isValid = false;
-                    AddError("SalesOrderHeader.OrderNumber exist.");
+                    if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber)
+                    && await SalesOrderHelper.ExistNumberAsync(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
+                    {
+                        isValid = false;
+                        AddError("SalesOrderHeader.OrderNumber exist.");
+                    }
                 }
                 //for Add mode, always reset uuid
                 dto.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();

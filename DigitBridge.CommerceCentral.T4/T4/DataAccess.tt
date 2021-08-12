@@ -78,7 +78,7 @@
 var suffix_ServiceName="";
 var suffix_ServiceValidatorName="";
 #>
-<#@ include file="SettingForShipment.ttinclude" #>
+<#@ include file="SettingForChannelOrder.ttinclude" #>
 
 <#      
     // Generate model output
