@@ -106,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#region faker data rules
 			return new Faker<DistributionCenterDto>()
 				.RuleFor(u => u.DatabaseNum, f => null)
-				.RuleFor(u => u.DistributionCenterNum, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.DistributionCenterNum, f =>null)
 				.RuleFor(u => u.MasterAccountNum, f => null)
 				.RuleFor(u => u.ProfileNum, f => null)
 				.RuleFor(u => u.DistributionCenterName, f => f.Company.CompanyName())
@@ -130,7 +130,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.BusinessHours, f => f.Random.AlphaNumeric(50))
 				.RuleFor(u => u.Notes, f => f.Lorem.Sentence())
 				.RuleFor(u => u.Priority, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.DistributionCenterUuid, f => String.Empty)
+				.RuleFor(u => u.DistributionCenterUuid, f => null)
 				;
 			#endregion faker data rules
 		}

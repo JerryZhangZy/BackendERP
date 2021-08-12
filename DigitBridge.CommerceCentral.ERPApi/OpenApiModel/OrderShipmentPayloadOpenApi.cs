@@ -118,7 +118,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <summary>
         /// (Response) List result count which load by filter and paging.
         /// </summary>
-        public int OrderShipmentListCount { get; set; }
+        public int? OrderShipmentListCount { get; set; }
         public static OrderShipmentPayloadFind GetSampleData()
         {
             var data = new OrderShipmentPayloadFind()

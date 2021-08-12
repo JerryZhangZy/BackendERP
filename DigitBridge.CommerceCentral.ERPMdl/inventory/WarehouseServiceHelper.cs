@@ -131,7 +131,7 @@ AND DistributionCenterNum= @rowNum
         public static long GetRowNumByWarehouseCode(string warehouseCode, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT Top 1 RowNum FROM DistributionCenter tbl
+SELECT Top 1 DistributionCenterNum FROM DistributionCenter tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND DistributionCenterCode = @warehouseCode
@@ -147,7 +147,7 @@ AND DistributionCenterCode = @warehouseCode
         public static async Task<long> GetRowNumByWarehouseCodeAsync(string warehouseCode, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT Top 1 RowNum FROM DistributionCenter tbl
+SELECT Top 1 DistributionCenterNum FROM DistributionCenter tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND DistributionCenterCode = @warehouseCode
