@@ -162,6 +162,34 @@ namespace DigitBridge.CommerceCentral.ERPApi
         //    payload = await srv.GetWarehouseListAsync(payload);
         //    return new JsonNetResponse<WarehousePayload>(payload);
         //}
+
+        /// <summary>
+        /// Add shipment
+        /// </summary>
+        [FunctionName(nameof(WarehouseAddSample))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "WarehouseAddSample", tags: new[] { "Sample" }, Summary = "Get new sample of shipment")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadAdd))]
+        public static async Task<JsonNetResponse<WarehousePayloadAdd>> WarehouseAddSample(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/post:warehouse")] HttpRequest req)
+        {
+            return new JsonNetResponse<WarehousePayloadAdd>(WarehousePayloadAdd.GetSampleData());
+        }
+
+        /// <summary>
+        /// find shipment
+        /// </summary>
+        [FunctionName(nameof(WarehouseFindSample))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "WarehouseFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of shipment find")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadFind))]
+        public static async Task<JsonNetResponse<WarehousePayloadFind>> WarehouseFindSample(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/find:warehouse")] HttpRequest req)
+        {
+            return new JsonNetResponse<WarehousePayloadFind>(WarehousePayloadFind.GetSampleData());
+        }
     }
 }
 

@@ -154,6 +154,34 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload = await srv.GetIProductListAsync(payload);
             return new JsonNetResponse<InventoryPayload>(payload);
         }
+
+        /// <summary>
+        /// Add productext
+        /// </summary>
+        [FunctionName(nameof(ProductExtAddSample))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "ProductExtAddSample", tags: new[] { "Sample" }, Summary = "Get new sample of product ext")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadAdd))]
+        public static async Task<JsonNetResponse<InventoryPayloadAdd>> ProductExtAddSample(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/post:productext")] HttpRequest req)
+        {
+            return new JsonNetResponse<InventoryPayloadAdd>(InventoryPayloadAdd.GetSampleData());
+        }
+
+        /// <summary>
+        /// find productext
+        /// </summary>
+        [FunctionName(nameof(ProductExtFindSample))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "ProductExtFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of product find")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadFind))]
+        public static async Task<JsonNetResponse<InventoryPayloadFind>> ProductExtFindSample(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/find:productext")] HttpRequest req)
+        {
+            return new JsonNetResponse<InventoryPayloadFind>(InventoryPayloadFind.GetSampleData());
+        }
     }
 }
 

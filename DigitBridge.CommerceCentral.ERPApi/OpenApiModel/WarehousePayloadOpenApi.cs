@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
+using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -33,6 +34,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) Warehouse object to add.")]
         public WarehouseDataDto Warehouse { get; set; }
+        public static WarehousePayloadAdd GetSampleData()
+        {
+            var data = new WarehousePayloadAdd();
+            data.Warehouse = new WarehouseDataDto().GetFakerData();
+            return data;
+        }
     }
 
 
@@ -99,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request Response payload for FIND API
     /// </summary>
     [Serializable()]
-    public class WarehousePayloadFind : PayloadBase
+    public class WarehousePayloadFind : FilterPayloadBase<WarehouseFilter>
     {
         /// <summary>
         /// (Response) List result which load by filter and paging.
@@ -112,7 +119,47 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         public int WarehouseListCount { get; set; }
 
+
+        public static WarehousePayloadFind GetSampleData()
+        {
+            var data = new WarehousePayloadFind()
+            {
+                LoadAll = false,
+                Skip = 10,
+                Top = 20,
+                SortBy = "WarehouseCode",
+                Filter = WarehouseFilter.GetFaker().Generate()
+            };
+            return data;
+        }
+
     }
 
+
+    public class WarehouseFilter
+    {
+        public string CustomerCode { get; set; }
+
+        public string CustomerName { get; set; }
+
+        public string Area { get; set; }
+
+        public string Region { get; set; }
+
+        public string ShippingCarrier { get; set; }
+
+        public static Faker<WarehouseFilter> GetFaker()
+        {
+            #region faker data rules
+            return new Faker<WarehouseFilter>()
+                .RuleFor(u => u.CustomerCode, f => f.Lorem.Word())
+                .RuleFor(u => u.CustomerName, f => f.Company.CompanyName())
+                .RuleFor(u => u.Area, f => f.Address.State())
+                .RuleFor(u => u.Region, f => f.Address.City())
+                .RuleFor(u => u.ShippingCarrier, f => f.Lorem.Word())
+                ;
+            #endregion faker data rules
+        }
+    }
 }
 

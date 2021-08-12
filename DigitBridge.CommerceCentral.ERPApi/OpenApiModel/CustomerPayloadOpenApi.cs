@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
+using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -33,6 +34,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) Customer object to add.")]
         public CustomerDataDto Customer { get; set; }
+        public static CustomerPayloadAdd GetSampleData()
+        {
+            var data = new CustomerPayloadAdd();
+            data.Customer = new CustomerDataDto().GetFakerData();
+            return data;
+        }
     }
 
 
@@ -118,6 +125,19 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         public int CustomerListCount { get; set; }
 
+        public static CustomerPayloadFind GetSampleData()
+        {
+            var data = new CustomerPayloadFind()
+            {
+                LoadAll = false,
+                Skip = 10,
+                Top = 20,
+                SortBy = "CustomerName",
+                Filter = CustomerFilter.GetFaker().Generate()
+            };
+            return data;
+        }
+
     }
 
 
@@ -132,6 +152,19 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public string Region { get; set; }
 
         public string ShippingCarrier { get; set; }
+
+        public static Faker<CustomerFilter> GetFaker()
+        {
+            #region faker data rules
+            return new Faker<CustomerFilter>()
+                .RuleFor(u => u.CustomerCode, f => f.Lorem.Word())
+                .RuleFor(u => u.CustomerName, f => f.Company.CompanyName())
+                .RuleFor(u => u.Area, f => f.Address.State())
+                .RuleFor(u => u.Region, f => f.Address.City())
+                .RuleFor(u => u.ShippingCarrier, f => f.Lorem.Word())
+                ;
+            #endregion faker data rules
+        }
     }
 }
 

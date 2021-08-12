@@ -41,24 +41,24 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.DistributionCenterNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.MasterAccountNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.DistributionCenterName, f => f.Lorem.Sentence().TruncateTo(200))
-					.RuleFor(u => u.DistributionCenterCode, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.DistributionCenterName, f => f.Company.CompanyName())
+					.RuleFor(u => u.DistributionCenterCode, f => f.Lorem.Word())
 					.RuleFor(u => u.DistributionCenterType, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.Status, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.DefaultLevel, f => f.Random.Bool())
-					.RuleFor(u => u.AddressLine1, f => f.Lorem.Sentence().TruncateTo(200))
-					.RuleFor(u => u.AddressLine2, f => f.Lorem.Sentence().TruncateTo(200))
-					.RuleFor(u => u.City, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.State, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.ZipCode, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.CompanyName, f => f.Lorem.Sentence().TruncateTo(200))
-					.RuleFor(u => u.ContactName, f => f.Lorem.Sentence().TruncateTo(200))
-					.RuleFor(u => u.ContactEmail, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.ContactPhone, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.MainPhone, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.Fax, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.AddressLine1, f => f.Address.StreetAddress())
+					.RuleFor(u => u.AddressLine2, f => f.Address.SecondaryAddress())
+					.RuleFor(u => u.City, f => f.Address.City())
+					.RuleFor(u => u.State, f => f.Address.State())
+					.RuleFor(u => u.ZipCode, f => f.Lorem.Word())
+					.RuleFor(u => u.CompanyName, f => f.Company.CompanyName())
+					.RuleFor(u => u.ContactName, f => f.Company.CompanyName())
+					.RuleFor(u => u.ContactEmail, f => f.Internet.Email())
+					.RuleFor(u => u.ContactPhone, f => f.Phone.PhoneNumber())
+					.RuleFor(u => u.MainPhone, f => f.Phone.PhoneNumber())
+					.RuleFor(u => u.Fax, f => f.Phone.PhoneNumber())
 					.RuleFor(u => u.Website, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.Email, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.Email, f => f.Internet.Email())
 					.RuleFor(u => u.BusinessHours, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.Notes, f => f.Lorem.Sentence())
 					.RuleFor(u => u.Priority, f => f.Random.Int(1, 100))
@@ -124,7 +124,6 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 		{
 			var data = FakerData.Generate();
             data.SetDataBaseFactory(DataBaseFactory);
-            data.DistributionCenterNum = 0;
             DataBaseFactory.Begin();
 			data.Add();
             DataBaseFactory.Commit();
@@ -187,7 +186,6 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
 	        var dataNew = FakerData.Generate();
             dataNew.SetDataBaseFactory(DataBaseFactory);
-            dataNew.DistributionCenterNum = 0;
             DataBaseFactory.Begin();
             dataNew.Save();
             DataBaseFactory.Commit();
@@ -276,7 +274,6 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
             var data = FakerData.Generate();
             data.SetDataBaseFactory(DataBaseFactory);
-            data.DistributionCenterNum = 0;
             DataBaseFactory.Begin();
             await data.AddAsync();
             DataBaseFactory.Commit();
@@ -339,7 +336,6 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
             var dataNew = FakerData.Generate();
             dataNew.SetDataBaseFactory(DataBaseFactory);
-            dataNew.DistributionCenterNum = 0;
             DataBaseFactory.Begin();
             await dataNew.SaveAsync();
             DataBaseFactory.Commit();

@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
+using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -33,6 +34,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) Inventory object to add.")]
         public InventoryDataDto Inventory { get; set; }
+
+        public static InventoryPayloadAdd GetSampleData()
+        {
+            var data = new InventoryPayloadAdd();
+            data.Inventory = new InventoryDataDto().GetFakerData();
+            return data;
+        }
     }
 
 
@@ -112,6 +120,20 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         public int InventoryListCount { get; set; }
 
+        public static InventoryPayloadFind GetSampleData()
+        {
+            var data = new InventoryPayloadFind()
+            {
+                LoadAll=false,
+                Skip=10,
+                Top=20,
+                SortBy="SKU",
+                Filter = InventoryFilter.GetFaker().Generate()
+            };
+            data.Filter = InventoryFilter.GetFaker().Generate();
+            return data;
+        }
+
     }
 
     [Serializable()]
@@ -132,6 +154,23 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public string LotNum { get; set; }
 
         public string LpnNum { get; set; }
+
+        public static Faker<InventoryFilter> GetFaker()
+        {
+            #region faker data rules
+            return new Faker<InventoryFilter>()
+                //.RuleFor(u => u.SKU, f => f.Commerce.Product())
+                .RuleFor(u => u.FNSku, f => f.Lorem.Sentence().TruncateTo(10))
+                .RuleFor(u => u.Brand, f => f.Lorem.Sentence().TruncateTo(150))
+                .RuleFor(u => u.Manufacturer, f => f.Lorem.Sentence().TruncateTo(255))
+                .RuleFor(u => u.ProductTitle, f => f.Lorem.Sentence().TruncateTo(500))
+                .RuleFor(u => u.UPC, f => f.Lorem.Sentence().TruncateTo(20))
+                .RuleFor(u => u.WarehouseCode, f => f.Lorem.Word())
+                .RuleFor(u => u.LotNum,f => f.Lorem.Sentence().TruncateTo(100))
+                .RuleFor(u => u.LpnNum, f => f.Lorem.Sentence().TruncateTo(100))
+                ;
+            #endregion faker data rules
+        }
     }
 
 }
