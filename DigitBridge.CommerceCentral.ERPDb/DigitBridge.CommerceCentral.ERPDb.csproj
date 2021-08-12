@@ -15,13 +15,16 @@
     <Compile Remove="inventory\dto\InventoryDataDtoMapperDefault_bak.cs" />
     <Compile Remove="inventory\InventoryData - Copy.Designer.cs" />
     <Compile Remove="Model\RequestParameter.cs" />
+    <Compile Remove="so\dto\SalesOrderDataDtoExtension_bak.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="33.0.2" />
     <PackageReference Include="DigitBridge.Orchestration.DataType" Version="1.0.0.4" />
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.1" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="0.7.1-preview" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
   </ItemGroup>
 
