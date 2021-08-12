@@ -82,7 +82,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync().ConfigureAwait(false);
         }
 
-        public virtual bool Add(InvoiceTransactionPayload payload)
+        public virtual bool Add(InvoiceReturnPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
                 return false;
@@ -106,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return SaveData();
         }
 
-        public virtual async Task<bool> AddAsync(InvoiceTransactionPayload payload)
+        public virtual async Task<bool> AddAsync(InvoiceReturnPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
                 return false;
@@ -186,7 +186,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Payload object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual bool Update(InvoiceTransactionPayload payload)
+        public virtual bool Update(InvoiceReturnPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction || payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong() <= 0)
                 return false;
@@ -216,7 +216,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual async Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
+        public virtual async Task<bool> UpdateAsync(InvoiceReturnPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
                 return false;

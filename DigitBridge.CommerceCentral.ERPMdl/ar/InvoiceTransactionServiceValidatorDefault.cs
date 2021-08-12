@@ -83,7 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = payload as InvoiceTransactionPayload;
+            var pl = payload as InvoiceReturnPayload;
             var dto = pl.InvoiceTransaction;
 
             if (processingMode == ProcessingMode.Add)
@@ -113,7 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = payload as InvoiceTransactionPayload;
+            var pl = payload as InvoiceReturnPayload;
             var dto = pl.InvoiceTransaction;
 
             if (processingMode == ProcessingMode.Add)

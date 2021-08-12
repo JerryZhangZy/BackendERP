@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
+using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -33,6 +34,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) InvoiceTransaction object to add.")]
         public InvoiceTransactionDto InvoiceTransaction { get; set; }
+
+        public static InvoicePaymentPayloadAdd GetSampleData()
+        {
+            var data = new InvoicePaymentPayloadAdd();
+            data.InvoiceTransaction = new InvoiceTransactionDto().GetFaker().Generate();
+            return data;
+        }
     } 
 
     /// <summary>
@@ -94,6 +102,18 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         public int InvoiceTransactionListCount { get; set; }
 
+        public static InvoicePaymentPayloadFind GetSampleData()
+        {
+            var data = new InvoicePaymentPayloadFind()
+            {
+                LoadAll = false,
+                Skip = 10,
+                Top = 20,
+                SortBy = "TransDate",
+                Filter = InvoicePaymentFilter.GetFaker().Generate()
+            };
+            return data;
+        }
     }
 
     public class InvoicePaymentFilter
@@ -115,6 +135,23 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public string ShippingCarrier { get; set; }
 
         public string WarehouseCode { get; set; }
+
+        public static Faker<InvoicePaymentFilter> GetFaker()
+        {
+            #region faker data rules
+            return new Faker<InvoicePaymentFilter>()
+                .RuleFor(u => u.InvoiceNumber, f => f.Random.Int(1, 100).ToString())
+                .RuleFor(u => u.InvoiceType, f => f.Random.Int(1, 100))
+                .RuleFor(u => u.InvoiceStatus, f => f.Random.Int(1, 100))
+                .RuleFor(u => u.CustomerCode, f => f.Lorem.Word())
+                .RuleFor(u => u.CustomerName, f => f.Name.FullName())
+                .RuleFor(u => u.ShippingCarrier, f => f.Random.AlphaNumeric(50))
+                .RuleFor(u => u.WarehouseCode, f => f.Lorem.Word())
+                .RuleFor(u => u.InvoiceDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-7))
+                .RuleFor(u => u.InvoiceDateTo, f => f.Date.Past(0).Date.Date)
+                ;
+            #endregion faker data rules
+        }
     }
 }
 

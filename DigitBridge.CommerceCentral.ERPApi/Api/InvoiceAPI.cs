@@ -65,7 +65,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "$skip", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$skip", Description = "Records to skip. https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadGetMultiple), Description = "Result is List<SalesOrderDataDto>")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadGetMultiple), Description = "Result is List<InvoiceDataDto>")]
         public static async Task<JsonNetResponse<InvoicePayload>> GetInvoiceList(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices")] HttpRequest req)
         {
@@ -74,7 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var srv = new InvoiceService(dataBaseFactory);
             //todo
             //payload.ReqeustData = "This api isn't implemented";
-            //payload = await srv.GetListBySalesOrderUuidsNumberAsync(payload);
+            //payload = await srv.GetListByInvoiceUuidsNumberAsync(payload);
             return new JsonNetResponse<InvoicePayload>(payload);
         }
 
@@ -163,6 +163,31 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var srv = new InvoiceList(dataBaseFactory, new InvoiceQuery());
             payload = await srv.GetInvoiceListAsync(payload);
             return new JsonNetResponse<InvoicePayload>(payload);
+        }
+
+        /// <summary>
+        /// Add invoice
+        /// </summary>
+        [FunctionName(nameof(InvociesSample))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "InvociesSample", tags: new[] { "Sample" }, Summary = "Get new sample of invoice")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadAdd))]
+        public static async Task<JsonNetResponse<InvoicePayloadAdd>> InvociesSample(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/post:invoice")] HttpRequest req)
+        {
+            return new JsonNetResponse<InvoicePayloadAdd>(InvoicePayloadAdd.GetSampleData());
+        }
+
+        [FunctionName(nameof(InvoiceFindSample))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "InvoiceFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of invoice find")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadFind))]
+        public static async Task<JsonNetResponse<InvoicePayloadFind>> InvoiceFindSample(
+           [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/find:invoice")] HttpRequest req)
+        {
+            return new JsonNetResponse<InvoicePayloadFind>(InvoicePayloadFind.GetSampleData());
         }
     }
 }

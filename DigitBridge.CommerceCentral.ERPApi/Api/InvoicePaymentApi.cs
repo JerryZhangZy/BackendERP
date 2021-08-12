@@ -149,6 +149,31 @@ namespace DigitBridge.CommerceCentral.ERPApi
         //    payload = await srv.GetInvoiceReturnListAsync(payload);
         //    return new JsonNetResponse<InvoiceTransactionPayload>(payload);
         //}
+
+        /// <summary>
+        /// Add Invoice payment
+        /// </summary>
+        [FunctionName(nameof(InvoicePaymentsSample))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "InvoicePaymentsSample", tags: new[] { "Sample" }, Summary = "Get new sample of InvoicePayment")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadAdd))]
+        public static async Task<JsonNetResponse<InvoicePaymentPayloadAdd>> InvoicePaymentsSample(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/post:invoicepayment")] HttpRequest req)
+        {
+            return new JsonNetResponse<InvoicePaymentPayloadAdd>(InvoicePaymentPayloadAdd.GetSampleData());
+        }
+
+        [FunctionName(nameof(InvoicePaymentFindSample))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "InvoicePaymentFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of invoice payment find")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadFind))]
+        public static async Task<JsonNetResponse<InvoicePaymentPayloadFind>> InvoicePaymentFindSample(
+           [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/find:InvoicePayment")] HttpRequest req)
+        {
+            return new JsonNetResponse<InvoicePaymentPayloadFind>(InvoicePaymentPayloadFind.GetSampleData());
+        }
     }
 }
 
