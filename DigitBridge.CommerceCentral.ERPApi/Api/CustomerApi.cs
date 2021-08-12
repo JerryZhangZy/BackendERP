@@ -172,14 +172,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <summary>
         /// Add customer
         /// </summary>
-        [FunctionName(nameof(CustomerAddSample))]
+        [FunctionName(nameof(Sample_Customer_Post))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiOperation(operationId: "CustomerAddSample", tags: new[] { "Sample" }, Summary = "Get new sample of customer")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadAdd))]
-        public static async Task<JsonNetResponse<CustomerPayloadAdd>> CustomerAddSample(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/post:customer")] HttpRequest req)
+        public static async Task<JsonNetResponse<CustomerPayloadAdd>> Sample_Customer_Post(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/customers")] HttpRequest req)
         {
             return new JsonNetResponse<CustomerPayloadAdd>(CustomerPayloadAdd.GetSampleData());
         }
@@ -187,14 +187,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <summary>
         /// find customer
         /// </summary>
-        [FunctionName(nameof(CustomerFindSample))]
+        [FunctionName(nameof(Sample_Customer_Find))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiOperation(operationId: "CustomerFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of customer find")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadFind))]
-        public static async Task<JsonNetResponse<CustomerPayloadFind>> CustomerFindSample(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/find:customer")] HttpRequest req)
+        public static async Task<JsonNetResponse<CustomerPayloadFind>> Sample_Customer_Find(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/customers/find")] HttpRequest req)
         {
             return new JsonNetResponse<CustomerPayloadFind>(CustomerPayloadFind.GetSampleData());
         }

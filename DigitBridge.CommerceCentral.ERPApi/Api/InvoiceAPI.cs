@@ -174,26 +174,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <summary>
         /// Add invoice
         /// </summary>
-        [FunctionName(nameof(InvociesSample))]
+        [FunctionName(nameof(Sample_Invocies_Post))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiOperation(operationId: "InvociesSample", tags: new[] { "Sample" }, Summary = "Get new sample of invoice")]
         //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadAdd))]
-        public static async Task<JsonNetResponse<InvoicePayloadAdd>> InvociesSample(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/post:invoice")] HttpRequest req)
+        public static async Task<JsonNetResponse<InvoicePayloadAdd>> Sample_Invocies_Post(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/invoices")] HttpRequest req)
         {
             return new JsonNetResponse<InvoicePayloadAdd>(InvoicePayloadAdd.GetSampleData());
         }
 
-        [FunctionName(nameof(InvoiceFindSample))]
+        [FunctionName(nameof(Sample_Invoice_Find))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiOperation(operationId: "InvoiceFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of invoice find")]
         //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadFind))]
-        public static async Task<JsonNetResponse<InvoicePayloadFind>> InvoiceFindSample(
-           [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/find:invoice")] HttpRequest req)
+        public static async Task<JsonNetResponse<InvoicePayloadFind>> Sample_Invoice_Find(
+           [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/invoices/find")] HttpRequest req)
         {
             return new JsonNetResponse<InvoicePayloadFind>(InvoicePayloadFind.GetSampleData());
         }

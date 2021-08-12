@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "SKU", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "sku", Description = "SKU", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadGetSingle), Description = "The OK response")]
         public static async Task<JsonNetResponse<InventoryPayload>> GetProductExt(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExt/{SKU}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExts/{SKU}")] HttpRequest req,
             string SKU = null)
         {
             var payload = await req.GetParameters<InventoryPayload>();
@@ -58,7 +58,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "skus", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "skus", Description = "SKU Array", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadGetMultiple), Description = "The OK response")]
         public static async Task<JsonNetResponse<InventoryPayload>> GetMultiProductExt(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExt")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExts")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -76,7 +76,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "SKU", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "SKU", Description = "SKU = ProfileNumber-SKU ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadDelete))]
         public static async Task<JsonNetResponse<InventoryPayload>> DeleteProductExt(
-            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "productExt/{SKU}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "productExts/{SKU}")] HttpRequest req,
             string SKU)
         {
             var payload = await req.GetParameters<InventoryPayload>();
@@ -103,7 +103,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryPayloadAdd), Description = "InventoryDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadAdd))]
         public static async Task<JsonNetResponse<InventoryPayload>> AddProductExt(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExt")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExts")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -126,7 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryPayloadUpdate), Description = "InventoryDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadUpdate))]
         public static async Task<JsonNetResponse<InventoryPayload>> UpdateProductExt(
-            [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "productExt")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "productExts")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -152,7 +152,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryPayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadFind))]
         public static async Task<JsonNetResponse<InventoryPayload>> ProductExList(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "productExt/find")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "productExts/find")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -164,14 +164,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <summary>
         /// Add productext
         /// </summary>
-        [FunctionName(nameof(ProductExtAddSample))]
+        [FunctionName(nameof(Sample_ProductExt_Post))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiOperation(operationId: "ProductExtAddSample", tags: new[] { "Sample" }, Summary = "Get new sample of product ext")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadAdd))]
-        public static async Task<JsonNetResponse<InventoryPayloadAdd>> ProductExtAddSample(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/post:productext")] HttpRequest req)
+        public static async Task<JsonNetResponse<InventoryPayloadAdd>> Sample_ProductExt_Post(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/productExts")] HttpRequest req)
         {
             return new JsonNetResponse<InventoryPayloadAdd>(InventoryPayloadAdd.GetSampleData());
         }
@@ -179,14 +179,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <summary>
         /// find productext
         /// </summary>
-        [FunctionName(nameof(ProductExtFindSample))]
+        [FunctionName(nameof(Sample_ProductExt_Find))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiOperation(operationId: "ProductExtFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of product find")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadFind))]
-        public static async Task<JsonNetResponse<InventoryPayloadFind>> ProductExtFindSample(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/find:productext")] HttpRequest req)
+        public static async Task<JsonNetResponse<InventoryPayloadFind>> Sample_ProductExt_Find(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/productExts/find")] HttpRequest req)
         {
             return new JsonNetResponse<InventoryPayloadFind>(InventoryPayloadFind.GetSampleData());
         }
