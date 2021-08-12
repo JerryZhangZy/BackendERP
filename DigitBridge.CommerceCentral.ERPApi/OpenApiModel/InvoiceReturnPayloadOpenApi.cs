@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
+using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -25,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request and Response payload object for Add API
     /// </summary>
     [Serializable()]
-    public class InvoiceTransactionPayloadAdd
+    public class InvoiceReturnPayloadAdd
     {
         /// <summary>
         /// (Request Data) InvoiceTransaction object to add.
@@ -33,6 +34,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) InvoiceTransaction object to add.")]
         public InvoiceTransactionDataDto InvoiceTransaction { get; set; }
+
+        internal static InvoiceReturnPayloadAdd GetSampleData()
+        {
+            var data = new InvoiceReturnPayloadAdd();
+            data.InvoiceTransaction = new InvoiceTransactionDataDto().GetFakerData();
+            return data;
+        }
     }
 
 
@@ -40,7 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request and Response payload object for Patch API
     /// </summary>
     [Serializable()]
-    public class InvoiceTransactionPayloadUpdate
+    public class InvoiceReturnPayloadUpdate
     {
         /// <summary>
         /// (Request Data) InvoiceTransaction object to update.
@@ -56,7 +64,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Response payload object for GET single API
     /// </summary>
     [Serializable()]
-    public class InvoiceTransactionPayloadGetSingle
+    public class InvoiceReturnPayloadGetSingle
     {
         /// <summary>
         /// (Response Data) InvoiceTransaction object.
@@ -70,7 +78,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request and Response payload object for GET multiple API
     /// </summary>
     [Serializable()]
-    public class InvoiceTransactionPayloadGetMultiple
+    public class InvoiceReturnPayloadGetMultiple
     {
         /// <summary>
         /// (Request) Array of uuid to get multiple InvoiceTransactions.
@@ -90,7 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Response payload object for DELETE API
     /// </summary>
     [Serializable()]
-    public class InvoiceTransactionPayloadDelete
+    public class InvoiceReturnPayloadDelete
     {
     }
 
@@ -99,7 +107,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request Response payload for FIND API
     /// </summary>
     [Serializable()]
-    public class InvoiceTransactionPayloadFind : FilterPayloadBase<InvoceReturnFilter>
+    public class InvoiceReturnPayloadFind : FilterPayloadBase<InvoceReturnFilter>
     {
         /// <summary>
         /// (Response) List result which load by filter and paging.
@@ -112,11 +120,23 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         public int InvoiceTransactionListCount { get; set; }
 
+        public static InvoiceReturnPayloadFind GetSampleData()
+        {
+            var data = new InvoiceReturnPayloadFind()
+            {
+                LoadAll = false,
+                Skip = 10,
+                Top = 20,
+                SortBy = "TransDate",
+                Filter = InvoceReturnFilter.GetFaker().Generate()
+            };
+            return data;
+        }
     }
     [Serializable()]
     public class InvoceReturnFilter
     {
-        public string TransUuid { get; set; }
+        //public string TransUuid { get; set; }
 
         public string InvoiceUuid { get; set; }
 
@@ -126,7 +146,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
         public string SKU { get; set; }
 
-        public string ProductUuid { get; set; }
+        //public string ProductUuid { get; set; }
 
         public string WarehouseCode { get; set; }
 
@@ -135,6 +155,22 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public DateTime ReturnDateFrom { get; set; }
 
         public DateTime ReturnDateTo { get; set; }
+
+        public static Faker<InvoceReturnFilter> GetFaker()
+        {
+            #region faker data rules
+            return new Faker<InvoceReturnFilter>()
+                .RuleFor(u => u.InvoiceUuid, f => f.Random.Guid().ToString())
+                .RuleFor(u => u.ReturnItemType, f => f.Random.Int(1, 100))
+                .RuleFor(u => u.ReturnItemStatus, f => f.Random.Int(1, 100))
+                .RuleFor(u => u.SKU, f => f.Commerce.Product())
+                .RuleFor(u => u.WarehouseCode, f => f.Lorem.Word())
+                .RuleFor(u => u.LotNum, f => f.Lorem.Sentence().TruncateTo(100))
+                .RuleFor(u => u.ReturnDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-7))
+                .RuleFor(u => u.ReturnDateTo, f => f.Date.Past(0).Date.Date) 
+                ;
+            #endregion faker data rules
+        }
     }
 
 }

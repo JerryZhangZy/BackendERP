@@ -35,6 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore]
         public string UniqueId { get; set; }
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore, XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 

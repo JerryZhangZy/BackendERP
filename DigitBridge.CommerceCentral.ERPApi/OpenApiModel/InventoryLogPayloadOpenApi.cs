@@ -110,7 +110,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <summary>
         /// (Response) List result count which load by filter and paging.
         /// </summary>
-        public int InventoryLogListCount { get; set; }
+        public int? InventoryLogListCount { get; set; }
 
     }
 

@@ -51,10 +51,10 @@ SELECT
 
         #endregion override methods
 
-        public virtual InvoiceTransactionPayload GetInvoiceReturnList(InvoiceTransactionPayload payload)
+        public virtual InvoiceReturnPayload GetInvoiceReturnList(InvoiceReturnPayload payload)
         {
             if (payload == null)
-                payload = new InvoiceTransactionPayload();
+                payload = new InvoiceReturnPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
@@ -76,10 +76,10 @@ SELECT
             return payload;
         }
 
-        public virtual async Task<InvoiceTransactionPayload> GetInvoiceReturnListAsync(InvoiceTransactionPayload payload)
+        public virtual async Task<InvoiceReturnPayload> GetInvoiceReturnListAsync(InvoiceReturnPayload payload)
         {
             if (payload == null)
-                payload = new InvoiceTransactionPayload();
+                payload = new InvoiceReturnPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();

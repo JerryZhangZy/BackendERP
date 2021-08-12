@@ -99,10 +99,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = SalesOrderHelper.ExistId(dto.DistributionCenter.DistributionCenterUuid, pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = WarehouseServiceHelper.ExistId(dto.DistributionCenter.DistributionCenterUuid, pl.MasterAccountNum, pl.ProfileNum);
                     else
-                        isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
-                    isValid = WarehouseHelper.ExistRowNum(dto.DistributionCenter.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = WarehouseServiceHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                    isValid = WarehouseServiceHelper.ExistRowNum(dto.DistributionCenter.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -130,10 +130,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = await SalesOrderHelper.ExistIdAsync(dto.DistributionCenter.DistributionCenterUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        isValid = await WarehouseServiceHelper.ExistIdAsync(dto.DistributionCenter.DistributionCenterUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                     else
-                       isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
-                   isValid = await WarehouseHelper.ExistRowNumAsync(dto.DistributionCenter.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                       isValid = await WarehouseServiceHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                 }
                 if (!isValid)
                     AddError($"Data not found.");

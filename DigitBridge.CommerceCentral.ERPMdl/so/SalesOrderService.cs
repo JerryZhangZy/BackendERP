@@ -138,7 +138,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasSalesOrderHeader)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!Validate(dto))
                 return false;
 
@@ -163,7 +164,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (dto is null || !dto.HasSalesOrderHeader)
                 return false;
-
+            //set edit mode before validate
+            Edit();
             if (!(await ValidateAsync(dto).ConfigureAwait(false)))
                 return false;
 
@@ -188,7 +190,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasSalesOrder || payload.SalesOrder.SalesOrderHeader.RowNum.ToLong() <= 0)
                 return false;
-
+            //set edit mode before validate
+            Edit();
 
             if (!ValidateAccount(payload))
                 return false;
@@ -219,7 +222,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             //set edit mode before validate
             Edit();
-
             if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
                 return false;
 
@@ -238,6 +240,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
+
         /// <summary>
         /// Delete salesorder by order number
         /// </summary>

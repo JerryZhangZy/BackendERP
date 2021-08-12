@@ -95,16 +95,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
-                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    if (number == null)
-                        isValid = SalesOrderHelper.ExistRowNum(dto.SalesOrderHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
-                    else
+                    //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                    if (!string.IsNullOrEmpty(number))
                         isValid = SalesOrderHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                    else if (!dto.SalesOrderHeader.RowNum.IsZero())
+                        isValid = SalesOrderHelper.ExistRowNum(dto.SalesOrderHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                    if (!isValid)
+                        AddError($"Data not found.");
                 }
-                if (!isValid)
-                    AddError($"Data not found.");
             }
             IsValid = isValid;
             return isValid;
@@ -125,16 +125,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
-                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    if (number == null)
-                        isValid = await SalesOrderHelper.ExistRowNumAsync(dto.SalesOrderHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
-                    else
-                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                    //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                    if (!string.IsNullOrEmpty(number))
+                        isValid = await SalesOrderHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
+                    else if (!dto.SalesOrderHeader.RowNum.IsZero())
+                        isValid = await SalesOrderHelper.ExistRowNumAsync(dto.SalesOrderHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                    if (!isValid)
+                        AddError($"Data not found.");
                 }
-                if (!isValid)
-                    AddError($"Data not found.");
             }
             IsValid = isValid;
             return isValid;
@@ -341,16 +341,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
+                using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    using (var tx = new ScopedTransaction(dbFactory))
+                    if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber)
+                    && SalesOrderHelper.ExistNumber(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
                     {
-                        if (SalesOrderHelper.ExistNumber(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
-                        {
-                            isValid = false;
-                            AddError("SalesOrderHeader.OrderNumber exist.");
-                        }
-
+                        isValid = false;
+                        AddError("SalesOrderHeader.OrderNumber exist.");
                     }
                 }
                 //for Add mode, always reset uuid
@@ -362,9 +359,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
 
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.SalesOrderHeader.RowNum.IsZero())
+                if (dto.SalesOrderHeader.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("SalesOrderHeader.RowNum is required.");
@@ -404,16 +401,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
+                using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    using (var tx = new ScopedTransaction(dbFactory))
+                    if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber)
+                    && await SalesOrderHelper.ExistNumberAsync(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
                     {
-                        if (await SalesOrderHelper.ExistNumberAsync(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()).ConfigureAwait(false))
-                        {
-                            isValid = false;
-                            AddError("SalesOrderHeader.OrderNumber exist.");
-                        }
-
+                        isValid = false;
+                        AddError("SalesOrderHeader.OrderNumber exist.");
                     }
                 }
                 //for Add mode, always reset uuid
@@ -425,7 +419,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
 
             }
-            if (processingMode == ProcessingMode.Edit)
+            else if (processingMode == ProcessingMode.Edit)
             {
                 if (dto.SalesOrderHeader.RowNum.IsZero())
                 {
