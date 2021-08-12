@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
+using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -33,6 +34,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) OrderShipment object to add.")]
         public OrderShipmentDataDto OrderShipment { get; set; }
+
+        public static OrderShipmentPayloadAdd GetSampleData()
+        {
+            var data = new OrderShipmentPayloadAdd();
+            data.OrderShipment = new OrderShipmentDataDto().GetFakerData();
+            return data;
+        }
     }
 
 
@@ -110,7 +118,19 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <summary>
         /// (Response) List result count which load by filter and paging.
         /// </summary>
-        public int OrderShipmentListCount { get; set; }
+        public int? OrderShipmentListCount { get; set; }
+        public static OrderShipmentPayloadFind GetSampleData()
+        {
+            var data = new OrderShipmentPayloadFind()
+            {
+                LoadAll = false,
+                Skip = 10,
+                Top = 20,
+                SortBy = "CustomerName",
+                Filter = OrderShipmentFilter.GetFaker().Generate()
+            };
+            return data;
+        }
 
     }
 
@@ -138,6 +158,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public string MainReturnTrackingNumber { get; set; }
 
         public int ProcessStatus { get; set; }
+
+        public static Faker<OrderShipmentFilter> GetFaker()
+        {
+            #region faker data rules
+            return new Faker<OrderShipmentFilter>()
+                .RuleFor(u => u.ChannelNum, f => f.Random.Number(0,1000))
+                .RuleFor(u => u.ChannelAccountNum, f => f.Random.Number(0,1000))
+                .RuleFor(u => u.OrderDCAssigmentNum, f => f.Random.Number(0,1000))
+                .RuleFor(u => u.CentralOrderNum, f => f.Random.Number(0,1000))
+                .RuleFor(u => u.ChannelOrderID, f => f.Random.Number(0,1000))
+                .RuleFor(u => u.ShipmentID, f => f.Lorem.Word())
+                .RuleFor(u => u.WarehouseID, f => f.Lorem.Word())
+                .RuleFor(u => u.ShipmentType, f => f.Random.Number(0, 10))
+                .RuleFor(u => u.MainTrackingNumber, f => f.Random.Hash(10))
+                .RuleFor(u => u.MainReturnTrackingNumber, f => f.Random.Hash(10))
+                .RuleFor(u => u.ProcessStatus, f => f.Random.Number(0, 10))
+                ;
+            #endregion faker data rules
+        }
     }
 
 }

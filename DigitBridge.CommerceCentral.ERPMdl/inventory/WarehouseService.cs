@@ -241,6 +241,55 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
+        public async Task<bool> DeleteByWarehouseCodeAsync(WarehousePayload payload, string warehouseCode)
+        {
+            if (string.IsNullOrEmpty(warehouseCode))
+                return false;
+            Delete();
+            if (!(await ValidateAccountAsync(payload, warehouseCode).ConfigureAwait(false)))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await WarehouseServiceHelper.GetRowNumByWarehouseCodeAsync(warehouseCode, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            var success = await GetDataAsync(rowNum);
+            return success && (await DeleteDataAsync());
+        }
+
+        public async Task<WarehousePayload> GetWarehouseByWarehouseCodeArrayAsync(WarehousePayload payload)
+        {
+            if (!payload.HasWarehouseCodes)
+                return payload;
+            var list = new List<WarehouseDataDto>();
+            var msglist = new List<MessageClass>();
+            foreach (var code in payload.WarehouseCodes)
+            {
+                if (await GetWarehouseByWarehouseCodeAsync(payload, code))
+                    list.Add(ToDto());
+                else
+                    msglist.AddError($"ProductSku:{code} no found");
+            }
+            payload.Warehouses = list;
+            payload.Messages = msglist;
+            return payload;
+        }
+
+        public async Task<bool> GetWarehouseByWarehouseCodeAsync(WarehousePayload payload, string warehouseCode)
+        {
+            if (string.IsNullOrEmpty(warehouseCode))
+                return false;
+            List();
+            if (!(await ValidateAccountAsync(payload, warehouseCode).ConfigureAwait(false)))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await WarehouseServiceHelper.GetRowNumByWarehouseCodeAsync(warehouseCode, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return await GetDataAsync(rowNum);
+        }
+
     }
 }
 

@@ -33,7 +33,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "DistributionCenterUuids", val => DistributionCenterUuids = val.Split(",").ToList() }
+                { "DistributionCenterUuids", val => DistributionCenterUuids = val.Split(",").ToList() },
+                { "WarehouseCodes", val => WarehouseCodes = val.Split(",").ToList() }
             };
         }
 
@@ -47,7 +48,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public IList<string> DistributionCenterUuids { get; set; } = new List<string>();
         [JsonIgnore] 
         public virtual bool HasDistributionCenterUuids => DistributionCenterUuids != null && DistributionCenterUuids.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasDistributionCenterUuids;
+        public bool ShouldSerializeDistributionCenterUuids() => HasDistributionCenterUuids;
+
+        /// <summary>
+        /// (Request Parameter) Array of uuid to load multiple Warehouse dto data.
+        /// </summary>
+        [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple Warehouse dto data.")]
+        public IList<string> WarehouseCodes { get; set; } = new List<string>();
+        [JsonIgnore] 
+        public virtual bool HasWarehouseCodes => WarehouseCodes != null && WarehouseCodes.Count > 0;
+        public bool ShouldSerializeWarehouseCodes() => HasWarehouseCodes;
 
         /// <summary>
         /// (Response Data) Array of Warehouse entity object which load by uuid array.
