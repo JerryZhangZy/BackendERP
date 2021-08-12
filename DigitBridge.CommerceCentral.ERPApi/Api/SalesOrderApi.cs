@@ -155,6 +155,20 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
+        /// <summary>
+        /// Add sales order
+        /// </summary>
+        [FunctionName(nameof(SalesOrdersSample))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "SalesOrdersSample", tags: new[] { "Sample" }, Summary = "Get new sample of sales order")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadAdd))]
+        public static async Task<JsonNetResponse<SalesOrderPayloadAdd>> SalesOrdersSample(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "Sample/post:salesorder")] HttpRequest req)
+        {
+            return new JsonNetResponse<SalesOrderPayloadAdd>(SalesOrderPayloadAdd.GetSampleData());
+        }
+
     }
 }
 

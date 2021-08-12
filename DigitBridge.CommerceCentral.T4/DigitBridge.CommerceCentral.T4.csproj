@@ -43,6 +43,10 @@
       <LastGenOutput>GenerateRepositoryHelperTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\GenerateStructureDtoExtension.ttinclude">
+      <LastGenOutput>GenerateStructureDtoExtension.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\GenerateServiceHelper.ttinclude">
       <LastGenOutput>GenerateServiceHelper.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -271,6 +275,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryPartialClass.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructureDtoExtension.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureDtoExtension.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateStructureDto - Copy.cs">
       <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>

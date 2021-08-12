@@ -73,12 +73,7 @@
 //SettingForShipment
 //SettingForDistributionCenter
 #>
-<# 
-//set it to empty if you want to override original file
-var suffix_ServiceName="";
-var suffix_ServiceValidatorName="";
-#>
-<#@ include file="SettingForChannelOrder.ttinclude" #>
+<#@ include file="SettingForSalesOrder.ttinclude" #>
 
 <#      
     // Generate model output
@@ -231,6 +226,11 @@ var suffix_ServiceValidatorName="";
 <# 
         dir = Path.Combine(path, StructureDtoFolder);
         SaveOutputNotExists(dir, $"{StructureDtoName}MapperDefault.cs");
+#>
+<#@ include file="GenerateStructureDtoExtension.ttinclude" #>
+<# 
+        dir = Path.Combine(path, StructureDtoFolder);
+        SaveOutputNotExists(dir, $"{StructureDtoName}Extension.cs");
 #>
 <# } #>
 
