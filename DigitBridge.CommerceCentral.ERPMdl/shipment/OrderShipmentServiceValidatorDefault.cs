@@ -461,11 +461,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     foreach (var detailItem in dto.OrderShipmentPackage)
                     {
                         detailItem.OrderShipmentPackageUuid = null;
+                        detailItem.OrderShipmentNum = null;
+                        detailItem.OrderShipmentUuid = null;
                         if (detailItem.OrderShipmentShippedItem != null && detailItem.OrderShipmentShippedItem.Count > 0)
                         {
                             foreach (var subItem in detailItem.OrderShipmentShippedItem)
                             {
                                 subItem.OrderShipmentShippedItemUuid = null;
+                                //subItem.OrderShipmentNum = null;
                             }
                         }
                     }
