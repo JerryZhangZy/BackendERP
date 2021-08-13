@@ -139,7 +139,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 else if (!dto.InvoiceHeader.RowNum.IsZero())
                 {
-                    isValid = await InvoiceHelper.ExistRowNumAsync(dto.InvoiceHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                    using (var tx = new ScopedTransaction(dbFactory))
+                    {
+                        isValid = await InvoiceHelper.ExistRowNumAsync(dto.InvoiceHeader.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                    }
                 }
                 if (!isValid)
                     AddError($"Data not found.");
