@@ -251,6 +251,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(invoiceNumber))
                 return false;
             List();
+
+            if (!(await ValidateAccountAsync(payload,invoiceNumber).ConfigureAwait(false)))
+                return false; 
+
             var rowNum = await _data.GetRowNumAsync(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum);
             if (!rowNum.HasValue)
                 return false;
@@ -262,9 +266,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Delete invoice by invoiceUuid
         /// </summary>
-        /// <param name="invoiceUuid"></param>
+        /// <param name="rowNum"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByInvoiceUuidAsync( InvoicePayload payload, long rowNum)
+        public virtual async Task<bool> DeleteByRowNumAsync( InvoicePayload payload, long rowNum)
         {
             payload.Invoice = new InvoiceDataDto();
             payload.Invoice.InvoiceHeader = new InvoiceHeaderDto();
