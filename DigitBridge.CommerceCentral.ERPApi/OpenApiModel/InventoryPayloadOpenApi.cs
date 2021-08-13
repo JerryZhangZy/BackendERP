@@ -124,10 +124,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var data = new InventoryPayloadFind()
             {
-                LoadAll=false,
-                Skip=10,
-                Top=20,
-                SortBy="SKU",
+                LoadAll = false,
+                Skip = 0,
+                Top = 20,
+                SortBy = "",
                 Filter = InventoryFilter.GetFaker().Generate()
             };
             data.Filter = InventoryFilter.GetFaker().Generate();
@@ -160,14 +160,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
             #region faker data rules
             return new Faker<InventoryFilter>()
                 //.RuleFor(u => u.SKU, f => f.Commerce.Product())
-                .RuleFor(u => u.FNSku, f => f.Lorem.Sentence().TruncateTo(10))
-                .RuleFor(u => u.Brand, f => f.Lorem.Sentence().TruncateTo(150))
-                .RuleFor(u => u.Manufacturer, f => f.Lorem.Sentence().TruncateTo(255))
-                .RuleFor(u => u.ProductTitle, f => f.Lorem.Sentence().TruncateTo(500))
-                .RuleFor(u => u.UPC, f => f.Lorem.Sentence().TruncateTo(20))
-                .RuleFor(u => u.WarehouseCode, f => f.Lorem.Word())
-                .RuleFor(u => u.LotNum,f => f.Lorem.Sentence().TruncateTo(100))
-                .RuleFor(u => u.LpnNum, f => f.Lorem.Sentence().TruncateTo(100))
+                .RuleFor(u => u.FNSku, f => string.Empty)
+                .RuleFor(u => u.Brand, f => string.Empty)
+                .RuleFor(u => u.Manufacturer, f => string.Empty)
+                .RuleFor(u => u.ProductTitle, f => string.Empty)
+                .RuleFor(u => u.UPC, f => string.Empty)
+                .RuleFor(u => u.WarehouseCode, f => string.Empty)
+                .RuleFor(u => u.LotNum,f => string.Empty)
+                .RuleFor(u => u.LpnNum, f => string.Empty)
                 ;
             #endregion faker data rules
         }

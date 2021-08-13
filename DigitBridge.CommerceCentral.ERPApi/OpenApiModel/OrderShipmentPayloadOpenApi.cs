@@ -124,9 +124,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var data = new OrderShipmentPayloadFind()
             {
                 LoadAll = false,
-                Skip = 10,
+                Skip = 0,
                 Top = 20,
-                SortBy = "CustomerName",
+                SortBy = "",
                 Filter = OrderShipmentFilter.GetFaker().Generate()
             };
             return data;
@@ -163,17 +163,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             #region faker data rules
             return new Faker<OrderShipmentFilter>()
-                .RuleFor(u => u.ChannelNum, f => f.Random.Number(0,1000))
-                .RuleFor(u => u.ChannelAccountNum, f => f.Random.Number(0,1000))
-                .RuleFor(u => u.OrderDCAssigmentNum, f => f.Random.Number(0,1000))
-                .RuleFor(u => u.CentralOrderNum, f => f.Random.Number(0,1000))
-                .RuleFor(u => u.ChannelOrderID, f => f.Random.Number(0,1000))
-                .RuleFor(u => u.ShipmentID, f => f.Lorem.Word())
-                .RuleFor(u => u.WarehouseID, f => f.Lorem.Word())
-                .RuleFor(u => u.ShipmentType, f => f.Random.Number(0, 10))
-                .RuleFor(u => u.MainTrackingNumber, f => f.Random.Hash(10))
-                .RuleFor(u => u.MainReturnTrackingNumber, f => f.Random.Hash(10))
-                .RuleFor(u => u.ProcessStatus, f => f.Random.Number(0, 10))
+                .RuleFor(u => u.ChannelNum, f =>0)
+                .RuleFor(u => u.ChannelAccountNum, f =>0)
+                .RuleFor(u => u.OrderDCAssigmentNum, f => 0)
+                .RuleFor(u => u.CentralOrderNum, f => 0)
+                .RuleFor(u => u.ChannelOrderID, f =>0)
+                .RuleFor(u => u.ShipmentID, f => string.Empty)
+                .RuleFor(u => u.WarehouseID, f => string.Empty)
+                .RuleFor(u => u.ShipmentType, f =>0)
+                .RuleFor(u => u.MainTrackingNumber, f => string.Empty)
+                .RuleFor(u => u.MainReturnTrackingNumber, f => string.Empty)
+                .RuleFor(u => u.ProcessStatus, f =>0)
                 ;
             #endregion faker data rules
         }

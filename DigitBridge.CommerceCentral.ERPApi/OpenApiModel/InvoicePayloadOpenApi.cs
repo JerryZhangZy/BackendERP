@@ -125,9 +125,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var data = new InvoicePayloadFind()
             {
                 LoadAll = false,
-                Skip = 10,
+                Skip = 0,
                 Top = 20,
-                SortBy = "InvoiceDate",
+                SortBy = "",
                 Filter = InvoiceFilter.GetFaker().Generate()
             };
             return data;
@@ -158,15 +158,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             #region faker data rules
             return new Faker<InvoiceFilter>()
-                .RuleFor(u => u.InvoiceNumber, f => f.Random.Int(1, 100).ToString())
-                .RuleFor(u => u.InvoiceType, f => f.Random.Int(1, 100))
-                .RuleFor(u => u.InvoiceStatus, f => f.Random.Int(1, 100))
-                .RuleFor(u => u.InvoiceDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-7))
+                .RuleFor(u => u.InvoiceNumber, f => string.Empty)
+                .RuleFor(u => u.InvoiceType, f =>0)
+                .RuleFor(u => u.InvoiceStatus, f =>0)
+                .RuleFor(u => u.InvoiceDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
                 .RuleFor(u => u.InvoiceDateTo, f => f.Date.Past(0).Date.Date)
-                .RuleFor(u => u.CustomerCode, f => f.Lorem.Word())
-                .RuleFor(u => u.CustomerName, f => f.Name.FullName())
-                .RuleFor(u => u.ShippingCarrier, f => f.Random.AlphaNumeric(50))
-                .RuleFor(u => u.WarehouseCode, f => f.Lorem.Word())
+                .RuleFor(u => u.CustomerCode, f => string.Empty)
+                .RuleFor(u => u.CustomerName, f => string.Empty)
+                .RuleFor(u => u.ShippingCarrier, f => string.Empty)
+                .RuleFor(u => u.WarehouseCode, f => string.Empty)
                 ;
             #endregion faker data rules
         }
