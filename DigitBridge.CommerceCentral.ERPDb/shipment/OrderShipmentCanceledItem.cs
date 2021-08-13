@@ -1,6 +1,6 @@
 
-              
-    
+
+
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class OrderShipmentCanceledItem
     {
-
+        //TODO : where to init uuid, same issue to others such as salesorderitem
+        public OrderShipmentCanceledItem() : base() { this.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString(); }
     }
 }
 

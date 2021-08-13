@@ -37,8 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [DtoName("OrderShipmentShippedItemDto")]
     public partial class OrderShipmentShippedItem : TableRepository<OrderShipmentShippedItem, long>
     {
-
-        public OrderShipmentShippedItem() : base() {}
+         
         public OrderShipmentShippedItem(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         #region Fields - Generated 
