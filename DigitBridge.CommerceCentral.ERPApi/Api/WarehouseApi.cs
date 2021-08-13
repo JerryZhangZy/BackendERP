@@ -54,6 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<WarehousePayload>(payload);
 
         }
+
         [FunctionName(nameof(GetMultiWarehouses))]
         [OpenApiOperation(operationId: "GetMultiWarehouses", tags: new[] { "Warehouses" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
