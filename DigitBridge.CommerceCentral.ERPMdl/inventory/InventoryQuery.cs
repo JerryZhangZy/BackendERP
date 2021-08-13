@@ -38,16 +38,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _UPC = new QueryFilter<string>("UPC", "UPC", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> UPC => _UPC;
 
-        protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> WarehouseCode => _WarehouseCode;
-
-        protected QueryFilter<string> _LotNum = new QueryFilter<string>("LotNum", "LotNum", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> LotNum => _LotNum;
-
-        protected QueryFilter<string> _LpnNum = new QueryFilter<string>("LpnNum", "LpnNum", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> LpnNum => _LpnNum;
-
-
         public InventoryQuery() : base(PREFIX)
         {
             AddFilter(_ProductUuid);
@@ -57,9 +47,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ProductTitle);
             AddFilter(_FNSku);
             AddFilter(_UPC);
-            AddFilter(_WarehouseCode);
-            AddFilter(_LotNum);
-            AddFilter(_LpnNum);
         }
         public override void InitQueryFilter()
         {

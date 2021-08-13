@@ -27,10 +27,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{CustomerHelper.RowNum()}, 
-{CustomerHelper.DatabaseNum()}, 
-{CustomerHelper.MasterAccountNum()}, 
-{CustomerHelper.ProfileNum()}, 
 {CustomerHelper.Digit_seller_id()}, 
 {CustomerHelper.CustomerUuid()}, 
 {CustomerHelper.CustomerCode()}, 
@@ -68,7 +64,24 @@ SELECT
 {CustomerHelper.DivisionCode()}, 
 {CustomerHelper.SourceCode()}, 
 {CustomerHelper.Terms()}, 
-{CustomerHelper.TermsDays()}
+{CustomerHelper.TermsDays()},
+{CustomerAddressHelper.AddressCode()},
+{CustomerAddressHelper.AddressType()},
+{CustomerAddressHelper.Description()},
+{CustomerAddressHelper.Name()},
+{CustomerAddressHelper.FirstName()},
+{CustomerAddressHelper.LastName()},
+{CustomerAddressHelper.Suffix()},
+{CustomerAddressHelper.Company()},
+{CustomerAddressHelper.CompanyJobTitle()},
+{CustomerAddressHelper.Attention()},
+{CustomerAddressHelper.City()},
+{CustomerAddressHelper.State()},
+{CustomerAddressHelper.PostalCode()},
+{CustomerAddressHelper.County()},
+{CustomerAddressHelper.Country()},
+{CustomerAddressHelper.DaytimePhone()},
+{CustomerAddressHelper.NightPhone()}
 ";
             return this.SQL_Select;
         }
@@ -77,6 +90,7 @@ SELECT
         {
             this.SQL_From = $@"
  FROM {CustomerHelper.TableName} {CustomerHelper.TableAllies} 
+LEFT JOIN {CustomerAddressHelper.TableName} {CustomerAddressHelper.TableAllies} ON ({CustomerHelper.TableAllies}.CustomerUuid = {CustomerAddressHelper.TableAllies}.CustomerUuid)
 ";
             return this.SQL_From;
         }

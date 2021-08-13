@@ -149,12 +149,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
         public string UPC { get; set; }
 
-        public string WarehouseCode { get; set; }
-
-        public string LotNum { get; set; }
-
-        public string LpnNum { get; set; }
-
         public static Faker<InventoryFilter> GetFaker()
         {
             #region faker data rules
@@ -165,9 +159,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 .RuleFor(u => u.Manufacturer, f => string.Empty)
                 .RuleFor(u => u.ProductTitle, f => string.Empty)
                 .RuleFor(u => u.UPC, f => string.Empty)
-                .RuleFor(u => u.WarehouseCode, f => string.Empty)
-                .RuleFor(u => u.LotNum,f => string.Empty)
-                .RuleFor(u => u.LpnNum, f => string.Empty)
                 ;
             #endregion faker data rules
         }
