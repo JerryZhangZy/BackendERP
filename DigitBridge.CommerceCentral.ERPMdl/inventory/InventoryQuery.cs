@@ -13,10 +13,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         // Table prefix which use in this sql query
         protected static string PREFIX = ProductBasicHelper.TableAllies;
         protected static string PREFIX_PRODUCTEX = ProductExtHelper.TableAllies;
-        protected static string PREFIX_DETAIL = ERPDb.InventoryHelper.TableAllies;
-
-        protected QueryFilter<int> _RMasterAccountNum = new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", PREFIX, FilterBy.eq, -1, Enable: true);
-        protected QueryFilter<int> _RProfileNum = new QueryFilter<int>("ProfileNum", "ProfileNum", PREFIX, FilterBy.eq, -1, Enable: true);
+        protected static string PREFIX_DETAIL = InventoryHelper.TableAllies;
 
         // Filter fields
 
@@ -51,10 +48,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<string> LpnNum => _LpnNum;
 
 
-        public InventoryQuery() : base()
+        public InventoryQuery() : base(PREFIX)
         {
-            RemoveFilter(_MasterAccountNum);
-            RemoveFilter(_ProfileNum);
             AddFilter(_ProductUuid);
             AddFilter(_SKU);
             AddFilter(_Brand);
@@ -65,8 +60,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_WarehouseCode);
             AddFilter(_LotNum);
             AddFilter(_LpnNum);
-            AddFilter(_RMasterAccountNum);
-            AddFilter(_RProfileNum);
         }
         public override void InitQueryFilter()
         {

@@ -120,9 +120,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
     {
         public string InvoiceNumber { get; set; }
 
-        public int InvoiceType { get; set; }
+        public string InvoiceType { get; set; }
 
-        public int InvoiceStatus { get; set; }
+        public string InvoiceStatus { get; set; }
 
         public DateTime InvoiceDateFrom { get; set; }
 
@@ -141,8 +141,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             #region faker data rules
             return new Faker<InvoicePaymentFilter>()
                 .RuleFor(u => u.InvoiceNumber, f => string.Empty)
-                .RuleFor(u => u.InvoiceType, f => f.Random.Int(1, 100))
-                .RuleFor(u => u.InvoiceStatus, f => f.Random.Int(1, 100))
+                .RuleFor(u => u.InvoiceType, f =>string.Empty)
+                .RuleFor(u => u.InvoiceStatus, f =>string.Empty)
                 .RuleFor(u => u.CustomerCode, f => string.Empty)
                 .RuleFor(u => u.CustomerName, f => string.Empty)
                 .RuleFor(u => u.ShippingCarrier, f => string.Empty)

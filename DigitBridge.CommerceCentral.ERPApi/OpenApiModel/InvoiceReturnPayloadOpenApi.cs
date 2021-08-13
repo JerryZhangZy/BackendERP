@@ -140,9 +140,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
         public string InvoiceUuid { get; set; }
 
-        public int ReturnItemType { get; set; }
+        public string ReturnItemType { get; set; }
 
-        public int ReturnItemStatus { get; set; }
+        public string ReturnItemStatus { get; set; }
 
         public string SKU { get; set; }
 
@@ -161,8 +161,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             #region faker data rules
             return new Faker<InvoceReturnFilter>()
                 .RuleFor(u => u.InvoiceUuid, f => string.Empty)
-                .RuleFor(u => u.ReturnItemType, f =>0)
-                .RuleFor(u => u.ReturnItemStatus, f =>0)
+                .RuleFor(u => u.ReturnItemType, f =>string.Empty)
+                .RuleFor(u => u.ReturnItemStatus, f =>string.Empty)
                 .RuleFor(u => u.SKU, f => string.Empty)
                 .RuleFor(u => u.WarehouseCode, f => string.Empty)
                 .RuleFor(u => u.LotNum, f => string.Empty)

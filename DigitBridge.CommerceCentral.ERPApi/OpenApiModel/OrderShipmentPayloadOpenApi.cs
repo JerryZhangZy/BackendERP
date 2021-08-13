@@ -137,43 +137,43 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [Serializable()]
     public class OrderShipmentFilter
     {
-        public int ChannelNum { get; set; }
+        public string ChannelNum { get; set; }
 
-        public int ChannelAccountNum { get; set; }
+        public string ChannelAccountNum { get; set; }
 
-        public long OrderDCAssigmentNum { get; set; }
+        public string OrderDCAssigmentNum { get; set; }
 
-        public long CentralOrderNum { get; set; }
+        public string CentralOrderNum { get; set; }
 
-        public long ChannelOrderID { get; set; }
+        public string ChannelOrderID { get; set; }
 
         public string ShipmentID { get; set; }
 
         public string WarehouseID { get; set; }
 
-        public int ShipmentType { get; set; }
+        public string ShipmentType { get; set; }
 
         public string MainTrackingNumber { get; set; }
 
         public string MainReturnTrackingNumber { get; set; }
 
-        public int ProcessStatus { get; set; }
+        public string ProcessStatus { get; set; }
 
         public static Faker<OrderShipmentFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<OrderShipmentFilter>()
-                .RuleFor(u => u.ChannelNum, f =>0)
-                .RuleFor(u => u.ChannelAccountNum, f =>0)
-                .RuleFor(u => u.OrderDCAssigmentNum, f => 0)
-                .RuleFor(u => u.CentralOrderNum, f => 0)
-                .RuleFor(u => u.ChannelOrderID, f =>0)
+                .RuleFor(u => u.ChannelNum, f =>string.Empty)
+                .RuleFor(u => u.ChannelAccountNum, f =>string.Empty)
+                .RuleFor(u => u.OrderDCAssigmentNum, f => string.Empty)
+                .RuleFor(u => u.CentralOrderNum, f => string.Empty)
+                .RuleFor(u => u.ChannelOrderID, f =>string.Empty)
                 .RuleFor(u => u.ShipmentID, f => string.Empty)
                 .RuleFor(u => u.WarehouseID, f => string.Empty)
-                .RuleFor(u => u.ShipmentType, f =>0)
+                .RuleFor(u => u.ShipmentType, f =>string.Empty)
                 .RuleFor(u => u.MainTrackingNumber, f => string.Empty)
                 .RuleFor(u => u.MainReturnTrackingNumber, f => string.Empty)
-                .RuleFor(u => u.ProcessStatus, f =>0)
+                .RuleFor(u => u.ProcessStatus, f =>string.Empty)
                 ;
             #endregion faker data rules
         }

@@ -27,7 +27,48 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{ERPDb.CustomerHelper.SelectAll(ERPDb.CustomerHelper.TableAllies)}
+{CustomerHelper.RowNum()}, 
+{CustomerHelper.DatabaseNum()}, 
+{CustomerHelper.MasterAccountNum()}, 
+{CustomerHelper.ProfileNum()}, 
+{CustomerHelper.Digit_seller_id()}, 
+{CustomerHelper.CustomerUuid()}, 
+{CustomerHelper.CustomerCode()}, 
+{CustomerHelper.CustomerName()}, 
+{CustomerHelper.Contact()}, 
+{CustomerHelper.Contact2()}, 
+{CustomerHelper.Contact3()}, 
+{CustomerHelper.Phone1()}, 
+{CustomerHelper.Phone2()}, 
+{CustomerHelper.Phone3()}, 
+{CustomerHelper.Phone4()}, 
+{CustomerHelper.Email()}, 
+{CustomerHelper.WebSite()}, 
+{CustomerHelper.CustomerType()}, 
+{CustomerHelper.CustomerStatus()}, 
+{CustomerHelper.BusinessType()}, 
+{CustomerHelper.PriceRule()}, 
+{CustomerHelper.FirstDate()}, 
+{CustomerHelper.Currency()}, 
+{CustomerHelper.CreditLimit()}, 
+{CustomerHelper.TaxRate()}, 
+{CustomerHelper.DiscountRate()}, 
+{CustomerHelper.ShippingCarrier()}, 
+{CustomerHelper.ShippingClass()}, 
+{CustomerHelper.ShippingAccount()}, 
+{CustomerHelper.Priority()}, 
+{CustomerHelper.Area()}, 
+{CustomerHelper.Region()}, 
+{CustomerHelper.Districtn()}, 
+{CustomerHelper.Zone()}, 
+{CustomerHelper.TaxId()}, 
+{CustomerHelper.ResaleLicense()}, 
+{CustomerHelper.ClassCode()}, 
+{CustomerHelper.DepartmentCode()}, 
+{CustomerHelper.DivisionCode()}, 
+{CustomerHelper.SourceCode()}, 
+{CustomerHelper.Terms()}, 
+{CustomerHelper.TermsDays()}
 ";
             return this.SQL_Select;
         }
@@ -35,7 +76,7 @@ SELECT
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
- FROM {ERPDb.CustomerHelper.TableName} {ERPDb.CustomerHelper.TableAllies} 
+ FROM {CustomerHelper.TableName} {CustomerHelper.TableAllies} 
 ";
             return this.SQL_From;
         }

@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //protected EnumQueryFilter<BusinessType> _BusinessType = new EnumQueryFilter<BusinessType>("BusinessType", "BusinessType", PREFIX, FilterBy.eq, -1);
         //public EnumQueryFilter<BusinessType> BusinessType => _BusinessType;
 
-        public CustomerQuery() : base()
+        public CustomerQuery() : base(PREFIX)
         {
             AddFilter(_CustomerCode);
             AddFilter(_CustomerName);
