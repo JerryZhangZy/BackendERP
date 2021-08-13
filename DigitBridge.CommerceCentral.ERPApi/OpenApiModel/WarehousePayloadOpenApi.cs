@@ -125,9 +125,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var data = new WarehousePayloadFind()
             {
                 LoadAll = false,
-                Skip = 10,
+                Skip = 0,
                 Top = 20,
-                SortBy = "WarehouseCode",
+                SortBy = "",
                 Filter = WarehouseFilter.GetFaker().Generate()
             };
             return data;
@@ -138,25 +138,34 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class WarehouseFilter
     {
-        public string CustomerCode { get; set; }
+        public string WarehouseName { get; set; }
 
-        public string CustomerName { get; set; }
+        public string WarehouseCode { get; set; }
 
-        public string Area { get; set; }
+        public string WarehouseType { get; set; }
 
-        public string Region { get; set; }
+        public string City { get; set; }
+
+        public string State { get; set; }
+
+        public string ZipCode { get; set; }
 
         public string ShippingCarrier { get; set; }
+
+        public string CompayName { get; set; }
 
         public static Faker<WarehouseFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<WarehouseFilter>()
-                .RuleFor(u => u.CustomerCode, f => f.Lorem.Word())
-                .RuleFor(u => u.CustomerName, f => f.Company.CompanyName())
-                .RuleFor(u => u.Area, f => f.Address.State())
-                .RuleFor(u => u.Region, f => f.Address.City())
-                .RuleFor(u => u.ShippingCarrier, f => f.Lorem.Word())
+                .RuleFor(u => u.WarehouseName, f =>"")
+                .RuleFor(u => u.WarehouseCode, f => "")
+                .RuleFor(u => u.WarehouseType, f =>"")
+                .RuleFor(u => u.City, f => "")
+                .RuleFor(u => u.State, f => "")
+                .RuleFor(u => u.ZipCode, f => "")
+                .RuleFor(u => u.ShippingCarrier, f => "")
+                .RuleFor(u => u.CompayName, f => "")
                 ;
             #endregion faker data rules
         }

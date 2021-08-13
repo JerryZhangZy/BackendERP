@@ -28,8 +28,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
         protected QueryFilter<int> _MasterAccountNum = new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", "", FilterBy.eq, -1, Enable: true);
         protected QueryFilter<int> _ProfileNum = new QueryFilter<int>("ProfileNum", "ProfileNum", "", FilterBy.eq, -1, Enable: true);
 
-        public QueryObject() 
+        public QueryObject(string prefix="")
         {
+            _PREFIX = prefix;
+            _MasterAccountNum.prefix = _PREFIX;
+            _ProfileNum.prefix = _PREFIX;
             AddFilter(_MasterAccountNum);
             AddFilter(_ProfileNum);
             InitQueryFilter();

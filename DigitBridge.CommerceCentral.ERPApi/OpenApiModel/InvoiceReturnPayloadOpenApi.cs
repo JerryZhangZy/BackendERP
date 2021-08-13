@@ -125,9 +125,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var data = new InvoiceReturnPayloadFind()
             {
                 LoadAll = false,
-                Skip = 10,
+                Skip = 0,
                 Top = 20,
-                SortBy = "TransDate",
+                SortBy = "",
                 Filter = InvoceReturnFilter.GetFaker().Generate()
             };
             return data;
@@ -140,9 +140,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
         public string InvoiceUuid { get; set; }
 
-        public int ReturnItemType { get; set; }
+        public string ReturnItemType { get; set; }
 
-        public int ReturnItemStatus { get; set; }
+        public string ReturnItemStatus { get; set; }
 
         public string SKU { get; set; }
 
@@ -160,13 +160,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             #region faker data rules
             return new Faker<InvoceReturnFilter>()
-                .RuleFor(u => u.InvoiceUuid, f => f.Random.Guid().ToString())
-                .RuleFor(u => u.ReturnItemType, f => f.Random.Int(1, 100))
-                .RuleFor(u => u.ReturnItemStatus, f => f.Random.Int(1, 100))
-                .RuleFor(u => u.SKU, f => f.Commerce.Product())
-                .RuleFor(u => u.WarehouseCode, f => f.Lorem.Word())
-                .RuleFor(u => u.LotNum, f => f.Lorem.Sentence().TruncateTo(100))
-                .RuleFor(u => u.ReturnDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-7))
+                .RuleFor(u => u.InvoiceUuid, f => string.Empty)
+                .RuleFor(u => u.ReturnItemType, f =>string.Empty)
+                .RuleFor(u => u.ReturnItemStatus, f =>string.Empty)
+                .RuleFor(u => u.SKU, f => string.Empty)
+                .RuleFor(u => u.WarehouseCode, f => string.Empty)
+                .RuleFor(u => u.LotNum, f => string.Empty)
+                .RuleFor(u => u.ReturnDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
                 .RuleFor(u => u.ReturnDateTo, f => f.Date.Past(0).Date.Date) 
                 ;
             #endregion faker data rules

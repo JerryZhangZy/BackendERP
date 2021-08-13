@@ -11,7 +11,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public class InventoryLogQuery : QueryObject<InventoryLogQuery>
     {
         // Table prefix which use in this sql query
-        protected static string PREFIX = ERPDb.InventoryLogHelper.TableAllies;
+        protected static string PREFIX = InventoryLogHelper.TableAllies;
 
         // Filter fields
         protected QueryFilter<DateTime> _LogDateFrom = new QueryFilter<DateTime>("LogDateFrom", "LogDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
@@ -20,7 +20,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _LogDateTo = new QueryFilter<DateTime>("LogDateTo", "LogDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
         public QueryFilter<DateTime> LogDateTo => _LogDateTo;
 
-        protected QueryFilter<long> _BatchNum = new QueryFilter<long>("BatchNum", "BatchNum", PREFIX, FilterBy.eq, -1);
+        protected QueryFilter<long> _BatchNum = new QueryFilter<long>("BatchNum", "BatchNum", PREFIX, FilterBy.eq, 0);
         public QueryFilter<long> BatchNum => _BatchNum;
 
         protected QueryFilter<string> _LogUuid = new QueryFilter<string>("LogUuid", "LogUuid", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //protected EnumQueryFilter<BusinessType> _BusinessType = new EnumQueryFilter<BusinessType>("BusinessType", "BusinessType", PREFIX, FilterBy.eq, -1);
         //public EnumQueryFilter<BusinessType> BusinessType => _BusinessType;
 
-        public InventoryLogQuery() : base()
+        public InventoryLogQuery() : base(PREFIX)
         {
             AddFilter(_LogDateFrom);
             AddFilter(_LogDateTo);

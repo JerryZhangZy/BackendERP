@@ -11,14 +11,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public class CustomerQuery : QueryObject<CustomerQuery>
     {
         // Table prefix which use in this sql query
-        protected static string PREFIX = ERPDb.CustomerHelper.TableAllies;
+        protected static string PREFIX = CustomerHelper.TableAllies;
+        protected static string PREFIX_ADDRESS = CustomerAddressHelper.TableAllies;
 
         // Filter fields
 
         protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty);
         public QueryFilter<string> CustomerCode => _CustomerCode;
 
-        protected QueryFilter<string> _CustomerName = new QueryFilter<string>("CustomerName", "CustomerName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _CustomerName = new QueryFilter<string>("CustomerName", "CustomerName", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> CustomerName => _CustomerName;
 
         protected QueryFilter<string> _Area = new QueryFilter<string>("Area", "Area", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
@@ -36,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //protected EnumQueryFilter<BusinessType> _BusinessType = new EnumQueryFilter<BusinessType>("BusinessType", "BusinessType", PREFIX, FilterBy.eq, -1);
         //public EnumQueryFilter<BusinessType> BusinessType => _BusinessType;
 
-        public CustomerQuery() : base()
+        public CustomerQuery() : base(PREFIX)
         {
             AddFilter(_CustomerCode);
             AddFilter(_CustomerName);

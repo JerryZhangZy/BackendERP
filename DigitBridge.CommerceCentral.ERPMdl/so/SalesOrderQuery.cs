@@ -40,9 +40,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
         public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
 
-        public SalesOrderQuery() : base()
+        public SalesOrderQuery() : base(PREFIX)
         {
-            _PREFIX = PREFIX;
             AddFilter(_OrderNumberFrom);
             AddFilter(_OrderNumberTo);
             AddFilter(_CustomerCode);

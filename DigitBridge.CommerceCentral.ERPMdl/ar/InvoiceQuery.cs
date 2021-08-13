@@ -20,10 +20,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _InvoiceNumber = new QueryFilter<string>("InvoiceNumber", "InvoiceNumber", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> InvoiceNumber => _InvoiceNumber;
 
-        protected EnumQueryFilter<InvoiceStatus> _InvoiceStatus = new EnumQueryFilter<InvoiceStatus>("InvoiceStatus", "InvoiceStatus", PREFIX, FilterBy.eq, -1);
+        protected EnumQueryFilter<InvoiceStatus> _InvoiceStatus = new EnumQueryFilter<InvoiceStatus>("InvoiceStatus", "InvoiceStatus", PREFIX, FilterBy.eq, 0);
         public EnumQueryFilter<InvoiceStatus> InvoiceStatus => _InvoiceStatus;
 
-        protected EnumQueryFilter<InvoiceType> _InvoiceType = new EnumQueryFilter<InvoiceType>("InvoiceType", "InvoiceType", PREFIX, FilterBy.eq, -1);
+        protected EnumQueryFilter<InvoiceType> _InvoiceType = new EnumQueryFilter<InvoiceType>("InvoiceType", "InvoiceType", PREFIX, FilterBy.eq, 0);
         public EnumQueryFilter<InvoiceType> InvoiceType => _InvoiceType;
 
 
@@ -47,9 +47,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<string> WarehouseCode => _WarehouseCode;
 
 
-        public InvoiceQuery() : base()
+        public InvoiceQuery() : base(PREFIX)
         {
-            _PREFIX = PREFIX;
             AddFilter(_InvoiceNumber);
             AddFilter(_InvoiceType);
             AddFilter(_InvoiceStatus);

@@ -11,10 +11,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public class InvoiceReturnQuery : QueryObject<InvoiceReturnQuery>
     {
         // Table prefix which use in this sql query
-        protected static string PREFIX = ERPDb.InvoiceReturnItemsHelper.TableAllies;
-
-        protected QueryFilter<int> _RMasterAccountNum = new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", PREFIX, FilterBy.eq, -1, Enable: true);
-        protected QueryFilter<int> _RProfileNum = new QueryFilter<int>("ProfileNum", "ProfileNum", PREFIX, FilterBy.eq, -1, Enable: true);
+        protected static string PREFIX = InvoiceReturnItemsHelper.TableAllies;
 
         // Filter fields
 
@@ -25,10 +22,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _InvoiceUuid = new QueryFilter<string>("InvoiceUuid", "InvoiceUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> InvoiceUuid => _InvoiceUuid;
 
-        protected QueryFilter<int> _ReturnItemType = new QueryFilter<int>("ReturnItemType", "ReturnItemType", PREFIX, FilterBy.eq, -1);
+        protected QueryFilter<int> _ReturnItemType = new QueryFilter<int>("ReturnItemType", "ReturnItemType", PREFIX, FilterBy.eq, 0);
         public QueryFilter<int> ReturnItemType => _ReturnItemType;
 
-        protected QueryFilter<int> _ReturnItemStatus = new QueryFilter<int>("ReturnItemStatus", "ReturnItemStatus", PREFIX, FilterBy.eq, -1);
+        protected QueryFilter<int> _ReturnItemStatus = new QueryFilter<int>("ReturnItemStatus", "ReturnItemStatus", PREFIX, FilterBy.eq, 0);
         public QueryFilter<int> ReturnItemStatus => _ReturnItemStatus;
 
         protected QueryFilter<string> _SKU = new QueryFilter<string>("SKU", "SKU", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
@@ -49,10 +46,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _ReturnDateTo = new QueryFilter<DateTime>("ReturnDateTo", "ReturnDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
         public QueryFilter<DateTime> ReturnDateTo => _ReturnDateTo;
 
-        public InvoiceReturnQuery() : base()
+        public InvoiceReturnQuery() : base(PREFIX)
         {
-            RemoveFilter(_MasterAccountNum);
-            RemoveFilter(_ProfileNum);
             AddFilter(_TransUuid);
             AddFilter(_InvoiceUuid);
             AddFilter(_ReturnItemType);
@@ -63,8 +58,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_LotNum);
             AddFilter(_ReturnDateFrom);
             AddFilter(_ReturnDateTo);
-            AddFilter(_RMasterAccountNum);
-            AddFilter(_RProfileNum);
         }
         public override void InitQueryFilter()
         {

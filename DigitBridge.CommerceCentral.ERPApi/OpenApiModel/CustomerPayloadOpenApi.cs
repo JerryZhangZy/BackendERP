@@ -130,9 +130,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var data = new CustomerPayloadFind()
             {
                 LoadAll = false,
-                Skip = 10,
+                Skip = 0,
                 Top = 20,
-                SortBy = "CustomerName",
+                SortBy = "",
                 Filter = CustomerFilter.GetFaker().Generate()
             };
             return data;
@@ -157,11 +157,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             #region faker data rules
             return new Faker<CustomerFilter>()
-                .RuleFor(u => u.CustomerCode, f => f.Lorem.Word())
-                .RuleFor(u => u.CustomerName, f => f.Company.CompanyName())
-                .RuleFor(u => u.Area, f => f.Address.State())
-                .RuleFor(u => u.Region, f => f.Address.City())
-                .RuleFor(u => u.ShippingCarrier, f => f.Lorem.Word())
+                .RuleFor(u => u.CustomerCode, f =>"")
+                .RuleFor(u => u.CustomerName, f =>"")
+                .RuleFor(u => u.Area, f => "")
+                .RuleFor(u => u.Region, f =>"")
+                .RuleFor(u => u.ShippingCarrier, f => "")
                 ;
             #endregion faker data rules
         }

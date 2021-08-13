@@ -124,9 +124,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var data = new OrderShipmentPayloadFind()
             {
                 LoadAll = false,
-                Skip = 10,
+                Skip = 0,
                 Top = 20,
-                SortBy = "CustomerName",
+                SortBy = "",
                 Filter = OrderShipmentFilter.GetFaker().Generate()
             };
             return data;
@@ -137,43 +137,43 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [Serializable()]
     public class OrderShipmentFilter
     {
-        public int ChannelNum { get; set; }
+        public string ChannelNum { get; set; }
 
-        public int ChannelAccountNum { get; set; }
+        public string ChannelAccountNum { get; set; }
 
-        public long OrderDCAssigmentNum { get; set; }
+        public string OrderDCAssigmentNum { get; set; }
 
-        public long CentralOrderNum { get; set; }
+        public string CentralOrderNum { get; set; }
 
-        public long ChannelOrderID { get; set; }
+        public string ChannelOrderID { get; set; }
 
         public string ShipmentID { get; set; }
 
         public string WarehouseID { get; set; }
 
-        public int ShipmentType { get; set; }
+        public string ShipmentType { get; set; }
 
         public string MainTrackingNumber { get; set; }
 
         public string MainReturnTrackingNumber { get; set; }
 
-        public int ProcessStatus { get; set; }
+        public string ProcessStatus { get; set; }
 
         public static Faker<OrderShipmentFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<OrderShipmentFilter>()
-                .RuleFor(u => u.ChannelNum, f => f.Random.Number(0,1000))
-                .RuleFor(u => u.ChannelAccountNum, f => f.Random.Number(0,1000))
-                .RuleFor(u => u.OrderDCAssigmentNum, f => f.Random.Number(0,1000))
-                .RuleFor(u => u.CentralOrderNum, f => f.Random.Number(0,1000))
-                .RuleFor(u => u.ChannelOrderID, f => f.Random.Number(0,1000))
-                .RuleFor(u => u.ShipmentID, f => f.Lorem.Word())
-                .RuleFor(u => u.WarehouseID, f => f.Lorem.Word())
-                .RuleFor(u => u.ShipmentType, f => f.Random.Number(0, 10))
-                .RuleFor(u => u.MainTrackingNumber, f => f.Random.Hash(10))
-                .RuleFor(u => u.MainReturnTrackingNumber, f => f.Random.Hash(10))
-                .RuleFor(u => u.ProcessStatus, f => f.Random.Number(0, 10))
+                .RuleFor(u => u.ChannelNum, f =>string.Empty)
+                .RuleFor(u => u.ChannelAccountNum, f =>string.Empty)
+                .RuleFor(u => u.OrderDCAssigmentNum, f => string.Empty)
+                .RuleFor(u => u.CentralOrderNum, f => string.Empty)
+                .RuleFor(u => u.ChannelOrderID, f =>string.Empty)
+                .RuleFor(u => u.ShipmentID, f => string.Empty)
+                .RuleFor(u => u.WarehouseID, f => string.Empty)
+                .RuleFor(u => u.ShipmentType, f =>string.Empty)
+                .RuleFor(u => u.MainTrackingNumber, f => string.Empty)
+                .RuleFor(u => u.MainReturnTrackingNumber, f => string.Empty)
+                .RuleFor(u => u.ProcessStatus, f =>string.Empty)
                 ;
             #endregion faker data rules
         }
