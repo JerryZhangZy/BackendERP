@@ -161,6 +161,39 @@ AND SKU = @sku
             );
             return result;
         }
+
+        public static List<long> GetRowNums(int masterAccountNum, int profileNum)
+        {
+
+            var sql = $@"
+SELECT CentralProductNum FROM ProductBasic tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+            using var dataReader = SqlQuery.ExecuteCommand(sql, CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum")
+            );
+            var rowNumList = new List<long>();
+            while (dataReader.Read())
+                rowNumList.Add(dataReader.GetInt64(0));
+            return rowNumList;
+        }
+
+        public static async Task<List<long>> GetRowNumsAsync(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT CentralProductNum FROM ProductBasic tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+            using var dataReader = await SqlQuery.ExecuteCommandAsync(sql, CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum")
+            );
+            var rowNumList = new List<long>();
+            while (await dataReader.ReadAsync())
+                rowNumList.Add(dataReader.GetInt64(0));
+            return rowNumList;
+        }
     }
 }
 

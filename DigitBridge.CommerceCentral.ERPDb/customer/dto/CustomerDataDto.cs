@@ -37,6 +37,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasCustomerAttributes => CustomerAttributes != null;
 
+        public CustomerDataDto ExportFixed()
+        {
+            if (!HasCustomer)
+                Customer = new CustomerDto();
+            if (!HasCustomerAttributes)
+                CustomerAttributes = new CustomerAttributesDto();
+            if (!HasCustomerAddress)
+                CustomerAddress = new List<CustomerAddressDto>();
+            return this;
+        }
     }
 }
 

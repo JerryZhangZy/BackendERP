@@ -52,27 +52,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 csv.Context.Configuration.HasHeaderRecord = false;
                 foreach (var data in datas)
                 {
-                    WriteCsv(data, csv);
+                    WriteCsv(data.ExportFixed(), csv);
                 }
                 csv.Flush();
             }
             return fileName;
         }
 
-        public virtual string Export(SalesOrderDataDto data, string fileName)
-        {
-            var config = GetConfiguration();
-            config.HasHeaderRecord = false;
+        //public virtual string Export(SalesOrderDataDto data, string fileName)
+        //{
+        //    var config = GetConfiguration();
+        //    config.HasHeaderRecord = false;
 
-            using (var writer = new StreamWriter(fileName))
-            using (var csv = new CsvWriter(writer, config))
-            {
-                csv.Context.Configuration.HasHeaderRecord = false;
-                WriteCsv(data, csv);
-                csv.Flush();
-            }
-            return fileName;
-        }
+        //    using (var writer = new StreamWriter(fileName))
+        //    using (var csv = new CsvWriter(writer, config))
+        //    {
+        //        csv.Context.Configuration.HasHeaderRecord = false;
+        //        WriteCsv(data, csv);
+        //        csv.Flush();
+        //    }
+        //    return fileName;
+        //}
 
         protected virtual void WriteCsv(SalesOrderDataDto data, CsvWriter csv)
         {
