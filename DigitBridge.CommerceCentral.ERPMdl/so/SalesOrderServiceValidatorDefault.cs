@@ -341,19 +341,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
-                {
-                    isValid = false;
-                    AddError("SalesOrderHeader.OrderNumber is required.");
-                }
-                else
+                if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
                 {
                     using (var tx = new ScopedTransaction(dbFactory))
                     {
                         if (SalesOrderHelper.ExistNumber(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
                         {
                             isValid = false;
-                            AddError("SalesOrderHeader.OrderNumber exist.");
+                            AddError("Order Number is duplicate.");
                         }
                     }
                 }
@@ -409,19 +404,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
-                {
-                    isValid = false;
-                    AddError("SalesOrderHeader.OrderNumber is required.");
-                }
-                else
+                if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
                 {
                     using (var tx = new ScopedTransaction(dbFactory))
                     {
                         if (await SalesOrderHelper.ExistNumberAsync(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
                         {
                             isValid = false;
-                            AddError("SalesOrderHeader.OrderNumber exist.");
+                            AddError("Order Number is duplicate.");
                         }
                     }
                 }
