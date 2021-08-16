@@ -199,6 +199,46 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             return new JsonNetResponse<WarehousePayloadFind>(WarehousePayloadFind.GetSampleData());
         }
+
+        [FunctionName(nameof(ExportWarehouse))]
+        [OpenApiOperation(operationId: "ExportWarehouse", tags: new[] { "Warehouses" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        public static async Task<FileContentResult> ExportWarehouse(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "warehouses/export")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<WarehousePayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new WarehouseManager(dbFactory);
+
+            var exportData = await svc.ExportAsync(payload);
+            var downfile = new FileContentResult(exportData, "text/csv");
+            downfile.FileDownloadName = "export-warehouse.csv";
+            return downfile;
+        }
+
+        [FunctionName(nameof(ImportWarehouse))]
+        [OpenApiOperation(operationId: "ImportWarehouse", tags: new[] { "Warehouses" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "File", In = ParameterLocation.Query, Type = typeof(IFormFile), Summary = "File", Description = "submit by form", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayload))]
+        public static async Task<WarehousePayload> ImportWarehouse(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "warehouses/import")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<WarehousePayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var files = req.Form.Files;
+            var svc = new WarehouseManager(dbFactory);
+
+             await svc.ImportAsync(payload, files);
+            payload.Success = true;
+            payload.Messages = svc.Messages;
+            return payload;
+        }
     }
 }
 

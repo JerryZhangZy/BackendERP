@@ -683,6 +683,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual DistributionCenter CheckIntegrity()
         {
+            CheckUniqueId();
             return this;
         }
 

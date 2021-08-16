@@ -15,15 +15,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
     {
         partial void CheckIntegrityOthers()
         {
-            if (ProductExt.DatabaseNum != ProductBasic.DatabaseNum)
-                ProductExt.DatabaseNum = ProductBasic.DatabaseNum;
-            if (ProductExt.MasterAccountNum != ProductBasic.MasterAccountNum)
-                ProductExt.MasterAccountNum = ProductBasic.MasterAccountNum;
-            if (ProductExt.ProfileNum != ProductBasic.ProfileNum)
-                ProductExt.ProfileNum = ProductBasic.ProfileNum;
-            if (ProductExt.SKU != ProductBasic.SKU)
-                ProductExt.SKU = ProductBasic.SKU;
-
+            if (ProductExt != null)
+            {
+                if (ProductExt.DatabaseNum != ProductBasic.DatabaseNum)
+                    ProductExt.DatabaseNum = ProductBasic.DatabaseNum;
+                if (ProductExt.MasterAccountNum != ProductBasic.MasterAccountNum)
+                    ProductExt.MasterAccountNum = ProductBasic.MasterAccountNum;
+                if (ProductExt.ProfileNum != ProductBasic.ProfileNum)
+                    ProductExt.ProfileNum = ProductBasic.ProfileNum;
+                if (ProductExt.SKU != ProductBasic.SKU)
+                    ProductExt.SKU = ProductBasic.SKU;
+            }
             foreach (var child in Inventory.Where(x => x != null))
             {
                 child.SetParent(this);

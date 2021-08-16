@@ -86,14 +86,18 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
             var mapper = new SalesOrderDataDtoMapperDefault();
 
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
+            var data = GetFakerData(100);
+            var dtolist = new List<SalesOrderDataDto>();
+            data.ForEach(x =>
+            {
+                dtolist.Add(mapper.WriteDto(x, null));
+            });
             var fileName = "c:\\temp\\salesOrderDto.csv";
             var csvHelper = new SalesOrderDataDtoCsv();
 
             try
             {
-                csvHelper.Export(dto, fileName);
+                csvHelper.Export(dtolist, fileName);
             }
             catch (Exception e)
             {

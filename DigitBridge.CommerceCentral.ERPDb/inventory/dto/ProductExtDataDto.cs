@@ -19,34 +19,24 @@ using DigitBridge.CommerceCentral.YoPoco;
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
-    /// Represents a CustomerDataDto Class.
+    /// Represents a InventoryDataDto Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
     [Serializable()]
-    public partial class CustomerDataDto
+    public partial class ProductExtDataDto
     {
-        public CustomerDto Customer { get; set; }
+        public ProductExtDto ProductExt { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
-        public bool HasCustomer => Customer != null;
+        public bool HasProductExt => ProductExt != null;
 
-        public IList<CustomerAddressDto> CustomerAddress { get; set; }
+        public ProductExtAttributesDto ProductExtAttributes { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
-        public bool HasCustomerAddress => CustomerAddress != null;
+        public bool HasProductExtAttributes => ProductExtAttributes != null;
 
-        public CustomerAttributesDto CustomerAttributes { get; set; }
+        public IList<InventoryDto> Inventory { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
-        public bool HasCustomerAttributes => CustomerAttributes != null;
+        public bool HasInventory => Inventory != null;
 
-        public CustomerDataDto ExportFixed()
-        {
-            if (!HasCustomer)
-                Customer = new CustomerDto();
-            if (!HasCustomerAttributes)
-                CustomerAttributes = new CustomerAttributesDto();
-            if (!HasCustomerAddress)
-                CustomerAddress = new List<CustomerAddressDto>();
-            return this;
-        }
     }
 }
 

@@ -1091,6 +1091,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual ProductExt CheckIntegrity()
         {
+            CheckUniqueId();
             return this;
         }
 
