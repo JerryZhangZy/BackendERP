@@ -1296,6 +1296,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual Inventory CheckIntegrity()
         {
+            CheckUniqueId();
 			CheckIntegrityInventoryAttributes();
             return this;
         }

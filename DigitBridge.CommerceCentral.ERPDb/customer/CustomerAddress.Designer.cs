@@ -651,6 +651,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual CustomerAddress CheckIntegrity()
         {
+            CheckUniqueId();
             return this;
         }
 

@@ -995,6 +995,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual Customer CheckIntegrity()
         {
+            CheckUniqueId();
             return this;
         }
 
