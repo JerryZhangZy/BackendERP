@@ -8,17 +8,16 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Helper = DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderHelper;
-using InfoHelper = DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageHelper;
+using Helper = DigitBridge.CommerceCentral.ERPDb.DistributionCenterHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class OrderShipmentList : SqlQueryBuilder<OrderShipmentQuery>
+    public class WarehouseList : SqlQueryBuilder<WarehouseQuery>
     {
-        public OrderShipmentList(IDataBaseFactory dbFactory) : base(dbFactory)
+        public WarehouseList(IDataBaseFactory dbFactory) : base(dbFactory)
         {
         }
-        public OrderShipmentList(IDataBaseFactory dbFactory, OrderShipmentQuery queryObject)
+        public WarehouseList(IDataBaseFactory dbFactory, WarehouseQuery queryObject)
             : base(dbFactory, queryObject)
         {
         }
@@ -29,7 +28,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.DistributionCenterNum()},
+{Helper.ProfileNum()},
+{Helper.DistributionCenterName()},
+{Helper.DistributionCenterCode()},
+{Helper.DistributionCenterType()},
+{Helper.DistributionCenterUuid()},
+{Helper.Status()},
+{Helper.DefaultLevel()},
+{Helper.AddressLine1()},
+{Helper.AddressLine2()},
+{Helper.City()},
+{Helper.State()},
+{Helper.ZipCode()},
+{Helper.CompanyName()},
+{Helper.ContactName()},
+{Helper.ContactEmail()},
+{Helper.ContactPhone()},
+{Helper.MainPhone()},
+{Helper.Fax()},
+{Helper.Website()},
+{Helper.Email()},
+{Helper.BusinessHours()},
+{Helper.Notes()},
+{Helper.Priority()}
 ";
             return this.SQL_Select;
         }
@@ -38,7 +60,6 @@ SELECT
         {
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
-LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.OrderShipmentUuid = {InfoHelper.TableAllies}.OrderShipmentUuid)
 ";
             return this.SQL_From;
         }
@@ -46,6 +67,8 @@ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllie
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
+            //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
+            //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
 
             return paramList.ToArray();
         
@@ -53,50 +76,50 @@ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllie
 
         #endregion override methods
 
-        public virtual OrderShipmentPayload GetOrderShipmentList(OrderShipmentPayload payload)
+        public virtual WarehousePayload GetWarehouseList(WarehousePayload payload)
         {
             if (payload == null)
-                payload = new OrderShipmentPayload();
+                payload = new WarehousePayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.OrderShipmentListCount = Count();
+                payload.WarehouseListCount = Count();
                 result = ExcuteJson(sb);
                 if (result)
-                    payload.OrderShipmentList = sb;
+                    payload.WarehouseList = sb;
             }
             catch (Exception ex)
             {
-                payload.OrderShipmentListCount = 0;
-                payload.OrderShipmentList = null;
+                payload.WarehouseListCount = 0;
+                payload.WarehouseList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<OrderShipmentPayload> GetOrderShipmentListAsync(OrderShipmentPayload payload)
+        public virtual async Task<WarehousePayload> GetIWarehouseListAsync(WarehousePayload payload)
         {
             if (payload == null)
-                payload = new OrderShipmentPayload();
+                payload = new WarehousePayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.OrderShipmentListCount = await CountAsync().ConfigureAwait(false);
+                payload.WarehouseListCount = await CountAsync().ConfigureAwait(false);
                 result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
                 if (result)
-                    payload.OrderShipmentList = sb;
+                    payload.WarehouseList = sb;
             }
             catch (Exception ex)
             {
-                payload.OrderShipmentListCount = 0;
-                payload.OrderShipmentList = null;
+                payload.WarehouseListCount = 0;
+                payload.WarehouseList = null;
                 return payload;
                 throw;
             }

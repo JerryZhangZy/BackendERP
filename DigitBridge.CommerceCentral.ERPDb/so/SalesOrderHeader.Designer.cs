@@ -950,6 +950,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual SalesOrderHeader CheckIntegrity()
         {
+            CheckUniqueId();
             return this;
         }
 

@@ -1397,6 +1397,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual SalesOrderItems CheckIntegrity()
         {
+            CheckUniqueId();
 			CheckIntegritySalesOrderItemsAttributes();
             return this;
         }

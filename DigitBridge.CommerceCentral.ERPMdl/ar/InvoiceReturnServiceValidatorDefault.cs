@@ -28,14 +28,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public partial class InvoiceReturnServiceValidatorDefault : InvoiceTransactionServiceValidatorDefault
     {
-        //public override bool Validate(InvoiceTransactionDataDto dto, IDataBaseFactory dbFactory, ProcessingMode processingMode = ProcessingMode.Edit)
-        //{
-        //    if (processingMode == ProcessingMode.Add)
-        //    {
-        //        dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
-        //    }
-        //    return base.Validate(dto, dbFactory, processingMode);
-        //}
+        public InvoiceReturnServiceValidatorDefault() : base() { }
+        public InvoiceReturnServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) : base(serviceMessage, dbFactory) { }
+        public override bool Validate(InvoiceTransactionDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (processingMode == ProcessingMode.Add)
+            {
+                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
+                // payment shouldn include return item
+                if (!dto.HasInvoiceReturnItems)
+                {
+                    isValid = false;
+                    AddError($"InvoiceReturnItems is required.");
+                }
+            }
+            return isValid && base.Validate(dto, processingMode);
+        }
+        public override async Task<bool> ValidateAsync(InvoiceTransactionDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (processingMode == ProcessingMode.Add)
+            {
+                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
+                // payment shouldn include return item
+                if (!dto.HasInvoiceReturnItems)
+                {
+                    isValid = false;
+                    AddError($"InvoiceReturnItems is required.");
+                }
+            }
+            return isValid && (await base.ValidateAsync(dto, processingMode));
+        }
     }
 }
 

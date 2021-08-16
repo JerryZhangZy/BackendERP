@@ -60,7 +60,7 @@ FROM Customer
             var req = HttpRequestFactory.GetRequest(reqestInfo);
             var response = await CustomerApi.GetCustomer(req, customer.CustomerCode);
             var payload = await response.GetBodyObjectAsync();
-            Assert.True(payload.HasCustomers);
+            Assert.True(payload.HasCustomer);
         }
 
         [Fact]

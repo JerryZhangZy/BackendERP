@@ -145,6 +145,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual CustomerAttributes CheckIntegrity()
         {
+            CheckUniqueId();
             return this;
         }
 

@@ -9,6 +9,7 @@
 	<ItemGroup>
 	  <Compile Remove="Common\ListLogger.cs" />
 	  <Compile Remove="Common\NullScope.cs" />
+	  <Compile Remove="InventoryLogApiTests.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
