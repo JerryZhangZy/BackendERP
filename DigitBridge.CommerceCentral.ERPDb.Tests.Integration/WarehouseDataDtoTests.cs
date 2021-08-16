@@ -80,6 +80,53 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 			Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
 		}
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void ExportCsv_Test()
+        {
+            var mapper = new WarehouseDataDtoMapperDefault();
+
+            var data = GetFakerData(100);
+            var dtolist = new List<WarehouseDataDto>();
+            data.ForEach(x =>
+            {
+                dtolist.Add(mapper.WriteDto(x, null));
+            });
+            //var dto = mapper.WriteDto(data, null);
+            var fileName = "c:\\temp\\warehouseDto.csv";
+            var csvHelper = new WarehouseDataDtoCsv();
+
+            try
+            {
+                csvHelper.Export(dtolist, fileName);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void ImportCsv_Test()
+        {
+            var fileName = "c:\\temp\\warehouseDto.csv";
+            var csvHelper = new WarehouseDataDtoCsv();
+            IList<WarehouseDataDto> data;
+
+            try
+            {
+                data = csvHelper.Import(fileName).ToList();
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+        }
     }
 }
 

@@ -24,57 +24,42 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
     public static class SalesOrderDataDtoExtension
-    {
-        /// <summary>
-        /// Merge SalesOrderDataDto header objects to one dynamic object
-        /// </summary>
-        /// <param name="dto">SalesOrderDataDto object to merge data</param>
-        /// <param name="withHeaderText">Add header text line at first</param>
-        /// <returns>Single dynamic object include all properties of Dto header objects</returns>
-        public static IEnumerable<dynamic> MergeHeaderRecord(this SalesOrderDataDto dto, bool withHeaderText = false)
-        {
-            var result = new List<dynamic>();
-            //TODO change to merge Dto children object
-            //if (withHeaderText)
-            //    result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
-            //result.Add(dto.SalesOrderHeader.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
-            return result;
-        }
+	{
+		public static IEnumerable<dynamic> MergeHeaderRecord(this SalesOrderDataDto dto, bool withHeaderText = false, bool withRecordsType = false)
+		{
+			var result = new List<dynamic>();
+			if (withHeaderText)
+				result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
+			result.Add(dto.SalesOrderHeader.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
+			return result;
+		}
 
-        /// <summary>
-        /// Merge SalesOrderDataDto detailt list to dynamic object list
-        /// </summary>
-        /// <param name="dto">SalesOrderDataDto object to merge data</param>
-        /// <param name="withHeaderText">Add header text line at first</param>
-        /// <returns>list of dynamic object include all properties of detailt objects</returns>
-        public static IEnumerable<dynamic> MergeDetailRecord(this SalesOrderDataDto dto, bool withHeaderText = false)
-        {
-            return null;
-            //TODO change to merge Dto children object
-            //if (!dto.HasSalesOrderItems) 
-            //    return null;
-            //
-            //var result = new List<dynamic>();
-            //var salesOrderItems = new SalesOrderItems() { SalesOrderItemsAttributes = new SalesOrderItemsAttributes()};
-            //
-            //if (withHeaderText)
-            //    result.Add(salesOrderItems.MergeName(salesOrderItems.SalesOrderItemsAttributes));
-            //
-            //foreach (var item in dto.SalesOrderItems)
-            //{
-            //    result.Add(item.Merge(item.SalesOrderItemsAttributes));
-            //}
-            //return result;
-        }
+		public static IEnumerable<dynamic> MergeDetailRecord(this SalesOrderDataDto dto, bool withHeaderText = false, bool withRecordsType = false)
+		{
+			if (!dto.HasSalesOrderItems)
+				return null;
+
+			var result = new List<dynamic>();
+			var salesOrderItems = new SalesOrderItems() { SalesOrderItemsAttributes = new SalesOrderItemsAttributes() };
+
+			if (withHeaderText)
+				result.Add(salesOrderItems.MergeName(salesOrderItems.SalesOrderItemsAttributes));
+
+			foreach (var item in dto.SalesOrderItems)
+			{
+				result.Add(item.Merge(item.SalesOrderItemsAttributes));
+			}
+			return result;
+		}
 
 
-        /// <summary>
-        /// Generate fake data for SalesOrderDataDto object
-        /// </summary>
-        /// <param name="dto">SalesOrderDataDto object</param>
-        /// <param name="count">Generate multiple fake data</param>
-        /// <returns>list for Fake data</returns>
-        public static IList<SalesOrderDataDto> GetFakerData(this SalesOrderDataDto dto, int count)
+		/// <summary>
+		/// Generate fake data for SalesOrderDataDto object
+		/// </summary>
+		/// <param name="dto">SalesOrderDataDto object</param>
+		/// <param name="count">Generate multiple fake data</param>
+		/// <returns>list for Fake data</returns>
+		public static IList<SalesOrderDataDto> GetFakerData(this SalesOrderDataDto dto, int count)
         {
             var obj = new SalesOrderDataDto();
             var datas = new List<SalesOrderDataDto>();
