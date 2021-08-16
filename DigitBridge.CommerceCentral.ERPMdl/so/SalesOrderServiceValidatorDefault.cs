@@ -341,15 +341,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                using (var tx = new ScopedTransaction(dbFactory))
+                if (string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
                 {
-                    if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber)
-                    && SalesOrderHelper.ExistNumber(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
+                    isValid = false;
+                    AddError("SalesOrderHeader.OrderNumber is required.");
+                }
+                else
+                {
+                    using (var tx = new ScopedTransaction(dbFactory))
                     {
-                        isValid = false;
-                        AddError("SalesOrderHeader.OrderNumber exist.");
+                        if (SalesOrderHelper.ExistNumber(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
+                        {
+                            isValid = false;
+                            AddError("SalesOrderHeader.OrderNumber exist.");
+                        }
                     }
                 }
+
                 //for Add mode, always reset uuid
                 dto.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();
                 if (dto.SalesOrderItems != null && dto.SalesOrderItems.Count > 0)
@@ -401,15 +409,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                using (var tx = new ScopedTransaction(dbFactory))
+                if (string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
                 {
-                    if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber)
-                    && await SalesOrderHelper.ExistNumberAsync(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
+                    isValid = false;
+                    AddError("SalesOrderHeader.OrderNumber is required.");
+                }
+                else
+                {
+                    using (var tx = new ScopedTransaction(dbFactory))
                     {
-                        isValid = false;
-                        AddError("SalesOrderHeader.OrderNumber exist.");
+                        if (await SalesOrderHelper.ExistNumberAsync(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
+                        {
+                            isValid = false;
+                            AddError("SalesOrderHeader.OrderNumber exist.");
+                        }
                     }
                 }
+
                 //for Add mode, always reset uuid
                 dto.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();
                 if (dto.SalesOrderItems != null && dto.SalesOrderItems.Count > 0)

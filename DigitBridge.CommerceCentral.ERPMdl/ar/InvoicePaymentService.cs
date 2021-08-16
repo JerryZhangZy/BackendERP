@@ -18,7 +18,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public InvoicePaymentService(IDataBaseFactory dbFactory) : base(dbFactory)
         {
-            AddValidator(new InvoicePaymentServiceValidatorDefault());
+        } 
+
+        public override InvoiceTransactionService Init()
+        { 
+            SetDtoMapper(new InvoiceTransactionDataDtoMapperDefault());
+            SetCalculator(new InvoiceTransactionServiceCalculatorDefault());
+            AddValidator(new InvoicePaymentServiceValidatorDefault(this, this.dbFactory));
+            return this;
         }
         /// <summary>
         /// Get invoice payment with detail by invoiceNumber

@@ -37,7 +37,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [DtoName("OrderShipmentShippedItemDto")]
     public partial class OrderShipmentShippedItem : TableRepository<OrderShipmentShippedItem, long>
     {
-         
+
+        public OrderShipmentShippedItem() : base() {}
         public OrderShipmentShippedItem(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         #region Fields - Generated 
@@ -423,6 +424,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual OrderShipmentShippedItem CheckIntegrity()
         {
+            CheckUniqueId();
             return this;
         }
 
