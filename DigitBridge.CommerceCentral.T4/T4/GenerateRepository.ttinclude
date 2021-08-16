@@ -523,6 +523,7 @@ if(table.HasOneToManyChildren)
 
         public virtual <#= table.Name #> CheckIntegrity()
         {
+            CheckUniqueId();
 <# // generate one to one children
             if(table.HasOneToOneChildren)
             { 
