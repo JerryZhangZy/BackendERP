@@ -79,7 +79,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 SELECT TOP 1 ins.OrderShipmentUuid 
 FROM OrderShipmentHeader ins 
 INNER JOIN (
-    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentPackage it GROUP BY it.OrderShipmentUuid
+    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentShippedItem it GROUP BY it.OrderShipmentUuid
 ) itm ON (itm.OrderShipmentUuid = ins.OrderShipmentUuid)
 WHERE itm.cnt > 0
 ");
@@ -121,7 +121,7 @@ WHERE itm.cnt > 0
 SELECT TOP 1 ins.OrderShipmentUuid 
 FROM OrderShipmentHeader ins 
 INNER JOIN (
-    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentPackage it GROUP BY it.OrderShipmentUuid
+    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentShippedItem it GROUP BY it.OrderShipmentUuid
 ) itm ON (itm.OrderShipmentUuid = ins.OrderShipmentUuid)
 WHERE itm.cnt > 0
 ");
@@ -157,7 +157,7 @@ WHERE itm.cnt > 0
 SELECT TOP 1 ins.OrderShipmentUuid 
 FROM OrderShipmentHeader ins 
 INNER JOIN (
-    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentPackage it GROUP BY it.OrderShipmentUuid
+    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentShippedItem it GROUP BY it.OrderShipmentUuid
 ) itm ON (itm.OrderShipmentUuid = ins.OrderShipmentUuid)
 WHERE itm.cnt > 0
 ");
@@ -206,7 +206,7 @@ WHERE itm.cnt > 0
 SELECT TOP 1 ins.OrderShipmentUuid 
 FROM OrderShipmentHeader ins 
 INNER JOIN (
-    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentPackage it GROUP BY it.OrderShipmentUuid
+    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentShippedItem it GROUP BY it.OrderShipmentUuid
 ) itm ON (itm.OrderShipmentUuid = ins.OrderShipmentUuid)
 WHERE itm.cnt > 0
 ");
@@ -242,7 +242,7 @@ WHERE itm.cnt > 0
 SELECT TOP 1 ins.OrderShipmentUuid 
 FROM OrderShipmentHeader ins 
 INNER JOIN (
-    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentPackage it GROUP BY it.OrderShipmentUuid
+    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentShippedItem it GROUP BY it.OrderShipmentUuid
 ) itm ON (itm.OrderShipmentUuid = ins.OrderShipmentUuid)
 WHERE itm.cnt > 0
 ");

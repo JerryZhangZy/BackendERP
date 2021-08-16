@@ -1225,6 +1225,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual InvoiceReturnItems CheckIntegrity()
         {
+            CheckUniqueId();
             return this;
         }
 

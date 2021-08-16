@@ -891,6 +891,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual InvoiceTransaction CheckIntegrity()
         {
+            CheckUniqueId();
             return this;
         }
 
