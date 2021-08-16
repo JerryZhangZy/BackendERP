@@ -35,9 +35,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             var result = new List<dynamic>();
             //TODO change to merge Dto children object
-            //if (withHeaderText)
-            //    result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
-            //result.Add(dto.SalesOrderHeader.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
+            if (withHeaderText)
+                result.Add(dto.ProductBasic.MergeName(dto.ProductExt, dto.ProductExtAttributes));
+            result.Add(dto.ProductBasic.Merge(dto.ProductExt, dto.ProductExtAttributes));
             return result;
         }
 
@@ -49,22 +49,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
         public static IEnumerable<dynamic> MergeDetailRecord(this InventoryDataDto dto, bool withHeaderText = false)
         {
-            return null;
+            //return null;
             //TODO change to merge Dto children object
-            //if (!dto.HasSalesOrderItems) 
-            //    return null;
-            //
-            //var result = new List<dynamic>();
-            //var salesOrderItems = new SalesOrderItems() { SalesOrderItemsAttributes = new SalesOrderItemsAttributes()};
-            //
-            //if (withHeaderText)
-            //    result.Add(salesOrderItems.MergeName(salesOrderItems.SalesOrderItemsAttributes));
-            //
-            //foreach (var item in dto.SalesOrderItems)
-            //{
-            //    result.Add(item.Merge(item.SalesOrderItemsAttributes));
-            //}
-            //return result;
+            if (!dto.HasInventory)
+                return null;
+
+            var result = new List<dynamic>();
+            var inventoryItems = new Inventory() { InventoryAttributes = new InventoryAttributes() };
+
+            if (withHeaderText)
+                result.Add(inventoryItems.MergeName(inventoryItems.InventoryAttributes));
+
+            foreach (var item in dto.Inventory)
+            {
+                result.Add(item.Merge(item.InventoryAttributes));
+            }
+            return result;
         }
 
 

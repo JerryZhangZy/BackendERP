@@ -28,38 +28,53 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
     [Serializable()]
-    public partial class SalesOrderDataDtoCsv : CsvHelper<SalesOrderDataDto>
+    public partial class InventoryDataDtoCsv : CsvHelper<InventoryDataDto>
     {
         public override void GetFormat() 
         { 
         }
         public override void RegisterMapper(CsvContext context)
         {
-            context.RegisterClassMap(new CsvAutoMapper<SalesOrderHeaderDto>());
-            context.RegisterClassMap(new CsvAutoMapper<SalesOrderHeaderInfoDto>());
-            context.RegisterClassMap(new CsvAutoMapper<SalesOrderHeaderAttributesDto>());
-            context.RegisterClassMap(new CsvAutoMapper<SalesOrderItemsDto>());
-            context.RegisterClassMap(new CsvAutoMapper<SalesOrderItemsAttributesDto>());
+            context.RegisterClassMap(new CsvAutoMapper<InventoryDataDto>());
+
+            context.RegisterClassMap(new CsvAutoMapper<ProductBasicDto>());
+            context.RegisterClassMap(new CsvAutoMapper<ProductExtDto>());
+            context.RegisterClassMap(new CsvAutoMapper<ProductExtAttributesDto>());
+            context.RegisterClassMap(new CsvAutoMapper<InventoryDto>());
+            context.RegisterClassMap(new CsvAutoMapper<InventoryAttributesDto>());
         }
 
-        public override string Export(IEnumerable<SalesOrderDataDto> datas, string fileName)
+        public override string Export(IEnumerable<InventoryDataDto> datas, string fileName)
         {
-            var config = GetConfiguration();
-            config.HasHeaderRecord = false;
-            using (var writer = new StreamWriter(fileName))
-            using (var csv = new CsvWriter(writer, config))
+            var exportData = Export(datas);
+            using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate))
             {
-                csv.Context.Configuration.HasHeaderRecord = false;
-                foreach (var data in datas)
-                {
-                    WriteCsv(data, csv);
-                }
-                csv.Flush();
+                fileStream.Write(exportData, 0, exportData.Length);
             }
             return fileName;
         }
 
-        public virtual string Export(SalesOrderDataDto data, string fileName)
+        public override byte[] Export(IEnumerable<InventoryDataDto> datas)
+        {
+            var config = GetConfiguration();
+            config.HasHeaderRecord = false;
+            using (var ms = new MemoryStream())
+            {
+                using (var writer = new StreamWriter(ms))
+                using (var csv = new CsvWriter(writer, config))
+                {
+                    csv.Context.Configuration.HasHeaderRecord = false;
+                    foreach (var data in datas)
+                    {
+                        WriteCsv(data, csv);
+                    }
+                    csv.Flush();
+                }
+                return ms.ToArray();
+            }
+        }
+
+        public virtual string Export(InventoryDataDto data, string fileName)
         {
             var config = GetConfiguration();
             config.HasHeaderRecord = false;
@@ -74,7 +89,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return fileName;
         }
 
-        protected virtual void WriteCsv(SalesOrderDataDto data, CsvWriter csv)
+        protected override void WriteCsv(InventoryDataDto data, CsvWriter csv)
         {
             // combine multiple Dto to one dynamic object
             var headerRecords = data.MergeHeaderRecord(true).ToList();
@@ -93,7 +108,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
             props[0] = new KeyValuePair<string, object>("RecordType", "H");
             for (int i = 1; i < headerRecords.Count; i++)
                 headerRecords[i] = ((ExpandoObject)headerRecords[i]).FilterAndSortProperty(props);
-
 
             var detailRecords = data.MergeDetailRecord(true).ToList();
             props = new List<KeyValuePair<string, object>>();
@@ -114,12 +128,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
             csv.WriteRecords(detailRecords);
         }
 
-        public override IEnumerable<SalesOrderDataDto> Import(string fileName)
+        public override IEnumerable<InventoryDataDto> Import(string fileName)
         {
-            var data = new List<SalesOrderDataDto>();
+            using (var reader = new FileStream(fileName,FileMode.OpenOrCreate))
+                return Import(reader);
+        }
+
+        public override IEnumerable<InventoryDataDto> Import(byte[] buffer)
+        {
+            using (var stream = new MemoryStream(buffer))
+                return Import(stream);
+        }
+
+        public override IEnumerable<InventoryDataDto> Import(Stream stream)
+        {
+            var data = new List<InventoryDataDto>();
             var isFirst = true;
-            SalesOrderDataDto dto = new SalesOrderDataDto();
-            using (var reader = new StreamReader(fileName))
+            InventoryDataDto dto = new InventoryDataDto();
+            using (var reader = new StreamReader(stream))
             using (var csv = new CsvReader(reader, GetConfiguration()))
             {
                 RegisterMapper(csv.Context);
@@ -138,21 +164,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
                         case "H":
                             if (!isFirst)
                             {
-                                if (dto != null && dto.HasSalesOrderHeader)
+                                if (dto != null&&dto.HasProductBasic)
                                     data.Add(dto);
+                                dto = new InventoryDataDto();
                                 isFirst = false;
-                                dto = new SalesOrderDataDto();
                             }
-                            dto.SalesOrderHeader = csv.GetRecord<SalesOrderHeaderDto>();
-                            dto.SalesOrderHeaderInfo = csv.GetRecord<SalesOrderHeaderInfoDto>();
-                            dto.SalesOrderHeaderAttributes = csv.GetRecord<SalesOrderHeaderAttributesDto>();
+                            dto.ProductBasic = csv.GetRecord<ProductBasicDto>();
                             break;
                         case "L":
-                            if (dto.SalesOrderItems == null)
-                                dto.SalesOrderItems = new List<SalesOrderItemsDto>();
-                            var item = csv.GetRecord<SalesOrderItemsDto>();
-                            item.SalesOrderItemsAttributes = csv.GetRecord<SalesOrderItemsAttributesDto>();
-                            dto.SalesOrderItems.Add(item);
+                            if (dto.Inventory == null)
+                                dto.Inventory = new List<InventoryDto>();
+                            var item = csv.GetRecord<InventoryDto>();
+                            item.InventoryAttributes = csv.GetRecord<InventoryAttributesDto>();
+                            dto.Inventory.Add(item);
                             break;
                     }
                 }
@@ -160,9 +184,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     data.Add(dto);
             }
             return data;
+
         }
-
-
     }
 }
 
