@@ -16,7 +16,7 @@
             new StructureTable() { Name = "OrderShipmentHeader", AlliesName = "shp", MainTable = true, OneToOne = true },
             new StructureTable() { Name = "OrderShipmentCanceledItem", AlliesName = "shpc", ParentName = "OrderShipmentHeader", DetailTable = true, OneToOne = false, LoadByColumn = "OrderShipmentUuid" },
             new StructureTable() { Name = "OrderShipmentPackage", AlliesName = "shpp", ParentName = "OrderShipmentHeader", DetailTable = true, OneToOne = false, LoadByColumn = "OrderShipmentUuid", oneToManyChildrenName = "OrderShipmentShippedItem" },
-            new StructureTable() { Name = "OrderShipmentShippedItem", AlliesName = "shpl", ParentName = "OrderShipmentPackage", DetailTable = true, OneToOne = false, LoadByColumn = "OrderShipmentUuid" }
+            new StructureTable() { Name = "OrderShipmentShippedItem", AlliesName = "shpl", ParentName = "OrderShipmentPackage", OneToOne = false, LoadByColumn = "OrderShipmentUuid" }
         );
 
 
