@@ -37,15 +37,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new CustomerService(dbFactory);
 
+            var spilterIndex = CustomerCode.IndexOf("-");
             var customerCode = CustomerCode;
-            if (!string.IsNullOrEmpty(CustomerCode))
+            if (spilterIndex > 0 && customerCode.StartsWith(payload.ProfileNum.ToString()))
             {
-                var spilterIndex = CustomerCode.IndexOf("-");
-                if (spilterIndex > 0)
-                {
-                    customerCode = CustomerCode.Substring(spilterIndex + 1);
-                }
-                payload.CustomerCodes.Add(customerCode);
+                customerCode = CustomerCode.Substring(spilterIndex + 1);
             }
             if (await svc.GetCustomerByCustomerCodeAsync(payload, customerCode))
                 payload.Customer = svc.ToDto();
@@ -88,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new CustomerService(dbFactory);
             var spilterIndex = CustomerCode.IndexOf("-");
             var customerCode = CustomerCode;
-            if (spilterIndex > 0)
+            if (spilterIndex > 0&&customerCode.StartsWith(payload.ProfileNum.ToString()))
             {
                 customerCode = CustomerCode.Substring(spilterIndex + 1);
             }

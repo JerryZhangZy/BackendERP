@@ -38,9 +38,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new InventoryService(dbFactory);
             var spilterIndex = SKU.IndexOf("-");
             var sku = SKU;
-            if (spilterIndex > 0)
+            if (spilterIndex > 0 && sku.StartsWith(payload.ProfileNum.ToString()))
             {
-                sku = SKU.Substring(spilterIndex + 1);
+                sku = sku.Substring(spilterIndex + 1);
             }
             payload.Skus.Add(sku);
             if (await svc.GetInventoryBySkuAsync(payload, sku))
@@ -83,11 +83,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var spilterIndex = SKU.IndexOf("-");
             var sku = SKU;
-            if (spilterIndex > 0)
+            if (spilterIndex > 0 && sku.StartsWith(payload.ProfileNum.ToString()))
             {
-                sku = SKU.Substring(spilterIndex + 1);
+                sku = sku.Substring(spilterIndex + 1);
             }
-            payload.Skus.Add(sku);
             var svc = new InventoryService(dbFactory);
             if (await svc.DeleteBySkuAsync(payload,sku))
                 payload.Inventory = svc.ToDto();
