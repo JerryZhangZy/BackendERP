@@ -48,26 +48,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Delete invoice payment  
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="transUuid"></param>
+        /// <param name="rowNum"></param>
         /// <returns></returns>
         [FunctionName(nameof(DeleteInvoicePayments))]
         [OpenApiOperation(operationId: "DeleteInvoicePayments", tags: new[] { "Invoice payments" }, Summary = "Delete one invoice payment ")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "transUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "Transaction uuid", Description = "Transaction uuid. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "rowNum", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "rowNum", Description = "Row num. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadDelete))]
-        public static async Task<JsonNetResponse<InvoicePaymentPayload>> DeleteInvoicePayments(
-           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoicePayments/{transUuid}")]
+        public static async Task<JsonNetResponse<InvoiceTransactionPayload>> DeleteInvoicePayments(
+           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoicePayments/{rowNum}")]
             HttpRequest req,
-            string transUuid)
+            long rowNum)
         {
-            var payload = await req.GetParameters<InvoicePaymentPayload>();
+            var payload = await req.GetParameters<InvoiceTransactionPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
-            payload.Success = await srv.DeleteByTransUuidAsync(transUuid, payload);
+            payload.Success = await srv.DeleteByRowNumAsync(payload, rowNum);
             payload.Messages = srv.Messages;
-            return new JsonNetResponse<InvoicePaymentPayload>(payload);
+            return new JsonNetResponse<InvoiceTransactionPayload>(payload);
         }
 
         /// <summary>

@@ -75,7 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual async Task<bool> AddAsync(InvoicePaymentPayload payload)
         {
-            var invoiceTransactionPayload = new InvoiceReturnPayload
+            var invoiceTransactionPayload = new InvoiceTransactionPayload
             {
                 InvoiceTransaction = new InvoiceTransactionDataDto()
                 {
@@ -84,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 MasterAccountNum = payload.MasterAccountNum,
                 ProfileNum = payload.ProfileNum
             };
-            return await AddAsync(invoiceTransactionPayload);
+            return await base.AddAsync(invoiceTransactionPayload);
         }
         /// <summary>
         /// Update data from Dto object
@@ -92,7 +92,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual async Task<bool> UpdateAsync(InvoicePaymentPayload payload)
         {
-            var invoiceTransactionPayload = new InvoiceReturnPayload
+            var invoiceTransactionPayload = new InvoiceTransactionPayload
             {
                 InvoiceTransaction = new InvoiceTransactionDataDto()
                 {
@@ -101,7 +101,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 MasterAccountNum = payload.MasterAccountNum,
                 ProfileNum = payload.ProfileNum
             };
-            return await UpdateAsync(invoiceTransactionPayload);
+            return await base.UpdateAsync(invoiceTransactionPayload);
         }
     }
 }

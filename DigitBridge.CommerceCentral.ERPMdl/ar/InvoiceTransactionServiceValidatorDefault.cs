@@ -83,7 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = payload as InvoiceReturnPayload;
+            var pl = payload as InvoiceTransactionPayload;
             var dto = pl.InvoiceTransaction;
 
             if (processingMode == ProcessingMode.Add)
@@ -101,7 +101,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (!string.IsNullOrEmpty(number)) //TODO  nubmer validate
                         isValid = InvoiceTransactionHelper.ExistNumber(dto.InvoiceTransaction.TransNum.ToInt(), dto.InvoiceTransaction.InvoiceNumber, pl.ProfileNum);
                     else if (!dto.InvoiceTransaction.RowNum.IsZero())
-                        isValid = InvoiceTransactionHelper.ExistRowNum(dto.InvoiceTransaction.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = InvoiceTransactionHelper.ExistRowNum(dto.InvoiceTransaction.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum,dto.InvoiceTransaction.TransType.ToInt());
                     if (!isValid)
                         AddError($"Data not found.");
                 }
@@ -113,7 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = payload as InvoiceReturnPayload;
+            var pl = payload as InvoiceTransactionPayload;
             var dto = pl.InvoiceTransaction;
             //todo InvoiceNumber TransNum ProfileNum required
 
@@ -133,7 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (!string.IsNullOrEmpty(number)) //TODO  nubmer validate
                         isValid = await InvoiceTransactionHelper.ExistNumberAsync(dto.InvoiceTransaction.TransNum.ToInt(), dto.InvoiceTransaction.InvoiceNumber, pl.ProfileNum);
                     else if (!dto.InvoiceTransaction.RowNum.IsZero())
-                        isValid = await InvoiceTransactionHelper.ExistRowNumAsync(dto.InvoiceTransaction.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = await InvoiceTransactionHelper.ExistRowNumAsync(dto.InvoiceTransaction.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum, dto.InvoiceTransaction.TransType.ToInt());
                     if (!isValid)
                         AddError($"Data not found.");
                 }

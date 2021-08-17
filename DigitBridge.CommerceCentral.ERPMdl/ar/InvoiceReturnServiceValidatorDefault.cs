@@ -30,6 +30,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public InvoiceReturnServiceValidatorDefault() : base() { }
         public InvoiceReturnServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) : base(serviceMessage, dbFactory) { }
+
+        public override bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var pl = (payload as InvoiceTransactionPayload);
+            if (pl.InvoiceTransaction != null)
+                pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
+            return base.ValidateAccount(payload, number, processingMode);
+        }
+        public override Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var pl = (payload as InvoiceTransactionPayload);
+            if (pl.InvoiceTransaction != null)
+                pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
+            return base.ValidateAccountAsync(payload, number, processingMode);
+        }
         public override bool Validate(InvoiceTransactionDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;

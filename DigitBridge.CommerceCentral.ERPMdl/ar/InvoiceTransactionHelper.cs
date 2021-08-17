@@ -98,34 +98,38 @@ AND TransUuid = @uuid
             return result > 0;
         }
 
-        public static bool ExistRowNum(long rowNum, int masterAccountNum, int profileNum)
+        public static bool ExistRowNum(long rowNum, int masterAccountNum, int profileNum, int transType)
         {
             var sql = $@"
 SELECT COUNT(1) FROM InvoiceTransaction tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND RowNum= @rowNum
+AND TransType=@transType
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"),
-                rowNum.ToSqlParameter("rowNum")
+                rowNum.ToSqlParameter("rowNum"),
+                transType.ToSqlParameter("transType")
             );
             return result > 0;
         }
 
-        public static async Task<bool> ExistRowNumAsync(long rowNum, int masterAccountNum, int profileNum)
+        public static async Task<bool> ExistRowNumAsync(long rowNum, int masterAccountNum, int profileNum, int transType)
         {
             var sql = $@"
 SELECT COUNT(1) FROM InvoiceTransaction tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND RowNum= @rowNum
+AND TransType=@transType
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"),
-                rowNum.ToSqlParameter("rowNum")
+                rowNum.ToSqlParameter("rowNum"),
+                transType.ToSqlParameter("transType")
             );
             return result > 0;
         }
