@@ -163,6 +163,60 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+        public override IEnumerable<SalesOrderDataDto> Import(byte[] buffer)
+        {
+            using (var stream = new MemoryStream(buffer))
+                return Import(stream);
+        }
+
+        public override IEnumerable<SalesOrderDataDto> Import(Stream stream)
+        {
+            var data = new List<SalesOrderDataDto>();
+            var isFirst = true;
+            SalesOrderDataDto dto = new SalesOrderDataDto();
+            using (var reader = new StreamReader(stream))
+            using (var csv = new CsvReader(reader, GetConfiguration()))
+            {
+                RegisterMapper(csv.Context);
+                while (csv.Read())
+                {
+                    // it is header line
+                    if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
+                    {
+                        csv.ReadHeader();
+                        isFirst = false;
+                        continue;
+                    }
+
+                    switch (csv.GetField(0))
+                    {
+                        case "H":
+                            if (!isFirst)
+                            {
+                                if (dto != null && dto.HasSalesOrderHeader)
+                                    data.Add(dto);
+                                dto = new SalesOrderDataDto();
+                                isFirst = false;
+                            }
+                            dto.SalesOrderHeader = csv.GetRecord<SalesOrderHeaderDto>();
+                            dto.SalesOrderHeaderInfo = csv.GetRecord<SalesOrderHeaderInfoDto>();
+                            dto.SalesOrderHeaderAttributes = csv.GetRecord<SalesOrderHeaderAttributesDto>();
+                            break;
+                        case "L":
+                            if (dto.SalesOrderItems == null)
+                                dto.SalesOrderItems = new List<SalesOrderItemsDto>();
+                            var item = csv.GetRecord<SalesOrderItemsDto>();
+                            item.SalesOrderItemsAttributes = csv.GetRecord<SalesOrderItemsAttributesDto>();
+                            dto.SalesOrderItems.Add(item);
+                            break;
+                    }
+                }
+                if (dto != null)
+                    data.Add(dto);
+            }
+            return data;
+
+        }
     }
 }
 

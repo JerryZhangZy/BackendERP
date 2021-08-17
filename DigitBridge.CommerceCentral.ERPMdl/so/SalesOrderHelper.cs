@@ -156,7 +156,7 @@ AND ProfileNum = @profileNum";
             );
             var rowNumList = new List<long>();
             while (dataReader.Read())
-                rowNumList.Add(dataReader.GetInt32(0));
+                rowNumList.Add(dataReader.GetInt64(0));
             return rowNumList;
         }
         public static async Task<List<long>> GetRowNumsAsync(int masterAccountNum, int profileNum)
@@ -171,7 +171,7 @@ AND ProfileNum = @profileNum";
             );
             var rowNumList = new List<long>();
             while (await dataReader.ReadAsync())
-                rowNumList.Add(dataReader.GetInt32(0));
+                rowNumList.Add(dataReader.GetInt64(0));
             return rowNumList;
         }
     }
