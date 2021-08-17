@@ -32,17 +32,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task GetPaymentWithInvoiceHeaderAsync(string invoiceNumber, InvoicePaymentPayload payload)
+        public virtual async Task GetPaymentWithInvoiceHeaderAsync(InvoicePaymentPayload payload, string invoiceNumber, int? transNum = null)
         {
-            payload.InvoiceTransactions = await GetInvoicePaymentAsync(invoiceNumber, payload.MasterAccountNum, payload.ProfileNum);
-            payload.InvoiceHeader = await GetInvoiceHeaderAsync(invoiceNumber, payload.MasterAccountNum, payload.ProfileNum);
+            payload.InvoiceTransactions = await GetInvoicePaymentAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transNum);
+            payload.InvoiceHeader = await GetInvoiceHeaderAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
         }
         /// <summary>
         /// Get InvoiceHeader by invoiceNumber
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        private async Task<InvoiceHeaderDto> GetInvoiceHeaderAsync(string invoiceNumber, int masterAccountNum, int profileNum)
+        private async Task<InvoiceHeaderDto> GetInvoiceHeaderAsync(int masterAccountNum, int profileNum, string invoiceNumber)
         {
             var invoiceHeader = await new InvoiceHeader(_dbFactory).GetByInvoiceNumberAsync(invoiceNumber, masterAccountNum, profileNum);
             var dto = new InvoiceHeaderDto();
@@ -52,13 +52,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
-        /// Get InvoiceHeader by invoiceNumber
+        /// Get InvoiceTransactionDtos by invoiceNumber and transNum
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        private async Task<List<InvoiceTransactionDto>> GetInvoicePaymentAsync(string invoiceNumber, int masterAccountNum, int profileNum)
+        private async Task<List<InvoiceTransactionDto>> GetInvoicePaymentAsync(int masterAccountNum, int profileNum, string invoiceNumber, int? transNum = null)
         {
-            var invoiceTransactions = await new InvoiceTransaction(_dbFactory).GetByInvoiceNumberAsync(invoiceNumber, masterAccountNum, profileNum, TransTypeEnum.Payment);
+            var invoiceTransactions = await new InvoiceTransaction(_dbFactory).GetByInvoiceNumberAsync(invoiceNumber, masterAccountNum, profileNum, TransTypeEnum.Payment, transNum);
             var dtos = new List<InvoiceTransactionDto>();
             if (invoiceTransactions != null && invoiceTransactions.Count > 0)
             {

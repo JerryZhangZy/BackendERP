@@ -137,7 +137,7 @@ AND TransType=@transType
         public static async Task<int> GetTranSeqNumAsync(string invoiceNumber, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM InvoiceTransaction tbl
+SELECT isnull(max(TransNum),0)+1 FROM InvoiceTransaction tbl
 WHERE ProfileNum = @profileNum
 AND invoiceNumber= @invoiceNumber
 ";
@@ -145,12 +145,12 @@ AND invoiceNumber= @invoiceNumber
                 profileNum.ToSqlParameter("profileNum"),
                 invoiceNumber.ToSqlParameter("invoiceNumber")
             );
-            return ++result;
+            return result;
         }
         public static int GetTranSeqNum(string invoiceNumber, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM InvoiceTransaction tbl
+SELECT isnull(max(TransNum),0)+1 FROM InvoiceTransaction tbl
 WHERE ProfileNum = @profileNum
 AND invoiceNumber= @invoiceNumber
 ";
@@ -158,7 +158,7 @@ AND invoiceNumber= @invoiceNumber
                 profileNum.ToSqlParameter("profileNum"),
                 invoiceNumber.ToSqlParameter("invoiceNumber")
             );
-            return ++result;
+            return result;
         }
     }
 }
