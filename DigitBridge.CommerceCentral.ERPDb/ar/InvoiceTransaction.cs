@@ -23,9 +23,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns> 
-        public virtual async Task<InvoiceTransaction> GetByInvoiceNumberAsync(string invoiceNumber, int masterAccountNum, int profileNum)
+        public virtual async Task<List<InvoiceTransaction>> GetByInvoiceNumberAsync(string invoiceNumber, int masterAccountNum, int profileNum, TransTypeEnum transType)
         {
-            return (await dbFactory.FindAsync<InvoiceTransaction>($"SELECT TOP 1 * FROM InvoiceTransaction where InvoiceNumber='{invoiceNumber}' and masterAccountNum={masterAccountNum} and profileNum={profileNum}")).FirstOrDefault();
+            return (await dbFactory.FindAsync<InvoiceTransaction>($"SELECT * FROM InvoiceTransaction where InvoiceNumber='{invoiceNumber}' and masterAccountNum={masterAccountNum} and profileNum={profileNum} and TransType={(int)transType}")).ToList();
         }
 
         /// <summary>
@@ -35,9 +35,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <param name="masterAccountNum"></param>
         /// <param name="profileNum"></param>
         /// <returns></returns>
-        public virtual async Task<InvoiceTransaction> GetByRowNumAsync(long rowNum, int masterAccountNum, int profileNum)
+        public virtual async Task<List<InvoiceTransaction>> GetByRowNumAsync(long rowNum, int masterAccountNum, int profileNum, TransTypeEnum transType)
         {
-            return (await dbFactory.FindAsync<InvoiceTransaction>($"SELECT TOP 1 * FROM InvoiceTransaction where RowNum={rowNum} and masterAccountNum={masterAccountNum} and profileNum={profileNum}")).FirstOrDefault();
+            return (await dbFactory.FindAsync<InvoiceTransaction>($"SELECT * FROM InvoiceTransaction where RowNum={rowNum} and masterAccountNum={masterAccountNum} and profileNum={profileNum} and TransType={(int)transType}")).ToList();
         }
     }
 }

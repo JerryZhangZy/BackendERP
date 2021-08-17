@@ -18,10 +18,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public InvoicePaymentService(IDataBaseFactory dbFactory) : base(dbFactory)
         {
-        } 
+        }
 
         public override InvoiceTransactionService Init()
-        { 
+        {
             SetDtoMapper(new InvoiceTransactionDataDtoMapperDefault());
             SetCalculator(new InvoiceTransactionServiceCalculatorDefault());
             AddValidator(new InvoicePaymentServiceValidatorDefault(this, this.dbFactory));
@@ -34,7 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task GetPaymentWithInvoiceHeaderAsync(string invoiceNumber, InvoicePaymentPayload payload)
         {
-            payload.InvoiceTransaction = await GetInvoicePaymentAsync(invoiceNumber, payload.MasterAccountNum, payload.ProfileNum);
+            payload.InvoiceTransactions = await GetInvoicePaymentAsync(invoiceNumber, payload.MasterAccountNum, payload.ProfileNum);
             payload.InvoiceHeader = await GetInvoiceHeaderAsync(invoiceNumber, payload.MasterAccountNum, payload.ProfileNum);
         }
         /// <summary>
@@ -56,15 +56,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        private async Task<InvoiceTransactionDto> GetInvoicePaymentAsync(string invoiceNumber, int masterAccountNum, int profileNum)
+        private async Task<List<InvoiceTransactionDto>> GetInvoicePaymentAsync(string invoiceNumber, int masterAccountNum, int profileNum)
         {
-            var invoiceTransaction = await new InvoiceTransaction(_dbFactory).GetByInvoiceNumberAsync(invoiceNumber, masterAccountNum, profileNum);
-            var dto = new InvoiceTransactionDto();
-            if (invoiceTransaction != null)
+            var invoiceTransactions = await new InvoiceTransaction(_dbFactory).GetByInvoiceNumberAsync(invoiceNumber, masterAccountNum, profileNum, TransTypeEnum.Payment);
+            var dtos = new List<InvoiceTransactionDto>();
+            if (invoiceTransactions != null && invoiceTransactions.Count > 0)
             {
-                new InvoiceTransactionDataDtoMapperDefault().WriteInvoiceTransaction(invoiceTransaction, dto);
+                foreach (var item in invoiceTransactions)
+                {
+                    var dto = new InvoiceTransactionDto();
+                    new InvoiceTransactionDataDtoMapperDefault().WriteInvoiceTransaction(item, dto);
+                    dtos.Add(dto);
+                }
+
             }
-            return dto;
+            return dtos;
         }
 
         public virtual async Task<bool> AddAsync(InvoicePaymentPayload payload)

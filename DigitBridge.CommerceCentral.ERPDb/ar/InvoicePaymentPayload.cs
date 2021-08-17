@@ -43,6 +43,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region list service
 
+        public List<InvoiceTransactionDto> InvoiceTransactions { get; set; }
+
         /// <summary>
         /// (Response Data) List result which load filter and paging.
         /// </summary>

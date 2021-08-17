@@ -139,9 +139,9 @@ AND invoiceNumber= @invoiceNumber
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 profileNum.ToSqlParameter("profileNum"),
-                invoiceNumber.ToSqlParameter("rowNum")
+                invoiceNumber.ToSqlParameter("invoiceNumber")
             );
-            return result++;
+            return ++result;
         }
         public static int GetTranSeqNum(string invoiceNumber, int profileNum)
         {
@@ -152,9 +152,9 @@ AND invoiceNumber= @invoiceNumber
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 profileNum.ToSqlParameter("profileNum"),
-                invoiceNumber.ToSqlParameter("rowNum")
+                invoiceNumber.ToSqlParameter("invoiceNumber")
             );
-            return result++;
+            return ++result;
         }
     }
 }
