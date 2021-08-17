@@ -341,7 +341,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
+                if (string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
+                {
+                    dto.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
+                }
+                else
                 {
                     using (var tx = new ScopedTransaction(dbFactory))
                     {
@@ -404,7 +408,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (!string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
+                if (string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
+                {
+                    dto.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
+                }
+                else
                 {
                     using (var tx = new ScopedTransaction(dbFactory))
                     {

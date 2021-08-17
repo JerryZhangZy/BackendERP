@@ -38,11 +38,11 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             #region faker data rules
             return new Faker<DistributionCenter>()
 					.RuleFor(u => u.DatabaseNum, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.DistributionCenterNum, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.DistributionCenterNum, f => 0)
 					.RuleFor(u => u.MasterAccountNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.DistributionCenterName, f => f.Company.CompanyName())
-					.RuleFor(u => u.DistributionCenterCode, f => f.Lorem.Word())
+					.RuleFor(u => u.DistributionCenterCode, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.DistributionCenterType, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.Status, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.DefaultLevel, f => f.Random.Bool())

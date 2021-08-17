@@ -17,8 +17,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class InvoiceReturnService : InvoiceTransactionService
     {
         public InvoiceReturnService(IDataBaseFactory dbFactory) : base(dbFactory)
+        { 
+        }
+        public override InvoiceTransactionService Init()
         {
-            AddValidator(new InvoiceReturnServiceValidatorDefault());
+            SetDtoMapper(new InvoiceTransactionDataDtoMapperDefault());
+            SetCalculator(new InvoiceTransactionServiceCalculatorDefault());
+            AddValidator(new InvoiceReturnServiceValidatorDefault(this, this.dbFactory));
+            return this;
         }
         public async Task<bool> GetDataAsync(string invoiceNumber, InvoiceReturnPayload payload)
         {

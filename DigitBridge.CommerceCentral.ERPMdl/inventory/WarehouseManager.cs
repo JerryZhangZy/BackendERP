@@ -110,6 +110,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         warehouseService.Messages.Clear();
                     }
                 }
+                if (payload.HasWarehouse)
+                    payload.Warehouse = null;
                 AddInfo($"FIle:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
@@ -147,7 +149,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 if (payload.HasWarehouse)
                     payload.Warehouse = null;
-                AddInfo($"FIle:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+                AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
 

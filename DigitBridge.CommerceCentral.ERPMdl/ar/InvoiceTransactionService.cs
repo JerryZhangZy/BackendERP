@@ -82,7 +82,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync().ConfigureAwait(false);
         }
 
-        public virtual bool Add(InvoiceReturnPayload payload)
+        public virtual bool Add(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
                 return false;
@@ -106,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return SaveData();
         }
 
-        public virtual async Task<bool> AddAsync(InvoiceReturnPayload payload)
+        public virtual async Task<bool> AddAsync(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
                 return false;
@@ -186,7 +186,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Payload object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual bool Update(InvoiceReturnPayload payload)
+        public virtual bool Update(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction || payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong() <= 0)
                 return false;
@@ -216,7 +216,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual async Task<bool> UpdateAsync(InvoiceReturnPayload payload)
+        public virtual async Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
                 return false;
@@ -248,23 +248,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
-        /// Delete invoice by transaction uuid
+        /// Delete  by rownum
         /// </summary>
-        /// <param name="invoiceUuid"></param>
+        /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByTransUuidAsync(string transUuid, PayloadBase payload)
+        public virtual async Task<bool> DeleteByRowNumAsync(InvoiceTransactionPayload payload, long rowNum)
         {
-            if (string.IsNullOrEmpty(transUuid))
-                return false;
-            // set mode to delete
-            Delete();
-            var success = await GetDataByIdAsync(transUuid);
-            /// validate after data loaded 
-            /// TODO merge
-            //if (!(await ValidatePayloadAsync(payload).ConfigureAwait(false)))
-            //    return false;
+            payload.InvoiceTransaction = new InvoiceTransactionDataDto();
+            payload.InvoiceTransaction.InvoiceTransaction = new InvoiceTransactionDto();
+            payload.InvoiceTransaction.InvoiceTransaction.RowNum = rowNum;
 
-            success = success && await DeleteDataAsync();
+            //set delete mode
+            Delete();
+
+            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+                return false;
+
+            //load data
+            var success = await GetDataAsync(rowNum.ToLong());
+            //delete salesorder and its sub items
+            success = success && DeleteData();
             return success;
         }
     }

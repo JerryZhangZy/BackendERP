@@ -48,8 +48,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
         }
 
-        [Fact()]
-        //[Fact(Skip = SkipReason)]
+        //[Fact()]
+        [Fact(Skip = SkipReason)]
         public async Task QueryAzureDb_Test()
         {
             var conf = new DbConnSetting()
@@ -115,14 +115,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var result = new List<ProductBasic>();
             using (var b = new Benchmark("QueryAsync_Test_ProductBasic"))
             {
-                result = (await SqlQuery.QueryAsync<ProductBasic>(sqlProduct, System.Data.CommandType.Text)).ToList();
+                using (var tx = new ScopedTransaction(DataBaseFactory))
+                {
+                    result = (await SqlQuery.QueryAsync<ProductBasic>(sqlProduct, System.Data.CommandType.Text)).ToList();
+                }
             }
 
             var sqlInventory = $@"SELECT * FROM Inventory";
             var result2 = new List<Inventory>();
             using (var b = new Benchmark("QueryAsync_Test_Inventory"))
             {
-                result2 = (await SqlQuery.QueryAsync<Inventory>(sqlInventory, System.Data.CommandType.Text)).ToList();
+                using (var tx = new ScopedTransaction(DataBaseFactory))
+                {
+                    result2 = (await SqlQuery.QueryAsync<Inventory>(sqlInventory, System.Data.CommandType.Text)).ToList();
+                }
             }
 
             Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
@@ -142,7 +148,10 @@ FOR JSON PATH
             var result = new List<InventoryData>();
             using (var b = new Benchmark("QueryJsonAsync_Test"))
             {
-                result = (await SqlQuery.QueryJsonAsync<InventoryData>(sql, System.Data.CommandType.Text)).ToList();
+                using (var tx = new ScopedTransaction(DataBaseFactory))
+                {
+                    result = (await SqlQuery.QueryJsonAsync<InventoryData>(sql, System.Data.CommandType.Text)).ToList();
+                }
             }
 
             Assert.True(result != null, "This is a generated tester, please report any tester bug to team leader.");
@@ -162,7 +171,10 @@ FOR JSON PATH
             var result = false;
             using (var b = new Benchmark("QueryJsonStringBuilderAsync_Test"))
             {
-                result = await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text);
+                using (var tx = new ScopedTransaction(DataBaseFactory))
+                {
+                    result = await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text);
+                }
             }
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
