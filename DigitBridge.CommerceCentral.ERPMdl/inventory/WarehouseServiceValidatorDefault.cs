@@ -102,7 +102,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         isValid = WarehouseServiceHelper.ExistId(dto.DistributionCenter.DistributionCenterUuid, pl.MasterAccountNum, pl.ProfileNum);
                     else
                         isValid = WarehouseServiceHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
-                    isValid = WarehouseServiceHelper.ExistRowNum(dto.DistributionCenter.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -186,9 +185,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.DistributionCenter.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            if (string.IsNullOrEmpty(data.DistributionCenter.DistributionCenterCode))
+            {
+                IsValid = false;
+                AddError($"DistributionCenterCode: {data.DistributionCenter.DistributionCenterCode} required.");
+
+            }
+            else
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                { 
+                    if(WarehouseServiceHelper.ExistNumber(data.DistributionCenter.DistributionCenterCode, data.DistributionCenter.MasterAccountNum, data.DistributionCenter.ProfileNum))
+                    {
+                        IsValid = false;
+                        AddError($"DistributionCenterCode: {data.DistributionCenter.DistributionCenterCode} is duplicate.");
+                    }
+                }
+            }
+            return IsValid;
 
         }
 
@@ -278,9 +293,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.DistributionCenter.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            if (string.IsNullOrEmpty(data.DistributionCenter.DistributionCenterCode))
+            {
+                IsValid = false;
+                AddError($"DistributionCenterCode: {data.DistributionCenter.DistributionCenterCode} required.");
+
+            }
+            else
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (await WarehouseServiceHelper.ExistNumberAsync(data.DistributionCenter.DistributionCenterCode, data.DistributionCenter.MasterAccountNum, data.DistributionCenter.ProfileNum))
+                    {
+                        IsValid = false;
+                        AddError($"DistributionCenterCode: {data.DistributionCenter.DistributionCenterCode} is duplicate.");
+                    }
+                }
+            }
+            return IsValid;
 
         }
 
@@ -358,6 +389,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.DistributionCenter.ProfileNum = null;
                 dto.DistributionCenter.DatabaseNum = null;
                 dto.DistributionCenter.DistributionCenterUuid = null;
+                dto.DistributionCenter.DistributionCenterCode = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
@@ -400,9 +432,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.DistributionCenter.ProfileNum = null;
                 dto.DistributionCenter.DatabaseNum = null;
                 dto.DistributionCenter.DistributionCenterUuid = null;
+                dto.DistributionCenter.DistributionCenterCode = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
-  
+
             }
             IsValid=isValid;
             return isValid;

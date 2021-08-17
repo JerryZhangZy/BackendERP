@@ -51,7 +51,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_DistributionCenter_DistributionCenterUuid] 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[DistributionCenter]') AND name = N'IX_DistributionCenter_DistributionCenterCode')
-CREATE NONCLUSTERED INDEX [IX_DistributionCenter_DistributionCenterCode] ON [dbo].[DistributionCenter]
+CREATE UNIQUE NONCLUSTERED INDEX [UC_DistributionCenter_DistributionCenterCode_MasterAccountNum_ProfileNum] ON [dbo].[DistributionCenter]
 (
     [MasterAccountNum] ASC, 
 	[ProfileNum] ASC, 
