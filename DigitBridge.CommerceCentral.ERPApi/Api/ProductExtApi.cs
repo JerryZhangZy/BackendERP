@@ -38,9 +38,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new InventoryService(dbFactory);
             var spilterIndex = SKU.IndexOf("-");
             var sku = SKU;
-            if (spilterIndex > 0)
+            if (spilterIndex > 0 && sku.StartsWith(payload.ProfileNum.ToString()))
             {
-                sku = SKU.Substring(spilterIndex + 1);
+                sku = sku.Substring(spilterIndex + 1);
             }
             payload.Skus.Add(sku);
             if (await svc.GetInventoryBySkuAsync(payload, sku))
@@ -83,11 +83,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var spilterIndex = SKU.IndexOf("-");
             var sku = SKU;
-            if (spilterIndex > 0)
+            if (spilterIndex > 0 && sku.StartsWith(payload.ProfileNum.ToString()))
             {
-                sku = SKU.Substring(spilterIndex + 1);
+                sku = sku.Substring(spilterIndex + 1);
             }
-            payload.Skus.Add(sku);
             var svc = new InventoryService(dbFactory);
             if (await svc.DeleteBySkuAsync(payload,sku))
                 payload.Inventory = svc.ToDto();
@@ -108,6 +107,29 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InventoryPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryService(dbFactory);
+            if (await svc.AddAsync(payload))
+                payload.Inventory = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<InventoryPayload>(payload);
+        }
+
+        [FunctionName(nameof(AddProductExtInfo))]
+        [OpenApiOperation(operationId: "AddProductExtInfo", tags: new[] { "ProductExts" },Summary = "add and update ProductExt depend on productbasic")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryPayloadAdd), Description = "InventoryDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadAdd))]
+        public static async Task<JsonNetResponse<InventoryPayload>> AddProductExtInfo(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExts/productExt")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new ProductExtService(dbFactory);
             if (await svc.AddAsync(payload))
                 payload.Inventory = svc.ToDto();
             else
@@ -177,6 +199,21 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         /// <summary>
+        /// Add productext
+        /// </summary>
+        [FunctionName(nameof(Sample_ProductExt_Ext_Post))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "ProductExtAddExtSample", tags: new[] { "Sample" }, Summary = "Get new sample of add and update productext depend on productbasic")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadAdd))]
+        public static async Task<JsonNetResponse<InventoryPayloadAdd>> Sample_ProductExt_Ext_Post(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/productExts/productExt")] HttpRequest req)
+        {
+            return new JsonNetResponse<InventoryPayloadAdd>(InventoryPayloadAdd.GetProductExtSampleData());
+        }
+
+        /// <summary>
         /// find productext
         /// </summary>
         [FunctionName(nameof(Sample_ProductExt_Find))]
@@ -208,6 +245,27 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var downfile = new FileContentResult(exportData, "text/csv");
             downfile.FileDownloadName = "export-warehouse.csv";
             return downfile;
+        }
+
+        [FunctionName(nameof(ImportProductExt))]
+        [OpenApiOperation(operationId: "ImportProductExt", tags: new[] { "ProductExts" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "File", In = ParameterLocation.Query, Type = typeof(IFormFile), Summary = "File", Description = "submit by form", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayload))]
+        public static async Task<InventoryPayload> ImportProductExt(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExts/import")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var files = req.Form.Files;
+            var svc = new InventoryManager(dbFactory);
+
+            await svc.ImportAsync(payload, files);
+            payload.Success = true;
+            payload.Messages = svc.Messages;
+            return payload;
         }
     }
 }

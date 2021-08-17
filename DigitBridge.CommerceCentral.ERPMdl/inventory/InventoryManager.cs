@@ -22,6 +22,7 @@ using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using Microsoft.AspNetCore.Http;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -76,6 +77,80 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (dtoList.Count == 0)
                 dtoList.Add(new InventoryDataDto());
             return InventoryDataDtoCsv.Export(dtoList);
+        }
+
+        public void Import(InventoryPayload payload, IFormFileCollection files)
+        {
+            if (files == null || files.Count == 0)
+            {
+                AddError("no files upload");
+                return;
+            }
+            foreach (var file in files)
+            {
+                if (!file.FileName.ToLower().EndsWith("csv"))
+                {
+                    AddError($"invalid file type:{file.FileName}");
+                    continue;
+                }
+                var list = InventoryDataDtoCsv.Import(file.OpenReadStream());
+                var readcount = list.Count();
+                var addsucccount = 0;
+                var errorcount = 0;
+                foreach (var item in list)
+                {
+                    payload.Inventory = item;
+                    if (inventoryService.Add(payload))
+                        addsucccount++;
+                    else
+                    {
+                        errorcount++;
+                        foreach (var msg in inventoryService.Messages)
+                            Messages.Add(msg);
+                        inventoryService.Messages.Clear();
+                    }
+                }
+                if (payload.HasInventory)
+                    payload.Inventory = null;
+                AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+            }
+        }
+
+        public async Task ImportAsync(InventoryPayload payload, IFormFileCollection files)
+        {
+            if (files == null || files.Count == 0)
+            {
+                AddError("no files upload");
+                return;
+            }
+            foreach (var file in files)
+            {
+                if (!file.FileName.ToLower().EndsWith("csv"))
+                {
+                    AddError($"invalid file type:{file.FileName}");
+                    continue;
+                }
+                var list = InventoryDataDtoCsv.Import(file.OpenReadStream());
+                var readcount = list.Count();
+                var addsucccount = 0;
+                var errorcount = 0;
+                foreach (var item in list)
+                {
+                    payload.Inventory = item;
+                    if (await inventoryService.AddAsync(payload))
+                        addsucccount++;
+                    else
+                    {
+                        errorcount++;
+                        foreach (var msg in inventoryService.Messages)
+                            Messages.Add(msg);
+                        inventoryService.Messages.Clear();
+                    }
+                }
+                if (payload.HasInventory)
+                    payload.Inventory = null;
+                AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+            }
         }
 
         #region DataBase

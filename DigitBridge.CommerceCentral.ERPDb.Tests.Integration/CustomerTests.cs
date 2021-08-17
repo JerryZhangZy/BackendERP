@@ -27,8 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
     public partial class CustomerTests
     {
 
-        [Fact()]
-        //[Fact(Skip = SkipReason)]
+        [Fact(Skip = SkipReason)]
         public void Add_AzureDb_Test()
         {
             var conf = new DbConnSetting()
