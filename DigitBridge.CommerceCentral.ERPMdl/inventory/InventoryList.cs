@@ -10,6 +10,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
 using Helper = DigitBridge.CommerceCentral.ERPDb.ProductBasicHelper;
 using ExHelper = DigitBridge.CommerceCentral.ERPDb.ProductExtHelper;
+using InvHelper = DigitBridge.CommerceCentral.ERPDb.InventoryHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -36,39 +37,13 @@ SELECT
 {Helper.Brand()}, 
 {Helper.Manufacturer()}, 
 {Helper.ProductTitle()}, 
-{Helper.LongDescription()}, 
 {Helper.Subtitle()}, 
 {Helper.ASIN()}, 
 {Helper.UPC()}, 
-{Helper.EAN()}, 
-{Helper.ISBN()}, 
-{Helper.MPN()}, 
 {Helper.Price()}, 
-{Helper.Cost()}, 
-{Helper.AvgCost()}, 
-{Helper.MAPPrice()}, 
 {Helper.MSRP()}, 
 {Helper.BundleType()}, 
 {Helper.ProductType()}, 
-{Helper.VariationVaryBy()}, 
-{Helper.IsInRelationship()}, 
-{Helper.NetWeight()}, 
-{Helper.GrossWeight()}, 
-{Helper.WeightUnit()}, 
-{Helper.ProductHeight()}, 
-{Helper.ProductLength()}, 
-{Helper.ProductWidth()}, 
-{Helper.BoxHeight()}, 
-{Helper.BoxLength()}, 
-{Helper.BoxWidth()}, 
-{Helper.DimensionUnit()},
-{Helper.TaxProductCode()},
-{Helper.Warranty()},
-{ExHelper.ColorPatternCode()},
-{ExHelper.SizeType()},
-{ExHelper.SizeCode()},
-{ExHelper.WidthCode()},
-{ExHelper.LengthCode()},
 {ExHelper.ClassCode()},
 {ExHelper.SubClassCode()},
 {ExHelper.DepartmentCode()},
@@ -77,25 +52,18 @@ SELECT
 {ExHelper.AlternateCode()},
 {ExHelper.Remark()},
 {ExHelper.Model()},
-{ExHelper.CatalogPage()},
 {ExHelper.CategoryCode()},
 {ExHelper.GroupCode()},
 {ExHelper.SubGroupCode()},
 {ExHelper.PriceRule()},
-{ExHelper.Stockable()},
-{ExHelper.Release()},
-{ExHelper.Currency()},
 {ExHelper.UOM()},
-{ExHelper.QtyPerPallot()},
-{ExHelper.QtyPerBox()},
 {ExHelper.QtyPerCase()},
-{ExHelper.PackQty()},
-{ExHelper.PoSize()},
-{ExHelper.MinStock()},
 {ExHelper.SalesCost()},
-{ExHelper.LeadTimeDay()},
-{ExHelper.ProductYear()},
-{ExHelper.DigitBridgeGuid()}
+{InvHelper.ColorPatternCode()},
+{InvHelper.WarehouseCode()},
+{InvHelper.InventoryUuid()},
+{InvHelper.Instock()},
+{InvHelper.AvaQty()}
 ";
             return this.SQL_Select;
         }
@@ -105,6 +73,7 @@ SELECT
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
 LEFT JOIN {ExHelper.TableName} {ExHelper.TableAllies} ON ({Helper.TableAllies}.ProductUuid = {ExHelper.TableAllies}.ProductUuid)
+LEFT JOIN {InvHelper.TableName} {InvHelper.TableAllies} ON ({Helper.TableAllies}.ProductUuid = {InvHelper.TableAllies}.ProductUuid)
 ";
             return this.SQL_From;
         }
