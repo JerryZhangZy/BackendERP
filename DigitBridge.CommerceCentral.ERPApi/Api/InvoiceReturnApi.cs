@@ -20,21 +20,48 @@ namespace DigitBridge.CommerceCentral.ERPApi
     public static class InvoiceReturnApi
     {
         /// <summary>
-        /// Get one invoice return by orderNumber
+        /// Get invoicereturns by invoiceNumber
         /// </summary>
         /// <param name="req"></param>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        [FunctionName(nameof(GetInvoiceReturn))]
-        [OpenApiOperation(operationId: "GetInvoiceReturn", tags: new[] { "Invoice returns" }, Summary = "Get one invoice return")]
+        [FunctionName(nameof(GetInvoiceReturns))]
+        [OpenApiOperation(operationId: "GetInvoiceReturns", tags: new[] { "Invoice returns" }, Summary = "Get  invoice returns by invoiceNumber")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadAdd))]
-        public static async Task<JsonNetResponse<InvoiceReturnPayload>> GetInvoiceReturn(
+        public static async Task<JsonNetResponse<InvoiceReturnPayload>> GetInvoiceReturns(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoiceReturns/{invoiceNumber}")] HttpRequest req,
             string invoiceNumber)
+        {
+            var payload = await req.GetParameters<InvoiceReturnPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InvoiceReturnService(dataBaseFactory);
+            payload.Success = await srv.GetDataAsync(invoiceNumber, payload);
+            payload.Messages = srv.Messages;
+            return new JsonNetResponse<InvoiceReturnPayload>(payload);
+        }
+
+        /// <summary>
+        /// Get one invoice return by invoiceNumber and transNum
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="invoiceNumber"></param>
+        /// <param name="transNum"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(GetInvoiceReturn))]
+        [OpenApiOperation(operationId: "GetInvoiceReturn", tags: new[] { "Invoice returns" }, Summary = "Get one invoice return by invoiceNumber and transNum")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "transNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "transNum", Description = "Transaction Num. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadAdd))]
+        public static async Task<JsonNetResponse<InvoiceReturnPayload>> GetInvoiceReturn(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoiceReturns/{invoiceNumber}/{transNum}")] HttpRequest req,
+            string invoiceNumber, int transNum)
         {
             var payload = await req.GetParameters<InvoiceReturnPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
