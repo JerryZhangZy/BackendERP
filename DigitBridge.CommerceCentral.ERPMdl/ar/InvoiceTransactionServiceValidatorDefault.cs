@@ -83,7 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = payload as InvoiceReturnPayload;
+            var pl = payload as InvoiceTransactionPayload;
             var dto = pl.InvoiceTransaction;
 
             if (processingMode == ProcessingMode.Add)
@@ -97,11 +97,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
                 using (var tx = new ScopedTransaction(dbFactory))
-                { 
+                {
                     if (!string.IsNullOrEmpty(number)) //TODO  nubmer validate
                         isValid = InvoiceTransactionHelper.ExistNumber(dto.InvoiceTransaction.TransNum.ToInt(), dto.InvoiceTransaction.InvoiceNumber, pl.ProfileNum);
                     else if (!dto.InvoiceTransaction.RowNum.IsZero())
-                        isValid = InvoiceTransactionHelper.ExistRowNum(dto.InvoiceTransaction.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = InvoiceTransactionHelper.ExistRowNum(dto.InvoiceTransaction.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum,dto.InvoiceTransaction.TransType.ToInt());
                     if (!isValid)
                         AddError($"Data not found.");
                 }
@@ -113,7 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
-            var pl = payload as InvoiceReturnPayload;
+            var pl = payload as InvoiceTransactionPayload;
             var dto = pl.InvoiceTransaction;
             //todo InvoiceNumber TransNum ProfileNum required
 
@@ -125,15 +125,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.InvoiceTransaction.DatabaseNum = pl.DatabaseNum;
             }
             else
-            { 
+            {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                    
+
                     if (!string.IsNullOrEmpty(number)) //TODO  nubmer validate
                         isValid = await InvoiceTransactionHelper.ExistNumberAsync(dto.InvoiceTransaction.TransNum.ToInt(), dto.InvoiceTransaction.InvoiceNumber, pl.ProfileNum);
                     else if (!dto.InvoiceTransaction.RowNum.IsZero())
-                        isValid = await InvoiceTransactionHelper.ExistRowNumAsync(dto.InvoiceTransaction.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = await InvoiceTransactionHelper.ExistRowNumAsync(dto.InvoiceTransaction.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum, dto.InvoiceTransaction.TransType.ToInt());
                     if (!isValid)
                         AddError($"Data not found.");
                 }
@@ -343,31 +343,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                //check trannum  
-                if (dto.InvoiceTransaction.TransNum.IsZero())
-                {
-                    isValid = false;
-                    AddError($"InvoiceTransaction.TransNum is required.");
-                }
                 //check InvoiceNumber  
                 if (string.IsNullOrEmpty(dto.InvoiceTransaction.InvoiceNumber))
                 {
                     isValid = false;
                     AddError($"InvoiceTransaction.InvoiceNumber is required.");
                 }
-
-                //check trannum unique
-                if (!dto.InvoiceTransaction.TransNum.IsZero() && !string.IsNullOrEmpty(dto.InvoiceTransaction.InvoiceNumber))
+                else
                 {
                     using (var tx = new ScopedTransaction(dbFactory))
                     {
-                        if (InvoiceTransactionHelper.ExistNumber(dto.InvoiceTransaction.TransNum.ToInt(), dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.ToInt()))
+                        //check trannum  
+                        if (dto.InvoiceTransaction.TransNum.IsZero())
                         {
-                            isValid = false;
-                            AddError("InvoiceTransaction.TransNum && InvoiceTransaction.InvoiceNumber exist.");
+                            dto.InvoiceTransaction.TransNum = InvoiceTransactionHelper.GetTranSeqNum(dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.ToInt());
+                        }
+                        else
+                        {
+                            if (InvoiceTransactionHelper.ExistNumber(dto.InvoiceTransaction.TransNum.ToInt(), dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.ToInt()))
+                            {
+                                isValid = false;
+                                AddError("InvoiceTransaction.TransNum && InvoiceTransaction.InvoiceNumber exist.");
+                            }
                         }
                     }
                 }
+
 
 
 
@@ -423,31 +424,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                //check trannum  
-                if (dto.InvoiceTransaction.TransNum.IsZero())
-                {
-                    isValid = false;
-                    AddError($"InvoiceTransaction.TransNum is required.");
-                }
                 //check InvoiceNumber  
                 if (string.IsNullOrEmpty(dto.InvoiceTransaction.InvoiceNumber))
                 {
                     isValid = false;
                     AddError($"InvoiceTransaction.InvoiceNumber is required.");
                 }
-
-                //check trannum unique
-                if (!dto.InvoiceTransaction.TransNum.IsZero() && !string.IsNullOrEmpty(dto.InvoiceTransaction.InvoiceNumber))
+                else
                 {
                     using (var tx = new ScopedTransaction(dbFactory))
                     {
-                        if (await InvoiceTransactionHelper.ExistNumberAsync(dto.InvoiceTransaction.TransNum.ToInt(), dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.ToInt()))
+                        //check trannum  
+                        if (dto.InvoiceTransaction.TransNum.IsZero())
                         {
-                            isValid = false;
-                            AddError("InvoiceTransaction.TransNum && InvoiceTransaction.InvoiceNumber exist.");
+                            dto.InvoiceTransaction.TransNum = await InvoiceTransactionHelper.GetTranSeqNumAsync(dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.ToInt());
+                        }
+                        else
+                        {
+                            if (await InvoiceTransactionHelper.ExistNumberAsync(dto.InvoiceTransaction.TransNum.ToInt(), dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.ToInt()))
+                            {
+                                isValid = false;
+                                AddError("InvoiceTransaction.TransNum && InvoiceTransaction.InvoiceNumber exist.");
+                            }
                         }
                     }
                 }
+
                 //for Add mode, always reset uuid
                 dto.InvoiceTransaction.TransUuid = Guid.NewGuid().ToString();
                 if (dto.InvoiceReturnItems != null && dto.InvoiceReturnItems.Count > 0)

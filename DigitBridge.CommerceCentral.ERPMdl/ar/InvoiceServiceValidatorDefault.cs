@@ -352,7 +352,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (!string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceNumber))
+                if (string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceNumber))
+                {
+                    dto.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
+                }
+                else
                 {
                     using (var tx = new ScopedTransaction(dbFactory))
                     {
@@ -416,7 +420,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (!string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceNumber))
+                if (string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceNumber))
+                {
+                    dto.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
+                }
+                else
                 {
                     using (var tx = new ScopedTransaction(dbFactory))
                     {

@@ -18,10 +18,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public InvoicePaymentService(IDataBaseFactory dbFactory) : base(dbFactory)
         {
-        } 
+        }
 
         public override InvoiceTransactionService Init()
-        { 
+        {
             SetDtoMapper(new InvoiceTransactionDataDtoMapperDefault());
             SetCalculator(new InvoiceTransactionServiceCalculatorDefault());
             AddValidator(new InvoicePaymentServiceValidatorDefault(this, this.dbFactory));
@@ -32,17 +32,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task GetPaymentWithInvoiceHeaderAsync(string invoiceNumber, InvoicePaymentPayload payload)
+        public virtual async Task GetPaymentWithInvoiceHeaderAsync(InvoicePaymentPayload payload, string invoiceNumber, int? transNum = null)
         {
-            payload.InvoiceTransaction = await GetInvoicePaymentAsync(invoiceNumber, payload.MasterAccountNum, payload.ProfileNum);
-            payload.InvoiceHeader = await GetInvoiceHeaderAsync(invoiceNumber, payload.MasterAccountNum, payload.ProfileNum);
+            payload.InvoiceTransactions = await GetInvoicePaymentAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transNum);
+            payload.InvoiceHeader = await GetInvoiceHeaderAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
         }
         /// <summary>
         /// Get InvoiceHeader by invoiceNumber
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        private async Task<InvoiceHeaderDto> GetInvoiceHeaderAsync(string invoiceNumber, int masterAccountNum, int profileNum)
+        private async Task<InvoiceHeaderDto> GetInvoiceHeaderAsync(int masterAccountNum, int profileNum, string invoiceNumber)
         {
             var invoiceHeader = await new InvoiceHeader(_dbFactory).GetByInvoiceNumberAsync(invoiceNumber, masterAccountNum, profileNum);
             var dto = new InvoiceHeaderDto();
@@ -52,24 +52,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
-        /// Get InvoiceHeader by invoiceNumber
+        /// Get InvoiceTransactionDtos by invoiceNumber and transNum
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        private async Task<InvoiceTransactionDto> GetInvoicePaymentAsync(string invoiceNumber, int masterAccountNum, int profileNum)
+        private async Task<List<InvoiceTransactionDto>> GetInvoicePaymentAsync(int masterAccountNum, int profileNum, string invoiceNumber, int? transNum = null)
         {
-            var invoiceTransaction = await new InvoiceTransaction(_dbFactory).GetByInvoiceNumberAsync(invoiceNumber, masterAccountNum, profileNum);
-            var dto = new InvoiceTransactionDto();
-            if (invoiceTransaction != null)
+            var invoiceTransactions = await new InvoiceTransaction(_dbFactory).GetByInvoiceNumberAsync(invoiceNumber, masterAccountNum, profileNum, TransTypeEnum.Payment, transNum);
+            var dtos = new List<InvoiceTransactionDto>();
+            if (invoiceTransactions != null && invoiceTransactions.Count > 0)
             {
-                new InvoiceTransactionDataDtoMapperDefault().WriteInvoiceTransaction(invoiceTransaction, dto);
+                foreach (var item in invoiceTransactions)
+                {
+                    var dto = new InvoiceTransactionDto();
+                    new InvoiceTransactionDataDtoMapperDefault().WriteInvoiceTransaction(item, dto);
+                    dtos.Add(dto);
+                }
+
             }
-            return dto;
+            return dtos;
         }
 
         public virtual async Task<bool> AddAsync(InvoicePaymentPayload payload)
         {
-            var invoiceTransactionPayload = new InvoiceReturnPayload
+            var invoiceTransactionPayload = new InvoiceTransactionPayload
             {
                 InvoiceTransaction = new InvoiceTransactionDataDto()
                 {
@@ -78,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 MasterAccountNum = payload.MasterAccountNum,
                 ProfileNum = payload.ProfileNum
             };
-            return await AddAsync(invoiceTransactionPayload);
+            return await base.AddAsync(invoiceTransactionPayload);
         }
         /// <summary>
         /// Update data from Dto object
@@ -86,7 +92,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public virtual async Task<bool> UpdateAsync(InvoicePaymentPayload payload)
         {
-            var invoiceTransactionPayload = new InvoiceReturnPayload
+            var invoiceTransactionPayload = new InvoiceTransactionPayload
             {
                 InvoiceTransaction = new InvoiceTransactionDataDto()
                 {
@@ -95,7 +101,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 MasterAccountNum = payload.MasterAccountNum,
                 ProfileNum = payload.ProfileNum
             };
-            return await UpdateAsync(invoiceTransactionPayload);
+            return await base.UpdateAsync(invoiceTransactionPayload);
         }
     }
 }
