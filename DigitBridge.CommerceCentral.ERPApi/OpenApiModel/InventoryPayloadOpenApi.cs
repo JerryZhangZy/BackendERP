@@ -41,6 +41,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
             data.Inventory = new InventoryDataDto().GetFakerData();
             return data;
         }
+
+        public static InventoryPayloadAdd GetProductExtSampleData()
+        {
+            var data = new InventoryPayloadAdd();
+            data.Inventory = new InventoryDataDto().GetFakerData();
+            data.Inventory.ProductExt.SKU = data.Inventory.ProductBasic.SKU;
+            data.Inventory.ProductBasic = null;
+            data.Inventory.ProductExtAttributes = null;
+            data.Inventory.Inventory = null;
+            return data;
+        }
     }
 
 

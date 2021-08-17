@@ -192,6 +192,30 @@ AND ProfileNum = @profileNum";
             return rowNumList;
         }
 
+        public static List<DistributionCenter> GetWarehouses(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT * FROM DistributionCenter tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+            return SqlQuery.Query<DistributionCenter>(sql, CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum")
+            ).ToList();
+        }
+
+        public static async Task<List<DistributionCenter>> GetWarehousesAsync(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT * FROM DistributionCenter tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+            return (await SqlQuery.QueryAsync<DistributionCenter>(sql, CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum")
+            )).ToList();
+        }
+
     }
 }
 

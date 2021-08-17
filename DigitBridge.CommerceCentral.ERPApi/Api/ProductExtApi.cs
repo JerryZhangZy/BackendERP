@@ -117,6 +117,29 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<InventoryPayload>(payload);
         }
 
+        [FunctionName(nameof(AddProductExtInfo))]
+        [OpenApiOperation(operationId: "AddProductExtInfo", tags: new[] { "ProductExts" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryPayloadAdd), Description = "InventoryDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadAdd))]
+        public static async Task<JsonNetResponse<InventoryPayload>> AddProductExtInfo(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExts/updateExt")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new ProductExtService(dbFactory);
+            if (await svc.AddAsync(payload))
+                payload.Inventory = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<InventoryPayload>(payload);
+        }
+
         [FunctionName(nameof(UpdateProductExt))]
         [OpenApiOperation(operationId: "UpdateProductExt", tags: new[] { "ProductExts" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -173,6 +196,21 @@ namespace DigitBridge.CommerceCentral.ERPApi
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/productExts")] HttpRequest req)
         {
             return new JsonNetResponse<InventoryPayloadAdd>(InventoryPayloadAdd.GetSampleData());
+        }
+
+        /// <summary>
+        /// Add productext
+        /// </summary>
+        [FunctionName(nameof(Sample_ProductExt_Ext_Post))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "ProductExtAddExtSample", tags: new[] { "Sample" }, Summary = "Get new sample of productext extend info")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadAdd))]
+        public static async Task<JsonNetResponse<InventoryPayloadAdd>> Sample_ProductExt_Ext_Post(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/productExts/ext")] HttpRequest req)
+        {
+            return new JsonNetResponse<InventoryPayloadAdd>(InventoryPayloadAdd.GetProductExtSampleData());
         }
 
         /// <summary>
