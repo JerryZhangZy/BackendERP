@@ -118,14 +118,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         [FunctionName(nameof(AddProductExtInfo))]
-        [OpenApiOperation(operationId: "AddProductExtInfo", tags: new[] { "ProductExts" })]
+        [OpenApiOperation(operationId: "AddProductExtInfo", tags: new[] { "ProductExts" },Summary = "add and update ProductExt depend on productbasic")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryPayloadAdd), Description = "InventoryDataDto ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadAdd))]
         public static async Task<JsonNetResponse<InventoryPayload>> AddProductExtInfo(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExts/updateExt")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExts/productExt")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -205,10 +205,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiOperation(operationId: "ProductExtAddExtSample", tags: new[] { "Sample" }, Summary = "Get new sample of productext extend info")]
+        [OpenApiOperation(operationId: "ProductExtAddExtSample", tags: new[] { "Sample" }, Summary = "Get new sample of add and update productext depend on productbasic")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadAdd))]
         public static async Task<JsonNetResponse<InventoryPayloadAdd>> Sample_ProductExt_Ext_Post(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/productExts/ext")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/productExts/productExt")] HttpRequest req)
         {
             return new JsonNetResponse<InventoryPayloadAdd>(InventoryPayloadAdd.GetProductExtSampleData());
         }

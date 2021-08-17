@@ -300,21 +300,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             #region override data.save()
             try
             {
-                dbFactory.Begin();
+                //dbFactory.Begin();
+                if (_data.ProductExtAttributes == null)
+                    _data.ProductExtAttributes = GenerateNewProductExtAttributes(_data.ProductExt);
+                //Supply all inventory
+                _data.Inventory = SupplyMissingInventories(_data.ProductExt, _data.Inventory);
+                _data.CheckIntegrity();
+
                 //save ProductExt
                 _data.ProductExt.SetDataBaseFactory(dbFactory)?.Save();
 
                 //save ProductExtAttributes
-                if (_data.ProductExtAttributes == null)
-                    _data.ProductExtAttributes = GenerateNewProductExtAttributes(_data.ProductExt);
+
                 _data.ProductExtAttributes.SetDataBaseFactory(dbFactory)?.Save();
 
-                //Supply all inventory
-                _data.Inventory = SupplyMissingInventories(_data.ProductExt,_data.Inventory);
                 //save inventory
                  _data.Inventory.SetDataBaseFactory(dbFactory)?.Save();
 
-                dbFactory.Commit();
             }catch(Exception)
             {
                 throw;
