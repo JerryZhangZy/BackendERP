@@ -190,4 +190,14 @@
   <ItemGroup>
     <None Include="inventory\DistributionCenter_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderDCAssignmentHeader.sql" />
+    <None Include="channelOrder\OrderDCAssignmentLine.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderDCAssignmentHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderDCAssignmentLine_Update.sql" />
+  </ItemGroup>
 </Project>

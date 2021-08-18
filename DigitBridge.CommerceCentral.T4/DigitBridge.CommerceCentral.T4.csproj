@@ -75,6 +75,10 @@
       <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForOrderDCAssignment.ttinclude">
+      <LastGenOutput>SettingForOrderDCAssignment.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForDistributionCenter.ttinclude">
       <LastGenOutput>SettingForDistributionCenter.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -285,6 +289,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryPartialClass.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateServiceValidator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceValidator.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructureDtoExtension.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -314,6 +323,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ReadDtoObjectChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForOrderDCAssignment.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForOrderDCAssignment.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\SettingForChannelOrder.cs">
       <DesignTime>True</DesignTime>
