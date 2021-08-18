@@ -39,46 +39,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
 			context.RegisterClassMap(new CsvAutoMapper<InventoryLogDto>());
         }
-        
-        protected override void WriteCsv(InventoryLogDataDto data, CsvWriter csv)
+
+        public override byte[] Export(IEnumerable<InventoryLogDataDto> datas)
         {
-            //data.ExportFixed();
-            // combine multiple Dto to one dynamic object
-            var headerRecords = data.MergeHeaderRecord(true).ToList();
-            
-            // get property orders in object 
-            var props = new List<KeyValuePair<string, object>>();
-            if (Format?.Columns == null || Format?.Columns?.Count == 0)
-                props = ((ExpandoObject)headerRecords[0]).GetPropertyNames().ToList();
-            // add RecordType column at first
-            props.Insert(0, new KeyValuePair<string, object>("RecordType", "RecordType"));
+            var config = GetConfiguration();
+            config.HasHeaderRecord = false;
+            using (var ms = new MemoryStream())
+            {
+                using (var writer = new StreamWriter(ms))
+                using (var csv = new CsvWriter(writer, config))
+                {
+                    var detailRecords = datas.MergeDetailRecord(true).ToList();
+                    var props = new List<KeyValuePair<string, object>>();
+                    if (Format?.Columns == null || Format?.Columns?.Count == 0)
+                        props = ((ExpandoObject)detailRecords[0]).GetPropertyNames().ToList();
+                    // add RecordType column at first
+                    props.Insert(0, new KeyValuePair<string, object>("RecordType", "RecordType"));
 
-            // Sort property of object by orders
-            headerRecords[0] = ((ExpandoObject)headerRecords[0]).FilterAndSortProperty(props);
+                    // Sort property of object by orders
+                    detailRecords[0] = ((ExpandoObject)detailRecords[0]).FilterAndSortProperty(props);
 
-            // sort data object property orders and set type = "H"
-            props[0] = new KeyValuePair<string, object>("RecordType", "H");
-            for (int i = 1; i < headerRecords.Count; i++)
-                headerRecords[i] = ((ExpandoObject)headerRecords[i]).FilterAndSortProperty(props);            
-            csv.WriteRecords(headerRecords);
+                    // sort data object property orders and set type = "H"
+                    props[0] = new KeyValuePair<string, object>("RecordType", "L");
+                    for (int i = 1; i < detailRecords.Count; i++)
+                        detailRecords[i] = ((ExpandoObject)detailRecords[i]).FilterAndSortProperty(props);
 
-            //if no details ,please comment undercode
-            var detailRecords = data.MergeDetailRecord(true).ToList();
-            props = new List<KeyValuePair<string, object>>();
-            if (Format?.Columns == null || Format?.Columns?.Count == 0)
-                props = ((ExpandoObject)detailRecords[0]).GetPropertyNames().ToList();
-            // add RecordType column at first
-            props.Insert(0, new KeyValuePair<string, object>("RecordType", "RecordType"));
-
-            // Sort property of object by orders
-            detailRecords[0] = ((ExpandoObject)detailRecords[0]).FilterAndSortProperty(props);
-
-            // sort data object property orders and set type = "H"
-            props[0] = new KeyValuePair<string, object>("RecordType", "L");
-            for (int i = 1; i < detailRecords.Count; i++)
-                detailRecords[i] = ((ExpandoObject)detailRecords[i]).FilterAndSortProperty(props);
-
-            csv.WriteRecords(detailRecords);
+                    csv.WriteRecords(detailRecords);
+                    csv.Flush();
+                }
+                return ms.ToArray();
+            }
         }
 
         public override void ReadEntities(CsvReader csv, IList<InventoryLogDataDto> data)
@@ -97,7 +87,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
                 switch (csv.GetField(0))
                 {
-                    case "H":
+                    case "L":
                         if (!isFirst)
                         {
                             if (dto != null && dto.HasInventoryLog)

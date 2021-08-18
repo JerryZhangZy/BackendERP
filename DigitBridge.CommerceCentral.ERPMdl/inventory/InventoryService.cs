@@ -35,6 +35,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return this;
         }
 
+        public virtual bool GetDataBySku(string sku, int masterAccountNum, int profileNum)
+        {
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = InventoryServiceHelper.GetRowNumBySku(sku, masterAccountNum, profileNum);
+            }
+            return GetData(rowNum);
+        }
+
+        public virtual async Task<bool> GetDataBySkuAsync(string sku, int masterAccountNum, int profileNum)
+        {
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await InventoryServiceHelper.GetRowNumBySkuAsync(sku, masterAccountNum, profileNum);
+            }
+            return await GetDataAsync(rowNum);
+        }
 
         /// <summary>
         /// Add new data from Dto object
@@ -55,6 +74,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // validate data for Add processing
             if (!Validate())
                 return false;
+
+            Data.Inventory = GenerateMissingInventories(Data.ProductBasic,Data.Inventory);
 
             return SaveData();
         }
@@ -79,6 +100,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync().ConfigureAwait(false)))
                 return false;
 
+            Data.Inventory = GenerateMissingInventories(Data.ProductBasic, Data.Inventory);
+
             return await SaveDataAsync().ConfigureAwait(false);
         }
 
@@ -102,6 +125,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // validate data for Add processing
             if (!Validate())
                 return false;
+
+            Data.Inventory = GenerateMissingInventories(Data.ProductBasic, Data.Inventory);
+
             return SaveData();
         }
 
@@ -126,6 +152,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync().ConfigureAwait(false)))
                 return false;
 
+            Data.Inventory = GenerateMissingInventories(Data.ProductBasic, Data.Inventory);
+
             return await SaveDataAsync().ConfigureAwait(false);
         }
 
@@ -145,7 +173,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // set Add mode and clear data
-            Edit(dto.ProductBasic.RowNum.ToLong());
+            if (dto.HasProductBasic)
+            {
+                Edit(dto.ProductBasic.RowNum.ToLong());
+            }
+            else
+            {
+                GetDataBySku(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
+                Data.AddIgnoreSave(InventoryData.ProductBasicTable);
+            }
 
             // load data from dto
             FromDto(dto);
@@ -172,9 +208,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync(dto).ConfigureAwait(false)))
                 return false;
 
-            // set Add mode and clear data
-            await EditAsync(dto.ProductBasic.RowNum.ToLong()).ConfigureAwait(false);
-
+            if (dto.HasProductBasic)
+            {
+                await EditAsync(dto.ProductBasic.RowNum.ToLong()).ConfigureAwait(false);
+            }
+            else
+            {
+                await GetDataBySkuAsync(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt()).ConfigureAwait(false);
+                Data.AddIgnoreSave(InventoryData.ProductBasicTable);
+            }
             // load data from dto
             FromDto(dto);
 
@@ -204,7 +246,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // set Add mode and clear data
-            Edit(payload.Inventory.ProductBasic.RowNum.ToLong());
+            var dto = payload.Inventory;
+            if (dto.HasProductBasic)
+            {
+                Edit(dto.ProductBasic.RowNum.ToLong());
+            }
+            else
+            {
+                GetDataBySku(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
+                Data.AddIgnoreSave(InventoryData.ProductBasicTable);
+            }
 
             // load data from dto
             FromDto(payload.Inventory);
@@ -235,7 +286,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // set Add mode and clear data
-            await EditAsync(payload.Inventory.ProductBasic.RowNum.ToLong()).ConfigureAwait(false);
+            var dto = payload.Inventory;
+            if (dto.HasProductBasic)
+            {
+                await EditAsync(dto.ProductBasic.RowNum.ToLong()).ConfigureAwait(false);
+            }
+            else
+            {
+                await GetDataBySkuAsync(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt()).ConfigureAwait(false);
+                Data.AddIgnoreSave(InventoryData.ProductBasicTable);
+            }
 
             // load data from dto
             FromDto(payload.Inventory);
@@ -289,12 +349,69 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             List();
             if (!(await ValidateAccountAsync(payload, sku).ConfigureAwait(false)))
                 return false;
-            long rowNum = 0;
+            return await GetDataBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
+        }
+        protected IList<Inventory> GenerateMissingInventories(ProductBasic product, IList<Inventory> inventories)
+        {
+            var warehouseList = new List<DistributionCenter>();
             using (var tx = new ScopedTransaction(dbFactory))
             {
-                rowNum = await InventoryServiceHelper.GetRowNumBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
+                warehouseList.AddRange(WarehouseServiceHelper.GetWarehouses(product.MasterAccountNum, product.ProfileNum));
             }
-            return await GetDataAsync(rowNum);
+            if (inventories == null)
+                inventories = new List<Inventory>();
+            var twarehouseCode = inventories.Select(r => r.WarehouseCode).Distinct().ToHashSet();
+            var missingWarehouse = warehouseList.Where(r => !twarehouseCode.Contains(r.DistributionCenterCode)).ToList();
+            missingWarehouse.ForEach(x =>
+            {
+                inventories.Add(GenerateSingleInventory(product, x));
+            });
+            return inventories;
+        }
+
+        protected Inventory GenerateSingleInventory(ProductBasic product, DistributionCenter warehouse)
+        {
+            return new Inventory()
+            {
+                //ProductBasic
+                DatabaseNum = product.DatabaseNum,
+                MasterAccountNum = product.MasterAccountNum,
+                ProfileNum = product.ProfileNum,
+                ProductUuid = product.ProductUuid,
+                InventoryUuid = Guid.NewGuid().ToString(),
+                SKU = product.SKU,
+
+                #region ProductExt
+
+                //StyleCode = ext.StyleCode,
+                //ColorPatternCode = ext.ColorPatternCode,
+                //SizeType = ext.SizeType,
+                //SizeCode = ext.SizeCode,
+                //WidthCode = ext.WidthCode,
+                //LengthCode = ext.LengthCode,
+                //PriceRule = ext.PriceRule,
+                //LeadTimeDay = ext.LeadTimeDay,
+                //PoSize = ext.PoSize,
+                //MinStock = ext.MinStock,
+
+                //Currency = ext.Currency,
+                //UOM = ext.UOM,
+                //QtyPerPallot = ext.QtyPerPallot,
+                //QtyPerCase = ext.QtyPerCase,
+                //QtyPerBox = ext.QtyPerBox,
+                //PackType = ext.PackType,
+                //PackQty = ext.PackQty,
+                //DefaultPackType = ext.DefaultPackType,
+
+                //SalesCost = ext.SalesCost,
+
+                #endregion
+
+                //Warehouse
+                WarehouseCode = warehouse.DistributionCenterCode,
+                WarehouseName = warehouse.DistributionCenterName,
+                WarehouseUuid = warehouse.DistributionCenterUuid
+            };
         }
     }
 }

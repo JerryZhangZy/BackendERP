@@ -67,6 +67,33 @@ namespace DigitBridge.CommerceCentral.ERPDb
             //return result;
         }
 
+        /// <summary>
+        /// Merge SalesOrderDataDto detailt list to dynamic object list
+        /// </summary>
+        /// <param name="dto">SalesOrderDataDto object to merge data</param>
+        /// <param name="withHeaderText">Add header text line at first</param>
+        /// <returns>list of dynamic object include all properties of detailt objects</returns>
+        public static IEnumerable<dynamic> MergeDetailRecord(this IEnumerable<InventoryLogDataDto> dtoList, bool withHeaderText = false)
+        {
+            //TODO change to merge Dto children object
+            if (dtoList == null)
+                return null;
+
+            var result = new List<dynamic>();
+            var inventoryLog = new InventoryLogDataDto() { InventoryLog = new InventoryLogDto() };
+
+            if (withHeaderText)
+                result.Add(inventoryLog.MergeName(inventoryLog.InventoryLog));
+
+            foreach (var item in dtoList)
+            {
+                result.Add(item.Merge(item.InventoryLog));
+            }
+            return result;
+        }
+
+
+
 
         /// <summary>
         /// Generate fake data for SalesOrderDataDto object
