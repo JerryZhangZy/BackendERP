@@ -9,27 +9,40 @@ using System.Threading.Tasks;
 using System.Web;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
+using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class InvoiceTransactionData
     {
-        public virtual async Task<InvoiceTransaction> GetInvoiceTransaction(string invoiceNumber, int masterAccountNum, int profileNum)
+
+        public async Task<List<InvoiceTransactionData>> GetDataListAsync(string invoiceNumber, int masterAccountNum, int profileNum, TransTypeEnum transType, int? transNum = null)
         {
-            return (await dbFactory.FindAsync<InvoiceTransaction>($"SELECT TOP 1 * FROM InvoiceTransaction where InvoiceNumber='{invoiceNumber}' and masterAccountNum={masterAccountNum} and profileNum={profileNum}")).FirstOrDefault();
+            var trans = await new InvoiceTransaction().GetByInvoiceNumberAsync(invoiceNumber, masterAccountNum, profileNum, transType, transNum);
+            return await WrapData(trans, transType == TransTypeEnum.Return);
+
         }
-
-
-        public virtual async Task<bool> GetAsync(string invoiceNumber, int masterAccountNum, int profileNum, bool loadOthers = true)
+        private async Task<List<InvoiceTransactionData>> WrapData(List<InvoiceTransaction> invoiceTransactions, bool loadOthers)
         {
-            var obj = await GetInvoiceTransaction(invoiceNumber, masterAccountNum, profileNum);
-            if (obj is null) return false;
-            InvoiceTransaction = obj;
+            if (invoiceTransactions is null || invoiceTransactions.Count == 0) return null;
+
+            List<InvoiceReturnItems> returnItems = null;
             if (loadOthers)
-                GetOthers();
-            if (_OnAfterLoad != null)
-                _OnAfterLoad(this);
-            return true;
+            {
+                var transUuids = invoiceTransactions?.Select(i => i.TransUuid).ToList();
+                returnItems = await new InvoiceReturnItems().GetReturnItems(transUuids);
+            }
+
+            List<InvoiceTransactionData> datas = new List<InvoiceTransactionData>();
+
+            foreach (var tran in invoiceTransactions)
+            {
+                var data = new InvoiceTransactionData();
+                data.InvoiceTransaction = tran;
+                data.InvoiceReturnItems = returnItems != null ? returnItems.Where(i => i.TransUuid == tran.TransUuid).ToList() : null;
+                datas.Add(data);
+            }
+            return datas;
         }
     }
 }
