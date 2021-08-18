@@ -73,7 +73,7 @@
 //SettingForShipment
 //SettingForDistributionCenter
 #>
-<#@ include file="SettingForShipment.ttinclude" #>
+<#@ include file="SettingForDistributionCenter.ttinclude" #>
 
 <#      
     // Generate model output
@@ -231,6 +231,17 @@
 <# 
         dir = Path.Combine(path, StructureDtoFolder);
         SaveOutputNotExists(dir, $"{StructureDtoName}Extension.cs");
+#>
+<# } #>
+
+<#  // Generate StructureDto class
+	if (generateStructureDtoCsv && StructureClass != null)
+	{
+#>              
+<#@ include file="GenerateStructureDtoCsv.ttinclude" #>
+<# 
+        dir = Path.Combine(path, StructureDtoFolder);
+        SaveOutputNotExists(dir, $"{StructureDtoName}Csv.cs");
 #>
 <# } #>
 

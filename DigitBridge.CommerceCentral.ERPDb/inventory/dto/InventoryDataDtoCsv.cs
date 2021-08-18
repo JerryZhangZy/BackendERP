@@ -35,8 +35,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
         public override void RegisterMapper(CsvContext context)
         {
-            context.RegisterClassMap(new CsvAutoMapper<InventoryDataDto>());
-
             context.RegisterClassMap(new CsvAutoMapper<ProductBasicDto>());
             context.RegisterClassMap(new CsvAutoMapper<ProductExtDto>());
             context.RegisterClassMap(new CsvAutoMapper<ProductExtAttributesDto>());
@@ -44,38 +42,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             context.RegisterClassMap(new CsvAutoMapper<InventoryAttributesDto>());
         }
 
-        public override string Export(IEnumerable<InventoryDataDto> datas, string fileName)
-        {
-            var exportData = Export(datas);
-            using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate))
-            {
-                fileStream.Write(exportData, 0, exportData.Length);
-            }
-            return fileName;
-        }
-
-        public override byte[] Export(IEnumerable<InventoryDataDto> datas)
-        {
-            var config = GetConfiguration();
-            config.HasHeaderRecord = false;
-            using (var ms = new MemoryStream())
-            {
-                using (var writer = new StreamWriter(ms))
-                using (var csv = new CsvWriter(writer, config))
-                {
-                    csv.Context.Configuration.HasHeaderRecord = false;
-                    foreach (var data in datas)
-                    {
-                        WriteCsv(data.ExportFixed(), csv);
-                    }
-                    csv.Flush();
-                }
-                return ms.ToArray();
-            }
-        }
-
         protected override void WriteCsv(InventoryDataDto data, CsvWriter csv)
         {
+            data.ExportFixed();
             // combine multiple Dto to one dynamic object
             var headerRecords = data.MergeHeaderRecord(true).ToList();
             
@@ -113,63 +82,45 @@ namespace DigitBridge.CommerceCentral.ERPDb
             csv.WriteRecords(detailRecords);
         }
 
-        public override IEnumerable<InventoryDataDto> Import(string fileName)
+        public override void ReadEntities(CsvReader csv, IList<InventoryDataDto> data)
         {
-            using (var reader = new FileStream(fileName,FileMode.OpenOrCreate))
-                return Import(reader);
-        }
-
-        public override IEnumerable<InventoryDataDto> Import(byte[] buffer)
-        {
-            using (var stream = new MemoryStream(buffer))
-                return Import(stream);
-        }
-
-        public override IEnumerable<InventoryDataDto> Import(Stream stream)
-        {
-            var data = new List<InventoryDataDto>();
             var isFirst = true;
             InventoryDataDto dto = new InventoryDataDto();
-            using (var reader = new StreamReader(stream))
-            using (var csv = new CsvReader(reader, GetConfiguration()))
+            while (csv.Read())
             {
-                RegisterMapper(csv.Context);
-                while (csv.Read())
+                // it is header line
+                if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
                 {
-                    // it is header line
-                    if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
-                    {
-                        csv.ReadHeader();
-                        isFirst = false;
-                        continue;
-                    }
-
-                    switch (csv.GetField(0))
-                    {
-                        case "H":
-                            if (!isFirst)
-                            {
-                                if (dto != null&&dto.HasProductBasic)
-                                    data.Add(dto);
-                                dto = new InventoryDataDto();
-                                isFirst = false;
-                            }
-                            dto.ProductBasic = csv.GetRecord<ProductBasicDto>();
-                            break;
-                        case "L":
-                            if (dto.Inventory == null)
-                                dto.Inventory = new List<InventoryDto>();
-                            var item = csv.GetRecord<InventoryDto>();
-                            item.InventoryAttributes = csv.GetRecord<InventoryAttributesDto>();
-                            dto.Inventory.Add(item);
-                            break;
-                    }
+                    csv.ReadHeader();
+                    isFirst = false;
+                    continue;
                 }
-                if (dto != null)
-                    data.Add(dto);
-            }
-            return data;
 
+                switch (csv.GetField(0))
+                {
+                    case "H":
+                        if (!isFirst)
+                        {
+                            if (dto != null && dto.HasProductBasic)
+                                data.Add(dto);
+                            dto = new InventoryDataDto();
+                            isFirst = false;
+                        }
+                        dto.ProductBasic = csv.GetRecord<ProductBasicDto>();
+                        dto.ProductExt = csv.GetRecord<ProductExtDto>();
+                        dto.ProductExtAttributes = csv.GetRecord<ProductExtAttributesDto>();
+                        break;
+                    case "L":
+                        if (dto.Inventory == null)
+                            dto.Inventory = new List<InventoryDto>();
+                        var item = csv.GetRecord<InventoryDto>();
+                        item.InventoryAttributes = csv.GetRecord<InventoryAttributesDto>();
+                        dto.Inventory.Add(item);
+                        break;
+                }
+            }
+            if (dto != null)
+                data.Add(dto);
         }
     }
 }

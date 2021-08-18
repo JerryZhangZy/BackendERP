@@ -45,7 +45,7 @@
 
     var OpenApiPayloadFolder = $"DigitBridge.CommerceCentral.ERPApi\\OpenApiModel";
     var OpenApiPayloadName = $"{PayloadName}OpenApi";
-
+    
     // generate repository class for each table
     var generateModel = true;
     var generateDto = true;
@@ -60,6 +60,7 @@
 
     // generate structure Dto class
     var generateStructureDto = true;
+    var generateStructureDtoCsv = true;
     var generateStructureDtoTester = true;
     var StructureDtoName = $"{structureName}Dto";
 

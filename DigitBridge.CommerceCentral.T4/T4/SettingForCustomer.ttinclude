@@ -59,6 +59,7 @@
 
     // generate structure Dto class
     var generateStructureDto = true;
+    var generateStructureDtoCsv = true;
     var generateStructureDtoTester = true;
     var StructureDtoName = $"{structureName}Dto";
 

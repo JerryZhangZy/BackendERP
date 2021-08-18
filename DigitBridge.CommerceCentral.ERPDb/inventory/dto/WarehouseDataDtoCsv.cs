@@ -36,43 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void RegisterMapper(CsvContext context)
         {
             context.RegisterClassMap(new CsvAutoMapper<DistributionCenterDto>());
-
-            //context.RegisterClassMap(new CsvAutoMapper<SalesOrderHeaderDto>());
-            //context.RegisterClassMap(new CsvAutoMapper<SalesOrderHeaderInfoDto>());
-            //context.RegisterClassMap(new CsvAutoMapper<SalesOrderHeaderAttributesDto>());
-            //context.RegisterClassMap(new CsvAutoMapper<SalesOrderItemsDto>());
-            //context.RegisterClassMap(new CsvAutoMapper<SalesOrderItemsAttributesDto>());
-        }
-
-        public override string Export(IEnumerable<WarehouseDataDto> datas, string fileName)
-        {
-            var exportData = Export(datas);
-            using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate))
-            {
-                fileStream.Write(exportData, 0, exportData.Length);
-            }
-            return fileName;
-        }
-
-        public override byte[] Export(IEnumerable<WarehouseDataDto> datas)
-        {
-            var config = GetConfiguration();
-            config.HasHeaderRecord = false;
-            using (var ms = new MemoryStream())
-            {
-                using (var writer = new StreamWriter(ms))
-                using (var csv = new CsvWriter(writer, config))
-                {
-                    csv.Context.Configuration.HasHeaderRecord = false;
-                    foreach (var data in datas)
-                    {
-                        WriteCsv(data.ExportFixed(), csv);
-                    }
-                    csv.Flush();
-                }
-                return ms.ToArray();
-            }
-        }
+        } 
 
         protected override void WriteCsv(WarehouseDataDto data, CsvWriter csv)
         {
@@ -97,63 +61,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
             csv.WriteRecords(headerRecords);
         }
 
-        public override IEnumerable<WarehouseDataDto> Import(string fileName)
+        public override void ReadEntities(CsvReader csv, IList<WarehouseDataDto> data)
         {
-            using (var reader = new FileStream(fileName,FileMode.OpenOrCreate))
-                return Import(reader);
-        }
-
-        public override IEnumerable<WarehouseDataDto> Import(byte[] buffer)
-        {
-            using (var stream = new MemoryStream(buffer))
-                return Import(stream);
-        }
-
-        public override IEnumerable<WarehouseDataDto> Import(Stream stream)
-        {
-            var data = new List<WarehouseDataDto>();
             var isFirst = true;
             WarehouseDataDto dto = new WarehouseDataDto();
-            using (var reader = new StreamReader(stream))
-            using (var csv = new CsvReader(reader, GetConfiguration()))
+            while (csv.Read())
             {
-                RegisterMapper(csv.Context);
-                while (csv.Read())
+                // it is header line
+                if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
                 {
-                    // it is header line
-                    if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
-                    {
-                        csv.ReadHeader();
-                        isFirst = false;
-                        continue;
-                    }
-
-                    switch (csv.GetField(0))
-                    {
-                        case "H":
-                            if (!isFirst)
-                            {
-                                if (dto != null&&dto.HasDistributionCenter)
-                                    data.Add(dto);
-                                dto = new WarehouseDataDto();
-                                isFirst = false;
-                            }
-                            dto.DistributionCenter = csv.GetRecord<DistributionCenterDto>();
-                            break;
-                            //case "L":
-                            //    if (dto.SalesOrderItems == null)
-                            //        dto.SalesOrderItems = new List<SalesOrderItemsDto>();
-                            //    var item = csv.GetRecord<SalesOrderItemsDto>();
-                            //    item.SalesOrderItemsAttributes = csv.GetRecord<SalesOrderItemsAttributesDto>();
-                            //    dto.SalesOrderItems.Add(item);
-                            //    break;
-                    }
+                    csv.ReadHeader();
+                    isFirst = false;
+                    continue;
                 }
-                if (dto != null)
-                    data.Add(dto);
-            }
-            return data;
 
+                switch (csv.GetField(0))
+                {
+                    case "H":
+                        if (!isFirst)
+                        {
+                            if (dto != null && dto.HasDistributionCenter)
+                                data.Add(dto);
+                            dto = new WarehouseDataDto();
+                            isFirst = false;
+                        }
+                        dto.DistributionCenter = csv.GetRecord<DistributionCenterDto>();
+                        break;
+                }
+            }
+            if (dto != null)
+                data.Add(dto);
         }
     }
 }

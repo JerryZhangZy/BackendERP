@@ -40,36 +40,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
             context.RegisterClassMap(new CsvAutoMapper<CustomerAddressDto>());
         }
 
-        public override string Export(IEnumerable<CustomerDataDto> datas, string fileName)
-        {
-            var exportData = Export(datas);
-            using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate))
-            {
-                fileStream.Write(exportData, 0, exportData.Length);
-            }
-            return fileName;
-        }
-
-        public override byte[] Export(IEnumerable<CustomerDataDto> datas)
-        {
-            var config = GetConfiguration();
-            config.HasHeaderRecord = false;
-            using (var ms = new MemoryStream())
-            {
-                using (var writer = new StreamWriter(ms))
-                using (var csv = new CsvWriter(writer, config))
-                {
-                    csv.Context.Configuration.HasHeaderRecord = false;
-                    foreach (var data in datas)
-                    {
-                        WriteCsv(data.ExportFixed(), csv);
-                    }
-                    csv.Flush();
-                }
-                return ms.ToArray();
-            }
-        }
-
         protected override void WriteCsv(CustomerDataDto data, CsvWriter csv)
         {
             // combine multiple Dto to one dynamic object
@@ -109,62 +79,43 @@ namespace DigitBridge.CommerceCentral.ERPDb
             csv.WriteRecords(detailRecords);
         }
 
-        public override IEnumerable<CustomerDataDto> Import(string fileName)
+        public override void ReadEntities(CsvReader csv, IList<CustomerDataDto> data)
         {
-            using (var reader = new FileStream(fileName,FileMode.OpenOrCreate))
-                return Import(reader);
-        }
-
-        public override IEnumerable<CustomerDataDto> Import(byte[] buffer)
-        {
-            using (var stream = new MemoryStream(buffer))
-                return Import(stream);
-        }
-
-        public override IEnumerable<CustomerDataDto> Import(Stream stream)
-        {
-            var data = new List<CustomerDataDto>();
             var isFirst = true;
             CustomerDataDto dto = new CustomerDataDto();
-            using (var reader = new StreamReader(stream))
-            using (var csv = new CsvReader(reader, GetConfiguration()))
+            while (csv.Read())
             {
-                RegisterMapper(csv.Context);
-                while (csv.Read())
+                // it is header line
+                if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
                 {
-                    // it is header line
-                    if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
-                    {
-                        csv.ReadHeader();
-                        isFirst = false;
-                        continue;
-                    }
-
-                    switch (csv.GetField(0))
-                    {
-                        case "H":
-                            if (!isFirst)
-                            {
-                                if (dto != null&&dto.HasCustomer)
-                                    data.Add(dto);
-                                dto = new CustomerDataDto();
-                                isFirst = false;
-                            }
-                            dto.Customer = csv.GetRecord<CustomerDto>();
-                            break;
-                        case "L":
-                            if (dto.CustomerAddress == null)
-                                dto.CustomerAddress = new List<CustomerAddressDto>();
-                            var item = csv.GetRecord<CustomerAddressDto>();
-                            dto.CustomerAddress.Add(item);
-                            break;
-                    }
+                    csv.ReadHeader();
+                    isFirst = false;
+                    continue;
                 }
-                if (dto != null)
-                    data.Add(dto);
-            }
-            return data;
 
+                switch (csv.GetField(0))
+                {
+                    case "H":
+                        if (!isFirst)
+                        {
+                            if (dto != null && dto.HasCustomer)
+                                data.Add(dto);
+                            dto = new CustomerDataDto();
+                            isFirst = false;
+                        }
+                        dto.Customer = csv.GetRecord<CustomerDto>();
+                        dto.CustomerAttributes = csv.GetRecord<CustomerAttributesDto>();
+                        break;
+                    case "L":
+                        if (dto.CustomerAddress == null)
+                            dto.CustomerAddress = new List<CustomerAddressDto>();
+                        var item = csv.GetRecord<CustomerAddressDto>();
+                        dto.CustomerAddress.Add(item);
+                        break;
+                }
+            }
+            if (dto != null)
+                data.Add(dto);
         }
     }
 }
