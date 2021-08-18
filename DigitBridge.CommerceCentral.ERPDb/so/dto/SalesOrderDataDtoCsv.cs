@@ -42,7 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             context.RegisterClassMap(new CsvAutoMapper<SalesOrderItemsAttributesDto>());
         }
 
-        protected virtual void WriteCsv(SalesOrderDataDto data, CsvWriter csv)
+        protected override void WriteCsv(SalesOrderDataDto data, CsvWriter csv)
         {
             // combine multiple Dto to one dynamic object
             var headerRecords = data.MergeHeaderRecord(true).ToList();
