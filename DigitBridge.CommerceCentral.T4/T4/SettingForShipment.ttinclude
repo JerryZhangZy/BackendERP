@@ -14,7 +14,7 @@
     var structureName = $"{processName}Data";
     var StructureClass = new StructureInfo(structureName,
             new StructureTable() { Name = "OrderShipmentHeader", AlliesName = "shp", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "OrderShipmentCanceledItem", AlliesName = "shpc", ParentName = "OrderShipmentHeader", OneToOne = false, LoadByColumn = "OrderShipmentUuid" },
+            new StructureTable() { Name = "OrderShipmentCanceledItem", AlliesName = "shpc", ParentName = "OrderShipmentHeader", DetailTable = true, OneToOne = false, LoadByColumn = "OrderShipmentUuid" },
             new StructureTable() { Name = "OrderShipmentPackage", AlliesName = "shpp", ParentName = "OrderShipmentHeader", DetailTable = true, OneToOne = false, LoadByColumn = "OrderShipmentUuid", oneToManyChildrenName = "OrderShipmentShippedItem" },
             new StructureTable() { Name = "OrderShipmentShippedItem", AlliesName = "shpl", ParentName = "OrderShipmentPackage", OneToOne = false, LoadByColumn = "OrderShipmentUuid" }
         );
@@ -39,30 +39,36 @@
     var NamespaceServiceTest = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
     var ServiceTesterFolder = "DigitBridge.CommerceCentral.ERPMdl.Tests.Integration";
 
+    var JsModelFolder = $"DigitBridge.CommerceCentral.ERPApi\\JsType\\{processForlderName}";
+    var PayloadName = $"{processName}Payload";
+
+    var OpenApiPayloadFolder = $"DigitBridge.CommerceCentral.ERPApi\\OpenApiModel";
+    var OpenApiPayloadName = $"{PayloadName}OpenApi";
 
     // generate repository class for each table
-    var generateModel = true;
-    var generateDto = true;
-    var generateModelHelper = true;
+    var generateModel = false;
+    var generateDto = false;
+    var generateModelHelper = false;
 
     // generate tester class for each table repository
-    var generateTester = true;
+    var generateTester = false;
 
     // generate structure repository class contain multiple table
-    var generateStructureRepository = true;
-    var generateStructureTester = true;
+    var generateStructureRepository = false;
+    var generateStructureTester = false;
 
     // generate structure Dto class
-    var generateStructureDto = true;
-    var generateStructureDtoTester = true;
+    var generateStructureDto = false;
+    var generateStructureDtoCsv = true;
+    var generateStructureDtoTester = false;
     var StructureDtoName = $"{structureName}Dto";
 
     // generate service class
-    var generateService = true;
+    var generateService = false;
     var ServiceName = $"{processName}Service";
     var ServiceHelperName = $"{processName}Helper";
 
-    var generateServiceTester = true;
+    var generateServiceTester = false;
 
     var indent = 2;
     var dir = string.Empty;

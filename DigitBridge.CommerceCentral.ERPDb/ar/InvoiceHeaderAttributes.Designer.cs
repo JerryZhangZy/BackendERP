@@ -143,6 +143,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual InvoiceHeaderAttributes CheckIntegrity()
+        {
+            CheckUniqueId();
+            return this;
+        }
+
         public virtual InvoiceHeaderAttributes ClearChildren()
         {
             return this;

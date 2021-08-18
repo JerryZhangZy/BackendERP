@@ -70,14 +70,12 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             }
             return null;
         }
-        
+
         public static async Task<object> GetBodyObjectAsync(this HttpRequest req, Type type)
         {
-            using (var reader = new StreamReader(req.Body))
-            {
-                var json = await reader.ReadToEndAsync();
-                return JsonConvert.DeserializeObject(json, type);
-            }
+            var json = await req.GetBodyStringAsync();
+            return JsonConvert.DeserializeObject(json, type);
+
         }
     }
 }

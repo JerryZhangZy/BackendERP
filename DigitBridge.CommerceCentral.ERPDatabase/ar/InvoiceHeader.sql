@@ -8,6 +8,9 @@
     [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Invoice uuid. <br> Display: false, Editable: false.
 	[InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT '', --Readable invoice number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
 
+    [SalesOrderUuid] VARCHAR(50) NOT NULL DEFAULT '', --Link to Order uuid. <br> Display: false, Editable: false.
+	[OrderNumber] VARCHAR(50) NOT NULL DEFAULT '', --Link to order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: false
+
     [InvoiceType] INT NOT NULL DEFAULT 0, --Invoice type. <br> Title: Type, Display: true, Editable: true
     [InvoiceStatus] INT NOT NULL DEFAULT 0, --Invoice status. <br> Title: Status, Display: true, Editable: true
 	[InvoiceDate] DATE NOT NULL, --Invoice date. <br> Title: Date, Display: true, Editable: true
@@ -83,5 +86,19 @@ GO
 CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_InvoiceSourceCode] ON [dbo].[InvoiceHeader]
 (
 	[InvoiceSourceCode] ASC
+) 
+GO
+
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_SalesOrderUuid')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_SalesOrderUuid] ON [dbo].[InvoiceHeader]
+(
+	[SalesOrderUuid] ASC
+) 
+GO
+
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_OrderNumber')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_OrderNumber] ON [dbo].[InvoiceHeader]
+(
+	[OrderNumber] ASC
 ) 
 GO

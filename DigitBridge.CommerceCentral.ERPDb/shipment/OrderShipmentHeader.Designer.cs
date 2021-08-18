@@ -892,6 +892,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual OrderShipmentHeader CheckIntegrity()
+        {
+            CheckUniqueId();
+            return this;
+        }
+
         public virtual OrderShipmentHeader ClearChildren()
         {
             return this;

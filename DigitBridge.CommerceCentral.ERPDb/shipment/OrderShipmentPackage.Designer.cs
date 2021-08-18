@@ -695,6 +695,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual OrderShipmentPackage CheckIntegrity()
+        {
+            CheckUniqueId();
+			CheckIntegrityOrderShipmentShippedItem();
+            return this;
+        }
+
         public virtual OrderShipmentPackage ClearChildren()
         {
 			OrderShipmentShippedItem = new List<OrderShipmentShippedItem>();

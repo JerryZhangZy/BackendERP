@@ -24,6 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Required(ErrorMessage = "masterAccountNum is required")]
         [Display(Name = "masterAccountNum")]
         [DataMember(Name = "masterAccountNum")]
+        [JsonIgnore]
         public int MasterAccountNum { get; set; }
         [JsonIgnore] public virtual bool HasMasterAccountNum => MasterAccountNum > 0;
         public bool ShouldSerializeMasterAccountNum() => HasMasterAccountNum;
@@ -35,9 +36,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Required(ErrorMessage = "profileNum is required")]
         [Display(Name = "profileNum")]
         [DataMember(Name = "profileNum")]
+        [JsonIgnore]
         public int ProfileNum { get; set; }
         [JsonIgnore] public virtual bool HasProfileNum => ProfileNum > 0;
         public bool ShouldSerializeProfileNum() => HasProfileNum;
+
+        /// <summary>
+        /// User ProfileNum
+        /// Required, from header
+        /// </summary>
+        [Required(ErrorMessage = "databaseNum is required")]
+        [Display(Name = "databaseNum")]
+        [DataMember(Name = "databaseNum")]
+        [JsonIgnore]
+        public int DatabaseNum { get; set; }
+        [JsonIgnore] public virtual bool HasDatabaseNum => DatabaseNum > 0;
+        public bool ShouldSerializeDatabaseNum() => HasDatabaseNum;
 
         /// <summary>
         /// Page size to load.
@@ -49,6 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Display(Name = "$top")]
         [Range(1, 500, ErrorMessage = "Invalid $top")]
         [DataMember(Name = "$top")]
+        [JsonProperty("$top")]
         public int Top { get; set; } = 1;
         [JsonIgnore] public virtual bool HasTop => Top > 0;
         public bool ShouldSerializeTop() => HasTop;
@@ -57,12 +72,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// Records to skip.
         /// Optional,
         /// Default value is 0.
-        /// Maximum value is 500.
         /// <see cref="https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
         /// </summary>
         [Display(Name = "$skip")]
         [Range(0, int.MaxValue, ErrorMessage = "Invalid $skip.")]
         [DataMember(Name = "$skip")]
+        [JsonProperty("$skip")]
         public int Skip { get; set; }
         [JsonIgnore] public virtual bool HasSkip => Skip >= 0;
         public bool ShouldSerializeSkip() => HasSkip;
@@ -74,8 +89,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// Default value: true.
         /// <see cref="https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md"/>
         /// </summary> 
-        [Display(Name = "$Count")]
-        [DataMember(Name = "$Count")]
+        [Display(Name = "$count")]
+        [DataMember(Name = "$count")]
+        [JsonProperty("$count")]
         public bool IsQueryTotalCount { get; set; } = true;
         [JsonIgnore] public virtual bool HasIsQueryTotalCount => IsQueryTotalCount;
 
@@ -87,6 +103,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         [Display(Name = "$sortBy")]
         [DataMember(Name = "$sortBy")]
+        [JsonProperty("$sortBy")]
         public string SortBy { get; set; }
         [JsonIgnore] public virtual bool HasSortBy => !string.IsNullOrEmpty(SortBy);
         public bool ShouldSerializeSortBy() => HasSortBy;
@@ -98,6 +115,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         [Display(Name = "$loadAll")]
         [DataMember(Name = "$loadAll")]
+        [JsonProperty("$loadAll")]
         public bool LoadAll { get; set; }
 
         /// <summary>
@@ -108,41 +126,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary> 
         [Display(Name = "$filter")]
         [DataMember(Name = "$filter")]
+        [JsonProperty("$filter")]
         public JObject Filter { get; set; }
         [JsonIgnore] public virtual bool HasFilter => Filter != null && Filter.Count > 0;
         public bool ShouldSerializeFilter() => HasFilter;
 
+        /// <summary>
+        /// Request success
+        /// </summary>
+        [Display(Name = "success")]
+        [DataMember(Name = "success")]
+        public bool Success { get; set; } = true;
 
         /// <summary>
-        /// StringBuilder for JSON result of SQL query.
-        /// Optional,
-        /// </summary> 
-        [Display(Name = "ListResults")]
-        [JsonConverter(typeof(StringBuilderConverter))]
-        public IDictionary<string, StringBuilder> ListResults { get; set; }
-        [JsonIgnore] public virtual bool HasListResults => ListResults != null && ListResults.Count > 0;
-        public bool ShouldSerializeListResults() => HasListResults;
-        public void AddListResult(string name, StringBuilder sb)
-        {
-            if (ListResults == null)
-                ListResults = new Dictionary<string, StringBuilder>();
-            ListResults.SetValue(name, sb);
-        }
-        public void RemoveListResult(string name) => ListResults?.RemoveKey(name);
-        public StringBuilder GetListResult(string name) => ListResults?.GetValue(name);
+        /// Message list for this request
+        /// </summary>
+        [Display(Name = "messages")]
+        [DataMember(Name = "messages")]
+        public IList<MessageClass> Messages { get; set; }
+        [JsonIgnore] public virtual bool HasMessages => Messages != null && Messages.Count > 0;
+        public bool ShouldSerializeMessages() => HasMessages;
 
-
-        public virtual IDictionary<string, Action<string>> GetOtherParameters() => null;
-
-
-        public dynamic ReqeustData { get; set; }
-        [JsonIgnore] public virtual bool HasReqeustData => ReqeustData != null;
-        public bool ShouldSerializeReqeustData() => HasReqeustData;
-
-
-        public dynamic ResponseData { get; set; }
-        [JsonIgnore] public virtual bool HasResponseData => ResponseData != null;
-        public bool ShouldSerializeResponseData() => HasResponseData;
-
+        public virtual IDictionary<string, Action<string>> GetOtherParameters() => null; 
     }
 }

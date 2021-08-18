@@ -18,14 +18,15 @@ namespace DigitBridge.CommerceCentral.ERPApi.Tests.Integration
         [Fact]
         public async void AddInvenrotyList_Test()
         {
-            var list = new List<InventoryLog>();
-            for(var i = 0;i<10;i++)
-            {
-                list.Add(InventoryLogTests.GetFakerData());
-            }
+            var list = InventoryLogDataTests.GetFakerData(20);
             var logUuid = Guid.NewGuid().ToString("N");
-            list.ForEach(x => x.LogUuid = logUuid);
+            var dtolist = new List<InventoryLogDataDto>();
             var mapper = new InventoryLogDataDtoMapperDefault();
+            foreach (var x in list)
+            {
+                x.InventoryLog.LogUuid = logUuid;
+                dtolist.Add(mapper.WriteDto(x, null));
+            }
             var reqestInfo = new RequestInfo<InventoryLogPayload>()
             {
                 RequestHeader = new RequestHeader()
@@ -35,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Tests.Integration
                 },
                 RequestBody = new InventoryLogPayload
                 {
-                    InventoryLogs = mapper.WriteInventoryLogDtoList(list,null)
+                    InventoryLogs = dtolist
                 }
             };
             //var req = HttpRequestFactory.GetRequest("/api/salesorder","POST", reqestInfo);
@@ -49,22 +50,22 @@ namespace DigitBridge.CommerceCentral.ERPApi.Tests.Integration
         public async void GetInventoryLogs_Test()
         {
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
-            var uuids = dbFactory.GetValue<InventoryLog, string>(@"
-SELECT TOP 1 ins.LogUuid 
-FROM InventoryLog ins 
+            var log = dbFactory.Db.First<InventoryLog>(@"
+SELECT TOP 1  *
+FROM InventoryLog 
 ");
             var reqestInfo = new RequestInfo<InventoryLogPayload>()
             {
                 RequestHeader = new RequestHeader()
                 {
-                    ProfileNum = 12,
-                    MasterAccountNum = 20
+                    ProfileNum = log.ProfileNum,
+                    MasterAccountNum = log.MasterAccountNum
                 },
                 RequestBody = new InventoryLogPayload()
             };
             //var req = HttpRequestFactory.GetRequest("/api/salesorder","POST", reqestInfo);
             var req = HttpRequestFactory.GetRequest(reqestInfo);
-            var response = await InventoryLogApi.GetInventoryLogs(req, uuids);
+            var response = await InventoryLogApi.GetInventoryLogs(req, log.LogUuid);
             var payload = await response.GetBodyObjectAsync();
             Assert.True(payload.HasInventoryLogs);
         }
@@ -73,22 +74,22 @@ FROM InventoryLog ins
         public async void DeleteProductEx_Test()
         {
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
-            var uuids = dbFactory.GetValue<InventoryLog, string>(@"
-SELECT TOP 1 ins.LogUuid 
-FROM InventoryLog ins 
+            var log = dbFactory.Db.First<InventoryLog>(@"
+SELECT TOP 1  *
+FROM InventoryLog 
 ");
             var reqestInfo = new RequestInfo<InventoryLogPayload>()
             {
                 RequestHeader = new RequestHeader()
                 {
-                    ProfileNum = 12,
-                    MasterAccountNum = 20
+                    ProfileNum = log.ProfileNum,
+                    MasterAccountNum = log.MasterAccountNum
                 },
                 RequestBody = new InventoryLogPayload()
             };
             //var req = HttpRequestFactory.GetRequest("/api/salesorder","POST", reqestInfo);
             var req = HttpRequestFactory.GetRequest(reqestInfo);
-            var response = await InventoryLogApi.DeleteInventoryLogs(req, uuids);
+            var response = await InventoryLogApi.DeleteInventoryLogs(req, log.LogUuid);
             var payload = await response.GetBodyObjectAsync();
             Assert.True(payload.HasInventoryLogs);
         }
@@ -97,28 +98,30 @@ FROM InventoryLog ins
         public async void UpdateProductEx_Test()
         {
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
-            var customer = dbFactory.Db.Query<Customer>(@"
+            var customer = dbFactory.Db.First<InventoryLog>(@"
 SELECT TOP 1 * 
-FROM Customer 
-", System.Data.CommandType.Text).First();
-            var svc = new CustomerService(dbFactory);
+FROM InventoryLog 
+", System.Data.CommandType.Text);
+            var svc = new InventoryLogService(dbFactory);
             svc.GetData(customer.RowNum);
             var dto = svc.ToDto();
-            dto.Customer.Contact = Guid.NewGuid().ToString("N");
-            var reqestInfo = new RequestInfo<CustomerPayload>()
+            dto.InventoryLog.Description = Guid.NewGuid().ToString("N");
+            var dtoList = new List<InventoryLogDataDto>();
+            dtoList.Add(dto);
+            var reqestInfo = new RequestInfo<InventoryLogPayload>()
             {
                 RequestHeader = new RequestHeader()
                 {
                     ProfileNum = customer.ProfileNum,
                     MasterAccountNum = customer.MasterAccountNum
                 },
-                RequestBody = new CustomerPayload() { Customer=dto}
+                RequestBody = new InventoryLogPayload() { InventoryLogs= dtoList }
             };
             //var req = HttpRequestFactory.GetRequest("/api/salesorder","POST", reqestInfo);
             var req = HttpRequestFactory.GetRequest(reqestInfo);
-            var response = await CustomerApi.UpdateCustomer(req);
+            var response = await InventoryLogApi.UpdateInventoryLogs(req);
             var payload = await response.GetBodyObjectAsync();
-            Assert.True(payload.HasCustomer);
+            Assert.True(payload.HasInventoryLogs);
         }
 
         //[Theory]

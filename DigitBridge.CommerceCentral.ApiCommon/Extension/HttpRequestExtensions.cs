@@ -22,19 +22,6 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             else
                 return req.GetNoneBodyParameters<TPayload>();
         }
-        /// <summary>
-        /// Get all request parameter to RequestParameter object, include Header and Query string
-        /// </summary>
-        public static async Task<TPayload> GetParameters<TEntity, TPayload>(this HttpRequest req)
-            where TPayload : PayloadBase, new()
-            where TEntity : class
-        {
-            var instance = new TPayload();
-            instance.ReqeustData = await req.GetBodyObjectAsync<TEntity>();
-            instance.MasterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
-            instance.ProfileNum = req.GetHeaderValue("profileNum").ToInt();
-            return instance;
-        }
         private static async Task<TPayload> GetBodyParameters<TPayload>(this HttpRequest req)
             where TPayload : PayloadBase, new()
         {
@@ -75,14 +62,17 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         }
 
 
-        public static async Task<T> GetBodyObjectAsync<T>(this HttpRequest req) where T : class
+        private static async Task<T> GetBodyObjectAsync<T>(this HttpRequest req) where T : class
         {
-            using (var reader = new StreamReader(req.Body))
-            {
-                var json = await reader.ReadToEndAsync();
-                return JsonConvert.DeserializeObject<T>(json);
-
-            }
+            var json = await req.GetBodyStringAsync();
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+        public static async Task<string> GetBodyStringAsync(this HttpRequest req)
+        {
+            if (req.Body.CanSeek)
+                req.Body.Seek(0, SeekOrigin.Begin);
+            var reader = new StreamReader(req.Body);
+            return await reader.ReadToEndAsync();
         }
 
         /// <summary>

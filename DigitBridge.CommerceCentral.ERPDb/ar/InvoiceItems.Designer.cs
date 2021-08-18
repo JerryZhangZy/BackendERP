@@ -1395,9 +1395,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual InvoiceItems CheckIntegrity()
+        {
+            CheckUniqueId();
+			CheckIntegrityInvoiceItemsAttributes();
+            return this;
+        }
+
         public virtual InvoiceItems ClearChildren()
         {
-			InvoiceItemsAttributes.Clear();
+			InvoiceItemsAttributes?.Clear();
             return this;
         }
 

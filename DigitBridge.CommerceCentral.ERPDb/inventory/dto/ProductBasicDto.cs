@@ -30,8 +30,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class ProductBasicDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -49,6 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -58,6 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -67,6 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -96,7 +102,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Product FN SKU. <br> Title: Condition, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Product FN SKU. <br> Title: Condition, Display: true, Editable: true")]
-        public bool? Condition { get; set; }
+        public int? Condition { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCondition => Condition != null;
@@ -260,7 +266,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Product is Bundle. None=0 ; BundleItem =1. <br> Title: Bundle, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Product is Bundle. None=0 ; BundleItem =1. <br> Title: Bundle, Display: true, Editable: true")]
-        public bool? BundleType { get; set; }
+        public int? BundleType { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBundleType => BundleType != null;
@@ -269,7 +275,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Product Type. <br> Title: Type, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Product Type. <br> Title: Type, Display: true, Editable: true")]
-        public bool? ProductType { get; set; }
+        public int? ProductType { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasProductType => ProductType != null;
@@ -288,7 +294,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Product info need CopyToChildren. <br> Title: CopyToChildren, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Product info need CopyToChildren. <br> Title: CopyToChildren, Display: true, Editable: true")]
-        public bool? CopyToChildren { get; set; }
+        public int? CopyToChildren { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCopyToChildren => CopyToChildren != null;
@@ -316,7 +322,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// IsInRelationship. <br> Title: In Relationship, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("IsInRelationship. <br> Title: In Relationship, Display: true, Editable: true")]
-        public bool? IsInRelationship { get; set; }
+        public int? IsInRelationship { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasIsInRelationship => IsInRelationship != null;
@@ -343,7 +349,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Unit measure of Weight. <br> Title: Weight Unit, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Unit measure of Weight. <br> Title: Weight Unit, Display: true, Editable: true")]
-        public bool? WeightUnit { get; set; }
+        public int? WeightUnit { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasWeightUnit => WeightUnit != null;
@@ -406,10 +412,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Dimension measure unit. <br> Title: Dimension Unit, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Dimension measure unit. <br> Title: Dimension Unit, Display: true, Editable: true")]
-        public bool? Unit { get; set; }
+        public int? DimensionUnit { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasUnit => Unit != null;
+        public bool HasDimensionUnit => DimensionUnit != null;
 
 		/// <summary>
 		/// HarmonizedCode. <br> Title: Harmonized, Display: true, Editable: true
@@ -435,7 +441,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Product Is Blocked. <br> Title: Blocked, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Product Is Blocked. <br> Title: Blocked, Display: true, Editable: true")]
-        public bool? IsBlocked { get; set; }
+        public int? IsBlocked { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasIsBlocked => IsBlocked != null;

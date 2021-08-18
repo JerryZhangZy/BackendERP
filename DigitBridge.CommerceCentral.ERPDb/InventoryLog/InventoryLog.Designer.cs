@@ -3,7 +3,6 @@
 
 
 
-
               
 
               
@@ -788,6 +787,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_beforeAvgCost = default(decimal); 
 			_enterBy = String.Empty; 
             ClearChildren();
+            return this;
+        }
+
+        public virtual InventoryLog CheckIntegrity()
+        {
             return this;
         }
 

@@ -3,7 +3,6 @@
 
 
 
-
               
 
               
@@ -991,6 +990,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
             ClearChildren();
+            return this;
+        }
+
+        public virtual Customer CheckIntegrity()
+        {
+            CheckUniqueId();
             return this;
         }
 

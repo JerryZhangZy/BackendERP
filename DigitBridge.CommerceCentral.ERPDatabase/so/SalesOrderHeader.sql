@@ -12,6 +12,7 @@
     [OrderStatus] INT NOT NULL DEFAULT 0, --Order status. <br> Title: Status, Display: true, Editable: true
 	[OrderDate] DATE NOT NULL, --Order date. <br> Title: Date, Display: true, Editable: true
 	[OrderTime] TIME NOT NULL, --Order time. <br> Title: Time, Display: true, Editable: true
+	[ShipDate] DATE NULL, --Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
 	[DueDate] DATE NULL, --(Ignore) Order due date. <br> Display: false, Editable: false
 	[BillDate] DATE NULL, --(Ignore) Order bill date. <br> Display: false, Editable: false
 
@@ -83,5 +84,28 @@ GO
 CREATE NONCLUSTERED INDEX [IX_SalesOrderHeader_OrderSourceCode] ON [dbo].[SalesOrderHeader]
 (
 	[OrderSourceCode] ASC
+)  
+GO
+
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'IX_SalesOrderHeader_OrderSourceCode')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeader_OrderDate] ON [dbo].[SalesOrderHeader]
+(
+	[OrderDate] ASC,
+	[OrderTime] ASC
+)  
+GO
+
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'IX_SalesOrderHeader_OrderSourceCode')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeader_ShipDate] ON [dbo].[SalesOrderHeader]
+(
+	[ShipDate] ASC
+)  
+GO
+
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'IX_SalesOrderHeader_MasterAccountNum_ProfileNum')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeader_MasterAccountNum_ProfileNum] ON [dbo].[SalesOrderHeader]
+(
+	[MasterAccountNum] ASC, 
+	[ProfileNum] ASC
 )  
 GO

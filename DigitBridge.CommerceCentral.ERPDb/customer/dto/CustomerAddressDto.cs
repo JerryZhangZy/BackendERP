@@ -30,8 +30,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class CustomerAddressDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore, XmlIgnore]
         public string UniqueId { get; set; }
         public DateTime? EnterDateUtc { get; set; }
+
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -51,6 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// </summary>
 		[OpenApiPropertyDescription("Customer uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The CustomerUuid value cannot exceed 50 characters. ")]
+        [JsonIgnore, XmlIgnore]
         public string CustomerUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]

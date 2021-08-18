@@ -1,5 +1,18 @@
 
 
+
+
+
+              
+
+
+
+
+
+
+
+
+
               
     
 
@@ -39,7 +52,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [JsonIgnore, XmlIgnore]
         public new string UniqueId => InventoryLog.UniqueId;
-
+        
+		 [JsonIgnore, XmlIgnore] 
+		public static string InventoryLogTable ="InventoryLog ";
+		
         #region CRUD Methods
 
         public override bool Equals(InventoryLogData other)
@@ -58,11 +74,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
+        partial void CheckIntegrityOthers();
         // Check Children table Integrity
         public virtual InventoryLogData CheckIntegrity()
         {
 			if (InventoryLog is null) return this; 
 			InventoryLog.CheckUniqueId(); 
+			CheckIntegrityOthers(); 
             return this;
         }
 
@@ -135,8 +153,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin();
-			InventoryLog.SetDataBaseFactory(dbFactory);
-			if (!InventoryLog.Save()) return false;
+
+			 if (NeedSave(InventoryLogTable))
+			{
+				InventoryLog.SetDataBaseFactory(dbFactory);
+				if (!InventoryLog.Save()) return false;
+			}
 
 			if (_OnSave != null)
 			{
@@ -158,8 +180,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
-			InventoryLog.SetDataBaseFactory(dbFactory); 
-			if (InventoryLog.Delete() <= 0) return false; 
+
+			 if (NeedDelete(InventoryLogTable))
+			{
+				InventoryLog.SetDataBaseFactory(dbFactory); 
+				if (InventoryLog.Delete() <= 0) return false; 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -210,8 +236,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin(); 
-			InventoryLog.SetDataBaseFactory(dbFactory); 
-			if (!(await InventoryLog.SaveAsync().ConfigureAwait(false))) return false; 
+
+			 if (NeedSave(InventoryLogTable))
+			{
+				InventoryLog.SetDataBaseFactory(dbFactory); 
+				if (!(await InventoryLog.SaveAsync().ConfigureAwait(false))) return false; 
+			}
 			if (_OnSave != null)
 			{
 				if (!_OnSave(dbFactory, this))
@@ -232,8 +262,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
+			 if (NeedDelete(InventoryLogTable))
+			{
 			InventoryLog.SetDataBaseFactory(dbFactory); 
 			if ((await InventoryLog.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))

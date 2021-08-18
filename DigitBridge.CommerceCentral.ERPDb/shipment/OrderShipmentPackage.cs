@@ -13,8 +13,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class OrderShipmentPackage
-    {
-
+    { 
     }
 }
 

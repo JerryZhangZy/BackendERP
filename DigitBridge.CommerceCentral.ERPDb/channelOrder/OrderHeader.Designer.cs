@@ -3,7 +3,6 @@
 
 
 
-
               
 
               
@@ -2434,6 +2433,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_dCAssignmentDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_centralOrderUuid = String.Empty; 
             ClearChildren();
+            return this;
+        }
+
+        public virtual OrderHeader CheckIntegrity()
+        {
             return this;
         }
 

@@ -124,18 +124,22 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #endregion Public Static Methods
 
-        public TableRepository() { }
+        public TableRepository() 
+        {
+            Clear();
+        }
 
-        public TableRepository(IDataBaseFactory dbFactory)
+        public TableRepository(IDataBaseFactory dbFactory) : this()
         {
             SetDataBaseFactory(dbFactory);
         }
 
         #region DataBase
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         protected IDataBaseFactory _dbFactory;
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [CsvHelper.Configuration.Attributes.Ignore]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         protected IDataBaseFactory dbFactory
         {
             get
@@ -152,7 +156,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return (TEntity)this;
         }
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [CsvHelper.Configuration.Attributes.Ignore]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public IDatabase db => dbFactory?.Db;
 
         public virtual ITransaction GetTransaction()
@@ -191,12 +196,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
         [IgnoreCompare]
         public Guid DigitBridgeGuid => _digitBridgeGuid;
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool AllowNull { get; private set; } = true;
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual bool IsNew => RowNum <= 0;
 
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual bool IsEmpty => false;
 
         public TEntity SetAllowNull(bool allowNull)
@@ -206,6 +211,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
 
         //TODO Add method to identify entity changed
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         private bool NeedsUpdate
         {
             get
@@ -228,7 +234,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #region Property Changed
         protected IList<string> _changedProperties;
-        [XmlIgnore, JsonIgnore, IgnoreCompare]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual IList<string> ChangedProperties
         {
             get

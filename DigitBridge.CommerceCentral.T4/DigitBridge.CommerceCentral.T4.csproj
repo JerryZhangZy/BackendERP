@@ -19,9 +19,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="T4\DataJavaScript.tt">
+      <LastGenOutput>DataJavaScript.js</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\DataAccess.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DataAccess.cs</LastGenOutput>
+    </None>
+    <None Update="T4\GenerateJsDocRepositoryDto.ttinclude">
+      <LastGenOutput>GenerateJsDocRepositoryDto.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateJsDocPayload.ttinclude">
+      <LastGenOutput>GenerateJsDocPayload.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateRepositoryHelper.ttinclude">
       <LastGenOutput>GenerateRepositoryHelper.cs</LastGenOutput>
@@ -31,12 +43,40 @@
       <LastGenOutput>GenerateRepositoryHelperTest.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\GenerateStructureDtoCsv.ttinclude">
+      <LastGenOutput>GenerateStructureDtoCsv.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateStructureDtoExtension.ttinclude">
+      <LastGenOutput>GenerateStructureDtoExtension.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\GenerateServiceHelper.ttinclude">
       <LastGenOutput>GenerateServiceHelper.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateServiceHelperTest.ttinclude">
       <LastGenOutput>GenerateServiceHelperTest.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateJsDocStructureDto.ttinclude">
+      <LastGenOutput>GenerateJsDocPayload.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServicePayloadOpenApi.ttinclude">
+      <LastGenOutput>GenerateServicePayloadOpenApi.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServicePayload.ttinclude">
+      <LastGenOutput>GenerateServicePayloadOpenApi.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\GenerateServiceValidator.ttinclude">
+      <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForDistributionCenter.ttinclude">
+      <LastGenOutput>SettingForDistributionCenter.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForInventoryLog.ttinclude">
@@ -73,10 +113,6 @@
     </None>
     <None Update="T4\GenerateRepositoryDto.ttinclude">
       <LastGenOutput>GenerateRepositoryDto.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="T4\GenerateServiceValidator.ttinclude">
-      <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateServiceCalculator.ttinclude">
@@ -144,7 +180,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateStructureDto.ttinclude">
-      <LastGenOutput>GenerateStructureDto.cs</LastGenOutput>
+      <LastGenOutput>GenerateJsDocStructureDto.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateStructureOneToManyChildren.ttinclude">
@@ -160,7 +196,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateServicePartial.ttinclude">
-      <LastGenOutput>GenerateServicePartial.cs</LastGenOutput>
+      <LastGenOutput>GenerateServicePayload.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateServiceTest.ttinclude">
@@ -219,40 +255,100 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DataAccess.tt</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateJsDocStructureDto - Copy.cs">
+      <DependentUpon>GenerateJsDocStructureDto.ttinclude</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\GenerateRepository - Copy.cs">
+      <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\GenerateJsDocRepositoryDto.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateJsDocRepositoryDto.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateRepository.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateRepositoryDto.cs">
+    <Compile Update="T4\GenerateRepositoryHelper.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
+      <DependentUpon>GenerateRepositoryHelper.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateRepositoryPartialClass.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryPartialClass.ttinclude</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateStructure.cs">
+    <Compile Update="T4\GenerateStructureDtoExtension.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
+      <DependentUpon>GenerateStructureDtoExtension.ttinclude</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateStructureDto.cs">
+    <Compile Update="T4\GenerateStructureDto - Copy.cs">
+      <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateJsDocPayload.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateJsDocPayload.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\ReadDtoGrandChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoGrandChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\ReadDtoObjectChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoObjectChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForChannelOrder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForChannelOrder.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForCustomer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForCustomer.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForDistributionCenter.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForDistributionCenter.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForInventory.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInventory.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\SettingForInventoryLog.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForInventoryLog.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForInvoice.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInvoice.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForSalesOrder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForSalesOrder.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 

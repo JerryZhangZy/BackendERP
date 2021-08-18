@@ -7,6 +7,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.YoPoco;
 using System.Threading.Tasks;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Utility;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -39,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// }
     /// </code>
     /// </example>
-    public abstract partial class ServiceBase<TService, TEntity, TDto> : IService<TService, TEntity, TDto>
+    public abstract partial class ServiceBase<TService, TEntity, TDto> : IService<TService, TEntity, TDto>, IMessage
         where TService : ServiceBase<TService, TEntity, TDto>
         where TEntity : StructureRepository<TEntity>, new()
         where TDto : class, new()
@@ -59,7 +60,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             IDataBaseFactory dbFactory,
             IDtoMapper<TEntity, TDto> dtoMapper,
             ICalculator<TEntity> calculator,
-            IList<IValidator<TEntity>> validators) : this(dbFactory)
+            IList<IValidator<TEntity, TDto>> validators) : this(dbFactory)
         {
             _DtoMapper = dtoMapper;
             _Calculator = calculator;
@@ -119,9 +120,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual ICalculator<TEntity> Calculator => _Calculator;
         public virtual void SetCalculator(ICalculator<TEntity> calculator) => _Calculator = calculator;
 
-        protected IList<IValidator<TEntity>> _Validators;
+        protected IList<IValidator<TEntity, TDto>> _Validators;
         [XmlIgnore, JsonIgnore]
-        public virtual IList<IValidator<TEntity>> Validators => _Validators;
+        public virtual IList<IValidator<TEntity, TDto>> Validators => _Validators;
 
         #endregion Properties
 
@@ -139,12 +140,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion Event Callback Methods
 
+        #region Messages
+        protected IList<MessageClass> _messages;
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get
+            {
+                if (_messages is null)
+                    _messages = new List<MessageClass>();
+                return _messages;
+            }
+            set { _messages = value; }
+        }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             Messages.Add(message, MessageLevel.Info, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Warning, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Error, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Fatal, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Debug, code);
+
+        #endregion Messages
+
         #region Methods
 
-        public virtual void AddValidator(IValidator<TEntity> validator)
+        public virtual void AddValidator(IValidator<TEntity, TDto> validator)
         {
             if (_Validators == null)
-                _Validators = new List<IValidator<TEntity>>();
+                _Validators = new List<IValidator<TEntity, TDto>>();
             _Validators.Add(validator);
         }
 
@@ -169,6 +196,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             _ProcessMode = ProcessingMode.List;
             ClearData();
+            Messages.Clear();
             return (TService)this;
         }
 
@@ -176,11 +204,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             _data = data;
             InitDataObject();
+            Messages.Clear();
             return (TService)this;
         }
         public virtual TService DetachData(TEntity data)
         {
             _data = null;
+            Messages.Clear();
             return (TService)this;
         }
         public virtual TService NewData()
@@ -257,6 +287,67 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return true;
         }
+
+        public virtual bool ValidateAccount(IPayload payload, string number = null)
+        {
+            if (Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!validator.ValidateAccount(payload, number, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+        public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null)
+        {
+            if (Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!(await validator.ValidateAccountAsync(payload, number, ProcessMode)))
+                    return false;
+            }
+            return true;
+        }
+
+        #region Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param> 
+        /// <returns></returns>
+        public virtual bool Validate(TDto dto)
+        {
+            if (dto is null || Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!validator.Validate(dto, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region Validate dto async (invoke this before data loaded)
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param> 
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(TDto dto)
+        {
+            if (dto is null || Validators is null || Validators.Count == 0)
+                return false;
+            foreach (var validator in Validators)
+            {
+                if (!await validator.ValidateAsync(dto, ProcessMode))
+                    return false;
+            }
+            return true;
+        }
+        #endregion
 
         #endregion Methods
 

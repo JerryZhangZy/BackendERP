@@ -70,13 +70,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (data is null || dto is null)
 				return;
 
-			#region read all not null properties
+            #region read all not null properties
 
-			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
-			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
-			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
+            if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
+            if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+            if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+            if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
 			if (dto.HasInvoiceNumber) data.InvoiceNumber = dto.InvoiceNumber;
+			if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
+			if (dto.HasOrderNumber) data.OrderNumber = dto.OrderNumber;
 			if (dto.HasInvoiceType) data.InvoiceType = dto.InvoiceType.ToInt();
 			if (dto.HasInvoiceStatus) data.InvoiceStatus = dto.InvoiceStatus.ToInt();
 			if (dto.HasInvoiceDate) data.InvoiceDate = dto.InvoiceDate.ToDateTime();
@@ -116,6 +118,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -193,6 +196,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -209,6 +213,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -295,6 +300,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read all grand children object
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -377,7 +383,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return dto;
         }
 
-		protected virtual void WriteInvoiceHeader(InvoiceHeader data, InvoiceHeaderDto dto)
+		public virtual void WriteInvoiceHeader(InvoiceHeader data, InvoiceHeaderDto dto)
 		{
 			if (data is null || dto is null)
 				return;
@@ -390,6 +396,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ProfileNum = data.ProfileNum;
 			dto.InvoiceUuid = data.InvoiceUuid;
 			dto.InvoiceNumber = data.InvoiceNumber;
+			dto.SalesOrderUuid = data.SalesOrderUuid;
+			dto.OrderNumber = data.OrderNumber;
 			dto.InvoiceType = data.InvoiceType;
 			dto.InvoiceStatus = data.InvoiceStatus;
 			dto.InvoiceDate = data.InvoiceDate;

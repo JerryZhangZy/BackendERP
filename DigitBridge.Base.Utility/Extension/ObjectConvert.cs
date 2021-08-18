@@ -399,6 +399,16 @@ namespace DigitBridge.Base.Utility
         }
 
         /// <summary>
+        /// Convert string to Camel case
+        /// </summary>
+        /// <returns></returns>
+        public static string ToCamelCase(this string str, bool toCamelCase = true) =>
+            string.IsNullOrWhiteSpace(str) || !toCamelCase
+                ? str
+                : $"{Char.ToLowerInvariant(str[0])}{str.Substring(1)}";
+
+
+        /// <summary>
         /// Get Datetime for sql server date range
         /// </summary>
         /// <returns></returns>
@@ -649,16 +659,27 @@ namespace DigitBridge.Base.Utility
 
         public static bool ToBool(this bool? input) => (input is null) ? false : (bool)input;
 
-        public static bool IsZero(this decimal input) => Math.Abs(input) < (decimal)0.000001;
+        public static bool IsZero(this decimal input) => Math.Abs(input) < (decimal)0.000001;//TODO input value is 0
         public static bool IsZero(this decimal? input) => (input is null) ? true : input.ToDecimal().IsZero();
 
-        public static bool IsZero(this double input) => Math.Abs(input) < (double)0.000001;
+        public static bool IsZero(this double input) => Math.Abs(input) < (double)0.000001;//TODO input value is 0
         public static bool IsZero(this double? input) => (input is null) ? true : input.ToDouble().IsZero();
 
-        public static bool IsZero(this int input) => Math.Abs(input) < (int)0;
+        /// <summary>
+        /// Positive int number
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsZero(this int input) => input <= 0;
         public static bool IsZero(this int? input) => (input is null) ? true : input.ToInt().IsZero();
 
-        public static bool IsZero(this long input) => Math.Abs(input) < (long)0;
+        //public static bool IsZero(this long input) => Math.Abs(input) < (long)0;
+        /// <summary>
+        /// Positive long number
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsZero(this long input) => input <=0;
         public static bool IsZero(this long? input) => (input is null) ? true : input.ToLong().IsZero();
 
         public static bool IsZero(this string input) => string.IsNullOrEmpty(input);

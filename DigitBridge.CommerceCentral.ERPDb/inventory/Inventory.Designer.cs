@@ -3,7 +3,6 @@
 
 
 
-
               
 
               
@@ -1295,9 +1294,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual Inventory CheckIntegrity()
+        {
+            CheckUniqueId();
+			CheckIntegrityInventoryAttributes();
+            return this;
+        }
+
         public virtual Inventory ClearChildren()
         {
-			InventoryAttributes.Clear();
+			InventoryAttributes?.Clear();
             return this;
         }
 

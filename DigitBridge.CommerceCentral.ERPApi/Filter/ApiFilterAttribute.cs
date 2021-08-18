@@ -2,11 +2,13 @@
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Log;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -27,26 +29,22 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             this._currentType = currentType;
         }
+
         /// <summary>
-        /// mark exception handled 
-        /// todo:write log 
+        /// Mark exception handled 
         /// </summary>
         /// <param name="exceptionContext"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task OnExceptionAsync(FunctionExceptionContext exceptionContext, CancellationToken cancellationToken)
         {
-            var isInvalidParameterException = exceptionContext.Exception.InnerException is InvalidParameterException;
-            if (!isInvalidParameterException)
-            {
-                //todo record
-            }
             if (MySingletonAppSetting.DebugMode)
             {
                 exceptionContext.Logger.LogInformation(exceptionContext.Exception.ObjectToString());
             }
             ((RecoverableException)exceptionContext.ExceptionDispatchInfo.SourceException).Handled = true;
         }
+        //Dictionary<Guid, HttpRequest> exceptionReqs = new Dictionary<Guid, HttpRequest>();
 
         /// <summary>
         /// override exception respone
@@ -58,33 +56,68 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var exception = executedContext.FunctionResult.Exception;
             if (exception != null)
-            { 
-                //todo which data detail should be render;
-                var data = new ResponseResult<Exception>(exception, false);
+            {
                 var req = executedContext.GetContext<HttpRequest>();
-                await req.HttpContext.Response.Output(data, data.StatusCode);
+                var hasException = !(exception is InvalidParameterException
+                    || exception is NoContentException
+                    || exception is InvalidRequestException);
+                var needLog = hasException && !MySingletonAppSetting.DebugMode;
+                var logMessage = string.Empty;
+                if (needLog)
+                {
+                    logMessage = await WriteLog(executedContext.FunctionName, exception, req);
+                }
+
+                var data = needLog ? logMessage : (hasException ? exception.ObjectToString() : exception.Message);
+
+                // anyway write response
+                await req.HttpContext.Response.Output(data);
             }
         }
 
         public async Task OnExecutingAsync(FunctionExecutingContext executingContext, CancellationToken cancellationToken)
         {
+            // todo Authorize  
+
             var methodInfo = _currentType.GetMethod(executingContext.FunctionName);
             var openApiParameterAttributes = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>().Where(i => i.Required);
+            var messages = new List<string>();
+            var req = executingContext.GetContext<HttpRequest>();
             if (openApiParameterAttributes != null)
             {
-                var req = executingContext.GetContext<HttpRequest>();
                 foreach (var item in openApiParameterAttributes)
                 {
                     var parameterValue = req.GetData(item.Name, item.In);
                     if (parameterValue == null)
                     {
-                        var message = $"parameter {item.Name} is required";
-                        await req.HttpContext.Response.Output(message);
-                        throw new InvalidParameterException(message);
+                        messages.Add($"parameter {item.Name} is required");
+                    }
+                    else if ((item.Name == Consts.MasterAccountNum || item.Name == Consts.ProfileNum)
+                        && parameterValue.ToInt() <= 0)
+                    {
+                        messages.Add($"parameter {item.Name} is invalid");
                     }
                 }
             }
-            // todo Authorize  
+            if (messages.Count > 0)
+            {
+                await req.HttpContext.Response.Output(messages.ObjectToString());
+                //interrupt function call
+                throw new InvalidParameterException();
+            }
+        }
+        private async Task<string> WriteLog(string functionName, Exception exception, HttpRequest req)
+        {
+            //var methodInfo = _currentType.GetMethod(executedContext.FunctionName);
+            //var bodyType = methodInfo?.GetCustomAttribute<OpenApiRequestBodyAttribute>()?.BodyType; 
+            //var parameters = await req.ToDictionary(executedContext.FunctionName, bodyType);
+
+            // write log to log center
+            var methodInfo = _currentType.GetMethod(functionName);
+            var parmeters = methodInfo?.GetCustomAttributes<OpenApiParameterAttribute>();
+            var reqInfo = await LogHelper.GetRequestInfo(req, functionName, parmeters);
+            var logID = LogCenter.CaptureException(exception, reqInfo);
+            return $"A general error occured. Error ID: {logID}";
         }
     }
 }

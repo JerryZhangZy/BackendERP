@@ -19,100 +19,100 @@ namespace DigitBridge.CommerceCentral.ERPApi.Tests.Integration
         {
             var data= InventoryDataTests.GetFakerData();
             var mapper = new InventoryDataDtoMapperDefault();
-            var reqestInfo = new RequestInfo<ProductExPayload>()
+            var reqestInfo = new RequestInfo<InventoryPayload>()
             {
                 RequestHeader = new RequestHeader()
                 {
                     ProfileNum = 1,
                     MasterAccountNum = 1
                 },
-                RequestBody = new ProductExPayload
+                RequestBody = new InventoryPayload
                 {
-                    InventoryData = mapper.WriteDto(data, null)
+                    Inventory = mapper.WriteDto(data, null)
                 }
             };
             //var req = HttpRequestFactory.GetRequest("/api/salesorder","POST", reqestInfo);
             var req = HttpRequestFactory.GetRequest(reqestInfo);
             var response = await ProductExtApi.AddProductExt(req);
             var payload = await response.GetBodyObjectAsync();
-            Assert.True(payload.HasInventoryData);
+            Assert.True(payload.HasInventory);
         }
 
         [Fact]
         public async void GetProductEx_Test()
         {
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
-            var inventory = dbFactory.Db.Query<ProductExt>(@"
+            var inventory = dbFactory.Db.Query<ProductBasic>(@"
 SELECT TOP 1 * 
-FROM ProductExt 
+FROM ProductBasic 
 ", System.Data.CommandType.Text).First();
-            var reqestInfo = new RequestInfo<ProductExPayload>()
+            var reqestInfo = new RequestInfo<InventoryPayload>()
             {
                 RequestHeader = new RequestHeader()
                 {
                     ProfileNum = inventory.ProfileNum,
                     MasterAccountNum = inventory.MasterAccountNum
                 },
-                RequestBody = new ProductExPayload()
+                RequestBody = new InventoryPayload()
             };
             reqestInfo.RequestBody.Skus.Add(inventory.SKU);
             //var req = HttpRequestFactory.GetRequest("/api/salesorder","POST", reqestInfo);
             var req = HttpRequestFactory.GetRequest(reqestInfo);
             var response = await ProductExtApi.GetProductExt(req,inventory.SKU);
             var payload = await response.GetBodyObjectAsync();
-            Assert.True(payload.HasInventoryDatas);
+            Assert.True(payload.HasInventory);
         }
 
         [Fact]
         public async void DeleteProductEx_Test()
         {
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
-            var inventory = dbFactory.Db.Query<ProductExt>(@"
+            var inventory = dbFactory.Db.Query<ProductBasic>(@"
 SELECT TOP 1 * 
-FROM ProductExt 
+FROM ProductBasic 
 ", System.Data.CommandType.Text).First();
-            var reqestInfo = new RequestInfo<ProductExPayload>()
+            var reqestInfo = new RequestInfo<InventoryPayload>()
             {
                 RequestHeader = new RequestHeader()
                 {
                     ProfileNum = inventory.ProfileNum,
                     MasterAccountNum = inventory.MasterAccountNum
                 },
-                RequestBody = new ProductExPayload()
+                RequestBody = new InventoryPayload()
             };
             reqestInfo.RequestBody.Skus.Add(inventory.SKU);
             var req = HttpRequestFactory.GetRequest(reqestInfo);
             var response = await ProductExtApi.DeleteProductExt(req, inventory.SKU);
             var payload = await response.GetBodyObjectAsync();
-            Assert.True(payload.HasInventoryData);
+            Assert.True(payload.HasInventory);
         }
 
         [Fact]
         public async void UpdateProductEx_Test()
         {
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(0);
-            var inventory = dbFactory.Db.Query<Inventory>(@"
+            var product = dbFactory.Db.Query<ProductBasic>(@"
 SELECT TOP 1 * 
-FROM Inventory 
+FROM ProductBasic 
 ", System.Data.CommandType.Text).First();
             var svc = new InventoryService(dbFactory);
-            svc.GetData(inventory.RowNum);
+            svc.GetData(product.RowNum);
             var dto = svc.ToDto();
-            dto.ProductExt.Remark = Guid.NewGuid().ToString("N");
-            var reqestInfo = new RequestInfo<ProductExPayload>()
+            dto.ProductBasic.ShortDescription = Guid.NewGuid().ToString("N");
+            var reqestInfo = new RequestInfo<InventoryPayload>()
             {
                 RequestHeader = new RequestHeader()
                 {
-                    ProfileNum = inventory.ProfileNum,
-                    MasterAccountNum = inventory.MasterAccountNum
+                    ProfileNum = product.ProfileNum,
+                    MasterAccountNum = product.MasterAccountNum
                 },
-                RequestBody = new ProductExPayload() { InventoryData=dto}
+                RequestBody = new InventoryPayload() { Inventory=dto}
             };
             //var req = HttpRequestFactory.GetRequest("/api/salesorder","POST", reqestInfo);
             var req = HttpRequestFactory.GetRequest(reqestInfo);
             var response = await ProductExtApi.UpdateProductExt(req);
             var payload = await response.GetBodyObjectAsync();
-            Assert.True(payload.HasInventoryData);
+            Assert.True(payload.HasInventory);
         }
 
         //[Theory]

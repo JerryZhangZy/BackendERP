@@ -3,7 +3,6 @@
 
 
 
-
               
 
               
@@ -1221,6 +1220,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
             ClearChildren();
+            return this;
+        }
+
+        public virtual InvoiceReturnItems CheckIntegrity()
+        {
+            CheckUniqueId();
             return this;
         }
 

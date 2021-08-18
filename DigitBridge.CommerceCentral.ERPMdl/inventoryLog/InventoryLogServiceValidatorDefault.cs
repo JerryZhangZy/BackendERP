@@ -26,16 +26,122 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default InventoryLogService Validator class.
     /// </summary>
-    public partial class InventoryLogServiceValidatorDefault : IValidator<InventoryLogData>
+    public partial class InventoryLogServiceValidatorDefault : IValidator<InventoryLogData,InventoryLogDataDto>, IMessage
     {
         public virtual bool IsValid { get; set; }
-        public virtual IList<string> Messages { get; set; }
+        public InventoryLogServiceValidatorDefault() { }
+        public InventoryLogServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) 
+        { 
+            this.ServiceMessage = serviceMessage; 
+            this.dbFactory = dbFactory;
+        }
+
+        protected IDataBaseFactory dbFactory { get; set; }
+
+        #region message
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages 
+        { 
+            get
+            {
+                if (ServiceMessage != null)
+                    return ServiceMessage.Messages;
+
+                if (_Messages == null)
+                    _Messages = new List<MessageClass>();
+                return _Messages;
+            }
+            set
+            {
+                if (ServiceMessage != null)
+                    ServiceMessage.Messages = value;
+                else
+                    _Messages = value;
+            }
+        }
+        protected IList<MessageClass> _Messages;
+        public IMessage ServiceMessage { get; set; }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddInfo(message, code) : Messages.AddInfo(message, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddWarning(message, code) : Messages.AddWarning(message, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddError(message, code) : Messages.AddError(message, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddFatal(message, code) : Messages.AddFatal(message, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddDebug(message, code) : Messages.AddDebug(message, code);
+
+        #endregion message
 
         public virtual void Clear()
         {
             IsValid = true;
-            Messages = new List<string>();
+            Messages = new List<MessageClass>();
         }
+
+        public virtual bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            var pl = payload as InventoryLogPayload;
+            var dto = pl.InventoryLog;
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.InventoryLog.MasterAccountNum = pl.MasterAccountNum;
+                dto.InventoryLog.ProfileNum = pl.ProfileNum;
+                dto.InventoryLog.DatabaseNum = pl.DatabaseNum;
+            }
+            else
+            {
+                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (number == null)
+                        isValid = InventoryLogServiceHelper.ExistId(dto.InventoryLog.InventoryLogUuid, pl.MasterAccountNum, pl.ProfileNum);
+                    else
+                        isValid = InventoryLogServiceHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                }
+                if (!isValid)
+                    AddError($"Data not found.");
+            }
+            IsValid = isValid;
+            return isValid;
+        }
+
+        public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            var pl = payload as InventoryLogPayload;
+            var dto = pl.InventoryLog;
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+                dto.InventoryLog.MasterAccountNum = pl.MasterAccountNum;
+                dto.InventoryLog.ProfileNum = pl.ProfileNum;
+                dto.InventoryLog.DatabaseNum = pl.DatabaseNum;
+            }
+            else
+            {
+                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (number == null)
+                        isValid = await InventoryLogServiceHelper.ExistIdAsync(dto.InventoryLog.InventoryLogUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                    else
+                        isValid = await InventoryLogServiceHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                }
+                if (!isValid)
+                    AddError($"Data not found.");
+            }
+            IsValid = isValid;
+            return isValid;
+        }
+
+        #region validate data
+
         public virtual bool Validate(InventoryLogData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
@@ -59,13 +165,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(data.InventoryLog.InventoryLogUuid))
             {
                 IsValid = false;
-                this.Messages.Add($"Unique Id cannot be empty.");
+                AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.InventoryLog.CustomerUuid))
             //{
             //    IsValid = false;
-            //    this.Messages.Add($"Customer cannot be empty.");
+            //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
             return true;
@@ -78,7 +184,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.InventoryLog.RowNum != 0 && dbFactory.Exists<InventoryLog>(data.InventoryLog.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} is duplicate.");
+                AddError($"RowNum: {data.InventoryLog.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -91,14 +197,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.InventoryLog.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
+                AddError($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.InventoryLog.RowNum != 0 && !dbFactory.Exists<InventoryLog>(data.InventoryLog.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
+                AddError($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -110,21 +216,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.InventoryLog.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
+                AddError($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.InventoryLog.RowNum != 0 && !dbFactory.Exists<InventoryLog>(data.InventoryLog.RowNum))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
+                AddError($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
             return true;
         }
 
+        #endregion
 
-        #region Async Methods
+        #region Async validate data
 
         public virtual async Task<bool> ValidateAsync(InventoryLogData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
@@ -150,13 +257,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(data.InventoryLog.InventoryLogUuid))
             {
                 IsValid = false;
-                this.Messages.Add($"Unique Id cannot be empty.");
+                AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.InventoryLog.CustomerUuid))
             //{
             //    IsValid = false;
-            //    this.Messages.Add($"Customer cannot be empty.");
+            //    AddError($"Customer cannot be empty.");
             //    return IsValid;
             //}
             return true;
@@ -169,7 +276,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.InventoryLog.RowNum != 0 && (await dbFactory.ExistsAsync<InventoryLog>(data.InventoryLog.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} is duplicate.");
+                AddError($"RowNum: {data.InventoryLog.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -182,14 +289,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.InventoryLog.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
+                AddError($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.InventoryLog.RowNum != 0 && !(await dbFactory.ExistsAsync<InventoryLog>(data.InventoryLog.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
+                AddError($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -201,20 +308,104 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data.InventoryLog.RowNum == 0)
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
+                AddError($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
 
             if (data.InventoryLog.RowNum != 0 && !(await dbFactory.ExistsAsync<InventoryLog>(data.InventoryLog.RowNum)))
             {
                 IsValid = false;
-                this.Messages.Add($"RowNum: {data.InventoryLog.RowNum} not found.");
+                AddError($"RowNum: {data.InventoryLog.RowNum} not found.");
                 return IsValid;
             }
             return true;
         }
 
-        #endregion Async Methods
+        #endregion Async validate data
+
+        #region Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual bool Validate(InventoryLogDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"Data not found");
+            }
+            if (processingMode == ProcessingMode.Add)
+            {
+                //for Add mode, always reset uuid
+                dto.InventoryLog.InventoryLogUuid = Guid.NewGuid().ToString();
+  
+            }
+            if (processingMode == ProcessingMode.Edit)
+            {
+                if (!dto.InventoryLog.RowNum.IsZero())
+                {
+                    isValid = false;
+                    AddError("InventoryLog.RowNum is required.");
+                }
+                // This property should not be changed.
+                dto.InventoryLog.MasterAccountNum = null;
+                dto.InventoryLog.ProfileNum = null;
+                dto.InventoryLog.DatabaseNum = null;
+                dto.InventoryLog.InventoryLogUuid = null;
+                // TODO 
+                //dto.SalesOrderHeader.OrderNumber = null;
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
+
+        #region async Validate dto (invoke this before data loaded)
+        /// <summary>
+        /// Validate dto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="dbFactory"></param>
+        /// <param name="processingMode"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ValidateAsync(InventoryLogDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            var isValid = true;
+            if (dto is null)
+            {
+                isValid = false;
+                AddError($"Data not found");
+            }
+            if (processingMode == ProcessingMode.Add)
+            {
+                //for Add mode, always reset uuid
+                dto.InventoryLog.InventoryLogUuid = Guid.NewGuid().ToString();
+  
+            }
+            if (processingMode == ProcessingMode.Edit)
+            {
+                if (!dto.InventoryLog.RowNum.IsZero())
+                {
+                    isValid = false;
+                    AddError("InventoryLog.RowNum is required.");
+                }
+                // This property should not be changed.
+                dto.InventoryLog.MasterAccountNum = null;
+                dto.InventoryLog.ProfileNum = null;
+                dto.InventoryLog.DatabaseNum = null;
+                dto.InventoryLog.InventoryLogUuid = null;
+                // TODO 
+                //dto.SalesOrderHeader.OrderNumber = null;
+            }
+            IsValid=isValid;
+            return isValid;
+        }
+        #endregion
     }
 }
 

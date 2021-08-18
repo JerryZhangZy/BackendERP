@@ -24,8 +24,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
     public abstract partial class QueryObject<TQueryObject> : IQueryObject
         where TQueryObject : QueryObject<TQueryObject>
     {
-        public QueryObject() 
+        protected string _PREFIX = string.Empty;
+        protected QueryFilter<int> _MasterAccountNum = new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", "", FilterBy.eq, -1, Enable: true);
+        protected QueryFilter<int> _ProfileNum = new QueryFilter<int>("ProfileNum", "ProfileNum", "", FilterBy.eq, -1, Enable: true);
+
+        public QueryObject(string prefix="")
         {
+            _PREFIX = prefix;
+            _MasterAccountNum.prefix = _PREFIX;
+            _ProfileNum.prefix = _PREFIX;
+            AddFilter(_MasterAccountNum);
+            AddFilter(_ProfileNum);
             InitQueryFilter();
         }
 
@@ -36,7 +45,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 i.Clear();
             _orderByList = new List<string>();
             LoadJson = true;
-            LoadAll = true;
+            LoadAll = false;
             SkipRecords = 0;
             PageSize = 20;
             TotalRecords = 0;
@@ -68,7 +77,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// Load all records or Load by page
         /// </summary>
         [XmlIgnore, JsonIgnore, IgnoreDataMember]
-        public virtual bool LoadAll { get; set; } = true;
+        public virtual bool LoadAll { get; set; } = false;
 
         /// <summary>
         /// Skip records 
@@ -387,33 +396,51 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return OrderByList;
         }
 
-        public virtual string GetOrderBySql(string prefix)
+        public virtual string GetOrderBySql(string prefix = null)
         {
             if (OrderByList.Count <= 0)
                 return string.Empty;
 
             var sb = new StringBuilder();
             var isFirst = true;
+            var pre = !string.IsNullOrEmpty(prefix)
+                    ? $"{prefix.Trim()}."
+                    : !string.IsNullOrEmpty(_PREFIX)
+                        ? $"{_PREFIX}."
+                        : string.Empty;
             foreach (string item in _orderByList)
             {
                 if (string.IsNullOrWhiteSpace(item))
                     continue;
                 var sep = (isFirst) ? string.Empty : ", ";
-                var pre = string.IsNullOrWhiteSpace(prefix) ? string.Empty : $"{prefix.Trim()}.";
                 sb.Append($"{sep}{pre}{item.Trim()}");
                 isFirst = false;
             }
             return (sb.Length > 1)
-                ? sb.ToString()
+                ? $" ORDER BY {sb.ToString()} "
                 : string.Empty;
         }
 
         #endregion
 
+        public virtual void SetSecurityParameter(int masterAccountNum, int profileNum)
+        {
+            _MasterAccountNum.prefix = _PREFIX;
+            _MasterAccountNum.FilterValue = masterAccountNum;
+            _ProfileNum.prefix = _PREFIX;
+            _ProfileNum.FilterValue = profileNum;
+        }
+
         public virtual void LoadRequestParameter(IPayload payload)
         {
             if (payload == null)
                 return;
+
+            _MasterAccountNum.prefix = _PREFIX;
+            _MasterAccountNum.FilterValue = payload.MasterAccountNum;
+            _ProfileNum.prefix = _PREFIX;
+            _ProfileNum.FilterValue = payload.ProfileNum;
+
             SkipRecords = payload.Skip < 0 ? 0 : payload.Skip;
             PageSize = payload.Top < 1 ? 20 : payload.Top;
             if (payload.LoadAll)

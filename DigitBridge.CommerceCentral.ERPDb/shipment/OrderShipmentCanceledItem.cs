@@ -1,6 +1,6 @@
 
-              
-    
+
+
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class OrderShipmentCanceledItem
     {
-
     }
 }
 

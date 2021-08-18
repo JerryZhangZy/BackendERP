@@ -65,6 +65,7 @@
     <Folder Include="shipment" />
     <Folder Include="channelOrder" />
     <Folder Include="dataType" />
+    <Folder Include="inventoryUpdate" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -169,28 +170,24 @@
     <None Include="channelOrder\OrderLine_Update.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="channelOrder\OrderDCAssignmentHeader.sql" />
-    <Build Include="channelOrder\OrderDCAssignmentLine.sql" />
-    <Build Include="channelOrder\OrderHeaderMarketplaceExt.sql" />
-    <Build Include="channelOrder\OrderHeaderMerchantExt.sql" />
-    <Build Include="channelOrder\OrderHeaderPromotion.sql" />
-    <Build Include="channelOrder\OrderLineAdjustment.sql" />
-    <Build Include="channelOrder\OrderLineBundleComponent.sql" />
-    <Build Include="channelOrder\OrderLineListingExt.sql" />
-    <Build Include="channelOrder\OrderLineMerchantExt.sql" />
-    <Build Include="channelOrder\OrderLineMiscExt.sql" />
-    <None Include="channelOrder\OrderHeaderMarketplaceExt_Update.sql" />
-    <None Include="channelOrder\OrderHeaderMerchantExt_Update.sql" />
-    <None Include="channelOrder\OrderHeaderPromotion_Update.sql" />
-    <None Include="channelOrder\OrderLineAdjustment_Update.sql" />
-    <None Include="channelOrder\OrderLineBundleComponent_Update.sql" />
-    <None Include="channelOrder\OrderLineListingExt_Update.sql" />
-    <None Include="channelOrder\OrderLineMerchantExt_Update.sql" />
-    <None Include="channelOrder\OrderLineMiscExt_Update.sql" />
-    <None Include="channelOrder\OrderDCAssignmentHeader_Update.sql" />
-    <None Include="channelOrder\OrderDCAssignmentLine_Update.sql" />
-    <None Include="channelOrder\OrderActivityLog_Update.sql" />
-    <None Include="channelOrder\OrderConversationLog_Update.sql" />
-    <None Include="channelOrder\OrderTransactionLog_Update.sql" />
+    <None Include="so\SalesOrderHeaderInfo_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="so\SalesOrderHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ar\InvoiceHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventoryUpdate\InventoryUpdateHeader.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventoryUpdate\InventoryUpdateItems.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\DistributionCenter.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\DistributionCenter_Update.sql" />
   </ItemGroup>
 </Project>

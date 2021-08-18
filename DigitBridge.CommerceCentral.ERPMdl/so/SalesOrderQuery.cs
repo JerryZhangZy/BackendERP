@@ -12,7 +12,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         // Table prefix which use in this sql query
         protected static string PREFIX = SalesOrderHeaderHelper.TableAllies;
-        protected static string PREFIX_CUSTOMER = CustomerHelper.TableAllies;
+        protected static string PREFIX_CUSTOMER = ERPDb.CustomerHelper.TableAllies;
         protected static string PREFIX_DETAIL = SalesOrderItemsHelper.TableAllies;
 
         // Filter fields
@@ -37,7 +37,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
         public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
 
-        public SalesOrderQuery() : base()
+        protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
+        public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
+
+        public SalesOrderQuery() : base(PREFIX)
         {
             AddFilter(_OrderNumberFrom);
             AddFilter(_OrderNumberTo);
@@ -49,8 +52,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public override void InitQueryFilter()
         {
-            _OrderDateFrom.FilterValue = DateTime.Today;
-            _OrderDateTo.FilterValue = DateTime.Today;
+            _OrderDateFrom.FilterValue = DateTime.Today.AddDays(-30);
+            _OrderDateTo.FilterValue = DateTime.Today.AddDays(7);
         }
 
     }

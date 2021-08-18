@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         void ClearOrderBy();
         void AddOrderBy(params string[] orderBy);
         IList<string> CopyOrderBy(IList<string> FromOrderByList);
-        string GetOrderBySql(string prefix);
+        string GetOrderBySql(string prefix = null);
 
         string GetSQL();
         string GetSQLWithPrefix(params string[] preString);
@@ -56,6 +56,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         void InitQueryFilter();
         void ClearAll();
+
+        void SetSecurityParameter(int masterAccountNum, int profileNum);
         void LoadRequestParameter(IPayload payload);
         JObject WriteFilterJObject(JObject obj);
 

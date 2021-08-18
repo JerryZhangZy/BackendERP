@@ -39,3 +39,10 @@ CREATE NONCLUSTERED INDEX [FK_OrderShipmentCanceledItem_OrderShipmentUuid] ON [d
 ) 
 GO
 
+
+CREATE NONCLUSTERED INDEX [FK_OrderShipmentCanceledItem_OrderShipmentNum] ON [dbo].[OrderShipmentCanceledItem]
+(
+	[OrderShipmentNum] ASC
+) 
+GO
+

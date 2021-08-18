@@ -103,6 +103,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -132,6 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -204,6 +206,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read all grand children object
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -257,6 +260,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasOrderShipmentShippedItemUuid) data.OrderShipmentShippedItemUuid = dto.OrderShipmentShippedItemUuid;
 
 			#endregion read properties
+
+			//TODO.Manual added. Take this to T4
+			data.CheckIntegrity();
 
 			return;
 		}

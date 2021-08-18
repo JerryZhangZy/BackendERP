@@ -1,0 +1,41 @@
+﻿<# 
+    WriteLine($" /**");
+    foreach(var item in StructureClass.StructureTables)
+    { 
+        var child = item.Value;
+        if (child == null) continue;
+        if (child.Table.IsChildrenOfChildren) continue;
+        WriteLine($" * @typedef {{ import('./{child.Table.DtoName}') }} {child.Table.DtoName}");
+    }
+    WriteLine($" */");
+    WriteLine($" ");
+    WriteLine($" ");
+
+
+    WriteLine($" /**");
+    WriteLine($" * @typedef {{Object}} {StructureDtoName}");
+    WriteLine(" * ");
+
+    foreach(var item in StructureClass.StructureTables)
+    { 
+        var child = item.Value;
+        if (child == null) continue;
+        if (child.Table.IsChildrenOfChildren) continue;
+
+        // generate one child object
+        if (child.OneToOne)
+        {
+            WriteLine($" * @property {{{child.Table.DtoName}}} {child.Table.Name} - {{@link {child.Table.DtoName}}}");
+            WriteLine(" * ");
+        } 
+        // generate child list
+        else
+        {
+            WriteLine($" * @property {{{child.Table.DtoName}[]}} {child.Table.Name} - {{@link {child.Table.DtoName}}}");
+            WriteLine(" * ");
+        } 
+    }
+    WriteLine($" */");
+#>
+
+

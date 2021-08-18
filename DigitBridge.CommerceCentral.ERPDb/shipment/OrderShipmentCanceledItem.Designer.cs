@@ -3,7 +3,6 @@
 
 
 
-
               
 
               
@@ -427,6 +426,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual OrderShipmentCanceledItem CheckIntegrity()
+        {
+            CheckUniqueId();
+            return this;
+        }
+
         public virtual OrderShipmentCanceledItem ClearChildren()
         {
             return this;
@@ -458,6 +463,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		public static async Task<long> CountByAsyncOrderShipmentUuid(IDataBaseFactory dbFactory, string orderShipmentUuid)
 		{
 			return await dbFactory.CountAsync<OrderShipmentCanceledItem>("WHERE OrderShipmentUuid = @0 ", orderShipmentUuid);
+		}
+		public static IList<OrderShipmentCanceledItem> FindByOrderShipmentNum(IDataBaseFactory dbFactory, long? orderShipmentNum)
+		{
+			return dbFactory.Find<OrderShipmentCanceledItem>("WHERE OrderShipmentNum = @0 ", orderShipmentNum).ToList();
+		}
+		public static long CountByOrderShipmentNum(IDataBaseFactory dbFactory, long? orderShipmentNum)
+		{
+			return dbFactory.Count<OrderShipmentCanceledItem>("WHERE OrderShipmentNum = @0 ", orderShipmentNum);
+		}
+		public static async Task<IList<OrderShipmentCanceledItem>> FindByAsyncOrderShipmentNum(IDataBaseFactory dbFactory, long? orderShipmentNum)
+		{
+			return (await dbFactory.FindAsync<OrderShipmentCanceledItem>("WHERE OrderShipmentNum = @0 ", orderShipmentNum)).ToList();
+		}
+		public static async Task<long> CountByAsyncOrderShipmentNum(IDataBaseFactory dbFactory, long? orderShipmentNum)
+		{
+			return await dbFactory.CountAsync<OrderShipmentCanceledItem>("WHERE OrderShipmentNum = @0 ", orderShipmentNum);
 		}
 
 

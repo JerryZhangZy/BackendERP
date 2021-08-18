@@ -36,11 +36,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 
-		/// <summary>
-		/// (Readonly) Invoice Return Item Line uuid. <br> Display: false, Editable: false
-		/// </summary>
-		[OpenApiPropertyDescription("(Readonly) Invoice Return Item Line uuid. <br> Display: false, Editable: false")]
+        /// <summary>
+        /// (Readonly) Invoice Return Item Line uuid. <br> Display: false, Editable: false
+        /// </summary>
+        [OpenApiPropertyDescription("(Readonly) Invoice Return Item Line uuid. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The ReturnItemUuid value cannot exceed 50 characters. ")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public string ReturnItemUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -51,6 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// </summary>
 		[OpenApiPropertyDescription("Invoice Transaction uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The TransUuid value cannot exceed 50 characters. ")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public string TransUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]

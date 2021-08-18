@@ -3,7 +3,6 @@
 
 
 
-
               
 
               
@@ -73,6 +72,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("OrderTime",SqlDbType.Time,NotNull=true)]
         private TimeSpan _orderTime;
+
+        [Column("ShipDate",SqlDbType.Date)]
+        private DateTime? _shipDate;
 
         [Column("DueDate",SqlDbType.Date)]
         private DateTime? _dueDate;
@@ -321,6 +323,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_orderTime = value.ToSqlSafeValue(); 
 				OnPropertyChanged("OrderTime", value);
+            }
+        }
+
+		/// <summary>
+		/// Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
+		/// </summary>
+        public virtual DateTime? ShipDate
+        {
+            get
+            {
+				if (!AllowNull && _shipDate is null) 
+					_shipDate = new DateTime().MinValueSql(); 
+				return _shipDate; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_shipDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("ShipDate", value);
+				}
             }
         }
 
@@ -888,6 +911,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_orderStatus = default(int); 
 			_orderDate = new DateTime().MinValueSql(); 
 			_orderTime = new TimeSpan().MinValueSql(); 
+			_shipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_dueDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_billDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_customerUuid = String.Empty; 
@@ -921,6 +945,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
             ClearChildren();
+            return this;
+        }
+
+        public virtual SalesOrderHeader CheckIntegrity()
+        {
+            CheckUniqueId();
             return this;
         }
 

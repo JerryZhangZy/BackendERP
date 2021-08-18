@@ -25,6 +25,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
         bool HasProfileNum { get; }
 
         /// <summary>
+        /// User ProfileNum
+        /// Required, from header
+        /// </summary>
+        int DatabaseNum { get; set; }
+        bool HasDatabaseNum { get; }
+
+        /// <summary>
         /// Page size to load.
         /// Optional,
         /// Default value is 100.
@@ -79,11 +86,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public JObject Filter { get; set; }
         bool HasFilter { get; }
 
-        IDictionary<string, StringBuilder> ListResults { get; set; }
-        bool HasListResults { get; }
-        void AddListResult(string name, StringBuilder sb);
-        void RemoveListResult(string name);
-        StringBuilder GetListResult(string name);
+        //IDictionary<string, StringBuilder> ListResults { get; set; }
+        //bool HasListResults { get; }
+        //void AddListResult(string name, StringBuilder sb);
+        //void RemoveListResult(string name);
+        //StringBuilder GetListResult(string name);
 
 
         IDictionary<string, Action<string>> GetOtherParameters();

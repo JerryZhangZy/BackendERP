@@ -1,15 +1,12 @@
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
-using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.OpenApi.Models;
-using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -23,28 +20,53 @@ namespace DigitBridge.CommerceCentral.ERPApi
     public static class InvoicePaymentApi
     {
         /// <summary>
-        /// Get one invoice payment by orderNumber
+        /// Get invoice payments by invoice num
         /// </summary>
         /// <param name="req"></param>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        [OpenApiOperation(operationId: "GetInvoicePayment", tags: new[] { "Invoice payments" }, Summary = "Get one invoice payment")]
+        [FunctionName(nameof(GetInvoicePayments))]
+        [OpenApiOperation(operationId: "GetInvoicePayments", tags: new[] { "Invoice payments" }, Summary = "Get invoice payments by invoice number")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
-        [FunctionName(nameof(GetInvoicePayment))]
-        public static async Task<JsonNetResponse<PayloadBase>> GetInvoicePayment(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "InvoicePayment/{invoiceNumber}")] HttpRequest req,
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadGetSingle))]
+        public static async Task<JsonNetResponse<InvoicePaymentPayload>> GetInvoicePayments(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoicePayments/{invoiceNumber}")] HttpRequest req,
             string invoiceNumber)
         {
-            var payload = await req.GetParameters<PayloadBase>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
-            var srv = new InvoiceTransactionService(dataBaseFactory);
-            var payment = await srv.GetByInvoiceNumberAsync(invoiceNumber);
-            var invoiceHeader = await srv.GetInvoiceHeaderAsync(invoiceNumber);
-            payload.ResponseData = new { Payment = payment, InvoiceHeader = invoiceHeader };
-            return new JsonNetResponse<PayloadBase>(payload);
+            var payload = await req.GetParameters<InvoicePaymentPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InvoicePaymentService(dataBaseFactory);
+            await srv.GetPaymentWithInvoiceHeaderAsync(payload, invoiceNumber);
+            return new JsonNetResponse<InvoicePaymentPayload>(payload);
+        }
+
+        /// <summary>
+        /// Get invoice payment by invoice num
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="invoiceNumber"></param>
+        /// <param name="transNum"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(GetInvoicePayment))]
+        [OpenApiOperation(operationId: "GetInvoicePayment", tags: new[] { "Invoice payments" }, Summary = "Get invoice payment by invoice number and trannum")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "transNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "transNum", Description = "Transaction Num. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadGetSingle))]
+        public static async Task<JsonNetResponse<InvoicePaymentPayload>> GetInvoicePayment(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoicePayments/{invoiceNumber}/{transNum}")] HttpRequest req,
+            string invoiceNumber, int transNum)
+        {
+            var payload = await req.GetParameters<InvoicePaymentPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InvoicePaymentService(dataBaseFactory);
+            await srv.GetPaymentWithInvoiceHeaderAsync(payload, invoiceNumber, transNum);
+            return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
 
 
@@ -52,23 +74,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Delete invoice payment  
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="invoiceNumber"></param>
+        /// <param name="rowNum"></param>
         /// <returns></returns>
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
-        [OpenApiOperation(operationId: "DeleteInvoicePayments", tags: new[] { "Invoice payments" }, Summary = "Delete one invoice payment ")]
-        [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "invoice Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [FunctionName(nameof(DeleteInvoicePayments))]
-        public static async Task<JsonNetResponse<PayloadBase>> DeleteInvoicePayments(
-           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "InvoicePayment/{invoiceNumber}")]
+        [OpenApiOperation(operationId: "DeleteInvoicePayments", tags: new[] { "Invoice payments" }, Summary = "Delete one invoice payment ")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "rowNum", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "rowNum", Description = "Row num. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadDelete))]
+        public static async Task<JsonNetResponse<InvoiceTransactionPayload>> DeleteInvoicePayments(
+           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoicePayments/{rowNum}")]
             HttpRequest req,
-            string invoiceNumber)
+            long rowNum)
         {
-            var payload = await req.GetParameters<PayloadBase>();
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
-            var srv = new InvoiceTransactionService(dataBaseFactory);
-            var success = await srv.DeleteByInvoiceNumberAsync(invoiceNumber);
-            payload.ResponseData = $"{success} to delete ";
-            return new JsonNetResponse<PayloadBase>(payload);
+            var payload = await req.GetParameters<InvoiceTransactionPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InvoicePaymentService(dataBaseFactory);
+            payload.Success = await srv.DeleteByRowNumAsync(payload, rowNum);
+            payload.Messages = srv.Messages;
+            return new JsonNetResponse<InvoiceTransactionPayload>(payload);
         }
 
         /// <summary>
@@ -78,55 +103,110 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <returns></returns>
         [FunctionName(nameof(UpdateInvoicePayments))]
         [OpenApiOperation(operationId: "UpdateInvoicePayments", tags: new[] { "Invoice payments" }, Summary = "Update one invoice payment ")]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceTransactionDataDto), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-
-        public static async Task<JsonNetResponse<PayloadBase>> UpdateInvoicePayments(
-[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "InvoicePayment")] HttpRequest req)
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadUpdate), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadUpdate))]
+        public static async Task<JsonNetResponse<InvoicePaymentPayload>> UpdateInvoicePayments(
+[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "invoicePayments")] HttpRequest req)
         {
-            var payload = await req.GetParameters<PayloadBase>();
-            var dto = await req.GetBodyObjectAsync<InvoiceTransactionDataDto>();
-            dto.InvoiceReturnItems = null;
-            if (dto.InvoiceTransaction.MasterAccountNum != payload.MasterAccountNum
-                || dto.InvoiceTransaction.ProfileNum != payload.ProfileNum)
-                throw new Exception("Invalid request");
-            payload.ReqeustData = dto;
-
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
-            var srv = new InvoiceTransactionService(dataBaseFactory);
-            var success = await srv.UpdateAsync(payload.ReqeustData);
-            payload.ResponseData = $"{success} to update data";
-            return new JsonNetResponse<PayloadBase>(payload);
+            var payload = await req.GetParameters<InvoicePaymentPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InvoicePaymentService(dataBaseFactory);
+            payload.Success = await srv.UpdateAsync(payload);
+            payload.Messages = srv.Messages;
+            return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
 
         /// <summary>
         /// Add invoice payment 
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="dto"></param>
         /// <returns></returns>
         [FunctionName(nameof(AddInvoicePayments))]
         [OpenApiOperation(operationId: "AddInvoicePayments", tags: new[] { "Invoice payments" }, Summary = "Add one invoice payment ")]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceTransactionDataDto), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PayloadBase))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        public static async Task<JsonNetResponse<PayloadBase>> AddInvoicePayments(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "InvoicePayment")] HttpRequest req)
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadAdd), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadAdd))]
+        public static async Task<JsonNetResponse<InvoicePaymentPayload>> AddInvoicePayments(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoicePayments")] HttpRequest req)
         {
-            var payload = await req.GetParameters<PayloadBase>();
-            var dto = await req.GetBodyObjectAsync<InvoiceTransactionDataDto>();
-            dto.InvoiceReturnItems = null;
-            dto.InvoiceTransaction.MasterAccountNum = payload.MasterAccountNum;
-            dto.InvoiceTransaction.ProfileNum = payload.ProfileNum;
-            payload.ReqeustData = dto;
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
-            var srv = new InvoiceTransactionService(dataBaseFactory);
-            var success = await srv.AddAsync(payload.ReqeustData);
-            payload.ResponseData = $"{success} to add data, the uuid is:{srv.Data.UniqueId}";
-            return new JsonNetResponse<PayloadBase>(payload);
+            var payload = await req.GetParameters<InvoicePaymentPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InvoicePaymentService(dataBaseFactory);
+            payload.Success = await srv.AddAsync(payload);
+            payload.Messages = srv.Messages;
+            return new JsonNetResponse<InvoicePaymentPayload>(payload);
+        }
+
+        /// <summary>
+        /// Load customer list
+        /// </summary>
+        [FunctionName(nameof(InvoicePaymentsList))]
+        [OpenApiOperation(operationId: "InvoicePaymentsList", tags: new[] { "Invoice payments" }, Summary = "Load invoicepayments list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadFind))]
+        public static async Task<JsonNetResponse<InvoicePaymentPayload>> InvoicePaymentsList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoicePayments/find")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InvoicePaymentPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InvoicePaymentList(dataBaseFactory, new InvoicePaymentQuery());
+            payload = await srv.GetInvoicePaymentListAsync(payload);
+            return new JsonNetResponse<InvoicePaymentPayload>(payload);
+        }
+
+        ///// <summary>
+        ///// Load customer list
+        ///// </summary>
+        //[FunctionName(nameof(InvoiceReturnsList))]
+        //[OpenApiOperation(operationId: "InvoiceReturnsList", tags: new[] { "Invoice returns" }, Summary = "Load invoice  return list data")]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceTransactionPayloadFind), Description = "Request Body in json format")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceTransactionPayloadFind))]
+        //public static async Task<JsonNetResponse<InvoiceTransactionPayload>> InvoiceReturnsList(
+        //    [HttpTrigger(AuthorizationLevel.Function, "post", Route = "InvoiceReturn/find")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<InvoiceTransactionPayload>(true);
+        //    var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var srv = new InvoiceReturnList(dataBaseFactory, new InvoiceReturnQuery());
+        //    payload = await srv.GetInvoiceReturnListAsync(payload);
+        //    return new JsonNetResponse<InvoiceTransactionPayload>(payload);
+        //}
+
+        /// <summary>
+        /// Add Invoice payment
+        /// </summary>
+        [FunctionName(nameof(Sample_InvoicePayments_Post))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "InvoicePaymentsSample", tags: new[] { "Sample" }, Summary = "Get new sample of InvoicePayment")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadAdd))]
+        public static async Task<JsonNetResponse<InvoicePaymentPayloadAdd>> Sample_InvoicePayments_Post(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/invoicePayments")] HttpRequest req)
+        {
+            return new JsonNetResponse<InvoicePaymentPayloadAdd>(InvoicePaymentPayloadAdd.GetSampleData());
+        }
+
+        [FunctionName(nameof(Sample_InvoicePayment_Find))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "InvoicePaymentFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of invoice payment find")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadFind))]
+        public static async Task<JsonNetResponse<InvoicePaymentPayloadFind>> Sample_InvoicePayment_Find(
+           [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/invoicePayments/find")] HttpRequest req)
+        {
+            return new JsonNetResponse<InvoicePaymentPayloadFind>(InvoicePaymentPayloadFind.GetSampleData());
         }
     }
 }

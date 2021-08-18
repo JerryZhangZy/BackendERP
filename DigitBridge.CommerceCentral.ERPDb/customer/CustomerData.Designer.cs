@@ -1,5 +1,36 @@
 
 
+
+
+
+              
+
+
+
+
+
+
+
+
+              
+
+
+
+
+
+
+
+
+              
+
+
+
+
+
+
+
+
+
               
     
 
@@ -39,7 +70,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [JsonIgnore, XmlIgnore]
         public new string UniqueId => Customer.UniqueId;
-
+        
+		 [JsonIgnore, XmlIgnore] 
+		public static string CustomerTable ="Customer ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string CustomerAddressTable ="CustomerAddress ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string CustomerAttributesTable ="CustomerAttributes ";
+		
         #region CRUD Methods
 
         public override bool Equals(CustomerData other)
@@ -66,6 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
+        partial void CheckIntegrityOthers();
         // Check Children table Integrity
         public virtual CustomerData CheckIntegrity()
         {
@@ -73,6 +114,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			Customer.CheckUniqueId(); 
 			CheckIntegrityCustomerAddress(); 
 			CheckIntegrityCustomerAttributes(); 
+			CheckIntegrityOthers(); 
             return this;
         }
 
@@ -158,17 +200,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin();
-			Customer.SetDataBaseFactory(dbFactory);
-			if (!Customer.Save()) return false;
 
-			if (CustomerAddress != null) 
-				CustomerAddress.SetDataBaseFactory(dbFactory)?.Save();
-			var delCustomerAddress = _CustomerAddressDeleted;
-			if (delCustomerAddress != null)
-				delCustomerAddress.SetDataBaseFactory(dbFactory)?.Delete();
+			 if (NeedSave(CustomerTable))
+			{
+				Customer.SetDataBaseFactory(dbFactory);
+				if (!Customer.Save()) return false;
+			}
 
-			if (CustomerAttributes != null) 
-				CustomerAttributes.SetDataBaseFactory(dbFactory)?.Save();
+			 if (NeedSave(CustomerAddressTable))
+			{
+				if (CustomerAddress != null) 
+					CustomerAddress.SetDataBaseFactory(dbFactory)?.Save();
+				var delCustomerAddress = _CustomerAddressDeleted;
+				if (delCustomerAddress != null)
+					delCustomerAddress.SetDataBaseFactory(dbFactory)?.Delete();
+			}
+
+			 if (NeedSave(CustomerAttributesTable))
+			{
+				if (CustomerAttributes != null) 
+					CustomerAttributes.SetDataBaseFactory(dbFactory)?.Save();
+			}
 
 			if (_OnSave != null)
 			{
@@ -190,12 +242,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
-			Customer.SetDataBaseFactory(dbFactory); 
-			if (Customer.Delete() <= 0) return false; 
-			if (CustomerAddress != null) 
-				CustomerAddress?.SetDataBaseFactory(dbFactory)?.Delete(); 
-			if (CustomerAttributes != null) 
-				CustomerAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
+
+			 if (NeedDelete(CustomerTable))
+			{
+				Customer.SetDataBaseFactory(dbFactory); 
+				if (Customer.Delete() <= 0) return false; 
+			}
+			 if (NeedDelete(CustomerAddressTable))
+			{
+				if (CustomerAddress != null) 
+					CustomerAddress?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
+			 if (NeedDelete(CustomerAttributesTable))
+			{
+				if (CustomerAttributes != null) 
+					CustomerAttributes?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -248,16 +310,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin(); 
-			Customer.SetDataBaseFactory(dbFactory); 
-			if (!(await Customer.SaveAsync().ConfigureAwait(false))) return false; 
-			if (CustomerAddress != null) 
-				await CustomerAddress.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
-			var delCustomerAddress = _CustomerAddressDeleted;
-			if (delCustomerAddress != null)
-				await delCustomerAddress.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
 
-			if (CustomerAttributes != null) 
-				await CustomerAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+			 if (NeedSave(CustomerTable))
+			{
+				Customer.SetDataBaseFactory(dbFactory); 
+				if (!(await Customer.SaveAsync().ConfigureAwait(false))) return false; 
+			}
+			 if (NeedSave(CustomerAddressTable))
+			{
+				if (CustomerAddress != null) 
+					await CustomerAddress.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+				var delCustomerAddress = _CustomerAddressDeleted;
+				if (delCustomerAddress != null)
+					await delCustomerAddress.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+			}
+
+			 if (NeedSave(CustomerAttributesTable))
+			{
+				if (CustomerAttributes != null) 
+					await CustomerAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+			}
 
 			if (_OnSave != null)
 			{
@@ -279,12 +351,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
+			 if (NeedDelete(CustomerTable))
+			{
 			Customer.SetDataBaseFactory(dbFactory); 
 			if ((await Customer.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
-			if (CustomerAddress != null) 
-				await CustomerAddress.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
-			if (CustomerAttributes != null) 
-				await CustomerAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			}
+			 if (NeedDelete(CustomerAddressTable))
+			{
+				if (CustomerAddress != null) 
+					await CustomerAddress.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			}
+			 if (NeedDelete(CustomerAttributesTable))
+			{
+				if (CustomerAttributes != null) 
+					await CustomerAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))

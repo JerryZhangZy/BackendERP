@@ -26,92 +26,208 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "GetProductExt", tags: new[] { "ProductExts" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "$top", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "$top", Description = "Page size. Default value is 100. Maximum value is 100.", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "$skip", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$skip", Description = "Records to skip. https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "$count", In = ParameterLocation.Query, Required = false, Type = typeof(bool), Summary = "$count", Description = "Valid value: true, false. When $count is true, return total count of records, otherwise return requested number of data.", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "$sortBy", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "$sortBy", Description = "sort by. Default order by LastUpdateDate. ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "skus", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "skus", Description = "SKU Array", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload), Example = typeof(ProductExPayload), Description = "The OK response")]
-        public static async Task<JsonNetResponse<ProductExPayload>> GetProductExt(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "productExt/{SKU?}")] HttpRequest req,
-            string SKU=null)
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "SKU", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "sku", Description = "SKU", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadGetSingle), Description = "The OK response")]
+        public static async Task<JsonNetResponse<InventoryPayload>> GetProductExt(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExts/{SKU}")] HttpRequest req,
+            string SKU = null)
         {
-            var payload = await req.GetParameters<ProductExPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var payload = await req.GetParameters<InventoryPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryService(dbFactory);
-            if (!string.IsNullOrEmpty(SKU))
+            var spilterIndex = SKU.IndexOf("-");
+            var sku = SKU;
+            if (spilterIndex > 0 && sku.StartsWith(payload.ProfileNum.ToString()))
             {
-                var spilterIndex = SKU.IndexOf("-");
-                var sku = SKU;
-                if (spilterIndex > 0)
-                {
-                    sku = SKU.Substring(spilterIndex + 1);
-                }
-                payload.Skus.Add(sku);
+                sku = sku.Substring(spilterIndex + 1);
             }
-            var result = svc.GetInventorysBySkuArray(payload);
+            payload.Skus.Add(sku);
+            if (await svc.GetInventoryBySkuAsync(payload, sku))
+                payload.Inventory = svc.ToDto();
+            else
+                payload.Messages = svc.Messages;
 
-            return new JsonNetResponse<ProductExPayload>(result);
+            return new JsonNetResponse<InventoryPayload>(payload);
+        }
+        [FunctionName(nameof(GetMultiProductExt))]
+        [OpenApiOperation(operationId: "GetMultiProductExt", tags: new[] { "ProductExts" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "skus", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "skus", Description = "SKU Array", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadGetMultiple), Description = "The OK response")]
+        public static async Task<JsonNetResponse<InventoryPayload>> GetMultiProductExt(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExts")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new InventoryService(dbFactory);
+            payload =await svc.GetInventoryBySkuArrayAsync(payload);
+
+            return new JsonNetResponse<InventoryPayload>(payload);
         }
 
         [FunctionName(nameof(DeleteProductExt))]
         [OpenApiOperation(operationId: "DeleteProductExt", tags: new[] { "ProductExts" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "SKU", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "SKU", Description = "SKU = ProfileNumber-SKU ", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload))]
-        public static async Task<JsonNetResponse<ProductExPayload>> DeleteProductExt(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "productExt/{SKU}")] HttpRequest req,
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadDelete))]
+        public static async Task<JsonNetResponse<InventoryPayload>> DeleteProductExt(
+            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "productExts/{SKU}")] HttpRequest req,
             string SKU)
         {
-            var payload = await req.GetParameters<ProductExPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var payload = await req.GetParameters<InventoryPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var spilterIndex = SKU.IndexOf("-");
             var sku = SKU;
-            if (spilterIndex > 0)
+            if (spilterIndex > 0 && sku.StartsWith(payload.ProfileNum.ToString()))
             {
-                sku = SKU.Substring(spilterIndex + 1);
+                sku = sku.Substring(spilterIndex + 1);
             }
-            payload.Skus.Add(sku);
             var svc = new InventoryService(dbFactory);
-            if (svc.DeleteBySku(payload.ProfileNum, sku))
-                payload.InventoryData = svc.ToDto();
-            return new JsonNetResponse<ProductExPayload>(payload);
+            if (await svc.DeleteBySkuAsync(payload,sku))
+                payload.Inventory = svc.ToDto();
+            else
+                payload.Messages = svc.Messages;
+            return new JsonNetResponse<InventoryPayload>(payload);
         }
         [FunctionName(nameof(AddProductExt))]
         [OpenApiOperation(operationId: "AddProductExt", tags: new[] { "ProductExts" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryDataDto), Description = "InventoryDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload))]
-        public static async Task<JsonNetResponse<ProductExPayload>> AddProductExt(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "productExt")] HttpRequest req)
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryPayloadAdd), Description = "InventoryDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadAdd))]
+        public static async Task<JsonNetResponse<InventoryPayload>> AddProductExt(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExts")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ProductExPayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var payload = await req.GetParameters<InventoryPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryService(dbFactory);
-
-            if (svc.Add(payload.InventoryData))
-                payload.InventoryData = svc.ToDto();
-            return new JsonNetResponse<ProductExPayload>(payload);
+            if (await svc.AddAsync(payload))
+                payload.Inventory = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<InventoryPayload>(payload);
         }
 
         [FunctionName(nameof(UpdateProductExt))]
         [OpenApiOperation(operationId: "UpdateProductExt", tags: new[] { "ProductExts" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryDataDto), Description = "InventoryDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ProductExPayload))]
-        public static async Task<JsonNetResponse<ProductExPayload>> UpdateProductExt(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "productExt")] HttpRequest req)
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryPayloadUpdate), Description = "InventoryDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadUpdate))]
+        public static async Task<JsonNetResponse<InventoryPayload>> UpdateProductExt(
+            [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "productExts")] HttpRequest req)
         {
-            var payload = await req.GetParameters<ProductExPayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var payload = await req.GetParameters<InventoryPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryService(dbFactory);
+            if (await svc.UpdateAsync(payload))
+                payload.Inventory = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<InventoryPayload>(payload);
+        }
 
-            if (svc.Update(payload.InventoryData))
-                payload.InventoryData = svc.ToDto();
-            return new JsonNetResponse<ProductExPayload>(payload);
+        /// <summary>
+        /// Load customer list
+        /// </summary>
+        [FunctionName(nameof(ProductExList))]
+        [OpenApiOperation(operationId: "ProductExList", tags: new[] { "ProductExts" }, Summary = "Load productex list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadFind))]
+        public static async Task<JsonNetResponse<InventoryPayload>> ProductExList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "productExts/find")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InventoryList(dataBaseFactory, new InventoryQuery());
+            payload = await srv.GetIProductListAsync(payload);
+            return new JsonNetResponse<InventoryPayload>(payload);
+        }
+
+        /// <summary>
+        /// Add productext
+        /// </summary>
+        [FunctionName(nameof(Sample_ProductExt_Post))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "ProductExtAddSample", tags: new[] { "Sample" }, Summary = "Get new sample of product ext")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadAdd))]
+        public static async Task<JsonNetResponse<InventoryPayloadAdd>> Sample_ProductExt_Post(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/productExts")] HttpRequest req)
+        {
+            return new JsonNetResponse<InventoryPayloadAdd>(InventoryPayloadAdd.GetSampleData());
+        }
+
+        /// <summary>
+        /// find productext
+        /// </summary>
+        [FunctionName(nameof(Sample_ProductExt_Find))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "ProductExtFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of product find")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadFind))]
+        public static async Task<JsonNetResponse<InventoryPayloadFind>> Sample_ProductExt_Find(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/productExts/find")] HttpRequest req)
+        {
+            return new JsonNetResponse<InventoryPayloadFind>(InventoryPayloadFind.GetSampleData());
+        }
+
+        [FunctionName(nameof(ExportProductExt))]
+        [OpenApiOperation(operationId: "ExportWarehouse", tags: new[] { "ProductExts" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        public static async Task<FileContentResult> ExportProductExt(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExts/export")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new InventoryManager(dbFactory);
+
+            var exportData = await svc.ExportAsync(payload);
+            var downfile = new FileContentResult(exportData, "text/csv");
+            downfile.FileDownloadName = "export-warehouse.csv";
+            return downfile;
+        }
+
+        [FunctionName(nameof(ImportProductExt))]
+        [OpenApiOperation(operationId: "ImportProductExt", tags: new[] { "ProductExts" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "File", In = ParameterLocation.Query, Type = typeof(IFormFile), Summary = "File", Description = "submit by form", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayload))]
+        public static async Task<InventoryPayload> ImportProductExt(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExts/import")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var files = req.Form.Files;
+            var svc = new InventoryManager(dbFactory);
+
+            await svc.ImportAsync(payload, files);
+            payload.Success = true;
+            payload.Messages = svc.Messages;
+            return payload;
         }
     }
 }

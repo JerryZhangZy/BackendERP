@@ -5,18 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="so\SalesOrderServiceValidatorDefault - Copy.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="CustomDefineCodes\dto\" />
-    <Folder Include="customer\" />
-    <Folder Include="inventory\" />
     <Folder Include="ap\" />
-    <Folder Include="channelOrder\" />
-    <Folder Include="inventoryLog\" />
-    <Folder Include="shipment\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />
   </ItemGroup>

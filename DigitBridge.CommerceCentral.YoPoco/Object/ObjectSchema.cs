@@ -12,6 +12,8 @@ using DigitBridge.Base.Utility;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Linq.Expressions;
+using System.Dynamic;
+using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
@@ -87,7 +89,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                                 continue;
 
                             var val = reader.GetValue(i);
-                            if (val is null)
+                            if (val is null || val == DBNull.Value)
                                 continue;
 
                             // Get the PocoColumn for this db column, ignore if not known
@@ -242,6 +244,228 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public string GetColumnName(string propertyName)
         {
             return Properties.Values.First(c => c.MemberInfo.Name.Equals(propertyName)).ColumnName;
+        }
+
+        public static IEnumerable<string> GetChangedProperties<T>(object A, object B)
+        {
+            if (A is null || B is null) return null;
+            return ObjectSchema.ForType(typeof(T)).GetChangedProperties(A, B);
+        }
+
+        public IEnumerable<string> GetChangedProperties(object A, object B)
+        {
+            if (A is null || B is null) return null;
+            if (!Properties.Any()) return null;
+
+            var allProperties = Properties.Select(x => x.Value);
+            var allValueProperties = allProperties.Where(col => col.CanCompare);
+            var unequalProperties =
+                from col in allValueProperties
+                let AValue = col.GetValue(A)
+                let BValue = col.GetValue(B)
+                where AValue != BValue && (AValue == null || !AValue.Equals(BValue))
+                select col.Name;
+            return unequalProperties.ToList();
+        }
+
+        public static void CopyProperties<T>(object A, object B, bool ignoreNull, IEnumerable<string> ignoreNames)
+        {
+            if (A is null || B is null) return;
+            ObjectSchema.ForType(typeof(T)).CopyProperties(A, B, ignoreNull, ignoreNames);
+        }
+
+        public void CopyProperties(object A, object B, bool ignoreNull, IEnumerable<string> ignoreNames)
+        {
+            if (A is null || B is null) return;
+            if (!Properties.Any()) return;
+
+            var allProperties = Properties.Select(x => x.Value);
+            var allValueProperties = allProperties.Where(col => col.CanCopy);
+            ignoreNames = ignoreNames?.ToList() ?? null;
+            foreach (var col in allValueProperties)
+            {
+                if (ignoreNames != null && ignoreNames.Contains(col.Name)) continue;
+                var AValue = col.GetValue(A);
+                if (ignoreNull && AValue is null) continue;
+
+                col.SetValue(B, AValue);
+            }
+            return;
+        }
+
+        public static Dictionary<string, PocoColumn> GetProperties<T>() =>
+            ObjectSchema.ForType(typeof(T))?.Properties;
+
+        public void GetCsvMapper(object A, object B, bool ignoreNull, IEnumerable<string> ignoreNames)
+        {
+            if (A is null || B is null) return;
+            if (!Properties.Any()) return;
+
+            var allProperties = Properties.Select(x => x.Value);
+            var allValueProperties = allProperties.Where(col => col.CanCopy);
+            ignoreNames = ignoreNames?.ToList() ?? null;
+            foreach (var col in allValueProperties)
+            {
+                if (ignoreNames != null && ignoreNames.Contains(col.Name)) continue;
+                var AValue = col.GetValue(A);
+                if (ignoreNull && AValue is null) continue;
+
+                col.SetValue(B, AValue);
+            }
+            return;
+        }
+
+    }
+
+    public static class ObjectSchemaExtension
+    {
+        public static dynamic Merge(this object obj, params object[] others)
+        {
+            if (obj == null || others == null || others.Length == 0)
+                return null;
+
+            dynamic expando = new ExpandoObject();
+
+            // get obj Schema
+            var objSchema = ObjectSchema.ForType(obj.GetType());
+            foreach (var item in objSchema.Properties)
+            {
+                AddExpandoObjectProperty(expando, item.Value, obj);
+            }
+
+            foreach (var otherObj in others)
+            {
+                var otherSchema = ObjectSchema.ForType(otherObj.GetType());
+                foreach (var item in otherSchema.Properties)
+                {
+                    AddExpandoObjectProperty(expando, item.Value, otherObj);
+                }
+            }
+            return expando;
+        }
+
+        private static void AddExpandoObjectProperty(ExpandoObject expando, PocoColumn col, object obj)
+        {
+            if (expando == null || col == null || col.PropertyInfo is null) return;
+
+            var result = expando as IDictionary<string, object>;
+            if (result.ContainsKey(col.Name)) return;
+
+            var pi = col.PropertyInfo;
+            var jsonIgnore = pi.GetCustomAttributes(typeof(JsonIgnoreAttribute), true).Any();
+            var isIgnore = pi.GetCustomAttributes(typeof(IgnoreAttribute), true).Any();
+
+            // get name from attributes 
+            var dataMember = pi.GetCustomAttribute<System.Runtime.Serialization.DataMemberAttribute>();
+            var jsonProperty = pi.GetCustomAttribute<JsonPropertyAttribute>();
+            var display = pi.GetCustomAttribute<System.ComponentModel.DataAnnotations.DisplayAttribute>();
+            var nameAttr = dataMember != null
+                ? dataMember.Name
+                : jsonProperty != null
+                    ? jsonProperty.PropertyName
+                    : display != null
+                        ? display.Name
+                        : null;
+
+            var isValueType = (pi.PropertyType.IsValueType || pi.PropertyType == typeof(string) || pi.PropertyType == typeof(byte[]));
+            if (jsonIgnore || isIgnore || !isValueType)
+                return;
+
+            result[col.Name] = col.GetValue(obj);
+        }
+
+        public static dynamic MergeName(this object obj, params object[] others)
+        {
+            if (obj == null || others == null || others.Length == 0)
+                return null;
+
+            dynamic expando = new ExpandoObject();
+
+            // get obj Schema
+            var objSchema = ObjectSchema.ForType(obj.GetType());
+            foreach (var item in objSchema.Properties)
+            {
+                AddExpandoObjectPropertyName(expando, item.Value);
+            }
+
+            foreach (var otherObj in others)
+            {
+                var otherSchema = ObjectSchema.ForType(otherObj.GetType());
+                foreach (var item in otherSchema.Properties)
+                {
+                    AddExpandoObjectPropertyName(expando, item.Value);
+                }
+            }
+            return expando;
+        }
+
+        private static void AddExpandoObjectPropertyName(ExpandoObject expando, PocoColumn col)
+        {
+            if (expando == null || col == null || col.PropertyInfo is null) return;
+
+            var result = expando as IDictionary<string, object>;
+            if (result.ContainsKey(col.Name)) return;
+
+            var pi = col.PropertyInfo;
+            var jsonIgnore = pi.GetCustomAttributes(typeof(JsonIgnoreAttribute), true).Any();
+            var isIgnore = pi.GetCustomAttributes(typeof(IgnoreAttribute), true).Any();
+
+            // get name from attributes 
+            var dataMember = pi.GetCustomAttribute<System.Runtime.Serialization.DataMemberAttribute>();
+            var jsonProperty = pi.GetCustomAttribute<JsonPropertyAttribute>();
+            var display = pi.GetCustomAttribute<System.ComponentModel.DataAnnotations.DisplayAttribute>();
+            var nameAttr = dataMember != null
+                ? dataMember.Name
+                : jsonProperty != null
+                    ? jsonProperty.PropertyName
+                    : display != null
+                        ? display.Name
+                        : null;
+
+
+            var isValueType = (pi.PropertyType.IsValueType || pi.PropertyType == typeof(string) || pi.PropertyType == typeof(byte[]));
+            if (jsonIgnore || isIgnore || !isValueType)
+                return;
+
+            result[col.Name] = string.IsNullOrEmpty(nameAttr) ? col.Name : nameAttr.Split(",")[0];
+        }
+
+        public static IEnumerable<dynamic> FilterAndSortProperty(this IEnumerable<ExpandoObject> expando, IList<KeyValuePair<string, object>> props)
+        {
+            if (expando == null || props == null || props.Count == 0) return expando;
+            var source = expando as IDictionary<string, object>;
+            var result = new List<dynamic>();
+            foreach (var obj in expando)
+                result.Add(obj.FilterAndSortProperty(props));
+            return result;
+        }
+        public static dynamic FilterAndSortProperty(this ExpandoObject expando, IList<KeyValuePair<string, object>> props)
+        {
+            if (expando == null || props == null || props.Count == 0) return expando;
+
+            var source = expando as IDictionary<string, object>;
+            var resultExpando = new ExpandoObject();
+            var result = resultExpando as IDictionary<string, object>;
+            foreach (var item in props)
+            {
+                if (source.TryGetValue(item.Key, out var value))
+                {
+                    result[item.Key] = value;
+                }
+                else if (!result.ContainsKey(item.Key))
+                {
+                    result[item.Key] = item.Value;
+                }
+            }
+            return result;
+        }
+        public static IList<KeyValuePair<string, object>> GetPropertyNames(this ExpandoObject expando)
+        {
+            var source = expando as IDictionary<string, object>;
+            var result = new List<KeyValuePair<string, object>>();
+            foreach (var item in source)
+                result.Add(new KeyValuePair<string, object>(item.Key, null));
+            return result;
         }
 
     }

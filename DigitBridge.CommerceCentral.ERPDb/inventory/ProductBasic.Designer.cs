@@ -172,8 +172,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("BoxWidth",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _boxWidth;
 
-        [Column("Unit",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
-        private byte _unit;
+        [Column("DimensionUnit",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
+        private byte _dimensionUnit;
 
         [Column("HarmonizedCode",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _harmonizedCode;
@@ -301,15 +301,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Product FN SKU. <br> Title: Condition, Display: true, Editable: true
 		/// </summary>
-        public virtual bool Condition
+        public virtual byte Condition
         {
             get
             {
-				return (_condition == 1); 
+				return _condition; 
             }
             set
             {
-				_condition = value ? (byte)1 : (byte)0; 
+				_condition = value; 
 				OnPropertyChanged("Condition", value);
             }
         }
@@ -573,15 +573,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Product is Bundle. None=0 ; BundleItem =1. <br> Title: Bundle, Display: true, Editable: true
 		/// </summary>
-        public virtual bool BundleType
+        public virtual byte BundleType
         {
             get
             {
-				return (_bundleType == 1); 
+				return _bundleType; 
             }
             set
             {
-				_bundleType = value ? (byte)1 : (byte)0; 
+				_bundleType = value; 
 				OnPropertyChanged("BundleType", value);
             }
         }
@@ -589,15 +589,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Product Type. <br> Title: Type, Display: true, Editable: true
 		/// </summary>
-        public virtual bool ProductType
+        public virtual byte ProductType
         {
             get
             {
-				return (_productType == 1); 
+				return _productType; 
             }
             set
             {
-				_productType = value ? (byte)1 : (byte)0; 
+				_productType = value; 
 				OnPropertyChanged("ProductType", value);
             }
         }
@@ -621,15 +621,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Product info need CopyToChildren. <br> Title: CopyToChildren, Display: true, Editable: true
 		/// </summary>
-        public virtual bool CopyToChildren
+        public virtual byte CopyToChildren
         {
             get
             {
-				return (_copyToChildren == 1); 
+				return _copyToChildren; 
             }
             set
             {
-				_copyToChildren = value ? (byte)1 : (byte)0; 
+				_copyToChildren = value; 
 				OnPropertyChanged("CopyToChildren", value);
             }
         }
@@ -669,15 +669,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// IsInRelationship. <br> Title: In Relationship, Display: true, Editable: true
 		/// </summary>
-        public virtual bool IsInRelationship
+        public virtual byte IsInRelationship
         {
             get
             {
-				return (_isInRelationship == 1); 
+				return _isInRelationship; 
             }
             set
             {
-				_isInRelationship = value ? (byte)1 : (byte)0; 
+				_isInRelationship = value; 
 				OnPropertyChanged("IsInRelationship", value);
             }
         }
@@ -717,15 +717,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Unit measure of Weight. <br> Title: Weight Unit, Display: true, Editable: true
 		/// </summary>
-        public virtual bool WeightUnit
+        public virtual byte WeightUnit
         {
             get
             {
-				return (_weightUnit == 1); 
+				return _weightUnit; 
             }
             set
             {
-				_weightUnit = value ? (byte)1 : (byte)0; 
+				_weightUnit = value; 
 				OnPropertyChanged("WeightUnit", value);
             }
         }
@@ -829,16 +829,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Dimension measure unit. <br> Title: Dimension Unit, Display: true, Editable: true
 		/// </summary>
-        public virtual bool Unit
+        public virtual byte DimensionUnit
         {
             get
             {
-				return (_unit == 1); 
+				return _dimensionUnit; 
             }
             set
             {
-				_unit = value ? (byte)1 : (byte)0; 
-				OnPropertyChanged("Unit", value);
+				_dimensionUnit = value; 
+				OnPropertyChanged("DimensionUnit", value);
             }
         }
 
@@ -877,15 +877,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Product Is Blocked. <br> Title: Blocked, Display: true, Editable: true
 		/// </summary>
-        public virtual bool IsBlocked
+        public virtual byte IsBlocked
         {
             get
             {
-				return (_isBlocked == 1); 
+				return _isBlocked; 
             }
             set
             {
-				_isBlocked = value ? (byte)1 : (byte)0; 
+				_isBlocked = value; 
 				OnPropertyChanged("IsBlocked", value);
             }
         }
@@ -1086,7 +1086,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_boxHeight = default(decimal); 
 			_boxLength = default(decimal); 
 			_boxWidth = default(decimal); 
-			_unit = default(byte); 
+			_dimensionUnit = default(byte); 
 			_harmonizedCode = String.Empty; 
 			_taxProductCode = String.Empty; 
 			_isBlocked = default(byte); 
@@ -1099,6 +1099,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_originalUPC = String.Empty; 
 			_productUuid = String.Empty; 
             ClearChildren();
+            return this;
+        }
+
+        public virtual ProductBasic CheckIntegrity()
+        {
+            CheckUniqueId();
             return this;
         }
 

@@ -39,6 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
 		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -48,6 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
 		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -57,6 +59,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
 		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -120,6 +123,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderTime => OrderTime != null;
+
+		/// <summary>
+		/// Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true")]
+        [DataType(DataType.DateTime)]
+        public DateTime? ShipDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasShipDate => ShipDate != null;
 
 		/// <summary>
 		/// (Ignore) Order due date. <br> Display: false, Editable: false

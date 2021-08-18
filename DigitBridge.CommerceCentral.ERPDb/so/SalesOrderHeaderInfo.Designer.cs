@@ -216,6 +216,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("BillToNightPhone",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _billToNightPhone;
 
+        [Column("Notes",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
+        private string _notes;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -1164,6 +1167,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Order notes. <br> Title: Notes, Display: true, Editable: true
+		/// </summary>
+        public virtual string Notes
+        {
+            get
+            {
+				return _notes?.TrimEnd(); 
+            }
+            set
+            {
+				_notes = value.TruncateTo(1000); 
+				OnPropertyChanged("Notes", value);
+            }
+        }
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
@@ -1302,10 +1321,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_billToEmail = String.Empty; 
 			_billToDaytimePhone = String.Empty; 
 			_billToNightPhone = String.Empty; 
+			_notes = String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
             ClearChildren();
+            return this;
+        }
+
+        public virtual SalesOrderHeaderInfo CheckIntegrity()
+        {
+            CheckUniqueId();
             return this;
         }
 

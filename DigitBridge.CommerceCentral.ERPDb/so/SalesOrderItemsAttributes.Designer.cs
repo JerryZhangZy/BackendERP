@@ -163,6 +163,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual SalesOrderItemsAttributes CheckIntegrity()
+        {
+            CheckUniqueId();
+            return this;
+        }
+
         public virtual SalesOrderItemsAttributes ClearChildren()
         {
             return this;

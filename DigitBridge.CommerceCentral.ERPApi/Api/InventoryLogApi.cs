@@ -29,18 +29,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "logUuids", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "logUuids", Description = "Transaction ID Arrays", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayload), Description = "Result is InventoryLogs")]
         public static async Task<JsonNetResponse<InventoryLogPayload>> GetInventoryLogs(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "inventoryLogs/{logUuid?}")] HttpRequest req,
-            string logUuid)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "inventoryLogs")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryLogPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
 
-            if (!string.IsNullOrEmpty(logUuid))
-            {
-                payload.LogUuids.Add(logUuid);
-            }
             var svc = new InventoryLogService(dbFactory);
-            var result = svc.GetListByUuid(payload);
+            var result =await svc.GetListByLogUuidAsync(payload);
 
             return new JsonNetResponse<InventoryLogPayload>(result);
         }
@@ -52,30 +47,30 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "logUuid", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "logUuid", Description = "Transaction ID ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayload), Description = "return delete count")]
         public static async Task<JsonNetResponse<InventoryLogPayload>> DeleteInventoryLogs(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "inventoryLogs/{logUuid}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "inventoryLogs/{logUuid}")] HttpRequest req,
             string logUuid)
         {
             var payload = await req.GetParameters<InventoryLogPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             payload.LogUuids.Add(logUuid);
             var svc = new InventoryLogService(dbFactory);
-            var result= svc.DeleteByLogUuid(payload);
+            var result=await svc.DeleteByLogUuidAsync(payload);
             return new JsonNetResponse<InventoryLogPayload>(result);
         }
         [FunctionName(nameof(AddInventoryLogs))]
         [OpenApiOperation(operationId: "AddInventoryLogs", tags: new[] { "InventoryLogs" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(List<InventoryLogDto>), Description = "InventoryLogList ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayload), Description = "return add count")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryLogPayloadAdd), Description = "InventoryLogList ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayloadAdd), Description = "return add count")]
         public static async Task<JsonNetResponse<InventoryLogPayload>> AddInventoryLogs(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "inventoryLogs")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "inventoryLogs")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryLogPayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryLogService(dbFactory);
 
-            var result= svc.AddList(payload);
+            var result=await svc.AddListAsync(payload);
             return new JsonNetResponse<InventoryLogPayload>(result);
         }
 
@@ -83,18 +78,37 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "UpdateInventoryLogs", tags: new[] { "InventoryLogs" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(List<InventoryLogDto>), Description = "InventoryLogList ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayload), Description = "return update count")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryLogPayloadUpdate), Description = "InventoryLogList ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayloadUpdate), Description = "return update count")]
         public static async Task<JsonNetResponse<InventoryLogPayload>> UpdateInventoryLogs(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "PATCH", Route = "inventoryLogs")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "inventoryLogs")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryLogPayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryLogService(dbFactory);
 
-            var result= svc.UpdateInventoryLogList(payload);
+            var result=await svc.UpdateInventoryLogListAsync(payload);
 
             return new JsonNetResponse<InventoryLogPayload>(result);
+        }
+
+        /// <summary>
+        /// Load inventorylog list
+        /// </summary>
+        [FunctionName(nameof(InventoryLogList))]
+        [OpenApiOperation(operationId: "InventoryLogList", tags: new[] { "InventoryLogs" }, Summary = "Load inventorylog list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryLogPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryLogPayloadFind))]
+        public static async Task<JsonNetResponse<InventoryLogPayload>> InventoryLogList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "inventoryLogs/find")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryLogPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InventoryLogList(dataBaseFactory, new InventoryLogQuery());
+            payload = await srv.GetInventoryLogListAsync(payload);
+            return new JsonNetResponse<InventoryLogPayload>(payload);
         }
     }
 }

@@ -649,6 +649,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
+        public virtual CustomerAddress CheckIntegrity()
+        {
+            CheckUniqueId();
+            return this;
+        }
+
         public virtual CustomerAddress ClearChildren()
         {
             return this;
