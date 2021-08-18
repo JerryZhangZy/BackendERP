@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             var result = new List<dynamic>();
             //TODO change to merge Dto children object
             if (withHeaderText)
-                result.Add(dto.Customer.MergeName(dto.CustomerAddress));
+                result.Add(dto.Customer.MergeName(dto.CustomerAttributes));
             result.Add(dto.Customer.Merge(dto.CustomerAttributes));
             return result;
         }

@@ -1,5 +1,18 @@
 
 
+
+
+
+              
+
+
+
+
+
+
+
+
+
               
     
 
@@ -39,7 +52,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [JsonIgnore, XmlIgnore]
         public new string UniqueId => DistributionCenter.UniqueId;
-
+        
+		 [JsonIgnore, XmlIgnore] 
+		public static string DistributionCenterTable ="DistributionCenter ";
+		
         #region CRUD Methods
 
         public override bool Equals(WarehouseData other)
@@ -137,8 +153,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin();
-			DistributionCenter.SetDataBaseFactory(dbFactory);
-			if (!DistributionCenter.Save()) return false;
+
+			 if (NeedSave(DistributionCenterTable))
+			{
+				DistributionCenter.SetDataBaseFactory(dbFactory);
+				if (!DistributionCenter.Save()) return false;
+			}
 
 			if (_OnSave != null)
 			{
@@ -160,8 +180,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
-			DistributionCenter.SetDataBaseFactory(dbFactory); 
-			if (DistributionCenter.Delete() <= 0) return false; 
+
+			 if (NeedDelete(DistributionCenterTable))
+			{
+				DistributionCenter.SetDataBaseFactory(dbFactory); 
+				if (DistributionCenter.Delete() <= 0) return false; 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -212,8 +236,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin(); 
-			DistributionCenter.SetDataBaseFactory(dbFactory); 
-			if (!(await DistributionCenter.SaveAsync().ConfigureAwait(false))) return false; 
+
+			 if (NeedSave(DistributionCenterTable))
+			{
+				DistributionCenter.SetDataBaseFactory(dbFactory); 
+				if (!(await DistributionCenter.SaveAsync().ConfigureAwait(false))) return false; 
+			}
 			if (_OnSave != null)
 			{
 				if (!_OnSave(dbFactory, this))
@@ -234,8 +262,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
+			 if (NeedDelete(DistributionCenterTable))
+			{
 			DistributionCenter.SetDataBaseFactory(dbFactory); 
 			if ((await DistributionCenter.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))

@@ -98,10 +98,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    if (number == null)
-                        isValid = InventoryServiceHelper.ExistId(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum);
-                    else
+                    if (!string.IsNullOrEmpty(number))
+                    {
                         isValid = InventoryServiceHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                    }
+                    else
+                    {
+                        if (dto.HasProductBasic)
+                        {
+                            if(dto.ProductBasic.HasProductUuid)
+                                isValid = InventoryServiceHelper.ExistId(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum);
+                            else
+                                isValid = InventoryServiceHelper.ExistNumber(dto.ProductBasic.SKU, pl.MasterAccountNum, pl.ProfileNum);
+                        }
+                        else if(dto.HasProductExt)
+                        {
+                            isValid = dto.ProductExt.HasSKU && dto.ProductExt.MasterAccountNum.ToInt() == pl.MasterAccountNum && dto.ProductExt.ProfileNum.ToInt() == pl.ProfileNum;
+                        }
+                        else
+                        {
+                            isValid = false;
+                        }
+                    }
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -128,10 +146,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    if (number == null)
-                        isValid = await InventoryServiceHelper.ExistIdAsync(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(number))
+                    {
+                        isValid = await InventoryServiceHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
+                    }
                     else
-                        isValid = await InventoryServiceHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                    {
+                        if (dto.HasProductBasic)
+                        {
+                            if (dto.ProductBasic.HasProductUuid)
+                                isValid = await InventoryServiceHelper.ExistIdAsync(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum);
+                            else
+                                isValid = await InventoryServiceHelper.ExistNumberAsync(dto.ProductBasic.SKU, pl.MasterAccountNum, pl.ProfileNum);
+                        }
+                        else if (dto.HasProductExt)
+                        {
+                            isValid = dto.ProductExt.HasSKU && dto.ProductExt.MasterAccountNum.ToInt() == pl.MasterAccountNum && dto.ProductExt.ProfileNum.ToInt() == pl.ProfileNum;
+                        }
+                        else
+                        {
+                            isValid = false;
+                        }
+                    }
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -379,16 +415,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else if (processingMode == ProcessingMode.Edit)
             {
-                if (dto.ProductBasic.RowNum.IsZero())
+                if (dto.HasProductBasic)
+                {
+                    if (dto.ProductBasic.RowNum.IsZero())
+                    {
+                        isValid = false;
+                        AddError("ProductBasic.RowNum is required.");
+                    }
+                    // This property should not be changed.
+                    dto.ProductBasic.MasterAccountNum = null;
+                    dto.ProductBasic.ProfileNum = null;
+                    dto.ProductBasic.DatabaseNum = null;
+                    dto.ProductBasic.ProductUuid = null;
+                }
+                else if(dto.HasProductExt)
+                {
+                    using (var tx = new ScopedTransaction(dbFactory))
+                    {
+                        isValid = InventoryServiceHelper.ExistNumber(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
+                    }
+                    if (isValid)
+                        AddError("Data not found");
+                }
+                else
                 {
                     isValid = false;
-                    AddError("ProductBasic.RowNum is required.");
+                    AddError("Data not found");
                 }
-                // This property should not be changed.
-                dto.ProductBasic.MasterAccountNum = null;
-                dto.ProductBasic.ProfileNum = null;
-                dto.ProductBasic.DatabaseNum = null;
-                dto.ProductBasic.ProductUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
                 if (dto.Inventory != null && dto.Inventory.Count > 0)
@@ -431,16 +484,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else if (processingMode == ProcessingMode.Edit)
             {
-                if (dto.ProductBasic.RowNum.IsZero())
+                if (dto.HasProductBasic)
+                {
+                    if (dto.ProductBasic.RowNum.IsZero())
+                    {
+                        isValid = false;
+                        AddError("ProductBasic.RowNum is required.");
+                    }
+                    // This property should not be changed.
+                    dto.ProductBasic.MasterAccountNum = null;
+                    dto.ProductBasic.ProfileNum = null;
+                    dto.ProductBasic.DatabaseNum = null;
+                    dto.ProductBasic.ProductUuid = null;
+                }
+                else if (dto.HasProductExt)
+                {
+                    using (var tx = new ScopedTransaction(dbFactory))
+                    {
+                        isValid = await InventoryServiceHelper.ExistNumberAsync(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
+                    }
+                    if (isValid)
+                        AddError("Data not found");
+                }
+                else
                 {
                     isValid = false;
-                    AddError("ProductBasic.RowNum is required.");
+                    AddError("Data not found");
                 }
-                // This property should not be changed.
-                dto.ProductBasic.MasterAccountNum = null;
-                dto.ProductBasic.ProfileNum = null;
-                dto.ProductBasic.DatabaseNum = null;
-                dto.ProductBasic.ProductUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
                 if (dto.Inventory != null && dto.Inventory.Count > 0)

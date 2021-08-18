@@ -64,15 +64,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
         [XmlIgnore, JsonIgnore]
         protected virtual IList<string> _IgnoreDelete { get; } = new List<string>();
 
-        protected virtual bool NeedSave(string name) => _IgnoreSave.Contains(name);
-        protected virtual bool NeedDelete(string name) => _IgnoreDelete.Contains(name);
+        protected virtual bool NeedSave(string name) => !_IgnoreSave.Contains(name);
+        protected virtual bool NeedDelete(string name) => !_IgnoreDelete.Contains(name);
 
-        protected virtual void AddIgnoreSave(string name)
+        public virtual void AddIgnoreSave(string name)
         {
             if (!_IgnoreSave.Contains(name)) 
                 _IgnoreSave.Add(name);
         }
-        protected virtual void AddIgnoreDelete(string name)
+        public virtual void AddIgnoreDelete(string name)
         {
             if (!_IgnoreDelete.Contains(name))
                 _IgnoreDelete.Contains(name);

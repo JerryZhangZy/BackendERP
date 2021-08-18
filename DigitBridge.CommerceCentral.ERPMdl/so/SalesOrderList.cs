@@ -135,7 +135,7 @@ COALESCE(ordst.text, '') orderStatusText,
         {
             this.QueryObject = queryObject;
 
-            //SetSecurityParameter(1, 1);
+            QueryObject.SetSecurityParameter(10001, 10001);
             //this.LoadRequestParameter(payload);
             var sqlWhere = QueryObject.GetSQLWithPrefixBySqlParameter(SalesOrderHeaderHelper.TableAllies);
             var sql = $@"
@@ -159,32 +159,35 @@ FOR JSON PATH
                 {
                     var datas = new List<SalesOrderData>();
                     var headers = sb.ToString().JsonToObject<IList<SalesOrderHeader>>();
-                    foreach (var h in headers)
+                    if (headers != null)
                     {
-                        var data = new SalesOrderData(dbFactory);
-                        data.Clear();
-                        data.SalesOrderHeader = h;
-                        if (h.HasSalesOrderHeaderInfoJson)
+                        foreach (var h in headers)
                         {
-                            data.SalesOrderHeaderInfo = h.SalesOrderHeaderInfoJson[0];
-                            h.SalesOrderHeaderInfoJson = null;
+                            var data = new SalesOrderData(dbFactory);
+                            data.Clear();
+                            data.SalesOrderHeader = h;
+                            if (h.HasSalesOrderHeaderInfoJson)
+                            {
+                                data.SalesOrderHeaderInfo = h.SalesOrderHeaderInfoJson[0];
+                                h.SalesOrderHeaderInfoJson = null;
+                            }
+                            if (h.HasSalesOrderHeaderAttributesJson)
+                            {
+                                data.SalesOrderHeaderAttributes = h.SalesOrderHeaderAttributesJson[0];
+                                h.SalesOrderHeaderAttributesJson = null;
+                            }
+                            if (h.HasSalesOrderItemsJson)
+                            {
+                                data.SalesOrderItems = h.SalesOrderItemsJson;
+                                h.SalesOrderItemsJson = null;
+                            }
+                            if (h.HasSalesOrderItemsAttributesJson)
+                            {
+                                data.SalesOrderItemsAttributes = h.SalesOrderItemsAttributesJson;
+                                h.SalesOrderItemsAttributesJson = null;
+                            }
+                            datas.Add(data);
                         }
-                        if (h.HasSalesOrderHeaderAttributesJson)
-                        {
-                            data.SalesOrderHeaderAttributes = h.SalesOrderHeaderAttributesJson[0];
-                            h.SalesOrderHeaderAttributesJson = null;
-                        }
-                        if (h.HasSalesOrderItemsJson)
-                        {
-                            data.SalesOrderItems = h.SalesOrderItemsJson;
-                            h.SalesOrderItemsJson = null;
-                        }
-                        if (h.HasSalesOrderItemsAttributesJson)
-                        {
-                            data.SalesOrderItemsAttributes = h.SalesOrderItemsAttributesJson;
-                            h.SalesOrderItemsAttributesJson = null;
-                        }
-                        datas.Add(data);
                     }
                     return datas;
                 }

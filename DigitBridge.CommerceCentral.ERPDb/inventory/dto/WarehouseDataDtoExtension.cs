@@ -34,10 +34,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static IEnumerable<dynamic> MergeHeaderRecord(this WarehouseDataDto dto, bool withHeaderText = false)
         {
             var result = new List<dynamic>();
-            //TODO change to merge Dto children object
-            //if (withHeaderText)
-            //    result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
-            //result.Add(dto.SalesOrderHeader.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
             if (withHeaderText)
                 result.Add(dto.DistributionCenter.MergeName(dto.DistributionCenter));
             result.Add(dto.DistributionCenter.Merge(dto.DistributionCenter));
@@ -68,6 +64,31 @@ namespace DigitBridge.CommerceCentral.ERPDb
             //    result.Add(item.Merge(item.SalesOrderItemsAttributes));
             //}
             //return result;
+        }
+
+        /// <summary>
+        /// Merge SalesOrderDataDto detailt list to dynamic object list
+        /// </summary>
+        /// <param name="dto">SalesOrderDataDto object to merge data</param>
+        /// <param name="withHeaderText">Add header text line at first</param>
+        /// <returns>list of dynamic object include all properties of detailt objects</returns>
+        public static IEnumerable<dynamic> MergeDetailRecord(this IEnumerable<WarehouseDataDto> dtoList, bool withHeaderText = false)
+        {
+            //TODO change to merge Dto children object
+            if (dtoList == null)
+                return null;
+
+            var result = new List<dynamic>();
+            var warehouse = new WarehouseDataDto() { DistributionCenter = new DistributionCenterDto() };
+
+            if (withHeaderText)
+                result.Add(warehouse.MergeName(warehouse.DistributionCenter));
+
+            foreach (var item in dtoList)
+            {
+                result.Add(item.Merge(item.DistributionCenter));
+            }
+            return result;
         }
 
 
