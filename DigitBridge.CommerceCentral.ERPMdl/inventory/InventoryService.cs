@@ -102,7 +102,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // validate data for Add processing
             if (!Validate())
                 return false;
-
             return SaveData();
         }
 
