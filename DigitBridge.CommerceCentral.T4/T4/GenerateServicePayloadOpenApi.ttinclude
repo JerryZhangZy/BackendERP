@@ -33,6 +33,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) <#= processName #> object to add.")]
         public <#= StructureDtoName #> <#= processName #> { get; set; }
+        
+        public static <#= PayloadName #>Add GetSampleData()
+        {
+            var data = new <#= PayloadName #>Add();
+            data.<#= processName #> = new <#= StructureDtoName #>().GetFakerData();
+            return data;
+        }
     }
 
 
@@ -99,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request Response payload for FIND API
     /// </summary>
     [Serializable()]
-    public class <#= PayloadName #>Find : PayloadBase
+    public class <#= PayloadName #>Find : FilterPayloadBase<<#= processName #>Filter>
     {
         /// <summary>
         /// (Response) List result which load by filter and paging.
@@ -111,7 +118,33 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// (Response) List result count which load by filter and paging.
         /// </summary>
         public int <#= processName #>ListCount { get; set; }
+        
+        public static <#= PayloadName #>Find GetSampleData()
+        {
+            var data = new <#= PayloadName #>Find()
+            {
+                LoadAll = false,
+                Skip = 0,
+                Top = 20,
+                SortBy = "",
+                Filter = <#= processName #>Filter.GetFaker().Generate()
+            };
+            return data;
+        }
+    }
 
+    public class <#= processName #>Filter
+    {
+        //public string City { get; set; }
+
+        public static Faker<<#= processName #>Filter> GetFaker()
+        {
+            #region faker data rules
+            return new Faker<<#= processName #>Filter>()
+                //.RuleFor(u => u.City, f => "")
+                ;
+            #endregion faker data rules
+        }
     }
 
 }

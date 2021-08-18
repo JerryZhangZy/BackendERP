@@ -46,28 +46,29 @@
     var OpenApiPayloadName = $"{PayloadName}OpenApi";
 
     // generate repository class for each table
-    var generateModel = true;
-    var generateDto = true;
-    var generateModelHelper = true;
+    var generateModel = false;
+    var generateDto = false;
+    var generateModelHelper = false;
 
     // generate tester class for each table repository
-    var generateTester = true;
+    var generateTester = false;
 
     // generate structure repository class contain multiple table
-    var generateStructureRepository = true;
-    var generateStructureTester = true;
+    var generateStructureRepository = false;
+    var generateStructureTester = false;
 
     // generate structure Dto class
-    var generateStructureDto = true;
-    var generateStructureDtoTester = true;
+    var generateStructureDto = false;
+    var generateStructureDtoCsv = true;
+    var generateStructureDtoTester = false;
     var StructureDtoName = $"{structureName}Dto";
 
     // generate service class
-    var generateService = true;
+    var generateService = false;
     var ServiceName = $"{processName}Service";
     var ServiceHelperName = $"{processName}Helper";
 
-    var generateServiceTester = true;
+    var generateServiceTester = false;
 
     var indent = 2;
     var dir = string.Empty;

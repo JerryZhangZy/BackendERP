@@ -47,15 +47,21 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return fileName;
         }
 
-        public virtual byte[] Export(IEnumerable<T> data)
+        public virtual byte[] Export(IEnumerable<T> datas)
         {
+            var config = GetConfiguration();
+            config.HasHeaderRecord = false;
             using (var ms = new MemoryStream())
             {
                 using (var writer = new StreamWriter(ms))
-                using (var csv = new CsvWriter(writer, GetConfiguration()))
+                using (var csv = new CsvWriter(writer, config))
                 {
-                    RegisterMapper(csv.Context);
-                    csv.WriteRecords<T>(data);
+                    csv.Context.Configuration.HasHeaderRecord = false;
+                    foreach (var data in datas)
+                    {
+                        WriteCsv(data, csv);
+                    }
+                    csv.Flush();
                 }
                 return ms.ToArray();
             }
@@ -63,7 +69,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
        protected virtual void WriteCsv(T data, CsvWriter csv)
         {
-
+            throw new Exception("must override WriteCsv  Method");
         }
 
         public virtual IEnumerable<T> Import(string fileName)
@@ -80,14 +86,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public virtual IEnumerable<T> Import(Stream stream)
         {
-            IEnumerable<T> data;
+            IList<T> data= new List<T>();
             using (var reader = new StreamReader(stream))
             using (var csv = new CsvReader(reader, GetConfiguration()))
             {
                 RegisterMapper(csv.Context);
-                data = csv.GetRecords<T>();
+                ReadEntities(csv, data);
             }
             return data;
+        }
+
+        public virtual void ReadEntities(CsvReader reader,IList<T> data)
+        {
+            throw new Exception("must override ReadEntities  Method");
         }
 
     }
