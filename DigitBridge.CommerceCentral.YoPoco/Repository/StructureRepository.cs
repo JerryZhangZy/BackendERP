@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
@@ -9,7 +10,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
     public class StructureRepository<TEntity> : IStructureRepository<TEntity>
         where TEntity : StructureRepository<TEntity>, new()
     {
-        public StructureRepository() {}
+        public StructureRepository() { }
 
         public StructureRepository(IDataBaseFactory dbFactory)
         {
@@ -30,7 +31,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return _dbFactory;
             }
         }
-            
+
         public TEntity SetDataBaseFactory(IDataBaseFactory dbFactory)
         {
             _dbFactory = dbFactory;
@@ -57,6 +58,25 @@ namespace DigitBridge.CommerceCentral.YoPoco
         #endregion Cache
 
         #region Properties
+
+        [XmlIgnore, JsonIgnore]
+        protected virtual IList<string> _IgnoreSave { get; } = new List<string>();
+        [XmlIgnore, JsonIgnore]
+        protected virtual IList<string> _IgnoreDelete { get; } = new List<string>();
+
+        protected virtual bool NeedSave(string name) => _IgnoreSave.Contains(name);
+        protected virtual bool NeedDelete(string name) => _IgnoreDelete.Contains(name);
+
+        protected virtual void AddIgnoreSave(string name)
+        {
+            if (!_IgnoreSave.Contains(name)) 
+                _IgnoreSave.Add(name);
+        }
+        protected virtual void AddIgnoreDelete(string name)
+        {
+            if (!_IgnoreDelete.Contains(name))
+                _IgnoreDelete.Contains(name);
+        }
 
         [XmlIgnore, JsonIgnore]
         public virtual bool AllowNull { get; private set; } = true;
