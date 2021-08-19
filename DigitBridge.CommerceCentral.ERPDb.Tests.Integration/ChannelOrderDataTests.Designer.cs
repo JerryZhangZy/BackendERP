@@ -33,6 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public static ChannelOrderData GetFakerData()
         {
 			var ChannelOrderData = new ChannelOrderData(); 
+
 			ChannelOrderData.OrderHeader = OrderHeaderTests.GetFakerData().Generate(); 
 			ChannelOrderData.OrderLine = OrderLineTests.GetFakerData().Generate(10); 
 			return ChannelOrderData; 
