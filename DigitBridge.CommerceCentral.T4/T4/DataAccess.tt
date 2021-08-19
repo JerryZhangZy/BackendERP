@@ -4,9 +4,7 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-
 <#@ include file="ParseSqlFile.ttinclude" #>
-
 <#
 /*
     T4 template to generate service, repository, data structure and tester for specify aspect 
@@ -74,7 +72,7 @@
 //SettingForDistributionCenter
 //SettingForOrderDCAssignment
 #>
-<#@ include file="SettingForOrderDCAssignment.ttinclude" #>
+<#@ include file="SettingForShipment.ttinclude" #>
 <#
     var overridesetting=true;
     //rewrite setting config
@@ -109,7 +107,6 @@
         foreach(var table in tables.Values)
         {
 #>              
-
 <#          // Generate model output
 	        if (generateModel)
 	        {
@@ -120,7 +117,6 @@
                 SaveOutput(dir, $"{table.Name}.Designer.cs");
             }
 #>
-
 <#          // Generate model output
 	        if (generateModel)
 	        {
@@ -131,7 +127,6 @@
                 SaveOutputNotExists(dir, $"{table.Name}.cs");
             }
 #>
-
 <#          // Generate model SQL helper output
 	        if (generateModelHelper)
 	        {
@@ -152,8 +147,6 @@
                 SaveOutputNotExists(dir, $"{table.Name}HelperTests.cs");
             }
 #>
-
-
 <#          // Generate tester class
 	        if (generateTester)
 	        {
@@ -164,7 +157,6 @@
                 SaveOutput(dir, $"{table.Name}Tests.Designer.cs");
             }
 #>
-
 <#          // Generate tester class
 	        if (generateTester)
 	        {
@@ -175,7 +167,6 @@
                 SaveOutputNotExists(dir, $"{table.Name}Tests.cs");
             }
 #>
-
 <#          // Generate tester class
 	        if (generateDto)
 	        {
@@ -186,12 +177,10 @@
                 SaveOutputNotExists(dir, $"{table.DtoName}.cs");
             }
 #>
-
 <# 
         }
     }
 #>
-
 <#      
     // Generate structure repository class
 	if (generateStructureRepository && StructureClass != null)
@@ -202,26 +191,22 @@
         dir = Path.Combine(path,StructureFolder);
         SaveOutput(dir, $"{StructureClass.ClassName}.Designer.cs");
 #>
-
 <#@ include file="GenerateStructurePartial.ttinclude" #>
 <# 
         dir = Path.Combine(path,StructureFolder);
         SaveOutputNotExists(dir, $"{StructureClass.ClassName}.cs");
 #>
 <# } #>
-
 <#@ include file="GenerateServicePayload.ttinclude" #>
 <# 
         dir = Path.Combine(path,StructureFolder);
         SaveOutputNotExists(dir, $"{PayloadName}.cs");
 #>
-
 <#@ include file="GenerateServicePayloadOpenApi.ttinclude" #>
 <# 
         dir = Path.Combine(path,OpenApiPayloadFolder);
         SaveOutputNotExists(dir, $"{OpenApiPayloadName}.cs");
 #>
-
 <#      
     // Generate structure repository class
 	if (generateStructureTester && StructureClass != null)
@@ -232,14 +217,12 @@
         dir = Path.Combine(path,TesterFolder);
         SaveOutput(dir, $"{StructureClass.ClassName}Tests.Designer.cs");
 #>
-
 <#@ include file="GenerateStructureTestPartial.ttinclude" #>
 <# 
         dir = Path.Combine(path,TesterFolder);
         SaveOutputNotExists(dir, $"{StructureClass.ClassName}Tests.cs");
 #>
 <# } #>
-
 <#  // Generate StructureDto class
 	if (generateStructureDto && StructureClass != null)
 	{
@@ -260,7 +243,6 @@
         SaveOutputNotExists(dir, $"{StructureDtoName}Extension.cs");
 #>
 <# } #>
-
 <#  // Generate StructureDto class
 	if (generateStructureDtoCsv && StructureClass != null)
 	{
@@ -271,7 +253,6 @@
         SaveOutputNotExists(dir, $"{StructureDtoName}Csv.cs");
 #>
 <# } #>
-
 <#      
     // Generate service tester class
 	if (generateStructureDtoTester)
@@ -283,8 +264,6 @@
         SaveOutputNotExists(dir, $"{StructureDtoName}Tests.cs");
 #>
 <# } #>
-
-
 <#      
     // Generate structure repository class
 	if (generateService && ServiceName != null)
@@ -295,19 +274,16 @@
         dir = Path.Combine(path,ServiceFolder);
         SaveOutput(dir, $"{ServiceName}.Designer.cs");
 #>
-
 <#@ include file="GenerateServicePartial.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceFolder);
         SaveOutputNotExists(dir, $"{ServiceName}.cs");
 #>
-
 <#@ include file="GenerateServiceHelper.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceFolder);
         SaveOutputNotExists(dir, $"{ServiceHelperName}.cs");
 #>
-
 <#@ include file="GenerateServiceInterface.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceFolder);
@@ -324,7 +300,6 @@
         SaveOutputNotExists(dir, $"{ServiceName}ValidatorDefault.cs");
 #>
 <# } #>
-
 <#      
     // Generate service tester class
 	if (generateServiceTester && ServiceName != null)
@@ -335,23 +310,17 @@
         dir = Path.Combine(path,ServiceTesterFolder);
         SaveOutput(dir, $"{ServiceName}Tests.Designer.cs");
 #>
-
 <#@ include file="GenerateServiceTestPartial.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceTesterFolder);
         SaveOutputNotExists(dir, $"{ServiceName}Tests.cs");
 #>
-
 <#@ include file="GenerateServiceHelperTest.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceTesterFolder);
         SaveOutputNotExists(dir, $"{ServiceHelperName}Tests.cs");
 #>
-
 <# } #>
-
-
-
 <#+
     public void SaveOutput(string destinationFolder, string outputFileName)
     {

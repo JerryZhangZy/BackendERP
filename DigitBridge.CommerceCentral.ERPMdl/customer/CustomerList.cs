@@ -8,6 +8,8 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
+using Helper = DigitBridge.CommerceCentral.ERPDb.CustomerHelper;
+using AdrHelper = DigitBridge.CommerceCentral.ERPDb.CustomerAddressHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -27,61 +29,57 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{CustomerHelper.Digit_seller_id()}, 
-{CustomerHelper.CustomerUuid()}, 
-{CustomerHelper.CustomerCode()}, 
-{CustomerHelper.CustomerName()}, 
-{CustomerHelper.Contact()}, 
-{CustomerHelper.Contact2()}, 
-{CustomerHelper.Contact3()}, 
-{CustomerHelper.Phone1()}, 
-{CustomerHelper.Phone2()}, 
-{CustomerHelper.Phone3()}, 
-{CustomerHelper.Phone4()}, 
-{CustomerHelper.Email()}, 
-{CustomerHelper.WebSite()}, 
-{CustomerHelper.CustomerType()}, 
-{CustomerHelper.CustomerStatus()}, 
-{CustomerHelper.BusinessType()}, 
-{CustomerHelper.PriceRule()}, 
-{CustomerHelper.FirstDate()}, 
-{CustomerHelper.Currency()}, 
-{CustomerHelper.CreditLimit()}, 
-{CustomerHelper.TaxRate()}, 
-{CustomerHelper.DiscountRate()}, 
-{CustomerHelper.ShippingCarrier()}, 
-{CustomerHelper.ShippingClass()}, 
-{CustomerHelper.ShippingAccount()}, 
-{CustomerHelper.Priority()}, 
-{CustomerHelper.Area()}, 
-{CustomerHelper.Region()}, 
-{CustomerHelper.Districtn()}, 
-{CustomerHelper.Zone()}, 
-{CustomerHelper.TaxId()}, 
-{CustomerHelper.ResaleLicense()}, 
-{CustomerHelper.ClassCode()}, 
-{CustomerHelper.DepartmentCode()}, 
-{CustomerHelper.DivisionCode()}, 
-{CustomerHelper.SourceCode()}, 
-{CustomerHelper.Terms()}, 
-{CustomerHelper.TermsDays()},
-{CustomerAddressHelper.AddressCode()},
-{CustomerAddressHelper.AddressType()},
-{CustomerAddressHelper.Description()},
-{CustomerAddressHelper.Name()},
-{CustomerAddressHelper.FirstName()},
-{CustomerAddressHelper.LastName()},
-{CustomerAddressHelper.Suffix()},
-{CustomerAddressHelper.Company()},
-{CustomerAddressHelper.CompanyJobTitle()},
-{CustomerAddressHelper.Attention()},
-{CustomerAddressHelper.City()},
-{CustomerAddressHelper.State()},
-{CustomerAddressHelper.PostalCode()},
-{CustomerAddressHelper.County()},
-{CustomerAddressHelper.Country()},
-{CustomerAddressHelper.DaytimePhone()},
-{CustomerAddressHelper.NightPhone()}
+{Helper.Digit_seller_id()}, 
+{Helper.RowNum()}, 
+{Helper.CustomerUuid()}, 
+{Helper.CustomerCode()}, 
+{Helper.CustomerName()}, 
+{Helper.Contact()}, 
+{Helper.Contact2()}, 
+{Helper.Contact3()}, 
+{Helper.Phone1()}, 
+{Helper.Phone2()}, 
+{Helper.Phone3()}, 
+{Helper.Phone4()}, 
+{Helper.Email()}, 
+{Helper.WebSite()}, 
+{Helper.CustomerType()}, 
+{Helper.CustomerStatus()}, 
+COALESCE(st.text, '') customerStatusText, 
+{Helper.BusinessType()}, 
+{Helper.PriceRule()}, 
+{Helper.FirstDate()}, 
+{Helper.Currency()}, 
+{Helper.CreditLimit()}, 
+{Helper.TaxRate()}, 
+{Helper.DiscountRate()}, 
+{Helper.ShippingCarrier()}, 
+{Helper.ShippingClass()}, 
+{Helper.ShippingAccount()}, 
+{Helper.Priority()}, 
+{Helper.Area()}, 
+{Helper.Region()}, 
+{Helper.Districtn()}, 
+{Helper.Zone()}, 
+{Helper.TaxId()}, 
+{Helper.ResaleLicense()}, 
+{Helper.ClassCode()}, 
+{Helper.DepartmentCode()}, 
+{Helper.DivisionCode()}, 
+{Helper.SourceCode()}, 
+{Helper.Terms()}, 
+{Helper.TermsDays()},
+{AdrHelper.AddressCode()},
+{AdrHelper.AddressType()},
+{AdrHelper.Description()},
+{AdrHelper.Name()},
+{AdrHelper.Company()},
+{AdrHelper.Attention()},
+{AdrHelper.City()},
+{AdrHelper.State()},
+{AdrHelper.PostalCode()},
+{AdrHelper.Country()},
+{AdrHelper.DaytimePhone()}
 ";
             return this.SQL_Select;
         }
@@ -89,8 +87,11 @@ SELECT
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
- FROM {CustomerHelper.TableName} {CustomerHelper.TableAllies} 
-LEFT JOIN {CustomerAddressHelper.TableName} {CustomerAddressHelper.TableAllies} ON ({CustomerHelper.TableAllies}.CustomerUuid = {CustomerAddressHelper.TableAllies}.CustomerUuid)
+FROM {Helper.TableName} {Helper.TableAllies} 
+OUTER APPLY ( 
+    SELECT TOP 1 i.* FROM {AdrHelper.TableName} i WHERE ({Helper.TableAllies}.CustomerUuid = i.CustomerUuid AND i.AddressCode = 'BILL')
+) {AdrHelper.TableAllies}
+LEFT JOIN @CustomerStatus st ON ({Helper.TableAllies}.CustomerStatus = st.num)
 ";
             return this.SQL_From;
         }
@@ -98,7 +99,7 @@ LEFT JOIN {CustomerAddressHelper.TableName} {CustomerAddressHelper.TableAllies} 
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-            //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
+            paramList.Add("@CustomerStatus".ToEnumParameter<CustomerStatus>());
             //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
 
             return paramList.ToArray();
@@ -107,26 +108,6 @@ LEFT JOIN {CustomerAddressHelper.TableName} {CustomerAddressHelper.TableAllies} 
 
         #endregion override methods
 
-        protected virtual string GetSQL_select_RowNum()
-        {
-            this.SQL_Select = $@"
-SELECT distinct 
- {CustomerHelper.TableAllies}.RowNum
-";
-            return this.SQL_Select;
-        }
-
-        public override void GetSQL_all()
-        {
-            QueryObject.LoadJson = false;
-            this.GetSQL_where();
-            this.GetSQL_select_RowNum();
-            this.GetSQL_from();
-            this.SQL_WithoutOrder = $"{this.SQL_Select} {this.SQL_From} {this.SQL_Where} ";
-            // set default order by
-            this.AddDefaultOrderBy();
-            this.GetSQL_orderBy();
-        }
         public virtual CustomerPayload GetCustomerList(CustomerPayload payload)
         {
             if (payload == null)
@@ -186,8 +167,8 @@ SELECT distinct
             var rowNumList = new List<long>();
 
             var sql = $@"
-SELECT {CustomerHelper.TableAllies}.RowNum 
-FROM {CustomerHelper.TableName} {CustomerHelper.TableAllies}
+SELECT {Helper.TableAllies}.RowNum 
+FROM {Helper.TableName} {Helper.TableAllies}
 {base.GetSQL_where()}
 ";
             try
@@ -214,8 +195,8 @@ FROM {CustomerHelper.TableName} {CustomerHelper.TableAllies}
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
             var sql = $@"
-SELECT {CustomerHelper.TableAllies}.RowNum 
-FROM {CustomerHelper.TableName} {CustomerHelper.TableAllies}
+SELECT {Helper.TableAllies}.RowNum 
+FROM {Helper.TableName} {Helper.TableAllies}
 {base.GetSQL_where()}
 ";
             try
