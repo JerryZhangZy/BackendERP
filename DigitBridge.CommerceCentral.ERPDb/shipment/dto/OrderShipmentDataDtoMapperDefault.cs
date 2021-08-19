@@ -261,9 +261,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
-			//TODO.Manual added. Take this to T4
 			data.CheckIntegrity();
-
 			return;
 		}
 		protected virtual IList<OrderShipmentShippedItem> ReadOrderShipmentShippedItem(IList<OrderShipmentShippedItem> data, IList<OrderShipmentShippedItemDto> dto)

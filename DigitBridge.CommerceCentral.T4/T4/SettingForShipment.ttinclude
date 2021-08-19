@@ -47,7 +47,7 @@
 
     // generate repository class for each table
     var generateModel = false;
-    var generateDto = false;
+    var generateDto = true;
     var generateModelHelper = false;
 
     // generate tester class for each table repository
@@ -58,7 +58,7 @@
     var generateStructureTester = false;
 
     // generate structure Dto class
-    var generateStructureDto = false;
+    var generateStructureDto = true;
     var generateStructureDtoCsv = true;
     var generateStructureDtoTester = false;
     var StructureDtoName = $"{structureName}Dto";

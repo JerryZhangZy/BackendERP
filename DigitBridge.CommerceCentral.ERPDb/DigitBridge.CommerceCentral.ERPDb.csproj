@@ -39,7 +39,6 @@
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="DTO\" />
     <Folder Include="po\dto\" />
-    <Folder Include="shipment\dto\" />
     <Folder Include="vendor\dto\" />
   </ItemGroup>
 
