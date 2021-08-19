@@ -50,21 +50,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 using (var csv = new CsvWriter(writer, config))
                 {
                     var detailRecords = datas.MergeDetailRecord(true).ToList();
-                    var props = new List<KeyValuePair<string, object>>();
-                    if (Format?.Columns == null || Format?.Columns?.Count == 0)
-                        props = ((ExpandoObject)detailRecords[0]).GetPropertyNames().ToList();
-                    // add RecordType column at first
-                    props.Insert(0, new KeyValuePair<string, object>("RecordType", "RecordType"));
-
-                    // Sort property of object by orders
-                    detailRecords[0] = ((ExpandoObject)detailRecords[0]).FilterAndSortProperty(props);
-
-                    // sort data object property orders and set type = "H"
-                    props[0] = new KeyValuePair<string, object>("RecordType", "L");
-                    for (int i = 1; i < detailRecords.Count; i++)
-                        detailRecords[i] = ((ExpandoObject)detailRecords[i]).FilterAndSortProperty(props);
-
-                    csv.WriteRecords(detailRecords);
+                    WriteEntities(csv, detailRecords, "L");
                     csv.Flush();
                 }
                 return ms.ToArray();
@@ -97,13 +83,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
                         }
                         dto. InventoryLog = csv.GetRecord<InventoryLogDto>();
                         break;
-                    //case "L":
-                    //    if (dto.Inventory == null)
-                    //        dto.Inventory = new List<InventoryDto>();
-                    //    var item = csv.GetRecord<InventoryDto>();
-                    //    item.InventoryAttributes = csv.GetRecord<InventoryAttributesDto>();
-                    //    dto.Inventory.Add(item);
-                    //    break;
                 }
             }
             if (dto != null)

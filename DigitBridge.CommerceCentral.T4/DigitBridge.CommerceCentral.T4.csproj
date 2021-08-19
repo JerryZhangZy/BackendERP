@@ -300,6 +300,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateJsDocPayload.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateStructureDtoTest.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureDtoTest.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -314,41 +319,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ReadDtoObjectChildren.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForChannelOrder.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForChannelOrder.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForCustomer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForCustomer.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForDistributionCenter.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForDistributionCenter.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForInventory.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForInventory.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForInventoryLog.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForInventoryLog.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForInvoice.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForInvoice.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForSalesOrder.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForSalesOrder.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 
