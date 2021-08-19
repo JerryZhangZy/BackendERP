@@ -107,8 +107,6 @@ LEFT JOIN {CustomerAddressHelper.TableName} {CustomerAddressHelper.TableAllies} 
 
         #endregion override methods
 
-        protected bool QueryRowNums = false;
-
         protected virtual string GetSQL_select_RowNum()
         {
             this.SQL_Select = $@"
@@ -120,17 +118,14 @@ SELECT distinct
 
         public override void GetSQL_all()
         {
-            if (QueryRowNums)
-            {
-                QueryObject.LoadJson = false;
-                this.GetSQL_where();
-                this.GetSQL_select_RowNum();
-                this.GetSQL_from();
-                this.SQL_WithoutOrder = $"{this.SQL_Select} {this.SQL_From} {this.SQL_Where} ";
-                // set default order by
-                this.AddDefaultOrderBy();
-                this.GetSQL_orderBy();
-            }
+            QueryObject.LoadJson = false;
+            this.GetSQL_where();
+            this.GetSQL_select_RowNum();
+            this.GetSQL_from();
+            this.SQL_WithoutOrder = $"{this.SQL_Select} {this.SQL_From} {this.SQL_Where} ";
+            // set default order by
+            this.AddDefaultOrderBy();
+            this.GetSQL_orderBy();
         }
         public virtual CustomerPayload GetCustomerList(CustomerPayload payload)
         {
@@ -187,19 +182,22 @@ SELECT distinct
             if (payload == null)
                 payload = new CustomerPayload();
 
-            QueryRowNums = true;
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
+
+            var sql = $@"
+SELECT {CustomerHelper.TableAllies}.RowNum 
+FROM {CustomerHelper.TableName} {CustomerHelper.TableAllies}
+{base.GetSQL_where()}
+";
             try
             {
-                var reader = Excute();
-                if (reader.data != null)
-                {
-                    foreach (var x in reader.data)
-                    {
-                        rowNumList.Add(x[0].ToLong());
-                    }
-                }
+
+                rowNumList = await SqlQuery.ExecuteAsync(
+                    sql,
+                    (long rowNum) => rowNum,
+                    base.GetSqlParameters().ToArray()
+                );
             }
             catch (Exception ex)
             {
@@ -213,19 +211,20 @@ SELECT distinct
             if (payload == null)
                 payload = new CustomerPayload();
 
-            QueryRowNums = true;
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
+            var sql = $@"
+SELECT {CustomerHelper.TableAllies}.RowNum 
+FROM {CustomerHelper.TableName} {CustomerHelper.TableAllies}
+{base.GetSQL_where()}
+";
             try
             {
-                var reader = Excute();
-                if (reader.data != null)
-                {
-                    foreach (var x in reader.data)
-                    {
-                        rowNumList.Add(x[0].ToLong());
-                    }
-                }
+                rowNumList = SqlQuery.Execute(
+                    sql,
+                    (long rowNum) => rowNum,
+                    base.GetSqlParameters().ToArray()
+                );
             }
             catch (Exception ex)
             {
