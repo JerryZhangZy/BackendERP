@@ -319,6 +319,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ReadDtoGrandChildren.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\ReadDtoGrandChildrenMethod.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoGrandChildrenMethod.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\ReadDtoObjectChildren.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -363,6 +368,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForSalesOrder.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForShipment.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForShipment.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 
