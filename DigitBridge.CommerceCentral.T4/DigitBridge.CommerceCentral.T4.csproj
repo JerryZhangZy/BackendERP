@@ -75,6 +75,10 @@
       <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForOrderDCAssignment.ttinclude">
+      <LastGenOutput>SettingForOrderDCAssignment.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForDistributionCenter.ttinclude">
       <LastGenOutput>SettingForDistributionCenter.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -285,6 +289,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryPartialClass.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateServiceValidator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceValidator.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructureDtoExtension.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -315,10 +324,60 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ReadDtoGrandChildren.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\ReadDtoGrandChildrenMethod.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoGrandChildrenMethod.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\ReadDtoObjectChildren.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ReadDtoObjectChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForOrderDCAssignment.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForOrderDCAssignment.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForChannelOrder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForChannelOrder.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForCustomer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForCustomer.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForDistributionCenter.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForDistributionCenter.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForInventory.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInventory.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForInventoryLog.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInventoryLog.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForInvoice.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInvoice.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForSalesOrder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForSalesOrder.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForShipment.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForShipment.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 

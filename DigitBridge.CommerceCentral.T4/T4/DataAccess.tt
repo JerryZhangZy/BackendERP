@@ -72,6 +72,7 @@
 //SettingForSalesOrder
 //SettingForShipment
 //SettingForDistributionCenter
+//SettingForOrderDCAssignment
 #>
 <#@ include file="SettingForInvoiceTransaction.ttinclude" #>
 <#

@@ -10,7 +10,7 @@
 	[CentralOrderNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
 	[ChannelNum] INT NOT NULL DEFAULT 0, --(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 	[ChannelAccountNum] INT NOT NULL DEFAULT 0, --(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
-	[ChannelOrderID] VARCHAR(130) NOT NULL DEFAULT 0, --(Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
+	[ChannelOrderID] VARCHAR(130) NOT NULL DEFAULT '', --(Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
 	[SecondaryChannelOrderID] VARCHAR(200) NOT NULL DEFAULT '', --(Readonly) Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time. <br> Title: Other Channel Order: Display: true, Editable: false
 	[ShippingAccount] VARCHAR(100) NOT NULL DEFAULT '', --(Readonly) requested Vendor use Account to ship. <br> Title: Shipping Account: Display: false, Editable: false
 	[WarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Warehouse uuid. <br> Display: false, Editable: false
