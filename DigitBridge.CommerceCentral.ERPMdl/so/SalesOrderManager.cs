@@ -23,6 +23,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.CommerceCentral.ERPMdl.so;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -36,6 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected SalesOrderDataDtoCsv salesOrderDataDtoCsv;
 
         private ChannelOrderService _channelOrderSrv;
+        private DCAssignmentService _dcAssignmentSrv;
 
         public SalesOrderManager() : base() { }
         public SalesOrderManager(IDataBaseFactory dbFactory)
@@ -45,6 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             salesOrderDataDtoCsv = new SalesOrderDataDtoCsv();
 
             _channelOrderSrv = new ChannelOrderService(dbFactory);
+            _dcAssignmentSrv = new DCAssignmentService(dbFactory);
 
         }
 
@@ -167,7 +170,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (ret)
             {
                 //Get DCAssignments by uuid
+                var dcAssigmentDataList = await _dcAssignmentSrv.GetByCentralOrderUuidAsync(centralOrderUuid);
 
+                if(dcAssigmentDataList != null && dcAssigmentDataList.Count > 0)
+                {
+                    //Create SalesOrder
+                    var soDataList = new List<SalesOrderData>();
+
+                    foreach(var dcAssigmentData in dcAssigmentDataList)
+                    {
+                        var coData = _channelOrderSrv.Data;
+
+                        var soData = SalesOrderMapper.ChannelOrderToSalesOrder(dcAssigmentData, coData);
+
+                        salesOrderService.Add();
+
+                        salesOrderService.AttachData(soData);
+
+                        await salesOrderService.SaveDataAsync();
+                    }
+                }
             }
 
             if (ret)
