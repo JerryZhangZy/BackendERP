@@ -128,6 +128,19 @@
                     IdProperties.Add(col.Name);
                 }
             }
+            if (StringProperties.Count < 2)
+            {
+                foreach (var col in Columns)
+                {
+                    if (!col.Name.Equals(PrimaryKey, StringComparison.CurrentCultureIgnoreCase) && 
+                        !col.Name.Equals(UniqueKey, StringComparison.CurrentCultureIgnoreCase) &&  
+                        col.Type.Equals("string", StringComparison.CurrentCultureIgnoreCase) && 
+                        !col.Name.EndsWith("Uuid", StringComparison.CurrentCultureIgnoreCase)) 
+                    {
+                        StringProperties.Add(col.Name);
+                    }
+                }
+            }
         }
 
         public string BlankMatchString()

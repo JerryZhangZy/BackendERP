@@ -72,8 +72,9 @@
 //SettingForSalesOrder
 //SettingForShipment
 //SettingForDistributionCenter
+//SettingForOrderDCAssignment
 #>
-<#@ include file="SettingForDistributionCenter.ttinclude" #>
+<#@ include file="SettingForOrderDCAssignment.ttinclude" #>
 
 <#      
     // Generate model output
