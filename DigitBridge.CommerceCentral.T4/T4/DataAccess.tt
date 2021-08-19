@@ -74,7 +74,7 @@
 //SettingForDistributionCenter
 //SettingForOrderDCAssignment
 #>
-<#@ include file="SettingForInvoiceTransaction.ttinclude" #>
+<#@ include file="SettingForOrderDCAssignment.ttinclude" #>
 <#
     var overridesetting=true;
     //rewrite setting config
