@@ -30,6 +30,7 @@
             WriteLine($"");
             WriteLine($"{new String('\t',indent+1)}#endregion read properties");
             WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}data.CheckIntegrity();");
 
             WriteLine($"{new String('\t',indent+1)}return;");
             WriteLine($"{new String('\t',indent)}}}");
@@ -69,6 +70,7 @@
             WriteLine($"");
             WriteLine($"{new String('\t',indent+1)}#endregion read properties");
             WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}data.CheckIntegrity();");
 
             WriteLine($"{new String('\t',indent+1)}return;");
             WriteLine($"{new String('\t',indent)}}}");
