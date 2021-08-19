@@ -74,8 +74,34 @@
 //SettingForDistributionCenter
 //SettingForOrderDCAssignment
 #>
-<#@ include file="SettingForShipment.ttinclude" #>
+<#@ include file="SettingForOrderDCAssignment.ttinclude" #>
+<#
+    var overridesetting=true;
+    //rewrite setting config
+    if(overridesetting)
+    {
+        generateModel = false;
+        generateDto = false;
+        generateModelHelper = false;
 
+        // generate tester class for each table repository
+        generateTester = false;
+
+        // generate structure repository class contain multiple table
+        generateStructureRepository = false;
+        generateStructureTester = false;
+
+        // generate structure Dto class
+        generateStructureDto = true;
+        generateStructureDtoCsv = true;
+        generateStructureDtoTester = true;
+
+        // generate service class
+        generateService = false;
+
+        generateServiceTester = false;
+   }
+#>
 <#      
     // Generate model output
 	if (tables.Count>0)

@@ -48,46 +48,35 @@ namespace DigitBridge.CommerceCentral.ERPDb
             //data.ExportFixed();
             // combine multiple Dto to one dynamic object
             var headerRecords = data.MergeHeaderRecord(true).ToList();
-            
-            // get property orders in object 
-            var props = new List<KeyValuePair<string, object>>();
-            if (Format?.Columns == null || Format?.Columns?.Count == 0)
-                props = ((ExpandoObject)headerRecords[0]).GetPropertyNames().ToList();
-            // add RecordType column at first
-            props.Insert(0, new KeyValuePair<string, object>("RecordType", "RecordType"));
-
-            // Sort property of object by orders
-            headerRecords[0] = ((ExpandoObject)headerRecords[0]).FilterAndSortProperty(props);
-
-            // sort data object property orders and set type = "H"
-            props[0] = new KeyValuePair<string, object>("RecordType", "H");
-            for (int i = 1; i < headerRecords.Count; i++)
-                headerRecords[i] = ((ExpandoObject)headerRecords[i]).FilterAndSortProperty(props);            
-            csv.WriteRecords(headerRecords);
+            WriteEntities(csv, headerRecords, "H");
 
             //if no details ,please comment undercode
-            var detailRecords = data.MergeDetailRecord(true).ToList();
-            props = new List<KeyValuePair<string, object>>();
-            if (Format?.Columns == null || Format?.Columns?.Count == 0)
-                props = ((ExpandoObject)detailRecords[0]).GetPropertyNames().ToList();
-            // add RecordType column at first
-            props.Insert(0, new KeyValuePair<string, object>("RecordType", "RecordType"));
+            if (data.HasOrderShipmentPackage)
+            {
+                foreach (var package in data.OrderShipmentPackage)
+                {
+                    headerRecords = package.MergeShipmentPackageHeaderRecord(true).ToList();
+                    WriteEntities(csv, headerRecords, "L");
 
-            // Sort property of object by orders
-            detailRecords[0] = ((ExpandoObject)detailRecords[0]).FilterAndSortProperty(props);
+                    if(package.HasOrderShipmentShippedItem){
+                        var detailsRecords = package.OrderShipmentShippedItem.MergeShipmentPackageDetailRecord(true).ToList();
+                        WriteEntities(csv, detailsRecords, "L1");
+                    }
+                }
+            }
 
-            // sort data object property orders and set type = "H"
-            props[0] = new KeyValuePair<string, object>("RecordType", "L");
-            for (int i = 1; i < detailRecords.Count; i++)
-                detailRecords[i] = ((ExpandoObject)detailRecords[i]).FilterAndSortProperty(props);
+            //if no details ,please comment undercode
+            var cancelDetailRecords = data.MergeShipmentCanceledDetailRecord(true).ToList();
+            WriteEntities(csv, cancelDetailRecords, "M");
 
-            csv.WriteRecords(detailRecords);
+            csv.WriteRecords(cancelDetailRecords);
         }
 
         public override void ReadEntities(CsvReader csv, IList<OrderShipmentDataDto> data)
         {
             var isFirst = true;
             OrderShipmentDataDto dto = new OrderShipmentDataDto();
+            OrderShipmentPackageDto packageDto = new OrderShipmentPackageDto();
             while (csv.Read())
             {
                 // it is header line
@@ -110,13 +99,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
                         }
                         dto. OrderShipmentHeader = csv.GetRecord<OrderShipmentHeaderDto>();
                         break;
-                    //case "L":
-                    //    if (dto.Inventory == null)
-                    //        dto.Inventory = new List<InventoryDto>();
-                    //    var item = csv.GetRecord<InventoryDto>();
-                    //    item.InventoryAttributes = csv.GetRecord<InventoryAttributesDto>();
-                    //    dto.Inventory.Add(item);
-                    //    break;
+                    case "L":
+                        if (dto.OrderShipmentPackage == null)
+                            dto.OrderShipmentPackage = new List<OrderShipmentPackageDto>();
+                        packageDto = csv.GetRecord<OrderShipmentPackageDto>();
+                        dto.OrderShipmentPackage.Add(packageDto);
+                        break;
+                    case "L1":
+                        if (packageDto.OrderShipmentShippedItem == null)
+                            packageDto.OrderShipmentShippedItem = new List<OrderShipmentShippedItemDto>();
+                        var packageItem = csv.GetRecord<OrderShipmentShippedItemDto>();
+                        packageDto.OrderShipmentShippedItem.Add(packageItem);
+                        break;
+                    case "M":
+                        if (dto.OrderShipmentCanceledItem == null)
+                            dto.OrderShipmentCanceledItem = new List<OrderShipmentCanceledItemDto>();
+                        var cancelItem = csv.GetRecord<OrderShipmentCanceledItemDto>();
+                        dto.OrderShipmentCanceledItem.Add(cancelItem);
+                        break;
                 }
             }
             if (dto != null)

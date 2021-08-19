@@ -41,27 +41,68 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return result;
         }
 
+		/// <summary>
+		/// Merge OrderShipmentDataDto header objects to one dynamic object
+		/// </summary>
+		/// <param name="dto">OrderShipmentDataDto object to merge data</param>
+		/// <param name="withHeaderText">Add header text line at first</param>
+		/// <returns>Single dynamic object include all properties of Dto header objects</returns>
+		public static IEnumerable<dynamic> MergeShipmentPackageHeaderRecord(this OrderShipmentPackageDto dto, bool withHeaderText = false)
+		{
+			var result = new List<dynamic>();
+			//TODO change to merge Dto children object
+			if (withHeaderText)
+				result.Add(dto.MergeName(dto));
+			result.Add(dto.Merge(dto));
+			return result;
+		}
+
+		/// <summary>
+		/// Merge SalesOrderDataDto detailt list to dynamic object list
+		/// </summary>
+		/// <param name="dto">SalesOrderDataDto object to merge data</param>
+		/// <param name="withHeaderText">Add header text line at first</param>
+		/// <returns>list of dynamic object include all properties of detailt objects</returns>
+		public static IEnumerable<dynamic> MergeShipmentPackageDetailRecord(this IList<OrderShipmentShippedItemDto> dto, bool withHeaderText = false)
+        {
+            //TODO change to merge Dto children object
+
+            var result = new List<dynamic>();
+			var orderShipmentShippedItem = new OrderShipmentShippedItemDto();
+			if (withHeaderText)
+			{
+				result.Add(orderShipmentShippedItem.MergeName(orderShipmentShippedItem));
+			}
+
+			foreach (var it in dto)
+			{
+				result.Add(it.Merge(it));
+			}
+            return result;
+        }
+
         /// <summary>
         /// Merge SalesOrderDataDto detailt list to dynamic object list
         /// </summary>
         /// <param name="dto">SalesOrderDataDto object to merge data</param>
         /// <param name="withHeaderText">Add header text line at first</param>
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
-        public static IEnumerable<dynamic> MergeDetailRecord(this OrderShipmentDataDto dto, bool withHeaderText = false)
+        public static IEnumerable<dynamic> MergeShipmentCanceledDetailRecord(this OrderShipmentDataDto dto, bool withHeaderText = false)
         {
             //TODO change to merge Dto children object
-            if (!dto.HasOrderShipmentPackage)
+            if (!dto.HasOrderShipmentCanceledItem)
                 return null;
 
             var result = new List<dynamic>();
-            var salesShipmentItems = new OrderShipmentPackage() { OrderShipmentShippedItem = new List<OrderShipmentShippedItem>() };
+            var orderShipmentCanceledItem = new OrderShipmentCanceledItemDto();
 
             if (withHeaderText)
-                result.Add(salesShipmentItems.MergeName(salesShipmentItems.OrderShipmentShippedItem));
+                result.Add(orderShipmentCanceledItem.MergeName(orderShipmentCanceledItem));
 
-            foreach (var item in dto.OrderShipmentPackage)
+            foreach (var item in dto.OrderShipmentCanceledItem)
             {
-                result.Add(item.Merge(item.OrderShipmentShippedItem));
+                result.Add(item.Merge(item));
+
             }
             return result;
         }

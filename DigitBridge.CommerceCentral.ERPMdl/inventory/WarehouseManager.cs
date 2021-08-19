@@ -34,6 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         protected WarehouseService warehouseService;
         protected WarehouseDataDtoCsv warehouseDataDtoCsv;
+        protected WarehouseList warehouseList;
 
         public WarehouseManager() : base() {}
         public WarehouseManager(IDataBaseFactory dbFactory)
@@ -41,21 +42,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             SetDataBaseFactory(dbFactory);
             warehouseService = new WarehouseService(dbFactory);
             warehouseDataDtoCsv = new WarehouseDataDtoCsv();
+            warehouseList = new WarehouseList(dbFactory);
         }
 
         public async Task<byte[]> ExportAsync(WarehousePayload payload)
         {
-            var rowNumList = new List<long>();
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                rowNumList = await WarehouseServiceHelper.GetRowNumsAsync(payload.MasterAccountNum, payload.ProfileNum);
-            }
+            var rowNumList =await warehouseList.GetRowNumListAsync(payload);
             var dtoList = new List<WarehouseDataDto>();
-            rowNumList.ForEach(x =>
+           foreach(var x in rowNumList)
             {
                 if (warehouseService.GetData(x))
                     dtoList.Add(warehouseService.ToDto());
-            });
+            };
             if (dtoList.Count == 0)
                 dtoList.Add(new WarehouseDataDto());
             return warehouseDataDtoCsv.Export(dtoList);
@@ -63,17 +61,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public byte[] Export(WarehousePayload payload)
         {
-            var rowNumList = new List<long>();
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                rowNumList = WarehouseServiceHelper.GetRowNums(payload.MasterAccountNum, payload.ProfileNum);
-            }
+            var rowNumList = warehouseList.GetRowNumList(payload);
             var dtoList = new List<WarehouseDataDto>();
-            rowNumList.ForEach(x =>
+            foreach (var x in rowNumList)
             {
                 if (warehouseService.GetData(x))
                     dtoList.Add(warehouseService.ToDto());
-            });
+            };
             if (dtoList.Count == 0)
                 dtoList.Add(new WarehouseDataDto());
             return warehouseDataDtoCsv.Export(dtoList);

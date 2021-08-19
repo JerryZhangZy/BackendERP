@@ -195,17 +195,18 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryPayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
         public static async Task<FileContentResult> ExportProductExt(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExts/export")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExts/export")] HttpRequest req)
         {
             var payload = await req.GetParameters<InventoryPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryManager(dbFactory);
-
+            payload.SortBy = "";
             var exportData = await svc.ExportAsync(payload);
             var downfile = new FileContentResult(exportData, "text/csv");
-            downfile.FileDownloadName = "export-warehouse.csv";
+            downfile.FileDownloadName = "export-product.csv";
             return downfile;
         }
 

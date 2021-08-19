@@ -11,6 +11,7 @@ using Microsoft.Data.SqlClient;
 using Helper = DigitBridge.CommerceCentral.ERPDb.ProductBasicHelper;
 using ExHelper = DigitBridge.CommerceCentral.ERPDb.ProductExtHelper;
 using InvHelper = DigitBridge.CommerceCentral.ERPDb.InventoryHelper;
+using System.Data;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -23,6 +24,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             : base(dbFactory, queryObject)
         {
         }
+
+        protected bool QueryRowNums = false;
 
         #region override methods
 
@@ -67,6 +70,30 @@ SELECT
 ";
             return this.SQL_Select;
         }
+        
+        protected virtual string GetSQL_select_RowNum()
+        {
+            this.SQL_Select = $@"
+SELECT distinct 
+ {ProductBasicHelper.TableAllies}.RowNum 
+";
+            return this.SQL_Select;
+        }
+
+        public override void GetSQL_all()
+        {
+            if (QueryRowNums)
+            {
+                QueryObject.LoadJson = false;
+                this.GetSQL_where();
+                this.GetSQL_select_RowNum();
+                this.GetSQL_from();
+                this.SQL_WithoutOrder = $"{this.SQL_Select} {this.SQL_From} {this.SQL_Where} ";
+                // set default order by
+                this.AddDefaultOrderBy();
+                this.GetSQL_orderBy();
+            }
+        }
 
         protected override string GetSQL_from()
         {
@@ -95,6 +122,7 @@ LEFT JOIN {InvHelper.TableName} {InvHelper.TableAllies} ON ({Helper.TableAllies}
             if (payload == null)
                 payload = new InventoryPayload();
 
+            QueryRowNums = false;
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
@@ -138,6 +166,58 @@ LEFT JOIN {InvHelper.TableName} {InvHelper.TableAllies} ON ({Helper.TableAllies}
                 throw;
             }
             return payload;
+        }
+
+        public virtual async Task<IList<long>> GetRowNumListAsync(InventoryPayload payload)
+        {
+            if (payload == null)
+                payload = new InventoryPayload();
+
+            QueryRowNums = true;
+            this.LoadRequestParameter(payload);
+            var rowNumList = new List<long>();
+            try
+            {
+                var reader = Excute();
+                if (reader.data != null)
+                {
+                    foreach (var x in reader.data)
+                    {
+                        rowNumList.Add(x[0].ToLong());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return rowNumList;
+        }
+
+        public virtual IList<long> GetRowNumList(InventoryPayload payload)
+        {
+            if (payload == null)
+                payload = new InventoryPayload();
+
+            QueryRowNums = true;
+            this.LoadRequestParameter(payload);
+            var rowNumList = new List<long>();
+            try
+            {
+                var reader = Excute();
+                if (reader.data != null)
+                {
+                    foreach(var x in reader.data)
+                    {
+                        rowNumList.Add(x[0].ToLong());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return rowNumList;
         }
 
     }
