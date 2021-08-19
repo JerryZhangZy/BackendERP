@@ -35,9 +35,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             var result = new List<dynamic>();
             //TODO change to merge Dto children object
-            //if (withHeaderText)
-            //    result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
-            //result.Add(dto.SalesOrderHeader.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
+            if (withHeaderText)
+                result.Add(dto.InvoiceHeader.MergeName(dto.InvoiceHeaderInfo, dto.InvoiceHeaderAttributes));
+            result.Add(dto.InvoiceHeader.Merge(dto.InvoiceHeaderInfo, dto.InvoiceHeaderAttributes));
             return result;
         }
 
@@ -49,22 +49,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
         public static IEnumerable<dynamic> MergeDetailRecord(this InvoiceDataDto dto, bool withHeaderText = false)
         {
-            return null;
             //TODO change to merge Dto children object
-            //if (!dto.HasSalesOrderItems) 
-            //    return null;
-            //
-            //var result = new List<dynamic>();
-            //var salesOrderItems = new SalesOrderItems() { SalesOrderItemsAttributes = new SalesOrderItemsAttributes()};
-            //
-            //if (withHeaderText)
-            //    result.Add(salesOrderItems.MergeName(salesOrderItems.SalesOrderItemsAttributes));
-            //
-            //foreach (var item in dto.SalesOrderItems)
-            //{
-            //    result.Add(item.Merge(item.SalesOrderItemsAttributes));
-            //}
-            //return result;
+            if (!dto.HasInvoiceItems)
+                return null;
+
+            var result = new List<dynamic>();
+            var invoiceItems = new InvoiceItems() { InvoiceItemsAttributes = new InvoiceItemsAttributes() };
+
+            if (withHeaderText)
+                result.Add(invoiceItems.MergeName(invoiceItems.InvoiceItemsAttributes));
+
+            foreach (var item in dto.InvoiceItems)
+            {
+                result.Add(item.Merge(item.InvoiceItemsAttributes));
+            }
+            return result;
         }
 
 
