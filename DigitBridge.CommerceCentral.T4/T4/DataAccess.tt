@@ -74,7 +74,29 @@
 //SettingForDistributionCenter
 #>
 <#@ include file="SettingForDistributionCenter.ttinclude" #>
+<#
+    //rewrite setting config
+     //generateModel = true;
+     //generateDto = false;
+     //generateModelHelper = false;
 
+    // generate tester class for each table repository
+    //generateTester = false;
+
+    // generate structure repository class contain multiple table
+    //generateStructureRepository = false;
+    //generateStructureTester = false;
+
+    // generate structure Dto class
+    //generateStructureDto = false;
+    //generateStructureDtoCsv = false;
+    //generateStructureDtoTester = false;
+
+    // generate service class
+    //generateService = false;
+
+   //generateServiceTester = false;
+#>
 <#      
     // Generate model output
 	if (tables.Count>0)
