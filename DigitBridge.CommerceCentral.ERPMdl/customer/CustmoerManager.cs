@@ -34,6 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         protected CustomerService customerService;
         protected CustomerDataDtoCsv customerDataDtoCsv;
+        protected CustomerList customerList;
 
         public CustmoerManager() : base() {}
         public CustmoerManager(IDataBaseFactory dbFactory)
@@ -41,21 +42,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             SetDataBaseFactory(dbFactory);
             customerService = new CustomerService(dbFactory);
             customerDataDtoCsv = new CustomerDataDtoCsv();
+            customerList = new CustomerList(dbFactory);
         }
 
         public async Task<byte[]> ExportAsync(CustomerPayload payload)
         {
-            var rowNumList = new List<long>();
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                rowNumList = await CustomerServiceHelper.GetRowNumsAsync(payload.MasterAccountNum, payload.ProfileNum);
-            }
+            var rowNumList =await customerList.GetRowNumListAsync(payload);
             var dtoList = new List<CustomerDataDto>();
-            rowNumList.ForEach(x =>
+            foreach(var x in rowNumList)
             {
                 if (customerService.GetData(x))
                     dtoList.Add(customerService.ToDto());
-            });
+            }
             if (dtoList.Count == 0)
                 dtoList.Add(new CustomerDataDto());
             return customerDataDtoCsv.Export(dtoList);
@@ -63,17 +61,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public byte[] Export(CustomerPayload payload)
         {
-            var rowNumList = new List<long>();
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                rowNumList = CustomerServiceHelper.GetRowNums(payload.MasterAccountNum, payload.ProfileNum);
-            }
+            var rowNumList = customerList.GetRowNumList(payload);
             var dtoList = new List<CustomerDataDto>();
-            rowNumList.ForEach(x =>
+            foreach (var x in rowNumList)
             {
                 if (customerService.GetData(x))
                     dtoList.Add(customerService.ToDto());
-            });
+            }
             if (dtoList.Count == 0)
                 dtoList.Add(new CustomerDataDto());
             return customerDataDtoCsv.Export(dtoList);
