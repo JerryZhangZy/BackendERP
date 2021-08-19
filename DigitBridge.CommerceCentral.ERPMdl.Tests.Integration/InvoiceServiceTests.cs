@@ -37,9 +37,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var mapper = srv.DtoMapper;
             var data = GetFakerData();
             var dto = mapper.WriteDto(data, null);
-            var id = data.UniqueId;
+            
 
             srv.Add(dto);
+
+            var id = dto.InvoiceHeader.InvoiceUuid;
 
             var srvGet = new InvoiceService(DataBaseFactory);
             //srvGet.Edit();
@@ -95,10 +97,11 @@ WHERE itm.cnt > 0
 
             var mapper = srv.DtoMapper;
             var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            var id = data.UniqueId;
+            var dto = mapper.WriteDto(data, null); 
 
             await srv.AddAsync(dto);
+
+            var id = dto.InvoiceHeader.InvoiceUuid;
 
             var srvGet = new InvoiceService(DataBaseFactory);
             srvGet.Edit();
@@ -136,6 +139,150 @@ WHERE itm.cnt > 0
 
             srv.Clear();
             await srv.UpdateAsync(dto);
+
+            var srvGet = new InvoiceService(DataBaseFactory);
+            //srvGet.Edit();
+            await srvGet.GetDataByIdAsync(id);
+            var result = srv.Data.Equals(srvGet.Data);
+
+			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+		}
+
+
+        [Fact()]
+		//[Fact(Skip = SkipReason)]
+		public void AddPayload_Test()
+		{
+            var srv = new InvoiceService(DataBaseFactory);
+            srv.Add();
+
+            var mapper = srv.DtoMapper;
+            var data = GetFakerData();
+            var dto = mapper.WriteDto(data, null);
+            
+
+            var payload = new InvoicePayload();
+            payload.Invoice = dto;
+            payload.MasterAccountNum = 1;
+            payload.ProfileNum = 1;
+            payload.DatabaseNum = 1;
+
+            srv.Add(payload);
+            var id = dto.InvoiceHeader.InvoiceUuid;
+            var srvGet = new InvoiceService(DataBaseFactory);
+            //srvGet.Edit();
+            srvGet.GetDataById(id);
+            var result = srv.Data.Equals(srvGet.Data);
+
+			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+		}
+
+        [Fact()]
+		//[Fact(Skip = SkipReason)]
+		public void UpdatePayload_Test()
+		{
+            SaveData_Test();
+
+            var id = DataBaseFactory.GetValue<InvoiceHeader, string>(@"
+SELECT TOP 1 ins.InvoiceUuid 
+FROM InvoiceHeader ins 
+INNER JOIN (
+    SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
+) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
+WHERE itm.cnt > 0
+");
+
+
+            var srv = new InvoiceService(DataBaseFactory);
+            srv.Edit(id);
+            var rowNum = srv.Data.InvoiceHeader.RowNum;
+
+            var mapper = srv.DtoMapper;
+            var data = GetFakerData();
+            var dto = mapper.WriteDto(data, null);
+            dto.InvoiceHeader.RowNum = rowNum;
+            dto.InvoiceHeader.InvoiceUuid = id;
+
+            var payload = new InvoicePayload();
+            payload.Invoice = dto;
+            payload.MasterAccountNum = srv.Data.InvoiceHeader.MasterAccountNum;
+            payload.ProfileNum = srv.Data.InvoiceHeader.ProfileNum;
+            payload.DatabaseNum = srv.Data.InvoiceHeader.DatabaseNum;
+
+            srv.Clear();
+            srv.Update(payload);
+
+            var srvGet = new InvoiceService(DataBaseFactory);
+            srvGet.Edit();
+            srvGet.GetDataById(id);
+            var result = srv.Data.Equals(srvGet.Data);
+
+			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+		}
+
+        [Fact()]
+		//[Fact(Skip = SkipReason)]
+		public async Task AddPayloadAsync_Test()
+		{
+            var srv = new InvoiceService(DataBaseFactory);
+            srv.Add();
+
+            var mapper = srv.DtoMapper;
+            var data = GetFakerData();
+            var dto = mapper.WriteDto(data, null);
+            
+            var payload = new InvoicePayload();
+            payload.Invoice = dto;
+            payload.MasterAccountNum = 1;
+            payload.ProfileNum = 1;
+            payload.DatabaseNum = 1;
+
+            await srv.AddAsync(payload);
+
+            var id = dto.InvoiceHeader.InvoiceUuid;
+
+            var srvGet = new InvoiceService(DataBaseFactory);
+            srvGet.Edit();
+            await srvGet.GetDataByIdAsync(id);
+            var result = srv.Data.Equals(srvGet.Data);
+
+			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+		}
+
+        [Fact()]
+		//[Fact(Skip = SkipReason)]
+		public async Task UpdatePayloadAsync_Test()
+		{
+            await SaveDataAsync_Test();
+
+            var id = await DataBaseFactory.GetValueAsync<InvoiceHeader, string>(@"
+SELECT TOP 1 ins.InvoiceUuid 
+FROM InvoiceHeader ins 
+INNER JOIN (
+    SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
+) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
+WHERE itm.cnt > 0
+");
+
+
+            var srv = new InvoiceService(DataBaseFactory);
+            await srv.EditAsync(id);
+            var rowNum = srv.Data.InvoiceHeader.RowNum;
+
+            var mapper = srv.DtoMapper;
+            var data = GetFakerData();
+            var dto = mapper.WriteDto(data, null);
+            dto.InvoiceHeader.RowNum = rowNum;
+            dto.InvoiceHeader.InvoiceUuid = id;
+
+            var payload = new InvoicePayload();
+            payload.Invoice = dto;
+            payload.MasterAccountNum = srv.Data.InvoiceHeader.MasterAccountNum;
+            payload.ProfileNum = srv.Data.InvoiceHeader.ProfileNum;
+            payload.DatabaseNum = srv.Data.InvoiceHeader.DatabaseNum;
+
+            srv.Clear();
+            await srv.UpdateAsync(payload);
 
             var srvGet = new InvoiceService(DataBaseFactory);
             //srvGet.Edit();
