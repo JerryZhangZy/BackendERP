@@ -116,6 +116,8 @@ COALESCE(ordst.text, '') orderStatusText,
             var result = false;
             try
             {
+                //TODO 
+                //if(payload.IsQueryTotalCount)
                 payload.SalesOrderListCount = await CountAsync().ConfigureAwait(false);
                 result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
                 if (result)
