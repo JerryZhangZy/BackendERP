@@ -44,39 +44,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             // combine multiple Dto to one dynamic object
             var headerRecords = data.MergeHeaderRecord(true).ToList();
-            
-            // get property orders in object 
-            var props = new List<KeyValuePair<string, object>>();
-            if (Format?.Columns == null || Format?.Columns?.Count == 0)
-                props = ((ExpandoObject)headerRecords[0]).GetPropertyNames().ToList();
-            // add RecordType column at first
-            props.Insert(0, new KeyValuePair<string, object>("RecordType", "RecordType"));
-
-            // Sort property of object by orders
-            headerRecords[0] = ((ExpandoObject)headerRecords[0]).FilterAndSortProperty(props);
-
-            // sort data object property orders and set type = "H"
-            props[0] = new KeyValuePair<string, object>("RecordType", "H");
-            for (int i = 1; i < headerRecords.Count; i++)
-                headerRecords[i] = ((ExpandoObject)headerRecords[i]).FilterAndSortProperty(props);
+            WriteEntities(csv, headerRecords, "H");
 
             var detailRecords = data.MergeDetailRecord(true).ToList();
-            props = new List<KeyValuePair<string, object>>();
-            if (Format?.Columns == null || Format?.Columns?.Count == 0)
-                props = ((ExpandoObject)detailRecords[0]).GetPropertyNames().ToList();
-            // add RecordType column at first
-            props.Insert(0, new KeyValuePair<string, object>("RecordType", "RecordType"));
-
-            // Sort property of object by orders
-            detailRecords[0] = ((ExpandoObject)detailRecords[0]).FilterAndSortProperty(props);
-
-            // sort data object property orders and set type = "H"
-            props[0] = new KeyValuePair<string, object>("RecordType", "L");
-            for (int i = 1; i < detailRecords.Count; i++)
-                detailRecords[i] = ((ExpandoObject)detailRecords[i]).FilterAndSortProperty(props);
-
-            csv.WriteRecords(headerRecords);
-            csv.WriteRecords(detailRecords);
+            WriteEntities(csv, detailRecords, "L");
         }
 
         public override void ReadEntities(CsvReader csv, IList<CustomerDataDto> data)

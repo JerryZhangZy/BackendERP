@@ -107,6 +107,26 @@ LEFT JOIN {CustomerAddressHelper.TableName} {CustomerAddressHelper.TableAllies} 
 
         #endregion override methods
 
+        protected virtual string GetSQL_select_RowNum()
+        {
+            this.SQL_Select = $@"
+SELECT distinct 
+ {CustomerHelper.TableAllies}.RowNum
+";
+            return this.SQL_Select;
+        }
+
+        public override void GetSQL_all()
+        {
+            QueryObject.LoadJson = false;
+            this.GetSQL_where();
+            this.GetSQL_select_RowNum();
+            this.GetSQL_from();
+            this.SQL_WithoutOrder = $"{this.SQL_Select} {this.SQL_From} {this.SQL_Where} ";
+            // set default order by
+            this.AddDefaultOrderBy();
+            this.GetSQL_orderBy();
+        }
         public virtual CustomerPayload GetCustomerList(CustomerPayload payload)
         {
             if (payload == null)
@@ -155,6 +175,62 @@ LEFT JOIN {CustomerAddressHelper.TableName} {CustomerAddressHelper.TableAllies} 
                 throw;
             }
             return payload;
+        }
+
+        public virtual async Task<IList<long>> GetRowNumListAsync(CustomerPayload payload)
+        {
+            if (payload == null)
+                payload = new CustomerPayload();
+
+            this.LoadRequestParameter(payload);
+            var rowNumList = new List<long>();
+
+            var sql = $@"
+SELECT {CustomerHelper.TableAllies}.RowNum 
+FROM {CustomerHelper.TableName} {CustomerHelper.TableAllies}
+{base.GetSQL_where()}
+";
+            try
+            {
+
+                rowNumList = await SqlQuery.ExecuteAsync(
+                    sql,
+                    (long rowNum) => rowNum,
+                    base.GetSqlParameters().ToArray()
+                );
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return rowNumList;
+        }
+
+        public virtual IList<long> GetRowNumList(CustomerPayload payload)
+        {
+            if (payload == null)
+                payload = new CustomerPayload();
+
+            this.LoadRequestParameter(payload);
+            var rowNumList = new List<long>();
+            var sql = $@"
+SELECT {CustomerHelper.TableAllies}.RowNum 
+FROM {CustomerHelper.TableName} {CustomerHelper.TableAllies}
+{base.GetSQL_where()}
+";
+            try
+            {
+                rowNumList = SqlQuery.Execute(
+                    sql,
+                    (long rowNum) => rowNum,
+                    base.GetSqlParameters().ToArray()
+                );
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return rowNumList;
         }
 
     }

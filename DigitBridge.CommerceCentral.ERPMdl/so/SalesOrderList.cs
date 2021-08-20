@@ -81,6 +81,31 @@ COALESCE(ordst.text, '') orderStatusText,
 
         #endregion override methods
 
+        protected bool QueryRowNums = false;
+
+        protected virtual string GetSQL_select_RowNum()
+        {
+            this.SQL_Select = $@"
+SELECT distinct 
+ {CustomerHelper.TableAllies}.RowNum
+";
+            return this.SQL_Select;
+        }
+
+        public override void GetSQL_all()
+        {
+            if (QueryRowNums)
+            {
+                QueryObject.LoadJson = false;
+                this.GetSQL_where();
+                this.GetSQL_select_RowNum();
+                this.GetSQL_from();
+                this.SQL_WithoutOrder = $"{this.SQL_Select} {this.SQL_From} {this.SQL_Where} ";
+                // set default order by
+                this.AddDefaultOrderBy();
+                this.GetSQL_orderBy();
+            }
+        }
         public virtual SalesOrderPayload GetSalesOrderList(SalesOrderPayload payload)
         {
             if (payload == null)
@@ -197,6 +222,58 @@ FOR JSON PATH
             {
                 throw;
             }
+        }
+
+        public virtual async Task<IList<long>> GetRowNumListAsync(SalesOrderPayload payload)
+        {
+            if (payload == null)
+                payload = new SalesOrderPayload();
+
+            QueryRowNums = true;
+            this.LoadRequestParameter(payload);
+            var rowNumList = new List<long>();
+            try
+            {
+                var reader = Excute();
+                if (reader.data != null)
+                {
+                    foreach (var x in reader.data)
+                    {
+                        rowNumList.Add(x[0].ToLong());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return rowNumList;
+        }
+
+        public virtual IList<long> GetRowNumList(SalesOrderPayload payload)
+        {
+            if (payload == null)
+                payload = new SalesOrderPayload();
+
+            QueryRowNums = true;
+            this.LoadRequestParameter(payload);
+            var rowNumList = new List<long>();
+            try
+            {
+                var reader = Excute();
+                if (reader.data != null)
+                {
+                    foreach (var x in reader.data)
+                    {
+                        rowNumList.Add(x[0].ToLong());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return rowNumList;
         }
 
     }

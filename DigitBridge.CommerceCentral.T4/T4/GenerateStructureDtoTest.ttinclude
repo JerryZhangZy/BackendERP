@@ -78,7 +78,53 @@ namespace <#= NamespaceTest #>
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}
+        
+        [Fact()]
+        public void ExportCsv_Test()
+        {
+            var mapper = new <#= StructureClass.ClassName #>DtoMapperDefault();
 
+            var data = GetFakerData(100);
+            var dtolist = new List<<#= StructureClass.ClassName #>Dto>();
+            data.ForEach(x =>
+            {
+                dtolist.Add(mapper.WriteDto(x, null));
+            });
+            //var dto = mapper.WriteDto(data, null);
+            var fileName = "c:\\temp\\_<#= StructureClass.ClassName #>Dto.csv";
+            var csvHelper = new <#= StructureClass.ClassName #>DtoCsv();
+
+            try
+            {
+                csvHelper.Export(dtolist, fileName);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void ImportCsv_Test()
+        {
+            var fileName = "c:\\temp\\_<#= StructureClass.ClassName #>Dto.csv";
+            var csvHelper = new <#= StructureClass.ClassName #>DtoCsv();
+            IList<<#= StructureClass.ClassName #>Dto> data;
+
+            try
+            {
+                data = csvHelper.Import(fileName).ToList();
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+        }
     }
 }
 

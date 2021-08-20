@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -70,6 +71,25 @@ namespace DigitBridge.CommerceCentral.YoPoco
        protected virtual void WriteCsv(T data, CsvWriter csv)
         {
             throw new Exception("must override WriteCsv  Method");
+        }
+
+        protected virtual void WriteEntities(CsvWriter csv, IList<dynamic> records,string recordType)
+        {
+            // get property orders in object 
+            var props = new List<KeyValuePair<string, object>>();
+            if (Format?.Columns == null || Format?.Columns?.Count == 0)
+                props = ((ExpandoObject)records[0]).GetPropertyNames().ToList();
+            // add RecordType column at first
+            props.Insert(0, new KeyValuePair<string, object>("RecordType", "RecordType"));
+
+            // Sort property of object by orders
+            records[0] = ((ExpandoObject)records[0]).FilterAndSortProperty(props);
+
+            // sort data object property orders and set type = "H"
+            props[0] = new KeyValuePair<string, object>("RecordType", recordType);
+            for (int i = 1; i < records.Count; i++)
+                records[i] = ((ExpandoObject)records[i]).FilterAndSortProperty(props);
+            csv.WriteRecords(records);
         }
 
         public virtual IEnumerable<T> Import(string fileName)

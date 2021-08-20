@@ -34,6 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         protected InventoryService inventoryService;
         protected InventoryDataDtoCsv InventoryDataDtoCsv;
+        protected InventoryList inventoryList;
 
         public InventoryManager() : base() {}
         public InventoryManager(IDataBaseFactory dbFactory)
@@ -41,21 +42,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             SetDataBaseFactory(dbFactory);
             inventoryService = new InventoryService(dbFactory); 
             InventoryDataDtoCsv = new InventoryDataDtoCsv();
+            inventoryList = new InventoryList(dbFactory);
         }
 
         public async Task<byte[]> ExportAsync(InventoryPayload payload)
         {
-            var rowNumList = new List<long>();
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                rowNumList = await InventoryServiceHelper.GetRowNumsAsync(payload.MasterAccountNum, payload.ProfileNum);
-            }
+            var rowNumList =await inventoryList.GetRowNumListAsync(payload);
             var dtoList = new List<InventoryDataDto>();
-            rowNumList.ForEach(x =>
+            foreach(var x in rowNumList)
             {
                 if (inventoryService.GetData(x))
                     dtoList.Add(inventoryService.ToDto());
-            });
+            };
             if (dtoList.Count == 0)
                 dtoList.Add(new InventoryDataDto()) ;
             return InventoryDataDtoCsv.Export(dtoList);
@@ -63,17 +61,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public byte[] Export(InventoryPayload payload)
         {
-            var rowNumList = new List<long>();
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                rowNumList = InventoryServiceHelper.GetRowNums(payload.MasterAccountNum, payload.ProfileNum);
-            }
+            var rowNumList = inventoryList.GetRowNumList(payload);
             var dtoList = new List<InventoryDataDto>();
-            rowNumList.ForEach(x =>
+            foreach (var x in rowNumList)
             {
                 if (inventoryService.GetData(x))
                     dtoList.Add(inventoryService.ToDto());
-            });
+            };
             if (dtoList.Count == 0)
                 dtoList.Add(new InventoryDataDto());
             return InventoryDataDtoCsv.Export(dtoList);

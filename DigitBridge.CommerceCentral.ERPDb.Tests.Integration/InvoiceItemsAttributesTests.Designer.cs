@@ -131,6 +131,31 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void Patch_Test()
+        {
+            var list = DataBaseFactory.Find<InvoiceItemsAttributes>("SELECT TOP 1 * FROM InvoiceItemsAttributes").ToList();
+
+            DataBaseFactory.Begin();
+            var data = list.FirstOrDefault();
+            var dataOrig = new InvoiceItemsAttributes();
+            dataOrig?.CopyFrom(data);
+
+            data.SetDataBaseFactory(DataBaseFactory);
+            var newData = FakerData.Generate();
+            data?.CopyFrom(newData);
+            data.Patch(new[] { "JsonFields", "JsonFields" });
+            DataBaseFactory.Commit();
+
+            var dataGet = DataBaseFactory.GetFromCache<InvoiceItemsAttributes>(data.RowNum);
+            var result = dataGet.JsonFields != dataOrig.JsonFields &&
+                            dataGet.JsonFields != dataOrig.JsonFields &&
+                            dataGet.JsonFields == newData.JsonFields &&
+                            dataGet.JsonFields == newData.JsonFields;
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
@@ -201,6 +226,64 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void AddList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var InvoiceUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.InvoiceUuid = InvoiceUuid);
+            list.SetDataBaseFactory<InvoiceItemsAttributes>(DataBaseFactory)
+                .Save<InvoiceItemsAttributes>();
+
+            var cnt = DataBaseFactory.Count<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0", InvoiceUuid);
+            var result = cnt.Equals(list.Count());
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void SaveList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var InvoiceUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.InvoiceUuid = InvoiceUuid);
+            list.SetDataBaseFactory<InvoiceItemsAttributes>(DataBaseFactory)
+                .Save<InvoiceItemsAttributes>();
+
+            var NewJsonFields = Guid.NewGuid().ToString();
+            var listFind = DataBaseFactory.Find<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid).ToList();
+            listFind.ToList().ForEach(x => x.JsonFields = NewJsonFields);
+            listFind.Save<InvoiceItemsAttributes>();
+
+            list = DataBaseFactory.Find<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid).ToList();
+            var result = list.Where(x => x.JsonFields == NewJsonFields).Count() == listFind.Count();
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void DeleteList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var InvoiceUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.InvoiceUuid = InvoiceUuid);
+            list.SetDataBaseFactory<InvoiceItemsAttributes>(DataBaseFactory)
+                .Save();
+
+            var listFind = DataBaseFactory.Find<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid).ToList();
+            listFind.Delete();
+
+            var cnt = DataBaseFactory.Count<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0", InvoiceUuid);
+            var result = cnt == 0;
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
@@ -252,6 +335,32 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceItemsAttributes>(data.UniqueId);
             var result = data.Equals(dataGet);
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task PatchAsync_Test()
+        {
+            var list = (await DataBaseFactory.FindAsync<InvoiceItemsAttributes>()).ToList();
+
+            DataBaseFactory.Begin();
+            var data = list.FirstOrDefault();
+            var dataOrig = new InvoiceItemsAttributes();
+            dataOrig?.CopyFrom(data);
+
+            data.SetDataBaseFactory(DataBaseFactory);
+            var newData = FakerData.Generate();
+            data?.CopyFrom(newData);
+            await data.PatchAsync(new[] { "JsonFields", "JsonFields" });
+            DataBaseFactory.Commit();
+
+            var dataGet = await DataBaseFactory.GetFromCacheAsync<InvoiceItemsAttributes>(data.RowNum);
+            var result = dataGet.JsonFields != dataOrig.JsonFields &&
+                            dataGet.JsonFields != dataOrig.JsonFields &&
+                            dataGet.JsonFields == newData.JsonFields &&
+                            dataGet.JsonFields == newData.JsonFields;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -321,6 +430,67 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task AddListAsync_Test()
+        {
+            var list = FakerData.Generate(10);
+            var InvoiceUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.InvoiceUuid = InvoiceUuid);
+            await list
+                .SetDataBaseFactory<InvoiceItemsAttributes>(DataBaseFactory)
+                .SaveAsync<InvoiceItemsAttributes>();
+
+            var cnt = await DataBaseFactory.CountAsync<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0", InvoiceUuid);
+            var result = cnt.Equals(list.Count());
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task SaveListAsync_Test()
+        {
+            var list = FakerData.Generate(10);
+            var InvoiceUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.InvoiceUuid = InvoiceUuid);
+            await list
+                .SetDataBaseFactory<InvoiceItemsAttributes>(DataBaseFactory)
+                .SaveAsync<InvoiceItemsAttributes>();
+
+            var NewJsonFields = Guid.NewGuid().ToString();
+            var listFind = (await DataBaseFactory.FindAsync<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid)).ToList();
+            listFind.ToList().ForEach(x => x.JsonFields = NewJsonFields);
+            await listFind.SaveAsync<InvoiceItemsAttributes>();
+
+            list = DataBaseFactory.Find<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid).ToList();
+            var result = list.Where(x => x.JsonFields == NewJsonFields).Count() == listFind.Count();
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task DeleteListAsync_Test()
+        {
+            var list = FakerData.Generate(10);
+            var InvoiceUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.InvoiceUuid = InvoiceUuid);
+            await list
+                .SetDataBaseFactory<InvoiceItemsAttributes>(DataBaseFactory)
+                .SaveAsync();
+
+            var listFind = (await DataBaseFactory.FindAsync<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid)).ToList();
+            await listFind.DeleteAsync();
+
+            var cnt = await DataBaseFactory.CountAsync<InvoiceItemsAttributes>("WHERE InvoiceUuid = @0", InvoiceUuid);
+            var result = cnt == 0;
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
