@@ -88,8 +88,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ShipmentID",SqlDbType.NVarChar,IsDefault=true)]
         private string _shipmentID;
 
-        [Column("WarehouseID",SqlDbType.NVarChar,IsDefault=true)]
-        private string _warehouseID;
+        [Column("WarehouseCode",SqlDbType.NVarChar,IsDefault=true)]
+        private string _warehouseCode;
 
         [Column("ShipmentType",SqlDbType.Int,IsDefault=true)]
         private int? _shipmentType;
@@ -350,20 +350,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Warehouse Code. <br> Title: Warehouse Code, Display: true, Editable: true
 		/// </summary>
-        public virtual string WarehouseID
+        public virtual string WarehouseCode
         {
             get
             {
-				if (!AllowNull && _warehouseID is null) 
-					_warehouseID = String.Empty; 
-				return _warehouseID?.TrimEnd(); 
+				if (!AllowNull && _warehouseCode is null) 
+					_warehouseCode = String.Empty; 
+				return _warehouseCode?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
 				{
-					_warehouseID = value.TruncateTo(50); 
-					OnPropertyChanged("WarehouseID", value);
+					_warehouseCode = value.TruncateTo(50); 
+					OnPropertyChanged("WarehouseCode", value);
 				}
             }
         }
@@ -865,7 +865,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_centralOrderNum = AllowNull ? (long?)null : default(long); 
 			_channelOrderID = String.Empty; 
 			_shipmentID = AllowNull ? (string)null : String.Empty; 
-			_warehouseID = AllowNull ? (string)null : String.Empty; 
+			_warehouseCode = AllowNull ? (string)null : String.Empty; 
 			_shipmentType = AllowNull ? (int?)null : default(int); 
 			_shipmentReferenceID = AllowNull ? (string)null : String.Empty; 
 			_shipmentDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 

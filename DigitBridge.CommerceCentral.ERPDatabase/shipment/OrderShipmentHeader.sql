@@ -11,7 +11,7 @@
 	[CentralOrderNum] [bigint] NULL DEFAULT 0, --(Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
 	[ChannelOrderID] [varchar](130) NOT NULL DEFAULT '', --(Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
 	[ShipmentID] [nvarchar](50) NULL DEFAULT '', --(Readonly) Shipment ID. <br> Title: Shipment Id, Display: true, Editable: false
-	[WarehouseID] [nvarchar](50) NULL DEFAULT '', --Warehouse Code. <br> Title: Warehouse Code, Display: true, Editable: true
+	[WarehouseCode] [nvarchar](50) NULL DEFAULT '', --Warehouse Code. <br> Title: Warehouse Code, Display: true, Editable: true
 	[ShipmentType] [int] NULL DEFAULT 0, --Shipment Type. <br> Title: Shipment Type, Display: true, Editable: true
 	[ShipmentReferenceID] [varchar](50) NULL DEFAULT '', --Ref Id. <br> Title: Reference, Display: true, Editable: true
 	[ShipmentDateUtc] [datetime] NULL, --Ship Date. <br> Title: Ship Date, Display: true, Editable: true

@@ -76,34 +76,6 @@ SELECT
 
         #endregion override methods
 
-        protected bool QueryRowNums = false;
-
-        protected virtual string GetSQL_select_RowNum()
-        {
-            this.SQL_Select = $@"
-SELECT distinct 
- {Helper.TableAllies}.DistributionCenterNum,
- {Helper.TableAllies}.RowNum
-";
-            return this.SQL_Select;
-        }
-
-        public override void GetSQL_all()
-        {
-            if (QueryRowNums)
-            {
-                QueryObject.LoadJson = false;
-                this.GetSQL_where();
-                this.GetSQL_select_RowNum();
-                this.GetSQL_from();
-                this.SQL_WithoutOrder = $"{this.SQL_Select} {this.SQL_From} {this.SQL_Where} ";
-                // set default order by
-                this.AddDefaultOrderBy();
-                this.GetSQL_orderBy();
-            }
-        }
-
-
         public virtual WarehousePayload GetWarehouseList(WarehousePayload payload)
         {
             if (payload == null)
@@ -159,19 +131,22 @@ SELECT distinct
             if (payload == null)
                 payload = new WarehousePayload();
 
-            QueryRowNums = true;
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
+
+            var sql = $@"
+SELECT distinct {Helper.TableAllies}.RowNum 
+{GetSQL_from()} 
+{base.GetSQL_where()}
+";
             try
             {
-                var reader = await ExcuteAsync();
-                if (reader.data != null)
-                {
-                    foreach (var x in reader.data)
-                    {
-                        rowNumList.Add(x[0].ToInt());
-                    }
-                }
+                using var trs = new ScopedTransaction(dbFactory);
+                rowNumList = await SqlQuery.ExecuteAsync(
+                    sql,
+                    (long rowNum) => rowNum,
+                    base.GetSqlParameters().ToArray()
+                );
             }
             catch (Exception ex)
             {
@@ -185,20 +160,21 @@ SELECT distinct
             if (payload == null)
                 payload = new WarehousePayload();
 
-            QueryRowNums = true;
-
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
+            var sql = $@"
+SELECT distinct {Helper.TableAllies}.RowNum 
+{GetSQL_from()} 
+{base.GetSQL_where()}
+";
             try
             {
-                var reader = Excute();
-                if (reader.data != null)
-                {
-                    foreach (var x in reader.data)
-                    {
-                        rowNumList.Add(x[0].ToInt());
-                    }
-                }
+                using var trs = new ScopedTransaction(dbFactory);
+                rowNumList = SqlQuery.Execute(
+                    sql,
+                    (long rowNum) => rowNum,
+                    base.GetSqlParameters().ToArray()
+                );
             }
             catch (Exception ex)
             {
