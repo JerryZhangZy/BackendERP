@@ -121,7 +121,7 @@ SELECT
             var sql = $@"
 SELECT distinct {Helper.TableAllies}.CentralOrderNum 
 {GetSQL_from()} 
-{base.GetSQL_where()}
+{GetSQL_where()}
 ";
             try
             {
@@ -129,7 +129,7 @@ SELECT distinct {Helper.TableAllies}.CentralOrderNum
                 rowNumList = await SqlQuery.ExecuteAsync(
                     sql,
                     (long rowNum) => rowNum,
-                    base.GetSqlParameters().ToArray()
+                    GetSqlParameters().ToArray()
                 );
             }
             catch (Exception ex)
@@ -149,7 +149,7 @@ SELECT distinct {Helper.TableAllies}.CentralOrderNum
             var sql = $@"
 SELECT distinct {Helper.TableAllies}.CentralOrderNum 
 {GetSQL_from()} 
-{base.GetSQL_where()}
+{GetSQL_where()}
 ";
             try
             {
@@ -157,7 +157,7 @@ SELECT distinct {Helper.TableAllies}.CentralOrderNum
                 rowNumList = SqlQuery.Execute(
                     sql,
                     (long rowNum) => rowNum,
-                    base.GetSqlParameters().ToArray()
+                    GetSqlParameters().ToArray()
                 );
             }
             catch (Exception ex)

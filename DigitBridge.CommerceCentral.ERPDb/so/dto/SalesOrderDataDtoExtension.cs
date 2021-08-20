@@ -36,10 +36,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		public static IEnumerable<dynamic> MergeDetailRecord(this SalesOrderDataDto dto, bool withHeaderText = false, bool withRecordsType = false)
 		{
-			if (!dto.HasSalesOrderItems)
-				return null;
-
 			var result = new List<dynamic>();
+			if (!dto.HasSalesOrderItems)
+				return result;
+
 			var salesOrderItems = new SalesOrderItems() { SalesOrderItemsAttributes = new SalesOrderItemsAttributes() };
 
 			if (withHeaderText)

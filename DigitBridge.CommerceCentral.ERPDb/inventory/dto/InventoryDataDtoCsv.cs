@@ -44,7 +44,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         protected override void WriteCsv(InventoryDataDto data, CsvWriter csv)
         {
-            data.ExportFixed();
             // combine multiple Dto to one dynamic object
             var headerRecords = data.MergeHeaderRecord(true).ToList();
             WriteEntities(csv, headerRecords, "H");
