@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -39,7 +37,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [JsonIgnore, XmlIgnore]
         public new string UniqueId => OrderHeader.UniqueId;
-
+        
+		 [JsonIgnore, XmlIgnore] 
+		public static string OrderHeaderTable ="OrderHeader ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string OrderLineTable ="OrderLine ";
+		
         #region CRUD Methods
 
         public override bool Equals(ChannelOrderData other)
@@ -140,7 +144,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             
 			if (string.IsNullOrEmpty(OrderHeader.CentralOrderUuid)) return; 
-			OrderLine = DigitBridge.CommerceCentral.ERPDb.OrderLine.FindByCentralOrderNum(dbFactory, OrderHeader.CentralOrderNum); 
+			OrderLine = GetOrderLineByCentralOrderUuid(OrderHeader.CentralOrderUuid); 
         }
 
         public override bool Save()
@@ -150,14 +154,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin();
-			OrderHeader.SetDataBaseFactory(dbFactory);
-			if (!OrderHeader.Save()) return false;
 
-			if (OrderLine != null) 
-				OrderLine.SetDataBaseFactory(dbFactory)?.Save();
-			var delOrderLine = _OrderLineDeleted;
-			if (delOrderLine != null)
-				delOrderLine.SetDataBaseFactory(dbFactory)?.Delete();
+			 if (NeedSave(OrderHeaderTable))
+			{
+				OrderHeader.SetDataBaseFactory(dbFactory);
+				if (!OrderHeader.Save()) return false;
+			}
+
+			 if (NeedSave(OrderLineTable))
+			{
+				if (OrderLine != null) 
+					OrderLine.SetDataBaseFactory(dbFactory)?.Save();
+				var delOrderLine = _OrderLineDeleted;
+				if (delOrderLine != null)
+					delOrderLine.SetDataBaseFactory(dbFactory)?.Delete();
+			}
 
 			if (_OnSave != null)
 			{
@@ -179,10 +190,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
-			OrderHeader.SetDataBaseFactory(dbFactory); 
-			if (OrderHeader.Delete() <= 0) return false; 
-			if (OrderLine != null) 
-				OrderLine?.SetDataBaseFactory(dbFactory)?.Delete(); 
+
+			 if (NeedDelete(OrderHeaderTable))
+			{
+				OrderHeader.SetDataBaseFactory(dbFactory); 
+				if (OrderHeader.Delete() <= 0) return false; 
+			}
+			 if (NeedDelete(OrderLineTable))
+			{
+				if (OrderLine != null) 
+					OrderLine?.SetDataBaseFactory(dbFactory)?.Delete(); 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))
@@ -234,13 +252,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin(); 
-			OrderHeader.SetDataBaseFactory(dbFactory); 
-			if (!(await OrderHeader.SaveAsync().ConfigureAwait(false))) return false; 
-			if (OrderLine != null) 
-				await OrderLine.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
-			var delOrderLine = _OrderLineDeleted;
-			if (delOrderLine != null)
-				await delOrderLine.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+
+			 if (NeedSave(OrderHeaderTable))
+			{
+				OrderHeader.SetDataBaseFactory(dbFactory); 
+				if (!(await OrderHeader.SaveAsync().ConfigureAwait(false))) return false; 
+			}
+			 if (NeedSave(OrderLineTable))
+			{
+				if (OrderLine != null) 
+					await OrderLine.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+				var delOrderLine = _OrderLineDeleted;
+				if (delOrderLine != null)
+					await delOrderLine.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+			}
 
 			if (_OnSave != null)
 			{
@@ -262,10 +287,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
+			 if (NeedDelete(OrderHeaderTable))
+			{
 			OrderHeader.SetDataBaseFactory(dbFactory); 
 			if ((await OrderHeader.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
-			if (OrderLine != null) 
-				await OrderLine.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			}
+			 if (NeedDelete(OrderLineTable))
+			{
+				if (OrderLine != null) 
+					await OrderLine.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+			}
 			if (_OnDelete != null)
 			{
 				if (!_OnDelete(dbFactory, this))

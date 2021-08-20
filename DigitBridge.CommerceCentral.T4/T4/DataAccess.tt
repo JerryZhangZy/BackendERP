@@ -72,9 +72,11 @@
 //SettingForDistributionCenter
 //SettingForOrderDCAssignment
 #>
-<#@ include file="SettingForShipment.ttinclude" #>
+<#@ include file="SettingForChannelOrder.ttinclude" #>
 <#
-    var overridesetting=true;
+    var dtoSuf = "";
+
+    var overridesetting=false;
     //rewrite setting config
     if(overridesetting)
     {
@@ -174,7 +176,7 @@
 <#@ include file="GenerateRepositoryDto.ttinclude" #>
 <# 
                 dir = Path.Combine(path, DtoFolder);
-                SaveOutputNotExists(dir, $"{table.DtoName}.cs");
+                SaveOutputNotExists(dir, $"{table.DtoName}{dtoSuf}.cs");
             }
 #>
 <# 
@@ -235,7 +237,7 @@
 <#@ include file="GenerateStructureDtoMapper.ttinclude" #>
 <# 
         dir = Path.Combine(path, StructureDtoFolder);
-        SaveOutputNotExists(dir, $"{StructureDtoName}MapperDefault.cs");
+        SaveOutputNotExists(dir, $"{StructureDtoName}MapperDefault{dtoSuf}.cs");
 #>
 <#@ include file="GenerateStructureDtoExtension.ttinclude" #>
 <# 

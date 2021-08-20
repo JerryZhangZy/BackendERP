@@ -1,10 +1,6 @@
 
 
-
-
-
               
-
               
     
 
@@ -2292,7 +2288,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Global Unique Guid for CentralOrder
+		/// 
 		/// </summary>
         public virtual string CentralOrderUuid
         {
@@ -2438,6 +2434,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public virtual OrderHeader CheckIntegrity()
         {
+            CheckUniqueId();
             return this;
         }
 
