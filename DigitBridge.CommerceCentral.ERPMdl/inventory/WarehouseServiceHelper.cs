@@ -166,14 +166,9 @@ AND DistributionCenterCode = @warehouseCode
 SELECT DistributionCenterNum FROM DistributionCenter tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum";
-            using var dataReader = SqlQuery.ExecuteCommand(sql, CommandType.Text,
+            return SqlQuery.Execute(sql, (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum")
-            );
-            var rowNumList = new List<long>();
-            while (dataReader.Read())
-                rowNumList.Add(dataReader.GetInt32(0));
-            return rowNumList;
+                profileNum.ToSqlParameter("profileNum"));
         }
 
         public static async Task<List<long>> GetRowNumsAsync(int masterAccountNum, int profileNum)
@@ -182,14 +177,9 @@ AND ProfileNum = @profileNum";
 SELECT DistributionCenterNum FROM DistributionCenter tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum";
-            using var dataReader = await SqlQuery.ExecuteCommandAsync(sql, CommandType.Text,
+            return await SqlQuery.ExecuteAsync(sql, (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum")
-            );
-            var rowNumList = new List<long>();
-            while (await dataReader.ReadAsync())
-                rowNumList.Add(dataReader.GetInt32(0));
-            return rowNumList;
+                profileNum.ToSqlParameter("profileNum"));
         }
 
         public static List<DistributionCenter> GetWarehouses(int masterAccountNum, int profileNum)
