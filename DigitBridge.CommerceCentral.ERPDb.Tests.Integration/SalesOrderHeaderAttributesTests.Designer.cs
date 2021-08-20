@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -130,6 +128,31 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void Patch_Test()
+        {
+            var list = DataBaseFactory.Find<SalesOrderHeaderAttributes>("SELECT TOP 1 * FROM SalesOrderHeaderAttributes").ToList();
+
+            DataBaseFactory.Begin();
+            var data = list.FirstOrDefault();
+            var dataOrig = new SalesOrderHeaderAttributes();
+            dataOrig?.CopyFrom(data);
+
+            data.SetDataBaseFactory(DataBaseFactory);
+            var newData = FakerData.Generate();
+            data?.CopyFrom(newData);
+            data.Patch(new[] { "JsonFields", "JsonFields" });
+            DataBaseFactory.Commit();
+
+            var dataGet = DataBaseFactory.GetFromCache<SalesOrderHeaderAttributes>(data.RowNum);
+            var result = dataGet.JsonFields != dataOrig.JsonFields &&
+                            dataGet.JsonFields != dataOrig.JsonFields &&
+                            dataGet.JsonFields == newData.JsonFields &&
+                            dataGet.JsonFields == newData.JsonFields;
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
@@ -251,6 +274,32 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<SalesOrderHeaderAttributes>(data.UniqueId);
             var result = data.Equals(dataGet);
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task PatchAsync_Test()
+        {
+            var list = (await DataBaseFactory.FindAsync<SalesOrderHeaderAttributes>()).ToList();
+
+            DataBaseFactory.Begin();
+            var data = list.FirstOrDefault();
+            var dataOrig = new SalesOrderHeaderAttributes();
+            dataOrig?.CopyFrom(data);
+
+            data.SetDataBaseFactory(DataBaseFactory);
+            var newData = FakerData.Generate();
+            data?.CopyFrom(newData);
+            await data.PatchAsync(new[] { "JsonFields", "JsonFields" });
+            DataBaseFactory.Commit();
+
+            var dataGet = await DataBaseFactory.GetFromCacheAsync<SalesOrderHeaderAttributes>(data.RowNum);
+            var result = dataGet.JsonFields != dataOrig.JsonFields &&
+                            dataGet.JsonFields != dataOrig.JsonFields &&
+                            dataGet.JsonFields == newData.JsonFields &&
+                            dataGet.JsonFields == newData.JsonFields;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }

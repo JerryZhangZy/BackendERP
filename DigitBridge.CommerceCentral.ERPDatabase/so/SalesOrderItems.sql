@@ -66,7 +66,9 @@
 	[LotInDate] DATE NULL, --(Ignore) Lot receive Date
 	[LotExpDate] DATE NULL, --(Ignore) Lot Expiration date
 
-	[DBChannelOrderLineRowID] VARCHAR(50) NOT NULL DEFAULT '', --DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: true, Editable: true
+    [CentralOrderLineUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Link to CentralOrderLineUuid in OrderLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+	[DBChannelOrderLineRowID] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: false, Editable: false
+    [OrderDCAssignmentLineUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Link to OrderDCAssignmentLineUuid in OrderDCAssignmentLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
 
     [UpdateDateUtc] DATETIME NULL, --(Ignore) 
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore) 

@@ -11,6 +11,9 @@ GO
 ALTER TABLE [dbo].[OrderLineMerchantExt] ADD  CONSTRAINT [DF_OrderLineMerchantExt_CentralOrderLineMerchantExtUuid]  DEFAULT (CONVERT([nvarchar](50),newid())) FOR [CentralOrderLineMerchantExtUuid]
 GO
 
+ALTER TABLE [dbo].[OrderLineMerchantExt] ADD  CONSTRAINT [DF_OrderLineMerchantExt_DigitBridgeGuid]  DEFAULT (newid()) FOR [DigitBridgeGuid]
+GO
+
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderLineMerchantExt]') AND name = N'UK_OrderLineMerchantExt_CentralOrderLineMerchantExtUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_OrderLineMerchantExt_CentralOrderLineMerchantExtUuid] ON [dbo].[OrderLineMerchantExt]
