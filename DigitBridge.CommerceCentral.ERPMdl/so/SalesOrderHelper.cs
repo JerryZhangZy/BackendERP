@@ -174,6 +174,18 @@ AND ProfileNum = @profileNum";
                 rowNumList.Add(dataReader.GetInt64(0));
             return rowNumList;
         }
+
+        public static async Task<bool> ExistOrderDCAssignmentUuidAsync(string orderDCAssignmentUuid)
+        {
+
+            var sql = $@"
+SELECT COUNT(1) FROM SalesOrderHeader tbl
+WHERE OrderSourceCode = 'OrderDCAssignmentUuid' + @orderDCAssignmentUuid
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                  orderDCAssignmentUuid.ToSqlParameter("orderDCAssignmentUuid"));
+            return result > 0;
+        }
     }
 }
 

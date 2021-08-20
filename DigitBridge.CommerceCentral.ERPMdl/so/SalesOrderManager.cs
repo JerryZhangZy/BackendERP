@@ -23,7 +23,6 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
-using DigitBridge.CommerceCentral.ERPMdl.so;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -39,7 +38,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         private ChannelOrderService _channelOrderSrv;
         private DCAssignmentService _dcAssignmentSrv;
 
-        public SalesOrderManager() : base() { }
+        private SalesOrderTransfer _soTransfer;
+
         public SalesOrderManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
@@ -49,6 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _channelOrderSrv = new ChannelOrderService(dbFactory);
             _dcAssignmentSrv = new DCAssignmentService(dbFactory);
 
+            _soTransfer = new SalesOrderTransfer(this);
         }
 
         public async Task<byte[]> ExportAsync(SalesOrderPayload payload)
@@ -167,39 +168,70 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //Get CentralOrder by uuid
             bool ret = await _channelOrderSrv.GetDataByIdAsync(centralOrderUuid);
 
+            var soDataList = new List<SalesOrderData>();
+
             if (ret)
             {
                 //Get DCAssignments by uuid
                 var dcAssigmentDataList = await _dcAssignmentSrv.GetByCentralOrderUuidAsync(centralOrderUuid);
 
-                if(dcAssigmentDataList != null && dcAssigmentDataList.Count > 0)
+                if (dcAssigmentDataList != null && dcAssigmentDataList.Count > 0)
                 {
                     //Create SalesOrder
-                    var soDataList = new List<SalesOrderData>();
 
-                    foreach(var dcAssigmentData in dcAssigmentDataList)
+                    foreach (var dcAssigmentData in dcAssigmentDataList)
                     {
                         var coData = _channelOrderSrv.Data;
+                        string dcUuid = dcAssigmentData.OrderDCAssignmentHeader.CentralOrderUuid;
 
-                        var soData = SalesOrderMapper.ChannelOrderToSalesOrder(dcAssigmentData, coData);
+                        if (! await SalesOrderHelper.ExistOrderDCAssignmentUuidAsync(dcUuid))
+                        {
+                            var soData = _soTransfer.FromChannelOrder(dcAssigmentData, coData);
 
-                        salesOrderService.Add();
-
-                        salesOrderService.AttachData(soData);
-
-                        await salesOrderService.SaveDataAsync();
+                            if (soData != null)
+                            {
+                                soDataList.Add(soData);
+                            }
+                            else
+                            {
+                                ret = false;
+                            }
+                        }
                     }
+
                 }
             }
 
             if (ret)
             {
                 //Transfer ChannelOrder Data to SalesOrderData
-
+                ret = await CreateSalesOrdersAsync(soDataList);
             }
+
             return ret;
         }
 
+        public async Task<bool> CreateSalesOrdersAsync(IList<SalesOrderData> soDataList)
+        {
+            if (soDataList != null && soDataList.Count > 0)
+            {
+                return true;
+            }
+
+            foreach (var soData in soDataList)
+            {
+                salesOrderService.Add();
+
+                salesOrderService.AttachData(soData);
+
+                if (await salesOrderService.SaveDataAsync() == false)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
         #region DataBase
         [XmlIgnore, JsonIgnore]
         protected IDataBaseFactory _dbFactory;
