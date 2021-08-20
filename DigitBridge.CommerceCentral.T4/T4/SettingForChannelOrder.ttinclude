@@ -14,7 +14,7 @@
     var structureName = $"{processName}Data";
     var StructureClass = new StructureInfo(structureName,
             new StructureTable() { Name = "OrderHeader", AlliesName = "cho", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "OrderLine", AlliesName = "chol", ParentName = "OrderHeader", DetailTable = true, OneToOne = false, LoadByColumn = "CentralOrderNum" }
+            new StructureTable() { Name = "OrderLine", AlliesName = "chol", ParentName = "OrderHeader", DetailTable = true, OneToOne = false, LoadByColumn = "CentralOrderUuid" }
         );
 
 

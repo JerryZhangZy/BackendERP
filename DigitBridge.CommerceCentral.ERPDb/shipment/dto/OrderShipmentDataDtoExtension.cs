@@ -158,7 +158,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.CentralOrderNum, f => default(long))
 				.RuleFor(u => u.ChannelOrderID, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.ShipmentID, f => f.Random.Guid().ToString())
-				.RuleFor(u => u.WarehouseID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.WarehouseCode, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.ShipmentType, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.ShipmentReferenceID, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.ShipmentDateUtc, f => f.Date.Past(0).Date)

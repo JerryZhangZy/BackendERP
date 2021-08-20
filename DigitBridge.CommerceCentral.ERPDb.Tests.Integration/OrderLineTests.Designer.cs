@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -47,7 +45,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ChannelOrderID, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.CentralProductNum, f => default(long))
 					.RuleFor(u => u.ChannelItemID, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.SKU, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.SKU, f => f.Commerce.Product())
 					.RuleFor(u => u.ItemTitle, f => f.Lorem.Sentence().TruncateTo(200))
 					.RuleFor(u => u.OrderQty, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.UnitPrice, f => f.Random.Decimal(1, 1000, 0))
@@ -61,11 +59,11 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.LineGiftNotes, f => f.Lorem.Sentence().TruncateTo(400))
 					.RuleFor(u => u.LineGiftAmount, f => f.Random.Decimal(1, 1000, 0))
 					.RuleFor(u => u.LineGiftTaxAmount, f => f.Random.Decimal(1, 1000, 0))
-					.RuleFor(u => u.LinePromotionCodes, f => f.Lorem.Sentence().TruncateTo(500))
+					.RuleFor(u => u.LinePromotionCodes, f => f.Lorem.Word())
 					.RuleFor(u => u.LinePromotionAmount, f => f.Random.Decimal(1, 1000, 0))
 					.RuleFor(u => u.LinePromotionTaxAmount, f => f.Random.Decimal(1, 1000, 0))
 					.RuleFor(u => u.BundleStatus, f => f.Random.Bool())
-					.RuleFor(u => u.HarmonizedCode, f => f.Lorem.Sentence().TruncateTo(20))
+					.RuleFor(u => u.HarmonizedCode, f => f.Lorem.Word())
 					.RuleFor(u => u.UPC, f => f.Lorem.Sentence().TruncateTo(20))
 					.RuleFor(u => u.EAN, f => f.Lorem.Sentence().TruncateTo(20))
 					.RuleFor(u => u.UnitOfMeasure, f => f.Lorem.Sentence().TruncateTo(20))
