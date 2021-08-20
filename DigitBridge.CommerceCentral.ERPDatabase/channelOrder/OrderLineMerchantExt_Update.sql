@@ -1,34 +1,38 @@
-﻿
--- 07/28/20201 By Yunman Li 
-IF COL_LENGTH('OrderLineMerchantExt', 'CentralOrderUuid') IS NULL					
-BEGIN					
-    ALTER TABLE OrderLineMerchantExt ADD [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT ''
-    CREATE NONCLUSTERED INDEX [FK_OrderLineMerchantExt_CentralOrderUuid] ON [dbo].[OrderLineMerchantExt]
-    (
-	    [CentralOrderUuid] ASC,
-	    [CentralOrderLineNum] ASC
-    );
-END			
+﻿-- 08/18/20201 By Jerry Z 
+ALTER TABLE [dbo].[OrderLineMerchantExt] ADD  CONSTRAINT [DF_OrderLineMerchantExt_EnterDateUtc]  DEFAULT (getutcdate()) FOR [EnterDateUtc]
+GO
 
-IF COL_LENGTH('OrderLineMerchantExt', 'CentralOrderLineUuid') IS NULL					
-BEGIN					
-    ALTER TABLE OrderLineMerchantExt ADD [CentralOrderLineUuid] VARCHAR(50) NOT NULL DEFAULT ''
-END	
+ALTER TABLE [dbo].[OrderLineMerchantExt] ADD  CONSTRAINT [DF_OrderLineMerchantExt_CentralOrderUuid]  DEFAULT ('') FOR [CentralOrderUuid]
+GO
 
-IF COL_LENGTH('OrderLineMerchantExt', 'CentralOrderLineMerchantExtUuid') IS NULL					
-BEGIN					
-    ALTER TABLE OrderLineMerchantExt ADD CentralOrderLineMerchantExtUuid VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50)))
-	CREATE UNIQUE NONCLUSTERED INDEX [UK_OrderLineMerchantExt_CentralOrderLineMerchantExtUuid] ON [dbo].[OrderLineMerchantExt]
-	(
-		[CentralOrderLineMerchantExtUuid] ASC
-	) 
-END					
-	
+ALTER TABLE [dbo].[OrderLineMerchantExt] ADD  CONSTRAINT [DF_OrderLineMerchantExt_CentralOrderLineUuid]  DEFAULT ('') FOR [CentralOrderLineUuid]
+GO
 
-/*
-    UPDATE spp
-    SET spp.CentralOrderUuid = sph.CentralOrderUuid
-	, CentralOrderLineUuid = sph.CentralOrderLineUuid
-    FROM OrderLineMerchantExt spp
-    INNER JOIN OrderLine sph ON (sph.CentralOrderNum = spp.CentralOrderNum and sph.CentralOrderLineNum = sph.CentralOrderLineNum);
-*/
+ALTER TABLE [dbo].[OrderLineMerchantExt] ADD  CONSTRAINT [DF_OrderLineMerchantExt_CentralOrderLineMerchantExtUuid]  DEFAULT (CONVERT([nvarchar](50),newid())) FOR [CentralOrderLineMerchantExtUuid]
+GO
+
+ALTER TABLE [dbo].[OrderLineMerchantExt] ADD  CONSTRAINT [DF_OrderLineMerchantExt_DigitBridgeGuid]  DEFAULT (newid()) FOR [DigitBridgeGuid]
+GO
+
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderLineMerchantExt]') AND name = N'UK_OrderLineMerchantExt_CentralOrderLineMerchantExtUuid')
+CREATE UNIQUE NONCLUSTERED INDEX [UK_OrderLineMerchantExt_CentralOrderLineMerchantExtUuid] ON [dbo].[OrderLineMerchantExt]
+(
+	[CentralOrderLineMerchantExtUuid] ASC
+);
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderLineMerchantExt]') AND name = N'FK_OrderLineMerchantExt_CentralOrderUuid')
+CREATE NONCLUSTERED INDEX [FK_OrderLineMerchantExt_CentralOrderUuid] ON [dbo].[OrderLineMerchantExt]
+(
+	[CentralOrderUuid] ASC, 
+	[CentralOrderLineNum] ASC
+);
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderLineMerchantExt]') AND name = N'FK_OrderLineMerchantExt_CentralOrderLineUuid')
+CREATE NONCLUSTERED INDEX [FK_OrderLineMerchantExt_CentralOrderLineUuid] ON [dbo].[OrderLineMerchantExt]
+(
+	[CentralOrderLineUuid] ASC
+);
+GO

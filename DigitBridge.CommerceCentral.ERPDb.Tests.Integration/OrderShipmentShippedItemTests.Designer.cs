@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -144,6 +142,31 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void Patch_Test()
+        {
+            var list = DataBaseFactory.Find<OrderShipmentShippedItem>("SELECT TOP 1 * FROM OrderShipmentShippedItem").ToList();
+
+            DataBaseFactory.Begin();
+            var data = list.FirstOrDefault();
+            var dataOrig = new OrderShipmentShippedItem();
+            dataOrig?.CopyFrom(data);
+
+            data.SetDataBaseFactory(DataBaseFactory);
+            var newData = FakerData.Generate();
+            data?.CopyFrom(newData);
+            data.Patch(new[] { "SKU", "ChannelOrderID" });
+            DataBaseFactory.Commit();
+
+            var dataGet = DataBaseFactory.GetFromCache<OrderShipmentShippedItem>(data.RowNum);
+            var result = dataGet.SKU != dataOrig.SKU &&
+                            dataGet.ChannelOrderID != dataOrig.ChannelOrderID &&
+                            dataGet.SKU == newData.SKU &&
+                            dataGet.ChannelOrderID == newData.ChannelOrderID;
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
@@ -214,6 +237,64 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void AddList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var ChannelOrderID = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.SetDataBaseFactory<OrderShipmentShippedItem>(DataBaseFactory)
+                .Save<OrderShipmentShippedItem>();
+
+            var cnt = DataBaseFactory.Count<OrderShipmentShippedItem>("WHERE ChannelOrderID = @0", ChannelOrderID);
+            var result = cnt.Equals(list.Count());
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void SaveList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var ChannelOrderID = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.SetDataBaseFactory<OrderShipmentShippedItem>(DataBaseFactory)
+                .Save<OrderShipmentShippedItem>();
+
+            var NewChannelOrderID = Guid.NewGuid().ToString();
+            var listFind = DataBaseFactory.Find<OrderShipmentShippedItem>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
+            listFind.ToList().ForEach(x => x.ChannelOrderID = NewChannelOrderID);
+            listFind.Save<OrderShipmentShippedItem>();
+
+            list = DataBaseFactory.Find<OrderShipmentShippedItem>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
+            var result = list.Where(x => x.ChannelOrderID == NewChannelOrderID).Count() == listFind.Count();
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void DeleteList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var ChannelOrderID = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            list.SetDataBaseFactory<OrderShipmentShippedItem>(DataBaseFactory)
+                .Save();
+
+            var listFind = DataBaseFactory.Find<OrderShipmentShippedItem>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
+            listFind.Delete();
+
+            var cnt = DataBaseFactory.Count<OrderShipmentShippedItem>("WHERE ChannelOrderID = @0", ChannelOrderID);
+            var result = cnt == 0;
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
@@ -265,6 +346,32 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<OrderShipmentShippedItem>(data.UniqueId);
             var result = data.Equals(dataGet);
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task PatchAsync_Test()
+        {
+            var list = (await DataBaseFactory.FindAsync<OrderShipmentShippedItem>()).ToList();
+
+            DataBaseFactory.Begin();
+            var data = list.FirstOrDefault();
+            var dataOrig = new OrderShipmentShippedItem();
+            dataOrig?.CopyFrom(data);
+
+            data.SetDataBaseFactory(DataBaseFactory);
+            var newData = FakerData.Generate();
+            data?.CopyFrom(newData);
+            await data.PatchAsync(new[] { "SKU", "ChannelOrderID" });
+            DataBaseFactory.Commit();
+
+            var dataGet = await DataBaseFactory.GetFromCacheAsync<OrderShipmentShippedItem>(data.RowNum);
+            var result = dataGet.SKU != dataOrig.SKU &&
+                            dataGet.ChannelOrderID != dataOrig.ChannelOrderID &&
+                            dataGet.SKU == newData.SKU &&
+                            dataGet.ChannelOrderID == newData.ChannelOrderID;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -334,6 +441,67 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task AddListAsync_Test()
+        {
+            var list = FakerData.Generate(10);
+            var ChannelOrderID = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            await list
+                .SetDataBaseFactory<OrderShipmentShippedItem>(DataBaseFactory)
+                .SaveAsync<OrderShipmentShippedItem>();
+
+            var cnt = await DataBaseFactory.CountAsync<OrderShipmentShippedItem>("WHERE ChannelOrderID = @0", ChannelOrderID);
+            var result = cnt.Equals(list.Count());
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task SaveListAsync_Test()
+        {
+            var list = FakerData.Generate(10);
+            var ChannelOrderID = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            await list
+                .SetDataBaseFactory<OrderShipmentShippedItem>(DataBaseFactory)
+                .SaveAsync<OrderShipmentShippedItem>();
+
+            var NewChannelOrderID = Guid.NewGuid().ToString();
+            var listFind = (await DataBaseFactory.FindAsync<OrderShipmentShippedItem>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID)).ToList();
+            listFind.ToList().ForEach(x => x.ChannelOrderID = NewChannelOrderID);
+            await listFind.SaveAsync<OrderShipmentShippedItem>();
+
+            list = DataBaseFactory.Find<OrderShipmentShippedItem>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID).ToList();
+            var result = list.Where(x => x.ChannelOrderID == NewChannelOrderID).Count() == listFind.Count();
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task DeleteListAsync_Test()
+        {
+            var list = FakerData.Generate(10);
+            var ChannelOrderID = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.ChannelOrderID = ChannelOrderID);
+            await list
+                .SetDataBaseFactory<OrderShipmentShippedItem>(DataBaseFactory)
+                .SaveAsync();
+
+            var listFind = (await DataBaseFactory.FindAsync<OrderShipmentShippedItem>("WHERE ChannelOrderID = @0 ORDER BY RowNum", ChannelOrderID)).ToList();
+            await listFind.DeleteAsync();
+
+            var cnt = await DataBaseFactory.CountAsync<OrderShipmentShippedItem>("WHERE ChannelOrderID = @0", ChannelOrderID);
+            var result = cnt == 0;
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]

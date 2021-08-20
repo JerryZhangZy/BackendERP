@@ -46,6 +46,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _ReturnDateTo = new QueryFilter<DateTime>("ReturnDateTo", "ReturnDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
         public QueryFilter<DateTime> ReturnDateTo => _ReturnDateTo;
 
+        protected QueryFilter<int> _TransType = new QueryFilter<int>("TransType", "TransType", PREFIX, FilterBy.eq, 0);
+        public QueryFilter<int> TransType => _TransType;
+
         public InvoiceReturnQuery() : base(PREFIX)
         {
             AddFilter(_TransUuid);
@@ -58,11 +61,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_LotNum);
             AddFilter(_ReturnDateFrom);
             AddFilter(_ReturnDateTo);
+            AddFilter(_TransType);
         }
         public override void InitQueryFilter()
         {
             _ReturnDateFrom.FilterValue = DateTime.Today.AddDays(-30);
            _ReturnDateTo.FilterValue = DateTime.Today.AddDays(7);
+            //TODO，make sure this won't be changed by user.
+            _TransType.FilterValue = (int)TransTypeEnum.Return;
         }
 
     }

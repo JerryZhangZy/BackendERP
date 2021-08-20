@@ -30,8 +30,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class SalesOrderItemsDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -577,6 +580,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLotExpDate => LotExpDate != null;
+
+		/// <summary>
+		/// (Readonly) Link to CentralOrderLineUuid in OrderLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Link to CentralOrderLineUuid in OrderLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The CentralOrderLineUuid value cannot exceed 50 characters. ")]
+        public string CentralOrderLineUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCentralOrderLineUuid => CentralOrderLineUuid != null;
+
+		/// <summary>
+		/// (Readonly) DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The DBChannelOrderLineRowID value cannot exceed 50 characters. ")]
+        public string DBChannelOrderLineRowID { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasDBChannelOrderLineRowID => DBChannelOrderLineRowID != null;
+
+		/// <summary>
+		/// (Readonly) Link to OrderDCAssignmentLineUuid in OrderDCAssignmentLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Link to OrderDCAssignmentLineUuid in OrderDCAssignmentLine. <br> Title: CentralOrderLineUuid, Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The OrderDCAssignmentLineUuid value cannot exceed 50 characters. ")]
+        public string OrderDCAssignmentLineUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderDCAssignmentLineUuid => OrderDCAssignmentLineUuid != null;
 
 		/// <summary>
 		/// (Ignore)

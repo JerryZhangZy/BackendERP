@@ -30,8 +30,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class SalesOrderHeaderInfoDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -92,6 +95,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCentralOrderNum => CentralOrderNum != null;
+
+		/// <summary>
+		/// (Readonly) CentralOrderUuid. <br> Title: Central Order: Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) CentralOrderUuid. <br> Title: Central Order: Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The CentralOrderUuid value cannot exceed 50 characters. ")]
+        public string CentralOrderUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCentralOrderUuid => CentralOrderUuid != null;
 
 		/// <summary>
 		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false

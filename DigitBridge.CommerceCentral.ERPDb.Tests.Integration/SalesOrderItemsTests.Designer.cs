@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -95,6 +93,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.LotCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.LotInDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.LotExpDate, f => f.Date.Past(0).Date)
+					.RuleFor(u => u.CentralOrderLineUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.DBChannelOrderLineRowID, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.OrderDCAssignmentLineUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))

@@ -135,6 +135,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasShippingClass) data.ShippingClass = dto.ShippingClass;
 			if (dto.HasDistributionCenterNum) data.DistributionCenterNum = dto.DistributionCenterNum.ToInt();
 			if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum.ToLong();
+			if (dto.HasCentralOrderUuid) data.CentralOrderUuid = dto.CentralOrderUuid;
 			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
 			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
 			if (dto.HasChannelOrderID) data.ChannelOrderID = dto.ChannelOrderID;
@@ -281,6 +282,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasLotCost) data.LotCost = dto.LotCost.ToDecimal();
 			if (dto.HasLotInDate) data.LotInDate = dto.LotInDate;
 			if (dto.HasLotExpDate) data.LotExpDate = dto.LotExpDate;
+			if (dto.HasCentralOrderLineUuid) data.CentralOrderLineUuid = dto.CentralOrderLineUuid;
+			if (dto.HasDBChannelOrderLineRowID) data.DBChannelOrderLineRowID = dto.DBChannelOrderLineRowID;
+			if (dto.HasOrderDCAssignmentLineUuid) data.OrderDCAssignmentLineUuid = dto.OrderDCAssignmentLineUuid;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -341,6 +345,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -453,6 +458,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ShippingClass = data.ShippingClass;
 			dto.DistributionCenterNum = data.DistributionCenterNum;
 			dto.CentralOrderNum = data.CentralOrderNum;
+			dto.CentralOrderUuid = data.CentralOrderUuid;
 			dto.ChannelNum = data.ChannelNum;
 			dto.ChannelAccountNum = data.ChannelAccountNum;
 			dto.ChannelOrderID = data.ChannelOrderID;
@@ -601,6 +607,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.LotCost = data.LotCost;
 			dto.LotInDate = data.LotInDate;
 			dto.LotExpDate = data.LotExpDate;
+			dto.CentralOrderLineUuid = data.CentralOrderLineUuid;
+			dto.DBChannelOrderLineRowID = data.DBChannelOrderLineRowID;
+			dto.OrderDCAssignmentLineUuid = data.OrderDCAssignmentLineUuid;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;

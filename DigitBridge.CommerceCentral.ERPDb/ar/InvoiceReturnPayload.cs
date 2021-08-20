@@ -26,6 +26,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
     [Serializable()]
     public class InvoiceReturnPayload : PayloadBase
     {
+        #region Set transtype to return
+        /// <summary>
+        /// always load transtype=TransTypeEnum.Return for all query
+        /// </summary>
+        [JsonIgnore]
+        public int TransType => (int)TransTypeEnum.Return;
+        #endregion
+
         /// <summary>
         /// Delegate function to load request parameter to payload property.
         /// </summary>

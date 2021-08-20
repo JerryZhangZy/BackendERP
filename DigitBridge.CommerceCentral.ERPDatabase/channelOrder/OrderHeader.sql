@@ -100,7 +100,7 @@
     [DCAssignmentDateUtc] DATETIME NULL, 
 
     [RowNum]      BIGINT NOT NULL DEFAULT 0,
-    [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for CentralOrder
+    [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))),
 
     CONSTRAINT [PK_OrderHeader] PRIMARY KEY CLUSTERED ([CentralOrderNum])
 ) ON [PRIMARY]
