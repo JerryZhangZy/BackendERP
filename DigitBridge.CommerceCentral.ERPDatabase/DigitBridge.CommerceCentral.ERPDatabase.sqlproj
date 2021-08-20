@@ -200,4 +200,10 @@
   <ItemGroup>
     <None Include="channelOrder\OrderDCAssignmentLine_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderLineMerchantExt.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderLineMerchantExt_Update.sql" />
+  </ItemGroup>
 </Project>

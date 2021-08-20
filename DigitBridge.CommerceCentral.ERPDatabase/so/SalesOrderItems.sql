@@ -66,6 +66,8 @@
 	[LotInDate] DATE NULL, --(Ignore) Lot receive Date
 	[LotExpDate] DATE NULL, --(Ignore) Lot Expiration date
 
+	[DBChannelOrderLineRowID] VARCHAR(50) NOT NULL DEFAULT '', --DB Channel Order Line RowID. <br> Title: Channel Order Line RowID, Display: true, Editable: true
+
     [UpdateDateUtc] DATETIME NULL, --(Ignore) 
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore) 
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore) 

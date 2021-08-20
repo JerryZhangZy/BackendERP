@@ -38,7 +38,7 @@
 
     [RowNum]      BIGINT NOT NULL DEFAULT 0, --(Ignore)
     [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for CentralOrder
-    [CentralOrderLineUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for CentralOrder line
+    [CentralOrderLineUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))),
 
     CONSTRAINT [PK_OrderLine] PRIMARY KEY ([CentralOrderLineNum])
 ) ON [PRIMARY]
