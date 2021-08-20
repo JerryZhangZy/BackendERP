@@ -123,9 +123,13 @@ COALESCE(ordst.text, '') orderStatusText,
             }
             catch (Exception ex)
             {
-                payload.SalesOrderListCount = 0;
-                payload.SalesOrderList = null;
-                return payload;
+                //TODO
+                //Throw or return only one work.
+                //Wirte ex to LogCenter then return, or throw.
+
+                //payload.SalesOrderListCount = 0;
+                //payload.SalesOrderList = null;
+                //return payload;
                 throw;
             }
             return payload;
