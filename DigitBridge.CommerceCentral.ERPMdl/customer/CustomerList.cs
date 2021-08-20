@@ -167,13 +167,13 @@ LEFT JOIN @CustomerStatus st ON ({Helper.TableAllies}.CustomerStatus = st.num)
             var rowNumList = new List<long>();
 
             var sql = $@"
-SELECT {Helper.TableAllies}.RowNum 
-FROM {Helper.TableName} {Helper.TableAllies}
+SELECT distinct {CustomerHelper.TableAllies}.RowNum 
+{GetSQL_from()} 
 {base.GetSQL_where()}
 ";
             try
             {
-
+                using var trs = new ScopedTransaction(dbFactory);
                 rowNumList = await SqlQuery.ExecuteAsync(
                     sql,
                     (long rowNum) => rowNum,
@@ -195,12 +195,13 @@ FROM {Helper.TableName} {Helper.TableAllies}
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
             var sql = $@"
-SELECT {Helper.TableAllies}.RowNum 
-FROM {Helper.TableName} {Helper.TableAllies}
+SELECT distinct {CustomerHelper.TableAllies}.RowNum 
+{GetSQL_from()} 
 {base.GetSQL_where()}
 ";
             try
             {
+                using var trs = new ScopedTransaction(dbFactory);
                 rowNumList = SqlQuery.Execute(
                     sql,
                     (long rowNum) => rowNum,
