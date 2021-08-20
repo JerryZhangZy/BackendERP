@@ -206,4 +206,7 @@
   <ItemGroup>
     <None Include="channelOrder\OrderLineMerchantExt_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="so\SalesOrderItems_Update.sql" />
+  </ItemGroup>
 </Project>

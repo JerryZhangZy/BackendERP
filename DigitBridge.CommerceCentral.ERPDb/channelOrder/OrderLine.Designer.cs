@@ -853,6 +853,70 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		}
         #endregion Methods - Parent
 
+		#region Methods - Children OrderLineMerchantExt
+		protected OrderLineMerchantExt _OrderLineMerchantExt;
+		[IgnoreCompare]
+		public OrderLineMerchantExt OrderLineMerchantExt
+		{
+			get
+			{
+				return _OrderLineMerchantExt;
+			}
+			set
+			{
+				_OrderLineMerchantExt = value;
+				CheckIntegrityOrderLineMerchantExt();
+			}
+		}
+		public OrderLineMerchantExt SetChildrenOrderLineMerchantExt(IList<OrderLineMerchantExt> children)
+		{
+			var childrenList = children.ToList();
+			OrderLineMerchantExt = childrenList.FirstOrDefault(x => !string.IsNullOrEmpty(CentralOrderLineUuid) && x.CentralOrderLineUuid == CentralOrderLineUuid);
+			return OrderLineMerchantExt;
+		}
+		public IList<OrderLineMerchantExt> GetChildrenOrderLineMerchantExt()
+		{
+			return new List<OrderLineMerchantExt>() { OrderLineMerchantExt };
+		}
+		public IList<OrderLineMerchantExt> GetChildrenDeletedOrderLineMerchantExt()
+		{
+			return null;
+		}
+		public OrderLineMerchantExt CheckIntegrityOrderLineMerchantExt()
+		{
+			if (OrderLineMerchantExt == null)
+				return OrderLineMerchantExt;
+			CheckUniqueId();
+			OrderLineMerchantExt.SetParent(Parent);
+			if (OrderLineMerchantExt.CentralOrderLineUuid != CentralOrderLineUuid) OrderLineMerchantExt.CentralOrderLineUuid = CentralOrderLineUuid;
+			return OrderLineMerchantExt;
+		}
+		public OrderLineMerchantExt LoadOrderLineMerchantExt()
+		{
+			OrderLineMerchantExt = dbFactory.GetById<OrderLineMerchantExt>(CentralOrderLineUuid);
+			return OrderLineMerchantExt;
+		}
+		public async Task<OrderLineMerchantExt> LoadOrderLineMerchantExtAsync()
+		{
+			OrderLineMerchantExt = await dbFactory.GetByIdAsync<OrderLineMerchantExt>(CentralOrderLineUuid);
+			return OrderLineMerchantExt;
+		}
+		public OrderLineMerchantExt NewOrderLineMerchantExt()
+		{
+			CheckUniqueId();
+			var child = new OrderLineMerchantExt(dbFactory);
+			child.SetParent(Parent);
+			child.CentralOrderLineUuid = CentralOrderLineUuid;
+			return child;
+		}
+		public OrderLineMerchantExt AddOrderLineMerchantExt(OrderLineMerchantExt child)
+		{
+			if (child == null)
+				child = NewOrderLineMerchantExt();
+			OrderLineMerchantExt = child;
+			return OrderLineMerchantExt;
+		}
+		#endregion Methods - Children OrderLineMerchantExt
 
         #region Methods - Generated 
         public override void ClearMetaData()
@@ -908,22 +972,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual OrderLine CheckIntegrity()
         {
             CheckUniqueId();
+			CheckIntegrityOrderLineMerchantExt();
             return this;
         }
 
         public virtual OrderLine ClearChildren()
         {
+			OrderLineMerchantExt?.Clear();
             return this;
         }
 
         public virtual OrderLine NewChildren()
         {
+			AddOrderLineMerchantExt(NewOrderLineMerchantExt());
             return this;
         }
 
         public virtual void CopyChildrenFrom(OrderLine data)
         {
             if (data is null) return;
+			OrderLineMerchantExt?.CopyFrom(data.OrderLineMerchantExt);
+			CheckIntegrityOrderLineMerchantExt(); 
             return;
         }
 
