@@ -47,6 +47,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             _TransDateFrom.FilterValue = DateTime.Today.AddDays(-30);
            _TransDateTo.FilterValue = DateTime.Today.AddDays(7);
+            //TODO，make sure this won't be changed by user.
+            _TransType.FilterValue = (int)TransTypeEnum.Payment;
         }
 
     }

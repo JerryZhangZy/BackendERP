@@ -116,6 +116,8 @@ COALESCE(ordst.text, '') orderStatusText,
             var result = false;
             try
             {
+                //TODO 
+                //if(payload.IsQueryTotalCount)
                 payload.SalesOrderListCount = await CountAsync().ConfigureAwait(false);
                 result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
                 if (result)
@@ -123,9 +125,13 @@ COALESCE(ordst.text, '') orderStatusText,
             }
             catch (Exception ex)
             {
-                payload.SalesOrderListCount = 0;
-                payload.SalesOrderList = null;
-                return payload;
+                //TODO
+                //Throw or return only one work.
+                //Wirte ex to LogCenter then return, or throw.
+
+                //payload.SalesOrderListCount = 0;
+                //payload.SalesOrderList = null;
+                //return payload;
                 throw;
             }
             return payload;
