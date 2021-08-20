@@ -172,9 +172,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (ret)
             {
-                //Get DCAssignments by uuid
+                    //Get DCAssignments by uuid
                 var dcAssigmentDataList = await _dcAssignmentSrv.GetByCentralOrderUuidAsync(centralOrderUuid);
-
                 if (dcAssigmentDataList != null && dcAssigmentDataList.Count > 0)
                 {
                     //Create SalesOrder
