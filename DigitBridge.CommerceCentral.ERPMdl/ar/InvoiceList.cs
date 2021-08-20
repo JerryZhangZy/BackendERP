@@ -129,6 +129,62 @@ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllie
             }
             return payload;
         }
+        public virtual async Task<IList<long>> GetRowNumListAsync(InvoicePayload payload)
+        {
+            if (payload == null)
+                payload = new InvoicePayload();
+
+            this.LoadRequestParameter(payload);
+            var rowNumList = new List<long>();
+
+            var sql = $@"
+SELECT distinct {Helper.TableAllies}.RowNum 
+{GetSQL_from()} 
+{base.GetSQL_where()}
+";
+            try
+            {
+                using var trs = new ScopedTransaction(dbFactory);
+                rowNumList = await SqlQuery.ExecuteAsync(
+                    sql,
+                    (long rowNum) => rowNum,
+                    base.GetSqlParameters().ToArray()
+                );
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return rowNumList;
+        }
+
+        public virtual IList<long> GetRowNumList(InvoicePayload payload)
+        {
+            if (payload == null)
+                payload = new InvoicePayload();
+
+            this.LoadRequestParameter(payload);
+            var rowNumList = new List<long>();
+            var sql = $@"
+SELECT distinct {Helper.TableAllies}.RowNum 
+{GetSQL_from()} 
+{base.GetSQL_where()}
+";
+            try
+            {
+                using var trs = new ScopedTransaction(dbFactory);
+                rowNumList = SqlQuery.Execute(
+                    sql,
+                    (long rowNum) => rowNum,
+                    base.GetSqlParameters().ToArray()
+                );
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return rowNumList;
+        }
 
     }
 }

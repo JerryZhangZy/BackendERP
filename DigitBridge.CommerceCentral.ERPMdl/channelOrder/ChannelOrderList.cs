@@ -15,16 +15,16 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Helper = DigitBridge.CommerceCentral.ERPDb.InventoryLogHelper;
+using Helper = DigitBridge.CommerceCentral.ERPDb.OrderHeaderHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class InventoryLogList : SqlQueryBuilder<InventoryLogQuery>
+    public class ChannelOrderList : SqlQueryBuilder<ChannelOrderQuery>
     {
-        public InventoryLogList(IDataBaseFactory dbFactory) : base(dbFactory)
+        public ChannelOrderList(IDataBaseFactory dbFactory) : base(dbFactory)
         {
         }
-        public InventoryLogList(IDataBaseFactory dbFactory, InventoryLogQuery queryObject)
+        public ChannelOrderList(IDataBaseFactory dbFactory, ChannelOrderQuery queryObject)
             : base(dbFactory, queryObject)
         {
         }
@@ -60,66 +60,66 @@ SELECT
         
         #endregion override methods
         
-        public virtual InventoryLogPayload GetInventoryLogList(InventoryLogPayload payload)
+        public virtual ChannelOrderPayload GetChannelOrderList(ChannelOrderPayload payload)
         {
             if (payload == null)
-                payload = new InventoryLogPayload();
+                payload = new ChannelOrderPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.InventoryLogListCount = Count();
+                payload.ChannelOrderListCount = Count();
                 result = ExcuteJson(sb);
                 if (result)
-                    payload.InventoryLogList = sb;
+                    payload.ChannelOrderList = sb;
             }
             catch (Exception ex)
             {
-                payload.InventoryLogListCount = 0;
-                payload.InventoryLogList = null;
+                payload.ChannelOrderListCount = 0;
+                payload.ChannelOrderList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<InventoryLogPayload> GetInventoryLogListAsync(InventoryLogPayload payload)
+        public virtual async Task<ChannelOrderPayload> GetChannelOrderListAsync(ChannelOrderPayload payload)
         {
             if (payload == null)
-                payload = new InventoryLogPayload();
+                payload = new ChannelOrderPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.InventoryLogListCount = await CountAsync().ConfigureAwait(false);
+                payload.ChannelOrderListCount = await CountAsync().ConfigureAwait(false);
                 result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
                 if (result)
-                    payload.InventoryLogList = sb;
+                    payload.ChannelOrderList = sb;
             }
             catch (Exception ex)
             {
-                payload.InventoryLogListCount = 0;
-                payload.InventoryLogList = null;
+                payload.ChannelOrderListCount = 0;
+                payload.ChannelOrderList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<IList<long>> GetRowNumListAsync(InventoryLogPayload payload)
+        public virtual async Task<IList<long>> GetRowNumListAsync(ChannelOrderPayload payload)
         {
             if (payload == null)
-                payload = new InventoryLogPayload();
+                payload = new ChannelOrderPayload();
 
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
 
             var sql = $@"
-SELECT distinct {Helper.TableAllies}.RowNum 
+SELECT distinct {Helper.TableAllies}.CentralOrderNum 
 {GetSQL_from()} 
 {base.GetSQL_where()}
 ";
@@ -139,15 +139,15 @@ SELECT distinct {Helper.TableAllies}.RowNum
             return rowNumList;
         }
 
-        public virtual IList<long> GetRowNumList(InventoryLogPayload payload)
+        public virtual IList<long> GetRowNumList(ChannelOrderPayload payload)
         {
             if (payload == null)
-                payload = new InventoryLogPayload();
+                payload = new ChannelOrderPayload();
 
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
             var sql = $@"
-SELECT distinct {Helper.TableAllies}.RowNum 
+SELECT distinct {Helper.TableAllies}.CentralOrderNum 
 {GetSQL_from()} 
 {base.GetSQL_where()}
 ";

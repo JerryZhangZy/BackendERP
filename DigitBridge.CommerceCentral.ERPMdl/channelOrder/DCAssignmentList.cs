@@ -15,16 +15,16 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Helper = DigitBridge.CommerceCentral.ERPDb.InventoryLogHelper;
+using Helper = DigitBridge.CommerceCentral.ERPDb.OrderDCAssignmentHeaderHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class InventoryLogList : SqlQueryBuilder<InventoryLogQuery>
+    public class DCAssignmentList : SqlQueryBuilder<DCAssignmentQuery>
     {
-        public InventoryLogList(IDataBaseFactory dbFactory) : base(dbFactory)
+        public DCAssignmentList(IDataBaseFactory dbFactory) : base(dbFactory)
         {
         }
-        public InventoryLogList(IDataBaseFactory dbFactory, InventoryLogQuery queryObject)
+        public DCAssignmentList(IDataBaseFactory dbFactory, DCAssignmentQuery queryObject)
             : base(dbFactory, queryObject)
         {
         }
@@ -60,66 +60,66 @@ SELECT
         
         #endregion override methods
         
-        public virtual InventoryLogPayload GetInventoryLogList(InventoryLogPayload payload)
+        public virtual DCAssignmentPayload GetDCAssignmentList(DCAssignmentPayload payload)
         {
             if (payload == null)
-                payload = new InventoryLogPayload();
+                payload = new DCAssignmentPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.InventoryLogListCount = Count();
+                payload.DCAssignmentListCount = Count();
                 result = ExcuteJson(sb);
                 if (result)
-                    payload.InventoryLogList = sb;
+                    payload.DCAssignmentList = sb;
             }
             catch (Exception ex)
             {
-                payload.InventoryLogListCount = 0;
-                payload.InventoryLogList = null;
+                payload.DCAssignmentListCount = 0;
+                payload.DCAssignmentList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<InventoryLogPayload> GetInventoryLogListAsync(InventoryLogPayload payload)
+        public virtual async Task<DCAssignmentPayload> GetDCAssignmentListAsync(DCAssignmentPayload payload)
         {
             if (payload == null)
-                payload = new InventoryLogPayload();
+                payload = new DCAssignmentPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.InventoryLogListCount = await CountAsync().ConfigureAwait(false);
+                payload.DCAssignmentListCount = await CountAsync().ConfigureAwait(false);
                 result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
                 if (result)
-                    payload.InventoryLogList = sb;
+                    payload.DCAssignmentList = sb;
             }
             catch (Exception ex)
             {
-                payload.InventoryLogListCount = 0;
-                payload.InventoryLogList = null;
+                payload.DCAssignmentListCount = 0;
+                payload.DCAssignmentList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<IList<long>> GetRowNumListAsync(InventoryLogPayload payload)
+        public virtual async Task<IList<long>> GetRowNumListAsync(DCAssignmentPayload payload)
         {
             if (payload == null)
-                payload = new InventoryLogPayload();
+                payload = new DCAssignmentPayload();
 
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
 
             var sql = $@"
-SELECT distinct {Helper.TableAllies}.RowNum 
+SELECT distinct {Helper.TableAllies}.OrderDCAssignmentNum 
 {GetSQL_from()} 
 {base.GetSQL_where()}
 ";
@@ -139,15 +139,15 @@ SELECT distinct {Helper.TableAllies}.RowNum
             return rowNumList;
         }
 
-        public virtual IList<long> GetRowNumList(InventoryLogPayload payload)
+        public virtual IList<long> GetRowNumList(DCAssignmentPayload payload)
         {
             if (payload == null)
-                payload = new InventoryLogPayload();
+                payload = new DCAssignmentPayload();
 
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
             var sql = $@"
-SELECT distinct {Helper.TableAllies}.RowNum 
+SELECT distinct {Helper.TableAllies}.OrderDCAssignmentNum 
 {GetSQL_from()} 
 {base.GetSQL_where()}
 ";

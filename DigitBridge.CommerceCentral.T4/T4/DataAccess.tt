@@ -72,34 +72,35 @@
 //SettingForDistributionCenter
 //SettingForOrderDCAssignment
 #>
-<#@ include file="SettingForChannelOrder.ttinclude" #>
+<#@ include file="SettingForOrderDCAssignment.ttinclude" #>
 <#
     var dtoSuf = "";
-
-    var overridesetting=false;
+    
+    var overridesetting = false;
     //rewrite setting config
     if(overridesetting)
     {
-        generateModel = true;
-        generateDto = true;
-        generateModelHelper = true;
+        generateModel = false;
+        generateDto = false;
+        generateModelHelper = false;
 
         // generate tester class for each table repository
-        generateTester = true;
+        generateTester = false;
 
         // generate structure repository class contain multiple table
-        generateStructureRepository = true;
-        generateStructureTester = true;
+        generateStructureRepository = false;
+        generateStructureTester = false;
 
         // generate structure Dto class
-        generateStructureDto = true;
-        generateStructureDtoCsv = true;
-        generateStructureDtoTester = true;
+        generateStructureDto = false;
+        generateStructureDtoCsv = false;
+        generateStructureDtoTester = false;
 
         // generate service class
-        generateService = true;
+        generateService = false;
+        generateStructureFindList=true;
 
-        generateServiceTester = true;
+        generateServiceTester = false;
    }
 #>
 <#      
@@ -264,6 +265,26 @@
 <# 
         dir = Path.Combine(path,TesterFolder);
         SaveOutputNotExists(dir, $"{StructureDtoName}Tests.cs");
+#>
+<# } #>
+<#  // Generate StructureDto class
+	if (generateStructureFindList && StructureClass != null)
+	{
+#>              
+<#@ include file="GenerateStructureQuery.ttinclude" #>
+<# 
+        dir = Path.Combine(path, ServiceFolder);
+        SaveOutputNotExists(dir, $"{processName}Query.cs");
+#>
+<#@ include file="GenerateStructureQueryList.ttinclude" #>
+<# 
+        dir = Path.Combine(path, ServiceFolder);
+        SaveOutputNotExists(dir, $"{processName}List.cs");
+#>
+<#@ include file="GenerateServiceManager.ttinclude" #>
+<# 
+        dir = Path.Combine(path, ServiceFolder);
+        SaveOutputNotExists(dir, $"{processName}Manager.cs");
 #>
 <# } #>
 <#      

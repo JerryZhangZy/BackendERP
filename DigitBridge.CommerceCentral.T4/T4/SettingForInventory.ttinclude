@@ -69,7 +69,8 @@
     var generateService = true;
     var ServiceName = $"{processName}Service";
     var ServiceHelperName = $"{processName}Helper";
-
+    
+    var generateStructureFindList=true;
     var generateServiceTester = true;
 
     var indent = 2;
