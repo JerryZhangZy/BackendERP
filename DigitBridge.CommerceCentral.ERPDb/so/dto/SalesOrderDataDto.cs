@@ -40,19 +40,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public IList<SalesOrderItemsDto> SalesOrderItems { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasSalesOrderItems => SalesOrderItems != null;
-
-        public SalesOrderDataDto ExportFixed()
-        {
-            if (!HasSalesOrderHeader)
-                SalesOrderHeader = new SalesOrderHeaderDto();
-            if (!HasSalesOrderHeaderInfo)
-                SalesOrderHeaderInfo = new SalesOrderHeaderInfoDto();
-            if (!HasSalesOrderHeaderAttributes)
-                SalesOrderHeaderAttributes = new SalesOrderHeaderAttributesDto();
-            if (!HasSalesOrderItems)
-                SalesOrderItems = new List<SalesOrderItemsDto>();
-            return this;
-        }
     }
 }
 

@@ -209,7 +209,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new CustmoerManager(dbFactory);
 
-            payload.SortBy = "";
             var exportData = await svc.ExportAsync(payload);
             var downfile = new FileContentResult(exportData, "text/csv");
             downfile.FileDownloadName = "export-customer.csv";

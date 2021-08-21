@@ -75,6 +75,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         protected virtual void WriteEntities(CsvWriter csv, IList<dynamic> records,string recordType)
         {
+            if(records==null||records.Count<1||records[0]==null)
+                return;
             // get property orders in object 
             var props = new List<KeyValuePair<string, object>>();
             if (Format?.Columns == null || Format?.Columns?.Count == 0)

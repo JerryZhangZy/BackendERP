@@ -152,7 +152,7 @@ LEFT JOIN {InvHelper.TableName} {InvHelper.TableAllies} ON ({Helper.TableAllies}
             var sql = $@"
 SELECT distinct {Helper.TableAllies}.RowNum 
 {GetSQL_from()} 
-{base.GetSQL_where()}
+{GetSQL_where()}
 ";
             try
             {
@@ -160,7 +160,7 @@ SELECT distinct {Helper.TableAllies}.RowNum
                 rowNumList = await SqlQuery.ExecuteAsync(
                     sql,
                     (long rowNum) => rowNum,
-                    base.GetSqlParameters().ToArray()
+                    GetSqlParameters().ToArray()
                 );
             }
             catch (Exception ex)
@@ -180,7 +180,7 @@ SELECT distinct {Helper.TableAllies}.RowNum
             var sql = $@"
 SELECT distinct {Helper.TableAllies}.RowNum 
 {GetSQL_from()} 
-{base.GetSQL_where()}
+{GetSQL_where()}
 ";
             try
             {
@@ -188,7 +188,7 @@ SELECT distinct {Helper.TableAllies}.RowNum
                 rowNumList = SqlQuery.Execute(
                     sql,
                     (long rowNum) => rowNum,
-                    base.GetSqlParameters().ToArray()
+                    GetSqlParameters().ToArray()
                 );
             }
             catch (Exception ex)

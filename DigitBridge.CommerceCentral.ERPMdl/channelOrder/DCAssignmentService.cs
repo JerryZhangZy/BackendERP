@@ -251,9 +251,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
 
             List();
-            var orderDCAssignmentNums = await DCAssignmentHelper.GetRowNumByCentralOrderUuidAsync(centralOrderUuid);
-            if (orderDCAssignmentNums is null || orderDCAssignmentNums.Count <= 0)
-                return null;
+            IList<long> orderDCAssignmentNums;
+            using (var trs = new ScopedTransaction(dbFactory))
+            {
+                orderDCAssignmentNums = await DCAssignmentHelper.GetRowNumByCentralOrderUuidAsync(centralOrderUuid);
+                if (orderDCAssignmentNums is null || orderDCAssignmentNums.Count <= 0)
+                    return null;
+            }
 
             var result = new List<DCAssignmentData>();
             foreach (var orderDCAssignmentNum in orderDCAssignmentNums)

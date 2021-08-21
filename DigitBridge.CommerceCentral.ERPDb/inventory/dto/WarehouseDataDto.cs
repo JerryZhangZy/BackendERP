@@ -29,12 +29,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasDistributionCenter => DistributionCenter != null;
 
-        public WarehouseDataDto ExportFixed()
-        {
-            if (!HasDistributionCenter)
-                DistributionCenter = new DistributionCenterDto();
-            return this;
-        }
     }
 }
 

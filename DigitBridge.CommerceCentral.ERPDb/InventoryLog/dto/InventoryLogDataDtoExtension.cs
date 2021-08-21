@@ -76,10 +76,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static IEnumerable<dynamic> MergeDetailRecord(this IEnumerable<InventoryLogDataDto> dtoList, bool withHeaderText = false)
         {
             //TODO change to merge Dto children object
-            if (dtoList == null)
-                return null;
-
             var result = new List<dynamic>();
+            if (dtoList == null)
+                return result;
+
             var inventoryLog = new InventoryLogDataDto() { InventoryLog = new InventoryLogDto() };
 
             if (withHeaderText)

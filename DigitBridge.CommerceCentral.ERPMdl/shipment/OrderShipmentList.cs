@@ -114,7 +114,7 @@ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllie
             var sql = $@"
 SELECT distinct {Helper.TableAllies}.OrderShipmentNum 
 {GetSQL_from()} 
-{base.GetSQL_where()}
+{GetSQL_where()}
 ";
             try
             {
@@ -122,7 +122,7 @@ SELECT distinct {Helper.TableAllies}.OrderShipmentNum
                 rowNumList = await SqlQuery.ExecuteAsync(
                     sql,
                     (long rowNum) => rowNum,
-                    base.GetSqlParameters().ToArray()
+                    GetSqlParameters().ToArray()
                 );
             }
             catch (Exception ex)
@@ -142,7 +142,7 @@ SELECT distinct {Helper.TableAllies}.OrderShipmentNum
             var sql = $@"
 SELECT distinct {Helper.TableAllies}.OrderShipmentNum 
 {GetSQL_from()} 
-{base.GetSQL_where()}
+{GetSQL_where()}
 ";
             try
             {
@@ -150,7 +150,7 @@ SELECT distinct {Helper.TableAllies}.OrderShipmentNum
                 rowNumList = SqlQuery.Execute(
                     sql,
                     (long rowNum) => rowNum,
-                    base.GetSqlParameters().ToArray()
+                    GetSqlParameters().ToArray()
                 );
             }
             catch (Exception ex)
