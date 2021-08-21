@@ -12,11 +12,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <summary>
         /// invoice payment
         /// </summary>
-        Payment=0,
+        Payment=1,
         /// <summary>
         /// inovice return
         /// </summary>
-        Return=1,
+        Return=2,
 
     }
 }

@@ -1,6 +1,4 @@
-
               
-
               
     
 
@@ -59,6 +57,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("CentralOrderNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
         private long _centralOrderNum;
+
+        [Column("CentralOrderUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _centralOrderUuid;
 
         [Column("ChannelNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _channelNum;
@@ -331,6 +332,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_centralOrderNum = value; 
 				OnPropertyChanged("CentralOrderNum", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) CentralOrderUuid. <br> Title: Central Order: Display: false, Editable: false
+		/// </summary>
+        public virtual string CentralOrderUuid
+        {
+            get
+            {
+				return _centralOrderUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_centralOrderUuid = value.TruncateTo(50); 
+				OnPropertyChanged("CentralOrderUuid", value);
             }
         }
 
@@ -1269,6 +1286,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_shippingClass = String.Empty; 
 			_distributionCenterNum = default(int); 
 			_centralOrderNum = default(long); 
+			_centralOrderUuid = String.Empty; 
 			_channelNum = default(int); 
 			_channelAccountNum = default(int); 
 			_channelOrderID = String.Empty; 

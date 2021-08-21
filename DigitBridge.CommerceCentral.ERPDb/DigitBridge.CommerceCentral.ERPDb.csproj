@@ -15,7 +15,6 @@
     <Compile Remove="inventory\dto\InventoryDataDtoMapperDefault_bak.cs" />
     <Compile Remove="inventory\InventoryData - Copy.Designer.cs" />
     <Compile Remove="Model\RequestParameter.cs" />
-    <Compile Remove="so\dto\SalesOrderDataDtoExtension_bak.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,7 +34,6 @@
   <ItemGroup>
     <Folder Include="ap\dto\" />
     <Folder Include="Attribute\" />
-    <Folder Include="channelOrder\dto\" />
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="DTO\" />
     <Folder Include="po\dto\" />
