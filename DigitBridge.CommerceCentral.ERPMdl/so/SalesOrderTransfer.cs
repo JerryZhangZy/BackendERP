@@ -86,7 +86,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             soHeader.ProfileNum = coHeader.ProfileNum;
             soHeader.ProfileNum = coHeader.ProfileNum;
             //SalesOrderUuid
-            soHeader.OrderNumber = coHeader.DatabaseNum + "-" + coHeader.CentralOrderNum;
+            soHeader.OrderNumber = coHeader.DatabaseNum + "-" + coHeader.CentralOrderNum + "-" + dcHeader.OrderDCAssignmentNum;
             //OrderType
             //OrderStatus
             soHeader.OrderDate = coHeader.OriginalOrderDateUtc;
