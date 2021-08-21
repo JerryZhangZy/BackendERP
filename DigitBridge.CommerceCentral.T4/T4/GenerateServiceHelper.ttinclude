@@ -133,6 +133,28 @@ AND <#= StructureClass.MainTable.PrimaryKey #>= @rowNum
             );
             return result > 0;
         }
+        
+        public static List<long> GetRowNums(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT <#= StructureClass.MainTable.PrimaryKey #> FROM <#= StructureClass.MainTable.Name #> tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+            return SqlQuery.Execute(sql, (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"));
+        }
+
+        public static async Task<List<long>> GetRowNumsAsync(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT <#= StructureClass.MainTable.PrimaryKey #> FROM <#= StructureClass.MainTable.Name #> tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+            return await SqlQuery.ExecuteAsync(sql, (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"));
+        }
 
     }
 }

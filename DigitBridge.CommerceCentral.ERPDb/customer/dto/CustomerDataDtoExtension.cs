@@ -49,11 +49,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
         public static IEnumerable<dynamic> MergeDetailRecord(this CustomerDataDto dto, bool withHeaderText = false)
         {
-            //TODO change to merge Dto children object
-            if (!dto.HasCustomerAddress)
-                return null;
+			//TODO change to merge Dto children object
+			var result = new List<dynamic>();
+			if (!dto.HasCustomerAddress)
+                return result;
 
-            var result = new List<dynamic>();
 			var addressList = new CustomerAddressDto();
 
             if (withHeaderText)

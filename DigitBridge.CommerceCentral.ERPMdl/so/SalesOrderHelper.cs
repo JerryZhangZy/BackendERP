@@ -145,19 +145,15 @@ AND RowNum= @rowNum
         }
         public static List<long> GetRowNums(int masterAccountNum, int profileNum)
         {
-
             var sql = $@"
 SELECT [RowNum] FROM SalesOrderHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum";
-            using var dataReader = SqlQuery.ExecuteCommand(sql, CommandType.Text,
+            return SqlQuery.Execute(sql,
+                    (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum")
             );
-            var rowNumList = new List<long>();
-            while (dataReader.Read())
-                rowNumList.Add(dataReader.GetInt64(0));
-            return rowNumList;
         }
         public static async Task<List<long>> GetRowNumsAsync(int masterAccountNum, int profileNum)
         {
@@ -165,14 +161,11 @@ AND ProfileNum = @profileNum";
 SELECT [RowNum] FROM SalesOrderHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum";
-            using var dataReader = await SqlQuery.ExecuteCommandAsync(sql, CommandType.Text,
+            return await SqlQuery.ExecuteAsync(sql,
+                    (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum")
             );
-            var rowNumList = new List<long>();
-            while (await dataReader.ReadAsync())
-                rowNumList.Add(dataReader.GetInt64(0));
-            return rowNumList;
         }
     }
 }

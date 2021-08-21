@@ -66,10 +66,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
 
             //if no details ,please comment undercode
-            var cancelDetailRecords = data.MergeShipmentCanceledDetailRecord(true).ToList();
-            WriteEntities(csv, cancelDetailRecords, "M");
-
-            csv.WriteRecords(cancelDetailRecords);
+            if (data.HasOrderShipmentCanceledItem)
+            {
+                var cancelDetailRecords = data.MergeShipmentCanceledDetailRecord(true).ToList();
+                WriteEntities(csv, cancelDetailRecords, "M");
+            }
         }
 
         public override void ReadEntities(CsvReader csv, IList<OrderShipmentDataDto> data)
