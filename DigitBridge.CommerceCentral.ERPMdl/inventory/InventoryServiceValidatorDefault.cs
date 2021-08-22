@@ -107,7 +107,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         if (dto.HasProductBasic)
                         {
                             if(dto.ProductBasic.HasProductUuid)
-                                isValid = InventoryServiceHelper.ExistId(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum);
+                            {
+                                if (!dto.ProductBasic.RowNum.IsZero())
+                                    isValid = InventoryServiceHelper.ExistRowNum(dto.ProductBasic.RowNum.ToInt(), pl.MasterAccountNum, pl.ProfileNum);
+                                else if (dto.ProductBasic.HasProductUuid)
+                                    isValid = InventoryServiceHelper.ExistId(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum);
+                                else
+                                    isValid = false;
+                            }
                             else
                                 isValid = InventoryServiceHelper.ExistNumber(dto.ProductBasic.SKU, pl.MasterAccountNum, pl.ProfileNum);
                         }
@@ -155,7 +162,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         if (dto.HasProductBasic)
                         {
                             if (dto.ProductBasic.HasProductUuid)
-                                isValid = await InventoryServiceHelper.ExistIdAsync(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum);
+                            {
+                                if (!dto.ProductBasic.RowNum.IsZero())
+                                    isValid = await InventoryServiceHelper.ExistRowNumAsync(dto.ProductBasic.RowNum.ToInt(), pl.MasterAccountNum, pl.ProfileNum);
+                                else if (dto.ProductBasic.HasProductUuid)
+                                    isValid = await InventoryServiceHelper.ExistIdAsync(dto.ProductBasic.ProductUuid, pl.MasterAccountNum, pl.ProfileNum);
+                                else
+                                    isValid = false;
+                            }
                             else
                                 isValid = await InventoryServiceHelper.ExistNumberAsync(dto.ProductBasic.SKU, pl.MasterAccountNum, pl.ProfileNum);
                         }
