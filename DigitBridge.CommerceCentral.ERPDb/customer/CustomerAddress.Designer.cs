@@ -1,6 +1,4 @@
-
               
-
               
     
 
@@ -131,7 +129,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => AddressUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(AddressUuid)) 
 				AddressUuid = Guid.NewGuid().ToString(); 
@@ -649,9 +647,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
-        public virtual CustomerAddress CheckIntegrity()
+        public override CustomerAddress CheckIntegrity()
         {
             CheckUniqueId();
+            CheckIntegrityOthers();
             return this;
         }
 

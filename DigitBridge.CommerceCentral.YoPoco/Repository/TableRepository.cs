@@ -257,6 +257,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
         #endregion Property Changed
 
         #region CRUD Methods
+        public virtual void CheckUniqueId() { }
+        public virtual TEntity CheckIntegrity()
+        {
+            CheckUniqueId();
+            CheckIntegrityOthers();
+            return (TEntity)this;
+        }
+        public virtual void CheckIntegrityOthers() { }
 
         public virtual bool Add(IDataBaseFactory DbFactory)
         {

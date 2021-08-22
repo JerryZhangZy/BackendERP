@@ -294,6 +294,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateServiceValidator.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateStructure.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructureDtoExtension.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

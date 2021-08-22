@@ -1,54 +1,3 @@
-
-
-
-
-
-              
-
-
-
-
-
-
-
-
-              
-
-
-
-
-
-
-
-
-              
-
-
-
-
-
-
-
-
-              
-
-
-
-
-
-
-
-
-              
-
-
-
-
-
-
-
-
-
               
     
 
@@ -138,9 +87,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
-        public virtual InventoryData CheckIntegrity()
+        public override InventoryData CheckIntegrity()
         {
 			if (ProductBasic is null) return this; 
 			ProductBasic.CheckUniqueId(); 
