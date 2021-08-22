@@ -1,6 +1,4 @@
-
               
-
               
     
 
@@ -120,7 +118,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => OrderDCAssignmentLineUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(OrderDCAssignmentLineUuid)) 
 				OrderDCAssignmentLineUuid = Guid.NewGuid().ToString(); 
@@ -484,9 +482,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
-        public virtual OrderDCAssignmentLine CheckIntegrity()
+        public override OrderDCAssignmentLine CheckIntegrity()
         {
             CheckUniqueId();
+            CheckIntegrityOthers();
             return this;
         }
 

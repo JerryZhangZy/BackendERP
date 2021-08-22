@@ -38,11 +38,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         private ChannelOrderService _channelOrderSrv;
         private DCAssignmentService _dcAssignmentSrv;
-
         private SalesOrderTransfer _soTransfer;
 
         public SalesOrderManager() : base() { }
-        public SalesOrderManager(IDataBaseFactory dbFactory, string userId)
+        public SalesOrderManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
             salesOrderService = new SalesOrderService(dbFactory);
@@ -52,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _channelOrderSrv = new ChannelOrderService(dbFactory);
             _dcAssignmentSrv = new DCAssignmentService(dbFactory);
 
-            _soTransfer = new SalesOrderTransfer(this, userId);
+            _soTransfer = new SalesOrderTransfer(this, string.Empty);
         }
         public async Task<byte[]> ExportAsync(SalesOrderPayload payload)
         {
@@ -219,7 +218,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 salesOrderService.Add();
 
-                //soData.CheckIntegrity();
+                soData.CheckIntegrity();
 
                 salesOrderService.AttachData(soData);
 

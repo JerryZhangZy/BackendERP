@@ -72,15 +72,15 @@
 //SettingForDistributionCenter
 //SettingForOrderDCAssignment
 #>
-<#@ include file="SettingForSalesOrder.ttinclude" #>
+<#@ include file="SettingForOrderDCAssignment.ttinclude" #>
 <#
     var dtoSuf = "";
     
-    var overridesetting = false;
+    var overridesetting = true;
     //rewrite setting config
     if(overridesetting)
     {
-        generateModel = false;
+        generateModel = true;
         generateDto = false;
         generateModelHelper = false;
 
@@ -88,7 +88,7 @@
         generateTester = false;
 
         // generate structure repository class contain multiple table
-        generateStructureRepository = false;
+        generateStructureRepository = true;
         generateStructureTester = false;
 
         // generate structure Dto class
@@ -98,7 +98,7 @@
 
         // generate service class
         generateService = false;
-        generateStructureFindList=true;
+        generateStructureFindList = false;
 
         generateServiceTester = false;
    }

@@ -88,7 +88,7 @@ if (!string.IsNullOrEmpty(table.UniqueKey))
 {
     WriteLine($"{new String('\t',2)}[IgnoreCompare] ");
     WriteLine($"{new String('\t',2)}public override string UniqueId => {table.UniqueKey}; ");
-    WriteLine($"{new String('\t',2)}public void CheckUniqueId() ");
+    WriteLine($"{new String('\t',2)}public override void CheckUniqueId() ");
     WriteLine($"{new String('\t',2)}{{");
     WriteLine($"{new String('\t',3)}if (string.IsNullOrEmpty({table.UniqueKey})) ");
     WriteLine($"{new String('\t',4)}{table.UniqueKey} = Guid.NewGuid().ToString(); ");
@@ -521,7 +521,7 @@ if(table.HasOneToManyChildren)
             return this;
         }
 
-        public virtual <#= table.Name #> CheckIntegrity()
+        public override <#= table.Name #> CheckIntegrity()
         {
             CheckUniqueId();
 <# // generate one to one children
@@ -545,6 +545,7 @@ if(table.HasOneToManyChildren)
                 }
             } 
 #>
+            CheckIntegrityOthers();
             return this;
         }
 

@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -89,9 +87,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
-        public virtual InvoiceData CheckIntegrity()
+        public override InvoiceData CheckIntegrity()
         {
 			if (InvoiceHeader is null) return this; 
 			InvoiceHeader.CheckUniqueId(); 

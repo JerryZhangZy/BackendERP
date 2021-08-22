@@ -21,6 +21,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
         TEntity SetDataBaseFactory(IDataBaseFactory dbFactory);
         ITransaction GetTransaction();
 
+        void CheckUniqueId();
+        TEntity CheckIntegrity();
+        void CheckIntegrityOthers();
 
         bool Add(IDataBaseFactory DbFactory);
         bool Add();

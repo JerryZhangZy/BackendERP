@@ -78,9 +78,8 @@ namespace <#= NamespaceStructure #>
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
-        public virtual <#= StructureClass.ClassName #> CheckIntegrity()
+        public override <#= StructureClass.ClassName #> CheckIntegrity()
         {
 <# 
             indent = 3;

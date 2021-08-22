@@ -173,7 +173,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => SalesOrderUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(SalesOrderUuid)) 
 				SalesOrderUuid = Guid.NewGuid().ToString(); 
@@ -944,9 +944,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
-        public virtual SalesOrderHeader CheckIntegrity()
+        public override SalesOrderHeader CheckIntegrity()
         {
             CheckUniqueId();
+            CheckIntegrityOthers();
             return this;
         }
 

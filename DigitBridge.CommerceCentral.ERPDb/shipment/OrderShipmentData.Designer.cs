@@ -80,9 +80,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
-        public virtual OrderShipmentData CheckIntegrity()
+        public override OrderShipmentData CheckIntegrity()
         {
 			if (OrderShipmentHeader is null) return this; 
 			OrderShipmentHeader.CheckUniqueId(); 
