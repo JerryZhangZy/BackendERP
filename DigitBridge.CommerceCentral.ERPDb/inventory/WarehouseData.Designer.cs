@@ -63,7 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override WarehouseData CheckIntegrity()
         {
 			if (DistributionCenter is null) return this; 
-			DistributionCenter.CheckUniqueId(); 
+			DistributionCenter.CheckIntegrity(); 
 			CheckIntegrityOthers(); 
             return this;
         }
