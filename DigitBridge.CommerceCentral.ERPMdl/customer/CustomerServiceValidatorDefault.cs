@@ -99,7 +99,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = CustomerServiceHelper.ExistId(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum);
+                    {
+                        if (!dto.Customer.RowNum.IsZero())
+                            isValid = CustomerServiceHelper.ExistRowNum(dto.Customer.RowNum.ToInt(), pl.MasterAccountNum, pl.ProfileNum);
+                        else if (dto.Customer.HasCustomerUuid)
+                            isValid = CustomerServiceHelper.ExistId(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum);
+                        else
+                            isValid = false;
+                    }
                     else
                         isValid = CustomerServiceHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
                 }
@@ -129,7 +136,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = await CustomerServiceHelper.ExistIdAsync(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                    {
+                        if (!dto.Customer.RowNum.IsZero())
+                            isValid = await CustomerServiceHelper.ExistRowNumAsync(dto.Customer.RowNum.ToInt(), pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        else if (dto.Customer.HasCustomerUuid)
+                            isValid = await CustomerServiceHelper.ExistIdAsync(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        else
+                            isValid = false;
+                    }
                     else
                         isValid = await CustomerServiceHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                 }
@@ -427,7 +441,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Edit)
             {
-                if (!dto.Customer.RowNum.IsZero())
+                if (dto.Customer.RowNum.IsZero())
                 {
                     isValid = false;
                     AddError("Customer.RowNum is required.");

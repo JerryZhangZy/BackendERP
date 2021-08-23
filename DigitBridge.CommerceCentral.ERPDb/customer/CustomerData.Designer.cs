@@ -77,7 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override CustomerData CheckIntegrity()
         {
 			if (Customer is null) return this; 
-			Customer.CheckUniqueId(); 
+			Customer.CheckIntegrity(); 
 			CheckIntegrityCustomerAddress(); 
 			CheckIntegrityCustomerAttributes(); 
 			CheckIntegrityOthers(); 
@@ -499,6 +499,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.CustomerUuid != Customer.CustomerUuid)
                     child.CustomerUuid = Customer.CustomerUuid;
+                child.CheckIntegrity();
             }
             return children;
         }
@@ -555,6 +556,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             CustomerAttributes.SetParent(this);
             if (CustomerAttributes.CustomerUuid != Customer.CustomerUuid)
                 CustomerAttributes.CustomerUuid = Customer.CustomerUuid;
+            CustomerAttributes.CheckIntegrity();
             return CustomerAttributes;
         }
 

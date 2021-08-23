@@ -1191,6 +1191,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckUniqueId();
 			InventoryAttributes.SetParent(Parent);
 			if (InventoryAttributes.InventoryUuid != InventoryUuid) InventoryAttributes.InventoryUuid = InventoryUuid;
+			InventoryAttributes.CheckIntegrity();
 			return InventoryAttributes;
 		}
 		public InventoryAttributes LoadInventoryAttributes()
@@ -1209,6 +1210,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			var child = new InventoryAttributes(dbFactory);
 			child.SetParent(Parent);
 			child.InventoryUuid = InventoryUuid;
+			child.CheckIntegrity();
 			return child;
 		}
 		public InventoryAttributes AddInventoryAttributes(InventoryAttributes child)
@@ -1217,6 +1219,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				child = NewInventoryAttributes();
 			InventoryAttributes = child;
 			return InventoryAttributes;
+			child.CheckIntegrity();
 		}
 		#endregion Methods - Children InventoryAttributes
 
