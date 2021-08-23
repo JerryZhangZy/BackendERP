@@ -298,6 +298,7 @@ if(table.HasOneToOneChildren)
         WriteLine($"{new String('\t',indent+1)}CheckUniqueId();");
         WriteLine($"{new String('\t',indent+1)}{childTable.Name}.SetParent(Parent);");
         WriteLine($"{new String('\t',indent+1)}if ({childTable.Name}.{table.UniqueKey} != {table.UniqueKey}) {childTable.Name}.{table.UniqueKey} = {table.UniqueKey};");
+        WriteLine($"{new String('\t',indent+1)}{childTable.Name}.CheckIntegrity();");
         WriteLine($"{new String('\t',indent+1)}return {childTable.Name};");
         WriteLine($"{new String('\t',indent)}}}");
 
@@ -321,6 +322,7 @@ if(table.HasOneToOneChildren)
         WriteLine($"{new String('\t',indent+1)}var child = new {childTable.Name}(dbFactory);");
         WriteLine($"{new String('\t',indent+1)}child.SetParent(Parent);");
         WriteLine($"{new String('\t',indent+1)}child.{table.UniqueKey} = {table.UniqueKey};");
+        WriteLine($"{new String('\t',indent+1)}child.CheckIntegrity();");
         WriteLine($"{new String('\t',indent+1)}return child;");
         WriteLine($"{new String('\t',indent)}}}");
 
@@ -331,6 +333,7 @@ if(table.HasOneToOneChildren)
         WriteLine($"{new String('\t',indent+2)}child = New{childTable.Name}();");
         WriteLine($"{new String('\t',indent+1)}{childTable.Name} = child;");
         WriteLine($"{new String('\t',indent+1)}return {childTable.Name};");
+        WriteLine($"{new String('\t',indent+1)}child.CheckIntegrity();");
         WriteLine($"{new String('\t',indent)}}}");
 
         WriteLine($"{new String('\t',indent)}#endregion Methods - Children {childTable.Name}");
@@ -431,6 +434,7 @@ if(table.HasOneToManyChildren)
         WriteLine($"{new String('\t',indent+1)}CheckUniqueId();");
         WriteLine($"{new String('\t',indent+1)}child.SetParent(Parent);");
         WriteLine($"{new String('\t',indent+1)}if (child.{table.UniqueKey} != {table.UniqueKey}) child.{table.UniqueKey} = {table.UniqueKey};");
+        WriteLine($"{new String('\t',indent+1)}child.CheckIntegrity();");
         WriteLine($"{new String('\t',indent+1)}return child;");
         WriteLine($"{new String('\t',indent)}}}");
 
@@ -457,6 +461,7 @@ if(table.HasOneToManyChildren)
         WriteLine($"{new String('\t',indent+1)}var child = new {childTable.Name}(dbFactory);");
         WriteLine($"{new String('\t',indent+1)}child.SetParent(Parent);");
         WriteLine($"{new String('\t',indent+1)}child.{table.UniqueKey} = {table.UniqueKey};");
+        WriteLine($"{new String('\t',indent+1)}child.CheckIntegrity();");
         WriteLine($"{new String('\t',indent+1)}return child;");
         WriteLine($"{new String('\t',indent)}}}");
 
