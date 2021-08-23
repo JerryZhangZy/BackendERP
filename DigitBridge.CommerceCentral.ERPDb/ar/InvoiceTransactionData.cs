@@ -18,7 +18,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public async Task<List<InvoiceTransactionData>> GetDataListAsync(string invoiceNumber, int masterAccountNum, int profileNum, TransTypeEnum transType, int? transNum = null)
         {
-            var trans = await new InvoiceTransaction().GetByInvoiceNumberAsync(invoiceNumber, masterAccountNum, profileNum, transType, transNum);
+            var trans = await new InvoiceTransaction(dbFactory).GetByInvoiceNumberAsync(invoiceNumber, masterAccountNum, profileNum, transType, transNum);
             return await WrapData(trans, transType == TransTypeEnum.Return);
 
         }
@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (loadOthers)
             {
                 var transUuids = invoiceTransactions?.Select(i => i.TransUuid).ToList();
-                returnItems = await new InvoiceReturnItems().GetReturnItems(transUuids);
+                returnItems = await new InvoiceReturnItems(dbFactory).GetReturnItems(transUuids);
             }
 
             List<InvoiceTransactionData> datas = new List<InvoiceTransactionData>();

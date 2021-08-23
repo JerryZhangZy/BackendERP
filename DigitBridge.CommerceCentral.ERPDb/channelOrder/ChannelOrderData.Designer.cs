@@ -77,7 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override ChannelOrderData CheckIntegrity()
         {
 			if (OrderHeader is null) return this; 
-			OrderHeader.CheckUniqueId(); 
+			OrderHeader.CheckIntegrity(); 
 			CheckIntegrityOrderLine(); 
 			CheckIntegrityOrderLineMerchantExt(); 
 			CheckIntegrityOthers(); 
@@ -504,6 +504,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.CentralOrderUuid != OrderHeader.CentralOrderUuid)
                     child.CentralOrderUuid = OrderHeader.CentralOrderUuid;
+                child.CheckIntegrity();
             }
             return children;
         }
@@ -591,6 +592,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.CentralOrderUuid != OrderHeader.CentralOrderUuid)
                     child.CentralOrderUuid = OrderHeader.CentralOrderUuid;
+                child.CheckIntegrity();
             }
             return children;
         }
