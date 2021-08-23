@@ -2008,7 +2008,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (columns?.Any() == false)
                 return 0;
 
-            columns = columns.Distinct();
+            columns = columns?.Distinct();
 
             var pd = PocoData.ForType(poco.GetType(), _defaultMapper);
             return ExecuteUpdate(pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco, primaryKeyValue, columns, tableColumns, ignoreUpdateColumns);
