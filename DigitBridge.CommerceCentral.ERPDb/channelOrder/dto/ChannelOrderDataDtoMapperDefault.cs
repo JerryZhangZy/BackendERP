@@ -207,6 +207,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			#region read all grand children object
+
+			if (dto.OrderLineMerchantExt != null)
+			{
+				if (data.OrderLineMerchantExt is null)
+					data.OrderLineMerchantExt = new OrderLineMerchantExt();
+				ReadOrderLineMerchantExt(data.OrderLineMerchantExt, dto.OrderLineMerchantExt);
+			}
+
+			#endregion read all grand children object
+
 			data.CheckIntegrity();
 			return;
 		}
@@ -237,6 +248,89 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return lstOrig;
 		}
 
+		protected virtual void ReadOrderLineMerchantExt(OrderLineMerchantExt data, OrderLineMerchantExtDto dto)
+		{
+			if (data is null || dto is null)
+				return;
+
+			#region read all not null properties
+
+			if (dto.HasCentralOrderLineNum) data.CentralOrderLineNum = dto.CentralOrderLineNum.ToLong();
+			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
+			if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum.ToLong();
+			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
+			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
+			if (dto.HasChannelOrderID) data.ChannelOrderID = dto.ChannelOrderID;
+			if (dto.HasChannelOrderLineNum) data.ChannelOrderLineNum = dto.ChannelOrderLineNum.ToInt();
+			if (dto.HasMerchantLineNumber) data.MerchantLineNumber = dto.MerchantLineNumber.ToInt();
+			if (dto.HasCustomerOrderLineNumber) data.CustomerOrderLineNumber = dto.CustomerOrderLineNumber.ToInt();
+			if (dto.HasHubLineID) data.HubLineID = dto.HubLineID;
+			if (dto.HasMerchantNRProductID) data.MerchantNRProductID = dto.MerchantNRProductID;
+			if (dto.HasMerchantSKU) data.MerchantSKU = dto.MerchantSKU;
+			if (dto.HasVendorSKU) data.VendorSKU = dto.VendorSKU;
+			if (dto.HasManufacturerSKU) data.ManufacturerSKU = dto.ManufacturerSKU;
+			if (dto.HasShoppingCartSKU) data.ShoppingCartSKU = dto.ShoppingCartSKU;
+			if (dto.HasVendorDescription) data.VendorDescription = dto.VendorDescription;
+			if (dto.HasVendorStyleNumber) data.VendorStyleNumber = dto.VendorStyleNumber;
+			if (dto.HasVendorColorDescription) data.VendorColorDescription = dto.VendorColorDescription;
+			if (dto.HasVendorSizeDescription) data.VendorSizeDescription = dto.VendorSizeDescription;
+			if (dto.HasMerchantColorCode) data.MerchantColorCode = dto.MerchantColorCode;
+			if (dto.HasMerchantSizeCode) data.MerchantSizeCode = dto.MerchantSizeCode;
+			if (dto.HasMerchantSetCode) data.MerchantSetCode = dto.MerchantSetCode;
+			if (dto.HasMerchantDescription) data.MerchantDescription = dto.MerchantDescription;
+			if (dto.HasMerchantDescription2) data.MerchantDescription2 = dto.MerchantDescription2;
+			if (dto.HasMerchantDescription3) data.MerchantDescription3 = dto.MerchantDescription3;
+			if (dto.HasMerchantColorSizeDescription) data.MerchantColorSizeDescription = dto.MerchantColorSizeDescription;
+			if (dto.HasFullRetailPrice) data.FullRetailPrice = dto.FullRetailPrice.ToDecimal();
+			if (dto.HasEncodedPrice) data.EncodedPrice = dto.EncodedPrice;
+			if (dto.HasUnitShippingWeight) data.UnitShippingWeight = dto.UnitShippingWeight.ToDecimal();
+			if (dto.HasWeightUnit) data.WeightUnit = dto.WeightUnit;
+			if (dto.HasCustomerUnitPrice) data.CustomerUnitPrice = dto.CustomerUnitPrice.ToDecimal();
+			if (dto.HasUnitCostToMerchant) data.UnitCostToMerchant = dto.UnitCostToMerchant.ToDecimal();
+			if (dto.HasLineMerchandiseCost) data.LineMerchandiseCost = dto.LineMerchandiseCost.ToDecimal();
+			if (dto.HasCustomerMerchandiseAmount) data.CustomerMerchandiseAmount = dto.CustomerMerchandiseAmount.ToDecimal();
+			if (dto.HasCustomerLineShippingAmount) data.CustomerLineShippingAmount = dto.CustomerLineShippingAmount.ToDecimal();
+			if (dto.HasCustomerLineHandlingAmount) data.CustomerLineHandlingAmount = dto.CustomerLineHandlingAmount.ToDecimal();
+			if (dto.HasCustomerLineSubTotalAmount) data.CustomerLineSubTotalAmount = dto.CustomerLineSubTotalAmount.ToDecimal();
+			if (dto.HasCustomerLineTaxAmount) data.CustomerLineTaxAmount = dto.CustomerLineTaxAmount.ToDecimal();
+			if (dto.HasCustomerLineTotalAmount) data.CustomerLineTotalAmount = dto.CustomerLineTotalAmount.ToDecimal();
+			if (dto.HasCustomerLineCredits) data.CustomerLineCredits = dto.CustomerLineCredits.ToDecimal();
+			if (dto.HasCustomerLineBalanceDue) data.CustomerLineBalanceDue = dto.CustomerLineBalanceDue.ToDecimal();
+			if (dto.HasLineDiscountAmount) data.LineDiscountAmount = dto.LineDiscountAmount.ToDecimal();
+			if (dto.HasVendorWareshoueID) data.VendorWareshoueID = dto.VendorWareshoueID;
+			if (dto.HasExpectedShipDateUtc) data.ExpectedShipDateUtc = dto.ExpectedShipDateUtc;
+			if (dto.HasPackingSlipLineMessage) data.PackingSlipLineMessage = dto.PackingSlipLineMessage;
+			if (dto.HasVendorLineNotes) data.VendorLineNotes = dto.VendorLineNotes;
+			if (dto.HasStoreName) data.StoreName = dto.StoreName;
+			if (dto.HasPersonalizationData) data.PersonalizationData = dto.PersonalizationData;
+			if (dto.HasFacgtoryOrderNum) data.FacgtoryOrderNum = dto.FacgtoryOrderNum;
+			if (dto.HasSubUnitQty) data.SubUnitQty = dto.SubUnitQty.ToDecimal();
+			if (dto.HasGiftWrapIndicator) data.GiftWrapIndicator = dto.GiftWrapIndicator;
+			if (dto.HasHoldUntilDateUtc) data.HoldUntilDateUtc = dto.HoldUntilDateUtc;
+			if (dto.HasRequiredShipDateUtc) data.RequiredShipDateUtc = dto.RequiredShipDateUtc;
+			if (dto.HasRequiredDeliveryDateUtc) data.RequiredDeliveryDateUtc = dto.RequiredDeliveryDateUtc;
+			if (dto.HasCustomerRequestedArrivalDateUtc) data.CustomerRequestedArrivalDateUtc = dto.CustomerRequestedArrivalDateUtc;
+			if (dto.HasShipperHubCode) data.ShipperHubCode = dto.ShipperHubCode;
+			if (dto.HasShippingHub) data.ShippingHub = dto.ShippingHub;
+			if (dto.HasSerializedProduct) data.SerializedProduct = dto.SerializedProduct;
+			if (dto.HasCustomerSKU) data.CustomerSKU = dto.CustomerSKU;
+			if (dto.HasVendorQuoteNumber) data.VendorQuoteNumber = dto.VendorQuoteNumber;
+			if (dto.HasGiftRegistryID) data.GiftRegistryID = dto.GiftRegistryID;
+			if (dto.HasMerchantDepartment) data.MerchantDepartment = dto.MerchantDepartment;
+			if (dto.HasNdcNumber) data.NdcNumber = dto.NdcNumber;
+			if (dto.HasVendorPatternCode) data.VendorPatternCode = dto.VendorPatternCode;
+			if (dto.HasVendorFinishCode) data.VendorFinishCode = dto.VendorFinishCode;
+			if (dto.HasCentralOrderUuid) data.CentralOrderUuid = dto.CentralOrderUuid;
+			if (dto.HasCentralOrderLineUuid) data.CentralOrderLineUuid = dto.CentralOrderLineUuid;
+			if (dto.HasCentralOrderLineMerchantExtUuid) data.CentralOrderLineMerchantExtUuid = dto.CentralOrderLineMerchantExtUuid;
+
+			#endregion read properties
+
+			data.CheckIntegrity();
+			return;
+		}
 
 
         #endregion read from dto to data
@@ -425,6 +519,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			#region write all grand children object
+
+			if (data.OrderLineMerchantExt != null)
+			{
+				dto.OrderLineMerchantExt = new OrderLineMerchantExtDto();
+				WriteOrderLineMerchantExt(data.OrderLineMerchantExt, dto.OrderLineMerchantExt);
+			}
+
+			#endregion write all grand children object
+
 			return;
 		}
 		protected virtual void WriteOrderLine(IList<OrderLine> data, IList<OrderLineDto> dto)
@@ -449,6 +553,91 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		}
 
 
+		protected virtual void WriteOrderLineMerchantExt(OrderLineMerchantExt data, OrderLineMerchantExtDto dto)
+		{
+			if (data is null || dto is null)
+				return;
+
+			#region write all properties with null
+
+			dto.RowNum = data.RowNum;
+			dto.CentralOrderLineNum = data.CentralOrderLineNum;
+			dto.DatabaseNum = data.DatabaseNum;
+			dto.CentralOrderNum = data.CentralOrderNum;
+			dto.MasterAccountNum = data.MasterAccountNum;
+			dto.ProfileNum = data.ProfileNum;
+			dto.ChannelNum = data.ChannelNum;
+			dto.ChannelAccountNum = data.ChannelAccountNum;
+			dto.ChannelOrderID = data.ChannelOrderID;
+			dto.ChannelOrderLineNum = data.ChannelOrderLineNum;
+			dto.MerchantLineNumber = data.MerchantLineNumber;
+			dto.CustomerOrderLineNumber = data.CustomerOrderLineNumber;
+			dto.HubLineID = data.HubLineID;
+			dto.MerchantNRProductID = data.MerchantNRProductID;
+			dto.MerchantSKU = data.MerchantSKU;
+			dto.VendorSKU = data.VendorSKU;
+			dto.ManufacturerSKU = data.ManufacturerSKU;
+			dto.ShoppingCartSKU = data.ShoppingCartSKU;
+			dto.VendorDescription = data.VendorDescription;
+			dto.VendorStyleNumber = data.VendorStyleNumber;
+			dto.VendorColorDescription = data.VendorColorDescription;
+			dto.VendorSizeDescription = data.VendorSizeDescription;
+			dto.MerchantColorCode = data.MerchantColorCode;
+			dto.MerchantSizeCode = data.MerchantSizeCode;
+			dto.MerchantSetCode = data.MerchantSetCode;
+			dto.MerchantDescription = data.MerchantDescription;
+			dto.MerchantDescription2 = data.MerchantDescription2;
+			dto.MerchantDescription3 = data.MerchantDescription3;
+			dto.MerchantColorSizeDescription = data.MerchantColorSizeDescription;
+			dto.FullRetailPrice = data.FullRetailPrice;
+			dto.EncodedPrice = data.EncodedPrice;
+			dto.UnitShippingWeight = data.UnitShippingWeight;
+			dto.WeightUnit = data.WeightUnit;
+			dto.CustomerUnitPrice = data.CustomerUnitPrice;
+			dto.UnitCostToMerchant = data.UnitCostToMerchant;
+			dto.LineMerchandiseCost = data.LineMerchandiseCost;
+			dto.CustomerMerchandiseAmount = data.CustomerMerchandiseAmount;
+			dto.CustomerLineShippingAmount = data.CustomerLineShippingAmount;
+			dto.CustomerLineHandlingAmount = data.CustomerLineHandlingAmount;
+			dto.CustomerLineSubTotalAmount = data.CustomerLineSubTotalAmount;
+			dto.CustomerLineTaxAmount = data.CustomerLineTaxAmount;
+			dto.CustomerLineTotalAmount = data.CustomerLineTotalAmount;
+			dto.CustomerLineCredits = data.CustomerLineCredits;
+			dto.CustomerLineBalanceDue = data.CustomerLineBalanceDue;
+			dto.LineDiscountAmount = data.LineDiscountAmount;
+			dto.VendorWareshoueID = data.VendorWareshoueID;
+			dto.ExpectedShipDateUtc = data.ExpectedShipDateUtc;
+			dto.PackingSlipLineMessage = data.PackingSlipLineMessage;
+			dto.VendorLineNotes = data.VendorLineNotes;
+			dto.StoreName = data.StoreName;
+			dto.PersonalizationData = data.PersonalizationData;
+			dto.FacgtoryOrderNum = data.FacgtoryOrderNum;
+			dto.SubUnitQty = data.SubUnitQty;
+			dto.GiftWrapIndicator = data.GiftWrapIndicator;
+			dto.HoldUntilDateUtc = data.HoldUntilDateUtc;
+			dto.RequiredShipDateUtc = data.RequiredShipDateUtc;
+			dto.RequiredDeliveryDateUtc = data.RequiredDeliveryDateUtc;
+			dto.CustomerRequestedArrivalDateUtc = data.CustomerRequestedArrivalDateUtc;
+			dto.ShipperHubCode = data.ShipperHubCode;
+			dto.ShippingHub = data.ShippingHub;
+			dto.SerializedProduct = data.SerializedProduct;
+			dto.CustomerSKU = data.CustomerSKU;
+			dto.VendorQuoteNumber = data.VendorQuoteNumber;
+			dto.GiftRegistryID = data.GiftRegistryID;
+			dto.MerchantDepartment = data.MerchantDepartment;
+			dto.NdcNumber = data.NdcNumber;
+			dto.VendorPatternCode = data.VendorPatternCode;
+			dto.VendorFinishCode = data.VendorFinishCode;
+			dto.EnterDateUtc = data.EnterDateUtc;
+			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+			dto.CentralOrderUuid = data.CentralOrderUuid;
+			dto.CentralOrderLineUuid = data.CentralOrderLineUuid;
+			dto.CentralOrderLineMerchantExtUuid = data.CentralOrderLineMerchantExtUuid;
+
+			#endregion read properties
+
+			return;
+		}
 
         #endregion write to dto from data
 
