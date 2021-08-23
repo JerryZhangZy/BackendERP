@@ -889,6 +889,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckUniqueId();
 			OrderLineMerchantExt.SetParent(Parent);
 			if (OrderLineMerchantExt.CentralOrderLineUuid != CentralOrderLineUuid) OrderLineMerchantExt.CentralOrderLineUuid = CentralOrderLineUuid;
+			OrderLineMerchantExt.CheckIntegrity();
 			return OrderLineMerchantExt;
 		}
 		public OrderLineMerchantExt LoadOrderLineMerchantExt()
@@ -907,6 +908,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			var child = new OrderLineMerchantExt(dbFactory);
 			child.SetParent(Parent);
 			child.CentralOrderLineUuid = CentralOrderLineUuid;
+			child.CheckIntegrity();
 			return child;
 		}
 		public OrderLineMerchantExt AddOrderLineMerchantExt(OrderLineMerchantExt child)
@@ -915,6 +917,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				child = NewOrderLineMerchantExt();
 			OrderLineMerchantExt = child;
 			return OrderLineMerchantExt;
+			child.CheckIntegrity();
 		}
 		#endregion Methods - Children OrderLineMerchantExt
 

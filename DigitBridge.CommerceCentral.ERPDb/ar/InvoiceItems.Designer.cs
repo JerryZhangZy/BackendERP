@@ -1288,6 +1288,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckUniqueId();
 			InvoiceItemsAttributes.SetParent(Parent);
 			if (InvoiceItemsAttributes.InvoiceItemsUuid != InvoiceItemsUuid) InvoiceItemsAttributes.InvoiceItemsUuid = InvoiceItemsUuid;
+			InvoiceItemsAttributes.CheckIntegrity();
 			return InvoiceItemsAttributes;
 		}
 		public InvoiceItemsAttributes LoadInvoiceItemsAttributes()
@@ -1306,6 +1307,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			var child = new InvoiceItemsAttributes(dbFactory);
 			child.SetParent(Parent);
 			child.InvoiceItemsUuid = InvoiceItemsUuid;
+			child.CheckIntegrity();
 			return child;
 		}
 		public InvoiceItemsAttributes AddInvoiceItemsAttributes(InvoiceItemsAttributes child)
@@ -1314,6 +1316,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				child = NewInvoiceItemsAttributes();
 			InvoiceItemsAttributes = child;
 			return InvoiceItemsAttributes;
+			child.CheckIntegrity();
 		}
 		#endregion Methods - Children InvoiceItemsAttributes
 
