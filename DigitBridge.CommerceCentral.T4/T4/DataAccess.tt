@@ -72,7 +72,7 @@
 //SettingForDistributionCenter
 //SettingForOrderDCAssignment
 #>
-<#@ include file="SettingForInvoice.ttinclude" #>
+<#@ include file="SettingForDistributionCenter.ttinclude" #>
 <#
     var dtoSuf = "";
     

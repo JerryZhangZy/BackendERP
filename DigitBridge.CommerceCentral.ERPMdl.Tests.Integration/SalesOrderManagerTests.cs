@@ -57,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             "4E807A78-4331-41C4-BEF7-6E8A26163A04",
             "C5FBE495-3D3D-4069-A841-4DD7D5932C68"
             };
-            SalesOrderManager soManager = new SalesOrderManager(DataBaseFactory, "Tester");
+            SalesOrderManager soManager = new SalesOrderManager(DataBaseFactory);
             bool result = true;
             foreach (var uuid in uuids)
             {

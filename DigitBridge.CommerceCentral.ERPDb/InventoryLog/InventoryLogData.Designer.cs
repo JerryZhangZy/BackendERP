@@ -63,7 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override InventoryLogData CheckIntegrity()
         {
 			if (InventoryLog is null) return this; 
-			InventoryLog.CheckUniqueId(); 
+			InventoryLog.CheckIntegrity(); 
 			CheckIntegrityOthers(); 
             return this;
         }
