@@ -1,4 +1,3 @@
-
               
     
 
@@ -30,8 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class OrderLineDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -49,6 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Each database has its own default value.
 		/// </summary>
 		[OpenApiPropertyDescription("Each database has its own default value.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -67,6 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// 
 		/// </summary>
 		[OpenApiPropertyDescription("")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -76,6 +80,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// 
 		/// </summary>
 		[OpenApiPropertyDescription("")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -356,9 +361,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasCentralOrderUuid => CentralOrderUuid != null;
 
 		/// <summary>
-		/// Global Unique Guid for CentralOrder line
+		/// 
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for CentralOrder line")]
+		[OpenApiPropertyDescription("")]
         [StringLength(50, ErrorMessage = "The CentralOrderLineUuid value cannot exceed 50 characters. ")]
         public string CentralOrderLineUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -371,6 +376,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Children - Generated 
 
+		public OrderLineMerchantExtDto OrderLineMerchantExt { get; set; }
+		[JsonIgnore, XmlIgnore, IgnoreCompare]
+		[OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+		public bool HasOrderLineMerchantExt => OrderLineMerchantExt != null;
+		
         #endregion Children - Generated 
 
     }
