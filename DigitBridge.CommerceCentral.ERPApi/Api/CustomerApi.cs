@@ -224,7 +224,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload))]
         public static async Task<CustomerPayload> ImportCustomer(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customers/import")] HttpRequest req)
-        {
+        { 
             var payload = await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var files = req.Form.Files;
