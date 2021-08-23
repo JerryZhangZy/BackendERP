@@ -91,7 +91,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override InvoiceData CheckIntegrity()
         {
 			if (InvoiceHeader is null) return this; 
-			InvoiceHeader.CheckUniqueId(); 
+			InvoiceHeader.CheckIntegrity(); 
 			CheckIntegrityInvoiceHeaderInfo(); 
 			CheckIntegrityInvoiceHeaderAttributes(); 
 			CheckIntegrityInvoiceItems(); 
@@ -520,6 +520,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             InvoiceHeaderInfo.SetParent(this);
             if (InvoiceHeaderInfo.InvoiceUuid != InvoiceHeader.InvoiceUuid)
                 InvoiceHeaderInfo.InvoiceUuid = InvoiceHeader.InvoiceUuid;
+            InvoiceHeaderInfo.CheckIntegrity();
             return InvoiceHeaderInfo;
         }
 
@@ -575,6 +576,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             InvoiceHeaderAttributes.SetParent(this);
             if (InvoiceHeaderAttributes.InvoiceUuid != InvoiceHeader.InvoiceUuid)
                 InvoiceHeaderAttributes.InvoiceUuid = InvoiceHeader.InvoiceUuid;
+            InvoiceHeaderAttributes.CheckIntegrity();
             return InvoiceHeaderAttributes;
         }
 
@@ -688,6 +690,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     child.InvoiceUuid = InvoiceHeader.InvoiceUuid;
                 seq += 1;
                 child.Seq = seq;
+                child.CheckIntegrity();
             }
             return children;
         }
@@ -775,6 +778,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.InvoiceUuid != InvoiceHeader.InvoiceUuid)
                     child.InvoiceUuid = InvoiceHeader.InvoiceUuid;
+                child.CheckIntegrity();
             }
             return children;
         }
