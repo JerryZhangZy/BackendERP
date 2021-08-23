@@ -91,7 +91,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override InventoryData CheckIntegrity()
         {
 			if (ProductBasic is null) return this; 
-			ProductBasic.CheckUniqueId(); 
+			ProductBasic.CheckIntegrity(); 
 			CheckIntegrityProductExt(); 
 			CheckIntegrityProductExtAttributes(); 
 			CheckIntegrityInventory(); 
@@ -520,6 +520,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             ProductExt.SetParent(this);
             if (ProductExt.ProductUuid != ProductBasic.ProductUuid)
                 ProductExt.ProductUuid = ProductBasic.ProductUuid;
+            ProductExt.CheckIntegrity();
             return ProductExt;
         }
 
@@ -575,6 +576,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             ProductExtAttributes.SetParent(this);
             if (ProductExtAttributes.ProductUuid != ProductBasic.ProductUuid)
                 ProductExtAttributes.ProductUuid = ProductBasic.ProductUuid;
+            ProductExtAttributes.CheckIntegrity();
             return ProductExtAttributes;
         }
 
@@ -686,6 +688,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.ProductUuid != ProductBasic.ProductUuid)
                     child.ProductUuid = ProductBasic.ProductUuid;
+                child.CheckIntegrity();
             }
             return children;
         }
@@ -773,6 +776,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.ProductUuid != ProductBasic.ProductUuid)
                     child.ProductUuid = ProductBasic.ProductUuid;
+                child.CheckIntegrity();
             }
             return children;
         }
