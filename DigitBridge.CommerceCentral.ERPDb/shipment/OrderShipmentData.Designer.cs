@@ -84,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override OrderShipmentData CheckIntegrity()
         {
 			if (OrderShipmentHeader is null) return this; 
-			OrderShipmentHeader.CheckUniqueId(); 
+			OrderShipmentHeader.CheckIntegrity(); 
 			CheckIntegrityOrderShipmentCanceledItem(); 
 			CheckIntegrityOrderShipmentPackage(); 
 			CheckIntegrityOrderShipmentShippedItem(); 
@@ -549,6 +549,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.OrderShipmentUuid != OrderShipmentHeader.OrderShipmentUuid)
                     child.OrderShipmentUuid = OrderShipmentHeader.OrderShipmentUuid;
+                child.CheckIntegrity();
             }
             return children;
         }
@@ -661,6 +662,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.OrderShipmentUuid != OrderShipmentHeader.OrderShipmentUuid)
                     child.OrderShipmentUuid = OrderShipmentHeader.OrderShipmentUuid;
+                child.CheckIntegrity();
             }
             return children;
         }
@@ -748,6 +750,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.OrderShipmentUuid != OrderShipmentHeader.OrderShipmentUuid)
                     child.OrderShipmentUuid = OrderShipmentHeader.OrderShipmentUuid;
+                child.CheckIntegrity();
             }
             return children;
         }

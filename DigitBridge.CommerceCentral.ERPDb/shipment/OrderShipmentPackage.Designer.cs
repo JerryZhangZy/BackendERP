@@ -617,6 +617,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckUniqueId();
 			child.SetParent(Parent);
 			if (child.OrderShipmentPackageUuid != OrderShipmentPackageUuid) child.OrderShipmentPackageUuid = OrderShipmentPackageUuid;
+			child.CheckIntegrity();
 			return child;
 		}
 		public IList<OrderShipmentShippedItem> LoadOrderShipmentShippedItem()
@@ -637,6 +638,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			var child = new OrderShipmentShippedItem(dbFactory);
 			child.SetParent(Parent);
 			child.OrderShipmentPackageUuid = OrderShipmentPackageUuid;
+			child.CheckIntegrity();
 			return child;
 		}
 		public IList<OrderShipmentShippedItem> AddOrderShipmentShippedItem(OrderShipmentShippedItem child)
