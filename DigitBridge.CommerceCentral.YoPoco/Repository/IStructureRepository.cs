@@ -20,6 +20,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
         TEntity SetDataBaseFactory(IDataBaseFactory dbFactory);
         ITransaction GetTransaction();
 
+        TEntity CheckIntegrity();
+        void CheckIntegrityOthers();
+
         void New();
         void Clear();
         TEntity Clone() => null;

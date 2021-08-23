@@ -294,6 +294,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateServiceValidator.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateStructure.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructure.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructureDtoExtension.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -313,6 +318,21 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureDtoTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructureGrandChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureGrandChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructureOneToManyChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureOneToManyChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\GenerateStructureOneToOneChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateStructureOneToOneChildren.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>

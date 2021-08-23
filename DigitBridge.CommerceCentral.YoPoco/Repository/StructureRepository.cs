@@ -126,6 +126,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         #region CRUD Methods
 
+        public virtual TEntity CheckIntegrity()
+        {
+            CheckIntegrityOthers();
+            return (TEntity)this;
+        }
+        public virtual void CheckIntegrityOthers() { }
+
         public virtual void New() { }
         public virtual void Clear() { }
         public virtual TEntity Clone() => (TEntity)null;

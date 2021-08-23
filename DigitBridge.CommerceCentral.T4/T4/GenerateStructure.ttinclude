@@ -78,14 +78,13 @@ namespace <#= NamespaceStructure #>
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
-        public virtual <#= StructureClass.ClassName #> CheckIntegrity()
+        public override <#= StructureClass.ClassName #> CheckIntegrity()
         {
 <# 
             indent = 3;
             WriteLine($"{new String('\t',indent)}if ({StructureClass.MainTable.Name} is null) return this; ");
-            WriteLine($"{new String('\t',indent)}{StructureClass.MainTable.Name}.CheckUniqueId(); ");
+            WriteLine($"{new String('\t',indent)}{StructureClass.MainTable.Name}.CheckIntegrity(); ");
             foreach(var item in StructureClass.StructureTables)
             { 
                 var child = item.Value;

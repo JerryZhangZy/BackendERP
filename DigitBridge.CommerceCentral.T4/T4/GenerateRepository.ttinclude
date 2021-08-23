@@ -88,7 +88,7 @@ if (!string.IsNullOrEmpty(table.UniqueKey))
 {
     WriteLine($"{new String('\t',2)}[IgnoreCompare] ");
     WriteLine($"{new String('\t',2)}public override string UniqueId => {table.UniqueKey}; ");
-    WriteLine($"{new String('\t',2)}public void CheckUniqueId() ");
+    WriteLine($"{new String('\t',2)}public override void CheckUniqueId() ");
     WriteLine($"{new String('\t',2)}{{");
     WriteLine($"{new String('\t',3)}if (string.IsNullOrEmpty({table.UniqueKey})) ");
     WriteLine($"{new String('\t',4)}{table.UniqueKey} = Guid.NewGuid().ToString(); ");
@@ -298,6 +298,7 @@ if(table.HasOneToOneChildren)
         WriteLine($"{new String('\t',indent+1)}CheckUniqueId();");
         WriteLine($"{new String('\t',indent+1)}{childTable.Name}.SetParent(Parent);");
         WriteLine($"{new String('\t',indent+1)}if ({childTable.Name}.{table.UniqueKey} != {table.UniqueKey}) {childTable.Name}.{table.UniqueKey} = {table.UniqueKey};");
+        WriteLine($"{new String('\t',indent+1)}{childTable.Name}.CheckIntegrity();");
         WriteLine($"{new String('\t',indent+1)}return {childTable.Name};");
         WriteLine($"{new String('\t',indent)}}}");
 
@@ -321,6 +322,7 @@ if(table.HasOneToOneChildren)
         WriteLine($"{new String('\t',indent+1)}var child = new {childTable.Name}(dbFactory);");
         WriteLine($"{new String('\t',indent+1)}child.SetParent(Parent);");
         WriteLine($"{new String('\t',indent+1)}child.{table.UniqueKey} = {table.UniqueKey};");
+        WriteLine($"{new String('\t',indent+1)}child.CheckIntegrity();");
         WriteLine($"{new String('\t',indent+1)}return child;");
         WriteLine($"{new String('\t',indent)}}}");
 
@@ -331,6 +333,7 @@ if(table.HasOneToOneChildren)
         WriteLine($"{new String('\t',indent+2)}child = New{childTable.Name}();");
         WriteLine($"{new String('\t',indent+1)}{childTable.Name} = child;");
         WriteLine($"{new String('\t',indent+1)}return {childTable.Name};");
+        WriteLine($"{new String('\t',indent+1)}child.CheckIntegrity();");
         WriteLine($"{new String('\t',indent)}}}");
 
         WriteLine($"{new String('\t',indent)}#endregion Methods - Children {childTable.Name}");
@@ -431,6 +434,7 @@ if(table.HasOneToManyChildren)
         WriteLine($"{new String('\t',indent+1)}CheckUniqueId();");
         WriteLine($"{new String('\t',indent+1)}child.SetParent(Parent);");
         WriteLine($"{new String('\t',indent+1)}if (child.{table.UniqueKey} != {table.UniqueKey}) child.{table.UniqueKey} = {table.UniqueKey};");
+        WriteLine($"{new String('\t',indent+1)}child.CheckIntegrity();");
         WriteLine($"{new String('\t',indent+1)}return child;");
         WriteLine($"{new String('\t',indent)}}}");
 
@@ -457,6 +461,7 @@ if(table.HasOneToManyChildren)
         WriteLine($"{new String('\t',indent+1)}var child = new {childTable.Name}(dbFactory);");
         WriteLine($"{new String('\t',indent+1)}child.SetParent(Parent);");
         WriteLine($"{new String('\t',indent+1)}child.{table.UniqueKey} = {table.UniqueKey};");
+        WriteLine($"{new String('\t',indent+1)}child.CheckIntegrity();");
         WriteLine($"{new String('\t',indent+1)}return child;");
         WriteLine($"{new String('\t',indent)}}}");
 
@@ -521,7 +526,7 @@ if(table.HasOneToManyChildren)
             return this;
         }
 
-        public virtual <#= table.Name #> CheckIntegrity()
+        public override <#= table.Name #> CheckIntegrity()
         {
             CheckUniqueId();
 <# // generate one to one children
@@ -545,6 +550,7 @@ if(table.HasOneToManyChildren)
                 }
             } 
 #>
+            CheckIntegrityOthers();
             return this;
         }
 

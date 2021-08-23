@@ -163,7 +163,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => CentralOrderLineUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(CentralOrderLineUuid)) 
 				CentralOrderLineUuid = Guid.NewGuid().ToString(); 
@@ -969,10 +969,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
-        public virtual OrderLine CheckIntegrity()
+        public override OrderLine CheckIntegrity()
         {
             CheckUniqueId();
 			CheckIntegrityOrderLineMerchantExt();
+            CheckIntegrityOthers();
             return this;
         }
 
