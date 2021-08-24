@@ -75,7 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #region Export 
         public async Task<byte[]> ExportAsync(InvoicePaymentPayload payload)
         {
-            var listService = new InvoicePaymentList(dbFactory, new InvoicePaymentQuery());
+            var listService = new InvoicePaymentList(dbFactory);
             var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
             var jsonStr = await listService.GetExportDataAsync(payload);
             return invoiceTransactionDataDtoCsv.Export(jsonStr);
@@ -83,7 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public byte[] Export(InvoicePaymentPayload payload)
         {
-            var listService = new InvoicePaymentList(dbFactory, new InvoicePaymentQuery());
+            var listService = new InvoicePaymentList(dbFactory);
             var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv(); 
             var jsonStr = listService.GetExportData(payload);  
             return invoiceTransactionDataDtoCsv.Export(jsonStr);
