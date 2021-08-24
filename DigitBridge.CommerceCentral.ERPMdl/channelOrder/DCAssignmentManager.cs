@@ -25,19 +25,53 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a DCAssignmentService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class DCAssignmentManager : IMessage
+    public class DCAssignmentManager :  IDCAssignmentManager , IMessage
     {
-        protected DCAssignmentService dCAssignmentService;
-        protected DCAssignmentDataDtoCsv dCAssignmentDataDtoCsv;
-        protected DCAssignmentList dCAssignmentList;
 
         public DCAssignmentManager() : base() {}
+
         public DCAssignmentManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
-            dCAssignmentService = new DCAssignmentService(dbFactory);
-            dCAssignmentDataDtoCsv = new DCAssignmentDataDtoCsv();
-            dCAssignmentList = new DCAssignmentList(dbFactory);
+        }
+        
+        [XmlIgnore, JsonIgnore]
+        protected DCAssignmentService _dCAssignmentService;
+        [XmlIgnore, JsonIgnore]
+        public DCAssignmentService dCAssignmentService
+        {
+            get
+            {
+                if (_dCAssignmentService is null)
+                    _dCAssignmentService = new DCAssignmentService();
+                return _dCAssignmentService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected DCAssignmentDataDtoCsv _dCAssignmentDataDtoCsv;
+        [XmlIgnore, JsonIgnore]
+        public DCAssignmentDataDtoCsv dCAssignmentDataDtoCsv
+        {
+            get
+            {
+                if (_dCAssignmentDataDtoCsv is null)
+                    _dCAssignmentDataDtoCsv = new DCAssignmentDataDtoCsv();
+                return _dCAssignmentDataDtoCsv;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected DCAssignmentList _dCAssignmentList;
+        [XmlIgnore, JsonIgnore]
+        public DCAssignmentList dCAssignmentList
+        {
+            get
+            {
+                if (_dCAssignmentList is null)
+                    _dCAssignmentList = new DCAssignmentList(dbFactory);
+                return _dCAssignmentList;
+            }
         }
 
         public async Task<byte[]> ExportAsync(DCAssignmentPayload payload)
@@ -101,7 +135,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 if (payload.HasDCAssignment)
                     payload.DCAssignment = null;
-                AddInfo($"FIle:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+                AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
 

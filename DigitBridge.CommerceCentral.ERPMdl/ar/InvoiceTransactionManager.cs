@@ -102,7 +102,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 if (payload.HasInvoiceTransaction)
                     payload.InvoiceTransaction = null;
-                AddInfo($"FIle:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+                AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
 

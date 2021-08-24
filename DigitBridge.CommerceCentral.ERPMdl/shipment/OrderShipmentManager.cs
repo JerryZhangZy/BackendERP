@@ -25,19 +25,53 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a OrderShipmentService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class OrderShipmentManager : IMessage
+    public class OrderShipmentManager :  IOrderShipmentManager , IMessage
     {
-        protected OrderShipmentService orderShipmentService;
-        protected OrderShipmentDataDtoCsv orderShipmentDataDtoCsv;
-        protected OrderShipmentList orderShipmentList;
 
         public OrderShipmentManager() : base() {}
+
         public OrderShipmentManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
-            orderShipmentService = new OrderShipmentService(dbFactory);
-            orderShipmentDataDtoCsv = new OrderShipmentDataDtoCsv();
-            orderShipmentList = new OrderShipmentList(dbFactory);
+        }
+        
+        [XmlIgnore, JsonIgnore]
+        protected OrderShipmentService _orderShipmentService;
+        [XmlIgnore, JsonIgnore]
+        public OrderShipmentService orderShipmentService
+        {
+            get
+            {
+                if (_orderShipmentService is null)
+                    _orderShipmentService = new OrderShipmentService();
+                return _orderShipmentService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected OrderShipmentDataDtoCsv _orderShipmentDataDtoCsv;
+        [XmlIgnore, JsonIgnore]
+        public OrderShipmentDataDtoCsv orderShipmentDataDtoCsv
+        {
+            get
+            {
+                if (_orderShipmentDataDtoCsv is null)
+                    _orderShipmentDataDtoCsv = new OrderShipmentDataDtoCsv();
+                return _orderShipmentDataDtoCsv;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected OrderShipmentList _orderShipmentList;
+        [XmlIgnore, JsonIgnore]
+        public OrderShipmentList orderShipmentList
+        {
+            get
+            {
+                if (_orderShipmentList is null)
+                    _orderShipmentList = new OrderShipmentList(dbFactory);
+                return _orderShipmentList;
+            }
         }
 
         public async Task<byte[]> ExportAsync(OrderShipmentPayload payload)
@@ -101,7 +135,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 if (payload.HasOrderShipment)
                     payload.OrderShipment = null;
-                AddInfo($"FIle:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+                AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
 

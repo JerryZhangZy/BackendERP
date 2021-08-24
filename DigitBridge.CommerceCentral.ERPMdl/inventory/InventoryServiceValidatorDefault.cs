@@ -441,6 +441,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     dto.ProductBasic.ProfileNum = null;
                     dto.ProductBasic.DatabaseNum = null;
                     dto.ProductBasic.ProductUuid = null;
+                    dto.ProductBasic.SKU = null;
                 }
                 else if(dto.HasProductExt)
                 {
@@ -510,6 +511,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     dto.ProductBasic.ProfileNum = null;
                     dto.ProductBasic.DatabaseNum = null;
                     dto.ProductBasic.ProductUuid = null;
+                    dto.ProductBasic.SKU = null;
                 }
                 else if (dto.HasProductExt)
                 {

@@ -184,7 +184,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<FileContentResult> ExportShipments(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "shipments/export")] HttpRequest req)
         {
-            var payload = await req.GetParameters<OrderShipmentPayload>();
+            var payload = await req.GetParameters<OrderShipmentPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new OrderShipmentManager(dbFactory);
 
