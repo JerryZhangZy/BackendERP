@@ -335,6 +335,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             foreach (var otherObj in others)
             {
+                if (otherObj == null)
+                    continue;
                 var otherSchema = ObjectSchema.ForType(otherObj.GetType());
                 foreach (var item in otherSchema.Properties)
                 {
@@ -390,6 +392,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             foreach (var otherObj in others)
             {
+                if (otherObj == null)
+                    continue;
                 var otherSchema = ObjectSchema.ForType(otherObj.GetType());
                 foreach (var item in otherSchema.Properties)
                 {

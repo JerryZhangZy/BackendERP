@@ -210,7 +210,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<FileContentResult> ExportWarehouse(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "warehouses/export")] HttpRequest req)
         {
-            var payload = await req.GetParameters<WarehousePayload>();
+            var payload = await req.GetParameters<WarehousePayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new WarehouseManager(dbFactory);
 

@@ -25,19 +25,53 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a InvoiceService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class InvoiceManager : IMessage
+    public class InvoiceManager :  IInvoiceManager , IMessage
     {
-        protected InvoiceService invoiceService;
-        protected InvoiceDataDtoCsv invoiceDataDtoCsv;
-        protected InvoiceList invoiceList;
 
         public InvoiceManager() : base() {}
+
         public InvoiceManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
-            invoiceService = new InvoiceService(dbFactory);
-            invoiceDataDtoCsv = new InvoiceDataDtoCsv();
-            invoiceList = new InvoiceList(dbFactory);
+        }
+        
+        [XmlIgnore, JsonIgnore]
+        protected InvoiceService _invoiceService;
+        [XmlIgnore, JsonIgnore]
+        public InvoiceService invoiceService
+        {
+            get
+            {
+                if (_invoiceService is null)
+                    _invoiceService = new InvoiceService();
+                return _invoiceService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected InvoiceDataDtoCsv _invoiceDataDtoCsv;
+        [XmlIgnore, JsonIgnore]
+        public InvoiceDataDtoCsv invoiceDataDtoCsv
+        {
+            get
+            {
+                if (_invoiceDataDtoCsv is null)
+                    _invoiceDataDtoCsv = new InvoiceDataDtoCsv();
+                return _invoiceDataDtoCsv;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected InvoiceList _invoiceList;
+        [XmlIgnore, JsonIgnore]
+        public InvoiceList invoiceList
+        {
+            get
+            {
+                if (_invoiceList is null)
+                    _invoiceList = new InvoiceList(dbFactory);
+                return _invoiceList;
+            }
         }
 
         public async Task<byte[]> ExportAsync(InvoicePayload payload)
@@ -101,7 +135,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 if (payload.HasInvoice)
                     payload.Invoice = null;
-                AddInfo($"FIle:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+                AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
 

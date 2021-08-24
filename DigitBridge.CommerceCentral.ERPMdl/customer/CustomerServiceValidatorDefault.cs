@@ -404,6 +404,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.Customer.ProfileNum = null;
                 dto.Customer.DatabaseNum = null;
                 dto.Customer.CustomerUuid = null;
+                dto.Customer.CustomerCode = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
@@ -451,6 +452,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.Customer.ProfileNum = null;
                 dto.Customer.DatabaseNum = null;
                 dto.Customer.CustomerUuid = null;
+                dto.Customer.CustomerCode = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
             }

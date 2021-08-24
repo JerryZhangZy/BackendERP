@@ -122,6 +122,8 @@ SELECT
 SELECT distinct {Helper.TableAllies}.RowNum 
 {GetSQL_from()} 
 {GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.RowNum 
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
@@ -150,6 +152,8 @@ SELECT distinct {Helper.TableAllies}.RowNum
 SELECT distinct {Helper.TableAllies}.RowNum 
 {GetSQL_from()} 
 {GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.RowNum 
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {

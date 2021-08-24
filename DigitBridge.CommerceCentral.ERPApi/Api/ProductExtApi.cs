@@ -200,7 +200,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<FileContentResult> ExportProductExt(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExts/export")] HttpRequest req)
         {
-            var payload = await req.GetParameters<InventoryPayload>();
+            var payload = await req.GetParameters<InventoryPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryManager(dbFactory);
 
