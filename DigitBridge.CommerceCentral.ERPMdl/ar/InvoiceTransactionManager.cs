@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a InvoiceTransactionService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class InvoiceTransactionManager : IMessage, IServiceManager<InvoiceTransactionPayload>
+    public class InvoiceTransactionManager : IMessage, IInvoiceTransactionManager
     {
         private IInvoiceTransactionService _invoiceTransactionService;
 

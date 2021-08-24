@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class InvoiceReturnManager : IMessage, IServiceManager<InvoiceReturnPayload>
+    public class InvoiceReturnManager : IMessage, IInvoiceReturnManager
     {
         public InvoiceReturnManager() : base() { }
         public InvoiceReturnManager(IDataBaseFactory dbFactory)
