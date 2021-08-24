@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", ReturnItemPREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> WarehouseCode => _WarehouseCode;
-        
+
         protected QueryFilter<string> _LotNum = new QueryFilter<string>("LotNum", "LotNum", ReturnItemPREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> LotNum => _LotNum;
 
@@ -65,8 +65,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public override void InitQueryFilter()
         {
-           // _ReturnDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-           //_ReturnDateTo.FilterValue = DateTime.Today;
+            _ReturnDateFrom.FilterValue = DateTime.Today.AddDays(-30);
+            _ReturnDateTo.FilterValue = DateTime.Today.AddDays(7);
             //TODO，make sure this won't be changed by user.
             _TransType.FilterValue = (int)TransTypeEnum.Return;
         }
