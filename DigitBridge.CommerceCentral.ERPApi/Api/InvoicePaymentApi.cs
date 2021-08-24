@@ -2,11 +2,13 @@ using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.OpenApi.Models;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -207,6 +209,48 @@ namespace DigitBridge.CommerceCentral.ERPApi
            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/invoicePayments/find")] HttpRequest req)
         {
             return new JsonNetResponse<InvoicePaymentPayloadFind>(InvoicePaymentPayloadFind.GetSampleData());
+        }
+
+
+        [FunctionName(nameof(ExportPayment))]
+        [OpenApiOperation(operationId: "ExportPayment", tags: new[] { "Invoice payments" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePaymentPayload), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        public static async Task<FileContentResult> ExportPayment(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoicePayments/export")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InvoicePaymentPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new InvoicePaymentManager(dbFactory);
+
+            var exportData = await svc.ExportAsync(payload);
+            var downfile = new FileContentResult(exportData, "text/csv");
+            downfile.FileDownloadName = "export-Payments.csv";
+            return downfile;
+        }
+
+        [FunctionName(nameof(ImportPayment))]
+        [OpenApiOperation(operationId: "ImportPayment", tags: new[] { "Invoice payments" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "File", In = ParameterLocation.Query, Type = typeof(IFormFile), Summary = "File", Description = "submit by form", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayload))]
+        public static async Task<InvoicePaymentPayload> ImportPayment(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoicePayments/import")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InvoicePaymentPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var files = req.Form.Files;
+            var svc = new InvoicePaymentManager(dbFactory);
+
+            await svc.ImportAsync(payload, files);
+            payload.Success = true;
+            payload.Messages = svc.Messages;
+            return payload;
         }
     }
 }

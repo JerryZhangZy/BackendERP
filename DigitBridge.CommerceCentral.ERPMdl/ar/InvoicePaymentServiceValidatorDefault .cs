@@ -32,14 +32,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public InvoicePaymentServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) : base(serviceMessage, dbFactory) { }
         public override bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var pl = (payload as InvoiceTransactionPayload);
+            var pl = (payload as InvoicePaymentPayload);
             if (pl.InvoiceTransaction != null)
                 pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
             return base.ValidateAccount(payload, number, processingMode);
         }
         public override Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var pl = (payload as InvoiceTransactionPayload);
+            var pl = (payload as InvoicePaymentPayload);
             if (pl.InvoiceTransaction != null)
                 pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
             return base.ValidateAccountAsync(payload, number, processingMode);

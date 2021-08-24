@@ -32,9 +32,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         bool Add(InvoiceTransactionDataDto dto);
         Task<bool> AddAsync(InvoiceTransactionDataDto dto);
-        
+
+        bool Add(InvoiceTransactionPayload payload);
+        Task<bool> AddAsync(InvoiceTransactionPayload payload);
+
+
         bool Update(InvoiceTransactionDataDto dto);
         Task<bool> UpdateAsync(InvoiceTransactionDataDto dto);
+
+        bool Update(InvoiceTransactionPayload payload);
+        Task<bool> UpdateAsync(InvoiceTransactionPayload payload);
+
+        IList<MessageClass> Messages { get; set; }
 
     }
 }

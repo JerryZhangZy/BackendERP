@@ -2,11 +2,13 @@ using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.OpenApi.Models;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -85,17 +87,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "rowNum", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "rowNum", Description = "Row num. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadDelete))]
-        public static async Task<JsonNetResponse<InvoiceTransactionPayload>> DeleteInvoiceReturns(
+        public static async Task<JsonNetResponse<InvoiceReturnPayload>> DeleteInvoiceReturns(
            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoiceReturns/{rowNum}")]
             HttpRequest req,
             long rowNum)
         {
-            var payload = await req.GetParameters<InvoiceTransactionPayload>();
+            var payload = await req.GetParameters<InvoiceReturnPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceReturnService(dataBaseFactory);
             payload.Success = await srv.DeleteByRowNumAsync(payload, rowNum);
             payload.Messages = srv.Messages;
-            return new JsonNetResponse<InvoiceTransactionPayload>(payload);
+            return new JsonNetResponse<InvoiceReturnPayload>(payload);
         }
 
         /// <summary>
@@ -110,15 +112,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadUpdate), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadUpdate))]
-        public static async Task<JsonNetResponse<InvoiceTransactionPayload>> UpdateInvoiceReturns(
+        public static async Task<JsonNetResponse<InvoiceReturnPayload>> UpdateInvoiceReturns(
 [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "invoiceReturns")] HttpRequest req)
         {
-            var payload = await req.GetParameters<InvoiceTransactionPayload>(true);
+            var payload = await req.GetParameters<InvoiceReturnPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceReturnService(dataBaseFactory);
             payload.Success = await srv.UpdateAsync(payload);
             payload.Messages = srv.Messages;
-            return new JsonNetResponse<InvoiceTransactionPayload>(payload);
+            return new JsonNetResponse<InvoiceReturnPayload>(payload);
         }
 
         /// <summary>
@@ -133,15 +135,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadAdd), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadAdd))]
-        public static async Task<JsonNetResponse<InvoiceTransactionPayload>> AddInvoiceReturns(
+        public static async Task<JsonNetResponse<InvoiceReturnPayload>> AddInvoiceReturns(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoiceReturns")] HttpRequest req)
         {
-            var payload = await req.GetParameters<InvoiceTransactionPayload>(true);
+            var payload = await req.GetParameters<InvoiceReturnPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceReturnService(dataBaseFactory);
             payload.Success = await srv.AddAsync(payload);
             payload.Messages = srv.Messages;
-            return new JsonNetResponse<InvoiceTransactionPayload>(payload);
+            return new JsonNetResponse<InvoiceReturnPayload>(payload);
         }
 
         /// <summary>
@@ -192,6 +194,46 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<InvoiceReturnPayloadFind>(InvoiceReturnPayloadFind.GetSampleData());
         }
 
+        [FunctionName(nameof(ExportReturn))]
+        [OpenApiOperation(operationId: "ExportReturn", tags: new[] { "Invoice returns" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceReturnPayload), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
+        public static async Task<FileContentResult> ExportReturn(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoiceReturns/export")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InvoiceReturnPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new InvoiceReturnManager(dbFactory);
+
+            var exportData = await svc.ExportAsync(payload);
+            var downfile = new FileContentResult(exportData, "text/csv");
+            downfile.FileDownloadName = "export-Returns.csv";
+            return downfile;
+        }
+
+        [FunctionName(nameof(ImportReturn))]
+        [OpenApiOperation(operationId: "ImportReturn", tags: new[] { "Invoice returns" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "File", In = ParameterLocation.Query, Type = typeof(IFormFile), Summary = "File", Description = "submit by form", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceReturnPayload))]
+        public static async Task<InvoiceReturnPayload> ImportReturn(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoiceReturns/import")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InvoiceReturnPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var files = req.Form.Files;
+            var svc = new InvoiceReturnManager(dbFactory);
+
+            await svc.ImportAsync(payload, files);
+            payload.Success = true;
+            payload.Messages = svc.Messages;
+            return payload;
+        }
     }
 }
 

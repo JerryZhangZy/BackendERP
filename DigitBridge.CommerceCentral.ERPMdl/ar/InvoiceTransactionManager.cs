@@ -25,29 +25,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a InvoiceTransactionService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class InvoiceTransactionManager : IMessage
+    public class InvoiceTransactionManager : IMessage, IServiceManager<InvoiceTransactionPayload>
     {
-        protected InvoiceTransactionService invoiceTransactionService;
-        protected InvoiceTransactionDataDtoCsv invoiceTransactionDataDtoCsv;
-        protected InvoiceTransactionList invoiceTransactionList;
+        private IInvoiceTransactionService _invoiceTransactionService;
 
-        public InvoiceTransactionManager() : base() {}
-        public InvoiceTransactionManager(IDataBaseFactory dbFactory)
+        public InvoiceTransactionManager() : base() { }
+        public InvoiceTransactionManager(IDataBaseFactory dbFactory, IInvoiceTransactionService invoiceTransactionService)
         {
             SetDataBaseFactory(dbFactory);
-            invoiceTransactionService = new InvoiceTransactionService(dbFactory);
-            invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
-            invoiceTransactionList = new InvoiceTransactionList(dbFactory);
+            _invoiceTransactionService = invoiceTransactionService;
         }
 
         public async Task<byte[]> ExportAsync(InvoiceTransactionPayload payload)
         {
-            var rowNumList =await invoiceTransactionList.GetRowNumListAsync(payload);
+            var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
+            var invoiceTransactionList = new InvoiceTransactionList(dbFactory);
+            var rowNumList = await invoiceTransactionList.GetRowNumListAsync(payload);
             var dtoList = new List<InvoiceTransactionDataDto>();
-           foreach(var x in rowNumList)
+            foreach (var x in rowNumList)
             {
-                if (invoiceTransactionService.GetData(x))
-                    dtoList.Add(invoiceTransactionService.ToDto());
+                if (_invoiceTransactionService.GetData(x))
+                    dtoList.Add(_invoiceTransactionService.ToDto());
             };
             if (dtoList.Count == 0)
                 dtoList.Add(new InvoiceTransactionDataDto());
@@ -56,12 +54,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public byte[] Export(InvoiceTransactionPayload payload)
         {
-            var rowNumList =invoiceTransactionList.GetRowNumList(payload);
+            var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
+            var invoiceTransactionList = new InvoiceTransactionList(dbFactory);
+            var rowNumList = invoiceTransactionList.GetRowNumList(payload);
             var dtoList = new List<InvoiceTransactionDataDto>();
             foreach (var x in rowNumList)
             {
-                if (invoiceTransactionService.GetData(x))
-                    dtoList.Add(invoiceTransactionService.ToDto());
+                if (_invoiceTransactionService.GetData(x))
+                    dtoList.Add(_invoiceTransactionService.ToDto());
             };
             if (dtoList.Count == 0)
                 dtoList.Add(new InvoiceTransactionDataDto());
@@ -70,12 +70,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public void Import(InvoiceTransactionPayload payload, IFormFileCollection files)
         {
-            if(files==null||files.Count==0)
+            if (files == null || files.Count == 0)
             {
                 AddError("no files upload");
                 return;
             }
-            foreach(var file in files)
+            var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv(); 
+            foreach (var file in files)
             {
                 if (!file.FileName.ToLower().EndsWith("csv"))
                 {
@@ -86,17 +87,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.InvoiceTransaction = item;
-                    if (invoiceTransactionService.Add(payload))
+                    if (_invoiceTransactionService.Add(payload))
                         addsucccount++;
                     else
                     {
                         errorcount++;
-                        foreach (var msg in invoiceTransactionService.Messages)
+                        foreach (var msg in _invoiceTransactionService.Messages)
                             Messages.Add(msg);
-                        invoiceTransactionService.Messages.Clear();
+                        _invoiceTransactionService.Messages.Clear();
                     }
                 }
                 if (payload.HasInvoiceTransaction)
@@ -107,33 +108,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task ImportAsync(InvoiceTransactionPayload payload, IFormFileCollection files)
         {
-            if(files==null||files.Count==0)
+            if (files == null || files.Count == 0)
             {
                 AddError("no files upload");
                 return;
             }
-            foreach(var file in files)
+            var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
+            foreach (var file in files)
             {
                 if (!file.FileName.ToLower().EndsWith("csv"))
                 {
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list =invoiceTransactionDataDtoCsv.Import(file.OpenReadStream());
+                var list = invoiceTransactionDataDtoCsv.Import(file.OpenReadStream());
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.InvoiceTransaction = item;
-                    if (await invoiceTransactionService.AddAsync(payload))
+                    if (await _invoiceTransactionService.AddAsync(payload))
                         addsucccount++;
                     else
                     {
                         errorcount++;
-                        foreach (var msg in invoiceTransactionService.Messages)
+                        foreach (var msg in _invoiceTransactionService.Messages)
                             Messages.Add(msg);
-                        invoiceTransactionService.Messages.Clear();
+                        _invoiceTransactionService.Messages.Clear();
                     }
                 }
                 if (payload.HasInvoiceTransaction)

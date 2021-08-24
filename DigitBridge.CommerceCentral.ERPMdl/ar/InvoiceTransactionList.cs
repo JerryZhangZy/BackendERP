@@ -51,7 +51,7 @@ SELECT
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-                        
+            paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
             //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
             //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
 

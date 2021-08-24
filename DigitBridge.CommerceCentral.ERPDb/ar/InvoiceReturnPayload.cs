@@ -24,82 +24,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Request and Response payload object
     /// </summary>
     [Serializable()]
-    public class InvoiceReturnPayload : PayloadBase
+    public class InvoiceReturnPayload : InvoiceTransactionPayload
     {
         #region Set transtype to return
         /// <summary>
         /// always load transtype=TransTypeEnum.Return for all query
         /// </summary>
         [JsonIgnore]
-        public int TransType => (int)TransTypeEnum.Return;
-        #endregion
-
-        /// <summary>
-        /// Delegate function to load request parameter to payload property.
-        /// </summary>
-        public override IDictionary<string, Action<string>> GetOtherParameters()
-        {
-            return new Dictionary<string, Action<string>>
-            {
-                { "TransUuids", val => TransUuids = val.Split(",").ToList() }
-            };
-        }
+        public override int TransType => (int)TransTypeEnum.Return;
+        
+        #endregion 
 
 
-        #region multiple Dto list
-
-        /// <summary>
-        /// (Request Parameter) Array of uuid to load multiple InvoiceTransaction dto data.
-        /// </summary>
-        [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple InvoiceTransaction dto data.")]
-        public IList<string> TransUuids { get; set; } = new List<string>();
-        [JsonIgnore] 
-        public virtual bool HasTransUuids => TransUuids != null && TransUuids.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasTransUuids;
-
-        /// <summary>
-        /// (Response Data) Array of InvoiceTransaction entity object which load by uuid array.
-        /// </summary>
-        [OpenApiPropertyDescription("(Response Data) Array of entity object which load by uuid array.")]
-        public IList<InvoiceTransactionDataDto> InvoiceTransactions { get; set; }
-        [JsonIgnore] public virtual bool HasInvoiceTransactions => InvoiceTransactions != null && InvoiceTransactions.Count > 0;
-        public bool ShouldSerializeInvoiceTransactions() => HasInvoiceTransactions;
-
-        #endregion multiple Dto list
-
-
-        #region single Dto object
-
-        /// <summary>
-        /// (Request and Response Data) Single InvoiceTransaction entity object which load by Number.
-        /// </summary>
-        [OpenApiPropertyDescription("(Response Data) Single entity object which load by Number.")]
-        public InvoiceTransactionDataDto InvoiceTransaction { get; set; }
-        [JsonIgnore] public virtual bool HasInvoiceTransaction => InvoiceTransaction != null;
-        public bool ShouldSerializeInvoiceTransaction() => HasInvoiceTransaction;
-
-        #endregion single Dto object
-
-
-        #region list service
-
-        /// <summary>
-        /// (Response Data) List result which load filter and paging.
-        /// </summary>
-        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
-        [JsonConverter(typeof(StringBuilderConverter))]
-        public StringBuilder InvoiceTransactionList { get; set; }
-        [JsonIgnore] public virtual bool HasInvoiceTransactionList => InvoiceTransactionList != null && InvoiceTransactionList.Length > 0;
-        public bool ShouldSerializeInvoiceTransactionList() => HasInvoiceTransactionList;
-
-        /// <summary>
-        /// (Response Data) List result count which load filter and paging.
-        /// </summary>
-        public int InvoiceTransactionListCount { get; set; }
-        [JsonIgnore] public virtual bool HasInvoiceTransactionListCount => InvoiceTransactionListCount > 0;
-        public bool ShouldSerializeInvoiceTransactionListCount() => HasInvoiceTransactionListCount;
-
-        #endregion list service
     }
 }
 

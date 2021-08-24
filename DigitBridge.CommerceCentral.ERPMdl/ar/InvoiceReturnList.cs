@@ -8,7 +8,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Helper = DigitBridge.CommerceCentral.ERPDb.InvoiceReturnItemsHelper;
+using Helper = DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -99,6 +99,64 @@ SELECT
                 throw;
             }
             return payload;
+        }
+
+
+        public virtual async Task<IList<long>> GetRowNumListAsync(InvoiceReturnPayload payload)
+        {
+            if (payload == null)
+                payload = new InvoiceReturnPayload();
+
+            this.LoadRequestParameter(payload);
+            var rowNumList = new List<long>();
+
+            var sql = $@"
+SELECT distinct {Helper.TableAllies}.RowNum 
+{GetSQL_from()} 
+{GetSQL_where()}
+";
+            try
+            {
+                using var trs = new ScopedTransaction(dbFactory);
+                rowNumList = await SqlQuery.ExecuteAsync(
+                    sql,
+                    (long rowNum) => rowNum,
+                    GetSqlParameters().ToArray()
+                );
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return rowNumList;
+        }
+
+        public virtual IList<long> GetRowNumList(InvoiceReturnPayload payload)
+        {
+            if (payload == null)
+                payload = new InvoiceReturnPayload();
+
+            this.LoadRequestParameter(payload);
+            var rowNumList = new List<long>();
+            var sql = $@"
+SELECT distinct {Helper.TableAllies}.RowNum 
+{GetSQL_from()} 
+{GetSQL_where()}
+";
+            try
+            {
+                using var trs = new ScopedTransaction(dbFactory);
+                rowNumList = SqlQuery.Execute(
+                    sql,
+                    (long rowNum) => rowNum,
+                    GetSqlParameters().ToArray()
+                );
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return rowNumList;
         }
 
     }

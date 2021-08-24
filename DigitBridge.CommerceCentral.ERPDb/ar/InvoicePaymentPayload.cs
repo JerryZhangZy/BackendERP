@@ -24,51 +24,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Request and Response payload object
     /// </summary>
     [Serializable()]
-    public class InvoicePaymentPayload : PayloadBase
+    public class InvoicePaymentPayload : InvoiceTransactionPayload
     {
         #region Set transtype to payment
         /// <summary>
         /// always load transtype=TransTypeEnum.Payment for all query
         /// </summary>
         [JsonIgnore]
-        public int TransType => (int)TransTypeEnum.Payment;
-        #endregion
+        public override int TransType => (int)TransTypeEnum.Payment;
 
-        #region single Dto object
+        #endregion 
 
-        /// <summary>
-        /// (Request and Response Data) Single InvoiceTransactionDto entity object which load by Number.
-        /// </summary> 
-        public InvoiceTransactionDto InvoiceTransaction { get; set; }
-
-        /// <summary>
-        /// (Response Data) Single InvoiceHeaderDto entity object which load by Number.
-        /// </summary> 
         public InvoiceHeaderDto InvoiceHeader { get; set; }
-
-        #endregion single Dto object
-
-        #region list service
-
-        public List<InvoiceTransactionDataDto> InvoiceTransactions { get; set; }
-
-        /// <summary>
-        /// (Response Data) List result which load filter and paging.
-        /// </summary>
-        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
-        [JsonConverter(typeof(StringBuilderConverter))]
-        public StringBuilder InvoiceTransactionList { get; set; }
-        [JsonIgnore] public virtual bool HasInvoiceTransactionList => InvoiceTransactionList != null && InvoiceTransactionList.Length > 0;
-        public bool ShouldSerializeInvoiceTransactionList() => HasInvoiceTransactionList;
-
-        /// <summary>
-        /// (Response Data) List result count which load filter and paging.
-        /// </summary>
-        public int InvoiceTransactionListCount { get; set; }
-        [JsonIgnore] public virtual bool HasInvoiceTransactionListCount => InvoiceTransactionListCount > 0;
-        public bool ShouldSerializeInvoiceTransactionListCount() => HasInvoiceTransactionListCount;
-
-        #endregion list service
     }
 }
 
