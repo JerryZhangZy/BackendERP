@@ -122,6 +122,8 @@ SELECT
 SELECT distinct {Helper.TableAllies}.OrderDCAssignmentNum 
 {GetSQL_from()} 
 {GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.OrderDCAssignmentNum  
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
@@ -150,6 +152,8 @@ SELECT distinct {Helper.TableAllies}.OrderDCAssignmentNum
 SELECT distinct {Helper.TableAllies}.OrderDCAssignmentNum 
 {GetSQL_from()} 
 {GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.OrderDCAssignmentNum  
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {

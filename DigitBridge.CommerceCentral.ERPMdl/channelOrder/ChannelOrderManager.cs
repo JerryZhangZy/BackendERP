@@ -25,19 +25,53 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a ChannelOrderService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class ChannelOrderManager : IMessage
+    public class ChannelOrderManager :  IChannelOrderManager , IMessage
     {
-        protected ChannelOrderService channelOrderService;
-        protected ChannelOrderDataDtoCsv channelOrderDataDtoCsv;
-        protected ChannelOrderList channelOrderList;
 
         public ChannelOrderManager() : base() {}
+
         public ChannelOrderManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
-            channelOrderService = new ChannelOrderService(dbFactory);
-            channelOrderDataDtoCsv = new ChannelOrderDataDtoCsv();
-            channelOrderList = new ChannelOrderList(dbFactory);
+        }
+        
+        [XmlIgnore, JsonIgnore]
+        protected ChannelOrderService _channelOrderService;
+        [XmlIgnore, JsonIgnore]
+        public ChannelOrderService channelOrderService
+        {
+            get
+            {
+                if (_channelOrderService is null)
+                    _channelOrderService = new ChannelOrderService();
+                return _channelOrderService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected ChannelOrderDataDtoCsv _channelOrderDataDtoCsv;
+        [XmlIgnore, JsonIgnore]
+        public ChannelOrderDataDtoCsv channelOrderDataDtoCsv
+        {
+            get
+            {
+                if (_channelOrderDataDtoCsv is null)
+                    _channelOrderDataDtoCsv = new ChannelOrderDataDtoCsv();
+                return _channelOrderDataDtoCsv;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected ChannelOrderList _channelOrderList;
+        [XmlIgnore, JsonIgnore]
+        public ChannelOrderList channelOrderList
+        {
+            get
+            {
+                if (_channelOrderList is null)
+                    _channelOrderList = new ChannelOrderList(dbFactory);
+                return _channelOrderList;
+            }
         }
 
         public async Task<byte[]> ExportAsync(ChannelOrderPayload payload)
@@ -101,7 +135,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 if (payload.HasChannelOrder)
                     payload.ChannelOrder = null;
-                AddInfo($"FIle:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+                AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
 

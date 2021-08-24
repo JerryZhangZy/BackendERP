@@ -115,6 +115,8 @@ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllie
 SELECT distinct {Helper.TableAllies}.OrderShipmentNum 
 {GetSQL_from()} 
 {GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.OrderShipmentNum
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
@@ -142,7 +144,9 @@ SELECT distinct {Helper.TableAllies}.OrderShipmentNum
             var sql = $@"
 SELECT distinct {Helper.TableAllies}.OrderShipmentNum 
 {GetSQL_from()} 
-{GetSQL_where()}
+{GetSQL_where()} 
+ORDER BY  {Helper.TableAllies}.OrderShipmentNum
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {

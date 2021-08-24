@@ -138,6 +138,8 @@ SELECT
 SELECT distinct {Helper.TableAllies}.DistributionCenterNum 
 {GetSQL_from()} 
 {GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.DistributionCenterNum
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
@@ -166,6 +168,8 @@ SELECT distinct {Helper.TableAllies}.DistributionCenterNum
 SELECT distinct {Helper.TableAllies}.DistributionCenterNum 
 {GetSQL_from()} 
 {GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.DistributionCenterNum
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
