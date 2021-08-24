@@ -72,7 +72,7 @@
 //SettingForDistributionCenter
 //SettingForOrderDCAssignment
 #>
-<#@ include file="SettingForDistributionCenter.ttinclude" #>
+<#@ include file="SettingForOrderDCAssignment.ttinclude" #>
 <#
     var dtoSuf = "";
     
@@ -80,7 +80,7 @@
     //rewrite setting config
     if(overridesetting)
     {
-        generateModel = true;
+        generateModel = false;
         generateDto = false;
         generateModelHelper = false;
 
@@ -88,7 +88,7 @@
         generateTester = false;
 
         // generate structure repository class contain multiple table
-        generateStructureRepository = true;
+        generateStructureRepository = false;
         generateStructureTester = false;
 
         // generate structure Dto class
@@ -98,7 +98,7 @@
 
         // generate service class
         generateService = false;
-        generateStructureFindList = false;
+        generateStructureFindList = true;
 
         generateServiceTester = false;
    }
@@ -280,6 +280,11 @@
 <# 
         dir = Path.Combine(path, ServiceFolder);
         SaveOutputNotExists(dir, $"{processName}List.cs");
+#>
+<#@ include file="GenerateServiceManagerInterface.ttinclude" #>
+<# 
+        dir = Path.Combine(path, ServiceFolder);
+        SaveOutputNotExists(dir, $"I{processName}Manager.cs");
 #>
 <#@ include file="GenerateServiceManager.ttinclude" #>
 <# 
