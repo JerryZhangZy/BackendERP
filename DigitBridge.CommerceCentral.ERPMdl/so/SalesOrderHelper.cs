@@ -180,17 +180,6 @@ WHERE OrderSourceCode = 'OrderDCAssignmentUuid:' + @orderDCAssignmentUuid
             return result > 0;
         }
 
-        public static async Task<bool> ExistOrderDCAssignmentUuidAsync(string orderDCAssignmentUuid)
-        {
-
-            var sql = $@"
-SELECT COUNT(1) FROM SalesOrderHeader tbl
-WHERE OrderSourceCode = 'OrderDCAssignmentUuid' + @orderDCAssignmentUuid
-";
-            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
-                  orderDCAssignmentUuid.ToSqlParameter("orderDCAssignmentUuid"));
-            return result > 0;
-        }
     }
 }
 

@@ -52,10 +52,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             //"9E590AE7-F15E-42CD-A575-B101C39AC536",
             //"C267FD30-2B58-4A32-B856-10B71300F928",
             //"19E20861-0BFA-4235-8DA9-1B5F1FF055E6",
-            "6fd3afc5-954a-4500-8e1b-8605d1dd5365",
-            "D7FB3599-D264-4055-A586-D0CFD11D55E1",
-            "4E807A78-4331-41C4-BEF7-6E8A26163A04",
-            "C5FBE495-3D3D-4069-A841-4DD7D5932C68"
+            //"9a119d2f-ba69-4d75-97d8-2ad4ef1af436",
+            //"5834b632-a23c-4518-91ed-e13c96ff152a",
+            //"9c521408-bb76-4be5-a02d-946225857eff",
+            //"C5FBE495-3D3D-4069-A841-4DD7D5932C68"
+            "0bebe247-2afb-4b47-9511-5287fff7405d"
             };
             SalesOrderManager soManager = new SalesOrderManager(DataBaseFactory);
             bool result = true;
