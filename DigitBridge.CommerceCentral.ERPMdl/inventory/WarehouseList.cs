@@ -135,7 +135,7 @@ SELECT
             var rowNumList = new List<long>();
 
             var sql = $@"
-SELECT distinct {Helper.TableAllies}.RowNum 
+SELECT distinct {Helper.TableAllies}.DistributionCenterNum 
 {GetSQL_from()} 
 {GetSQL_where()}
 ";
@@ -163,7 +163,7 @@ SELECT distinct {Helper.TableAllies}.RowNum
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
             var sql = $@"
-SELECT distinct {Helper.TableAllies}.RowNum 
+SELECT distinct {Helper.TableAllies}.DistributionCenterNum 
 {GetSQL_from()} 
 {GetSQL_where()}
 ";
