@@ -210,7 +210,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<FileContentResult> ExportInvoices(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoices/export")] HttpRequest req)
         {
-            var payload = await req.GetParameters<InvoicePayload>();
+            var payload = await req.GetParameters<InvoicePayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InvoiceManager(dbFactory);
 

@@ -217,6 +217,8 @@ FOR JSON PATH
 SELECT distinct {SalesOrderHeaderHelper.TableAllies}.RowNum 
 {GetSQL_from()} 
 {GetSQL_where()}
+ORDER BY  {SalesOrderHeaderHelper.TableAllies}.RowNum
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
@@ -245,6 +247,8 @@ SELECT distinct {SalesOrderHeaderHelper.TableAllies}.RowNum
 SELECT distinct {SalesOrderHeaderHelper.TableAllies}.RowNum 
 {GetSQL_from()} 
 {GetSQL_where()}
+ORDER BY  {SalesOrderHeaderHelper.TableAllies}.RowNum
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {

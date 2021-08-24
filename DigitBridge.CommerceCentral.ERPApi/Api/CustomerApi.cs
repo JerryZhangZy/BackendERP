@@ -205,7 +205,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<FileContentResult> ExportCustomer(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customers/export")] HttpRequest req)
         {
-            var payload = await req.GetParameters<CustomerPayload>();
+            var payload = await req.GetParameters<CustomerPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new CustomerManager(dbFactory);
 
