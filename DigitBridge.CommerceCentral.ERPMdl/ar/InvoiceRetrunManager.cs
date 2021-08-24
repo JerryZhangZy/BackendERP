@@ -76,37 +76,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<byte[]> ExportAsync(InvoiceReturnPayload payload)
         {
             var listService = new InvoiceReturnList(dbFactory, new InvoiceReturnQuery());
-            var iTranService = new InvoiceReturnService(dbFactory);
             var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
-
-            var rowNumList = await listService.GetRowNumListAsync(payload);
-            var dtoList = new List<InvoiceTransactionDataDto>();
-            foreach (var x in rowNumList)
-            {
-                if (iTranService.GetData(x))
-                    dtoList.Add(iTranService.ToDto());
-            };
-            if (dtoList.Count == 0)
-                dtoList.Add(new InvoiceTransactionDataDto());
-            return invoiceTransactionDataDtoCsv.Export(dtoList);
+            var sb = await listService.GetExportDataAsync(payload);
+            var dtos = sb.ToString().JsonToObject<List<InvoiceTransactionDataDto>>();
+            //export not depend on dto.
+            return invoiceTransactionDataDtoCsv.Export(dtos);
         }
 
         public byte[] Export(InvoiceReturnPayload payload)
         {
             var listService = new InvoiceReturnList(dbFactory, new InvoiceReturnQuery());
-            var iTranService = new InvoiceReturnService(dbFactory);
             var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
-
-            var rowNumList = listService.GetRowNumList(payload);
-            var dtoList = new List<InvoiceTransactionDataDto>();
-            foreach (var x in rowNumList)
-            {
-                if (iTranService.GetData(x))
-                    dtoList.Add(iTranService.ToDto());
-            };
-            if (dtoList.Count == 0)
-                dtoList.Add(new InvoiceTransactionDataDto());
-            return invoiceTransactionDataDtoCsv.Export(dtoList);
+            var sb = listService.GetExportData(payload);
+            var dtos = sb.ToString().JsonToObject<List<InvoiceTransactionDataDto>>();
+            //export not depend on dto.
+            return invoiceTransactionDataDtoCsv.Export(dtos);
         }
         #endregion
 

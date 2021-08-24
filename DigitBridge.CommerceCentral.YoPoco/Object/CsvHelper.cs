@@ -9,6 +9,7 @@ using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
@@ -67,8 +68,33 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return ms.ToArray();
             }
         }
-
-       protected virtual void WriteCsv(T data, CsvWriter csv)
+        /// <summary>
+        /// TODO not finished.
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        public virtual byte[] Export(StringBuilder json)
+        {
+            JObject jobj = JObject.Parse(json.ToString());
+            var config = GetConfiguration();
+            config.HasHeaderRecord = false;
+            using (var ms = new MemoryStream())
+            {
+                using (var writer = new StreamWriter(ms))
+                using (var csv = new CsvWriter(writer, config))
+                {
+                    csv.Context.Configuration.HasHeaderRecord = false;
+                    //TODO write jobj to cvs.
+                    //foreach (var data in datas)
+                    //{
+                    //    WriteCsv(data, csv);
+                    //}
+                    csv.Flush();
+                }
+                return ms.ToArray();
+            }
+        }
+        protected virtual void WriteCsv(T data, CsvWriter csv)
         {
             throw new Exception("must override WriteCsv  Method");
         }
