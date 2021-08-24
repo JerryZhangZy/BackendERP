@@ -237,7 +237,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => SalesOrderItemsUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(SalesOrderItemsUuid)) 
 				SalesOrderItemsUuid = Guid.NewGuid().ToString(); 
@@ -1345,6 +1345,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckUniqueId();
 			SalesOrderItemsAttributes.SetParent(Parent);
 			if (SalesOrderItemsAttributes.SalesOrderItemsUuid != SalesOrderItemsUuid) SalesOrderItemsAttributes.SalesOrderItemsUuid = SalesOrderItemsUuid;
+			SalesOrderItemsAttributes.CheckIntegrity();
 			return SalesOrderItemsAttributes;
 		}
 		public SalesOrderItemsAttributes LoadSalesOrderItemsAttributes()
@@ -1363,6 +1364,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			var child = new SalesOrderItemsAttributes(dbFactory);
 			child.SetParent(Parent);
 			child.SalesOrderItemsUuid = SalesOrderItemsUuid;
+			child.CheckIntegrity();
 			return child;
 		}
 		public SalesOrderItemsAttributes AddSalesOrderItemsAttributes(SalesOrderItemsAttributes child)
@@ -1371,6 +1373,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				child = NewSalesOrderItemsAttributes();
 			SalesOrderItemsAttributes = child;
 			return SalesOrderItemsAttributes;
+			child.CheckIntegrity();
 		}
 		#endregion Methods - Children SalesOrderItemsAttributes
 
@@ -1453,10 +1456,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
-        public virtual SalesOrderItems CheckIntegrity()
+        public override SalesOrderItems CheckIntegrity()
         {
             CheckUniqueId();
 			CheckIntegritySalesOrderItemsAttributes();
+            CheckIntegrityOthers();
             return this;
         }
 

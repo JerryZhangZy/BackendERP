@@ -1,18 +1,3 @@
-
-
-
-
-
-              
-
-
-
-
-
-
-
-
-
               
     
 
@@ -74,12 +59,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
-        public virtual InventoryLogData CheckIntegrity()
+        public override InventoryLogData CheckIntegrity()
         {
 			if (InventoryLog is null) return this; 
-			InventoryLog.CheckUniqueId(); 
+			InventoryLog.CheckIntegrity(); 
 			CheckIntegrityOthers(); 
             return this;
         }

@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -68,12 +66,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
-        public virtual InvoiceTransactionData CheckIntegrity()
+        public override InvoiceTransactionData CheckIntegrity()
         {
 			if (InvoiceTransaction is null) return this; 
-			InvoiceTransaction.CheckUniqueId(); 
+			InvoiceTransaction.CheckIntegrity(); 
 			CheckIntegrityInvoiceReturnItems(); 
 			CheckIntegrityOthers(); 
             return this;
@@ -468,6 +465,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     child.TransUuid = InvoiceTransaction.TransUuid;
                 seq += 1;
                 child.Seq = seq;
+                child.CheckIntegrity();
             }
             return children;
         }

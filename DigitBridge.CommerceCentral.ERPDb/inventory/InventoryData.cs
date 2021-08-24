@@ -13,7 +13,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class InventoryData
     {
-        partial void CheckIntegrityOthers()
+        public override void CheckIntegrityOthers()
         {
             if (ProductExt != null)
             {

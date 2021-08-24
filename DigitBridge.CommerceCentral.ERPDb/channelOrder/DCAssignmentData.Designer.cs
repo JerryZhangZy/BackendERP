@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -68,9 +66,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
-        public virtual DCAssignmentData CheckIntegrity()
+        public override DCAssignmentData CheckIntegrity()
         {
 			if (OrderDCAssignmentHeader is null) return this; 
 			OrderDCAssignmentHeader.CheckUniqueId(); 

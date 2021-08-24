@@ -108,7 +108,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => OrderShipmentCanceledItemUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(OrderShipmentCanceledItemUuid)) 
 				OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString(); 
@@ -422,9 +422,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
-        public virtual OrderShipmentCanceledItem CheckIntegrity()
+        public override OrderShipmentCanceledItem CheckIntegrity()
         {
             CheckUniqueId();
+            CheckIntegrityOthers();
             return this;
         }
 

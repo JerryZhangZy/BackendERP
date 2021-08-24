@@ -169,7 +169,7 @@ LEFT JOIN @CustomerStatus st ON ({Helper.TableAllies}.CustomerStatus = st.num)
             var sql = $@"
 SELECT distinct {CustomerHelper.TableAllies}.RowNum 
 {GetSQL_from()} 
-{base.GetSQL_where()}
+{GetSQL_where()}
 ";
             try
             {
@@ -177,7 +177,7 @@ SELECT distinct {CustomerHelper.TableAllies}.RowNum
                 rowNumList = await SqlQuery.ExecuteAsync(
                     sql,
                     (long rowNum) => rowNum,
-                    base.GetSqlParameters().ToArray()
+                    GetSqlParameters().ToArray()
                 );
             }
             catch (Exception ex)
@@ -197,7 +197,7 @@ SELECT distinct {CustomerHelper.TableAllies}.RowNum
             var sql = $@"
 SELECT distinct {CustomerHelper.TableAllies}.RowNum 
 {GetSQL_from()} 
-{base.GetSQL_where()}
+{GetSQL_where()}
 ";
             try
             {
@@ -205,7 +205,7 @@ SELECT distinct {CustomerHelper.TableAllies}.RowNum
                 rowNumList = SqlQuery.Execute(
                     sql,
                     (long rowNum) => rowNum,
-                    base.GetSqlParameters().ToArray()
+                    GetSqlParameters().ToArray()
                 );
             }
             catch (Exception ex)

@@ -87,12 +87,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
-        public virtual SalesOrderData CheckIntegrity()
+        public override SalesOrderData CheckIntegrity()
         {
 			if (SalesOrderHeader is null) return this; 
-			SalesOrderHeader.CheckUniqueId(); 
+			SalesOrderHeader.CheckIntegrity(); 
 			CheckIntegritySalesOrderHeaderInfo(); 
 			CheckIntegritySalesOrderHeaderAttributes(); 
 			CheckIntegritySalesOrderItems(); 
@@ -521,6 +520,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             SalesOrderHeaderInfo.SetParent(this);
             if (SalesOrderHeaderInfo.SalesOrderUuid != SalesOrderHeader.SalesOrderUuid)
                 SalesOrderHeaderInfo.SalesOrderUuid = SalesOrderHeader.SalesOrderUuid;
+            SalesOrderHeaderInfo.CheckIntegrity();
             return SalesOrderHeaderInfo;
         }
 
@@ -576,6 +576,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             SalesOrderHeaderAttributes.SetParent(this);
             if (SalesOrderHeaderAttributes.SalesOrderUuid != SalesOrderHeader.SalesOrderUuid)
                 SalesOrderHeaderAttributes.SalesOrderUuid = SalesOrderHeader.SalesOrderUuid;
+            SalesOrderHeaderAttributes.CheckIntegrity();
             return SalesOrderHeaderAttributes;
         }
 
@@ -689,6 +690,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     child.SalesOrderUuid = SalesOrderHeader.SalesOrderUuid;
                 seq += 1;
                 child.Seq = seq;
+                child.CheckIntegrity();
             }
             return children;
         }
@@ -776,6 +778,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 child.SetParent(this);
                 if (child.SalesOrderUuid != SalesOrderHeader.SalesOrderUuid)
                     child.SalesOrderUuid = SalesOrderHeader.SalesOrderUuid;
+                child.CheckIntegrity();
             }
             return children;
         }

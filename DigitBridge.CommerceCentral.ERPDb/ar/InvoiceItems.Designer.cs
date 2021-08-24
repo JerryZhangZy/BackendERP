@@ -1,6 +1,4 @@
-
               
-
               
     
 
@@ -230,7 +228,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => InvoiceItemsUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(InvoiceItemsUuid)) 
 				InvoiceItemsUuid = Guid.NewGuid().ToString(); 
@@ -1290,6 +1288,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckUniqueId();
 			InvoiceItemsAttributes.SetParent(Parent);
 			if (InvoiceItemsAttributes.InvoiceItemsUuid != InvoiceItemsUuid) InvoiceItemsAttributes.InvoiceItemsUuid = InvoiceItemsUuid;
+			InvoiceItemsAttributes.CheckIntegrity();
 			return InvoiceItemsAttributes;
 		}
 		public InvoiceItemsAttributes LoadInvoiceItemsAttributes()
@@ -1308,6 +1307,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			var child = new InvoiceItemsAttributes(dbFactory);
 			child.SetParent(Parent);
 			child.InvoiceItemsUuid = InvoiceItemsUuid;
+			child.CheckIntegrity();
 			return child;
 		}
 		public InvoiceItemsAttributes AddInvoiceItemsAttributes(InvoiceItemsAttributes child)
@@ -1316,6 +1316,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				child = NewInvoiceItemsAttributes();
 			InvoiceItemsAttributes = child;
 			return InvoiceItemsAttributes;
+			child.CheckIntegrity();
 		}
 		#endregion Methods - Children InvoiceItemsAttributes
 
@@ -1395,10 +1396,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
-        public virtual InvoiceItems CheckIntegrity()
+        public override InvoiceItems CheckIntegrity()
         {
             CheckUniqueId();
 			CheckIntegrityInvoiceItemsAttributes();
+            CheckIntegrityOthers();
             return this;
         }
 

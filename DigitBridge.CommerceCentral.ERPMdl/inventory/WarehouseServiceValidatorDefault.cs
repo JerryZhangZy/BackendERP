@@ -99,7 +99,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = WarehouseServiceHelper.ExistId(dto.DistributionCenter.DistributionCenterUuid, pl.MasterAccountNum, pl.ProfileNum);
+                    {
+                        if (!dto.DistributionCenter.RowNum.IsZero())
+                            isValid = WarehouseServiceHelper.ExistRowNum(dto.DistributionCenter.RowNum.ToInt(), pl.MasterAccountNum, pl.ProfileNum);
+                        else if (dto.DistributionCenter.HasDistributionCenterUuid)
+                            isValid = WarehouseServiceHelper.ExistId(dto.DistributionCenter.DistributionCenterUuid, pl.MasterAccountNum, pl.ProfileNum);
+                        else
+                            isValid = false;
+                    }
                     else
                         isValid = WarehouseServiceHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
                 }
@@ -129,7 +136,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (number == null)
-                        isValid = await WarehouseServiceHelper.ExistIdAsync(dto.DistributionCenter.DistributionCenterUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                    {
+                        if (!dto.DistributionCenter.RowNum.IsZero())
+                            isValid =await WarehouseServiceHelper.ExistRowNumAsync(dto.DistributionCenter.RowNum.ToInt(), pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        else if (dto.DistributionCenter.HasDistributionCenterUuid)
+                            isValid =await WarehouseServiceHelper.ExistIdAsync(dto.DistributionCenter.DistributionCenterUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        else
+                            isValid = false;
+                    }
                     else
                        isValid = await WarehouseServiceHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
                 }

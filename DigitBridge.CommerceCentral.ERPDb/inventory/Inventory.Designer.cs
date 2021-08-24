@@ -1,10 +1,6 @@
 
 
-
-
-
               
-
               
     
 
@@ -216,7 +212,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => InventoryUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(InventoryUuid)) 
 				InventoryUuid = Guid.NewGuid().ToString(); 
@@ -1195,6 +1191,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckUniqueId();
 			InventoryAttributes.SetParent(Parent);
 			if (InventoryAttributes.InventoryUuid != InventoryUuid) InventoryAttributes.InventoryUuid = InventoryUuid;
+			InventoryAttributes.CheckIntegrity();
 			return InventoryAttributes;
 		}
 		public InventoryAttributes LoadInventoryAttributes()
@@ -1213,6 +1210,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			var child = new InventoryAttributes(dbFactory);
 			child.SetParent(Parent);
 			child.InventoryUuid = InventoryUuid;
+			child.CheckIntegrity();
 			return child;
 		}
 		public InventoryAttributes AddInventoryAttributes(InventoryAttributes child)
@@ -1221,6 +1219,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				child = NewInventoryAttributes();
 			InventoryAttributes = child;
 			return InventoryAttributes;
+			child.CheckIntegrity();
 		}
 		#endregion Methods - Children InventoryAttributes
 
@@ -1294,10 +1293,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
-        public virtual Inventory CheckIntegrity()
+        public override Inventory CheckIntegrity()
         {
             CheckUniqueId();
 			CheckIntegrityInventoryAttributes();
+            CheckIntegrityOthers();
             return this;
         }
 

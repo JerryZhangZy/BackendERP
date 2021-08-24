@@ -216,7 +216,7 @@ FOR JSON PATH
             var sql = $@"
 SELECT distinct {SalesOrderHeaderHelper.TableAllies}.RowNum 
 {GetSQL_from()} 
-{base.GetSQL_where()}
+{GetSQL_where()}
 ";
             try
             {
@@ -224,7 +224,7 @@ SELECT distinct {SalesOrderHeaderHelper.TableAllies}.RowNum
                 rowNumList = await SqlQuery.ExecuteAsync(
                     sql,
                     (long rowNum) => rowNum,
-                    base.GetSqlParameters().ToArray()
+                    GetSqlParameters().ToArray()
                 );
             }
             catch (Exception ex)
@@ -244,7 +244,7 @@ SELECT distinct {SalesOrderHeaderHelper.TableAllies}.RowNum
             var sql = $@"
 SELECT distinct {SalesOrderHeaderHelper.TableAllies}.RowNum 
 {GetSQL_from()} 
-{base.GetSQL_where()}
+{GetSQL_where()}
 ";
             try
             {
@@ -252,7 +252,7 @@ SELECT distinct {SalesOrderHeaderHelper.TableAllies}.RowNum
                 rowNumList = SqlQuery.Execute(
                     sql,
                     (long rowNum) => rowNum,
-                    base.GetSqlParameters().ToArray()
+                    GetSqlParameters().ToArray()
                 );
             }
             catch (Exception ex)

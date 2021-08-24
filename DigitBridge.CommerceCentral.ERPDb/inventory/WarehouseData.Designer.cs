@@ -1,18 +1,3 @@
-
-
-
-
-
-              
-
-
-
-
-
-
-
-
-
               
     
 
@@ -53,9 +38,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore]
         public new string UniqueId => DistributionCenter.UniqueId;
         
-		 [JsonIgnore, XmlIgnore] 
-		public static string DistributionCenterTable ="DistributionCenter ";
-		
+			 [JsonIgnore, XmlIgnore] 
+			public static string DistributionCenterTable ="DistributionCenter ";
+			
         #region CRUD Methods
 
         public override bool Equals(WarehouseData other)
@@ -74,12 +59,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return true;
         }
 
-        partial void CheckIntegrityOthers();
         // Check Children table Integrity
-        public virtual WarehouseData CheckIntegrity()
+        public override WarehouseData CheckIntegrity()
         {
 			if (DistributionCenter is null) return this; 
-			DistributionCenter.CheckUniqueId(); 
+			DistributionCenter.CheckIntegrity(); 
 			CheckIntegrityOthers(); 
             return this;
         }

@@ -49,12 +49,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
         public static IEnumerable<dynamic> MergeDetailRecord(this InventoryDataDto dto, bool withHeaderText = false)
         {
-            //return null;
-            //TODO change to merge Dto children object
-            if (!dto.HasInventory)
-                return null;
+			//return null;
+			//TODO change to merge Dto children object
+			var result = new List<dynamic>();
+			if (!dto.HasInventory)
+				return result;
 
-            var result = new List<dynamic>();
             var inventoryItems = new Inventory() { InventoryAttributes = new InventoryAttributes() };
 
             if (withHeaderText)

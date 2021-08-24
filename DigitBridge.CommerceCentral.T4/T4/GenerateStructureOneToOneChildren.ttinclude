@@ -50,6 +50,7 @@
             <#= child.Table.Name #>.SetParent(this);
             if (<#= child.Table.Name #>.<#= StructureClass.MainTable.UniqueKey #> != <#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>)
                 <#= child.Table.Name #>.<#= StructureClass.MainTable.UniqueKey #> = <#= StructureClass.MainTable.Name #>.<#= StructureClass.MainTable.UniqueKey #>;
+            <#= child.Table.Name #>.CheckIntegrity();
             return <#= child.Table.Name #>;
         }
 <# } #>

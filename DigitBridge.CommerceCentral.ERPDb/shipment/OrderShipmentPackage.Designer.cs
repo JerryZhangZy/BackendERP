@@ -124,7 +124,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 		[IgnoreCompare] 
 		public override string UniqueId => OrderShipmentPackageUuid; 
-		public void CheckUniqueId() 
+		public override void CheckUniqueId() 
 		{
 			if (string.IsNullOrEmpty(OrderShipmentPackageUuid)) 
 				OrderShipmentPackageUuid = Guid.NewGuid().ToString(); 
@@ -617,6 +617,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			CheckUniqueId();
 			child.SetParent(Parent);
 			if (child.OrderShipmentPackageUuid != OrderShipmentPackageUuid) child.OrderShipmentPackageUuid = OrderShipmentPackageUuid;
+			child.CheckIntegrity();
 			return child;
 		}
 		public IList<OrderShipmentShippedItem> LoadOrderShipmentShippedItem()
@@ -637,6 +638,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			var child = new OrderShipmentShippedItem(dbFactory);
 			child.SetParent(Parent);
 			child.OrderShipmentPackageUuid = OrderShipmentPackageUuid;
+			child.CheckIntegrity();
 			return child;
 		}
 		public IList<OrderShipmentShippedItem> AddOrderShipmentShippedItem(OrderShipmentShippedItem child)
@@ -693,10 +695,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return this;
         }
 
-        public virtual OrderShipmentPackage CheckIntegrity()
+        public override OrderShipmentPackage CheckIntegrity()
         {
             CheckUniqueId();
 			CheckIntegrityOrderShipmentShippedItem();
+            CheckIntegrityOthers();
             return this;
         }
 

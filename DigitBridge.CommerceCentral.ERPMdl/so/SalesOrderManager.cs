@@ -30,41 +30,85 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a SalesOrderService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class SalesOrderManager : IMessage
+    public class SalesOrderManager : ISalesOrderManager, IMessage
     {
         protected SalesOrderService salesOrderService;
         protected SalesOrderDataDtoCsv salesOrderDataDtoCsv;
+        protected SalesOrderList salesOrderList;
 
-        private ChannelOrderService _channelOrderSrv;
-        private DCAssignmentService _dcAssignmentSrv;
-
+        //private ChannelOrderService _channelOrderSrv;
+        //private DCAssignmentService _dcAssignmentSrv;
         private SalesOrderTransfer _soTransfer;
 
+        public SalesOrderManager() : base() { }
         public SalesOrderManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
             salesOrderService = new SalesOrderService(dbFactory);
             salesOrderDataDtoCsv = new SalesOrderDataDtoCsv();
+            salesOrderList = new SalesOrderList(dbFactory);
 
-            _channelOrderSrv = new ChannelOrderService(dbFactory);
-            _dcAssignmentSrv = new DCAssignmentService(dbFactory);
-
-            _soTransfer = new SalesOrderTransfer(this);
+            _soTransfer = new SalesOrderTransfer(this, string.Empty);
         }
+
+        #region DataBase
+        [XmlIgnore, JsonIgnore]
+        protected IDataBaseFactory _dbFactory;
+
+        [XmlIgnore, JsonIgnore]
+        public IDataBaseFactory dbFactory
+        {
+            get
+            {
+                if (_dbFactory is null)
+                    _dbFactory = DataBaseFactory.CreateDefault();
+                return _dbFactory;
+            }
+        }
+
+        public void SetDataBaseFactory(IDataBaseFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
+
+        #endregion DataBase
+
+        #region Messages
+        protected IList<MessageClass> _messages;
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get
+            {
+                if (_messages is null)
+                    _messages = new List<MessageClass>();
+                return _messages;
+            }
+            set { _messages = value; }
+        }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             Messages.Add(message, MessageLevel.Info, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Warning, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Error, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Fatal, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Debug, code);
+
+        #endregion Messages
+
 
         public async Task<byte[]> ExportAsync(SalesOrderPayload payload)
         {
-            var rowNumList = new List<long>();
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                rowNumList = await SalesOrderHelper.GetRowNumsAsync(payload.MasterAccountNum, payload.ProfileNum);
-            }
+            var rowNumList = await salesOrderList.GetRowNumListAsync(payload);
             var dtoList = new List<SalesOrderDataDto>();
-            rowNumList.ForEach(x =>
+            foreach (var x in rowNumList)
             {
                 if (salesOrderService.GetData(x))
                     dtoList.Add(salesOrderService.ToDto());
-            });
+            }
             if (dtoList.Count == 0)
                 dtoList.Add(new SalesOrderDataDto());
             return salesOrderDataDtoCsv.Export(dtoList);
@@ -72,17 +116,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public byte[] Export(SalesOrderPayload payload)
         {
-            var rowNumList = new List<long>();
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                rowNumList = SalesOrderHelper.GetRowNums(payload.MasterAccountNum, payload.ProfileNum);
-            }
+            var rowNumList = salesOrderList.GetRowNumList(payload);
             var dtoList = new List<SalesOrderDataDto>();
-            rowNumList.ForEach(x =>
+            foreach (var x in rowNumList)
             {
                 if (salesOrderService.GetData(x))
                     dtoList.Add(salesOrderService.ToDto());
-            });
+            }
             if (dtoList.Count == 0)
                 dtoList.Add(new SalesOrderDataDto());
             return salesOrderDataDtoCsv.Export(dtoList);
@@ -163,122 +203,125 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+
+        /// <summary>
+        /// Load Central Order and order assignment, create Sales order for each order assignment.
+        /// </summary>
+        /// <param name="centralOrderUuid"></param>
+        /// <returns>Success Create Sales Order</returns>
         public async Task<bool> CreateSalesOrderByChannelOrderIdAsync(string centralOrderUuid)
         {
             //Get CentralOrder by uuid
-            bool ret = await _channelOrderSrv.GetDataByIdAsync(centralOrderUuid);
+            var coData = await GetChannelOrderAsync(centralOrderUuid);
+            if (coData is null)
+            {
+                AddError("ChannelOrder uuid {centralOrderUuid} not found.");
+                return false;
+            }
+
+            var dcAssigmentDataList = await GetDCAssignmentAsync(centralOrderUuid);
+            if (dcAssigmentDataList == null || dcAssigmentDataList.Count == 0)
+            {
+                AddError("ChannelOrder DC Assigment not found.");
+                return false;
+            }
 
             var soDataList = new List<SalesOrderData>();
-
-            if (ret)
+            //Create SalesOrder
+            foreach (var dcAssigmentData in dcAssigmentDataList)
             {
-                    //Get DCAssignments by uuid
-                var dcAssigmentDataList = await _dcAssignmentSrv.GetByCentralOrderUuidAsync(centralOrderUuid);
-                if (dcAssigmentDataList != null && dcAssigmentDataList.Count > 0)
-                {
-                    //Create SalesOrder
-
-                    foreach (var dcAssigmentData in dcAssigmentDataList)
-                    {
-                        var coData = _channelOrderSrv.Data;
-                        string dcUuid = dcAssigmentData.OrderDCAssignmentHeader.CentralOrderUuid;
-
-                        if (! await SalesOrderHelper.ExistOrderDCAssignmentUuidAsync(dcUuid))
-                        {
-                            var soData = _soTransfer.FromChannelOrder(dcAssigmentData, coData);
-
-                            if (soData != null)
-                            {
-                                soDataList.Add(soData);
-                            }
-                            else
-                            {
-                                ret = false;
-                            }
-                        }
-                    }
-
-                }
+                var soData = await CreateSalesOrdersAsync(coData, dcAssigmentData);
+                if (soData != null)
+                    soDataList.Add(soData);
             }
-
-            if (ret)
-            {
-                //Transfer ChannelOrder Data to SalesOrderData
-                ret = await CreateSalesOrdersAsync(soDataList);
-            }
-
-            return ret;
+            return soDataList.Count > 0;
         }
 
-        public async Task<bool> CreateSalesOrdersAsync(IList<SalesOrderData> soDataList)
+        /// <summary>
+        /// Get ChannelOrderData by centralOrderUuid
+        /// </summary>
+        /// <param name="centralOrderUuid"></param>
+        /// <returns>ChannelOrderData</returns>
+        protected async Task<ChannelOrderData> GetChannelOrderAsync(string centralOrderUuid)
         {
-            if (soDataList != null && soDataList.Count > 0)
-            {
-                return true;
-            }
+            //Get CentralOrder by uuid
+            var channelOrderSrv = new ChannelOrderService(dbFactory);
 
-            foreach (var soData in soDataList)
-            {
-                salesOrderService.Add();
-
-                salesOrderService.AttachData(soData);
-
-                if (await salesOrderService.SaveDataAsync() == false)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            if (!(await channelOrderSrv.GetDataByIdAsync(centralOrderUuid)))
+                return null;
+            return channelOrderSrv.Data;
         }
-        #region DataBase
-        [XmlIgnore, JsonIgnore]
-        protected IDataBaseFactory _dbFactory;
 
-        [XmlIgnore, JsonIgnore]
-        public IDataBaseFactory dbFactory
+        /// <summary>
+        /// Get DCAssignmentData list by centralOrderUuid
+        /// </summary>
+        /// <param name="centralOrderUuid"></param>
+        /// <returns>list of ChannelOrderData</returns>
+        protected async Task<IList<DCAssignmentData>> GetDCAssignmentAsync(string centralOrderUuid)
         {
-            get
-            {
-                if (_dbFactory is null)
-                    _dbFactory = DataBaseFactory.CreateDefault();
-                return _dbFactory;
-            }
+            var dcAssignmentSrv = new DCAssignmentService(dbFactory);
+            return await dcAssignmentSrv.GetByCentralOrderUuidAsync(centralOrderUuid);
         }
 
-        public void SetDataBaseFactory(IDataBaseFactory dbFactory)
+        /// <summary>
+        /// Check DCAssignment is already exist in sales order
+        /// </summary>
+        /// <param name="orderDCAssignmentUuid"></param>
+        /// <returns>Exist or Not</returns>
+        protected async Task<bool> ExistDCAssignmentInSalesOrderAsync(string orderDCAssignmentUuid)
         {
-            _dbFactory = dbFactory;
+            using (var trs = new ScopedTransaction(dbFactory))
+            return await SalesOrderHelper.ExistOrderDCAssignmentUuidAsync(orderDCAssignmentUuid);
         }
 
-        #endregion DataBase
-
-        #region Messages
-        protected IList<MessageClass> _messages;
-        [XmlIgnore, JsonIgnore]
-        public virtual IList<MessageClass> Messages
+        /// <summary>
+        /// Create one sales order from one ChannelOrder and one DCAssignment.
+        /// </summary>
+        /// <param name="coData"></param>
+        /// <param name="dcAssigmentData"></param>
+        /// <returns>Success Create Sales Order</returns>
+        public async Task<SalesOrderData> CreateSalesOrdersAsync(ChannelOrderData coData, DCAssignmentData dcAssigmentData)
         {
-            get
+            if ((await ExistDCAssignmentInSalesOrderAsync(dcAssigmentData.OrderDCAssignmentHeader.OrderDCAssignmentUuid)))
             {
-                if (_messages is null)
-                    _messages = new List<MessageClass>();
-                return _messages;
+                AddError("ChannelOrder DC Assigment has transferred to sales order.");
+                return null;
             }
-            set { _messages = value; }
+
+            salesOrderService.DetachData(null);
+            salesOrderService.Add();
+            var soData = _soTransfer.FromChannelOrder(dcAssigmentData, coData);
+            salesOrderService.AttachData(soData);
+            salesOrderService.Data.CheckIntegrity();
+
+            if (await salesOrderService.SaveDataAsync())
+                return salesOrderService.Data;
+            return null;
         }
-        public IList<MessageClass> AddInfo(string message, string code = null) =>
-             Messages.Add(message, MessageLevel.Info, code);
-        public IList<MessageClass> AddWarning(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Warning, code);
-        public IList<MessageClass> AddError(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Error, code);
-        public IList<MessageClass> AddFatal(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Fatal, code);
-        public IList<MessageClass> AddDebug(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Debug, code);
 
-        #endregion Messages
+        //public async Task<bool> CreateSalesOrdersAsync(IList<SalesOrderData> soDataList)
+        //{
+        //    if (soDataList == null || soDataList.Count == 0)
+        //    {
+        //        return true;
+        //    }
 
+        //    foreach (var soData in soDataList)
+        //    {
+        //        salesOrderService.Add();
+
+        //        soData.CheckIntegrity();
+
+        //        salesOrderService.AttachData(soData);
+
+        //        if (await salesOrderService.SaveDataAsync() == false)
+        //        {
+        //            return false;
+        //        }
+        //    }
+
+        //    return true;
+        //}
 
     }
 }
