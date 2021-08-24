@@ -205,9 +205,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<FileContentResult> ExportCustomer(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customers/export")] HttpRequest req)
         {
-            var payload = await req.GetParameters<CustomerPayload>();
+            var payload = await req.GetParameters<CustomerPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new CustmoerManager(dbFactory);
+            var svc = new CustomerManager(dbFactory);
 
             var exportData = await svc.ExportAsync(payload);
             var downfile = new FileContentResult(exportData, "text/csv");
@@ -228,7 +228,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var files = req.Form.Files;
-            var svc = new CustmoerManager(dbFactory);
+            var svc = new CustomerManager(dbFactory);
 
             await svc.ImportAsync(payload, files);
             payload.Success = true;

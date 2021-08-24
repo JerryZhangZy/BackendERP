@@ -25,19 +25,53 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a InvoiceTransactionService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class InvoiceTransactionManager : IMessage
+    public class InvoiceTransactionManager :  IInvoiceTransactionManager , IMessage
     {
-        protected InvoiceTransactionService invoiceTransactionService;
-        protected InvoiceTransactionDataDtoCsv invoiceTransactionDataDtoCsv;
-        protected InvoiceTransactionList invoiceTransactionList;
 
         public InvoiceTransactionManager() : base() {}
+
         public InvoiceTransactionManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
-            invoiceTransactionService = new InvoiceTransactionService(dbFactory);
-            invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
-            invoiceTransactionList = new InvoiceTransactionList(dbFactory);
+        }
+        
+        [XmlIgnore, JsonIgnore]
+        protected InvoiceTransactionService _invoiceTransactionService;
+        [XmlIgnore, JsonIgnore]
+        public InvoiceTransactionService invoiceTransactionService
+        {
+            get
+            {
+                if (_invoiceTransactionService is null)
+                    _invoiceTransactionService = new InvoiceTransactionService();
+                return _invoiceTransactionService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected InvoiceTransactionDataDtoCsv _invoiceTransactionDataDtoCsv;
+        [XmlIgnore, JsonIgnore]
+        public InvoiceTransactionDataDtoCsv invoiceTransactionDataDtoCsv
+        {
+            get
+            {
+                if (_invoiceTransactionDataDtoCsv is null)
+                    _invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
+                return _invoiceTransactionDataDtoCsv;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected InvoiceTransactionList _invoiceTransactionList;
+        [XmlIgnore, JsonIgnore]
+        public InvoiceTransactionList invoiceTransactionList
+        {
+            get
+            {
+                if (_invoiceTransactionList is null)
+                    _invoiceTransactionList = new InvoiceTransactionList(dbFactory);
+                return _invoiceTransactionList;
+            }
         }
 
         public async Task<byte[]> ExportAsync(InvoiceTransactionPayload payload)
@@ -101,7 +135,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 if (payload.HasInvoiceTransaction)
                     payload.InvoiceTransaction = null;
-                AddInfo($"FIle:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+                AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
 

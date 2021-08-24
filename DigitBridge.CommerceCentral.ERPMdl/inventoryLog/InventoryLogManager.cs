@@ -25,19 +25,53 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a InventoryLogService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class InventoryLogManager : IMessage
+    public class InventoryLogManager :  IInventoryLogManager , IMessage
     {
-        protected InventoryLogService inventoryLogService;
-        protected InventoryLogDataDtoCsv inventoryLogDataDtoCsv;
-        protected InventoryLogList inventoryLogList;
 
         public InventoryLogManager() : base() {}
+
         public InventoryLogManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
-            inventoryLogService = new InventoryLogService(dbFactory);
-            inventoryLogDataDtoCsv = new InventoryLogDataDtoCsv();
-            inventoryLogList = new InventoryLogList(dbFactory);
+        }
+        
+        [XmlIgnore, JsonIgnore]
+        protected InventoryLogService _inventoryLogService;
+        [XmlIgnore, JsonIgnore]
+        public InventoryLogService inventoryLogService
+        {
+            get
+            {
+                if (_inventoryLogService is null)
+                    _inventoryLogService = new InventoryLogService();
+                return _inventoryLogService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected InventoryLogDataDtoCsv _inventoryLogDataDtoCsv;
+        [XmlIgnore, JsonIgnore]
+        public InventoryLogDataDtoCsv inventoryLogDataDtoCsv
+        {
+            get
+            {
+                if (_inventoryLogDataDtoCsv is null)
+                    _inventoryLogDataDtoCsv = new InventoryLogDataDtoCsv();
+                return _inventoryLogDataDtoCsv;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected InventoryLogList _inventoryLogList;
+        [XmlIgnore, JsonIgnore]
+        public InventoryLogList inventoryLogList
+        {
+            get
+            {
+                if (_inventoryLogList is null)
+                    _inventoryLogList = new InventoryLogList(dbFactory);
+                return _inventoryLogList;
+            }
         }
 
         public async Task<byte[]> ExportAsync(InventoryLogPayload payload)
@@ -101,7 +135,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 if (payload.HasInventoryLog)
                     payload.InventoryLog = null;
-                AddInfo($"FIle:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
+                AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
 

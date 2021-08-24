@@ -68,6 +68,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasTop => Top > 0;
         public bool ShouldSerializeTop() => HasTop;
 
+        [JsonIgnore]
+        public int FixedTop => HasTop ? (Top>500?500:Top) : 1;
+
         /// <summary>
         /// Records to skip.
         /// Optional,
@@ -81,6 +84,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public int Skip { get; set; }
         [JsonIgnore] public virtual bool HasSkip => Skip >= 0;
         public bool ShouldSerializeSkip() => HasSkip;
+
+        [JsonIgnore]
+        public int FixedSkip => HasSkip ? Skip : 0;
 
         /// <summary>
         /// true:query totalcount and paging data;false:only query paging data;
