@@ -76,9 +76,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<byte[]> ExportAsync(InvoicePaymentPayload payload)
         {
             var listService = new InvoicePaymentList(dbFactory);
-            var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
+            var invoicePaymentDataDtoCsv = new InvoicePaymentDataDtoCsv();
             var jsonStr = await listService.GetExportDataAsync(payload);
-            return invoiceTransactionDataDtoCsv.Export(jsonStr);
+            return invoicePaymentDataDtoCsv.Export(jsonStr);
         }
 
         public byte[] Export(InvoicePaymentPayload payload)
