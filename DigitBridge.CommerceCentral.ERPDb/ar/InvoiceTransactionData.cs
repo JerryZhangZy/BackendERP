@@ -33,7 +33,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 { 
                     returnItem.InvoiceUuid = _InvoiceData.InvoiceHeader.InvoiceUuid;
 
-                    var invoiceItem = _InvoiceData.InvoiceItems.Where(i => i.InvoiceItemsUuid == returnItem.InvoiceItemsUuid).FirstOrDefault(); 
+                    var invoiceItem = _InvoiceData.InvoiceItems.Where(i => i.InvoiceItemsUuid == returnItem.InvoiceItemsUuid).FirstOrDefault();
+                    if (invoiceItem == null) continue;
                     returnItem.InvoiceWarehouseCode = invoiceItem.WarehouseCode;
                     returnItem.InvoiceWarehouseUuid = invoiceItem.WarehouseUuid;
                     returnItem.SKU = invoiceItem.SKU;
