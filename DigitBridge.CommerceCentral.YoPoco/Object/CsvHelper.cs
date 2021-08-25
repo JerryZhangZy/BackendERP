@@ -175,7 +175,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
 
         /// <summary>
-        /// Write data to cvs
+        /// Write datas to cvs
         /// </summary>
         /// <param name="jObj"></param>
         /// <param name="path"></param>
@@ -184,14 +184,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
         private void WriteProperties(JObject jObj, string path, CsvWriter csv, List<string> skipNames = null)
         {
             if (jObj == null) return;
-            var properties = jObj.SelectToken(path).Select(i => (i as JProperty));
-            if (skipNames != null && skipNames.Count > 0)
-                properties = properties.Where(i => !skipNames.Contains(i.Name));
-            foreach (var item in properties)
+            var matchItems = jObj.SelectTokens(path);
+            foreach (var item in matchItems)
             {
-                csv.WriteField(item.Value.ToString());
+                var properties = item.Select(i => (i as JProperty));
+                if (skipNames != null && skipNames.Count > 0)
+                    properties = properties.Where(i => !skipNames.Contains(i.Name));
+                foreach (var property in properties)
+                {
+                    csv.WriteField(property.Value.ToString());
+                }
+                csv.NextRecord();
             }
-            csv.NextRecord();
+
         }
         /// <summary>
         /// Write jobj to csv

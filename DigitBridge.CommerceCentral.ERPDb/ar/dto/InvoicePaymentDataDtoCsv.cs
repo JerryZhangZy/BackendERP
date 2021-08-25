@@ -38,7 +38,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void RegisterMapper(CsvContext context)
         {
             context.RegisterClassMap(new CsvAutoMapper<InvoiceTransactionDto>());
-            context.RegisterClassMap(new CsvAutoMapper<InvoiceReturnItemsDto>());
         }
 
         protected override void WriteCsv(JObject data, CsvWriter csv)
@@ -74,12 +73,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
                             isFirst = false;
                         }
                         dto.InvoiceTransaction = csv.GetRecord<InvoiceTransactionDto>();
-                        break;
-                    case "L":
-                        if (dto.InvoiceReturnItems == null)
-                            dto.InvoiceReturnItems = new List<InvoiceReturnItemsDto>();
-                        var item = csv.GetRecord<InvoiceReturnItemsDto>();
-                        dto.InvoiceReturnItems.Add(item);
                         break;
                 }
             }
