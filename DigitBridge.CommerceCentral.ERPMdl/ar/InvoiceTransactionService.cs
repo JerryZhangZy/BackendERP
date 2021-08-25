@@ -35,6 +35,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return this;
         }
 
+        /// <summary>
+        /// Load Invoice data.
+        /// </summary>
+        /// <param name="invoiceUuid"></param>
+        private void LoadInvoice(string invoiceUuid)
+        {
+            // load invoice data
+            var invoiceService = new InvoiceService(dbFactory);
+            invoiceService.GetDataById(invoiceUuid);
+            Data._InvoiceData = invoiceService.Data;
+        }
 
         /// <summary>
         /// Add new data from Dto object
@@ -51,6 +62,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data from dto
             FromDto(dto);
+
+            //load invoice data.
+            LoadInvoice(dto.InvoiceTransaction.InvoiceUuid);
 
             // validate data for Add processing
             if (!Validate())
@@ -74,6 +88,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data from dto
             FromDto(dto);
+
+            //load invoice data.
+            LoadInvoice(dto.InvoiceTransaction.InvoiceUuid);
 
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
@@ -99,6 +116,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.InvoiceTransaction);
 
+            //load invoice data.
+            LoadInvoice(payload.InvoiceTransaction.InvoiceTransaction.InvoiceUuid);
+
             // validate data for Add processing
             if (!Validate())
                 return false;
@@ -123,6 +143,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.InvoiceTransaction);
 
+            //load invoice data.
+            LoadInvoice(payload.InvoiceTransaction.InvoiceTransaction.InvoiceUuid);
+
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
                 return false;
@@ -145,6 +168,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data 
             GetData(dto.InvoiceTransaction.RowNum.ToLong());
+
+            //load invoice data.
+            LoadInvoice(dto.InvoiceTransaction.InvoiceUuid);
 
             // load data from dto
             FromDto(dto);
@@ -171,6 +197,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data 
             await GetDataAsync(dto.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
+
+            //load invoice data.
+            LoadInvoice(dto.InvoiceTransaction.InvoiceUuid);
 
             // load data from dto
             FromDto(dto);
@@ -202,6 +231,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data 
             GetData(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong());
 
+            //load invoice data.
+            LoadInvoice(payload.InvoiceTransaction.InvoiceTransaction.InvoiceUuid);
+
             // load data from dto
             FromDto(payload.InvoiceTransaction);
 
@@ -230,6 +262,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data 
             await GetDataAsync(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
+
+            //load invoice data.
+            LoadInvoice(payload.InvoiceTransaction.InvoiceTransaction.InvoiceUuid);
 
             // load data from dto
             FromDto(payload.InvoiceTransaction);
