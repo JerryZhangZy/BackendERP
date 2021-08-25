@@ -38,15 +38,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new WarehouseService(dbFactory);
 
             var warehouseCode = WarehouseCode;
-            if (!string.IsNullOrEmpty(WarehouseCode))
+            var spilterIndex = WarehouseCode.IndexOf("-");
+            if (spilterIndex > 0 && warehouseCode.StartsWith(payload.ProfileNum.ToString()))
             {
-                var spilterIndex = WarehouseCode.IndexOf("-");
-                if (spilterIndex > 0)
-                {
-                    warehouseCode = WarehouseCode.Substring(spilterIndex + 1);
-                }
-                payload.WarehouseCodes.Add(warehouseCode);
+                warehouseCode = WarehouseCode.Substring(spilterIndex + 1);
             }
+            payload.WarehouseCodes.Add(warehouseCode);
             if (await svc.GetWarehouseByWarehouseCodeAsync(payload, warehouseCode))
                 payload.Warehouse = svc.ToDto();
             else
@@ -68,7 +65,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<WarehousePayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new WarehouseService(dbFactory);
-            payload =await svc.GetWarehouseByWarehouseCodeArrayAsync(payload);
+            payload = await svc.GetWarehouseByWarehouseCodeArrayAsync(payload);
             return new JsonNetResponse<WarehousePayload>(payload);
 
         }
@@ -79,7 +76,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "WarehouseCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "WarehouseCode", Description = "WarehouseCode", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadDelete),Description = "The OK response")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadDelete), Description = "The OK response")]
         public static async Task<JsonNetResponse<WarehousePayload>> DeleteWarehouse(
             [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "warehouses/{WarehouseCode}")] HttpRequest req,
             string WarehouseCode)
@@ -89,12 +86,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new WarehouseService(dbFactory);
             var spilterIndex = WarehouseCode.IndexOf("-");
             var warehouseCode = WarehouseCode;
-            if (spilterIndex > 0)
+            if (spilterIndex > 0 && warehouseCode.StartsWith(payload.ProfileNum.ToString()))
             {
                 warehouseCode = WarehouseCode.Substring(spilterIndex + 1);
             }
             payload.WarehouseCodes.Add(warehouseCode);
-            if (await svc.DeleteByWarehouseCodeAsync(payload,warehouseCode))
+            if (await svc.DeleteByWarehouseCodeAsync(payload, warehouseCode))
                 payload.Warehouse = svc.ToDto();
             else
             {
@@ -235,7 +232,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var files = req.Form.Files;
             var svc = new WarehouseManager(dbFactory);
 
-             await svc.ImportAsync(payload, files);
+            await svc.ImportAsync(payload, files);
             payload.Success = true;
             payload.Messages = svc.Messages;
             return payload;
