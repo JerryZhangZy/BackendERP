@@ -43,36 +43,36 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
          
 
-        public virtual async Task<bool> AddAsync(InvoicePaymentPayload payload)
-        {
-            var invoiceTransactionPayload = new InvoiceTransactionPayload
-            {
-                InvoiceTransaction = new InvoiceTransactionDataDto()
-                {
-                    InvoiceTransaction = payload.InvoiceTransaction
-                },
-                MasterAccountNum = payload.MasterAccountNum,
-                ProfileNum = payload.ProfileNum
-            };
-            return await base.AddAsync(invoiceTransactionPayload);
-        }
+        //public virtual async Task<bool> AddAsync(InvoicePaymentPayload payload)
+        //{
+        //    var invoiceTransactionPayload = new InvoiceTransactionPayload
+        //    {
+        //        InvoiceTransaction = new InvoiceTransactionDataDto()
+        //        {
+        //            InvoiceTransaction = payload.InvoiceTransaction
+        //        },
+        //        MasterAccountNum = payload.MasterAccountNum,
+        //        ProfileNum = payload.ProfileNum
+        //    };
+        //    return await base.AddAsync(invoiceTransactionPayload);
+        //}
         /// <summary>
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual async Task<bool> UpdateAsync(InvoicePaymentPayload payload)
-        {
-            var invoiceTransactionPayload = new InvoiceTransactionPayload
-            {
-                InvoiceTransaction = new InvoiceTransactionDataDto()
-                {
-                    InvoiceTransaction = payload.InvoiceTransaction
-                },
-                MasterAccountNum = payload.MasterAccountNum,
-                ProfileNum = payload.ProfileNum
-            };
-            return await base.UpdateAsync(invoiceTransactionPayload);
-        }
+        //public virtual async Task<bool> UpdateAsync(InvoicePaymentPayload payload)
+        //{
+        //    var invoiceTransactionPayload = new InvoiceTransactionPayload
+        //    {
+        //        InvoiceTransaction = new InvoiceTransactionDataDto()
+        //        {
+        //            InvoiceTransaction = payload.InvoiceTransaction
+        //        },
+        //        MasterAccountNum = payload.MasterAccountNum,
+        //        ProfileNum = payload.ProfileNum
+        //    };
+        //    return await base.UpdateAsync(invoiceTransactionPayload);
+        //}
     }
 }
 
