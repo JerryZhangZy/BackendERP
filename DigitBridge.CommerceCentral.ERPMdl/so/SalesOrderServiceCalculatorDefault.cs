@@ -29,39 +29,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class SalesOrderServiceCalculatorDefault : ICalculator<SalesOrderData>
     {
 
-        public virtual void PrepareData(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            // get customer data
-            data.GetCache<CustomerData>(data.SalesOrderHeader.CustomerUuid,
-                () =>
-                {
-                    var srv = new CustomerService(dbFactory);
-                    if (srv.GetDataById(data.SalesOrderHeader.CustomerUuid))
-                        return srv.Data;
-                    else
-                        return null;
-                }
-            );
+        //public virtual void PrepareData(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        //{
+        //    // get customer data
+        //    data.GetCache<CustomerData>(data.SalesOrderHeader.CustomerUuid,
+        //        () =>
+        //        {
+        //            var srv = new CustomerService(dbFactory);
+        //            if (srv.GetDataById(data.SalesOrderHeader.CustomerUuid))
+        //                return srv.Data;
+        //            else
+        //                return null;
+        //        }
+        //    );
 
-            // get inventory data
-            foreach (var item in data.SalesOrderItems)
-            {
-                if (item.IsEmpty) continue;
-                GetInventoryData(item.ProductUuid);
-            }
-        }
+        //    // get inventory data
+        //    foreach (var item in data.SalesOrderItems)
+        //    {
+        //        if (item.IsEmpty) continue;
+        //        GetInventoryData(item.ProductUuid);
+        //    }
+        //}
 
-        public virtual InventoryData GetInventoryData(SalesOrderData data, string productUuid)
-        {
-            data.GetCache<InventoryData>(productUuid, () =>
-            {
-                var srv = new InventoryService(dbFactory);
-                if (srv.GetDataById(productUuid))
-                    return srv.Data;
-                else
-                    return null;
-            });
-        }
+        //public virtual InventoryData GetInventoryData(SalesOrderData data, string productUuid)
+        //{
+        //    data.GetCache<InventoryData>(productUuid, () =>
+        //    {
+        //        var srv = new InventoryService(dbFactory);
+        //        if (srv.GetDataById(productUuid))
+        //            return srv.Data;
+        //        else
+        //            return null;
+        //    });
+        //}
 
         public virtual bool SetDefault(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
