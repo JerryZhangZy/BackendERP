@@ -54,6 +54,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             return _Cache.FromCache<T>(id, () => dbFactory.GetById<T>(id));
         }
+        public T GetCache<T>(string id, Func<T> create) where T : StructureRepository<TEntity>, new()
+        {
+            return _Cache.FromCache<T>(id, create);
+        }
 
         #endregion Cache
 

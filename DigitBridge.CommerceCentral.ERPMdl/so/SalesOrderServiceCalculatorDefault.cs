@@ -28,6 +28,41 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public partial class SalesOrderServiceCalculatorDefault : ICalculator<SalesOrderData>
     {
+
+        public virtual void PrepareData(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            // get customer data
+            data.GetCache<CustomerData>(data.SalesOrderHeader.CustomerUuid,
+                () =>
+                {
+                    var srv = new CustomerService(dbFactory);
+                    if (srv.GetDataById(data.SalesOrderHeader.CustomerUuid))
+                        return srv.Data;
+                    else
+                        return null;
+                }
+            );
+
+            // get inventory data
+            foreach (var item in data.SalesOrderItems)
+            {
+                if (item.IsEmpty) continue;
+                GetInventoryData(item.ProductUuid);
+            }
+        }
+
+        public virtual InventoryData GetInventoryData(SalesOrderData data, string productUuid)
+        {
+            data.GetCache<InventoryData>(productUuid, () =>
+            {
+                var srv = new InventoryService(dbFactory);
+                if (srv.GetDataById(productUuid))
+                    return srv.Data;
+                else
+                    return null;
+            });
+        }
+
         public virtual bool SetDefault(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             SetDefaultSummary(data, processingMode);
@@ -168,7 +203,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (data is null)
                 return false;
-
             //TODO: add calculate summary object logic
             /* This is generated sample code
 
@@ -184,6 +218,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 if (item is null || item.IsEmpty)
                     continue;
+                var inv = GetInventoryData(item.ProductUuid);
+
                 SetDefault(item, data, processingMode);
                 CalculateDetail(item, data, processingMode);
                 if (item.IsAr)
@@ -200,6 +236,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             */
             return true;
         }
+
 
         //TODO: add set default for detail line logic
         /* This is generated sample code
