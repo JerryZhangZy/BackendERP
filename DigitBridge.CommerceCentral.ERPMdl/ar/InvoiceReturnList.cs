@@ -107,11 +107,11 @@ SELECT
         {
             var sql = @"
 select 
+trans.InvoiceNumber as 'InvoiceTransaction.InvoiceNumber',
 trans.TransUuid as 'InvoiceTransaction.TransUuid',
 trans.TransNum as 'InvoiceTransaction.TransNum',
 trans.TransStatus as 'InvoiceTransaction.TransStatus',
-trans.TransDate as 'InvoiceTransaction.TransDate',
-trans.TransTime as 'InvoiceTransaction.TransTime',
+(cast(trans.TransDate as datetime) + cast(trans.TransTime as datetime)) as 'InvoiceTransaction.TransTime',
 trans.Description as 'InvoiceTransaction.Description',
 trans.Notes as 'InvoiceTransaction.Notes',
 trans.PaidBy as 'InvoiceTransaction.PaidBy',

@@ -105,12 +105,13 @@ SELECT
         private string GetExportSql()
         {
             var sql = @"
-select 
+select
+trans.InvoiceNumber as 'InvoiceTransaction.InvoiceNumber',
 trans.TransUuid as 'InvoiceTransaction.TransUuid',
 trans.TransNum as 'InvoiceTransaction.TransNum',
 trans.TransStatus as 'InvoiceTransaction.TransStatus',
-trans.TransDate as 'InvoiceTransaction.TransDate',
-trans.TransTime as 'InvoiceTransaction.TransTime',
+--trans.TransDate as 'InvoiceTransaction.TransDate',
+(cast(trans.TransDate as datetime) + cast(trans.TransTime as datetime)) as 'InvoiceTransaction.TransTime',
 trans.Description as 'InvoiceTransaction.Description',
 trans.Notes as 'InvoiceTransaction.Notes',
 trans.PaidBy as 'InvoiceTransaction.PaidBy',
@@ -137,8 +138,8 @@ trans.CreditAccount as 'InvoiceTransaction.CreditAccount',
 trans.DebitAccount as 'InvoiceTransaction.DebitAccount',
 trans.TransSourceCode as 'InvoiceTransaction.TransSourceCode',
 
-invoice.InvoiceNumber as 'Invoice.Invoice Number',
-invoice.InvoiceDate as 'Invoice.Invoice Date',
+
+invoice.InvoiceDate as 'Invoice.InvoiceDate',
 invoice.BillDate as 'Invoice.Bill Date',
 invoice.OrderNumber as 'Invoice.Order Number',
 invoice.InvoiceType as 'Invoice.Invoice Type' 

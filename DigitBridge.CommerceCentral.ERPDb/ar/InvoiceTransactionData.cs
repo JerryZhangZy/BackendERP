@@ -23,9 +23,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override void CheckIntegrityOthers()
         {
-            if (_InvoiceData != null && this.InvoiceTransaction != null)
+            if (this.InvoiceTransaction == null) return;
+            //if(this.InvoiceTransaction.TransTime==null)
+            if (_InvoiceData != null )
             {
-                this.InvoiceTransaction.InvoiceNumber = _InvoiceData.InvoiceHeader.InvoiceNumber;
+                this.InvoiceTransaction.InvoiceUuid = _InvoiceData.InvoiceHeader.InvoiceUuid;
             }
             if (_InvoiceData != null && this.InvoiceReturnItems != null && this.InvoiceReturnItems.Count > 0)
             {

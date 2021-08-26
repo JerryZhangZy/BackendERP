@@ -192,7 +192,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     properties = properties.Where(i => !skipNames.Contains(i.Name));
                 foreach (var property in properties)
                 {
-                    csv.WriteField(property.Value.ToString());
+                    var valueType = property.Value.Type.GetType();
+                    var value = valueType == typeof(DateTime) ? property.Value<DateTime>().ToString("yyyy-MM-dd HH:mm:ss")
+                        : property.Value.ToString();
+                    csv.WriteField(value);
                 }
                 csv.NextRecord();
             }

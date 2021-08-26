@@ -48,36 +48,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
             Write(data, path, csv, wirteheader);
         }
 
-        public override void ReadEntities(CsvReader csv, IList<InvoiceTransactionDataDto> data)
-        {
-            var isFirst = true;
-            InvoiceTransactionDataDto dto = new InvoiceTransactionDataDto();
+        public override void ReadEntities(CsvReader csv, IList<InvoiceTransactionDataDto> dtos)
+        { 
             while (csv.Read())
             {
                 // it is header line
-                if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
+                if (csv.GetField(0).EqualsIgnoreSpace("InvoiceNumber"))
                 {
                     csv.ReadHeader();
-                    isFirst = false;
-                    continue;
                 }
-
-                switch (csv.GetField(0))
+                else
                 {
-                    case "H":
-                        if (!isFirst)
-                        {
-                            if (dto != null && dto.HasInvoiceTransaction)
-                                data.Add(dto);
-                            dto = new InvoiceTransactionDataDto();
-                            isFirst = false;
-                        }
-                        dto.InvoiceTransaction = csv.GetRecord<InvoiceTransactionDto>();
-                        break;
+                    var dto = new InvoiceTransactionDataDto()
+                    {
+                        InvoiceTransaction = csv.GetRecord<InvoiceTransactionDto>()
+                    };
+                    dtos.Add(dto);
                 }
             }
-            if (dto != null)
-                data.Add(dto);
         }
     }
 }
