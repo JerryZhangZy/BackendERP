@@ -37,34 +37,61 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void RegisterMapper(CsvContext context)
         {
             context.RegisterClassMap(new CsvAutoMapper<InvoiceTransactionDto>());
+            context.RegisterClassMap(new CsvAutoMapper<InvoiceReturnItemsDto>());
         }
 
         protected override void WriteCsv(JObject data, CsvWriter csv)
         {
             //"The data path in json file. Depend on the json file formate you set."
             var path = "InvoiceTransaction";
-            var wirteheader = csv.Row == 1;
-            Write(data, path, csv, wirteheader);
+            Write(data, path, csv, true);
+
+            var itemsPath = "InvoiceReturnItems";
+            var itemDatas = data.SelectTokens(itemsPath);
+            foreach (JObject itemData in itemDatas.Children())
+            {
+                var itemPath = "InvoiceReturnItem";
+                Write(itemData, itemPath, csv, true);
+            }
+
         }
 
-        public override void ReadEntities(CsvReader csv, IList<InvoiceTransactionDataDto> dtos)
+        public override void ReadEntities(CsvReader csv, IList<InvoiceTransactionDataDto> data)
         {
+            var isFirst = true;
+            InvoiceTransactionDataDto dto = new InvoiceTransactionDataDto();
             while (csv.Read())
             {
                 // it is header line
-                if (csv.GetField(0).EqualsIgnoreSpace("InvoiceNumber"))
+                if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
                 {
                     csv.ReadHeader();
+                    isFirst = false;
+                    continue;
                 }
-                else
+
+                switch (csv.GetField(0))
                 {
-                    var dto = new InvoiceTransactionDataDto()
-                    {
-                        InvoiceTransaction = csv.GetRecord<InvoiceTransactionDto>()
-                    };
-                    dtos.Add(dto);
+                    case "H":
+                        if (!isFirst)
+                        {
+                            if (dto != null && dto.HasInvoiceTransaction)
+                                data.Add(dto);
+                            dto = new InvoiceTransactionDataDto();
+                            isFirst = false;
+                        }
+                        dto.InvoiceTransaction = csv.GetRecord<InvoiceTransactionDto>();
+                        break;
+                    case "L":
+                        if (dto.InvoiceReturnItems == null)
+                            dto.InvoiceReturnItems = new List<InvoiceReturnItemsDto>();
+                        var item = csv.GetRecord<InvoiceReturnItemsDto>();
+                        dto.InvoiceReturnItems.Add(item);
+                        break;
                 }
             }
+            if (dto != null)
+                data.Add(dto);
         }
     }
 }

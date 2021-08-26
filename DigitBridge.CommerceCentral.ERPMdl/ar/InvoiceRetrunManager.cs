@@ -76,21 +76,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<byte[]> ExportAsync(InvoiceReturnPayload payload)
         {
             var listService = new InvoiceReturnList(dbFactory);
-            var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
-            var sb = await listService.GetExportDataAsync(payload);
-            var dtos = sb.ToString().JsonToObject<List<InvoiceTransactionDataDto>>();
-            //export not depend on dto.
-            return invoiceTransactionDataDtoCsv.Export(dtos);
+            var invoiceReturnDataDtoCsv = new InvoiceReturnDataDtoCsv();
+            var sb = await listService.GetExportDataAsync(payload); 
+            return invoiceReturnDataDtoCsv.Export(sb);
         }
 
         public byte[] Export(InvoiceReturnPayload payload)
         {
             var listService = new InvoiceReturnList(dbFactory);
-            var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
-            var sb = listService.GetExportData(payload);
-            var dtos = sb.ToString().JsonToObject<List<InvoiceTransactionDataDto>>();
-            //export not depend on dto.
-            return invoiceTransactionDataDtoCsv.Export(dtos);
+            var invoiceReturnDataDtoCsv = new InvoiceReturnDataDtoCsv();
+            var sb = listService.GetExportData(payload); 
+            return invoiceReturnDataDtoCsv.Export(sb);
         }
         #endregion
 
@@ -98,7 +94,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public void Import(InvoiceReturnPayload payload, IFormFileCollection files)
         {
             var iTranService = new InvoiceReturnService(dbFactory);
-            var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
+            var invoiceReturnDataDtoCsv = new InvoiceReturnDataDtoCsv();
 
             if (files == null || files.Count == 0)
             {
@@ -112,7 +108,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list = invoiceTransactionDataDtoCsv.Import(file.OpenReadStream());
+                var list = invoiceReturnDataDtoCsv.Import(file.OpenReadStream());
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
@@ -144,7 +140,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             var iTranService = new InvoiceReturnService(dbFactory);
-            var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
+            var invoiceReturnDataDtoCsv = new InvoiceReturnDataDtoCsv();
 
             foreach (var file in files)
             {
@@ -153,7 +149,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list = invoiceTransactionDataDtoCsv.Import(file.OpenReadStream());
+                var list = invoiceReturnDataDtoCsv.Import(file.OpenReadStream());
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;

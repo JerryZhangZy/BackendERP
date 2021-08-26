@@ -107,9 +107,10 @@ SELECT
         {
             var sql = @"
 select 
+'H' as 'InvoiceTransaction.RecordType',
 trans.InvoiceNumber as 'InvoiceTransaction.InvoiceNumber',
 trans.TransUuid as 'InvoiceTransaction.TransUuid',
-trans.TransNum as 'InvoiceTransaction.TransNum',
+--trans.TransNum as 'InvoiceTransaction.TransNum',
 trans.TransStatus as 'InvoiceTransaction.TransStatus',
 (cast(trans.TransDate as datetime) + cast(trans.TransTime as datetime)) as 'InvoiceTransaction.TransTime',
 trans.Description as 'InvoiceTransaction.Description',
@@ -146,15 +147,16 @@ trans.TransSourceCode as 'InvoiceTransaction.TransSourceCode',
 
 (   
 SELECT 
-returnItem.SKU as 'InvoiceReturnItems.SKU',
-returnItem.ReturnItemType as 'InvoiceReturnItems.ReturnItemType',
-returnItem.ReturnDate as 'InvoiceReturnItems.ReturnDate',
-returnItem.ReturnTime as 'InvoiceReturnItems.ReturnTime',
-returnItem.ReceiveDate as 'InvoiceReturnItems.ReceiveDate',
-returnItem.StockDate as 'InvoiceReturnItems.StockDate',
-returnItem.Reason as 'InvoiceReturnItems.Reason',
-returnItem.ReturnQty as 'InvoiceReturnItems.ReturnQuantity',
-returnItem.ReceiveQty as 'InvoiceReturnItems.ReceiveQuantity'
+'L' as 'InvoiceReturnItem.RecordType',
+returnItem.SKU as 'InvoiceReturnItem.SKU',
+returnItem.ReturnItemType as 'InvoiceReturnItem.ReturnItemType',
+returnItem.ReceiveDate as 'InvoiceReturnItem.ReceiveDate',
+(cast(returnItem.ReturnDate as datetime) + cast(returnItem.ReturnTime as datetime)) as 'InvoiceReturnItem.ReturnTime',
+returnItem.StockDate as 'InvoiceReturnItem.StockDate',
+returnItem.Reason as 'InvoiceReturnItem.Reason',
+returnItem.ReturnQty as 'InvoiceReturnItem.ReturnQuantity',
+returnItem.ReceiveQty as 'InvoiceReturnItem.ReceiveQuantity',
+returnItem.Description as 'InvoiceReturnItem.Description'
 FROM InvoiceReturnItems returnItem
 WHERE trans.TransUuid=returnItem.TransUuid for json path
 ) AS InvoiceReturnItems
