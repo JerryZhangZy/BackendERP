@@ -26,42 +26,83 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default SalesOrderService Calculator class.
     /// </summary>
-    public partial class SalesOrderServiceCalculatorDefault : ICalculator<SalesOrderData>
+    public partial class SalesOrderServiceCalculatorDefault : ICalculator<SalesOrderData>,IMessage
     {
+
+        public SalesOrderServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        {
+            this.ServiceMessage = serviceMessage;
+            this.dbFactory = dbFactory;
+        }
+
+        protected IDataBaseFactory dbFactory { get; set; }
+        
+        //
 
         public virtual void PrepareData(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             // get customer data
-            data.GetCache<CustomerData>(data.SalesOrderHeader.CustomerUuid,
-                () =>
-                {
-                    var srv = new CustomerService(dbFactory);
-                    if (srv.GetDataById(data.SalesOrderHeader.CustomerUuid))
-                        return srv.Data;
-                    else
-                        return null;
-                }
-            );
+            GetCustomerData(data,data.SalesOrderHeader.CustomerUuid);
 
             // get inventory data
             foreach (var item in data.SalesOrderItems)
             {
-                if (item.IsEmpty) continue;
-                GetInventoryData(item.ProductUuid);
+                if (string.IsNullOrEmpty(item.ProductUuid)) continue;
+                GetInventoryData(data,item.ProductUuid);
             }
         }
 
+        #region Service Property
+
+        private CustomerService _customerService;
+
+        protected CustomerService customerService
+        {
+            get
+            {
+                if (_customerService is null)
+                    _customerService = new CustomerService(dbFactory);
+                return _customerService;
+            }
+        }
+
+        private InventoryService _inventoryService;
+
+        protected InventoryService inventoryService
+        {
+            get
+            {
+                if (_inventoryService is null)
+                    _inventoryService = new InventoryService(dbFactory);
+                return _inventoryService;
+            }
+        }
+
+        #endregion
+
+        #region GetDataWithCache
         public virtual InventoryData GetInventoryData(SalesOrderData data, string productUuid)
         {
-            data.GetCache<InventoryData>(productUuid, () =>
+            return data.GetCache(productUuid, () =>
             {
-                var srv = new InventoryService(dbFactory);
-                if (srv.GetDataById(productUuid))
-                    return srv.Data;
+                if (inventoryService.GetDataById(productUuid))
+                    return inventoryService.Data;
                 else
                     return null;
             });
         }
+
+        public virtual CustomerData GetCustomerData(SalesOrderData data, string customerUuid)
+        {
+            return data.GetCache(customerUuid, () =>
+            {
+                if (customerService.GetDataById(customerUuid))
+                    return customerService.Data;
+                else
+                    return null;
+            });
+        }
+        #endregion
 
         public virtual bool SetDefault(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
@@ -341,6 +382,42 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
         */
+
+        #region message
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get
+            {
+                if (ServiceMessage != null)
+                    return ServiceMessage.Messages;
+
+                if (_Messages == null)
+                    _Messages = new List<MessageClass>();
+                return _Messages;
+            }
+            set
+            {
+                if (ServiceMessage != null)
+                    ServiceMessage.Messages = value;
+                else
+                    _Messages = value;
+            }
+        }
+        protected IList<MessageClass> _Messages;
+        public IMessage ServiceMessage { get; set; }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddInfo(message, code) : Messages.AddInfo(message, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddWarning(message, code) : Messages.AddWarning(message, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddError(message, code) : Messages.AddError(message, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddFatal(message, code) : Messages.AddFatal(message, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddDebug(message, code) : Messages.AddDebug(message, code);
+
+        #endregion message
 
     }
 }

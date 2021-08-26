@@ -126,6 +126,49 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
         }
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void ImportPaymentCsv_Test()
+        {
+            var fileName = "c:\\temp\\_invoicePaymentDataDto.csv";
+            var csvHelper = new InvoicePaymentDataDtoCsv();
+            IList<InvoiceTransactionDataDto> data;
+
+            try
+            {
+                data = csvHelper.Import(fileName).ToList();
+                foreach (var s in data)
+                    Console.WriteLine(s.InvoiceTransaction.InvoiceNumber);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void ImportReturnCsv_Test()
+        {
+            var fileName = "c:\\temp\\import-Returns.csv";
+            var csvHelper = new InvoiceTransactionDataDtoCsv();
+            IList<InvoiceTransactionDataDto> data;
+
+            try
+            {
+                data = csvHelper.Import(fileName).ToList();
+                foreach (var s in data)
+                    Console.WriteLine(s.InvoiceTransaction.InvoiceNumber);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+        }
     }
 }
 

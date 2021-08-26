@@ -174,6 +174,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         #endregion async methods
 
+        [Fact()]
+        public void ExportSql_Test()
+        {
+            var payload = new CustomerPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                Skip = 0,
+                Top = 100
+            };
+            var customerList = new CustomerList(dataBaseFactory);
+            var json = customerList.GetExportJsonList(payload);
+            var jArray = JArray.Parse(json.ToString());
+            var attr = JObject.Parse(jArray[0]["CustomerAttributes"].ToString());
+
+            Assert.True(attr != null, "succ");
+        }
+
     }
 }
 

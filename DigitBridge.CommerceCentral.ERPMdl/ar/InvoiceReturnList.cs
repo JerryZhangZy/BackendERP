@@ -8,7 +8,8 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Helper = DigitBridge.CommerceCentral.ERPDb.InvoiceReturnItemsHelper;
+using Newtonsoft.Json.Linq;
+using Helper = DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -46,7 +47,7 @@ SELECT
             var paramList = base.GetSqlParameters().ToList();
 
             return paramList.ToArray();
-        
+
         }
 
         #endregion override methods
@@ -101,5 +102,93 @@ SELECT
             return payload;
         }
 
+        //TODO where sql
+        private string GetExportSql()
+        {
+            var sql = @"
+select 
+trans.TransUuid as 'InvoiceTransaction.TransUuid',
+trans.TransNum as 'InvoiceTransaction.TransNum',
+trans.TransStatus as 'InvoiceTransaction.TransStatus',
+trans.TransDate as 'InvoiceTransaction.TransDate',
+trans.TransTime as 'InvoiceTransaction.TransTime',
+trans.Description as 'InvoiceTransaction.Description',
+trans.Notes as 'InvoiceTransaction.Notes',
+trans.PaidBy as 'InvoiceTransaction.PaidBy',
+trans.BankAccountCode as 'InvoiceTransaction.BankAccountCode',
+trans.CheckNum as 'InvoiceTransaction.CheckNum',
+trans.AuthCode as 'InvoiceTransaction.AuthCode',
+trans.Currency as 'InvoiceTransaction.Currency',
+trans.ExchangeRate as 'InvoiceTransaction.ExchangeRate',
+trans.SubTotalAmount as 'InvoiceTransaction.Sub TotalAmount',
+trans.SalesAmount as 'InvoiceTransaction.SalesAmount',
+trans.TotalAmount as 'InvoiceTransaction.TotalAmount',
+trans.TaxableAmount as 'InvoiceTransaction.TaxableAmount',
+trans.NonTaxableAmount as 'InvoiceTransaction.NonTaxableAmount',
+trans.TaxRate as 'InvoiceTransaction.TaxRate',
+trans.TaxAmount as 'InvoiceTransaction.TaxAmount',
+trans.DiscountRate as 'InvoiceTransaction.DiscountRate',
+trans.DiscountAmount as 'InvoiceTransaction.DiscountAmount',
+trans.ShippingAmount as 'InvoiceTransaction.ShippingAmount',
+trans.ShippingTaxAmount as 'InvoiceTransaction.ShippingTaxAmount',
+trans.MiscAmount as 'InvoiceTransaction.MiscAmount',
+trans.MiscTaxAmount as 'InvoiceTransaction.MiscTaxAmount',
+trans.ChargeAndAllowanceAmount as 'InvoiceTransaction.ChargeAndAllowanceAmount',
+trans.CreditAccount as 'InvoiceTransaction.CreditAccount',
+trans.DebitAccount as 'InvoiceTransaction.DebitAccount',
+trans.TransSourceCode as 'InvoiceTransaction.TransSourceCode',
+
+--invoice.InvoiceNumber as 'Invoice.Invoice Number',
+--invoice.InvoiceDate as 'Invoice.Invoice Date',
+--invoice.BillDate as 'Invoice.Bill Date',
+--invoice.OrderNumber as 'Invoice.Order Number',
+--invoice.InvoiceType as 'Invoice.Invoice Type', 
+
+(   
+SELECT 
+returnItem.SKU as 'InvoiceReturnItems.SKU',
+returnItem.ReturnItemType as 'InvoiceReturnItems.ReturnItemType',
+returnItem.ReturnDate as 'InvoiceReturnItems.ReturnDate',
+returnItem.ReturnTime as 'InvoiceReturnItems.ReturnTime',
+returnItem.ReceiveDate as 'InvoiceReturnItems.ReceiveDate',
+returnItem.StockDate as 'InvoiceReturnItems.StockDate',
+returnItem.Reason as 'InvoiceReturnItems.Reason',
+returnItem.ReturnQty as 'InvoiceReturnItems.ReturnQuantity',
+returnItem.ReceiveQty as 'InvoiceReturnItems.ReceiveQuantity'
+FROM InvoiceReturnItems returnItem
+WHERE trans.TransUuid=returnItem.TransUuid for json path
+) AS InvoiceReturnItems
+
+from InvoiceTransaction(nolock) trans 
+--left join InvoiceReturnItems returnItem on trans.TransUuid=returnItem.TransUuid
+left join InvoiceHeader invoice on invoice.InvoiceUuid=trans.InvoiceUuid
+where trans.TransType=2
+for json path;
+";
+            return sql;
+        }
+        public virtual async Task<StringBuilder> GetExportDataAsync(InvoiceReturnPayload payload)
+        {
+            if (payload == null)
+                payload = new InvoiceReturnPayload();
+
+            this.LoadRequestParameter(payload);
+            using var trs = new ScopedTransaction(dbFactory);
+            StringBuilder sb = new StringBuilder();
+            await SqlQuery.QueryJsonAsync(sb, GetExportSql(), System.Data.CommandType.Text, GetSqlParameters().ToArray());
+            return sb;
+        }
+
+        public virtual StringBuilder GetExportData(InvoiceReturnPayload payload)
+        {
+            if (payload == null)
+                payload = new InvoiceReturnPayload();
+
+            this.LoadRequestParameter(payload);
+            using var trs = new ScopedTransaction(dbFactory);
+            StringBuilder sb = new StringBuilder();
+            SqlQuery.QueryJson(sb, GetExportSql(), System.Data.CommandType.Text, GetSqlParameters().ToArray());
+            return sb;
+        }
     }
 }
