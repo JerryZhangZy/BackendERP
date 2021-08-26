@@ -17,6 +17,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
 using Helper = DigitBridge.CommerceCentral.ERPDb.CustomerHelper;
 using AdrHelper = DigitBridge.CommerceCentral.ERPDb.CustomerAddressHelper;
+using AtrHelper = DigitBridge.CommerceCentral.ERPDb.CustomerAttributesHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -223,6 +224,70 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
                 throw;
             }
             return rowNumList;
+        }
+
+        //TODO where sql
+        private string GetExportSql()
+        {
+            var sql = $@"
+select {Helper.TableAllies}.*,
+(select {AdrHelper.TableAllies}.* from CustomerAddress {AdrHelper.TableAllies} where {Helper.TableAllies}.CustomerUuid={AdrHelper.TableAllies}.CustomerUuid for json auto,include_null_values ) as CustomerAddress,
+(select * from CustomerAttributes {AtrHelper.TableAllies} where {Helper.TableAllies}.CustomerUuid={AtrHelper.TableAllies}.CustomerUuid for json path ,without_array_wrapper,include_null_values) as CustomerAttributes 
+from Customer {Helper.TableAllies}
+";
+            return sql;
+        }
+
+        public virtual StringBuilder GetExportJsonList(CustomerPayload payload)
+        {
+            if (payload == null)
+                payload = new CustomerPayload();
+
+            this.LoadRequestParameter(payload);
+            var sql = $@"
+{GetExportSql()}
+{GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.RowNum  
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
+ for json  auto,include_null_values
+";
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                using var trs = new ScopedTransaction(dbFactory);
+                SqlQuery.QueryJson(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
+                return sb;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public virtual async Task<StringBuilder> GetExportJsonListAsync(CustomerPayload payload)
+        {
+            if (payload == null)
+                payload = new CustomerPayload();
+
+            this.LoadRequestParameter(payload);
+            var sql = $@"
+{GetExportSql()}
+{GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.RowNum  
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
+ for json  auto,include_null_values
+";
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                using var trs = new ScopedTransaction(dbFactory);
+                await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
+                return sb;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
