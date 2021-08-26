@@ -450,7 +450,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 ILGenerator ilGenerator = dynamicMethod.GetILGenerator();
 
                 ilGenerator.Emit(OpCodes.Ldarg_0);
-                ilGenerator.EmitCall(OpCodes.Callvirt, property.GetGetMethod(), null);
+                var method = property.GetGetMethod();
+                if (method == null)
+                    return null;
+                ilGenerator.EmitCall(OpCodes.Callvirt, method, null);
                 if (type.IsValueType)
                 {
                     ilGenerator.Emit(OpCodes.Box, type);
