@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             base.Init();
             SetDtoMapper(new SalesOrderDataDtoMapperDefault());
-            SetCalculator(new SalesOrderServiceCalculatorDefault());
+            SetCalculator(new SalesOrderServiceCalculatorDefault(this,this.dbFactory));
             AddValidator(new SalesOrderServiceValidatorDefault(this, this.dbFactory));
             return this;
         }

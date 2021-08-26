@@ -12,6 +12,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         RepositoryCache Cache { get; }
         T GetCache<T>(string id) where T : TableRepository<T, long>, new();
+        T GetCache<T>(string id, Func<T> create) where T : StructureRepository<T>, new();
 
         bool AllowNull { get; }
         bool IsNew { get; }

@@ -72,6 +72,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return (TService)this;
         }
 
+        #region Cache
+        protected RepositoryCache _Cache = new RepositoryCache();
+        [XmlIgnore, JsonIgnore]
+        protected virtual RepositoryCache Cache => _Cache;
+
+        public TEntity GetCacheById(string id)
+        {
+            return _Cache.FromCache(id, ()=>
+            {
+                if (GetDataById(id))
+                    return Data;
+                return null;
+            });
+        }
+        public TEntity GetCacheByRowNum(long rowNum)
+        {
+            var key = $"ROW_NUM_{rowNum}";
+            return _Cache.FromCache(key, ()=>
+            {
+                if (GetData(rowNum))
+                    return Data;
+                return null;
+            });
+        }
+
+        #endregion Cache
+
         #region DataBase
         [XmlIgnore, JsonIgnore]
         protected IDataBaseFactory _dbFactory;
