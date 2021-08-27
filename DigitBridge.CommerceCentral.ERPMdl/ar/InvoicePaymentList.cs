@@ -156,7 +156,7 @@ SELECT
         private string GetExportSql(int userConfigID)
         {
             using var trs = new ScopedTransaction(dbFactory);
-            var datas = ExportHelper.GetExportSelect(userConfigID);
+            var datas = ExportHelper.GetExportColumns(userConfigID);
             var tranCols = ExportHelper.GetSelectColumnsByConfig(datas, "H", Helper.TableAllies);
             var sql = $@"  
 select {tranCols}

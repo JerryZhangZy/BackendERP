@@ -33,7 +33,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public static class ExportHelper
     {
-        public static dynamic GetExportSelect(int userConfigID)
+        /// <summary>
+        /// Get all export column by config id
+        /// </summary>
+        /// <param name="userConfigID"></param>
+        /// <returns></returns>
+        public static dynamic GetExportColumns(int userConfigID)
         {
             var sql = $@"
 select configDetail.ColumnName,userconfig.DisplayName,configDetail.RecordType,configDetail.OutputStructName
@@ -41,10 +46,7 @@ from [dbo].[ExportUserConfig] userconfig
 join [dbo].[ExportConfigDetail] configDetail on configDetail.RowNum=userconfig.ExportConfigDetailRowNum
 where userconfig.[UserConfigID]=@userConfigID
 order by userconfig.[DisplayOrder]
-";
-            //StringBuilder sb = new StringBuilder();
-            //SqlQuery.QueryJson(sb, sql, System.Data.CommandType.Text, userConfigID.ToSqlParameter("userConfigID"));
-
+"; 
             return SqlQuery.Execute(sql,
                  (string columnName, string displayName, string recordType, string outputStructName) => new { ColumnName = columnName, DisplayName = displayName, RecordType = recordType, OutputStructName = outputStructName }
                  , userConfigID.ToSqlParameter("userConfigID"));
