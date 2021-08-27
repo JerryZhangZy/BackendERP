@@ -283,6 +283,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateRepositoryDto.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateRepositoryHelper.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
