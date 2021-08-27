@@ -48,10 +48,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
             var itemsPath = "InvoiceReturnItems";
             var itemDatas = data.SelectTokens(itemsPath);
+            var writeHeader = true;
             foreach (JObject itemData in itemDatas.Children())
             {
-                var itemPath = "InvoiceReturnItem";
-                Write(itemData, itemPath, csv, true);
+                var itemPath = "InvoiceReturnItems";
+                Write(itemData, itemPath, csv, writeHeader);
+                writeHeader = false;
             }
 
         }

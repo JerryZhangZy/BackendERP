@@ -8,6 +8,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
 using Helper = DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
@@ -101,66 +102,81 @@ SELECT
             return payload;
         }
 
+        //        //TODO where sql&more column displayed.
+        //        private string GetExportSql(int userConfigID)
+        //        {
+        //            using var trs = new ScopedTransaction(dbFactory);
+        //            var datas = ExportHelper.GetExportSelect(userConfigID);
+
+        //            var sql = $@"
+        //with BaseExportTable as (
+        //select
+        //{Helper.TableAllies}.InvoiceNumber,
+        //{Helper.TableAllies}.TransUuid,
+        //{Helper.TableAllies}.TransNum,
+        //{Helper.TableAllies}.TransStatus,
+        //(cast({Helper.TableAllies}.TransDate as datetime) + cast({Helper.TableAllies}.TransTime as datetime)) as 'TransTime',
+        //{Helper.TableAllies}.Description,
+        //{Helper.TableAllies}.Notes,
+        //{Helper.TableAllies}.PaidBy,
+        //{Helper.TableAllies}.BankAccountCode,
+        //{Helper.TableAllies}.CheckNum,
+        //{Helper.TableAllies}.AuthCode,
+        //{Helper.TableAllies}.Currency,
+        //{Helper.TableAllies}.ExchangeRate,
+        //{Helper.TableAllies}.SubTotalAmount,
+        //{Helper.TableAllies}.SalesAmount,
+        //{Helper.TableAllies}.TotalAmount,
+        //{Helper.TableAllies}.TaxableAmount,
+        //{Helper.TableAllies}.NonTaxableAmount,
+        //{Helper.TableAllies}.TaxRate,
+        //{Helper.TableAllies}.TaxAmount,
+        //{Helper.TableAllies}.DiscountRate,
+        //{Helper.TableAllies}.DiscountAmount,
+        //{Helper.TableAllies}.ShippingAmount,
+        //{Helper.TableAllies}.ShippingTaxAmount,
+        //{Helper.TableAllies}.MiscAmount,
+        //{Helper.TableAllies}.MiscTaxAmount,
+        //{Helper.TableAllies}.ChargeAndAllowanceAmount,
+        //{Helper.TableAllies}.CreditAccount,
+        //{Helper.TableAllies}.DebitAccount,
+        //{Helper.TableAllies}.TransSourceCode
+
+        //from InvoiceTransaction {Helper.TableAllies} 
+        //where {Helper.TableAllies}.TransType=1
+        //)
+        //select {ExportHelper.GetSelectColumnsByConfig(datas, "H", Helper.TableAllies)}
+        //from BaseExportTable {Helper.TableAllies}
+        //for json path;
+        //";
+        //            return sql;
+        //        }
+
         //TODO where sql&more column displayed.
-        private string GetExportSql()
+        private string GetExportSql(int userConfigID)
         {
-            var sql = @"
-select
-trans.InvoiceNumber as 'InvoiceTransaction.InvoiceNumber',
-trans.TransUuid as 'InvoiceTransaction.TransUuid',
-trans.TransNum as 'InvoiceTransaction.TransNum',
-trans.TransStatus as 'InvoiceTransaction.TransStatus',
---trans.TransDate as 'InvoiceTransaction.TransDate',
-(cast(trans.TransDate as datetime) + cast(trans.TransTime as datetime)) as 'InvoiceTransaction.TransTime',
-trans.Description as 'InvoiceTransaction.Description',
-trans.Notes as 'InvoiceTransaction.Notes',
-trans.PaidBy as 'InvoiceTransaction.PaidBy',
-trans.BankAccountCode as 'InvoiceTransaction.BankAccountCode',
-trans.CheckNum as 'InvoiceTransaction.CheckNum',
-trans.AuthCode as 'InvoiceTransaction.AuthCode',
-trans.Currency as 'InvoiceTransaction.Currency',
-trans.ExchangeRate as 'InvoiceTransaction.ExchangeRate',
-trans.SubTotalAmount as 'InvoiceTransaction.Sub TotalAmount',
-trans.SalesAmount as 'InvoiceTransaction.SalesAmount',
-trans.TotalAmount as 'InvoiceTransaction.TotalAmount',
-trans.TaxableAmount as 'InvoiceTransaction.TaxableAmount',
-trans.NonTaxableAmount as 'InvoiceTransaction.NonTaxableAmount',
-trans.TaxRate as 'InvoiceTransaction.TaxRate',
-trans.TaxAmount as 'InvoiceTransaction.TaxAmount',
-trans.DiscountRate as 'InvoiceTransaction.DiscountRate',
-trans.DiscountAmount as 'InvoiceTransaction.DiscountAmount',
-trans.ShippingAmount as 'InvoiceTransaction.ShippingAmount',
-trans.ShippingTaxAmount as 'InvoiceTransaction.ShippingTaxAmount',
-trans.MiscAmount as 'InvoiceTransaction.MiscAmount',
-trans.MiscTaxAmount as 'InvoiceTransaction.MiscTaxAmount',
-trans.ChargeAndAllowanceAmount as 'InvoiceTransaction.ChargeAndAllowanceAmount',
-trans.CreditAccount as 'InvoiceTransaction.CreditAccount',
-trans.DebitAccount as 'InvoiceTransaction.DebitAccount',
-trans.TransSourceCode as 'InvoiceTransaction.TransSourceCode',
-
-
-invoice.InvoiceDate as 'Invoice.InvoiceDate',
-invoice.BillDate as 'Invoice.Bill Date',
-invoice.OrderNumber as 'Invoice.Order Number',
-invoice.InvoiceType as 'Invoice.Invoice Type' 
- 
-
-from InvoiceTransaction(nolock) trans  
-left join InvoiceHeader invoice on invoice.InvoiceUuid=trans.InvoiceUuid
-where trans.TransType=1
+            using var trs = new ScopedTransaction(dbFactory);
+            var datas = ExportHelper.GetExportSelect(userConfigID);
+            var tranCols = ExportHelper.GetSelectColumnsByConfig(datas, "H", Helper.TableAllies);
+            var sql = $@"  
+select {tranCols}
+from InvoiceTransaction {Helper.TableAllies}
+where {Helper.TableAllies}.TransType=1
 for json path;
 ";
             return sql;
         }
+
         public virtual async Task<StringBuilder> GetExportDataAsync(InvoicePaymentPayload payload)
         {
             if (payload == null)
                 payload = new InvoicePaymentPayload();
 
             this.LoadRequestParameter(payload);
+            var sql = GetExportSql(payload.ExportUserConfigID);
             using var trs = new ScopedTransaction(dbFactory);
             StringBuilder sb = new StringBuilder();
-            await SqlQuery.QueryJsonAsync(sb, GetExportSql(), System.Data.CommandType.Text, GetSqlParameters().ToArray());
+            await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
             return sb;
         }
 
@@ -170,9 +186,11 @@ for json path;
                 payload = new InvoicePaymentPayload();
 
             this.LoadRequestParameter(payload);
+            var sql = GetExportSql(payload.ExportUserConfigID);
+
             using var trs = new ScopedTransaction(dbFactory);
             StringBuilder sb = new StringBuilder();
-            SqlQuery.QueryJson(sb, GetExportSql(), System.Data.CommandType.Text, GetSqlParameters().ToArray());
+            SqlQuery.QueryJson(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
             return sb;
         }
     }
