@@ -165,47 +165,47 @@ WHERE itm.cnt > 0
                 Assert.True(dataList.Count>1000, "");
         }
 
-        [Fact()]
-        public void RandomRepeatReadInventoryWithCache_Test()
-        {
-            var idlist = DataBaseFactory.Db.Query<string>("select ProductUuid from ProductBasic order by newid();").ToList();
-            var dataList = new List<InventoryData>();
-            var service = new InventoryService(DataBaseFactory);
-            using (var b = new Benchmark("RandomRepeatReadInventoryWithCache_Test"))
-            {
-                for(var i = 0; i < 1000; i++)
-                {
-                    foreach(var uuid in idlist)
-                    {
-                        var dt = service.GetCacheById(uuid);
-                        if(dt!=null)
-                            dataList.Add(service.Data);
-                    }
-                }
-            }
-                Assert.True(dataList.Count>1000, "");
-        }
+        //[Fact()]
+        //public void RandomRepeatReadInventoryWithCache_Test()
+        //{
+        //    var idlist = DataBaseFactory.Db.Query<string>("select ProductUuid from ProductBasic order by newid();").ToList();
+        //    var dataList = new List<InventoryData>();
+        //    var service = new InventoryService(DataBaseFactory);
+        //    using (var b = new Benchmark("RandomRepeatReadInventoryWithCache_Test"))
+        //    {
+        //        for(var i = 0; i < 1000; i++)
+        //        {
+        //            foreach(var uuid in idlist)
+        //            {
+        //                var dt = service.GetCacheById(uuid);
+        //                if(dt!=null)
+        //                    dataList.Add(service.Data);
+        //            }
+        //        }
+        //    }
+        //        Assert.True(dataList.Count>1000, "");
+        //}
 
-        [Fact()]
-        public void RandomRepeatReadInventoryWithRowNumCache_Test()
-        {
-            var idlist = DataBaseFactory.Db.Query<long>("select CentralProductNum from ProductBasic order by newid();").ToList();
-            var dataList = new List<InventoryData>();
-            var service = new InventoryService(DataBaseFactory);
-            using (var b = new Benchmark("RandomRepeatReadInventoryWithRowNumCache_Test"))
-            {
-                for(var i = 0; i < 1000; i++)
-                {
-                    foreach(var uuid in idlist)
-                    {
-                        var dt = service.GetCacheByRowNum(uuid);
-                        if(dt!=null)
-                            dataList.Add(service.Data);
-                    }
-                }
-            }
-                Assert.True(dataList.Count>1000, "");
-        }
+        //[Fact()]
+        //public void RandomRepeatReadInventoryWithRowNumCache_Test()
+        //{
+        //    var idlist = DataBaseFactory.Db.Query<long>("select CentralProductNum from ProductBasic order by newid();").ToList();
+        //    var dataList = new List<InventoryData>();
+        //    var service = new InventoryService(DataBaseFactory);
+        //    using (var b = new Benchmark("RandomRepeatReadInventoryWithRowNumCache_Test"))
+        //    {
+        //        for(var i = 0; i < 1000; i++)
+        //        {
+        //            foreach(var uuid in idlist)
+        //            {
+        //                var dt = service.GetCacheByRowNum(uuid);
+        //                if(dt!=null)
+        //                    dataList.Add(service.Data);
+        //            }
+        //        }
+        //    }
+        //        Assert.True(dataList.Count>1000, "");
+        //}
 
     }
 }
