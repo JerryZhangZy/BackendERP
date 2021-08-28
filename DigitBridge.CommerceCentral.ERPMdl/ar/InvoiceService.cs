@@ -286,6 +286,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
+        /// <summary>
+        /// Get invoice list by Uuid list
+        /// </summary>
+        public virtual async Task<InvoicePayload> GetListByInvoiceUuidAsync(InvoicePayload payload)
+        {
+            if (payload is null || !payload.HasInvoiceUuids)
+                return null;
+            var invoiceUuids = payload.InvoiceUuids;
+
+            List();
+            var result = new List<InvoiceDataDto>();
+            foreach (var id in invoiceUuids)
+            {
+                if (!(await this.GetDataByIdAsync(id)))
+                    continue;
+                result.Add(this.ToDto());
+                this.DetachData(this.Data);
+            }
+            payload.Invoices = result;
+            return payload;
+        }
     }
 }
 
