@@ -1,9 +1,8 @@
 ﻿CREATE TABLE [dbo].[PoHeaderInfo]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [PoId] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O
+    [PoUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O
 
-	-- drop ship S/O info
 	[CentralFulfillmentNum] BIGINT NULL, --CentralFulfillmentNum of dropship S/O
 	[ShippingCarrier] VARCHAR(50) NULL,
 	[ShippingClass] VARCHAR(50) NULL,
@@ -75,7 +74,7 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeaderInfo]') AND name = N'UI_PoHeaderInfo_PoId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoHeaderInfo_PoUuid] ON [dbo].[PoHeaderInfo]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_PoHeaderInfo_PoUuid] ON [dbo].[PoHeaderInfo]
 (
 	[PoUuid] ASC
 ) ON [PRIMARY]

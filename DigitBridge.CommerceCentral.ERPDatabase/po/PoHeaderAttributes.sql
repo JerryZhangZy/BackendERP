@@ -9,7 +9,7 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoHeaderAttributes]') AND name = N'UI_PoHeaderAttributes_PoId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoHeaderAttributes_PoUuid] ON [dbo].[PoHeaderAttributes]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_PoHeaderAttributes_PoUuid] ON [dbo].[PoHeaderAttributes]
 (
 	[PoUuid] ASC
 ) ON [PRIMARY]
