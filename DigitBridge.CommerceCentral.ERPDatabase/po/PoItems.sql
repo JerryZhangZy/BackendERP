@@ -30,7 +30,7 @@
 	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for P/O items. 
 	[TaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total P/O tax amount (include shipping tax and misc tax) 
 	[DiscountRate] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount rate. 
-	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount amount, base on [SubTotalAmount]
+	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount amount, base on SubTotalAmount
 	[ShippingAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total shipping fee for all items
 	[ShippingTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of shipping fee
 	[MiscAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O handling charge 
@@ -52,7 +52,7 @@
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItems]') AND name = N'UI_PoItems_PoItemId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoItems_PoItemUuid] ON [dbo].[PoItems]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_PoItems_PoItemUuid] ON [dbo].[PoItems]
 (
 	[PoItemUuid] ASC
 ) ON [PRIMARY]
