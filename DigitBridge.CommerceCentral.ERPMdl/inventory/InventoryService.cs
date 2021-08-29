@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             base.Init();
             SetDtoMapper(new InventoryDataDtoMapperDefault());
-            SetCalculator(new InventoryServiceCalculatorDefault());
+            SetCalculator(new InventoryServiceCalculatorDefault(this, this.dbFactory));
             AddValidator(new InventoryServiceValidatorDefault(this, this.dbFactory));
             return this;
         }

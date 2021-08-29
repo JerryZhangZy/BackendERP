@@ -10,6 +10,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public interface ICalculator<TEntity>
         where TEntity : StructureRepository<TEntity>, new()
     {
+        void PrepareData(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
         bool SetDefault(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
         bool SetDefaultSummary(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);
         bool SetDefaultDetail(TEntity data, ProcessingMode processingMode = ProcessingMode.Edit);

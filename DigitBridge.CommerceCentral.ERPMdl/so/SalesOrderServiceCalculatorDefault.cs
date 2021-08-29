@@ -41,14 +41,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual void PrepareData(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
+            if(data==null||data.SalesOrderHeader==null)
+                return;
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
+            {
+                using var trx = new ScopedTransaction(dbFactory);
+                data.SalesOrderHeader.CustomerUuid = CustomerServiceHelper.GetCustomerUuidByCustomerCode(
+                    data.SalesOrderHeader.CustomerCode, data.SalesOrderHeader.MasterAccountNum,
+                    data.SalesOrderHeader.ProfileNum);
+            }
             // get customer data
             GetCustomerData(data,data.SalesOrderHeader.CustomerUuid);
 
-            // get inventory data
-            foreach (var item in data.SalesOrderItems)
+            if (data.SalesOrderItems != null)
             {
-                if (string.IsNullOrEmpty(item.ProductUuid)) continue;
-                GetInventoryData(data,item.ProductUuid);
+                var skuList = data.SalesOrderItems
+                    .Where(r => string.IsNullOrEmpty(r.ProductUuid) && !string.IsNullOrEmpty(r.SKU)).Select(r => r.SKU)
+                    .Distinct().ToList();
+                using var trx = new ScopedTransaction(dbFactory);
+                var list = InventoryServiceHelper.GetKeyInfoBySkus(skuList, data.SalesOrderHeader.MasterAccountNum,
+                    data.SalesOrderHeader.ProfileNum);
+                foreach (var tuple in list)
+                {
+                    data.SalesOrderItems.First(r => r.SKU == tuple.Item3).ProductUuid = tuple.Item2;
+                }
+
+                // get inventory data
+                foreach (var item in data.SalesOrderItems)
+                {
+                    if (string.IsNullOrEmpty(item.ProductUuid)) continue;
+                    GetInventoryData(data, item.ProductUuid);
+                }
             }
         }
 
