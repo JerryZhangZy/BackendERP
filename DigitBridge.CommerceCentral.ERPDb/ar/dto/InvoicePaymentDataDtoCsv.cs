@@ -40,32 +40,44 @@ namespace DigitBridge.CommerceCentral.ERPDb
             context.RegisterClassMap(new CsvAutoMapper<InvoiceTransactionDto>());
         }
 
-        protected override void WriteCsv(JObject data, CsvWriter csv)
+        protected override void WriteCsv(InvoiceTransactionDataDto data, CsvWriter csv)
         {
-            //"The data path in json file. Depend on the json file formate you set."
-            var path = "InvoiceTransaction";
-            var wirteheader = csv.Row == 1;
-            Write(data, path, csv, wirteheader);
+            // combine multiple Dto to one dynamic object
+            var headerRecords = data.MergeHeaderRecord(true).ToList();
+            WriteEntities(csv, headerRecords, "H");
         }
 
-        public override void ReadEntities(CsvReader csv, IList<InvoiceTransactionDataDto> dtos)
-        { 
+        public override void ReadEntities(CsvReader csv, IList<InvoiceTransactionDataDto> data)
+        {
+            var isFirst = true;
+            InvoiceTransactionDataDto dto = new InvoiceTransactionDataDto();
             while (csv.Read())
             {
                 // it is header line
-                if (csv.GetField(0).EqualsIgnoreSpace("InvoiceNumber"))
+                if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
                 {
                     csv.ReadHeader();
+                    isFirst = false;
+                    continue;
                 }
-                else
+
+                switch (csv.GetField(0))
                 {
-                    var dto = new InvoiceTransactionDataDto()
-                    {
-                        InvoiceTransaction = csv.GetRecord<InvoiceTransactionDto>()
-                    };
-                    dtos.Add(dto);
+                    case "H":
+                        if (!isFirst)
+                        {
+                            if (dto != null && dto.HasInvoiceTransaction)
+                                data.Add(dto);
+                            dto = new InvoiceTransactionDataDto();
+                            isFirst = false;
+                        }
+                        dto.InvoiceTransaction = csv.GetRecord<InvoiceTransactionDto>();
+                        break;
+                    
                 }
             }
+            if (dto != null)
+                data.Add(dto);
         }
     }
 }

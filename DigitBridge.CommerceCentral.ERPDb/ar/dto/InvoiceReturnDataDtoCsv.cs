@@ -40,22 +40,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
             context.RegisterClassMap(new CsvAutoMapper<InvoiceReturnItemsDto>());
         }
 
-        protected override void WriteCsv(JObject data, CsvWriter csv)
+        protected override void WriteCsv(InvoiceTransactionDataDto data, CsvWriter csv)
         {
-            //"The data path in json file. Depend on the json file formate you set."
-            var path = "InvoiceTransaction";
-            Write(data, path, csv, true);
+            // combine multiple Dto to one dynamic object
+            var headerRecords = data.MergeHeaderRecord(true).ToList();
+            WriteEntities(csv, headerRecords, "H");
 
-            var itemsPath = "InvoiceReturnItems";
-            var itemDatas = data.SelectTokens(itemsPath);
-            var writeHeader = true;
-            foreach (JObject itemData in itemDatas.Children())
-            {
-                var itemPath = "InvoiceReturnItems";
-                Write(itemData, itemPath, csv, writeHeader);
-                writeHeader = false;
-            }
-
+            // Sort property of object by orders
+            var detailRecords = data.MergeDetailRecord(true).ToList();
+            WriteEntities(csv, detailRecords, "L");
         }
 
         public override void ReadEntities(CsvReader csv, IList<InvoiceTransactionDataDto> data)

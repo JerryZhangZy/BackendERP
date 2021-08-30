@@ -102,100 +102,30 @@ SELECT
             return payload;
         }
 
-//        //TODO where sql
-//        private string GetExportSql()
-//        {
-//            var sql = @"
-//select 
-//'H' as 'InvoiceTransaction.RecordType',
-//trans.InvoiceNumber as 'InvoiceTransaction.InvoiceNumber',
-//trans.TransUuid as 'InvoiceTransaction.TransUuid',
-//--trans.TransNum as 'InvoiceTransaction.TransNum',
-//trans.TransStatus as 'InvoiceTransaction.TransStatus',
-//(cast(trans.TransDate as datetime) + cast(trans.TransTime as datetime)) as 'InvoiceTransaction.TransTime',
-//trans.Description as 'InvoiceTransaction.Description',
-//trans.Notes as 'InvoiceTransaction.Notes',
-//trans.PaidBy as 'InvoiceTransaction.PaidBy',
-//trans.BankAccountCode as 'InvoiceTransaction.BankAccountCode',
-//trans.CheckNum as 'InvoiceTransaction.CheckNum',
-//trans.AuthCode as 'InvoiceTransaction.AuthCode',
-//trans.Currency as 'InvoiceTransaction.Currency',
-//trans.ExchangeRate as 'InvoiceTransaction.ExchangeRate',
-//trans.SubTotalAmount as 'InvoiceTransaction.Sub TotalAmount',
-//trans.SalesAmount as 'InvoiceTransaction.SalesAmount',
-//trans.TotalAmount as 'InvoiceTransaction.TotalAmount',
-//trans.TaxableAmount as 'InvoiceTransaction.TaxableAmount',
-//trans.NonTaxableAmount as 'InvoiceTransaction.NonTaxableAmount',
-//trans.TaxRate as 'InvoiceTransaction.TaxRate',
-//trans.TaxAmount as 'InvoiceTransaction.TaxAmount',
-//trans.DiscountRate as 'InvoiceTransaction.DiscountRate',
-//trans.DiscountAmount as 'InvoiceTransaction.DiscountAmount',
-//trans.ShippingAmount as 'InvoiceTransaction.ShippingAmount',
-//trans.ShippingTaxAmount as 'InvoiceTransaction.ShippingTaxAmount',
-//trans.MiscAmount as 'InvoiceTransaction.MiscAmount',
-//trans.MiscTaxAmount as 'InvoiceTransaction.MiscTaxAmount',
-//trans.ChargeAndAllowanceAmount as 'InvoiceTransaction.ChargeAndAllowanceAmount',
-//trans.CreditAccount as 'InvoiceTransaction.CreditAccount',
-//trans.DebitAccount as 'InvoiceTransaction.DebitAccount',
-//trans.TransSourceCode as 'InvoiceTransaction.TransSourceCode',
-
-//--invoice.InvoiceNumber as 'Invoice.Invoice Number',
-//--invoice.InvoiceDate as 'Invoice.Invoice Date',
-//--invoice.BillDate as 'Invoice.Bill Date',
-//--invoice.OrderNumber as 'Invoice.Order Number',
-//--invoice.InvoiceType as 'Invoice.Invoice Type', 
-
-//(   
-//SELECT 
-//'L' as 'InvoiceReturnItem.RecordType',
-//returnItem.SKU as 'InvoiceReturnItem.SKU',
-//returnItem.ReturnItemType as 'InvoiceReturnItem.ReturnItemType',
-//returnItem.ReceiveDate as 'InvoiceReturnItem.ReceiveDate',
-//(cast(returnItem.ReturnDate as datetime) + cast(returnItem.ReturnTime as datetime)) as 'InvoiceReturnItem.ReturnTime',
-//returnItem.StockDate as 'InvoiceReturnItem.StockDate',
-//returnItem.Reason as 'InvoiceReturnItem.Reason',
-//returnItem.ReturnQty as 'InvoiceReturnItem.ReturnQuantity',
-//returnItem.ReceiveQty as 'InvoiceReturnItem.ReceiveQuantity',
-//returnItem.Description as 'InvoiceReturnItem.Description'
-//FROM InvoiceReturnItems returnItem
-//WHERE trans.TransUuid=returnItem.TransUuid for json path
-//) AS InvoiceReturnItems
-
-//from InvoiceTransaction(nolock) trans 
-//--left join InvoiceReturnItems returnItem on trans.TransUuid=returnItem.TransUuid
-//left join InvoiceHeader invoice on invoice.InvoiceUuid=trans.InvoiceUuid
-//where trans.TransType=2
-//for json path;
-//";
-//            return sql;
-//        }
-
-        private string GetExportSql(int userConfigID)
+        //        //TODO where sql
+        private string GetExportSql()
         {
-            using var trs = new ScopedTransaction(dbFactory);
-            var datas = ExportHelper.GetExportColumns(userConfigID);
-
-            var tranCols = ExportHelper.GetSelectColumnsByConfig(datas, "H", Helper.TableAllies);
-            var returnItemCols = ExportHelper.GetSelectColumnsByConfig(datas, "L", InvoiceReturnItemsHelper.TableAllies);
-
             var sql = $@"
-select 
-{tranCols} 
-,(   
+select  
+{Helper.TableAllies}.*, 
+
+(   
 SELECT 
-{returnItemCols} 
+{InvoiceReturnItemsHelper.TableAllies}.*
 FROM InvoiceReturnItems {InvoiceReturnItemsHelper.TableAllies}
 WHERE {Helper.TableAllies}.TransUuid={InvoiceReturnItemsHelper.TableAllies}.TransUuid for json path
 ) AS InvoiceReturnItems
 
-from InvoiceTransaction(nolock) {Helper.TableAllies}
---left join InvoiceReturnItems returnItem on trans.TransUuid=returnItem.TransUuid
---left join InvoiceHeader invoice on invoice.InvoiceUuid=trans.InvoiceUuid
+from InvoiceTransaction(nolock) {Helper.TableAllies} 
+--left join InvoiceReturnItems returnItem on {Helper.TableAllies}.TransUuid=returnItem.TransUuid
+--left join InvoiceHeader invoice on invoice.InvoiceUuid={Helper.TableAllies}.InvoiceUuid
 where {Helper.TableAllies}.TransType=2
 for json path;
 ";
             return sql;
         }
+
+
 
         public virtual async Task<StringBuilder> GetExportDataAsync(InvoiceReturnPayload payload)
         {
@@ -205,7 +135,7 @@ for json path;
             this.LoadRequestParameter(payload);
             using var trs = new ScopedTransaction(dbFactory);
             StringBuilder sb = new StringBuilder();
-            await SqlQuery.QueryJsonAsync(sb, GetExportSql(payload.ExportUserConfigID), System.Data.CommandType.Text, GetSqlParameters().ToArray());
+            await SqlQuery.QueryJsonAsync(sb, GetExportSql(), System.Data.CommandType.Text, GetSqlParameters().ToArray());
             return sb;
         }
 
@@ -217,7 +147,7 @@ for json path;
             this.LoadRequestParameter(payload);
             using var trs = new ScopedTransaction(dbFactory);
             StringBuilder sb = new StringBuilder();
-            SqlQuery.QueryJson(sb, GetExportSql(payload.ExportUserConfigID), System.Data.CommandType.Text, GetSqlParameters().ToArray());
+            SqlQuery.QueryJson(sb, GetExportSql(), System.Data.CommandType.Text, GetSqlParameters().ToArray());
             return sb;
         }
     }

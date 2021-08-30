@@ -100,66 +100,12 @@ SELECT
                 throw;
             }
             return payload;
-        }
-
-        //        //TODO where sql&more column displayed.
-        //        private string GetExportSql(int userConfigID)
-        //        {
-        //            using var trs = new ScopedTransaction(dbFactory);
-        //            var datas = ExportHelper.GetExportSelect(userConfigID);
-
-        //            var sql = $@"
-        //with BaseExportTable as (
-        //select
-        //{Helper.TableAllies}.InvoiceNumber,
-        //{Helper.TableAllies}.TransUuid,
-        //{Helper.TableAllies}.TransNum,
-        //{Helper.TableAllies}.TransStatus,
-        //(cast({Helper.TableAllies}.TransDate as datetime) + cast({Helper.TableAllies}.TransTime as datetime)) as 'TransTime',
-        //{Helper.TableAllies}.Description,
-        //{Helper.TableAllies}.Notes,
-        //{Helper.TableAllies}.PaidBy,
-        //{Helper.TableAllies}.BankAccountCode,
-        //{Helper.TableAllies}.CheckNum,
-        //{Helper.TableAllies}.AuthCode,
-        //{Helper.TableAllies}.Currency,
-        //{Helper.TableAllies}.ExchangeRate,
-        //{Helper.TableAllies}.SubTotalAmount,
-        //{Helper.TableAllies}.SalesAmount,
-        //{Helper.TableAllies}.TotalAmount,
-        //{Helper.TableAllies}.TaxableAmount,
-        //{Helper.TableAllies}.NonTaxableAmount,
-        //{Helper.TableAllies}.TaxRate,
-        //{Helper.TableAllies}.TaxAmount,
-        //{Helper.TableAllies}.DiscountRate,
-        //{Helper.TableAllies}.DiscountAmount,
-        //{Helper.TableAllies}.ShippingAmount,
-        //{Helper.TableAllies}.ShippingTaxAmount,
-        //{Helper.TableAllies}.MiscAmount,
-        //{Helper.TableAllies}.MiscTaxAmount,
-        //{Helper.TableAllies}.ChargeAndAllowanceAmount,
-        //{Helper.TableAllies}.CreditAccount,
-        //{Helper.TableAllies}.DebitAccount,
-        //{Helper.TableAllies}.TransSourceCode
-
-        //from InvoiceTransaction {Helper.TableAllies} 
-        //where {Helper.TableAllies}.TransType=1
-        //)
-        //select {ExportHelper.GetSelectColumnsByConfig(datas, "H", Helper.TableAllies)}
-        //from BaseExportTable {Helper.TableAllies}
-        //for json path;
-        //";
-        //            return sql;
-        //        }
-
+        } 
         //TODO where sql&more column displayed.
-        private string GetExportSql(int userConfigID)
-        {
-            using var trs = new ScopedTransaction(dbFactory);
-            var datas = ExportHelper.GetExportColumns(userConfigID);
-            var tranCols = ExportHelper.GetSelectColumnsByConfig(datas, "H", Helper.TableAllies);
+        private string GetExportSql()
+        { 
             var sql = $@"  
-select {tranCols}
+select {Helper.TableAllies}.*
 from InvoiceTransaction {Helper.TableAllies}
 where {Helper.TableAllies}.TransType=1
 for json path;
@@ -173,7 +119,7 @@ for json path;
                 payload = new InvoicePaymentPayload();
 
             this.LoadRequestParameter(payload);
-            var sql = GetExportSql(payload.ExportUserConfigID);
+            var sql = GetExportSql();
             using var trs = new ScopedTransaction(dbFactory);
             StringBuilder sb = new StringBuilder();
             await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
@@ -186,7 +132,7 @@ for json path;
                 payload = new InvoicePaymentPayload();
 
             this.LoadRequestParameter(payload);
-            var sql = GetExportSql(payload.ExportUserConfigID);
+            var sql = GetExportSql();
 
             using var trs = new ScopedTransaction(dbFactory);
             StringBuilder sb = new StringBuilder();

@@ -76,17 +76,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<byte[]> ExportAsync(InvoiceReturnPayload payload)
         {
             var listService = new InvoiceReturnList(dbFactory);
-            var invoiceReturnDataDtoCsv = new InvoiceReturnDataDtoCsv();
-            var sb = await listService.GetExportDataAsync(payload); 
-            return invoiceReturnDataDtoCsv.Export(sb);
+            var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
+            var sb = await listService.GetExportDataAsync(payload);
+            var dtos = sb.ToString().JsonToObject<List<InvoiceTransactionDataDto>>(); 
+            return invoiceTransactionDataDtoCsv.Export(dtos);
         }
 
         public byte[] Export(InvoiceReturnPayload payload)
         {
             var listService = new InvoiceReturnList(dbFactory);
             var invoiceReturnDataDtoCsv = new InvoiceReturnDataDtoCsv();
-            var sb = listService.GetExportData(payload); 
-            return invoiceReturnDataDtoCsv.Export(sb);
+            var sb = listService.GetExportData(payload);
+            var dtos = JsonConvert.DeserializeObject<List<InvoiceTransactionDataDto>>(sb.ToString());
+            return invoiceReturnDataDtoCsv.Export(dtos);
         }
         #endregion
 
