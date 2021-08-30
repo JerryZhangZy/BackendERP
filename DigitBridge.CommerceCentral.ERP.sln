@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.Log", "DigitBridge.Log\DigitBridge.Log.csproj", "{8368AC64-88A8-44E5-BB8F-D1ABE2DD2B9F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvHelper", "..\CsvHelper\src\CsvHelper\CsvHelper.csproj", "{74E85885-3918-435B-921F-842ACD40D7C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvHelper", "CsvHelper\CsvHelper.csproj", "{74E85885-3918-435B-921F-842ACD40D7C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

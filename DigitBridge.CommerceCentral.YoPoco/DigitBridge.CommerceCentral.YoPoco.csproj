@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CsvHelper\src\CsvHelper\CsvHelper.csproj" />
+    <ProjectReference Include="..\CsvHelper\CsvHelper.csproj" />
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
   </ItemGroup>
 

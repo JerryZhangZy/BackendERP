@@ -258,11 +258,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="T4\DataAccess.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataAccess.tt</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateJsDocStructureDto - Copy.cs">
       <DependentUpon>GenerateJsDocStructureDto.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -297,11 +292,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryPartialClass.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateServicePayloadOpenApi.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateServicePayloadOpenApi.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateServiceValidator.cs">
       <DesignTime>True</DesignTime>
@@ -402,11 +392,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForInvoice.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForPurchaseOrder.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForPurchaseOrder.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\SettingForSalesOrder.cs">
       <DesignTime>True</DesignTime>
