@@ -95,6 +95,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
                     else if((item.Type == typeof(int) && parameterValue.ToInt() <= 0)
                         || (item.Type == typeof(long) && parameterValue.ToLong() <= 0)
                         || (item.Type == typeof(IList<string>) && parameterValue.SplitTo<string>().Count() == 0)
+                        || (item.Type == typeof(string) && string.IsNullOrWhiteSpace(parameterValue))
                         )
                     {
                         messages.Add($"Parameter {item.Name} is invalid");
