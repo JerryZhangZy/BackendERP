@@ -305,8 +305,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		/// <summary>
 		/// Global Unique Guid for P/O Item Line
-
-	-- drop ship S/O info
 		/// </summary>
         public virtual string PoItemUuid
         {

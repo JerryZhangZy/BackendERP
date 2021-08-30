@@ -80,12 +80,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		/// <summary>
 		/// Global Unique Guid for P/O Item Line
-
-	-- drop ship S/O info
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for P/O Item Line
-
-	-- drop ship S/O info")]
+		[OpenApiPropertyDescription("Global Unique Guid for P/O Item Line")]
         [StringLength(50, ErrorMessage = "The PoItemUuid value cannot exceed 50 characters. ")]
         public string PoItemUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
