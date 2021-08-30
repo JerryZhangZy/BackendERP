@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override InventoryService Init()
         {
             SetDtoMapper(new InventoryDataDtoMapperDefault());
-            SetCalculator(new InventoryServiceCalculatorDefault());
+            SetCalculator(new InventoryServiceCalculatorDefault(this, this.dbFactory));
             AddValidator(new ProductExtServiceValidatorDefault(this, this.dbFactory));
             return this;
         }

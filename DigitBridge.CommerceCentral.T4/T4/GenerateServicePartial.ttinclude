@@ -30,7 +30,7 @@ namespace <#= NamespaceService #>
         {
             base.Init();
             SetDtoMapper(new <#= StructureClass.ClassName #>DtoMapperDefault());
-            SetCalculator(new <#= ServiceName #>CalculatorDefault());
+            SetCalculator(new <#= ServiceName #>CalculatorDefault(this,this.dbFactory));
             AddValidator(new <#= ServiceName #>ValidatorDefault(this, this.dbFactory));
             return this;
         }
@@ -51,6 +51,8 @@ namespace <#= NamespaceService #>
 
             // load data from dto
             FromDto(dto);
+            
+            Calculate();
 
             // validate data for Add processing
             if (!Validate())
@@ -74,6 +76,8 @@ namespace <#= NamespaceService #>
 
             // load data from dto
             FromDto(dto);
+            
+            Calculate();
 
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
@@ -98,6 +102,8 @@ namespace <#= NamespaceService #>
 
             // load data from dto
             FromDto(payload.<#= processName #>);
+            
+            Calculate();
 
             // validate data for Add processing
             if (!Validate())
@@ -122,6 +128,8 @@ namespace <#= NamespaceService #>
 
             // load data from dto
             FromDto(payload.<#= processName #>);
+            
+            Calculate();
 
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
@@ -148,6 +156,8 @@ namespace <#= NamespaceService #>
 
             // load data from dto
             FromDto(dto);
+            
+            Calculate();
 
             // validate data for Add processing
             if (!Validate())
@@ -174,6 +184,8 @@ namespace <#= NamespaceService #>
 
             // load data from dto
             FromDto(dto);
+            
+            Calculate();
 
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
@@ -204,6 +216,8 @@ namespace <#= NamespaceService #>
 
             // load data from dto
             FromDto(payload.<#= processName #>);
+            
+            Calculate();
 
             // validate data for Add processing
             if (!Validate())
@@ -233,6 +247,8 @@ namespace <#= NamespaceService #>
 
             // load data from dto
             FromDto(payload.<#= processName #>);
+            
+            Calculate();
 
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))

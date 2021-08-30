@@ -6,8 +6,6 @@
 	[ProfileNum] INT NOT NULL,
     [PoUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O
     [PoItemUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O Item Line
-
-	-- drop ship S/O info 
 	[CentralFulfillmentNum] BIGINT NULL, --CentralFulfillmentNum of dropship S/O
 	[ShippingCarrier] VARCHAR(50) NULL,
 	[ShippingClass] VARCHAR(50) NULL,
@@ -18,7 +16,6 @@
 	[ChannelOrderID] VARCHAR(130) NOT NULL, --This usually is the marketplace order ID, or merchant PO Number
 	[SecondaryChannelOrderID] VARCHAR(200) NULL, --Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time.
 	[ShippingAccount] VARCHAR(100) NULL, --requested Vendor use Account to ship
-
 	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
 	[CustomerUuid] VARCHAR(50) NULL, --Customer Guid
 	[EndBuyerUserID] VARCHAR(255) NULL, --The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.

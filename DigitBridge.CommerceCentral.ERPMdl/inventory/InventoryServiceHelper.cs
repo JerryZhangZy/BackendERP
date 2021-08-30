@@ -184,6 +184,75 @@ AND ProfileNum = @profileNum";
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="skus"></param>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        /// <returns>Tuple List,(RowNum,UniqueId,Code)</returns>
+        public static List<(long,string,string)> GetKeyInfoBySkus(IList<string> skus, int masterAccountNum, int profileNum)
+        {
+            if (skus == null || skus.Count == 0)
+                return new List<(long, string, string)>();
+            var filters = new List<IQueryFilter>
+            {
+                new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", "", FilterBy.eq, 0)
+                {
+                    FilterValue = masterAccountNum
+                },
+                new QueryFilter<int>("ProfileNum", "ProfileNum", "", FilterBy.eq, 0)
+                {
+                    FilterValue = profileNum
+                },
+                new QueryFilter<string>("SKU", "SKU", "", FilterBy.eq, "")
+                {
+                    MultipleFilterValueList = skus
+                }
+            };
+            var whereSql = string.Join(" and ", filters.Select(f => f.GetFilterSQLBySqlParameter()));
+            var sqlParams = filters.Select(f => f.GetSqlParameter()).ToArray();
+            var sql = $@"
+SELECT CentralProductNum,ProductUuid,SKU FROM ProductBasic tbl
+WHERE {whereSql}";
+
+            return SqlQuery.Execute(
+                sql,
+                (long rowNum, string customerUuid, string customerCode) => (rowNum,  customerUuid, customerCode),
+                sqlParams);
+        }
+
+        public static async Task<List<(long,string,string)>> GetKeyInfoBySkusAsync(IList<string> skus, int masterAccountNum, int profileNum)
+        {
+            if (skus == null || skus.Count == 0)
+                return new List<(long, string, string)>();
+            var filters = new List<IQueryFilter>
+            {
+                new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", "", FilterBy.eq, 0)
+                {
+                    FilterValue = masterAccountNum
+                },
+                new QueryFilter<int>("ProfileNum", "ProfileNum", "", FilterBy.eq, 0)
+                {
+                    FilterValue = profileNum
+                },
+                new QueryFilter<string>("SKU", "SKU", "", FilterBy.eq, "")
+                {
+                    MultipleFilterValueList = skus
+                }
+            };
+            var whereSql = string.Join(" and ", filters.Select(f => f.GetFilterSQLBySqlParameter()));
+            var sqlParams = filters.Select(f => f.GetSqlParameter()).ToArray();
+            var sql = $@"
+SELECT CentralProductNum,ProductUuid,SKU FROM ProductBasic tbl
+WHERE {whereSql}";
+
+            return await SqlQuery.ExecuteAsync(
+                sql,
+                (long rowNum, string customerUuid, string customerCode) => (rowNum, customerUuid, customerCode),
+                sqlParams);
+        }
     }
 }
 

@@ -10,7 +10,7 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItemsAttributes]') AND name = N'UI_PoItemsAttributes_PoId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoItemsAttributes_PoItemUuid] ON [dbo].[PoItemsAttributes]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_PoItemsAttributes_PoItemUuid] ON [dbo].[PoItemsAttributes]
 (
 	[PoItemUuid] ASC
 ) ON [PRIMARY]

@@ -28,6 +28,74 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public partial class InvoiceTransactionServiceCalculatorDefault : ICalculator<InvoiceTransactionData>
     {
+        protected IDataBaseFactory dbFactory { get; set; }
+
+        public InvoiceTransactionServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        {
+            this.ServiceMessage = serviceMessage;
+            this.dbFactory = dbFactory;
+        }
+
+        public virtual void PrepareData(InvoiceTransactionData  data, ProcessingMode processingMode = ProcessingMode.Edit)
+        {
+            //if(data==null||data.SalesOrderHeader==null)
+            //    return;
+            //if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
+            //{
+            //    using var trx = new ScopedTransaction(dbFactory);
+            //    data.SalesOrderHeader.CustomerUuid = CustomerServiceHelper.GetCustomerUuidByCustomerCode(
+            //        data.SalesOrderHeader.CustomerCode, data.SalesOrderHeader.MasterAccountNum,
+            //        data.SalesOrderHeader.ProfileNum);
+            //}
+            //// get customer data
+            //GetCustomerData(data,data.SalesOrderHeader.CustomerUuid);
+
+            //if (data.SalesOrderItems != null)
+            //{
+            //    var skuList = data.SalesOrderItems
+            //        .Where(r => string.IsNullOrEmpty(r.ProductUuid) && !string.IsNullOrEmpty(r.SKU)).Select(r => r.SKU)
+            //        .Distinct().ToList();
+            //    using var trx = new ScopedTransaction(dbFactory);
+            //    var list = InventoryServiceHelper.GetKeyInfoBySkus(skuList, data.SalesOrderHeader.MasterAccountNum,
+            //        data.SalesOrderHeader.ProfileNum);
+            //    foreach (var tuple in list)
+            //    {
+            //        data.SalesOrderItems.First(r => r.SKU == tuple.Item3).ProductUuid = tuple.Item2;
+            //    }
+
+            //    // get inventory data
+            //    foreach (var item in data.SalesOrderItems)
+            //    {
+            //        if (string.IsNullOrEmpty(item.ProductUuid)) continue;
+            //        GetInventoryData(data, item.ProductUuid);
+            //    }
+            //}
+        }
+        
+        #region Service Property
+
+        //private CustomerService _customerService;
+        //protected CustomerService customerService => _customerService ??= new CustomerService(dbFactory);
+
+        //private InventoryService _inventoryService;
+        //protected InventoryService inventoryService => _inventoryService ??= new InventoryService(dbFactory);
+
+        #endregion
+
+        #region GetDataWithCache
+
+        //public virtual InventoryData GetInventoryData(SalesOrderData data, string productUuid)
+        //{
+        //    return data.GetCache(productUuid, () => inventoryService.GetDataById(productUuid) ? inventoryService.Data : null);
+        //}
+
+        //public virtual CustomerData GetCustomerData(SalesOrderData data, string customerUuid)
+        //{
+        //    return data.GetCache(customerUuid, () => customerService.GetDataById(customerUuid) ? customerService.Data : null);
+        //}
+
+        #endregion
+
         public virtual bool SetDefault(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             SetDefaultSummary(data, processingMode);
@@ -111,6 +179,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual bool Calculate(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
+            PrepareData(data);
             CalculateDetail(data, processingMode);
             CalculateSummary(data, processingMode);
             return true;
@@ -304,8 +373,45 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
         */
+        
+        #region message
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get
+            {
+                if (ServiceMessage != null)
+                    return ServiceMessage.Messages;
+
+                if (_Messages == null)
+                    _Messages = new List<MessageClass>();
+                return _Messages;
+            }
+            set
+            {
+                if (ServiceMessage != null)
+                    ServiceMessage.Messages = value;
+                else
+                    _Messages = value;
+            }
+        }
+        protected IList<MessageClass> _Messages;
+        public IMessage ServiceMessage { get; set; }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddInfo(message, code) : Messages.AddInfo(message, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddWarning(message, code) : Messages.AddWarning(message, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddError(message, code) : Messages.AddError(message, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddFatal(message, code) : Messages.AddFatal(message, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+             ServiceMessage != null ? ServiceMessage.AddDebug(message, code) : Messages.AddDebug(message, code);
+
+        #endregion message
 
     }
+
 }
 
 

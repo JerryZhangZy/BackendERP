@@ -51,6 +51,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data from dto
             FromDto(dto);
+            
+            Calculate();
 
             // validate data for Add processing
             if (!Validate())
