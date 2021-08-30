@@ -168,18 +168,40 @@ AND ProfileNum = @profileNum";
             );
         }
 
-        public static async Task<bool> ExistOrderDCAssignmentUuidAsync(string orderDCAssignmentUuid)
+        //        public static async Task<bool> ExistOrderDCAssignmentUuidAsync(string orderDCAssignmentUuid)
+        //        {
+
+        //            var sql = $@"
+        //SELECT COUNT(1) FROM SalesOrderHeader tbl
+        //WHERE OrderSourceCode = 'OrderDCAssignmentUuid:' + @orderDCAssignmentUuid
+        //";
+        //            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+        //                  orderDCAssignmentUuid.ToSqlParameter("orderDCAssignmentUuid"));
+        //            return result > 0;
+        //        }
+        public static async Task<bool> ExistOrderDCAssignmentNumAsync(long orderDCAssignmentNum)
         {
 
             var sql = $@"
 SELECT COUNT(1) FROM SalesOrderHeader tbl
-WHERE OrderSourceCode = 'OrderDCAssignmentUuid:' + @orderDCAssignmentUuid
+WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + @orderDCAssignmentNum
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
-                  orderDCAssignmentUuid.ToSqlParameter("orderDCAssignmentUuid"));
+                  orderDCAssignmentNum.ToSqlParameter("orderDCAssignmentNum"));
             return result > 0;
         }
 
+        public static async Task<string> GetSalesOrderUuidAsync(long orderDCAssignmentNum)
+        {
+            var sql = $@"
+SELECT [SalesOrderUuid] FROM SalesOrderHeader tbl
+WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + @orderDCAssignmentNum
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                 orderDCAssignmentNum.ToSqlParameter("orderDCAssignmentNum"));
+
+            return result.ToString();
+        }
     }
 }
 
