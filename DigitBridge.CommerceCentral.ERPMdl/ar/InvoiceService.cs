@@ -292,7 +292,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<InvoicePayload> GetListByInvoiceUuidAsync(InvoicePayload payload)
         {
             if (payload is null || !payload.HasInvoiceUuids)
-                return null;
+            {
+                AddError("InvoiceUuids is required.");
+                payload.Messages = this.Messages;
+                return payload;
+            }
             var invoiceUuids = payload.InvoiceUuids;
 
             List();
