@@ -52,7 +52,7 @@
     [UpdateDateUtc] DATETIME NULL, --(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
-    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Radonly) Created Date time. <br> Title: Created At, Display: true, Editable: false
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Readonly) Created Date time. <br> Title: Created At, Display: true, Editable: false
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)
     CONSTRAINT [PK_SalesOrderHeader] PRIMARY KEY ([RowNum]), 
 ) 
