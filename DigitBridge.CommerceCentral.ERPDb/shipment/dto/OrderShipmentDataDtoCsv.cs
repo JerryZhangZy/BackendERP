@@ -38,9 +38,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void RegisterMapper(CsvContext context)
         {
 			context.RegisterClassMap(new CsvAutoMapper<OrderShipmentHeaderDto>());
-			context.RegisterClassMap(new CsvAutoMapper<OrderShipmentCanceledItemDto>());
-			context.RegisterClassMap(new CsvAutoMapper<OrderShipmentPackageDto>());
-			context.RegisterClassMap(new CsvAutoMapper<OrderShipmentShippedItemDto>());
+			context.RegisterClassMap(new CsvAutoMapper<OrderShipmentCanceledItemDto>(1));
+			context.RegisterClassMap(new CsvAutoMapper<OrderShipmentPackageDto>(2));
+			context.RegisterClassMap(new CsvAutoMapper<OrderShipmentShippedItemDto>(2));
         }
         
         protected override void WriteCsv(OrderShipmentDataDto data, CsvWriter csv)

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 
 using CsvHelper.Configuration;
+using CsvHelper.Configuration.Attributes;
 using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.YoPoco
@@ -13,8 +14,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
     public class CsvAutoMapper<T> : ClassMap<T>
         where T: new()
     {
-        public CsvAutoMapper()
+        protected int NameIndex = 0;
+        public CsvAutoMapper(int nameIndex=0)
         {
+            NameIndex = nameIndex;
             AutoMap(CultureInfo.InvariantCulture);
             var props = ObjectSchema.GetProperties<T>();
             if (props is null)
@@ -83,6 +86,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             // set all column is Optional
             map.Optional();
+
+            map.NameIndex(NameIndex);
 
             return map;
         }

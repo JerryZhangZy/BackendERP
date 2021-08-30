@@ -34,12 +34,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override void RegisterMapper(CsvContext context)
         {
-			context.RegisterClassMap(new CsvAutoMapper<PoHeaderDto>());
-			context.RegisterClassMap(new CsvAutoMapper<PoHeaderInfoDto>());
-			context.RegisterClassMap(new CsvAutoMapper<PoHeaderAttributesDto>());
-			context.RegisterClassMap(new CsvAutoMapper<PoItemsDto>());
-			context.RegisterClassMap(new CsvAutoMapper<PoItemsAttributesDto>());
-			context.RegisterClassMap(new CsvAutoMapper<PoItemsRefDto>());
+            context.RegisterClassMap(new CsvAutoMapper<PoHeaderDto>());
+            context.RegisterClassMap(new CsvAutoMapper<PoHeaderInfoDto>());
+            context.RegisterClassMap(new CsvAutoMapper<PoHeaderAttributesDto>());
+            context.RegisterClassMap(new CsvAutoMapper<PoItemsDto>(1));
+            context.RegisterClassMap(new CsvAutoMapper<PoItemsAttributesDto>(1));
+            context.RegisterClassMap(new CsvAutoMapper<PoItemsRefDto>(1));
         }
         
         protected override void WriteCsv(PurchaseOrderDataDto data, CsvWriter csv)
@@ -77,15 +77,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
                             dto = new PurchaseOrderDataDto();
                             isFirst = false;
                         }
-                        dto. PoHeader = csv.GetRecord<PoHeaderDto>();
+                        dto.PoHeader = csv.GetRecord<PoHeaderDto>();
+                        dto.PoHeaderInfo = csv.GetRecord<PoHeaderInfoDto>();
+                        dto.PoHeaderAttributes = csv.GetRecord<PoHeaderAttributesDto>();
                         break;
-                    //case "L":
-                    //    if (dto.Inventory == null)
-                    //        dto.Inventory = new List<InventoryDto>();
-                    //    var item = csv.GetRecord<InventoryDto>();
-                    //    item.InventoryAttributes = csv.GetRecord<InventoryAttributesDto>();
-                    //    dto.Inventory.Add(item);
-                    //    break;
+                    case "L":
+                        if (dto.PoItems == null)
+                            dto.PoItems = new List<PoItemsDto>();
+                        var item = csv.GetRecord<PoItemsDto>();
+                        item.PoItemsAttributes = csv.GetRecord<PoItemsAttributesDto>();
+                        item.PoItemsRef = csv.GetRecord<PoItemsRefDto>();
+                        dto.PoItems.Add(item);
+                        break;
                 }
             }
             if (dto != null)

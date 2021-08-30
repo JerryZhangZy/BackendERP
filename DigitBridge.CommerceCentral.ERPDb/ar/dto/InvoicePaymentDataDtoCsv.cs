@@ -46,18 +46,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
             var headerRecords = data.MergeHeaderRecord(true).ToList();
             WriteEntities(csv, headerRecords, "H");
         }
-
         public override void ReadEntities(CsvReader csv, IList<InvoiceTransactionDataDto> data)
         {
-            var isFirst = true;
             InvoiceTransactionDataDto dto = new InvoiceTransactionDataDto();
             while (csv.Read())
             {
                 // it is header line
-                if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
+                if (csv.GetField(0).EqualsIgnoreSpace("InvoiceNumber"))
                 {
                     csv.ReadHeader();
-                    isFirst = false;
                     continue;
                 }
 
@@ -76,8 +73,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     
                 }
             }
-            if (dto != null)
-                data.Add(dto);
         }
     }
 }

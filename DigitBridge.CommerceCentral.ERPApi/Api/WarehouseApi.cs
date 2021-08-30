@@ -222,7 +222,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "File", In = ParameterLocation.Query, Type = typeof(IFormFile), Summary = "File", Description = "submit by form", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayload))]
         public static async Task<WarehousePayload> ImportWarehouse(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "warehouses/import")] HttpRequest req)

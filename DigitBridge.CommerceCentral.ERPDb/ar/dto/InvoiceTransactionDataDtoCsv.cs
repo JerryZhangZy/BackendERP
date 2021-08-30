@@ -18,6 +18,7 @@ using System.IO;
 using DigitBridge.Base.Utility;
 using System.Dynamic;
 using System.Linq;
+using CsvHelper.Configuration;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -35,8 +36,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public override void RegisterMapper(CsvContext context)
         {
-			context.RegisterClassMap(new CsvAutoMapper<InvoiceTransactionDto>());
-			context.RegisterClassMap(new CsvAutoMapper<InvoiceReturnItemsDto>());
+			context.RegisterClassMap(new CsvAutoMapper<InvoiceTransactionDto>(0));
+			context.RegisterClassMap(new CsvAutoMapper<InvoiceReturnItemsDto>(1));
         }
         
         protected override void WriteCsv(InvoiceTransactionDataDto data, CsvWriter csv)
