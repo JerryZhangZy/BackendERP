@@ -1238,7 +1238,7 @@ namespace CsvHelper
 			if (namedIndexCache.ContainsKey(nameKey))
 			{
 				(var cachedName, var cachedIndex) = namedIndexCache[nameKey];
-				return namedIndexes[cachedName][cachedIndex];
+				return namedIndexes[cachedName][0];
 			}
 
 			// Check all possible names for this field.
@@ -1270,7 +1270,7 @@ namespace CsvHelper
 				return -1;
 			}
 
-			namedIndexCache.Add(nameKey, (name, index));
+			namedIndexCache.Add(nameKey, (name, 0));
 
 			return namedIndexes[name][0];
 		}
