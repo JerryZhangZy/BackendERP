@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.4.0" />
-    <PackageReference Include="CsvHelper" Version="27.1.1" />
     <PackageReference Include="DigitBridge.Orchestration.OrchestrationDb" Version="1.0.4" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="3.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -25,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CsvHelper\CsvHelper.csproj" />
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
   </ItemGroup>
 

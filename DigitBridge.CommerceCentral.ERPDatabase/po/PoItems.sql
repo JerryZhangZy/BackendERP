@@ -67,7 +67,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_PoItems_PoUuid_Seq] ON [dbo].[PoItems]
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoItems]') AND name = N'UI_PoItems_PoId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoItems_PoUuid] ON [dbo].[PoItems]
+CREATE NONCLUSTERED INDEX [UI_PoItems_PoUuid] ON [dbo].[PoItems]
 (
 	[PoUuid] ASC
 ) ON [PRIMARY]
