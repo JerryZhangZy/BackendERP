@@ -35,9 +35,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             var result = new List<dynamic>();
             //TODO change to merge Dto children object
-            //if (withHeaderText)
-            //    result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
-            //result.Add(dto.SalesOrderHeader.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
+            if (withHeaderText)
+                result.Add(dto.PoHeader.MergeName(dto.PoHeaderInfo, dto.PoHeaderAttributes));
+            result.Add(dto.PoHeader.Merge(dto.PoHeaderInfo, dto.PoHeaderAttributes));
             return result;
         }
 
@@ -49,22 +49,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
         public static IEnumerable<dynamic> MergeDetailRecord(this PurchaseOrderDataDto dto, bool withHeaderText = false)
         {
-            return null;
+            //return null;
             //TODO change to merge Dto children object
-            //if (!dto.HasSalesOrderItems) 
-            //    return null;
-            //
-            //var result = new List<dynamic>();
-            //var salesOrderItems = new SalesOrderItems() { SalesOrderItemsAttributes = new SalesOrderItemsAttributes()};
-            //
-            //if (withHeaderText)
-            //    result.Add(salesOrderItems.MergeName(salesOrderItems.SalesOrderItemsAttributes));
-            //
-            //foreach (var item in dto.SalesOrderItems)
-            //{
-            //    result.Add(item.Merge(item.SalesOrderItemsAttributes));
-            //}
-            //return result;
+            if (!dto.HasPoItems)
+                return null;
+
+            var result = new List<dynamic>();
+            var poItems = new PoItems() { PoItemsAttributes = new PoItemsAttributes() ,PoItemsRef = new PoItemsRef()};
+
+            if (withHeaderText)
+                result.Add(poItems.MergeName(poItems.PoItemsAttributes,poItems.PoItemsRef));
+
+            foreach (var item in dto.PoItems)
+            {
+                result.Add(item.Merge(item.PoItemsAttributes,item.PoItemsRef));
+            }
+            return result;
         }
 
 

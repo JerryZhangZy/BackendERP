@@ -5,6 +5,8 @@
     [PoUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O
 	[JsonFields] NVARCHAR(max) NULL, --JSON string, store any document fields
 
+    [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Ignore)
+    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)
     CONSTRAINT [PK_PoItemsAttributes] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
 GO
