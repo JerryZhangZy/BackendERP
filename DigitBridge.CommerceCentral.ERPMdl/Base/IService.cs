@@ -56,6 +56,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         TEntity FromDto(TEntity data, TDto dto);
 
 
+        void PrepareData();
+        void SetDefault();
         bool Calculate();
         bool Validate();
         Task<bool> ValidateAsync();
