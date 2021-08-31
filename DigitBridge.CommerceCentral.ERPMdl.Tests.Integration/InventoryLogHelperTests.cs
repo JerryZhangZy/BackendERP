@@ -50,6 +50,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
         }
 
+        [Fact()]
+        public void Test_tests()
+        {
+            var query = new QueryFilter<string>("SKU", "SKU", "", FilterBy.eq, "");
+            query.MultipleFilterValueList = new List<string> { "1", "2" };
+            var where = query.GetFilterSQLBySqlParameter();
+            var para = query.GetSqlParameter();
+            Assert.True(true);
+        }
+
 
         #region sync methods
 

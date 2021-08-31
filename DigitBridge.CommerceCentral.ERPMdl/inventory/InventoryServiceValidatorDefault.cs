@@ -419,11 +419,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.ProductBasic.ProductUuid = Guid.NewGuid().ToString();
-                if (dto.Inventory != null && dto.Inventory.Count > 0)
+                dto.ProductBasic.ProductUuid = null;
+                if (dto.HasInventory)
                 {
                     foreach (var detailItem in dto.Inventory)
-                        detailItem.InventoryUuid = Guid.NewGuid().ToString();
+                        detailItem.InventoryUuid = null;
                 }
   
             }
@@ -443,16 +443,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     dto.ProductBasic.ProductUuid = null;
                     dto.ProductBasic.SKU = null;
                 }
-                else if(dto.HasProductExt)
+                if(dto.HasProductExt)
                 {
-                    using (var tx = new ScopedTransaction(dbFactory))
-                    {
-                        isValid = InventoryServiceHelper.ExistNumber(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
-                    }
+                    //don't clear dto.ProductExt.SKU,if only ProductExt ,used it find productBasic
                     if (isValid)
                         AddError("Data not found");
                 }
-                else
+                if (!dto.HasProductBasic && !dto.HasProductExt)
                 {
                     isValid = false;
                     AddError("Data not found");
@@ -513,16 +510,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     dto.ProductBasic.ProductUuid = null;
                     dto.ProductBasic.SKU = null;
                 }
-                else if (dto.HasProductExt)
+                if (dto.HasProductExt)
                 {
-                    using (var tx = new ScopedTransaction(dbFactory))
-                    {
-                        isValid = await InventoryServiceHelper.ExistNumberAsync(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
-                    }
                     if (isValid)
                         AddError("Data not found");
                 }
-                else
+                if(!dto.HasProductBasic&&!dto.HasProductExt)
                 {
                     isValid = false;
                     AddError("Data not found");

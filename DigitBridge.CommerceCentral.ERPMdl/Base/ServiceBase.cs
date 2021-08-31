@@ -261,6 +261,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (Data is null || Calculator is null)
                 return false;
+            Calculator.SetDefault(Data,ProcessMode);
             return Calculator.Calculate(Data, ProcessMode);
         }
 
