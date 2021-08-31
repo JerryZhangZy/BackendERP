@@ -287,31 +287,59 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
         /// <summary>
-        /// Get sale order list by Uuid list
+        /// Get multi sale order with detail by orderNumbers
         /// </summary>
-        public virtual async Task<SalesOrderPayload> GetListBySalesOrderUuidsNumberAsync(SalesOrderPayload salesOrderPayload)
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual async Task GetListByOrderNumbersAsync(SalesOrderPayload payload)
         {
-            if (salesOrderPayload is null || !salesOrderPayload.HasSalesOrderUuids)
+            if (payload is null || !payload.HasOrderNumbers)
             {
-                AddError("SalesOrderUuids is required.");
-                salesOrderPayload.Messages = this.Messages;
-                return salesOrderPayload;
+                AddError("OrderNumbers is required.");
+                payload.Messages = this.Messages;
+                payload.Success = false;
             }
+            var rowNums = await new SalesOrderList(dbFactory).GetRowNumListAsync(payload.OrderNumbers, payload.MasterAccountNum, payload.ProfileNum);
 
-            var salesOrderUuids = salesOrderPayload.SalesOrderUuids;
-
-            List();
             var result = new List<SalesOrderDataDto>();
-            foreach (var id in salesOrderUuids)
+            foreach (var rowNum in rowNums)
             {
-                if (!(await this.GetDataByIdAsync(id)))
+                if (!(await this.GetDataAsync(rowNum)))
                     continue;
                 result.Add(this.ToDto());
                 this.DetachData(this.Data);
             }
-            salesOrderPayload.SalesOrders = result;
-            return salesOrderPayload;
+            payload.SalesOrders = result;
         }
+
+
+
+        ///// <summary>
+        ///// Get sale order list by Uuid list
+        ///// </summary>
+        //public virtual async Task<SalesOrderPayload> GetListBySalesOrderUuidsNumberAsync(SalesOrderPayload salesOrderPayload)
+        //{
+        //    if (salesOrderPayload is null || !salesOrderPayload.HasSalesOrderUuids)
+        //    {
+        //        AddError("SalesOrderUuids is required.");
+        //        salesOrderPayload.Messages = this.Messages;
+        //        return salesOrderPayload;
+        //    }
+
+        //    var salesOrderUuids = salesOrderPayload.SalesOrderUuids;
+
+        //    List();
+        //    var result = new List<SalesOrderDataDto>();
+        //    foreach (var id in salesOrderUuids)
+        //    {
+        //        if (!(await this.GetDataByIdAsync(id)))
+        //            continue;
+        //        result.Add(this.ToDto());
+        //        this.DetachData(this.Data);
+        //    }
+        //    salesOrderPayload.SalesOrders = result;
+        //    return salesOrderPayload;
+        //}
     }
 }
 

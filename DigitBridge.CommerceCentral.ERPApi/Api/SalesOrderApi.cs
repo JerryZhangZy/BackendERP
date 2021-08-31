@@ -58,7 +58,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "SalesOrderUuids", In = ParameterLocation.Query, Required = true, Type = typeof(IList<string>), Summary = "SalesOrderUuids", Description = "Array of SalesOrderUuid.", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderNumbers", In = ParameterLocation.Query, Required = true, Type = typeof(IList<string>), Summary = "orderNumbers", Description = "Array of order numbers.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadGetMultiple), Description = "Result is List<SalesOrderDataDto>")]
         public static async Task<JsonNetResponse<SalesOrderPayload>> GetSalesOrderList(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesOrders")] HttpRequest req)
@@ -67,7 +67,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new SalesOrderService(dataBaseFactory);
 
-            payload = await srv.GetListBySalesOrderUuidsNumberAsync(payload);
+            await srv.GetListByOrderNumbersAsync(payload);
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 

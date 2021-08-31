@@ -52,7 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             while (csv.Read())
             {
                 // it is header line
-                if (csv.GetField(0).EqualsIgnoreSpace("InvoiceNumber"))
+                if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
                 {
                     csv.ReadHeader();
                     continue;
@@ -60,17 +60,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
                 switch (csv.GetField(0))
                 {
-                    case "H":
-                        if (!isFirst)
-                        {
-                            if (dto != null && dto.HasInvoiceTransaction)
-                                data.Add(dto);
-                            dto = new InvoiceTransactionDataDto();
-                            isFirst = false;
-                        }
+                    case "H": 
+                        if (dto != null && dto.HasInvoiceTransaction)
+                            data.Add(dto);
+                        dto = new InvoiceTransactionDataDto();
                         dto.InvoiceTransaction = csv.GetRecord<InvoiceTransactionDto>();
                         break;
-                    
+
                 }
             }
         }
