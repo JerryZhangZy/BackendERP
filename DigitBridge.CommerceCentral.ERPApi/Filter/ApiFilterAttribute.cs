@@ -90,12 +90,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
                     var parameterValue = req.GetData(item.Name, item.In);
                     if (parameterValue == null)
                     {
-                        messages.Add($"parameter {item.Name} is required");
+                        messages.Add($"Parameter {item.Name} is required in {item.In}");
                     }
-                    else if ((item.Name == Consts.MasterAccountNum || item.Name == Consts.ProfileNum)
-                        && parameterValue.ToInt() <= 0)
+                    else if((item.Type == typeof(int) && parameterValue.ToInt() <= 0)
+                        || (item.Type == typeof(long) && parameterValue.ToLong() <= 0)
+                        || (item.Type == typeof(IList<string>) && parameterValue.SplitTo<string>().Count() == 0)
+                        || (item.Type == typeof(string) && string.IsNullOrWhiteSpace(parameterValue))
+                        )
                     {
-                        messages.Add($"parameter {item.Name} is invalid");
+                        messages.Add($"Parameter {item.Name} is invalid");
                     }
                 }
             }

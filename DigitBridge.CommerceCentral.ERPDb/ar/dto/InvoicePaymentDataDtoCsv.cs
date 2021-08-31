@@ -40,12 +40,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             context.RegisterClassMap(new CsvAutoMapper<InvoiceTransactionDto>());
         }
 
-        protected override void WriteCsv(JObject data, CsvWriter csv)
+        protected override void WriteCsv(InvoiceTransactionDataDto data, CsvWriter csv)
         {
-            //"The data path in json file. Depend on the json file formate you set."
-            var path = "InvoiceTransaction";
-            var wirteheader = csv.Row == 1;
-            Write(data, path, csv, wirteheader);
+            // combine multiple Dto to one dynamic object
+            var headerRecords = data.MergeHeaderRecord(true).ToList();
+            WriteEntities(csv, headerRecords, "H");
         }
         public override void ReadEntities(CsvReader csv, IList<InvoiceTransactionDataDto> data)
         {
@@ -53,15 +52,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             while (csv.Read())
             {
                 // it is header line
-                if (csv.GetField(0).EqualsIgnoreSpace("InvoiceNumber"))
+                if (csv.GetField(0).EqualsIgnoreSpace("RecordType"))
                 {
                     csv.ReadHeader();
                     continue;
                 }
-                dto = new InvoiceTransactionDataDto();
-                dto.InvoiceTransaction = csv.GetRecord<InvoiceTransactionDto>();
-                if (dto.HasInvoiceTransaction)
-                    data.Add(dto);
+
+                switch (csv.GetField(0))
+                {
+                    case "H": 
+                        if (dto != null && dto.HasInvoiceTransaction)
+                            data.Add(dto);
+                        dto = new InvoiceTransactionDataDto();
+                        dto.InvoiceTransaction = csv.GetRecord<InvoiceTransactionDto>();
+                        break;
+
+                }
             }
         }
     }
