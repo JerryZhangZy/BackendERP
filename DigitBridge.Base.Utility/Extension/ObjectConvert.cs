@@ -16,7 +16,7 @@ namespace DigitBridge.Base.Utility
         public static DateTime MaxDatatime = (DateTime)System.Data.SqlTypes.SqlDateTime.MaxValue;
 
         public static TimeSpan MinTime = new TimeSpan(0, 0, 0);
-        public static TimeSpan MaxTime = new TimeSpan(11, 59, 59);
+        public static TimeSpan MaxTime = new TimeSpan(24, 0, 0).Subtract(new TimeSpan(1));
 
         public static int QtyDecimalDigits = 2;
         public static int PriceDecimalDigits = 2;

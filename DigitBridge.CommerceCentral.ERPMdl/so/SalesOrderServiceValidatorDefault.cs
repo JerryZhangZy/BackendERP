@@ -187,6 +187,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"RowNum: {data.SalesOrderHeader.RowNum} is duplicate.");
                 return IsValid;
             }
+
+
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.OrderNumber))
+            {
+                data.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
+            }
+            else
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (SalesOrderHelper.ExistNumber(data.SalesOrderHeader.OrderNumber, data.SalesOrderHeader.ProfileNum.ToInt()))
+                    {
+                        IsValid = false;
+                        AddError("Order Number is duplicate.");
+                        return IsValid;
+                    }
+                }
+            }
+
+            //for Add mode, always reset data's uuid
+            data.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();
+            if (data.SalesOrderItems != null && data.SalesOrderItems.Count > 0)
+            {
+                foreach (var detailItem in data.SalesOrderItems)
+                    detailItem.SalesOrderItemsUuid = Guid.NewGuid().ToString();
+            }
+
             return true;
 
         }
@@ -279,6 +306,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"RowNum: {data.SalesOrderHeader.RowNum} is duplicate.");
                 return IsValid;
             }
+
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.OrderNumber))
+            {
+                data.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
+            }
+            else
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (await SalesOrderHelper.ExistNumberAsync(data.SalesOrderHeader.OrderNumber, data.SalesOrderHeader.ProfileNum.ToInt()))
+                    {
+                        IsValid = false;
+                        AddError("Order Number is duplicate.");
+                        return IsValid;
+                    }
+                }
+            }
+
+            //for Add mode, always reset data's uuid
+            data.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();
+            if (data.SalesOrderItems != null && data.SalesOrderItems.Count > 0)
+            {
+                foreach (var detailItem in data.SalesOrderItems)
+                    detailItem.SalesOrderItemsUuid = Guid.NewGuid().ToString();
+            }
+
             return true;
 
         }
@@ -408,30 +461,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
-                {
-                    dto.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
-                }
-                else
-                {
-                    using (var tx = new ScopedTransaction(dbFactory))
-                    {
-                        if (await SalesOrderHelper.ExistNumberAsync(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
-                        {
-                            isValid = false;
-                            AddError("Order Number is duplicate.");
-                        }
-                    }
-                }
-
-                //for Add mode, always reset uuid
-                dto.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();
-                if (dto.SalesOrderItems != null && dto.SalesOrderItems.Count > 0)
-                {
-                    foreach (var detailItem in dto.SalesOrderItems)
-                        detailItem.SalesOrderItemsUuid = Guid.NewGuid().ToString();
-                }
-
             }
             else if (processingMode == ProcessingMode.Edit)
             {

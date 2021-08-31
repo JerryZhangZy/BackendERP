@@ -139,6 +139,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Success = await srv.AddAsync(payload);
             if (!payload.Success)
                 payload.Messages = srv.Messages;
+            payload.SalesOrder = srv.ToDto();
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
