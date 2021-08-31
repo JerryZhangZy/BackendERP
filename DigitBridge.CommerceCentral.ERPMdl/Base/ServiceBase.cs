@@ -261,7 +261,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (Data is null || Calculator is null)
                 return false;
-            Calculator.SetDefault(Data,ProcessMode);
+            SetDefault();
             return Calculator.Calculate(Data, ProcessMode);
         }
 
@@ -388,7 +388,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (_data is null)
                 return false;
             //PrepareData();
-            SetDefault();
             Calculate();
             return _data.Save();
         }
@@ -427,7 +426,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (_data is null)
                 return false;
             //PrepareData();
-            SetDefault();
             Calculate();
             return await _data.SaveAsync().ConfigureAwait(false);
         }
