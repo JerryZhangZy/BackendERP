@@ -218,6 +218,41 @@ AND CustomerCode = @customerCode
             );
             return result;
         }
+        public static List<long> GetRowNumsByCustomerCodes(IList<string> customerCodes, int masterAccountNum, int profileNum)
+        {
+            if (customerCodes == null || customerCodes.Count == 0)
+                return new List<long>();
+            var sql = $@"
+SELECT RowNum FROM Customer tbl
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @CustomerCode _CustomerCode WHERE _CustomerCode.item = COALESCE([CustomerCode],'')))";
+
+            return SqlQuery.Execute(
+                sql,
+                (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                customerCodes.ToParameter<string>("CustomerCode"));
+        }
+
+        public static async Task<List<long>> GetRowNumsByCustomerCodesAsync(IList<string> customerCodes, int masterAccountNum, int profileNum)
+        {
+            if (customerCodes == null || customerCodes.Count == 0)
+                return new List<long>();
+            var sql = $@"
+SELECT RowNum FROM Customer tbl
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @CustomerCode _CustomerCode WHERE _CustomerCode.item = COALESCE([CustomerCode],'')))";
+
+            return await SqlQuery.ExecuteAsync(
+                sql,
+                (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                customerCodes.ToParameter<string>("CustomerCode"));
+        }
 
         /// <summary>
         /// 
@@ -230,62 +265,36 @@ AND CustomerCode = @customerCode
         {
             if (customerCodes == null || customerCodes.Count == 0)
                 return new List<(long, string, string)>();
-            var filters = new List<IQueryFilter>
-            {
-                new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", "", FilterBy.eq, 0)
-                {
-                    FilterValue = masterAccountNum
-                },
-                new QueryFilter<int>("ProfileNum", "ProfileNum", "", FilterBy.eq, 0)
-                {
-                    FilterValue = profileNum
-                },
-                new QueryFilter<string>("CustomerCode", "CustomerCode", "", FilterBy.eq, "")
-                {
-                    MultipleFilterValueList = customerCodes
-                }
-            };
-            var whereSql = string.Join(" and ", filters.Select(f => f.GetFilterSQLBySqlParameter()));
-            var sqlParams = filters.Select(f => f.GetSqlParameter()).ToArray();
             var sql = $@"
 SELECT RowNum,CustomerUuid,CustomerCode FROM Customer tbl
-WHERE {whereSql}";
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @CustomerCode _CustomerCode WHERE _CustomerCode.item = COALESCE([CustomerCode],'')))";
 
             return SqlQuery.Execute(
                 sql,
                 (long rowNum, string customerUuid, string customerCode) => (rowNum, customerUuid, customerCode),
-                sqlParams);
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                customerCodes.ToParameter<string>("CustomerCode"));
         }
 
         public static async Task<List<(long, string, string)>> GetKeyInfoBySkusAsync(IList<string> customerCodes, int masterAccountNum, int profileNum)
         {
             if (customerCodes == null || customerCodes.Count == 0)
                 return new List<(long, string, string)>();
-            var filters = new List<IQueryFilter>
-            {
-                new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", "", FilterBy.eq, 0)
-                {
-                    FilterValue = masterAccountNum
-                },
-                new QueryFilter<int>("ProfileNum", "ProfileNum", "", FilterBy.eq, 0)
-                {
-                    FilterValue = profileNum
-                },
-                new QueryFilter<string>("CustomerCode", "CustomerCode", "", FilterBy.eq, "")
-                {
-                    MultipleFilterValueList = customerCodes
-                }
-            };
-            var whereSql = string.Join(" and ", filters.Select(f => f.GetFilterSQLBySqlParameter()));
-            var sqlParams = filters.Select(f => f.GetSqlParameter()).ToArray();
             var sql = $@"
 SELECT RowNum,CustomerUuid,CustomerCode FROM Customer tbl
-WHERE {whereSql}";
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @CustomerCode _CustomerCode WHERE _CustomerCode.item = COALESCE([CustomerCode],'')))";
 
             return await SqlQuery.ExecuteAsync(
                 sql,
                 (long rowNum, string customerUuid, string customerCode) => (rowNum, customerUuid, customerCode),
-                sqlParams);
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                customerCodes.ToParameter<string>("CustomerCode"));
         }
     }
 }

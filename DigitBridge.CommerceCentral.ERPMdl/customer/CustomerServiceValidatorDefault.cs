@@ -384,11 +384,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.Customer.CustomerUuid = Guid.NewGuid().ToString();
+                dto.Customer.CustomerUuid = null;
                 if (dto.HasCustomerAddress)
                 {
                     foreach (var addr in dto.CustomerAddress)
-                        addr.AddressUuid = Guid.NewGuid().ToString();
+                        addr.AddressUuid = null;
                 }
   
             }
@@ -405,8 +405,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.Customer.DatabaseNum = null;
                 dto.Customer.CustomerUuid = null;
                 dto.Customer.CustomerCode = null;
-                // TODO 
-                //dto.SalesOrderHeader.OrderNumber = null;
+                if (dto.HasCustomerAddress)
+                {
+                    foreach (var addr in dto.CustomerAddress)
+                    {
+                        addr.AddressUuid = null;
+                        addr.AddressCode = null;
+                    }
+                }
             }
             IsValid=isValid;
             return isValid;
@@ -432,11 +438,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.Customer.CustomerUuid = Guid.NewGuid().ToString();
+                dto.Customer.CustomerUuid = null;
                 if (dto.HasCustomerAddress)
                 {
                     foreach (var addr in dto.CustomerAddress)
-                        addr.AddressUuid = Guid.NewGuid().ToString();
+                        addr.AddressUuid = null;
                 }
 
             }
@@ -453,8 +459,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.Customer.DatabaseNum = null;
                 dto.Customer.CustomerUuid = null;
                 dto.Customer.CustomerCode = null;
-                // TODO 
-                //dto.SalesOrderHeader.OrderNumber = null;
+                if (dto.HasCustomerAddress)
+                {
+                    foreach (var addr in dto.CustomerAddress)
+                    {
+                        addr.AddressUuid = null;
+                        addr.AddressCode = null;
+                    }
+                }
             }
             IsValid=isValid;
             return isValid;

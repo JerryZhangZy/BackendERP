@@ -257,30 +257,63 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success && (await DeleteDataAsync());
         }
 
-        public async Task<WarehousePayload> GetWarehouseByWarehouseCodeArrayAsync(WarehousePayload payload)
+        public WarehousePayload GetWarehouseByWarehouseCodeArray(WarehousePayload payload)
         {
             if (!payload.HasWarehouseCodes)
                 return payload;
             var list = new List<WarehouseDataDto>();
             var msglist = new List<MessageClass>();
-            foreach (var code in payload.WarehouseCodes)
+            var rowNumList = new List<long>();
+            using(var trx=new ScopedTransaction(dbFactory))
             {
-                if (await GetWarehouseByWarehouseCodeAsync(payload, code))
+                rowNumList = WarehouseServiceHelper.GetRowNumsByWarehouseCodes(payload.WarehouseCodes, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rownum in rowNumList)
+            {
+                if (GetData(rownum))
                     list.Add(ToDto());
-                else
-                    msglist.AddError($"ProductSku:{code} no found");
             }
             payload.Warehouses = list;
             payload.Messages = msglist;
             return payload;
         }
 
-        public async Task<bool> GetWarehouseByWarehouseCodeAsync(WarehousePayload payload, string warehouseCode)
+        public async Task<WarehousePayload> GetWarehouseByWarehouseCodeArrayAsync(WarehousePayload payload)
+        {
+            if (!payload.HasWarehouseCodes)
+                return payload;
+            var list = new List<WarehouseDataDto>();
+            var msglist = new List<MessageClass>();
+            var rowNumList = new List<long>();
+            using(var trx=new ScopedTransaction(dbFactory))
+            {
+                rowNumList = await WarehouseServiceHelper.GetRowNumsByWarehouseCodesAsync(payload.WarehouseCodes, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rownum in rowNumList)
+            {
+                if (await GetDataAsync(rownum))
+                    list.Add(ToDto());
+            }
+            payload.Warehouses = list;
+            payload.Messages = msglist;
+            return payload;
+        }
+
+        public bool GetWarehouseByWarehouseCode(WarehousePayload payload, string warehouseCode)
         {
             if (string.IsNullOrEmpty(warehouseCode))
                 return false;
-            List();
-            if (!(await ValidateAccountAsync(payload, warehouseCode).ConfigureAwait(false)))
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = WarehouseServiceHelper.GetRowNumByWarehouseCode(warehouseCode, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return GetData(rowNum);
+        }
+
+        public async Task<bool> GetWarehouseByWarehouseCodeAsync(WarehousePayload payload, string warehouseCode)
+        {
+            if (string.IsNullOrEmpty(warehouseCode))
                 return false;
             long rowNum = 0;
             using (var tx = new ScopedTransaction(dbFactory))

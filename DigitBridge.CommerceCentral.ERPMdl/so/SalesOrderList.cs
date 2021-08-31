@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -76,7 +77,7 @@ COALESCE(ordst.text, '') orderStatusText,
             paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
 
             return paramList.ToArray();
-        
+
         }
 
         #endregion override methods
@@ -264,6 +265,32 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
                 throw;
             }
             return rowNumList;
+        }
+
+        /// <summary>
+        /// Get row num list by order numbers
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<List<long>> GetRowNumListAsync(IList<string> orderNumbers, int masterAccountNum, int profileNum)
+        {
+            var sql = @"
+SELECT RowNum FROM SalesOrderHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND @orderNumbers.exist('/parameters/value[text()=sql:column(''tbl.OrderNumber'')]')=1";
+            var paras = new SqlParameter[]
+            {
+                new SqlParameter("@masterAccountNum",masterAccountNum),
+                new SqlParameter("@profileNum",profileNum),
+                new SqlParameter("@orderNumbers",orderNumbers.ListToXml()){ DbType=DbType.Xml}
+        };
+            using var trs = new ScopedTransaction(dbFactory);
+            return await SqlQuery.ExecuteAsync(
+                sql,
+                (long rowNum) => rowNum,
+                paras
+            );
         }
 
     }

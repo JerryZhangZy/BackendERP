@@ -261,6 +261,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (Data is null || Calculator is null)
                 return false;
+            Calculator.SetDefault(Data,ProcessMode);
             return Calculator.Calculate(Data, ProcessMode);
         }
 
@@ -270,7 +271,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return ;
             Calculator.PrepareData(Data, ProcessMode);
         }
-
+        public virtual void SetDefault()
+        {
+            if (Data is null || Calculator is null)
+                return;
+            Calculator.SetDefault(Data, ProcessMode);
+        }
         public virtual bool Validate()
         {
             if (Data is null || Validators is null || Validators.Count == 0)
@@ -381,7 +387,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 return false;
-
+            //PrepareData();
+            SetDefault();
             Calculate();
             return _data.Save();
         }
@@ -419,6 +426,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 return false;
+            //PrepareData();
+            SetDefault();
             Calculate();
             return await _data.SaveAsync().ConfigureAwait(false);
         }

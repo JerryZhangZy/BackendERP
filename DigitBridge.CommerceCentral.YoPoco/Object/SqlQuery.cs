@@ -1161,6 +1161,18 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             return null;
         }
+        public static IDataParameter ToDateParameter<T>(this T value, string name, FilterBy filterBy = FilterBy.eq)
+        {
+            var dt = (value.ToDateTime() < _SqlMinDateTime) ? _SqlMinDateTime : value.ToDateTime();
+            if (filterBy == FilterBy.lt || filterBy == FilterBy.le)
+                dt = dt.Date.AddDays(1).AddSeconds(-1);
+            else
+                dt = dt.Date;
+            return new SqlParameter(name.ToParameterName(), SqlDbType.DateTime)
+            {
+                Value = dt
+            };
+        }
 
         public static IDataParameter ToParameter(this string value, string name, bool isNvarchar = false)
         {

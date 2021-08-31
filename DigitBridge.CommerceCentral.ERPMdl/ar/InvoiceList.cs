@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -188,6 +189,32 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
                 throw;
             }
             return rowNumList;
+        }
+
+        /// <summary>
+        /// Get row num list by  numbers
+        /// </summary>
+        /// <param name="invoiceNumbers"></param>
+        /// <returns></returns>
+        public virtual async Task<List<long>> GetRowNumListAsync(IList<string> invoiceNumbers, int masterAccountNum, int profileNum)
+        {
+            var sql = @"
+SELECT RowNum FROM InvoiceHeader ins
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND @invoiceNumbers.exist('/parameters/value[text()=sql:column(''ins.InvoiceNumber'')]')=1";
+            var paras = new SqlParameter[]
+            {
+                new SqlParameter("@masterAccountNum",masterAccountNum),
+                new SqlParameter("@profileNum",profileNum),
+                new SqlParameter("@invoiceNumbers",invoiceNumbers.ListToXml()){ DbType=DbType.Xml}
+        };
+            using var trs = new ScopedTransaction(dbFactory);
+            return await SqlQuery.ExecuteAsync(
+                sql,
+                (long rowNum) => rowNum,
+                paras
+            );
         }
 
     }

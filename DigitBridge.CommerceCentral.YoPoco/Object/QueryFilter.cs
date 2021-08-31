@@ -21,6 +21,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         protected bool _enable;
         protected IList<string> _morePropertyName;
         protected bool _isNVarChar;
+        protected bool _isDate;
 
         protected string _sqlString;
         protected IList<T> _multipleFilterValueList;
@@ -35,9 +36,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
             _enable = false;
             _morePropertyName = new List<string>();
             _sqlString = string.Empty;
+            _isDate = false;
         }
 
-        public QueryFilter(string Name, string PropertyName, string prefix, FilterBy FilterMode, T DefaultValue, bool isNVarChar = false, bool Enable = false)
+        public QueryFilter(string Name, string PropertyName, string prefix, FilterBy FilterMode, T DefaultValue, bool isNVarChar = false, bool Enable = false,bool isDate=false)
             : this()
         {
             _name = Name;
@@ -49,6 +51,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             _enable = Enable;
             _sqlString = string.Empty;
             _isNVarChar = isNVarChar;
+            _isDate = isDate;
         }
 
         public QueryFilter(string Name, string PropertyName, IEnumerable<string> MorePropertyName, string prefix, FilterBy FilterMode, T DefaultValue, bool isNVarChar = false, bool Enable = false)
@@ -635,7 +638,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             return (HasMultipleFilterValue)
                 ? MultipleFilterValueList.ToParameter<T>(Name)
-                : FilterValue.ToParameter<T>(Name, IsNVarchar);
+                :(typeof(T)==typeof(DateTime)&&_isDate)?FilterValue.ToDateParameter<T>(Name,FilterMode):FilterValue.ToParameter<T>(Name, IsNVarchar);
         }
 
         protected virtual bool IsValidValue(T value)

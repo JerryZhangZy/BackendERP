@@ -247,9 +247,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
-        public string GetCustomerUuidByCode(int profileNum, string customerCode)
+
+        public CustomerPayload GetCustomersByCodeArray(CustomerPayload payload)
         {
-            return dbFactory.Db.FirstOrDefault<string>($"select CustomerUuid from Customer where CustomerCode='{customerCode}' and ProfileNum={profileNum}");
+            if (!payload.HasCustomerCodes)
+                return payload;
+            var list = new List<CustomerDataDto>();
+            var msglist = new List<MessageClass>();
+            var rowNumList = new List<long>();
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNumList = CustomerServiceHelper.GetRowNumsByCustomerCodes(payload.CustomerCodes, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rowNum in rowNumList)
+            {
+                if (GetData(rowNum))
+                    list.Add(ToDto());
+            }
+            payload.Customers = list;
+            payload.Messages = msglist;
+            return payload;
         }
 
         public async Task<CustomerPayload> GetCustomersByCodeArrayAsync(CustomerPayload payload)
@@ -258,12 +275,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return payload;
             var list = new List<CustomerDataDto>();
             var msglist = new List<MessageClass>();
-            foreach(var code in payload.CustomerCodes)
+            var rowNumList = new List<long>();
+            using (var trx = new ScopedTransaction(dbFactory))
             {
-                if (await GetCustomerByCustomerCodeAsync(payload, code))
+                rowNumList =await CustomerServiceHelper.GetRowNumsByCustomerCodesAsync(payload.CustomerCodes, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rowNum in rowNumList)
+            {
+                if (await GetDataAsync(rowNum))
                     list.Add(ToDto());
-                else
-                    msglist.AddError($"CustomerCode:{code} no found");
             }
             payload.Customers = list;
             payload.Messages = msglist;
