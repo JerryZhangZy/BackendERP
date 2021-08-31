@@ -75,8 +75,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            Data.Inventory = GenerateMissingInventories(Data.ProductBasic,Data.Inventory);
-
             return SaveData();
         }
 
@@ -99,8 +97,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
                 return false;
-
-            Data.Inventory = GenerateMissingInventories(Data.ProductBasic, Data.Inventory);
 
             return await SaveDataAsync().ConfigureAwait(false);
         }
@@ -126,8 +122,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            Data.Inventory = GenerateMissingInventories(Data.ProductBasic, Data.Inventory);
-
             return SaveData();
         }
 
@@ -151,8 +145,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // validate data for Add processing
             if (!(await ValidateAsync().ConfigureAwait(false)))
                 return false;
-
-            Data.Inventory = GenerateMissingInventories(Data.ProductBasic, Data.Inventory);
 
             return await SaveDataAsync().ConfigureAwait(false);
         }
@@ -323,6 +315,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success && (await DeleteDataAsync());
         }
 
+        public InventoryPayload GetInventoryBySkuArray(InventoryPayload payload)
+        {
+            if (!payload.HasSkus)
+                return payload;
+            var list = new List<InventoryDataDto>();
+            var msglist = new List<MessageClass>();
+            var rowNumList = new List<long>();
+            using(var trx=new ScopedTransaction(dbFactory))
+            {
+                rowNumList = InventoryServiceHelper.GetRowNumsBySkus(payload.Skus, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rownum in rowNumList)
+            {
+                if (GetData(rownum))
+                    list.Add(ToDto());
+            }
+            payload.Inventorys = list;
+            payload.Messages = msglist;
+            return payload;
+        }
 
         public async Task<InventoryPayload> GetInventoryBySkuArrayAsync(InventoryPayload payload)
         {
@@ -330,89 +342,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return payload;
             var list = new List<InventoryDataDto>();
             var msglist = new List<MessageClass>();
-            foreach (var code in payload.Skus)
+            var rowNumList = new List<long>();
+            using(var trx=new ScopedTransaction(dbFactory))
             {
-                if (await GetInventoryBySkuAsync(payload, code))
+                rowNumList = await InventoryServiceHelper.GetRowNumsBySkusAsync(payload.Skus, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rownum in rowNumList)
+            {
+                if (await GetDataAsync(rownum))
                     list.Add(ToDto());
-                else
-                    msglist.AddError($"ProductSku:{code} no found");
             }
             payload.Inventorys = list;
             payload.Messages = msglist;
             return payload;
         }
 
+        public bool GetInventoryBySku(InventoryPayload payload, string sku)
+        {
+            return  GetDataBySku(sku, payload.MasterAccountNum, payload.ProfileNum);
+        }
+
         public async Task<bool> GetInventoryBySkuAsync(InventoryPayload payload, string sku)
         {
-            if (string.IsNullOrEmpty(sku))
-                return false;
-            List();
-            if (!(await ValidateAccountAsync(payload, sku).ConfigureAwait(false)))
-                return false;
             return await GetDataBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
         }
-        protected IList<Inventory> GenerateMissingInventories(ProductBasic product, IList<Inventory> inventories)
-        {
-            var warehouseList = new List<DistributionCenter>();
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                warehouseList.AddRange(WarehouseServiceHelper.GetWarehouses(product.MasterAccountNum, product.ProfileNum));
-            }
-            if (inventories == null)
-                inventories = new List<Inventory>();
-            var twarehouseCode = inventories.Select(r => r.WarehouseCode).Distinct().ToHashSet();
-            var missingWarehouse = warehouseList.Where(r => !twarehouseCode.Contains(r.DistributionCenterCode)).ToList();
-            missingWarehouse.ForEach(x =>
-            {
-                inventories.Add(GenerateSingleInventory(product, x));
-            });
-            return inventories;
-        }
 
-        protected Inventory GenerateSingleInventory(ProductBasic product, DistributionCenter warehouse)
-        {
-            return new Inventory()
-            {
-                //ProductBasic
-                DatabaseNum = product.DatabaseNum,
-                MasterAccountNum = product.MasterAccountNum,
-                ProfileNum = product.ProfileNum,
-                ProductUuid = product.ProductUuid,
-                InventoryUuid = Guid.NewGuid().ToString(),
-                SKU = product.SKU,
-
-                #region ProductExt
-
-                //StyleCode = ext.StyleCode,
-                //ColorPatternCode = ext.ColorPatternCode,
-                //SizeType = ext.SizeType,
-                //SizeCode = ext.SizeCode,
-                //WidthCode = ext.WidthCode,
-                //LengthCode = ext.LengthCode,
-                //PriceRule = ext.PriceRule,
-                //LeadTimeDay = ext.LeadTimeDay,
-                //PoSize = ext.PoSize,
-                //MinStock = ext.MinStock,
-
-                //Currency = ext.Currency,
-                //UOM = ext.UOM,
-                //QtyPerPallot = ext.QtyPerPallot,
-                //QtyPerCase = ext.QtyPerCase,
-                //QtyPerBox = ext.QtyPerBox,
-                //PackType = ext.PackType,
-                //PackQty = ext.PackQty,
-                //DefaultPackType = ext.DefaultPackType,
-
-                //SalesCost = ext.SalesCost,
-
-                #endregion
-
-                //Warehouse
-                WarehouseCode = warehouse.DistributionCenterCode,
-                WarehouseName = warehouse.DistributionCenterName,
-                WarehouseUuid = warehouse.DistributionCenterUuid
-            };
-        }
     }
 }
 

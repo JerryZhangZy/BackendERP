@@ -126,7 +126,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (data is null)
                 return false;
-
+            if (processingMode == ProcessingMode.Add)
+            {
+                data.Inventory = GenerateMissingInventories(data.ProductBasic, data.Inventory);
+            }
             //TODO: add set default for detail list logic
             /* This is generated sample code
 
@@ -139,6 +142,68 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             */
             return true;
+        }
+        protected IList<Inventory> GenerateMissingInventories(ProductBasic product, IList<Inventory> inventories)
+        {
+            var warehouseList = new List<DistributionCenter>();
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                warehouseList.AddRange(WarehouseServiceHelper.GetWarehouses(product.MasterAccountNum, product.ProfileNum));
+            }
+            if (inventories == null)
+                inventories = new List<Inventory>();
+            var twarehouseCode = inventories.Select(r => r.WarehouseCode).Distinct().ToHashSet();
+            var missingWarehouse = warehouseList.Where(r => !twarehouseCode.Contains(r.DistributionCenterCode)).ToList();
+            missingWarehouse.ForEach(x =>
+            {
+                inventories.Add(GenerateSingleInventory(product, x));
+            });
+            return inventories;
+        }
+
+        protected Inventory GenerateSingleInventory(ProductBasic product, DistributionCenter warehouse)
+        {
+            return new Inventory()
+            {
+                //ProductBasic
+                DatabaseNum = product.DatabaseNum,
+                MasterAccountNum = product.MasterAccountNum,
+                ProfileNum = product.ProfileNum,
+                ProductUuid = product.ProductUuid,
+                InventoryUuid = Guid.NewGuid().ToString(),
+                SKU = product.SKU,
+
+                #region ProductExt
+
+                //StyleCode = ext.StyleCode,
+                //ColorPatternCode = ext.ColorPatternCode,
+                //SizeType = ext.SizeType,
+                //SizeCode = ext.SizeCode,
+                //WidthCode = ext.WidthCode,
+                //LengthCode = ext.LengthCode,
+                //PriceRule = ext.PriceRule,
+                //LeadTimeDay = ext.LeadTimeDay,
+                //PoSize = ext.PoSize,
+                //MinStock = ext.MinStock,
+
+                //Currency = ext.Currency,
+                //UOM = ext.UOM,
+                //QtyPerPallot = ext.QtyPerPallot,
+                //QtyPerCase = ext.QtyPerCase,
+                //QtyPerBox = ext.QtyPerBox,
+                //PackType = ext.PackType,
+                //PackQty = ext.PackQty,
+                //DefaultPackType = ext.DefaultPackType,
+
+                //SalesCost = ext.SalesCost,
+
+                #endregion
+
+                //Warehouse
+                WarehouseCode = warehouse.DistributionCenterCode,
+                WarehouseName = warehouse.DistributionCenterName,
+                WarehouseUuid = warehouse.DistributionCenterUuid
+            };
         }
 
         //TODO: add set default for detail line logic

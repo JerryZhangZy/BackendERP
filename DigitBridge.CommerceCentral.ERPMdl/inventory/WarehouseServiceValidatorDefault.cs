@@ -388,7 +388,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.DistributionCenter.DistributionCenterUuid = Guid.NewGuid().ToString();
+                dto.DistributionCenter.DistributionCenterUuid = null;
   
             }
             else if (processingMode == ProcessingMode.Edit)
@@ -404,8 +404,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.DistributionCenter.DatabaseNum = null;
                 dto.DistributionCenter.DistributionCenterUuid = null;
                 dto.DistributionCenter.DistributionCenterCode = null;
-                // TODO 
-                //dto.SalesOrderHeader.OrderNumber = null;
             }
             IsValid=isValid;
             return isValid;
@@ -431,8 +429,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.DistributionCenter.DistributionCenterUuid = Guid.NewGuid().ToString();
-  
+                dto.DistributionCenter.DistributionCenterUuid = null;
             }
             else if (processingMode == ProcessingMode.Edit)
             {
@@ -447,8 +444,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.DistributionCenter.DatabaseNum = null;
                 dto.DistributionCenter.DistributionCenterUuid = null;
                 dto.DistributionCenter.DistributionCenterCode = null;
-                // TODO 
-                //dto.SalesOrderHeader.OrderNumber = null;
 
             }
             IsValid=isValid;

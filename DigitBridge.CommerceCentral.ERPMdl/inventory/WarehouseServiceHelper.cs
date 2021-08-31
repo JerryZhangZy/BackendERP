@@ -205,6 +205,41 @@ AND ProfileNum = @profileNum";
                 profileNum.ToSqlParameter("profileNum")
             )).ToList();
         }
+        public static List<long> GetRowNumsByWarehouseCodes(IList<string> warehouseCodes, int masterAccountNum, int profileNum)
+        {
+            if (warehouseCodes == null || warehouseCodes.Count == 0)
+                return new List<long>();
+            var sql = $@"
+SELECT DistributionCenterNum FROM DistributionCenter tbl
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @WarehouseCode _WarehouseCode WHERE _WarehouseCode.item = COALESCE([DistributionCenterCode],'')))";
+
+            return SqlQuery.Execute(
+                sql,
+                (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                warehouseCodes.ToParameter<string>("WarehouseCode"));
+        }
+
+        public static async Task<List<long>> GetRowNumsByWarehouseCodesAsync(IList<string> warehouseCodes, int masterAccountNum, int profileNum)
+        {
+            if (warehouseCodes == null || warehouseCodes.Count == 0)
+                return new List<long>();
+            var sql = $@"
+SELECT DistributionCenterNum FROM DistributionCenter tbl
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @WarehouseCode _WarehouseCode WHERE _WarehouseCode.item = COALESCE([DistributionCenterCode],'')))";
+
+            return await SqlQuery.ExecuteAsync(
+                sql,
+                (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                warehouseCodes.ToParameter<string>("WarehouseCode"));
+        }
 
     }
 }
