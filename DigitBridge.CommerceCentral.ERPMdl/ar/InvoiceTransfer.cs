@@ -82,7 +82,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             invoiceHeader.MasterAccountNum = soHeader.MasterAccountNum;
             invoiceHeader.ProfileNum = soHeader.ProfileNum;
             //InvoiceUuid
-            invoiceHeader.InvoiceNumber = soHeader.OrderNumber + "-" + osHeader.OrderShipmentNum;
+            invoiceHeader.InvoiceNumber = string.IsNullOrEmpty(osHeader.InvoiceNumber) ? 
+                soHeader.OrderNumber + "-" + osHeader.OrderShipmentNum : osHeader.InvoiceNumber;
             invoiceHeader.InvoiceType = (int)InvoiceType.Sales;
             invoiceHeader.InvoiceStatus = (int)InvoiceStatus.New;
             invoiceHeader.InvoiceDate = _dtNowUtc;
@@ -133,15 +134,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return invoieHeaderAttributes;
         }
 
-        private InvoiceHeaderInfo OrderShipmentAndSalesOrderToInvoiceHeaderInfo(OrderShipmentHeader osHeader, SalesOrderHeader soHeader)
+        private InvoiceHeaderInfo OrderShipmentAndSalesOrderToInvoiceHeaderInfo(OrderShipmentHeader osHeader, SalesOrderHeaderInfo soHeaderInfo)
         {
-            string invoiceHeaderJson = soHeader.ObjectToString();
-            var invoiceHeaderInfo = JsonConvert.DeserializeObject<InvoiceHeaderInfo>(invoiceHeaderJson);
+            string soHeaderInfoJson = soHeaderInfo.ObjectToString();
+            var invoiceHeaderInfo = JsonConvert.DeserializeObject<InvoiceHeaderInfo>(soHeaderInfoJson);
 
             invoiceHeaderInfo.RowNum = 0;
 
             invoiceHeaderInfo.OrderShipmentNum = osHeader.OrderShipmentNum;
             invoiceHeaderInfo.OrderShipmentUuid = osHeader.OrderShipmentUuid;
+            invoiceHeaderInfo.ShippingCarrier = osHeader.ShippingCarrier;
+            invoiceHeaderInfo.ShippingClass = osHeader.ShippingClass;
+            invoiceHeaderInfo.WarehouseCode = osHeader.WarehouseCode;
+            invoiceHeaderInfo.RefNum = osHeader.ShipmentReferenceID;
 
             return invoiceHeaderInfo;
         }
@@ -158,7 +163,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 foreach (var osItem in osPkg.OrderShipmentShippedItem)
                 {
-                    var soLine = soData.SalesOrderItems.FirstOrDefault(p => p.OrderDCAssignmentLineUuid == "");//osItem.OrderDCAssignmentLineNum);
+                    var soLine = soData.SalesOrderItems.FirstOrDefault(p => p.OrderDCAssignmentLineNum == osItem.OrderDCAssignmentLineNum);
                     if (soLine == null)
                     {
                         AddError($"Data not found.");
@@ -173,8 +178,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         InvoiceItemStatus = soLine.SalesOrderItemstatus,
                         ItemDate = _dtNowUtc,
                         ItemTime = _dtNowUtc.TimeOfDay,
-                        ShipDate = soLine.ShipDate,
-                        //EtaArrivalDate
+                        ShipDate = osHeader.ShipmentDateUtc,
+                        EtaArrivalDate = soLine.EtaArrivalDate,
                         SKU = soLine.SKU,
                         ProductUuid = soLine.ProductUuid,
                         InventoryUuid = soLine.InventoryUuid,

@@ -250,17 +250,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     return false;
                 }
                 salesOrderUuid = await GetSalesOrderUuidAsync(orderDCAssignmentNum);
-                if (osData is null)
-                {
-                    AddError($"OrderShipment uuid {orderShimentUuid} not found.");
-                    return false;
-                }
+            }
+            if (string.IsNullOrEmpty(salesOrderUuid))
+            {
+                AddError($"SalesOrder uuid {orderShimentUuid} not found.");
+                return false;
+            }
+
+            if ((await ExistSalesOrderInInvoiceAsync(salesOrderUuid)))
+            {
+                AddError($"SalesOrderUuid {salesOrderUuid} has transferred to sales order.");
+                return false;
             }
 
             var soData = await GetSalesOrderAsync(salesOrderUuid);
             if (soData is null)
             {
-                AddError($"SalesOrder uuid{salesOrderUuid} not found.");
+                AddError($"SalesOrder {salesOrderUuid} not found.");
                 return false;
             }
        
@@ -297,6 +303,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
+        /// Check SalesOrder is already exist in Invoice
+        /// </summary>
+        /// <param name="salesOrderUuid"></param>
+        /// <returns>Exist or Not</returns>
+        protected async Task<bool> ExistSalesOrderInInvoiceAsync(string salesOrderUuid)
+        {
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await InvoiceHelper.ExistSalesOrderUuidAsync(salesOrderUuid);
+        }
+
+        /// <summary>
         /// Get SalesOrderData by salesOrderUuid
         /// </summary>
         /// <param name="salesOrderUuid"></param>
@@ -326,17 +343,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return null;
             }
 
-            invoiceService.DetachData(null);
-            invoiceService.Add();
-
             InvoiceTransfer invoiceTransfer = new InvoiceTransfer(this, "");
-
             var invoiceData = invoiceTransfer.FromOrderShipmentAndSalesOrder(osData, soData);
-            invoiceService.AttachData(invoiceData);
-            invoiceService.Data.CheckIntegrity();
 
-            if (await invoiceService.SaveDataAsync())
-                return invoiceService.Data;
+            var inSrv = new InvoiceService(dbFactory);
+
+            inSrv.DetachData(null);
+            inSrv.Add();
+
+            inSrv.AttachData(invoiceData);
+            inSrv.Data.CheckIntegrity();
+
+            if (await inSrv.SaveDataAsync())
+                return inSrv.Data;
             return null;
         }
 

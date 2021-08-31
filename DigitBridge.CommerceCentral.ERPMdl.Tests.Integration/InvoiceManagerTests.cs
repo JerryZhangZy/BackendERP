@@ -16,7 +16,7 @@ using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
-    public partial class SalesOrderManagerTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class InvoiceManagerTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug Manager Function";
 
@@ -24,14 +24,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public IConfiguration Configuration { get; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public SalesOrderManagerTests(TestFixture<StartupTest> fixture)
+        public InvoiceManagerTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
 
             InitForTest();
 
-            CreateSalesOrder_Test();
+            CreateInvoice_Test();
         }
         protected void InitForTest()
         {
@@ -46,26 +46,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         #region sync methods
         [Fact]
         //[Fact(Skip = SkipReason)]
-        public void CreateSalesOrder_Test()
+        public void CreateInvoice_Test()
         {
             var uuids = new List<string> {
-            "815E5528-5CD8-48E6-9FFD-EDBD0EA58394",
-            "8265ED1E-DAC9-4B03-BB08-AB5FF7430405",
-            "F82BCD20-BA46-4A55-AF95-248BF6634E56",
-            "72EBF750-3C86-4865-BD41-4B1E5CF54FFD",
-            "984A5EE4-6002-4955-A754-C27BED59E78E",
-            "97fdd43b-3413-42c3-ba5c-284e8a3524c0",
-            "8240c857-f491-4895-801a-71c4c9d5fd45",
-            "dd999d94-74f5-4f6c-af5c-7bec45e03b58",
-            "a792a6ed-87c3-4cfe-9dd4-15174b7290f8"
+            "ac1e7f54-e5a2-4a45-80bd-a04a38b105b3",
+            "11cb3ad7-80b1-48ba-a7a7-02a1ddb238b7",
+            "ffb46bc8-a1f0-4245-9f7f-11f641411e11",
+            "0221637b-7c9d-45e4-aec1-c7f1235912b2",
+            "d9ec860f-8a9e-4f61-a9a4-9cedbd887961",
+            "f13f3fd4-715f-4772-8c39-e68494ec87c3",
+            "ed239ada-6526-4fed-99f2-e9a4fe7ad0f3",
+            "736bf01f-31a2-49b5-a14c-f6235e88e096",
+            "f9973f32-5d61-4e7c-8862-3f98f73da427"
             };
-            SalesOrderManager soManager = new SalesOrderManager(DataBaseFactory);
+            InvoiceManager invoiceManager = new InvoiceManager(DataBaseFactory);
             bool result = true;
             foreach (var uuid in uuids)
             {
                 try
                 {
-                    result = soManager.CreateSalesOrderByChannelOrderIdAsync(uuid).Result;
+                    result = invoiceManager.CreateInvoiceByOrderShipmentIdAsync(uuid).Result;
 
                     Assert.True(result);
 

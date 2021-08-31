@@ -316,19 +316,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns>Success Create Sales Order</returns>
         public async Task<SalesOrderData> CreateSalesOrdersAsync(ChannelOrderData coData, DCAssignmentData dcAssigmentData)
         {
-            if ((await ExistDCAssignmentInSalesOrderAsync(dcAssigmentData.OrderDCAssignmentHeader.OrderDCAssignmentNum)))
+            long orderDCAssignmentNum = dcAssigmentData.OrderDCAssignmentHeader.OrderDCAssignmentNum;
+            if ((await ExistDCAssignmentInSalesOrderAsync(orderDCAssignmentNum)))
             {
-                AddError("ChannelOrder DC Assigment has transferred to sales order.");
+                AddError($"Channel OrderDCAssigmentNum {orderDCAssignmentNum} has transferred to sales order.");
                 return null;
             }
+
+            SalesOrderTransfer soTransfer = new SalesOrderTransfer(this, "");
+            var soData = soTransfer.FromChannelOrder(dcAssigmentData, coData);
+
             var soSrv = new SalesOrderService(dbFactory);
 
             soSrv.DetachData(null);
             soSrv.Add();
 
-            SalesOrderTransfer soTransfer = new SalesOrderTransfer(this, "");
-
-            var soData = soTransfer.FromChannelOrder(dcAssigmentData, coData);
             soSrv.AttachData(soData);
             soSrv.Data.CheckIntegrity();
 

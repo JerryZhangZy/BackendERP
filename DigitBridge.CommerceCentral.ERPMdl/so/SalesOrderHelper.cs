@@ -197,10 +197,10 @@ WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + Cast(@orderDCAssignmentNum as 
 SELECT [SalesOrderUuid] FROM SalesOrderHeader tbl
 WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + Cast(@orderDCAssignmentNum as varchar)
 ";
-            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+            var result = await SqlQuery.ExecuteScalarAsync<string>(sql,
                  orderDCAssignmentNum.ToSqlParameter("orderDCAssignmentNum"));
 
-            return result.ToString();
+            return result;
         }
     }
 }

@@ -232,6 +232,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("UpdateBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _updateBy;
 
+        [Column("OrderDCAssignmentLineNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _orderDCAssignmentLineNum;
+
         #endregion Fields - Generated 
 
         #region Properties - Generated 
@@ -1293,6 +1296,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+		/// </summary>
+        public virtual long OrderDCAssignmentLineNum
+        {
+            get
+            {
+				return _orderDCAssignmentLineNum; 
+            }
+            set
+            {
+				_orderDCAssignmentLineNum = value; 
+				OnPropertyChanged("OrderDCAssignmentLineNum", value);
+            }
+        }
+
 
 
         #endregion Properties - Generated 
@@ -1452,6 +1471,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
+			_orderDCAssignmentLineNum = default(long); 
             ClearChildren();
             return this;
         }

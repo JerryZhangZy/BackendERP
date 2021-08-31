@@ -16,6 +16,7 @@ BEGIN
     ALTER TABLE SalesOrderItems ADD [OrderDCAssignmentLineUuid] VARCHAR(50) NOT NULL DEFAULT ''
 END		
 
+-- 08/31/20201 By Yunman
 IF COL_LENGTH('SalesOrderItems', 'OrderDCAssignmentLineNum') IS NULL					
 BEGIN					
     ALTER TABLE SalesOrderItems ADD [OrderDCAssignmentLineNum] bigint NOT NULL DEFAULT 0

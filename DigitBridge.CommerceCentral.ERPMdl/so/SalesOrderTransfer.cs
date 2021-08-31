@@ -251,7 +251,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     //DigitBridgeGuid
                     CentralOrderLineUuid = dcLine.CentralOrderLineUuid,
                     DBChannelOrderLineRowID = dcLine.DBChannelOrderLineRowID,
-                    OrderDCAssignmentLineUuid = dcLine.OrderDCAssignmentLineUuid
+                    OrderDCAssignmentLineUuid = dcLine.OrderDCAssignmentLineUuid,
+                    OrderDCAssignmentLineNum = dcLine.OrderDCAssignmentLineNum
                 };
 
                 soItem.SalesOrderItemsAttributes = new SalesOrderItemsAttributes();
