@@ -25,16 +25,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a SalesOrderService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class SalesOrderManager :  ISalesOrderManager , IMessage
+    public class SalesOrderManager : ISalesOrderManager, IMessage
     {
 
-        public SalesOrderManager() : base() {}
+        public SalesOrderManager() : base() { }
 
         public SalesOrderManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
         }
-        
+
         [XmlIgnore, JsonIgnore]
         protected SalesOrderService _salesOrderService;
         [XmlIgnore, JsonIgnore]
@@ -73,7 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _salesOrderList;
             }
         }
-        
+
         [XmlIgnore, JsonIgnore]
         protected SalesOrderTransfer _salesOrderTransfer;
         [XmlIgnore, JsonIgnore]
@@ -87,13 +87,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
-        private SalesOrderTransfer _soTransfer;
 
         public async Task<byte[]> ExportAsync(SalesOrderPayload payload)
         {
-            var rowNumList =await salesOrderList.GetRowNumListAsync(payload);
+            var rowNumList = await salesOrderList.GetRowNumListAsync(payload);
             var dtoList = new List<SalesOrderDataDto>();
-           foreach(var x in rowNumList)
+            foreach (var x in rowNumList)
             {
                 if (salesOrderService.GetData(x))
                     dtoList.Add(salesOrderService.ToDto());
@@ -105,7 +104,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public byte[] Export(SalesOrderPayload payload)
         {
-            var rowNumList =salesOrderList.GetRowNumList(payload);
+            var rowNumList = salesOrderList.GetRowNumList(payload);
             var dtoList = new List<SalesOrderDataDto>();
             foreach (var x in rowNumList)
             {
@@ -119,12 +118,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public void Import(SalesOrderPayload payload, IFormFileCollection files)
         {
-            if(files==null||files.Count==0)
+            if (files == null || files.Count == 0)
             {
                 AddError("no files upload");
                 return;
             }
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 if (!file.FileName.ToLower().EndsWith("csv"))
                 {
@@ -135,7 +134,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.SalesOrder = item;
                     if (salesOrderService.Add(payload))
@@ -156,23 +155,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task ImportAsync(SalesOrderPayload payload, IFormFileCollection files)
         {
-            if(files==null||files.Count==0)
+            if (files == null || files.Count == 0)
             {
                 AddError("no files upload");
                 return;
             }
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 if (!file.FileName.ToLower().EndsWith("csv"))
                 {
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list =salesOrderDataDtoCsv.Import(file.OpenReadStream());
+                var list = salesOrderDataDtoCsv.Import(file.OpenReadStream());
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.SalesOrder = item;
                     if (await salesOrderService.AddAsync(payload))
@@ -250,7 +249,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var coData = await GetChannelOrderAsync(centralOrderUuid);
             if (coData is null)
             {
-                AddError("ChannelOrder uuid {centralOrderUuid} not found.");
+                AddError($"ChannelOrder uuid {centralOrderUuid} not found.");
                 return false;
             }
 
@@ -303,10 +302,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="orderDCAssignmentUuid"></param>
         /// <returns>Exist or Not</returns>
-        protected async Task<bool> ExistDCAssignmentInSalesOrderAsync(string orderDCAssignmentUuid)
+        protected async Task<bool> ExistDCAssignmentInSalesOrderAsync(long orderDCAssignmentNum)
         {
             using (var trs = new ScopedTransaction(dbFactory))
-                return await SalesOrderHelper.ExistOrderDCAssignmentUuidAsync(orderDCAssignmentUuid);
+                return await SalesOrderHelper.ExistOrderDCAssignmentNumAsync(orderDCAssignmentNum);
         }
 
         /// <summary>
@@ -317,7 +316,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns>Success Create Sales Order</returns>
         public async Task<SalesOrderData> CreateSalesOrdersAsync(ChannelOrderData coData, DCAssignmentData dcAssigmentData)
         {
-            if ((await ExistDCAssignmentInSalesOrderAsync(dcAssigmentData.OrderDCAssignmentHeader.OrderDCAssignmentUuid)))
+            if ((await ExistDCAssignmentInSalesOrderAsync(dcAssigmentData.OrderDCAssignmentHeader.OrderDCAssignmentNum)))
             {
                 AddError("ChannelOrder DC Assigment has transferred to sales order.");
                 return null;
@@ -325,7 +324,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             salesOrderService.DetachData(null);
             salesOrderService.Add();
-            var soData = _soTransfer.FromChannelOrder(dcAssigmentData, coData);
+
+            SalesOrderTransfer soTransfer = new SalesOrderTransfer(this, "");
+
+            var soData = soTransfer.FromChannelOrder(dcAssigmentData, coData);
             salesOrderService.AttachData(soData);
             salesOrderService.Data.CheckIntegrity();
 

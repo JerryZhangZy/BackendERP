@@ -142,7 +142,19 @@ AND RowNum= @rowNum
                  profileNum.ToSqlParameter("profileNum"),
                  rowNum.ToSqlParameter("rowNum"));
             return result > 0;
-        } 
+        }
+
+        public static async Task<bool> ExistSalesOrderUuidAsync(string salesOrderUuid)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM InvoiceHeader tbl
+WHERE SalesOrderUuid = @salesOrderUuid
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql, 
+                salesOrderUuid.ToSqlParameter("salesOrderUuid")
+                );
+            return result > 0;
+        }
     }
 }
 

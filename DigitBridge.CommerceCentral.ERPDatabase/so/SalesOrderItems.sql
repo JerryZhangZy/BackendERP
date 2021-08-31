@@ -75,7 +75,10 @@
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore) 
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Ignore) 
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore) 
-    CONSTRAINT [PK_SalesOrderItems] PRIMARY KEY ([RowNum]), 
+ 
+    [OrderDCAssignmentLineNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+   
+   CONSTRAINT [PK_SalesOrderItems] PRIMARY KEY ([RowNum]), 
 ) 
 GO
 

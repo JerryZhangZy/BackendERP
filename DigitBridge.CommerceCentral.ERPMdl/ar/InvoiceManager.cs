@@ -25,16 +25,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a InvoiceService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class InvoiceManager :  IInvoiceManager , IMessage
+    public class InvoiceManager : IInvoiceManager, IMessage
     {
 
-        public InvoiceManager() : base() {}
+        public InvoiceManager() : base() { }
 
         public InvoiceManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
         }
-        
+
         [XmlIgnore, JsonIgnore]
         protected InvoiceService _invoiceService;
         [XmlIgnore, JsonIgnore]
@@ -76,9 +76,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<byte[]> ExportAsync(InvoicePayload payload)
         {
-            var rowNumList =await invoiceList.GetRowNumListAsync(payload);
+            var rowNumList = await invoiceList.GetRowNumListAsync(payload);
             var dtoList = new List<InvoiceDataDto>();
-           foreach(var x in rowNumList)
+            foreach (var x in rowNumList)
             {
                 if (invoiceService.GetData(x))
                     dtoList.Add(invoiceService.ToDto());
@@ -90,7 +90,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public byte[] Export(InvoicePayload payload)
         {
-            var rowNumList =invoiceList.GetRowNumList(payload);
+            var rowNumList = invoiceList.GetRowNumList(payload);
             var dtoList = new List<InvoiceDataDto>();
             foreach (var x in rowNumList)
             {
@@ -104,12 +104,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public void Import(InvoicePayload payload, IFormFileCollection files)
         {
-            if(files==null||files.Count==0)
+            if (files == null || files.Count == 0)
             {
                 AddError("no files upload");
                 return;
             }
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 if (!file.FileName.ToLower().EndsWith("csv"))
                 {
@@ -120,7 +120,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.Invoice = item;
                     if (invoiceService.Add(payload))
@@ -141,23 +141,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task ImportAsync(InvoicePayload payload, IFormFileCollection files)
         {
-            if(files==null||files.Count==0)
+            if (files == null || files.Count == 0)
             {
                 AddError("no files upload");
                 return;
             }
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 if (!file.FileName.ToLower().EndsWith("csv"))
                 {
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list =invoiceDataDtoCsv.Import(file.OpenReadStream());
+                var list = invoiceDataDtoCsv.Import(file.OpenReadStream());
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.Invoice = item;
                     if (await invoiceService.AddAsync(payload))
@@ -223,5 +223,132 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Messages.Add(message, MessageLevel.Debug, code);
 
         #endregion Messages
+
+        /// <summary>
+        /// Load OrderShipment and SalesOrder, create Invoice for each OrderShipment.
+        /// </summary>
+        /// <param name="centralOrderUuid"></param>
+        /// <returns>Success Create Sales Order</returns>
+        public async Task<bool> CreateInvoiceByOrderShipmentIdAsync(string orderShimentUuid)
+        {
+            //Get OrderShipment by uuid
+            var osData = await GetOrderShipmentAsync(orderShimentUuid);
+            if (osData is null)
+            {
+                AddError($"OrderShipment uuid {orderShimentUuid} not found.");
+                return false;
+            }
+
+            //Get Sale by uuid
+            string salesOrderUuid = "";// osData.OrderShipmentHeader.s
+            if (string.IsNullOrEmpty(salesOrderUuid))
+            {
+                long orderDCAssignmentNum = osData.OrderShipmentHeader.OrderDCAssignmentNum ?? 0;
+                if (orderDCAssignmentNum == 0)
+                {
+                    AddError($"No OrderDCAssignmentNum of OrderShipment {orderShimentUuid}.");
+                    return false;
+                }
+                salesOrderUuid = await GetSalesOrderUuidAsync(orderDCAssignmentNum);
+                if (osData is null)
+                {
+                    AddError($"OrderShipment uuid {orderShimentUuid} not found.");
+                    return false;
+                }
+            }
+
+            var soData = await GetSalesOrderAsync(salesOrderUuid);
+            if (soData is null)
+            {
+                AddError($"SalesOrder uuid{salesOrderUuid} not found.");
+                return false;
+            }
+       
+            //Create Invoice
+            var invoiceData = await CreateInvoiceAsync(osData, soData);
+            return invoiceData != null;
+        }
+
+        /// <summary>
+        /// Get OrderShipmentData by centralOrderUuid
+        /// </summary>
+        /// <param name="orderShimentUuid"></param>
+        /// <returns>OrderShipmentData</returns>
+        protected async Task<OrderShipmentData> GetOrderShipmentAsync(string orderShimentUuid)
+        {
+            //Get OrderShipment by uuid
+            var osSrv = new OrderShipmentService(dbFactory);
+
+            if (!(await osSrv.GetDataByIdAsync(orderShimentUuid)))
+                return null;
+            return osSrv.Data;
+        }
+
+        /// <summary>
+        /// Get SalesOrderData by OrderDCAssignmentNum
+        /// </summary>
+        /// <param name="orderDCAssignmentNum"></param>
+        /// <returns>SalesOrderData</returns>
+        protected async Task<string> GetSalesOrderUuidAsync(long orderDCAssignmentNum)
+        {
+            //Get SalesOrderData by uuid
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await SalesOrderHelper.GetSalesOrderUuidAsync(orderDCAssignmentNum);
+        }
+
+        /// <summary>
+        /// Get SalesOrderData by salesOrderUuid
+        /// </summary>
+        /// <param name="salesOrderUuid"></param>
+        /// <returns>SalesOrderData</returns>
+        protected async Task<SalesOrderData> GetSalesOrderAsync(string salesOrderUuid)
+        {
+            //Get SalesOrder by uuid
+            var soSrv = new SalesOrderService(dbFactory);
+
+            if (!(await soSrv.GetDataByIdAsync(salesOrderUuid)))
+                return null;
+            return soSrv.Data;
+        }
+
+        /// <summary>
+        /// Create one invoice from one orderShipment and one salesOrder.
+        /// </summary>
+        /// <param name="coData"></param>
+        /// <param name="dcAssigmentData"></param>
+        /// <returns>Success Create Invoice</returns>
+        public async Task<InvoiceData> CreateInvoiceAsync(OrderShipmentData osData, SalesOrderData soData)
+        {
+            string salesOrderUuid = soData.SalesOrderHeader.SalesOrderUuid;
+            if ((await ExistSalesOrderUuidAsync(salesOrderUuid)))
+            {
+                AddError($"SalesOrder has transferred to Invoice.{salesOrderUuid}");
+                return null;
+            }
+
+            invoiceService.DetachData(null);
+            invoiceService.Add();
+
+            InvoiceTransfer invoiceTransfer = new InvoiceTransfer(this, "");
+
+            var invoiceData = invoiceTransfer.FromOrderShipmentAndSalesOrder(osData, soData);
+            invoiceService.AttachData(invoiceData);
+            invoiceService.Data.CheckIntegrity();
+
+            if (await invoiceService.SaveDataAsync())
+                return invoiceService.Data;
+            return null;
+        }
+
+        /// <summary>
+        /// Check SalesOrderUuid is already exist in Invoice
+        /// </summary>
+        /// <param name="salesOrderUuid"></param>
+        /// <returns>Exist or Not</returns>
+        protected async Task<bool> ExistSalesOrderUuidAsync(string salesOrderUuid)
+        {
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await InvoiceHelper.ExistSalesOrderUuidAsync(salesOrderUuid);
+        }
     }
 }

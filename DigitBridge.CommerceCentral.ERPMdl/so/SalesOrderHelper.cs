@@ -184,7 +184,7 @@ AND ProfileNum = @profileNum";
 
             var sql = $@"
 SELECT COUNT(1) FROM SalesOrderHeader tbl
-WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + @orderDCAssignmentNum
+WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + Cast(@orderDCAssignmentNum as varchar)
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                   orderDCAssignmentNum.ToSqlParameter("orderDCAssignmentNum"));
@@ -195,7 +195,7 @@ WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + @orderDCAssignmentNum
         {
             var sql = $@"
 SELECT [SalesOrderUuid] FROM SalesOrderHeader tbl
-WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + @orderDCAssignmentNum
+WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + Cast(@orderDCAssignmentNum as varchar)
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                  orderDCAssignmentNum.ToSqlParameter("orderDCAssignmentNum"));
