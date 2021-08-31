@@ -196,62 +196,72 @@ AND ProfileNum = @profileNum";
         {
             if (skus == null || skus.Count == 0)
                 return new List<(long, string, string)>();
-            var filters = new List<IQueryFilter>
-            {
-                new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", "", FilterBy.eq, 0)
-                {
-                    FilterValue = masterAccountNum
-                },
-                new QueryFilter<int>("ProfileNum", "ProfileNum", "", FilterBy.eq, 0)
-                {
-                    FilterValue = profileNum
-                },
-                new QueryFilter<string>("SKU", "SKU", "", FilterBy.eq, "")
-                {
-                    MultipleFilterValueList = skus
-                }
-            };
-            var whereSql = string.Join(" and ", filters.Select(f => f.GetFilterSQLBySqlParameter()));
-            var sqlParams = filters.Select(f => f.GetSqlParameter()).ToArray();
             var sql = $@"
 SELECT CentralProductNum,ProductUuid,SKU FROM ProductBasic tbl
-WHERE {whereSql}";
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
 
             return SqlQuery.Execute(
                 sql,
                 (long rowNum, string customerUuid, string customerCode) => (rowNum,  customerUuid, customerCode),
-                sqlParams);
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                skus.ToParameter<string>("SKU"));
         }
 
         public static async Task<List<(long,string,string)>> GetKeyInfoBySkusAsync(IList<string> skus, int masterAccountNum, int profileNum)
         {
             if (skus == null || skus.Count == 0)
                 return new List<(long, string, string)>();
-            var filters = new List<IQueryFilter>
-            {
-                new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", "", FilterBy.eq, 0)
-                {
-                    FilterValue = masterAccountNum
-                },
-                new QueryFilter<int>("ProfileNum", "ProfileNum", "", FilterBy.eq, 0)
-                {
-                    FilterValue = profileNum
-                },
-                new QueryFilter<string>("SKU", "SKU", "", FilterBy.eq, "")
-                {
-                    MultipleFilterValueList = skus
-                }
-            };
-            var whereSql = string.Join(" and ", filters.Select(f => f.GetFilterSQLBySqlParameter()));
-            var sqlParams = filters.Select(f => f.GetSqlParameter()).ToArray();
             var sql = $@"
 SELECT CentralProductNum,ProductUuid,SKU FROM ProductBasic tbl
-WHERE {whereSql}";
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
 
             return await SqlQuery.ExecuteAsync(
                 sql,
                 (long rowNum, string customerUuid, string customerCode) => (rowNum, customerUuid, customerCode),
-                sqlParams);
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                skus.ToParameter<string>("SKU"));
+        }
+
+        public static List<long> GetRowNumsBySkus(IList<string> skus, int masterAccountNum, int profileNum)
+        {
+            if (skus == null || skus.Count == 0)
+                return new List<long>();
+            var sql = $@"
+SELECT CentralProductNum FROM ProductBasic tbl
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
+
+            return SqlQuery.Execute(
+                sql,
+                (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                skus.ToParameter<string>("SKU"));
+        }
+
+        public static async Task<List<long>> GetRowNumsBySkusAsync(IList<string> skus, int masterAccountNum, int profileNum)
+        {
+            if (skus == null || skus.Count == 0)
+                return new List<long>();
+            var sql = $@"
+SELECT CentralProductNum FROM ProductBasic tbl
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
+
+            return await SqlQuery.ExecuteAsync(
+                sql,
+                (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                skus.ToParameter<string>("SKU"));
         }
     }
 }
