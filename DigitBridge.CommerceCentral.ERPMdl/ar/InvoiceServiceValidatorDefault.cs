@@ -198,6 +198,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"RowNum: {data.InvoiceHeader.RowNum} is duplicate.");
                 return IsValid;
             }
+            if (string.IsNullOrEmpty(data.InvoiceHeader.InvoiceNumber))
+            {
+                data.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
+            }
+            else
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (InvoiceHelper.ExistNumber(data.InvoiceHeader.InvoiceNumber, data.InvoiceHeader.ProfileNum.ToInt()))
+                    {
+                        IsValid = false;
+                        AddError("InvoiceHeader.InvoiceNumber exist.");
+                        return IsValid;
+                    }
+                }
+
+            }
+            //for Add mode, always reset uuid
+            data.InvoiceHeader.InvoiceUuid = Guid.NewGuid().ToString();
+            if (data.InvoiceItems != null && data.InvoiceItems.Count > 0)
+            {
+                foreach (var detailItem in data.InvoiceItems)
+                    detailItem.InvoiceItemsUuid = Guid.NewGuid().ToString();
+            }
+
             return true;
 
         }
@@ -290,6 +315,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"RowNum: {data.InvoiceHeader.RowNum} is duplicate.");
                 return IsValid;
             }
+
+            if (string.IsNullOrEmpty(data.InvoiceHeader.InvoiceNumber))
+            {
+                data.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
+            }
+            else
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (await InvoiceHelper.ExistNumberAsync(data.InvoiceHeader.InvoiceNumber, data.InvoiceHeader.ProfileNum.ToInt()))
+                    {
+                        IsValid = false;
+                        AddError("InvoiceHeader.InvoiceNumber exist.");
+                        return IsValid;
+                    }
+                }
+            }
+            //for Add mode, always reset uuid
+            data.InvoiceHeader.InvoiceUuid = Guid.NewGuid().ToString();
+            if (data.InvoiceItems != null && data.InvoiceItems.Count > 0)
+            {
+                foreach (var detailItem in data.InvoiceItems)
+                    detailItem.InvoiceItemsUuid = Guid.NewGuid().ToString();
+            }
+
             return true;
 
         }
@@ -352,30 +402,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceNumber))
-                {
-                    dto.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
-                }
-                else
-                {
-                    using (var tx = new ScopedTransaction(dbFactory))
-                    {
-                        if (InvoiceHelper.ExistNumber(dto.InvoiceHeader.InvoiceNumber, dto.InvoiceHeader.ProfileNum.ToInt()))
-                        {
-                            isValid = false;
-                            AddError("InvoiceHeader.InvoiceNumber exist.");
-                        }
-                    }
-
-                }
-                //for Add mode, always reset uuid
-                dto.InvoiceHeader.InvoiceUuid = Guid.NewGuid().ToString();
-                if (dto.InvoiceItems != null && dto.InvoiceItems.Count > 0)
-                {
-                    foreach (var detailItem in dto.InvoiceItems)
-                        detailItem.InvoiceItemsUuid = Guid.NewGuid().ToString();
-                }
-
+                
             }
             else if (processingMode == ProcessingMode.Edit)
             {
@@ -420,28 +447,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                if (string.IsNullOrEmpty(dto.InvoiceHeader.InvoiceNumber))
-                {
-                    dto.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
-                }
-                else
-                {
-                    using (var tx = new ScopedTransaction(dbFactory))
-                    {
-                        if (await InvoiceHelper.ExistNumberAsync(dto.InvoiceHeader.InvoiceNumber, dto.InvoiceHeader.ProfileNum.ToInt()))
-                        {
-                            isValid = false;
-                            AddError("InvoiceHeader.InvoiceNumber exist.");
-                        }
-                    }
-                }
-                //for Add mode, always reset uuid
-                dto.InvoiceHeader.InvoiceUuid = Guid.NewGuid().ToString();
-                if (dto.InvoiceItems != null && dto.InvoiceItems.Count > 0)
-                {
-                    foreach (var detailItem in dto.InvoiceItems)
-                        detailItem.InvoiceItemsUuid = Guid.NewGuid().ToString();
-                }
 
             }
             else if (processingMode == ProcessingMode.Edit)

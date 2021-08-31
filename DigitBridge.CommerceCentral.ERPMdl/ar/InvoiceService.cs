@@ -286,31 +286,57 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
-        /// <summary>
-        /// Get invoice list by Uuid list
-        /// </summary>
-        public virtual async Task<InvoicePayload> GetListByInvoiceUuidAsync(InvoicePayload payload)
-        {
-            if (payload is null || !payload.HasInvoiceUuids)
-            {
-                AddError("InvoiceUuids is required.");
-                payload.Messages = this.Messages;
-                return payload;
-            }
-            var invoiceUuids = payload.InvoiceUuids;
 
-            List();
-            var result = new List<InvoiceDataDto>();
-            foreach (var id in invoiceUuids)
+        /// <summary>
+        /// Get multi sale order with detail by InvoiceNumbers
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <returns></returns>
+        public virtual async Task GetListByInvoiceNumbersAsync(InvoicePayload payload)
+        {
+            if (payload is null || !payload.HasInvoiceNumbers)
             {
-                if (!(await this.GetDataByIdAsync(id)))
+                AddError("InvoiceNumbers is required.");
+                payload.Messages = this.Messages;
+                payload.Success = false;
+            }
+            var rowNums = await new InvoiceList(dbFactory).GetRowNumListAsync(payload.InvoiceNumbers, payload.MasterAccountNum, payload.ProfileNum);
+
+            var result = new List<InvoiceDataDto>();
+            foreach (var rowNum in rowNums)
+            {
+                if (!(await this.GetDataAsync(rowNum)))
                     continue;
                 result.Add(this.ToDto());
                 this.DetachData(this.Data);
             }
             payload.Invoices = result;
-            return payload;
         }
+        ///// <summary>
+        ///// Get invoice list by Uuid list
+        ///// </summary>
+        //public virtual async Task<InvoicePayload> GetListByInvoiceUuidAsync(InvoicePayload payload)
+        //{
+        //    if (payload is null || !payload.HasInvoiceUuids)
+        //    {
+        //        AddError("InvoiceUuids is required.");
+        //        payload.Messages = this.Messages;
+        //        return payload;
+        //    }
+        //    var invoiceUuids = payload.InvoiceUuids;
+
+        //    List();
+        //    var result = new List<InvoiceDataDto>();
+        //    foreach (var id in invoiceUuids)
+        //    {
+        //        if (!(await this.GetDataByIdAsync(id)))
+        //            continue;
+        //        result.Add(this.ToDto());
+        //        this.DetachData(this.Data);
+        //    }
+        //    payload.Invoices = result;
+        //    return payload;
+        //}
     }
 }
 

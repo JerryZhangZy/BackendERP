@@ -393,31 +393,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"Data not found");
             }
             if (processingMode == ProcessingMode.Add)
-            {
-                if (string.IsNullOrEmpty(dto.SalesOrderHeader.OrderNumber))
-                {
-                    dto.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
-                }
-                else
-                {
-                    using (var tx = new ScopedTransaction(dbFactory))
-                    {
-                        if (SalesOrderHelper.ExistNumber(dto.SalesOrderHeader.OrderNumber, dto.SalesOrderHeader.ProfileNum.ToInt()))
-                        {
-                            isValid = false;
-                            AddError("Order Number is duplicate.");
-                        }
-                    }
-                }
-
-                //for Add mode, always reset uuid
-                dto.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();
-                if (dto.SalesOrderItems != null && dto.SalesOrderItems.Count > 0)
-                {
-                    foreach (var detailItem in dto.SalesOrderItems)
-                        detailItem.SalesOrderItemsUuid = Guid.NewGuid().ToString();
-                }
-
+            { 
             }
             else if (processingMode == ProcessingMode.Edit)
             {

@@ -35,7 +35,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "InvoiceUuids", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "InvoiceUuids", Description = "Invoice Uuids. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadGetSingle))]
         public static async Task<JsonNetResponse<InvoicePayload>> GetInvoice(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices/{invoiceNumber}")] HttpRequest req,
@@ -66,7 +65,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login MasterAccountNum", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "InvoiceUuids", In = ParameterLocation.Query, Required = true, Type = typeof(IList<string>), Summary = "InvoiceUuids", Description = "Array of InvoiceUuids.", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "invoiceNumbers", In = ParameterLocation.Query, Required = true, Type = typeof(IList<string>), Summary = "invoiceNumbers", Description = "Array of invoiceNumber.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadGetMultiple), Description = "mulit invoice.")]
         public static async Task<JsonNetResponse<InvoicePayload>> GetInvoiceList(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices")] HttpRequest req)
@@ -74,7 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
-            payload = await srv.GetListByInvoiceUuidAsync(payload);
+            await srv.GetListByInvoiceNumbersAsync(payload);
             return new JsonNetResponse<InvoicePayload>(payload);
         }
 
