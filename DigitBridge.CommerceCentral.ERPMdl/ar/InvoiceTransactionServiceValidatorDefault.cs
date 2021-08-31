@@ -340,9 +340,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 isValid = false;
                 AddError($"Data not found");
-            }
+            } 
             if (processingMode == ProcessingMode.Add)
             {
+                
+                dto.InvoiceTransaction.InvoiceUuid = null;
                 //check InvoiceNumber  
                 if (string.IsNullOrEmpty(dto.InvoiceTransaction.InvoiceNumber))
                 {
@@ -424,6 +426,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
+                dto.InvoiceTransaction.InvoiceUuid = null;
                 //check InvoiceNumber  
                 if (string.IsNullOrEmpty(dto.InvoiceTransaction.InvoiceNumber))
                 {
@@ -474,6 +477,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.InvoiceTransaction.TransType = null;
                 dto.InvoiceTransaction.TransNum = null;
                 dto.InvoiceTransaction.InvoiceNumber = null;
+                dto.InvoiceTransaction.InvoiceUuid = null;
                 if (dto.InvoiceReturnItems != null && dto.InvoiceReturnItems.Count > 0)
                 {
                     foreach (var detailItem in dto.InvoiceReturnItems)

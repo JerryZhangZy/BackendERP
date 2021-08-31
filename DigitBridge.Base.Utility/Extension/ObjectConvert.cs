@@ -16,7 +16,7 @@ namespace DigitBridge.Base.Utility
         public static DateTime MaxDatatime = (DateTime)System.Data.SqlTypes.SqlDateTime.MaxValue;
 
         public static TimeSpan MinTime = new TimeSpan(0, 0, 0);
-        public static TimeSpan MaxTime = new TimeSpan(11, 59, 59);
+        public static TimeSpan MaxTime = new TimeSpan(24, 0, 0).Subtract(new TimeSpan(1));
 
         public static int QtyDecimalDigits = 2;
         public static int PriceDecimalDigits = 2;
@@ -679,7 +679,7 @@ namespace DigitBridge.Base.Utility
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static bool IsZero(this long input) => input <=0;
+        public static bool IsZero(this long input) => input <= 0;
         public static bool IsZero(this long? input) => (input is null) ? true : input.ToLong().IsZero();
 
         public static bool IsZero(this string input) => string.IsNullOrEmpty(input);
@@ -829,5 +829,23 @@ namespace DigitBridge.Base.Utility
             (lst?.Any() != true)
                 ? new List<T>()
                 : lst.Select(x => x.ConvertObject<T>()).ToList();
+
+        /// <summary>
+        /// number list to xml
+        /// </summary>
+        /// <param name="numbers"></param>
+        /// <returns></returns>
+        public static string ListToXml(this IList<string> numbers)
+        {
+            StringBuilder sb = new StringBuilder("<parameters>");
+
+            foreach (var number in numbers)
+            {
+                sb.AppendFormat("<value>{0}</value>", number);
+            }
+            sb.Append("</parameters>");
+
+            return sb.ToString();
+        }
     }
 }

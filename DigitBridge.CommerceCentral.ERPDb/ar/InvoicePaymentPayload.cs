@@ -36,6 +36,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion 
 
         public InvoiceHeaderDto InvoiceHeader { get; set; }
+
+        public int ExportUserConfigID { get; set; }
+
+
+        /// <summary>
+        /// Delegate function to load request parameter to payload property.
+        /// </summary>
+        public override IDictionary<string, Action<string>> GetOtherParameters()
+        {
+            return new Dictionary<string, Action<string>>
+            {
+                { "UserConfigID", val => ExportUserConfigID = val.ToInt() }
+            };
+        }
     }
 }
 
