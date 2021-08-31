@@ -321,18 +321,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("ChannelOrder DC Assigment has transferred to sales order.");
                 return null;
             }
+            var soSrv = new SalesOrderService(dbFactory);
 
-            salesOrderService.DetachData(null);
-            salesOrderService.Add();
+            soSrv.DetachData(null);
+            soSrv.Add();
 
             SalesOrderTransfer soTransfer = new SalesOrderTransfer(this, "");
 
             var soData = soTransfer.FromChannelOrder(dcAssigmentData, coData);
-            salesOrderService.AttachData(soData);
-            salesOrderService.Data.CheckIntegrity();
+            soSrv.AttachData(soData);
+            soSrv.Data.CheckIntegrity();
 
-            if (await salesOrderService.SaveDataAsync())
-                return salesOrderService.Data;
+            if (await soSrv.SaveDataAsync())
+                return soSrv.Data;
             return null;
         }
 
