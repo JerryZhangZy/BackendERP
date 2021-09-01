@@ -111,6 +111,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return SaveData();
         }
 
+        public bool GetPurchaseOrderByPoNum(PurchaseOrderPayload payload, string ponum)
+        {
+            if (string.IsNullOrEmpty(ponum))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = PurchaseOrderHelper.GetRowNumByPoNum(ponum, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return GetData(rowNum);
+        }
+
+        public async Task<bool> GetPurchaseOrderByPoNumAsync(PurchaseOrderPayload payload, string ponum)
+        {
+            if (string.IsNullOrEmpty(ponum))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await PurchaseOrderHelper.GetRowNumByPoNumAsync(ponum, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return await GetDataAsync(rowNum);
+        }
+
         public virtual async Task<bool> AddAsync(PurchaseOrderPayload payload)
         {
             if (payload is null || !payload.HasPurchaseOrder)
@@ -135,6 +159,64 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return await SaveDataAsync().ConfigureAwait(false);
+        }
+
+        public PurchaseOrderPayload GetPurchaseOrderByPoNumArray(PurchaseOrderPayload payload)
+        {
+            if (!payload.HasPoNums)
+                return payload;
+            var list = new List<PurchaseOrderDataDto>();
+            var msglist = new List<MessageClass>();
+            var rowNumList = new List<long>();
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNumList = PurchaseOrderHelper.GetRowNumsByPoNums(payload.PoNums, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rowNum in rowNumList)
+            {
+                if (GetData(rowNum))
+                    list.Add(ToDto());
+            }
+            payload.PurchaseOrders = list;
+            payload.Messages = msglist;
+            return payload;
+        }
+
+        public async Task<PurchaseOrderPayload> GetPurchaseOrderByPoNumArrayAsync(PurchaseOrderPayload payload)
+        {
+            if (!payload.HasPoNums)
+                return payload;
+            var list = new List<PurchaseOrderDataDto>();
+            var msglist = new List<MessageClass>();
+            var rowNumList = new List<long>();
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNumList = await PurchaseOrderHelper.GetRowNumsByPoNumsAsync(payload.PoNums, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rowNum in rowNumList)
+            {
+                if (await GetDataAsync(rowNum))
+                    list.Add(ToDto());
+            }
+            payload.PurchaseOrders = list;
+            payload.Messages = msglist;
+            return payload;
+        }
+
+        public async Task<bool> DeleteByPoNumAsync(PurchaseOrderPayload payload, string ponum)
+        {
+            if (string.IsNullOrEmpty(ponum))
+                return false;
+            Delete();
+            if (!(await ValidateAccountAsync(payload, ponum).ConfigureAwait(false)))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await PurchaseOrderHelper.GetRowNumByPoNumAsync(ponum, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            var success = await GetDataAsync(rowNum);
+            return success && (await DeleteDataAsync());
         }
 
         /// <summary>

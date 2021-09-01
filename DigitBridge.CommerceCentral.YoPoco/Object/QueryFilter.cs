@@ -54,8 +54,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
             _isDate = isDate;
         }
 
-        public QueryFilter(string Name, string PropertyName, IEnumerable<string> MorePropertyName, string prefix, FilterBy FilterMode, T DefaultValue, bool isNVarChar = false, bool Enable = false)
-            : this(Name, PropertyName, prefix, FilterMode, DefaultValue, isNVarChar, Enable)
+        public QueryFilter(string Name, string PropertyName, IEnumerable<string> MorePropertyName, string prefix, FilterBy FilterMode, T DefaultValue, bool isNVarChar = false, bool Enable = false, bool isDate = false)
+            : this(Name, PropertyName, prefix, FilterMode, DefaultValue, isNVarChar, Enable,isDate)
         {
             if (MorePropertyName.Any())
                 _morePropertyName = MorePropertyName.ToList();

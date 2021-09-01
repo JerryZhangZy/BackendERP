@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "PoUuids", val => PoUuids = val.Split(",").ToList() }
+                { "poNums", val => PoNums = val.Split(",").ToList() }
             };
         }
 
@@ -43,10 +43,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// (Request Parameter) Array of uuid to load multiple PurchaseOrder dto data.
         /// </summary>
         [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple PurchaseOrder dto data.")]
-        public IList<string> PoUuids { get; set; } = new List<string>();
+        public IList<string> PoNums { get; set; } = new List<string>();
         [JsonIgnore] 
-        public virtual bool HasPoUuids => PoUuids != null && PoUuids.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasPoUuids;
+        public virtual bool HasPoNums => PoNums != null && PoNums.Count > 0;
+        public bool ShouldSerializePoNums() => HasPoNums;
 
         /// <summary>
         /// (Response Data) Array of PurchaseOrder entity object which load by uuid array.
