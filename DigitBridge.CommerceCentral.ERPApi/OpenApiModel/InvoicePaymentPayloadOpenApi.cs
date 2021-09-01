@@ -33,12 +33,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// (Response Data) InvoiceTransaction object which has been added.
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) InvoiceTransaction object to add.")]
-        public InvoiceTransactionDto InvoiceTransaction { get; set; }
+        public InvoiceTransactionDataDto InvoiceTransaction { get; set; }
 
         public static InvoicePaymentPayloadAdd GetSampleData()
         {
             var data = new InvoicePaymentPayloadAdd();
-            data.InvoiceTransaction = new InvoiceTransactionDto().GetFaker().Generate();
+            data.InvoiceTransaction = new InvoiceTransactionDataDto().GetFakerData();
+            data.InvoiceTransaction.InvoiceTransaction.TransType = 1;
+            data.InvoiceTransaction.InvoiceReturnItems = null;
             return data;
         }
     } 
