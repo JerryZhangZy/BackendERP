@@ -14,6 +14,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public class SalesOrderTransfer : IMessage
     {
         private DateTime _dtNowUtc = DateTime.UtcNow;
+        private DateTime _initNowUtc = new DateTime(1800, 12, 28);
         private string _userId;
         public SalesOrderTransfer(IMessage serviceMessage, string userId)
         {
@@ -59,40 +60,49 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion message
 
-        private string _soUuid;
+        //private string _soUuid;
         public SalesOrderData FromChannelOrder(DCAssignmentData dcData, ChannelOrderData coData)
         {
-            _soUuid = Guid.NewGuid().ToString();
+            _dtNowUtc = DateTime.UtcNow;
+            //_soUuid = Guid.NewGuid().ToString();
 
             SalesOrderData soData = new SalesOrderData();
+            decimal dcQty = dcData.OrderDCAssignmentLine.Sum(p => p.OrderQty);
+            decimal coQty = coData.OrderLine.Sum(p => p.OrderQty ?? 0);
+            if (coQty <= 0)
+            {
+                AddError($"No ChannelOrder Qty {coQty}.");
+                return null;
+            }
+            decimal qtyRatio = dcQty / coQty;
 
-            soData.SalesOrderHeader = ChannelOrderToSalesOrderHeader(dcData.OrderDCAssignmentHeader, coData.OrderHeader);
+            soData.SalesOrderHeader = ChannelOrderToSalesOrderHeader(dcData.OrderDCAssignmentHeader, coData.OrderHeader, qtyRatio);
 
             soData.SalesOrderHeaderAttributes = ChannelOrderToSalesOrderHeaderAttributes();
 
             soData.SalesOrderHeaderInfo = ChannelOrderToSalesOrderHeaderInfo(dcData.OrderDCAssignmentHeader, coData.OrderHeader);
 
-            (soData.SalesOrderItems, soData.SalesOrderItemsAttributes) = ChannelorderLineToSalesOrderLines(dcData, coData);
+            soData.SalesOrderItems = ChannelOrderToSalesOrderLines(dcData, coData);
 
             return soData;
         }
 
-        private SalesOrderHeader ChannelOrderToSalesOrderHeader(OrderDCAssignmentHeader dcHeader, OrderHeader coHeader)
+        private SalesOrderHeader ChannelOrderToSalesOrderHeader(OrderDCAssignmentHeader dcHeader
+            , OrderHeader coHeader
+            , decimal qtyRatio)
         {
             var soHeader = new SalesOrderHeader();
-            soHeader.SalesOrderUuid = _soUuid;
             soHeader.DatabaseNum = coHeader.DatabaseNum;
             soHeader.MasterAccountNum = coHeader.MasterAccountNum;
             soHeader.ProfileNum = coHeader.ProfileNum;
-            soHeader.ProfileNum = coHeader.ProfileNum;
             //SalesOrderUuid
             soHeader.OrderNumber = coHeader.DatabaseNum + "-" + coHeader.CentralOrderNum + "-" + dcHeader.OrderDCAssignmentNum;
-            //OrderType
-            //OrderStatus
+            soHeader.OrderType = (int)SalesOrderType.ChannelOrder;
+            soHeader.OrderStatus = (int)SalesOrderStatus.New;
             soHeader.OrderDate = coHeader.OriginalOrderDateUtc;
             soHeader.OrderTime = coHeader.OriginalOrderDateUtc.TimeOfDay;
-            //DueDate
-            //BillDate
+            soHeader.DueDate = _initNowUtc;
+            soHeader.BillDate = _initNowUtc;
             //CustomerUuid
             //CustomerCode
             //CustomerName
@@ -107,9 +117,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //TaxRate
             //TaxAmount
             //DiscountRate
-            //DiscountAmount
-            //ShippingAmount
-            //ShippingTaxAmount
+            soHeader.DiscountAmount = coHeader.PromotionAmount ?? 0;
+            soHeader.ShippingAmount = (coHeader.TotalShippingAmount ?? 0) * qtyRatio;
+            soHeader.ShippingTaxAmount = (coHeader.TotalShippingTaxAmount ?? 0) * qtyRatio;
             //MiscAmount
             //MiscTaxAmount
             //ChargeAndAllowanceAmount
@@ -119,20 +129,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //UnitCost
             //AvgCost
             //LotCost
-            soHeader.OrderSourceCode = "OrderDCAssignmentUuid:" + dcHeader.OrderDCAssignmentUuid;
+            //soHeader.OrderSourceCode = "OrderDCAssignmentUuid:" + dcHeader.OrderDCAssignmentUuid;
+            soHeader.OrderSourceCode = "OrderDCAssignmentNum:" + dcHeader.OrderDCAssignmentNum;
             soHeader.UpdateDateUtc = _dtNowUtc;
             soHeader.EnterBy = _userId;
             //UpdateBy
             //EnterDateUtc
             //DigitBridgeGuid
-            //ShipDate
+            soHeader.ShipDate = _initNowUtc;
             return soHeader;
         }
 
         private SalesOrderHeaderAttributes ChannelOrderToSalesOrderHeaderAttributes()
         {
             SalesOrderHeaderAttributes soHeaderAttributes = new SalesOrderHeaderAttributes();
-
+            soHeaderAttributes.RowNum = string.IsNullOrEmpty(soHeaderAttributes.JsonFields) ? 1 : 0; //1: not add, 0: add
             return soHeaderAttributes;
         }
 
@@ -140,8 +151,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             string coHeaderJson = coHeader.ObjectToString();
             var soHeaderInfo = JsonConvert.DeserializeObject<SalesOrderHeaderInfo>(coHeaderJson);
-            soHeaderInfo.SalesOrderUuid = _soUuid;
-
+            //soHeaderInfo.SalesOrderUuid = _soUuid;
+            soHeaderInfo.RowNum = 0;
             soHeaderInfo.CentralFulfillmentNum = dcHeader.OrderDCAssignmentNum;
             soHeaderInfo.DistributionCenterNum = dcHeader.DistributionCenterNum;
             soHeaderInfo.WarehouseCode = dcHeader.SellerWarehouseID;
@@ -155,15 +166,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return soHeaderInfo;
         }
 
-        private (List<SalesOrderItems>, List<SalesOrderItemsAttributes>) ChannelorderLineToSalesOrderLines(DCAssignmentData dcData, ChannelOrderData coData)
+        private List<SalesOrderItems> ChannelOrderToSalesOrderLines(DCAssignmentData dcData, ChannelOrderData coData)
         {
             List<SalesOrderItems> soItemList = new List<SalesOrderItems>();
-            List<SalesOrderItemsAttributes> soItemAttributeList = new List<SalesOrderItemsAttributes>();
 
             var coHeader = coData.OrderHeader;
 
             int itemSeq = 1;
-            string soLnUuid = Guid.NewGuid().ToString();
+            //string soLnUuid = Guid.NewGuid().ToString();
             foreach (var dcLine in dcData.OrderDCAssignmentLine)
             {
                 var coLine = coData.OrderLine.FirstOrDefault(p => p.CentralOrderLineUuid == dcLine.CentralOrderLineUuid);
@@ -171,20 +181,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     AddError($"Data not found.");
 
-                    return (null, null);
+                    return (null);
                 }
 
                 SalesOrderItems soItem = new SalesOrderItems()
                 {
-                    SalesOrderItemsUuid = soLnUuid,
-                    SalesOrderUuid = _soUuid,
+                    //SalesOrderItemsUuid = soLnUuid,
+                    //SalesOrderUuid = _soUuid,
                     Seq = itemSeq++,
-                    //OrderItemType
-                    //SalesOrderItemstatus
+                    OrderItemType = (int)SalesOrderType.ChannelOrder,
+                    SalesOrderItemstatus = (int)SalesOrderStatus.New,
                     ItemDate = coHeader.OriginalOrderDateUtc,
                     ItemTime = coHeader.OriginalOrderDateUtc.TimeOfDay,
-                    //ShipDate
-                    //EtaArrivalDate
+                    ShipDate = _initNowUtc,
+                    EtaArrivalDate = _initNowUtc,
                     SKU = coLine.SKU,
                     //ProductUuid
                     //InventoryUuid
@@ -226,14 +236,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     //OpenAmount
                     //Stockable
                     //IsAr
-                    //Taxable
+                    Taxable = coLine.LineItemTaxAmount.Value > 0,
                     //Costable
                     //IsProfit
                     //UnitCost
                     //AvgCost
                     //LotCost
-                    //LotInDate
-                    //LotExpDate
+                    LotInDate = _initNowUtc,
+                    LotExpDate = _initNowUtc,
                     UpdateDateUtc = _dtNowUtc,
                     EnterBy = _userId,
                     //UpdateBy
@@ -241,20 +251,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     //DigitBridgeGuid
                     CentralOrderLineUuid = dcLine.CentralOrderLineUuid,
                     DBChannelOrderLineRowID = dcLine.DBChannelOrderLineRowID,
-                    OrderDCAssignmentLineUuid = dcLine.OrderDCAssignmentLineUuid
+                    OrderDCAssignmentLineUuid = dcLine.OrderDCAssignmentLineUuid,
+                    OrderDCAssignmentLineNum = dcLine.OrderDCAssignmentLineNum
                 };
+
+                soItem.SalesOrderItemsAttributes = new SalesOrderItemsAttributes();
+                soItem.SalesOrderItemsAttributes.RowNum = string.IsNullOrEmpty(soItem.SalesOrderItemsAttributes.JsonFields) ? 1 : 0; //1: not add, 0: add
 
                 soItemList.Add(soItem);
 
-                SalesOrderItemsAttributes soItemAttribute = new SalesOrderItemsAttributes()
-                {
-
-                };
-
-                soItemAttributeList.Add(soItemAttribute);
             }
 
-            return (soItemList, soItemAttributeList);
+            return soItemList;
         }
 
     }

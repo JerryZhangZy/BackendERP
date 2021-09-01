@@ -155,6 +155,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("OrderShipmentUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _orderShipmentUuid;
 
+        [Column("InvoiceNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _invoiceNumber;
+
         #endregion Fields - Generated 
 
         #region Properties - Generated 
@@ -713,6 +716,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// InvoiceNumber. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string InvoiceNumber
+        {
+            get
+            {
+				return _invoiceNumber?.TrimEnd(); 
+            }
+            set
+            {
+				_invoiceNumber = value.TruncateTo(50); 
+				OnPropertyChanged("InvoiceNumber", value);
+            }
+        }
+
 
 
         #endregion Properties - Generated 
@@ -776,6 +795,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_processStatus = default(int); 
 			_processDateUtc = new DateTime().MinValueSql(); 
 			_orderShipmentUuid = String.Empty; 
+			_invoiceNumber = String.Empty; 
             ClearChildren();
             return this;
         }

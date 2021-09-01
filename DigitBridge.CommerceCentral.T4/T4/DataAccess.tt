@@ -73,7 +73,7 @@
 //SettingForOrderDCAssignment
 //SettingForPurchaseOrder
 #>
-<#@ include file="SettingForPurchaseOrder.ttinclude" #>
+<#@ include file="SettingForSalesOrder.ttinclude" #>
 <#
     var dtoSuf = "";
     
