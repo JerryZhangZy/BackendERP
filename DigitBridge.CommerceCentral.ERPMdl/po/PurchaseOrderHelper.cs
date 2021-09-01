@@ -33,12 +33,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT COUNT(1) FROM PoHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
+AND PoNum = @number
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -46,18 +45,15 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT COUNT(1) FROM PoHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
+AND PoNum = @number
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -65,8 +61,6 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
@@ -153,6 +147,74 @@ AND ProfileNum = @profileNum";
             return await SqlQuery.ExecuteAsync(sql, (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"));
+        }
+
+        public static long GetRowNumByPoNum(string poNum, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT Top 1 RowNum FROM PoHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND PoNum = @poNum
+";
+            var result = SqlQuery.ExecuteScalar<long>(sql, CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                poNum.ToSqlParameter("poNum")
+            );
+            return result;
+        }
+
+        public static List<long> GetRowNumsByPoNums(IList<string> poNums, int masterAccountNum, int profileNum)
+        {
+            if (poNums == null || poNums.Count == 0)
+                return new List<long>();
+            var sql = $@"
+SELECT RowNum FROM PoHeader tbl
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @PoNum _PoNum WHERE _PoNum.item = COALESCE([PoNum],'')))";
+
+            return SqlQuery.Execute(
+                sql,
+                (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                poNums.ToParameter<string>("PoNum"));
+        }
+
+        public static async Task<List<long>> GetRowNumsByPoNumsAsync(IList<string> poNums, int masterAccountNum, int profileNum)
+        {
+            if (poNums == null || poNums.Count == 0)
+                return new List<long>();
+            var sql = $@"
+SELECT RowNum FROM PoHeader tbl
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @PoNum _PoNum WHERE _PoNum.item = COALESCE([PoNum],'')))";
+
+            return await SqlQuery.ExecuteAsync(
+                sql,
+                (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                poNums.ToParameter<string>("PoNum"));
+        }
+
+        public static async Task<long> GetRowNumByPoNumAsync(string poNum, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT Top 1 RowNum FROM PoHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND PoNum = @poNum
+";
+            var result =await SqlQuery.ExecuteScalarAsync<long>(sql, CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                poNum.ToSqlParameter("poNum")
+            );
+            return result;
         }
 
     }
