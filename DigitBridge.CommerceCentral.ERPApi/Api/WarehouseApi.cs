@@ -57,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "WarehouseCodes", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "WarehouseCodes", Description = "WarehouseCode Array", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "WarehouseCodes", In = ParameterLocation.Query, Required = true, Type = typeof(List<string>), Summary = "WarehouseCodes", Description = "WarehouseCode Array", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadGetMultiple))]
         public static async Task<JsonNetResponse<WarehousePayload>> GetMultiWarehouses(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "warehouses")] HttpRequest req)

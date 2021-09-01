@@ -27,7 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "poNum", Description = "PoNum", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "poNum", Description = "PoNum", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadGetSingle), Description = "The OK response")]
         public static async Task<JsonNetResponse<PurchaseOrderPayload>> GetPurchaseOrder(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "purchaseOrders/{poNum}")] HttpRequest req,
@@ -55,7 +55,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "poNums", In = ParameterLocation.Query, Required = false, Type = typeof(List<string>), Summary = "PoNums", Description = "PoNum Array", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "poNums", In = ParameterLocation.Query, Required = true, Type = typeof(List<string>), Summary = "PoNums", Description = "PoNum Array", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadGetMultiple), Description = "The OK response")]
         public static async Task<JsonNetResponse<PurchaseOrderPayload>> GetMultiPurchaseOrder(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "purchaseOrders")] HttpRequest req)
@@ -73,7 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "PoNum", Description = "PoNum = ProfileNumber-PoNum ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "PoNum", Description = "PoNum = ProfileNumber-PoNum ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadDelete))]
         public static async Task<JsonNetResponse<PurchaseOrderPayload>> DeletePurchaseOrder(
             [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "purchaseOrders/{poNum}")] HttpRequest req,
