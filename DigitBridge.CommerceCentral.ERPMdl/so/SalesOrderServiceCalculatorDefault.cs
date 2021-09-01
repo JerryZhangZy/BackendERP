@@ -43,35 +43,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (data == null || data.SalesOrderHeader == null)
                 return;
-            if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
-            {
-                using (var trx = new ScopedTransaction(dbFactory))
-                {
-                    data.SalesOrderHeader.CustomerUuid = CustomerServiceHelper.GetCustomerUuidByCustomerCode(
-                        data.SalesOrderHeader.CustomerCode, data.SalesOrderHeader.MasterAccountNum,
-                        data.SalesOrderHeader.ProfileNum);
-                }
-            }
-            // get customer data
-            GetCustomerData(data, data.SalesOrderHeader.CustomerUuid);
-
-            if (data.SalesOrderItems != null)
-            {
-                var skuList = data.SalesOrderItems
-                    .Where(r => !string.IsNullOrEmpty(r.SKU)).Select(r => r.SKU)
-                    .Distinct().ToList();
-                List<(long, string, string)> list;
-                using (var trx = new ScopedTransaction(dbFactory))
-                {
-                    list = InventoryServiceHelper.GetKeyInfoBySkus(skuList, data.SalesOrderHeader.MasterAccountNum,
-                        data.SalesOrderHeader.ProfileNum);
-                }
-                foreach(var tuple in list)
-                {
-                    GetInventoryData(data, tuple.Item2);
-                    data.SalesOrderItems.First(r => r.SKU == tuple.Item3).ProductUuid = tuple.Item2;
-                }
-            }
         }
 
         #region Service Property
@@ -103,25 +74,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
         #region GetDataWithCache
-        public virtual InventoryData GetInventoryData(SalesOrderData data, string productUuid)
+        /// <summary>
+        /// get inventory data
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="sku"></param>
+        /// <returns></returns>
+        public virtual InventoryData GetInventoryData(SalesOrderData data, string sku)
         {
-            return data.GetCache(productUuid, () =>
+            var key = data.SalesOrderHeader.MasterAccountNum + "_" + data.SalesOrderHeader.ProfileNum + '_' + sku;
+            return data.GetCache(key, () =>
             {
-                if (inventoryService.GetDataById(productUuid))
-                    return inventoryService.Data;
-                else
-                    return null;
+                inventoryService.GetByNumber(data.SalesOrderHeader.MasterAccountNum, data.SalesOrderHeader.ProfileNum, sku);
+                return inventoryService.Data;
             });
         }
-
-        public virtual CustomerData GetCustomerData(SalesOrderData data, string customerUuid)
+        /// <summary>
+        /// Get Customer Data by customerCode
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="customerCode"></param>
+        /// <returns></returns>
+        public virtual CustomerData GetCustomerData(SalesOrderData data, string customerCode)
         {
-            return data.GetCache(customerUuid, () =>
+            var key = data.SalesOrderHeader.MasterAccountNum + "_" + data.SalesOrderHeader.ProfileNum + '_' + customerCode;
+            return data.GetCache(key, () =>
             {
-                if (customerService.GetDataById(customerUuid))
-                    return customerService.Data;
-                else
-                    return null;
+                customerService.GetByNumber(data.SalesOrderHeader.MasterAccountNum, data.SalesOrderHeader.ProfileNum, customerCode);
+                return customerService.Data;
             });
         }
         #endregion
@@ -148,70 +128,84 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 sum.OrderDate = now.Date;
                 sum.OrderTime = now.TimeOfDay;
             }
-            
-
-            //UpdateDateUtc
+            sum.UpdateDateUtc = now;
             //EnterBy
             //UpdateBy
+            if (processingMode == ProcessingMode.Add)
+            {
+                if (string.IsNullOrEmpty(data.SalesOrderHeader.OrderNumber))
+                {
+                    data.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
+                }
+                //for Add mode, always reset data's uuid
+                data.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();
+                if (data.SalesOrderItems != null && data.SalesOrderItems.Count > 0)
+                {
+                    foreach (var detailItem in data.SalesOrderItems)
+                        detailItem.SalesOrderItemsUuid = Guid.NewGuid().ToString();
+                }
+            }
+            else if (processingMode == ProcessingMode.Edit)
+            {
+                //todo 
+            }
 
+            // get customer data
+            var customerData = GetCustomerData(data, data.SalesOrderHeader.CustomerCode);
+            data.SalesOrderHeader.CustomerUuid = customerData.Customer.CustomerUuid;
 
             return true;
         }
 
         public virtual bool SetDefaultDetail(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            if (data is null)
+            if (data is null || data.SalesOrderItems == null || data.SalesOrderItems.Count == 0)
                 return false;
 
             //TODO: add set default for detail list logic
-            /* This is generated sample code
-
-            foreach (var item in data.InvoiceItems)
+            // This is generated sample code 
+            foreach (var item in data.SalesOrderItems)
             {
-                if (item is null || item.IsEmpty)
-                    continue;
                 SetDefault(item, data, processingMode);
             }
-
-            */
             return true;
         }
 
         //TODO: add set default for detail line logic
-        /* This is generated sample code
-        protected virtual bool SetDefault(InvoiceItems item, SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        //This is generated sample code
+        protected virtual bool SetDefault(SalesOrderItems item, SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            if (item is null || item.IsEmpty)
-                return false;
+            // get inventory data
+            var inventoryData = GetInventoryData(data, item.SKU);
+            item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
+            //inventoryData.Inventory.Where(i=>i.q)
+            //item.InventoryUuid=inventoryData.in 
+            //var setting = new ERPSetting();
+            //var sum = data.SalesOrderHeader;
+            ////var prod = data.GetCache<ProductBasic>(ProductId);
+            ////var inv = data.GetCache<Inventory>(InventoryId);
+            ////var invCost = new ItemCostClass(inv);
+            //var invCost = new ItemCostClass();
 
-            var setting = new ERPSetting();
-            var sum = data.SalesOrderHeader;
-            //var prod = data.GetCache<ProductBasic>(ProductId);
-            //var inv = data.GetCache<Inventory>(InventoryId);
-            //var invCost = new ItemCostClass(inv);
-            var invCost = new ItemCostClass();
+            ////InvoiceItemType
+            ////InvoiceItemStatus
+            ////ItemDate
+            ////ItemTime
+            ////ShipDate
+            ////EtaArrivalDate
 
-            //InvoiceItemType
-            //InvoiceItemStatus
-            //ItemDate
-            //ItemTime
-            //ShipDate
-            //EtaArrivalDate
-
-            //SKU
-            //ProductUuid
-            //InventoryUuid
-            //WarehouseUuid
-            //LotNum
-            //Description
-            //Notes
-            //UOM
-            //Currency
+            ////SKU
+            ////ProductUuid
+            ////InventoryUuid
+            ////WarehouseUuid
+            ////LotNum
+            ////Description
+            ////Notes
+            ////UOM
+            ////Currency
 
             return true;
         }
-        */
-
 
         public virtual bool Calculate(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
