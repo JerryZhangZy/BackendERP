@@ -109,11 +109,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             //TODO: add set default summary data logic
-            /* This is generated sample code
+            //This is generated sample code
             var sum = data.PoHeader;
-            if (sum.InvoiceDate.IsZero()) sum.InvoiceDate = DateTime.Today;
-            if (sum.InvoiceTime.IsZero()) sum.InvoiceTime = DateTime.Now.TimeOfDay;
-
+            if (sum.PoDate.IsZero()) sum.PoDate = DateTime.Today;
+            if (sum.PoTime.IsZero()) sum.PoTime = DateTime.Now.TimeOfDay;
+            /*
             //UpdateDateUtc
             //EnterBy
             //UpdateBy

@@ -112,7 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.TransNum, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.InvoiceUuid, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.InvoiceNumber, f => f.Random.Int(1, 100).ToString())
-				.RuleFor(u => u.TransType, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.TransType, f => 2)
 				.RuleFor(u => u.TransStatus, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.TransDate, f => f.Date.Past(0).Date)
 				.RuleFor(u => u.TransTime, f => f.Date.Timespan().ToDateTime())
