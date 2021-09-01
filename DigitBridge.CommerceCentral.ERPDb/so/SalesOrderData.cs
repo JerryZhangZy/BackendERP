@@ -77,7 +77,7 @@ AND OrderNumber = @2";
             };
 
             return await dbFactory.GetValueAsync<SalesOrderHeader, long?>(sql, paras);
-        } 
+        }
 
         /// <summary>
         /// Return all salesOrderItemsUuids existed in table SalesOrderItems
@@ -117,6 +117,29 @@ AND OrderNumber = @2";
                 return allDuplicate.ObjectToString();
             }
             return dbFactory.GetValue<SalesOrderItems, string>($"SELECT SalesOrderItemsUuid FROM SalesOrderItems where SalesOrderItemsUuid in ('{string.Join("','", SalesOrderItemsUuids)}') for json path ");
+        }
+
+        public override bool GetByNumber(int masterAccountNum, int profileNum, string number)
+        {
+            var sql = @"
+SELECT TOP 1 * FROM SalesOrderHeader tbl
+WHERE MasterAccountNum = @0
+AND ProfileNum = @1
+AND OrderNumber = @2";
+            var paras = new SqlParameter[]
+            {
+                new SqlParameter("@0",masterAccountNum),
+                new SqlParameter("@1",profileNum),
+                new SqlParameter("@2",number)
+            };
+
+            var obj = dbFactory.GetBy<SalesOrderHeader>(sql, paras);
+            if (obj is null) return false;
+            SalesOrderHeader = obj;
+            GetOthers();
+            if (_OnAfterLoad != null)
+                _OnAfterLoad(this);
+            return true;
         }
     }
 }

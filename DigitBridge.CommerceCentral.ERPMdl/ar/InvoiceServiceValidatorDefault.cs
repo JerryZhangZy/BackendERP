@@ -179,12 +179,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
-            //if (string.IsNullOrEmpty(data.InvoiceHeader.CustomerUuid))
-            //{
-            //    IsValid = false;
-            //    AddError($"Customer cannot be empty.");
-            //    return IsValid;
-            //}
+            if (string.IsNullOrEmpty(data.InvoiceHeader.CustomerCode))
+            {
+                IsValid = false;
+                AddError($"CustomerCode cannot be empty.");
+                return IsValid;
+            }
+            //TODO review this item 
+            if (string.IsNullOrEmpty(data.InvoiceHeader.OrderNumber))
+            {
+                IsValid = false;
+                AddError($"OrderNumber cannot be empty.");
+                return IsValid;
+            }
             return true;
 
         }
@@ -198,11 +205,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"RowNum: {data.InvoiceHeader.RowNum} is duplicate.");
                 return IsValid;
             }
-            if (string.IsNullOrEmpty(data.InvoiceHeader.InvoiceNumber))
-            {
-                data.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
-            }
-            else
+            if (!string.IsNullOrEmpty(data.InvoiceHeader.InvoiceNumber))
             {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
@@ -213,16 +216,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         return IsValid;
                     }
                 }
-
             }
-            //for Add mode, always reset uuid
-            data.InvoiceHeader.InvoiceUuid = Guid.NewGuid().ToString();
-            if (data.InvoiceItems != null && data.InvoiceItems.Count > 0)
-            {
-                foreach (var detailItem in data.InvoiceItems)
-                    detailItem.InvoiceItemsUuid = Guid.NewGuid().ToString();
-            }
-
             return true;
 
         }
@@ -296,12 +290,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
-            //if (string.IsNullOrEmpty(data.InvoiceHeader.CustomerUuid))
-            //{
-            //    IsValid = false;
-            //    AddError($"Customer cannot be empty.");
-            //    return IsValid;
-            //}
+            if (string.IsNullOrEmpty(data.InvoiceHeader.CustomerCode))
+            {
+                IsValid = false;
+                AddError($"CustomerCode cannot be empty.");
+                return IsValid;
+            }
+            //TODO review this item 
+            if (string.IsNullOrEmpty(data.InvoiceHeader.OrderNumber))
+            {
+                IsValid = false;
+                AddError($"OrderNumber cannot be empty.");
+                return IsValid;
+            }
             return true;
 
         }
@@ -316,11 +317,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return IsValid;
             }
 
-            if (string.IsNullOrEmpty(data.InvoiceHeader.InvoiceNumber))
-            {
-                data.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
-            }
-            else
+            if (!string.IsNullOrEmpty(data.InvoiceHeader.InvoiceNumber))
             {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
@@ -331,13 +328,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         return IsValid;
                     }
                 }
-            }
-            //for Add mode, always reset uuid
-            data.InvoiceHeader.InvoiceUuid = Guid.NewGuid().ToString();
-            if (data.InvoiceItems != null && data.InvoiceItems.Count > 0)
-            {
-                foreach (var detailItem in data.InvoiceItems)
-                    detailItem.InvoiceItemsUuid = Guid.NewGuid().ToString();
             }
 
             return true;
@@ -402,7 +392,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                
+
             }
             else if (processingMode == ProcessingMode.Edit)
             {

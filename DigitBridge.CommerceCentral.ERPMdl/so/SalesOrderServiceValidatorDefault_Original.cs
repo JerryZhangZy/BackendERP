@@ -26,11 +26,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default SalesOrderService Validator class.
     /// </summary>
-    public partial class SalesOrderServiceValidatorDefault : IValidator<SalesOrderData, SalesOrderDataDto>, IMessage
+    public partial class SalesOrderServiceValidatorDefault_Original : IValidator<SalesOrderData, SalesOrderDataDto>, IMessage
     {
         public virtual bool IsValid { get; set; }
-        public SalesOrderServiceValidatorDefault() { }
-        public SalesOrderServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        public SalesOrderServiceValidatorDefault_Original() { }
+        public SalesOrderServiceValidatorDefault_Original(IMessage serviceMessage, IDataBaseFactory dbFactory)
         {
             this.ServiceMessage = serviceMessage;
             this.dbFactory = dbFactory;
@@ -168,30 +168,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
-            if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerCode))
-            {
-                IsValid = false;
-                AddError($"CustomerCode cannot be empty.");
-                return IsValid;
-            }
-
-            if (data.SalesOrderItems != null && data.SalesOrderItems.Count > 0)
-            {
-                if (data.SalesOrderItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
-                {
-                    IsValid = false;
-                    AddError($"SKU cannot be empty.");
-                    return IsValid;
-                }
-                //TODO  check logic
-                else if (data.SalesOrderItems.Count > data.SalesOrderItems.Select(i => i.SKU).Distinct().Count())
-                {
-                    IsValid = false;
-                    AddError($"SKU is duplicate.");
-                    return IsValid;
-                }
-            }
-
+            //if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
+            //{
+            //    IsValid = false;
+            //    AddError($"Customer cannot be empty.");
+            //    return IsValid;
+            //}
             return true;
 
         }
@@ -207,11 +189,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
 
-            //if (string.IsNullOrEmpty(data.SalesOrderHeader.OrderNumber))
-            //{
-            //    data.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
-            //}
-            if (!string.IsNullOrEmpty(data.SalesOrderHeader.OrderNumber))
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.OrderNumber))
+            {
+                data.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
+            }
+            else
             {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
@@ -223,6 +205,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     }
                 }
             }
+
+            //for Add mode, always reset data's uuid
+            data.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();
+            if (data.SalesOrderItems != null && data.SalesOrderItems.Count > 0)
+            {
+                foreach (var detailItem in data.SalesOrderItems)
+                    detailItem.SalesOrderItemsUuid = Guid.NewGuid().ToString();
+            }
+
             return true;
 
         }
@@ -230,13 +221,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual bool ValidateEdit(SalesOrderData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.SalesOrderHeader.RowNum.IsZero())
+            if (data.SalesOrderHeader.RowNum == 0)
             {
                 IsValid = false;
                 AddError($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
-            else if (!dbFactory.Exists<SalesOrderHeader>(data.SalesOrderHeader.RowNum))
+
+            if (data.SalesOrderHeader.RowNum != 0 && !dbFactory.Exists<SalesOrderHeader>(data.SalesOrderHeader.RowNum))
             {
                 IsValid = false;
                 AddError($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
@@ -295,28 +287,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
-            if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerCode))
-            {
-                IsValid = false;
-                AddError($"CustomerCode cannot be empty.");
-                return IsValid;
-            }
-            if (data.SalesOrderItems != null && data.SalesOrderItems.Count > 0)
-            {
-                if (data.SalesOrderItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
-                {
-                    IsValid = false;
-                    AddError($"SKU cannot be empty.");
-                    return IsValid;
-                }
-                //TODO  check logic
-                else if (data.SalesOrderItems.Count > data.SalesOrderItems.Select(i => i.SKU).Distinct().Count())
-                {
-                    IsValid = false;
-                    AddError($"SKU is duplicate.");
-                    return IsValid;
-                }
-            }
+            //if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
+            //{
+            //    IsValid = false;
+            //    AddError($"Customer cannot be empty.");
+            //    return IsValid;
+            //}
             return true;
 
         }
@@ -331,11 +307,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return IsValid;
             }
 
-            //if (string.IsNullOrEmpty(data.SalesOrderHeader.OrderNumber))
-            //{
-            //    data.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
-            //}
-            if (!string.IsNullOrEmpty(data.SalesOrderHeader.OrderNumber))
+            if (string.IsNullOrEmpty(data.SalesOrderHeader.OrderNumber))
+            {
+                data.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
+            }
+            else
             {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
@@ -347,6 +323,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     }
                 }
             }
+
+            //for Add mode, always reset data's uuid
+            data.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();
+            if (data.SalesOrderItems != null && data.SalesOrderItems.Count > 0)
+            {
+                foreach (var detailItem in data.SalesOrderItems)
+                    detailItem.SalesOrderItemsUuid = Guid.NewGuid().ToString();
+            }
+
             return true;
 
         }
@@ -354,13 +339,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual async Task<bool> ValidateEditAsync(SalesOrderData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.SalesOrderHeader.RowNum.IsZero())
+            if (data.SalesOrderHeader.RowNum == 0)
             {
                 IsValid = false;
                 AddError($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
                 return IsValid;
             }
-            else if (!(await dbFactory.ExistsAsync<SalesOrderHeader>(data.SalesOrderHeader.RowNum)))
+
+            if (data.SalesOrderHeader.RowNum != 0 && !(await dbFactory.ExistsAsync<SalesOrderHeader>(data.SalesOrderHeader.RowNum)))
             {
                 IsValid = false;
                 AddError($"RowNum: {data.SalesOrderHeader.RowNum} not found.");
@@ -406,7 +392,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 isValid = false;
                 AddError($"Data not found");
             }
-            if (processingMode == ProcessingMode.Edit)
+            if (processingMode == ProcessingMode.Add)
+            { 
+            }
+            else if (processingMode == ProcessingMode.Edit)
             {
                 if (dto.SalesOrderHeader.RowNum.IsZero())
                 {
@@ -446,7 +435,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 isValid = false;
                 AddError($"Data not found");
             }
-            if (processingMode == ProcessingMode.Edit)
+            if (processingMode == ProcessingMode.Add)
+            {
+            }
+            else if (processingMode == ProcessingMode.Edit)
             {
                 if (dto.SalesOrderHeader.RowNum.IsZero())
                 {
