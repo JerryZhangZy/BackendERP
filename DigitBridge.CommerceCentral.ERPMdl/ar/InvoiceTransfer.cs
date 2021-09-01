@@ -68,7 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             invoiceData.InvoiceHeaderAttributes = OrderShipmentAndSalesOrderToInvoiceHeaderAttributes();
 
-            invoiceData.InvoiceHeaderInfo = OrderShipmentAndSalesOrderToInvoiceHeaderInfo(osData.OrderShipmentHeader, soData.SalesOrderHeader);
+            invoiceData.InvoiceHeaderInfo = OrderShipmentAndSalesOrderToInvoiceHeaderInfo(osData.OrderShipmentHeader, soData.SalesOrderHeaderInfo);
 
             (invoiceData.InvoiceItems) = OrderShipmentAndSalesOrderToInvoiceLines(osData, soData);
 

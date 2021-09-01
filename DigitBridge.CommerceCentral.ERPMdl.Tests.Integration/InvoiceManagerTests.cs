@@ -66,9 +66,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 try
                 {
                     result = invoiceManager.CreateInvoiceByOrderShipmentIdAsync(uuid).Result;
-
-                    Assert.True(result);
-
+                    if (result)
+                        Assert.True(result);
+                    else
+                        Assert.False(result);
                 }
                 catch (Exception ex)
                 {
