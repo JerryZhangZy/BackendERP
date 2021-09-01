@@ -45,6 +45,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return;
         }
 
+        private DateTime now = DateTime.Now;
+
         #region Service Property
 
         private CustomerService _customerService;
@@ -139,11 +141,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 //for Add mode, always reset data's uuid
                 data.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();
-                if (data.SalesOrderItems != null && data.SalesOrderItems.Count > 0)
-                {
-                    foreach (var detailItem in data.SalesOrderItems)
-                        detailItem.SalesOrderItemsUuid = Guid.NewGuid().ToString();
-                }
             }
             else if (processingMode == ProcessingMode.Edit)
             {
@@ -153,6 +150,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // get customer data
             var customerData = GetCustomerData(data, data.SalesOrderHeader.CustomerCode);
             data.SalesOrderHeader.CustomerUuid = customerData.Customer.CustomerUuid;
+            data.SalesOrderHeader.CustomerName = customerData.Customer.CustomerName;
 
             return true;
         }
@@ -175,11 +173,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //This is generated sample code
         protected virtual bool SetDefault(SalesOrderItems item, SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
+            item.UpdateDateUtc = now;
+            if (item.ItemTime.IsZero()) item.ItemTime = now.TimeOfDay;
+            if (item.ItemDate.IsZero())
+            {
+                item.ItemDate = now.Date;
+                item.ItemTime = now.TimeOfDay;
+            }
+
             // get inventory data
+            if (processingMode == ProcessingMode.Add)
+            {
+                item.SalesOrderItemsUuid = Guid.NewGuid().ToString();
+            }  
             var inventoryData = GetInventoryData(data, item.SKU);
             item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
+            
             //inventoryData.Inventory.Where(i=>i.q)
             //item.InventoryUuid=inventoryData.in 
+            //item.WarehouseCode
+            //item.WarehouseUuid
+
             //var setting = new ERPSetting();
             //var sum = data.SalesOrderHeader;
             ////var prod = data.GetCache<ProductBasic>(ProductId);
