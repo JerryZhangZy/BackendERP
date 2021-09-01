@@ -185,9 +185,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.PoHeader.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            if (string.IsNullOrEmpty(data.PoHeader.PoNum))
+            {
+                IsValid = false;
+                AddError($"PoNum: {data.PoHeader.PoNum} required.");
+
+            }
+            else
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (PurchaseOrderHelper.ExistNumber(data.PoHeader.PoNum, data.PoHeader.MasterAccountNum, data.PoHeader.ProfileNum))
+                    {
+                        IsValid = false;
+                        AddError($"DistributionCenterCode: {data.PoHeader.PoNum} is duplicate.");
+                    }
+                }
+            }
+            return IsValid;
 
         }
 
@@ -277,9 +293,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.PoHeader.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            if (string.IsNullOrEmpty(data.PoHeader.PoNum))
+            {
+                IsValid = false;
+                AddError($"PoNum: {data.PoHeader.PoNum} required.");
+
+            }
+            else
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    if (await PurchaseOrderHelper.ExistNumberAsync(data.PoHeader.PoNum, data.PoHeader.MasterAccountNum, data.PoHeader.ProfileNum))
+                    {
+                        IsValid = false;
+                        AddError($"PoNum: {data.PoHeader.PoNum} is duplicate.");
+                    }
+                }
+            }
+            return IsValid;
 
         }
 
@@ -342,13 +374,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.PoHeader.PoUuid = Guid.NewGuid().ToString();
-                if (dto.PoItems != null && dto.PoItems.Count > 0)
+                dto.PoHeader.PoUuid = null;
+                if (dto.HasPoItems)
                 {
                     foreach (var detailItem in dto.PoItems)
-                        detailItem.PoItemUuid = Guid.NewGuid().ToString();
+                        detailItem.PoItemUuid = null;
                 }
-  
             }
             else if (processingMode == ProcessingMode.Edit)
             {
@@ -362,6 +393,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.PoHeader.ProfileNum = null;
                 dto.PoHeader.DatabaseNum = null;
                 dto.PoHeader.PoUuid = null;
+                dto.PoHeader.PoNum = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
                 if (dto.PoItems != null && dto.PoItems.Count > 0)
@@ -394,11 +426,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.PoHeader.PoUuid = Guid.NewGuid().ToString();
+                dto.PoHeader.PoUuid = null;
                 if (dto.PoItems != null && dto.PoItems.Count > 0)
                 {
                     foreach (var detailItem in dto.PoItems)
-                        detailItem.PoItemUuid = Guid.NewGuid().ToString();
+                        detailItem.PoItemUuid = null ;
                 }
   
             }
@@ -414,6 +446,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.PoHeader.ProfileNum = null;
                 dto.PoHeader.DatabaseNum = null;
                 dto.PoHeader.PoUuid = null;
+                dto.PoHeader.PoNum = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
                 if (dto.PoItems != null && dto.PoItems.Count > 0)

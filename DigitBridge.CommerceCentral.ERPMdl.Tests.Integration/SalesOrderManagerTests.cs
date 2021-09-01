@@ -49,13 +49,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public void CreateSalesOrder_Test()
         {
             var uuids = new List<string> {
-            //"9E590AE7-F15E-42CD-A575-B101C39AC536",
-            //"C267FD30-2B58-4A32-B856-10B71300F928",
-            //"19E20861-0BFA-4235-8DA9-1B5F1FF055E6",
-            "6fd3afc5-954a-4500-8e1b-8605d1dd5365",
-            "D7FB3599-D264-4055-A586-D0CFD11D55E1",
-            "4E807A78-4331-41C4-BEF7-6E8A26163A04",
-            "C5FBE495-3D3D-4069-A841-4DD7D5932C68"
+            "815E5528-5CD8-48E6-9FFD-EDBD0EA58394",
+            "8265ED1E-DAC9-4B03-BB08-AB5FF7430405",
+            "F82BCD20-BA46-4A55-AF95-248BF6634E56",
+            "72EBF750-3C86-4865-BD41-4B1E5CF54FFD",
+            "984A5EE4-6002-4955-A754-C27BED59E78E",
+            "97fdd43b-3413-42c3-ba5c-284e8a3524c0",
+            "8240c857-f491-4895-801a-71c4c9d5fd45",
+            "dd999d94-74f5-4f6c-af5c-7bec45e03b58",
+            "a792a6ed-87c3-4cfe-9dd4-15174b7290f8"
             };
             SalesOrderManager soManager = new SalesOrderManager(DataBaseFactory);
             bool result = true;

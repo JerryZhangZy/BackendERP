@@ -372,7 +372,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             ClearData();
             return _data.Get(RowNum);
         }
-
+        public virtual bool GetByNumber(int masterAccountNum, int profileNum, string number)
+        {
+            if (ProcessMode == ProcessingMode.Add || string.IsNullOrEmpty(number) )
+                return false;
+            ClearData();
+            return _data.GetByNumber(masterAccountNum, profileNum, number);
+        }
         public virtual bool GetDataById(string id)
         {
             if (ProcessMode == ProcessingMode.Add || string.IsNullOrWhiteSpace(id))
@@ -409,7 +415,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 NewData();
             return await _data.GetAsync(RowNum).ConfigureAwait(false);
         }
-
+        public virtual async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
+        {
+            if (ProcessMode == ProcessingMode.Add || string.IsNullOrEmpty(number))
+                return false;
+            ClearData();
+            return await _data.GetByNumberAsync(masterAccountNum, profileNum, number);
+        }
         public virtual async Task<bool> GetDataByIdAsync(string id)
         {
             if (ProcessMode == ProcessingMode.Add || string.IsNullOrWhiteSpace(id))

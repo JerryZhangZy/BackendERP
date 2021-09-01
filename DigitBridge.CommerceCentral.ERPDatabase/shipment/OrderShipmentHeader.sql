@@ -38,7 +38,9 @@
     [OrderShipmentUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Shipment uuid. <br> Display: false, Editable: false.
     [RowNum] BIGINT NOT NULL DEFAULT 0,	--(Ignore) dummy field for T4 template 
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore) 
-
+    
+	[InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT '',	--InvoiceNumber. <br> Display: false, Editable: false.
+	
 	CONSTRAINT [PK_OrderShipmentHeader] PRIMARY KEY CLUSTERED ([OrderShipmentNum] ASC)
 );
 GO
