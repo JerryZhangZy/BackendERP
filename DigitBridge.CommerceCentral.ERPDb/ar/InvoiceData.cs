@@ -56,6 +56,29 @@ AND InvoiceNumber = @2";
                 _OnAfterLoad(this);
             return true;
         }
+        public override async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
+        {
+            var sql = @"
+SELECT TOP 1 * FROM InvoiceHeader
+WHERE MasterAccountNum = @0
+AND ProfileNum = @1
+AND InvoiceNumber = @2";
+            var paras = new SqlParameter[]
+            {
+                new SqlParameter("@0",masterAccountNum),
+                new SqlParameter("@1",profileNum),
+                new SqlParameter("@2",number)
+            };
+
+            var obj =await dbFactory.GetByAsync<InvoiceHeader>(sql, paras);
+            if (obj is null) return false;
+            InvoiceHeader = obj;
+            await GetOthersAsync();
+            if (_OnAfterLoad != null)
+                _OnAfterLoad(this);
+            return true;
+        }
+         
     }
 }
 

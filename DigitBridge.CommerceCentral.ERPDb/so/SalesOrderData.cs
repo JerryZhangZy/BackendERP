@@ -122,7 +122,7 @@ AND OrderNumber = @2";
         public override bool GetByNumber(int masterAccountNum, int profileNum, string number)
         {
             var sql = @"
-SELECT TOP 1 * FROM SalesOrderHeader tbl
+SELECT TOP 1 * FROM SalesOrderHeader 
 WHERE MasterAccountNum = @0
 AND ProfileNum = @1
 AND OrderNumber = @2";
@@ -137,6 +137,27 @@ AND OrderNumber = @2";
             if (obj is null) return false;
             SalesOrderHeader = obj;
             GetOthers();
+            if (_OnAfterLoad != null)
+                _OnAfterLoad(this);
+            return true;
+        }
+        public override async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
+        {
+            var sql = @"
+SELECT TOP 1 * FROM SalesOrderHeader 
+WHERE MasterAccountNum = @0
+AND ProfileNum = @1
+AND OrderNumber = @2";
+            var paras = new SqlParameter[]
+            {
+                new SqlParameter("@0",masterAccountNum),
+                new SqlParameter("@1",profileNum),
+                new SqlParameter("@2",number)
+            }; 
+            var obj = await dbFactory.GetByAsync<SalesOrderHeader>(sql, paras);
+            if (obj is null) return false;
+            SalesOrderHeader = obj;
+            await GetOthersAsync();
             if (_OnAfterLoad != null)
                 _OnAfterLoad(this);
             return true;
