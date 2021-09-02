@@ -190,6 +190,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError($"SKU is duplicate.");
                     return IsValid;
                 }
+
+                if (data.SalesOrderItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
+                {
+                    IsValid = false;
+                    AddError($"WarehouseCode cannot be empty.");
+                    return IsValid;
+                }
             }
 
             return true;
@@ -314,6 +321,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     IsValid = false;
                     AddError($"SKU is duplicate.");
+                    return IsValid;
+                }
+
+                if (data.SalesOrderItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
+                {
+                    IsValid = false;
+                    AddError($"WarehouseCode cannot be empty.");
                     return IsValid;
                 }
             }

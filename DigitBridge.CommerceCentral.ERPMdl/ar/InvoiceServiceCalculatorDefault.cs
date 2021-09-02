@@ -124,7 +124,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return salesOrderService.Data;
             });
         }
-        
+
 
         #endregion
 
@@ -163,13 +163,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 data.InvoiceHeader.InvoiceUuid = Guid.NewGuid().ToString();
             }
 
-            // get customer data
+            // Set customer info
             var customerData = GetCustomerData(data, data.InvoiceHeader.CustomerCode);
             data.InvoiceHeader.CustomerUuid = customerData.Customer.CustomerUuid;
             data.InvoiceHeader.CustomerName = customerData.Customer.CustomerName;
 
-            // get salesorder data
-            // TODO review this item. 
+            //Set salesorder info 
             var salesOrderData = GetSalesOrderData(data, data.InvoiceHeader.OrderNumber);
             data.InvoiceHeader.SalesOrderUuid = salesOrderData.SalesOrderHeader.SalesOrderUuid;
             data.InvoiceHeader.SalesAmount = salesOrderData.SalesOrderHeader.SalesAmount;
@@ -182,7 +181,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual bool SetDefaultDetail(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            if (data is null)
+            if (data is null || data.InvoiceItems == null || data.InvoiceItems.Count == 0)
                 return false;
 
             //TODO: add set default for detail list logic
@@ -190,8 +189,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             foreach (var item in data.InvoiceItems)
             {
-                if (item is null || item.IsEmpty)
-                    continue;
                 SetDefault(item, data, processingMode);
             }
 
@@ -214,7 +211,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 item.InvoiceItemsUuid = Guid.NewGuid().ToString();
             }
-            
+
+            //Set SKU info
+            var inventoryData = GetInventoryData(data, item.SKU);
+            item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
+            var inventory = inventoryService.GetInventory(inventoryData, item);
+            item.InventoryUuid = inventory.InventoryUuid;
+            item.WarehouseCode = inventory.WarehouseCode;
+            item.WarehouseUuid = inventory.WarehouseUuid;
+            item.LotNum = inventory.LotNum;
+            item.UOM = inventory.UOM;
+            item.Currency = inventory.Currency;
+
             //var setting = new ERPSetting();
             //var sum = data.InvoiceHeader;
             ////var prod = data.GetCache<ProductBasic>(ProductId);
@@ -223,21 +231,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //var invCost = new ItemCostClass();
 
             ////InvoiceItemType
-            ////InvoiceItemStatus
-            ////ItemDate
-            ////ItemTime
+            ////InvoiceItemStatus 
             ////ShipDate
             ////EtaArrivalDate
 
-            ////SKU
-            ////ProductUuid
-            ////InventoryUuid
-            ////WarehouseUuid
-            ////LotNum
+            ////SKU 
             ////Description
-            ////Notes
-            ////UOM
-            ////Currency
+            ////Notes 
 
             return true;
         }

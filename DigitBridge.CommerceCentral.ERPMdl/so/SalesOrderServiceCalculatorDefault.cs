@@ -180,19 +180,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.ItemDate = now.Date;
                 item.ItemTime = now.TimeOfDay;
             }
-
-            // get inventory data
+             
             if (processingMode == ProcessingMode.Add)
             {
                 item.SalesOrderItemsUuid = Guid.NewGuid().ToString();
-            }  
+            }
+
+            //Set SKU info
             var inventoryData = GetInventoryData(data, item.SKU);
             item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
-            
-            //inventoryData.Inventory.Where(i=>i.q)
-            //item.InventoryUuid=inventoryData.in 
-            //item.WarehouseCode
-            //item.WarehouseUuid
+            var inventory = inventoryService.GetInventory(inventoryData, item); 
+            item.InventoryUuid = inventory.InventoryUuid;
+            item.WarehouseCode = inventory.WarehouseCode;
+            item.WarehouseUuid = inventory.WarehouseUuid; 
+            item.LotNum = inventory.LotNum;
+            item.UOM = inventory.UOM;
+            item.Currency = inventory.Currency;  
 
             //var setting = new ERPSetting();
             //var sum = data.SalesOrderHeader;
@@ -202,20 +205,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //var invCost = new ItemCostClass();
 
             ////InvoiceItemType
-            ////InvoiceItemStatus
-            ////ItemDate
-            ////ItemTime
+            ////InvoiceItemStatus 
             ////ShipDate
             ////EtaArrivalDate
 
-            ////SKU
-            ////ProductUuid
-            ////InventoryUuid
-            ////WarehouseUuid
-            ////LotNum
+            ////SKU 
             ////Description
-            ////Notes
-            ////UOM
+            ////Notes 
             ////Currency
 
             return true;
