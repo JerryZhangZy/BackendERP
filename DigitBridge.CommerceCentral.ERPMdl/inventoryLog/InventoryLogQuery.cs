@@ -14,16 +14,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected static string PREFIX = InventoryLogHelper.TableAllies;
 
         // Filter fields
-        protected QueryFilter<DateTime> _LogDateFrom = new QueryFilter<DateTime>("LogDateFrom", "LogDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
+        protected QueryFilter<DateTime> _LogDateFrom = new QueryFilter<DateTime>("LogDateFrom", "LogDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
         public QueryFilter<DateTime> LogDateFrom => _LogDateFrom;
 
-        protected QueryFilter<DateTime> _LogDateTo = new QueryFilter<DateTime>("LogDateTo", "LogDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
+        protected QueryFilter<DateTime> _LogDateTo = new QueryFilter<DateTime>("LogDateTo", "LogDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> LogDateTo => _LogDateTo;
 
         protected QueryFilter<long> _BatchNum = new QueryFilter<long>("BatchNum", "BatchNum", PREFIX, FilterBy.eq, 0);
         public QueryFilter<long> BatchNum => _BatchNum;
 
-        protected QueryFilter<string> _LogUuid = new QueryFilter<string>("LogUuid", "LogUuid", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _LogUuid = new QueryFilter<string>("LogUuid", "LogUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> LogUuid => _LogUuid;
 
         protected QueryFilter<string> _LogType = new QueryFilter<string>("LogType", "LogType", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);

@@ -40,10 +40,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _LotNum = new QueryFilter<string>("LotNum", "LotNum", ReturnItemPREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> LotNum => _LotNum;
 
-        protected QueryFilter<DateTime> _ReturnDateFrom = new QueryFilter<DateTime>("ReturnDateFrom", "ReturnDate", ReturnItemPREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
+        protected QueryFilter<DateTime> _ReturnDateFrom = new QueryFilter<DateTime>("ReturnDateFrom", "ReturnDate", ReturnItemPREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
         public QueryFilter<DateTime> ReturnDateFrom => _ReturnDateFrom;
 
-        protected QueryFilter<DateTime> _ReturnDateTo = new QueryFilter<DateTime>("ReturnDateTo", "ReturnDate", ReturnItemPREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
+        protected QueryFilter<DateTime> _ReturnDateTo = new QueryFilter<DateTime>("ReturnDateTo", "ReturnDate", ReturnItemPREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> ReturnDateTo => _ReturnDateTo;
 
         protected QueryFilter<int> _TransType = new QueryFilter<int>("TransType", "TransType", TranSactionPREFIX, FilterBy.eq, 0);
@@ -66,7 +66,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override void InitQueryFilter()
         {
             _ReturnDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            _ReturnDateTo.FilterValue = DateTime.Today.AddDays(7);
+            _ReturnDateTo.FilterValue = DateTime.Today;
             //TODO，make sure this won't be changed by user.
             _TransType.FilterValue = (int)TransTypeEnum.Return;
         }

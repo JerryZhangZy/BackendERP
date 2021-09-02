@@ -29,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _Manufacturer = new QueryFilter<string>("Manufacturer", "Manufacturer", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> Manufacturer => _Manufacturer;
 
-        protected QueryFilter<string> _ProductTitle = new QueryFilter<string>("ProductTitle", "ProductTitle", PREFIX, FilterBy.cn, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _ProductTitle = new QueryFilter<string>("ProductTitle", "ProductTitle", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> ProductTitle => _ProductTitle;
 
         protected QueryFilter<string> _FNSku = new QueryFilter<string>("FNSku", "FNSku", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);

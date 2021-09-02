@@ -19,7 +19,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty);
         public QueryFilter<string> CustomerCode => _CustomerCode;
 
-        protected QueryFilter<string> _CustomerName = new QueryFilter<string>("CustomerName", "CustomerName", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _CustomerName = new QueryFilter<string>("CustomerName", "CustomerName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> CustomerName => _CustomerName;
 
         protected QueryFilter<string> _Area = new QueryFilter<string>("Area", "Area", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
