@@ -241,49 +241,49 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
+        ///// <summary>
+        ///// Get invoice with detail by invoiceNumber
+        ///// </summary>
+        ///// <param name="invoiceNumber"></param>
+        ///// <returns></returns>
+        //public virtual async Task<bool> GetByInvoiceNumberAsync(string invoiceNumber, InvoicePayload payload)
+        //{
+        //    if (string.IsNullOrEmpty(invoiceNumber))
+        //        return false;
+        //    List();
+
+        //    if (!(await ValidateAccountAsync(payload,invoiceNumber).ConfigureAwait(false)))
+        //        return false; 
+
+        //    var rowNum = await _data.GetRowNumAsync(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum);
+        //    if (!rowNum.HasValue)
+        //        return false;
+        //    var success = await GetDataAsync(rowNum.Value);
+        //    //if (success) ToDto();
+        //    return success;
+        //}
+
         /// <summary>
-        /// Get invoice with detail by invoiceNumber
+        /// Delete invoice by invoice number
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> GetByInvoiceNumberAsync(string invoiceNumber, InvoicePayload payload)
+        public virtual async Task<bool> DeleteByNumberAsync(InvoicePayload payload, string invoiceNumber)
         {
             if (string.IsNullOrEmpty(invoiceNumber))
                 return false;
-            List();
-
-            if (!(await ValidateAccountAsync(payload,invoiceNumber).ConfigureAwait(false)))
-                return false; 
-
-            var rowNum = await _data.GetRowNumAsync(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum);
-            if (!rowNum.HasValue)
-                return false;
-            var success = await GetDataAsync(rowNum.Value);
-            //if (success) ToDto();
-            return success;
-        }
-
-        /// <summary>
-        /// Delete invoice by invoiceUuid
-        /// </summary>
-        /// <param name="rowNum"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> DeleteByRowNumAsync( InvoicePayload payload, long rowNum)
-        {
-            payload.Invoice = new InvoiceDataDto();
-            payload.Invoice.InvoiceHeader = new InvoiceHeaderDto();
-            payload.Invoice.InvoiceHeader.RowNum = rowNum;
-
             //set delete mode
             Delete();
-
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
-                return false;
-
             //load data
-            var success = await GetDataAsync(rowNum.ToLong());
-            //delete salesorder and its sub items
-            success = success && DeleteData();
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
+            if (success)
+            {
+                success = DeleteData();
+            }
+            else
+            {
+                AddError("Data not found.");
+            }
             return success;
         }
 
@@ -300,12 +300,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 payload.Messages = this.Messages;
                 payload.Success = false;
             }
-            var rowNums = await new InvoiceList(dbFactory).GetRowNumListAsync(payload.InvoiceNumbers, payload.MasterAccountNum, payload.ProfileNum);
+            //var rowNums = await new InvoiceList(dbFactory).GetRowNumListAsync(payload.InvoiceNumbers, payload.MasterAccountNum, payload.ProfileNum);
 
             var result = new List<InvoiceDataDto>();
-            foreach (var rowNum in rowNums)
+            foreach (var invoiceNumber in payload.InvoiceNumbers)
             {
-                if (!(await this.GetDataAsync(rowNum)))
+                if (!(await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber)))
                     continue;
                 result.Add(this.ToDto());
                 this.DetachData(this.Data);

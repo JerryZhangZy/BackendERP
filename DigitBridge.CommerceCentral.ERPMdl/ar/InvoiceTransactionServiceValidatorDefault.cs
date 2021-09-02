@@ -101,7 +101,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (!string.IsNullOrEmpty(number)) //TODO  nubmer validate
                         isValid = InvoiceTransactionHelper.ExistNumber(dto.InvoiceTransaction.TransNum.ToInt(), dto.InvoiceTransaction.InvoiceNumber, pl.ProfileNum);
                     else if (!dto.InvoiceTransaction.RowNum.IsZero())
-                        isValid = InvoiceTransactionHelper.ExistRowNum(dto.InvoiceTransaction.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum,dto.InvoiceTransaction.TransType.ToInt());
+                        isValid = InvoiceTransactionHelper.ExistRowNum(dto.InvoiceTransaction.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum, dto.InvoiceTransaction.TransType.ToInt());
                     if (!isValid)
                         AddError($"Data not found.");
                 }
@@ -170,12 +170,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
-            //if (string.IsNullOrEmpty(data.InvoiceTransaction.CustomerUuid))
-            //{
-            //    IsValid = false;
-            //    AddError($"Customer cannot be empty.");
-            //    return IsValid;
-            //}
+            if (data.InvoiceReturnItems != null && data.InvoiceReturnItems.Count > 0)
+            {
+                if (data.InvoiceReturnItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
+                {
+                    IsValid = false;
+                    AddError($"SKU cannot be empty.");
+                    return IsValid;
+                }
+                else if (data.InvoiceReturnItems.Count > data.InvoiceReturnItems.Select(i => i.SKU).Distinct().Count())
+                {
+                    IsValid = false;
+                    AddError($"SKU is duplicate.");
+                    return IsValid;
+                }
+
+                if (data.InvoiceReturnItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
+                {
+                    IsValid = false;
+                    AddError($"WarehouseCode cannot be empty.");
+                    return IsValid;
+                }
+            }
             return true;
 
         }
@@ -188,6 +204,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 IsValid = false;
                 AddError($"RowNum: {data.InvoiceTransaction.RowNum} is duplicate.");
                 return IsValid;
+            }
+
+            //dto.InvoiceTransaction.InvoiceUuid = null;
+            //check InvoiceNumber  
+            if (string.IsNullOrEmpty(data.InvoiceTransaction.InvoiceNumber))
+            {
+                IsValid = false;
+                AddError($"InvoiceTransaction.InvoiceNumber is required.");
+                return IsValid;
+            }
+            else
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    //check trannum 
+                    if (!data.InvoiceTransaction.TransNum.IsZero()
+                        && InvoiceTransactionHelper.ExistNumber(data.InvoiceTransaction.TransNum.ToInt(), data.InvoiceTransaction.InvoiceNumber, data.InvoiceTransaction.ProfileNum.ToInt()))
+                    {
+                        IsValid = false;
+                        AddError("InvoiceTransaction.TransNum && InvoiceTransaction.InvoiceNumber exist.");
+                        return IsValid;
+                    }
+                }
             }
             return true;
 
@@ -262,12 +301,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
-            //if (string.IsNullOrEmpty(data.InvoiceTransaction.CustomerUuid))
-            //{
-            //    IsValid = false;
-            //    AddError($"Customer cannot be empty.");
-            //    return IsValid;
-            //}
+            if (data.InvoiceReturnItems != null && data.InvoiceReturnItems.Count > 0)
+            {
+                if (data.InvoiceReturnItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
+                {
+                    IsValid = false;
+                    AddError($"SKU cannot be empty.");
+                    return IsValid;
+                }
+                else if (data.InvoiceReturnItems.Count > data.InvoiceReturnItems.Select(i => i.SKU).Distinct().Count())
+                {
+                    IsValid = false;
+                    AddError($"SKU is duplicate.");
+                    return IsValid;
+                }
+
+                if (data.InvoiceReturnItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
+                {
+                    IsValid = false;
+                    AddError($"WarehouseCode cannot be empty.");
+                    return IsValid;
+                }
+            }
             return true;
 
         }
@@ -280,6 +335,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 IsValid = false;
                 AddError($"RowNum: {data.InvoiceTransaction.RowNum} is duplicate.");
                 return IsValid;
+            }
+
+            //dto.InvoiceTransaction.InvoiceUuid = null;
+            //check InvoiceNumber  
+            if (string.IsNullOrEmpty(data.InvoiceTransaction.InvoiceNumber))
+            {
+                IsValid = false;
+                AddError($"InvoiceTransaction.InvoiceNumber is required.");
+                return IsValid;
+            }
+            else
+            {
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    //check trannum  
+                    if (!data.InvoiceTransaction.TransNum.IsZero() &&
+                          await InvoiceTransactionHelper.ExistNumberAsync(data.InvoiceTransaction.TransNum.ToInt(), data.InvoiceTransaction.InvoiceNumber, data.InvoiceTransaction.ProfileNum.ToInt()))
+                    {
+                        IsValid = false;
+                        AddError("InvoiceTransaction.TransNum && InvoiceTransaction.InvoiceNumber exist.");
+                        return IsValid;
+                    }
+                }
             }
             return true;
 
@@ -340,47 +418,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 isValid = false;
                 AddError($"Data not found");
-            } 
+            }
             if (processingMode == ProcessingMode.Add)
             {
-                
-                dto.InvoiceTransaction.InvoiceUuid = null;
-                //check InvoiceNumber  
-                if (string.IsNullOrEmpty(dto.InvoiceTransaction.InvoiceNumber))
-                {
-                    isValid = false;
-                    AddError($"InvoiceTransaction.InvoiceNumber is required.");
-                }
-                else
-                {
-                    using (var tx = new ScopedTransaction(dbFactory))
-                    {
-                        //check trannum  
-                        if (dto.InvoiceTransaction.TransNum.IsZero())
-                        {
-                            dto.InvoiceTransaction.TransNum = InvoiceTransactionHelper.GetTranSeqNum(dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.ToInt());
-                        }
-                        else
-                        {
-                            if (InvoiceTransactionHelper.ExistNumber(dto.InvoiceTransaction.TransNum.ToInt(), dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.ToInt()))
-                            {
-                                isValid = false;
-                                AddError("InvoiceTransaction.TransNum && InvoiceTransaction.InvoiceNumber exist.");
-                            }
-                        }
-                    }
-                }
 
-
-
-
-                //for Add mode, always reset uuid
-                dto.InvoiceTransaction.TransUuid = Guid.NewGuid().ToString();
-                if (dto.InvoiceReturnItems != null && dto.InvoiceReturnItems.Count > 0)
-                {
-                    foreach (var detailItem in dto.InvoiceReturnItems)
-                        detailItem.ReturnItemUuid = Guid.NewGuid().ToString();
-                }
             }
             else if (processingMode == ProcessingMode.Edit)
             {
@@ -426,40 +467,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                dto.InvoiceTransaction.InvoiceUuid = null;
-                //check InvoiceNumber  
-                if (string.IsNullOrEmpty(dto.InvoiceTransaction.InvoiceNumber))
-                {
-                    isValid = false;
-                    AddError($"InvoiceTransaction.InvoiceNumber is required.");
-                }
-                else
-                {
-                    using (var tx = new ScopedTransaction(dbFactory))
-                    {
-                        //check trannum  
-                        if (dto.InvoiceTransaction.TransNum.IsZero())
-                        {
-                            dto.InvoiceTransaction.TransNum = await InvoiceTransactionHelper.GetTranSeqNumAsync(dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.ToInt());
-                        }
-                        else
-                        {
-                            if (await InvoiceTransactionHelper.ExistNumberAsync(dto.InvoiceTransaction.TransNum.ToInt(), dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.ToInt()))
-                            {
-                                isValid = false;
-                                AddError("InvoiceTransaction.TransNum && InvoiceTransaction.InvoiceNumber exist.");
-                            }
-                        }
-                    }
-                }
-
-                //for Add mode, always reset uuid
-                dto.InvoiceTransaction.TransUuid = Guid.NewGuid().ToString();
-                if (dto.InvoiceReturnItems != null && dto.InvoiceReturnItems.Count > 0)
-                {
-                    foreach (var detailItem in dto.InvoiceReturnItems)
-                        detailItem.ReturnItemUuid = Guid.NewGuid().ToString();
-                }
 
             }
             else if (processingMode == ProcessingMode.Edit)
