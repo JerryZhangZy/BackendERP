@@ -149,9 +149,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // get customer data
             var customerData = GetCustomerData(data, data.SalesOrderHeader.CustomerCode);
-            data.SalesOrderHeader.CustomerUuid = customerData.Customer.CustomerUuid;
-            data.SalesOrderHeader.CustomerName = customerData.Customer.CustomerName;
-
+            if (customerData != null && customerData.Customer != null)
+            {
+                data.SalesOrderHeader.CustomerUuid = customerData.Customer.CustomerUuid;
+                data.SalesOrderHeader.CustomerName = customerData.Customer.CustomerName;
+            }
             return true;
         }
 
@@ -180,7 +182,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.ItemDate = now.Date;
                 item.ItemTime = now.TimeOfDay;
             }
-             
+
             if (processingMode == ProcessingMode.Add)
             {
                 item.SalesOrderItemsUuid = Guid.NewGuid().ToString();
@@ -188,14 +190,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //Set SKU info
             var inventoryData = GetInventoryData(data, item.SKU);
-            item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
-            var inventory = inventoryService.GetInventory(inventoryData, item); 
-            item.InventoryUuid = inventory.InventoryUuid;
-            item.WarehouseCode = inventory.WarehouseCode;
-            item.WarehouseUuid = inventory.WarehouseUuid; 
-            item.LotNum = inventory.LotNum;
-            item.UOM = inventory.UOM;
-            item.Currency = inventory.Currency;  
+            if (inventoryData != null)
+            {
+                item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
+                var inventory = inventoryService.GetInventory(inventoryData, item);
+                item.InventoryUuid = inventory.InventoryUuid;
+                item.WarehouseCode = inventory.WarehouseCode;
+                item.WarehouseUuid = inventory.WarehouseUuid;
+                item.LotNum = inventory.LotNum;
+                item.UOM = inventory.UOM;
+                item.Currency = inventory.Currency;
+            }
 
             //var setting = new ERPSetting();
             //var sum = data.SalesOrderHeader;

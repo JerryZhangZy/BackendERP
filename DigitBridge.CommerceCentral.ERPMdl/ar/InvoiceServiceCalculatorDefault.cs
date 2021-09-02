@@ -165,13 +165,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // Set customer info
             var customerData = GetCustomerData(data, data.InvoiceHeader.CustomerCode);
-            data.InvoiceHeader.CustomerUuid = customerData.Customer.CustomerUuid;
-            data.InvoiceHeader.CustomerName = customerData.Customer.CustomerName;
+            if (customerData != null && customerData.Customer != null)
+            {
+                data.InvoiceHeader.CustomerUuid = customerData.Customer.CustomerUuid;
+                data.InvoiceHeader.CustomerName = customerData.Customer.CustomerName;
+            }
 
             //Set salesorder info 
             var salesOrderData = GetSalesOrderData(data, data.InvoiceHeader.OrderNumber);
-            data.InvoiceHeader.SalesOrderUuid = salesOrderData.SalesOrderHeader.SalesOrderUuid;
-            data.InvoiceHeader.SalesAmount = salesOrderData.SalesOrderHeader.SalesAmount;
+            if (salesOrderData != null && salesOrderData.SalesOrderHeader != null)
+            {
+                data.InvoiceHeader.SalesOrderUuid = salesOrderData.SalesOrderHeader.SalesOrderUuid;
+                data.InvoiceHeader.SalesAmount = salesOrderData.SalesOrderHeader.SalesAmount;
+            }
+
             //EnterBy
             //UpdateBy
 
@@ -214,14 +221,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //Set SKU info
             var inventoryData = GetInventoryData(data, item.SKU);
-            item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
-            var inventory = inventoryService.GetInventory(inventoryData, item);
-            item.InventoryUuid = inventory.InventoryUuid;
-            item.WarehouseCode = inventory.WarehouseCode;
-            item.WarehouseUuid = inventory.WarehouseUuid;
-            item.LotNum = inventory.LotNum;
-            item.UOM = inventory.UOM;
-            item.Currency = inventory.Currency;
+            if (inventoryData != null)
+            {
+                item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
+                var inventory = inventoryService.GetInventory(inventoryData, item);
+                item.InventoryUuid = inventory.InventoryUuid;
+                item.WarehouseCode = inventory.WarehouseCode;
+                item.WarehouseUuid = inventory.WarehouseUuid;
+                item.LotNum = inventory.LotNum;
+                item.UOM = inventory.UOM;
+                item.Currency = inventory.Currency;
+            }
+
 
             //var setting = new ERPSetting();
             //var sum = data.InvoiceHeader;
