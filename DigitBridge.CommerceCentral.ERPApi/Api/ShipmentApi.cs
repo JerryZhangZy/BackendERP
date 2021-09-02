@@ -190,7 +190,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             var exportData = await svc.ExportAsync(payload);
             var downfile = new FileContentResult(exportData, "text/csv");
-            downfile.FileDownloadName = "export-invoices.csv";
+            downfile.FileDownloadName = "export-shipments.csv";
             return downfile;
         }
 

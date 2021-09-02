@@ -34,8 +34,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 config.Delimiter = Format.Delimiter;
                 config.Encoding = Format.Encoding;
                 config.HasHeaderRecord = Format.HasHeaderRecord;
-                config.MissingFieldFound = null;
             }
+            config.MissingFieldFound = null;
             return config;
         }
 
