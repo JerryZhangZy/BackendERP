@@ -185,12 +185,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"CustomerCode cannot be empty.");
                 return IsValid;
             }
-            //TODO review this item 
-            if (string.IsNullOrEmpty(data.InvoiceHeader.OrderNumber))
+            if (data.InvoiceItems != null && data.InvoiceItems.Count > 0)
             {
-                IsValid = false;
-                AddError($"OrderNumber cannot be empty.");
-                return IsValid;
+                if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
+                {
+                    IsValid = false;
+                    AddError($"SKU cannot be empty.");
+                    return IsValid;
+                }
+                //TODO  check logic
+                else if (data.InvoiceItems.Count > data.InvoiceItems.Select(i => i.SKU).Distinct().Count())
+                {
+                    IsValid = false;
+                    AddError($"SKU is duplicate.");
+                    return IsValid;
+                }
+
+                if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
+                {
+                    IsValid = false;
+                    AddError($"WarehouseCode cannot be empty.");
+                    return IsValid;
+                }
             }
             return true;
 
@@ -296,12 +312,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"CustomerCode cannot be empty.");
                 return IsValid;
             }
-            //TODO review this item 
-            if (string.IsNullOrEmpty(data.InvoiceHeader.OrderNumber))
+            if (data.InvoiceItems != null && data.InvoiceItems.Count > 0)
             {
-                IsValid = false;
-                AddError($"OrderNumber cannot be empty.");
-                return IsValid;
+                if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
+                {
+                    IsValid = false;
+                    AddError($"SKU cannot be empty.");
+                    return IsValid;
+                }
+                //TODO  check logic
+                else if (data.InvoiceItems.Count > data.InvoiceItems.Select(i => i.SKU).Distinct().Count())
+                {
+                    IsValid = false;
+                    AddError($"SKU is duplicate.");
+                    return IsValid;
+                }
+
+                if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
+                {
+                    IsValid = false;
+                    AddError($"WarehouseCode cannot be empty.");
+                    return IsValid;
+                }
             }
             return true;
 

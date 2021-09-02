@@ -317,26 +317,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
         /// <summary>
-        /// Delete  by rownum
+        /// Delete invoice by invoice number
         /// </summary>
-        /// <param name="orderNumber"></param>
+        /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByRowNumAsync(InvoiceTransactionPayload payload, long rowNum)
+        public virtual async Task<bool> DeleteByNumberAsync(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
         {
-            payload.InvoiceTransaction = new InvoiceTransactionDataDto();
-            payload.InvoiceTransaction.InvoiceTransaction = new InvoiceTransactionDto();
-            payload.InvoiceTransaction.InvoiceTransaction.RowNum = rowNum;
-
             //set delete mode
             Delete();
-
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
-                return false;
-
             //load data
-            var success = await GetDataAsync(rowNum.ToLong());
-            //delete salesorder and its sub items
-            success = success && DeleteData();
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber + "_" + (int)transType + "_" + transNum);
+            if (success)
+            {
+                success = DeleteData();
+            }
+            else
+            {
+                AddError("Data not found.");
+            }
             return success;
         }
     }

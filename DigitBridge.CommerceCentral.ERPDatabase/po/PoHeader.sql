@@ -1,44 +1,44 @@
 ﻿CREATE TABLE [dbo].[PoHeader]
 (
-	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [DatabaseNum] INT NOT NULL, --Each database has its own default value.
-	[MasterAccountNum] INT NOT NULL,
-	[ProfileNum] INT NOT NULL,
+	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,--(Readonly) Record Number. Required, <br> Display: false, Editable: false.
+    [DatabaseNum] INT NOT NULL, --(Readonly) Database Number. <br> Display: false, Editable: false.
+	[MasterAccountNum] INT NOT NULL, --(Readonly) Login user account. <br> Display: false, Editable: false.
+	[ProfileNum] INT NOT NULL, --(Readonly) Login user profile. <br> Display: false, Editable: false.
 
-    [PoUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O
-	[PoNum] VARCHAR(50) NOT NULL, --Unique in this database, ProfileNum + PoNum is DigitBridgePoNum, which is global unique
-    [PoType] INT NULL DEFAULT 0, --P/O type
-    [PoStatus] INT NULL DEFAULT 0, --P/O status
-	[PoDate] DATE NOT NULL, --P/O date
-	[PoTime] TIME NOT NULL, --P/O time
-	[EtaShipDate] DATE NULL, --Estimated vendor ship date
-	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer 
-	[CancelDate] DATE NULL, --Usually it is related to shipping instruction
+    [PoUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O. <br> Display: false, Editable: false.
+	[PoNum] VARCHAR(50) NOT NULL, --Unique in this database. <br> ProfileNum + PoNum is DigitBridgePoNum, which is global unique. <br> Title: PoNum, Display: true, Editable: true
+    [PoType] INT NULL DEFAULT 0, --P/O type. <br> Title: Type, Display: true, Editable: true
+    [PoStatus] INT NULL DEFAULT 0, --P/O status. <br> Title: Status, Display: true, Editable: true
+	[PoDate] DATE NOT NULL, --P/O date. <br> Title: Date, Display: true, Editable: true
+	[PoTime] TIME NOT NULL, --P/O time. <br> Title: Time, Display: true, Editable: true
+	[EtaShipDate] DATE NULL, --Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
+	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer . <br> Title: Arrival Date, Display: true, Editable: true
+	[CancelDate] DATE NULL, --Usually it is related to shipping instruction. <br> Title: Cancel Date, Display: false, Editable: false
 
-    [VendorUuid] VARCHAR(50) NULL DEFAULT '', --reference Vendor Unique Guid
-	[VendorNum] VARCHAR(50) NULL, --Vendor readable number, DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique
-	[VendorName] NVARCHAR(100) NULL, --Vendor name
+    [VendorUuid] VARCHAR(50) NULL DEFAULT '', --reference Vendor Unique Guid. <br> Display: false, Editable: false
+	[VendorNum] VARCHAR(50) NULL, --Vendor readable number.<br> DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique. <br> Display: false, Editable: false
+	[VendorName] NVARCHAR(100) NULL, --Vendor name. <br> Display: false, Editable: false
 
-	[Currency] VARCHAR(10) NULL,
-	[SubTotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sub total amount is sumary items amount. 
-	[TotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total order amount. Include every charge. Related to VAT. For US orders, tax should not be included. Refer to tax info to find more detail. Reference calculation <br>(Sum of all items OrderItems[Quantity] x OrderItems[UnitPrice] ) + TotalTaxPrice + Total ShippingPrice + TotalInsurancePrice + TotalGiftOptionPrice + AdditionalCostOrDiscount +PromotionAmount + (Sum of all items OrderItems[Promotions[Amount]] + OrderItems[Promotions[ShippingAmount]] + OrderItems[RecyclingFee])
-	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for P/O items. 
-	[TaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total P/O tax amount (include shipping tax and misc tax) 
-	[DiscountRate] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount rate. 
-	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount amount, base on SubTotalAmount
-	[ShippingAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total shipping fee for all items
-	[ShippingTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of shipping fee
-	[MiscAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O handling charge 
-	[MiscTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of handling charge
-	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O total Charg Allowance Amount
+	[Currency] VARCHAR(10) NULL, --Currency code. <br> Title: Currency, Display: true, Editable: true
+	[SubTotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sub total amount is sumary items amount. . <br> Title: Subtotal, Display: true, Editable: false
+	[TotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total order amount. Include every charge. Related to VAT. For US orders, tax should not be included. Refer to tax info to find more detail. Reference calculation <br>(Sum of all items OrderItems[Quantity] x OrderItems[UnitPrice] ) + TotalTaxPrice + Total ShippingPrice + TotalInsurancePrice + TotalGiftOptionPrice + AdditionalCostOrDiscount +PromotionAmount + (Sum of all items OrderItems[Promotions[Amount]] + OrderItems[Promotions[ShippingAmount]] + OrderItems[RecyclingFee]). <br> Title: Order Amount, Display: true, Editable: false
+	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for P/O items. . <br> Title: Tax, Display: true, Editable: true
+	[TaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total P/O tax amount (include shipping tax and misc tax) . <br> Title: Tax Amount, Display: true, Editable: false
+	[DiscountRate] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount rate. <br> Title: Discount, Display: true, Editable: true
+	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount amount, base on SubTotalAmount. <br> Title: Discount Amount, Display: true, Editable: true
+	[ShippingAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total shipping fee for all items. <br> Title: Shipping, Display: true, Editable: true
+	[ShippingTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of shipping fee. <br> Title: Shipping Tax, Display: true, Editable: false
+	[MiscAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O handling charge . <br> Title: Handling, Display: true, Editable: true 
+	[MiscTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of handling charge. <br> Title: Handling Tax, Display: true, Editable: false
+	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O total Charg Allowance Amount. <br> Title: Charge&Allowance, Display: true, Editable: true
 
-	[PoSourceCode] VARCHAR(100) NOT NULL DEFAULT '', --P/O import or create from other entity number, use to prevent import duplicate P/O
+	[PoSourceCode] VARCHAR(100) NOT NULL DEFAULT '', --P/O import or create from other entity number, use to prevent import duplicate P/O. <br> Title: Source Code, Display: false, Editable: false
 
-    [EnterDateUtc] DATETIME NULL,
-    [UpdateDateUtc] DATETIME NULL,
-    [EnterBy] Varchar(100) NOT NULL,
-    [UpdateBy] Varchar(100) NOT NULL,
-    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
+    [EnterDateUtc] DATETIME NULL, --(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
+    [UpdateDateUtc] DATETIME NULL, --(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
+    [EnterBy] Varchar(100) NOT NULL, --(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
+    [UpdateBy] Varchar(100) NOT NULL, --(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
+    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)
     CONSTRAINT [PK_PoHeader] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
 GO

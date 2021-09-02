@@ -120,7 +120,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         }
                         else if(dto.HasProductExt)
                         {
-                            isValid = dto.ProductExt.HasSKU && dto.ProductExt.MasterAccountNum.ToInt() == pl.MasterAccountNum && dto.ProductExt.ProfileNum.ToInt() == pl.ProfileNum;
+                            if (dto.ProductExt.HasSKU)
+                                isValid = InventoryServiceHelper.ExistNumber(dto.ProductExt.SKU, pl.MasterAccountNum, pl.ProfileNum);
+                            else
+                                isValid = false;
                         }
                         else
                         {
@@ -175,7 +178,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         }
                         else if (dto.HasProductExt)
                         {
-                            isValid = dto.ProductExt.HasSKU && dto.ProductExt.MasterAccountNum.ToInt() == pl.MasterAccountNum && dto.ProductExt.ProfileNum.ToInt() == pl.ProfileNum;
+                            if (dto.ProductExt.HasSKU)
+                                isValid = await InventoryServiceHelper.ExistNumberAsync(dto.ProductExt.SKU, pl.MasterAccountNum, pl.ProfileNum);
+                            else
+                                isValid = false;
                         }
                         else
                         {
@@ -443,12 +449,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     dto.ProductBasic.ProductUuid = null;
                     dto.ProductBasic.SKU = null;
                 }
-                if(dto.HasProductExt)
-                {
-                    //don't clear dto.ProductExt.SKU,if only ProductExt ,used it find productBasic
-                    if (isValid)
-                        AddError("Data not found");
-                }
                 if (!dto.HasProductBasic && !dto.HasProductExt)
                 {
                     isValid = false;
@@ -509,11 +509,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     dto.ProductBasic.DatabaseNum = null;
                     dto.ProductBasic.ProductUuid = null;
                     dto.ProductBasic.SKU = null;
-                }
-                if (dto.HasProductExt)
-                {
-                    if (isValid)
-                        AddError("Data not found");
                 }
                 if(!dto.HasProductBasic&&!dto.HasProductExt)
                 {

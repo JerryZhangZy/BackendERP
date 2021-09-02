@@ -39,9 +39,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 
 		/// <summary>
-		/// Global Unique Guid for P/O
+		/// Global Unique Guid for P/O. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for P/O")]
+		[OpenApiPropertyDescription("Global Unique Guid for P/O. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The PoUuid value cannot exceed 50 characters. ")]
         public string PoUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

@@ -38,8 +38,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             context.RegisterClassMap(new CsvAutoMapper<ProductBasicDto>());
             context.RegisterClassMap(new CsvAutoMapper<ProductExtDto>());
             context.RegisterClassMap(new CsvAutoMapper<ProductExtAttributesDto>());
-            context.RegisterClassMap(new CsvAutoMapper<InventoryDto>());
-            context.RegisterClassMap(new CsvAutoMapper<InventoryAttributesDto>());
+            context.RegisterClassMap(new CsvAutoMapper<InventoryDto>(1));
+            context.RegisterClassMap(new CsvAutoMapper<InventoryAttributesDto>(1));
         }
 
         protected override void WriteCsv(InventoryDataDto data, CsvWriter csv)

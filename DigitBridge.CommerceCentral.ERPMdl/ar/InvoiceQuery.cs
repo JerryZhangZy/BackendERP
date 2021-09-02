@@ -27,10 +27,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public EnumQueryFilter<InvoiceType> InvoiceType => _InvoiceType;
 
 
-        protected QueryFilter<DateTime> _InvoiceDateFrom = new QueryFilter<DateTime>("InvoiceDateFrom", "InvoiceDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
+        protected QueryFilter<DateTime> _InvoiceDateFrom = new QueryFilter<DateTime>("InvoiceDateFrom", "InvoiceDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
         public QueryFilter<DateTime> InvoiceDateFrom => _InvoiceDateFrom;
 
-        protected QueryFilter<DateTime> _InvoiceDateTo = new QueryFilter<DateTime>("InvoiceDateTo", "InvoiceDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
+        protected QueryFilter<DateTime> _InvoiceDateTo = new QueryFilter<DateTime>("InvoiceDateTo", "InvoiceDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> InvoiceDateTo => _InvoiceDateTo;
 
 
@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override void InitQueryFilter()
         {
             _InvoiceDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            _InvoiceDateTo.FilterValue = DateTime.Today.AddDays(7);
+            _InvoiceDateTo.FilterValue = DateTime.Today;
         }
 
     }

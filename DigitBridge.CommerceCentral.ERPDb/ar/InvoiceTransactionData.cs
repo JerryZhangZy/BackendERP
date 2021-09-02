@@ -10,6 +10,7 @@ using System.Web;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using System.Linq;
+using Microsoft.Data.SqlClient;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -25,14 +26,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             if (this.InvoiceTransaction == null) return;
             //if(this.InvoiceTransaction.TransTime==null)
-            if (_InvoiceData != null )
+            if (_InvoiceData != null)
             {
                 this.InvoiceTransaction.InvoiceUuid = _InvoiceData.InvoiceHeader.InvoiceUuid;
             }
             if (_InvoiceData != null && this.InvoiceReturnItems != null && this.InvoiceReturnItems.Count > 0)
             {
                 foreach (var returnItem in this.InvoiceReturnItems)
-                { 
+                {
                     returnItem.InvoiceUuid = _InvoiceData.InvoiceHeader.InvoiceUuid;
 
                     var invoiceItem = _InvoiceData.InvoiceItems.Where(i => i.InvoiceItemsUuid == returnItem.InvoiceItemsUuid).FirstOrDefault();
@@ -41,7 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                     returnItem.InvoiceWarehouseUuid = invoiceItem.WarehouseUuid;
                     returnItem.SKU = invoiceItem.SKU;
                     returnItem.ProductUuid = invoiceItem.ProductUuid;
-                    returnItem.InventoryUuid = invoiceItem.InventoryUuid; 
+                    returnItem.InventoryUuid = invoiceItem.InventoryUuid;
                     returnItem.InvoiceDiscountPrice = invoiceItem.DiscountPrice;
                     returnItem.LotNum = invoiceItem.LotNum;
                     returnItem.Currency = invoiceItem.Currency;
@@ -76,6 +77,79 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 datas.Add(data);
             }
             return datas;
+        }
+
+        public override bool GetByNumber(int masterAccountNum, int profileNum, string number)
+        {
+            var invoiceNumberAndTranNum = number.Split('_');
+            var invoiceNumber = invoiceNumberAndTranNum[0];
+            var transType = invoiceNumberAndTranNum[1];
+
+            var sql = @"
+SELECT TOP 1 * FROM InvoiceTransaction
+WHERE MasterAccountNum = @0
+AND ProfileNum = @1
+AND InvoiceNumber = @2
+AND TransType = @3
+
+";
+            var paras = new List<SqlParameter>()
+            {
+                new SqlParameter("@0",masterAccountNum),
+                new SqlParameter("@1",profileNum),
+                new SqlParameter("@2",invoiceNumber),
+                new SqlParameter("@3",transType)
+            };
+
+            if (invoiceNumberAndTranNum.Length > 1)
+            {
+                sql += " AND TransNum=@4";
+                paras.Add(new SqlParameter("@4", invoiceNumberAndTranNum[1].ToInt()));
+            }
+
+            var obj = dbFactory.GetBy<InvoiceTransaction>(sql, paras.ToArray());
+            if (obj is null) return false;
+            InvoiceTransaction = obj;
+            GetOthers();
+            if (_OnAfterLoad != null)
+                _OnAfterLoad(this);
+            return true;
+        }
+        public override async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
+        {
+            var invoiceNumberAndTranNum = number.Split('_');
+            var invoiceNumber = invoiceNumberAndTranNum[0];
+            var transType = invoiceNumberAndTranNum[1];
+
+            var sql = @"
+SELECT TOP 1 * FROM InvoiceTransaction
+WHERE MasterAccountNum = @0
+AND ProfileNum = @1
+AND InvoiceNumber = @2
+AND TransType = @3
+
+";
+            var paras = new List<SqlParameter>()
+            {
+                new SqlParameter("@0",masterAccountNum),
+                new SqlParameter("@1",profileNum),
+                new SqlParameter("@2",invoiceNumber),
+                new SqlParameter("@3",transType)
+            };
+
+            if (invoiceNumberAndTranNum.Length > 2)
+            {
+                sql += " AND TransNum=@4";
+                paras.Add(new SqlParameter("@4", invoiceNumberAndTranNum[2].ToInt()));
+            }
+
+            var obj = await dbFactory.GetByAsync<InvoiceTransaction>(sql, paras.ToArray()); 
+            if (obj is null) return false;
+            InvoiceTransaction = obj;
+            await GetOthersAsync();
+            if (_OnAfterLoad != null)
+                _OnAfterLoad(this);
+            return true;
         }
     }
 }

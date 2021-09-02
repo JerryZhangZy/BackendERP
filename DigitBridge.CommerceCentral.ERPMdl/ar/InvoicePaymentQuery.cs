@@ -28,10 +28,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<int> TransStatus => _TransStatus;
 
 
-        protected QueryFilter<DateTime> _TransDateFrom = new QueryFilter<DateTime>("TransDateFrom", "TransDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
+        protected QueryFilter<DateTime> _TransDateFrom = new QueryFilter<DateTime>("TransDateFrom", "TransDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime,isDate:true);
         public QueryFilter<DateTime> TransDateFrom => _TransDateFrom;
 
-        protected QueryFilter<DateTime> _TransDateTo = new QueryFilter<DateTime>("TransDateTo", "TransDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
+        protected QueryFilter<DateTime> _TransDateTo = new QueryFilter<DateTime>("TransDateTo", "TransDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> TransDateTo => _TransDateTo;
 
         public InvoicePaymentQuery() : base(PREFIX)
@@ -46,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override void InitQueryFilter()
         {
             _TransDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            _TransDateTo.FilterValue = DateTime.Today.AddDays(7);
+            _TransDateTo.FilterValue = DateTime.Today;
             //TODO，make sure this won't be changed by user.
             _TransType.FilterValue = (int)TransTypeEnum.Payment;
         }

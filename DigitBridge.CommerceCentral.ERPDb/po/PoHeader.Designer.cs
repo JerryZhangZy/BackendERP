@@ -146,7 +146,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				PoUuid = Guid.NewGuid().ToString(); 
 		}
 		/// <summary>
-		/// Each database has its own default value.
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual int DatabaseNum
         {
@@ -162,7 +162,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual int MasterAccountNum
         {
@@ -178,7 +178,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual int ProfileNum
         {
@@ -194,7 +194,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Global Unique Guid for P/O
+		/// Global Unique Guid for P/O. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual string PoUuid
         {
@@ -210,7 +210,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Unique in this database, ProfileNum + PoNum is DigitBridgePoNum, which is global unique
+		/// Unique in this database. <br> ProfileNum + PoNum is DigitBridgePoNum, which is global unique. <br> Title: PoNum, Display: true, Editable: true
 		/// </summary>
         public virtual string PoNum
         {
@@ -226,7 +226,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O type
+		/// P/O type. <br> Title: Type, Display: true, Editable: true
 		/// </summary>
         public virtual int? PoType
         {
@@ -247,7 +247,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O status
+		/// P/O status. <br> Title: Status, Display: true, Editable: true
 		/// </summary>
         public virtual int? PoStatus
         {
@@ -268,7 +268,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O date
+		/// P/O date. <br> Title: Date, Display: true, Editable: true
 		/// </summary>
         public virtual DateTime PoDate
         {
@@ -284,7 +284,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O time
+		/// P/O time. <br> Title: Time, Display: true, Editable: true
 		/// </summary>
         public virtual TimeSpan PoTime
         {
@@ -300,7 +300,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Estimated vendor ship date
+		/// Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
 		/// </summary>
         public virtual DateTime? EtaShipDate
         {
@@ -321,7 +321,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Estimated date when item arrival to buyer
+		/// Estimated date when item arrival to buyer . <br> Title: Arrival Date, Display: true, Editable: true
 		/// </summary>
         public virtual DateTime? EtaArrivalDate
         {
@@ -342,7 +342,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Usually it is related to shipping instruction
+		/// Usually it is related to shipping instruction. <br> Title: Cancel Date, Display: false, Editable: false
 		/// </summary>
         public virtual DateTime? CancelDate
         {
@@ -363,7 +363,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// reference Vendor Unique Guid
+		/// reference Vendor Unique Guid. <br> Display: false, Editable: false
 		/// </summary>
         public virtual string VendorUuid
         {
@@ -384,7 +384,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Vendor readable number, DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique
+		/// Vendor readable number.<br> DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique. <br> Display: false, Editable: false
 		/// </summary>
         public virtual string VendorNum
         {
@@ -405,7 +405,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Vendor name
+		/// Vendor name. <br> Display: false, Editable: false
 		/// </summary>
         public virtual string VendorName
         {
@@ -426,7 +426,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Currency code. <br> Title: Currency, Display: true, Editable: true
 		/// </summary>
         public virtual string Currency
         {
@@ -447,7 +447,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Sub total amount is sumary items amount.
+		/// Sub total amount is sumary items amount. . <br> Title: Subtotal, Display: true, Editable: false
 		/// </summary>
         public virtual decimal SubTotalAmount
         {
@@ -479,7 +479,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Default Tax rate for P/O items.
+		/// Default Tax rate for P/O items. . <br> Title: Tax, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? TaxRate
         {
@@ -500,7 +500,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Total P/O tax amount (include shipping tax and misc tax)
+		/// Total P/O tax amount (include shipping tax and misc tax) . <br> Title: Tax Amount, Display: true, Editable: false
 		/// </summary>
         public virtual decimal? TaxAmount
         {
@@ -521,7 +521,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O level discount rate.
+		/// P/O level discount rate. <br> Title: Discount, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? DiscountRate
         {
@@ -542,7 +542,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O level discount amount, base on SubTotalAmount
+		/// P/O level discount amount, base on SubTotalAmount. <br> Title: Discount Amount, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? DiscountAmount
         {
@@ -563,7 +563,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Total shipping fee for all items
+		/// Total shipping fee for all items. <br> Title: Shipping, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? ShippingAmount
         {
@@ -584,7 +584,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// tax amount of shipping fee
+		/// tax amount of shipping fee. <br> Title: Shipping Tax, Display: true, Editable: false
 		/// </summary>
         public virtual decimal? ShippingTaxAmount
         {
@@ -605,7 +605,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O handling charge
+		/// P/O handling charge . <br> Title: Handling, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? MiscAmount
         {
@@ -626,7 +626,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// tax amount of handling charge
+		/// tax amount of handling charge. <br> Title: Handling Tax, Display: true, Editable: false
 		/// </summary>
         public virtual decimal? MiscTaxAmount
         {
@@ -647,7 +647,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O total Charg Allowance Amount
+		/// P/O total Charg Allowance Amount. <br> Title: Charge&Allowance, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? ChargeAndAllowanceAmount
         {
@@ -668,7 +668,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O import or create from other entity number, use to prevent import duplicate P/O
+		/// P/O import or create from other entity number, use to prevent import duplicate P/O. <br> Title: Source Code, Display: false, Editable: false
 		/// </summary>
         public virtual string PoSourceCode
         {
@@ -684,7 +684,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
         {
@@ -705,7 +705,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
 		/// </summary>
         public virtual string EnterBy
         {
@@ -721,7 +721,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
 		/// </summary>
         public virtual string UpdateBy
         {
