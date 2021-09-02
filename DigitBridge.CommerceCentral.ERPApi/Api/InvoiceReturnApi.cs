@@ -78,24 +78,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// Delete invoice return  
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="rowNum"></param>
+        /// <param name="invoiceNumber"></param>
+        /// <param name="transNum"></param>
         /// <returns></returns>
         [FunctionName(nameof(DeleteInvoiceReturns))]
         [OpenApiOperation(operationId: "DeleteInvoiceReturns", tags: new[] { "Invoice returns" }, Summary = "Delete one invoice Return ")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "rowNum", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "rowNum", Description = "Row num. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "transNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "transNum", Description = "Transaction Num. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadDelete))]
         public static async Task<JsonNetResponse<InvoiceReturnPayload>> DeleteInvoiceReturns(
-           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoiceReturns/{rowNum}")]
+           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoiceReturns/{invoiceNumber}/{transNum}")]
             HttpRequest req,
-            long rowNum)
+            string invoiceNumber, int transNum)
         {
             var payload = await req.GetParameters<InvoiceReturnPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceReturnService(dataBaseFactory);
-            payload.Success = await srv.DeleteByRowNumAsync(payload, rowNum);
+            payload.Success = await srv.DeleteByNumberAsync(payload, invoiceNumber, TransTypeEnum.Return, transNum);
             payload.Messages = srv.Messages;
             return new JsonNetResponse<InvoiceReturnPayload>(payload);
         }
@@ -143,6 +145,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var srv = new InvoiceReturnService(dataBaseFactory);
             payload.Success = await srv.AddAsync(payload);
             payload.Messages = srv.Messages;
+            payload.InvoiceTransaction = srv.ToDto();
             return new JsonNetResponse<InvoiceReturnPayload>(payload);
         }
 
