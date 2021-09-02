@@ -234,7 +234,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				PoUuid = Guid.NewGuid().ToString(); 
 		}
 		/// <summary>
-		/// Global Unique Guid for P/O
+		/// Global Unique Guid for P/O. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual string PoUuid
         {
@@ -250,7 +250,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// CentralFulfillmentNum of dropship S/O
+		/// (Ignore) Reference to CentralFulfillmentNum. <br> Display: false, Editable: false
 		/// </summary>
         public virtual long? CentralFulfillmentNum
         {
@@ -271,7 +271,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Shipping Carrier. <br> Title: Shipping Carrier: Display: true, Editable: true
 		/// </summary>
         public virtual string ShippingCarrier
         {
@@ -292,7 +292,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Shipping Method. <br> Title: Shipping Method: Display: true, Editable: true
 		/// </summary>
         public virtual string ShippingClass
         {
@@ -313,7 +313,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Readonly) Original DC number. <br> Title: DC number: Display: false, Editable: false
 		/// </summary>
         public virtual int? DistributionCenterNum
         {
@@ -334,7 +334,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// CentralOrderNum is DigitBridgeOrderId, use same DatabaseNum
+		/// (Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
 		/// </summary>
         public virtual long? CentralOrderNum
         {
@@ -355,7 +355,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// The channel which sells the item. Refer to Master Account Channel Setting
+		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 		/// </summary>
         public virtual int ChannelNum
         {
@@ -371,7 +371,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// The unique number of this profile’s channel account
+		/// (Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
 		/// </summary>
         public virtual int ChannelAccountNum
         {
@@ -387,7 +387,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// This usually is the marketplace order ID, or merchant PO Number
+		/// (Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
 		/// </summary>
         public virtual string ChannelOrderID
         {
@@ -403,7 +403,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time.
+		/// (Readonly) Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time. <br> Title: Other Channel Order: Display: true, Editable: false
 		/// </summary>
         public virtual string SecondaryChannelOrderID
         {
@@ -424,7 +424,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// requested Vendor use Account to ship
+		/// (Readonly) requested Vendor use Account to ship. <br> Title: Shipping Account: Display: false, Editable: false
 		/// </summary>
         public virtual string ShippingAccount
         {
@@ -445,7 +445,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Reference Number
+		/// Reference Number. <br> Title: Reference Number: Display: true, Editable: true
 		/// </summary>
         public virtual string RefNum
         {
@@ -466,7 +466,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Customer P/O Number
+		/// Customer P/O Number. <br> Title: Customer PO: Display: true, Editable: true
 		/// </summary>
         public virtual string CustomerPoNum
         {
@@ -487,7 +487,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Warehouse Guid
+		/// (Readonly) Warehouse uuid, load from warehouse data. <br> Display: false, Editable: false
 		/// </summary>
         public virtual string WarehouseUuid
         {
@@ -508,7 +508,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Customer Guid
+		/// Customer uuid, load from customer data. <br> Display: false, Editable: false
 		/// </summary>
         public virtual string CustomerUuid
         {
@@ -529,7 +529,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
+		/// The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.<br> Display: false, Editable: false
 		/// </summary>
         public virtual string EndBuyerUserID
         {
@@ -550,7 +550,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
+		/// The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.<br> Display: false, Editable: false
 		/// </summary>
         public virtual string EndBuyerName
         {
@@ -571,7 +571,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// The email of the end customer
+		/// The email of the end customer。<br> Display: false, Editable: false
 		/// </summary>
         public virtual string EndBuyerEmail
         {
@@ -592,7 +592,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to name <br> Title: Ship to name: Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToName
         {
@@ -613,7 +613,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string ShipToFirstName
         {
@@ -634,7 +634,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string ShipToLastName
         {
@@ -655,7 +655,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string ShipToSuffix
         {
@@ -676,7 +676,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to company name. <br> Title: Ship to company: Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToCompany
         {
@@ -697,7 +697,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string ShipToCompanyJobTitle
         {
@@ -718,7 +718,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to contact <br> Title: Ship to contact: Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToAttention
         {
@@ -739,7 +739,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to address 1 <br> Title: Ship to address 1: Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToAddressLine1
         {
@@ -760,7 +760,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to address 2 <br> Title: Ship to address 2: Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToAddressLine2
         {
@@ -781,7 +781,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to address 3 <br> Title: Ship to address 3: Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToAddressLine3
         {
@@ -802,7 +802,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to city <br> Title: Ship to city: Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToCity
         {
@@ -823,7 +823,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to state <br> Title: Ship to state: Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToState
         {
@@ -844,7 +844,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string ShipToStateFullName
         {
@@ -865,7 +865,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to zip code <br> Title: Ship to zip Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToPostalCode
         {
@@ -886,7 +886,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string ShipToPostalCodeExt
         {
@@ -907,7 +907,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to county <br> Title: Ship to county: Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToCounty
         {
@@ -928,7 +928,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to country <br> Title: Ship to country: Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToCountry
         {
@@ -949,7 +949,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to email <br> Title: Ship to email: Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToEmail
         {
@@ -970,7 +970,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Ship to phone <br> Title: Ship to phone: Display: true, Editable: true
 		/// </summary>
         public virtual string ShipToDaytimePhone
         {
@@ -991,7 +991,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string ShipToNightPhone
         {
@@ -1012,7 +1012,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to name <br> Title: Bill to name: Display: true, Editable: true
 		/// </summary>
         public virtual string BillToName
         {
@@ -1033,7 +1033,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string BillToFirstName
         {
@@ -1054,7 +1054,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string BillToLastName
         {
@@ -1075,7 +1075,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string BillToSuffix
         {
@@ -1096,7 +1096,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to company name. <br> Title: Bill to company: Display: true, Editable: true
 		/// </summary>
         public virtual string BillToCompany
         {
@@ -1117,7 +1117,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string BillToCompanyJobTitle
         {
@@ -1138,7 +1138,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to contact <br> Title: Bill to contact: Display: true, Editable: true
 		/// </summary>
         public virtual string BillToAttention
         {
@@ -1159,7 +1159,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to address 1 <br> Title: Bill to address 1: Display: true, Editable: true
 		/// </summary>
         public virtual string BillToAddressLine1
         {
@@ -1180,7 +1180,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to address 2 <br> Title: Bill to address 2: Display: true, Editable: true
 		/// </summary>
         public virtual string BillToAddressLine2
         {
@@ -1201,7 +1201,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to address 3 <br> Title: Bill to address 3: Display: true, Editable: true
 		/// </summary>
         public virtual string BillToAddressLine3
         {
@@ -1222,7 +1222,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to city <br> Title: Bill to city: Display: true, Editable: true
 		/// </summary>
         public virtual string BillToCity
         {
@@ -1243,7 +1243,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to state <br> Title: Bill to state: Display: true, Editable: true
 		/// </summary>
         public virtual string BillToState
         {
@@ -1264,7 +1264,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string BillToStateFullName
         {
@@ -1285,7 +1285,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to zip code <br> Title: Bill to zip Display: true, Editable: true
 		/// </summary>
         public virtual string BillToPostalCode
         {
@@ -1306,7 +1306,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string BillToPostalCodeExt
         {
@@ -1327,7 +1327,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to county <br> Title: Bill to county: Display: true, Editable: true
 		/// </summary>
         public virtual string BillToCounty
         {
@@ -1348,7 +1348,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to country <br> Title: Bill to country: Display: true, Editable: true
 		/// </summary>
         public virtual string BillToCountry
         {
@@ -1369,7 +1369,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to email <br> Title: Bill to email: Display: true, Editable: true
 		/// </summary>
         public virtual string BillToEmail
         {
@@ -1390,7 +1390,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// Bill to phone <br> Title: Bill to phone: Display: true, Editable: true
 		/// </summary>
         public virtual string BillToDaytimePhone
         {
@@ -1411,7 +1411,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string BillToNightPhone
         {
@@ -1432,7 +1432,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
         {
@@ -1453,7 +1453,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string EnterBy
         {
@@ -1469,7 +1469,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string UpdateBy
         {

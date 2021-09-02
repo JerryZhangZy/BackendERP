@@ -39,9 +39,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 
 		/// <summary>
-		/// Global Unique Guid for P/O Item Line
+		/// Global Unique Guid for P/O Item Line. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for P/O Item Line")]
+		[OpenApiPropertyDescription("Global Unique Guid for P/O Item Line. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The PoItemUuid value cannot exceed 50 characters. ")]
         public string PoItemUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -49,9 +49,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasPoItemUuid => PoItemUuid != null;
 
 		/// <summary>
-		/// Global Unique Guid for P/O
+		/// Global Unique Guid for P/O. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for P/O")]
+		[OpenApiPropertyDescription("Global Unique Guid for P/O. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The PoUuid value cannot exceed 50 characters. ")]
         public string PoUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -59,36 +59,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasPoUuid => PoUuid != null;
 
 		/// <summary>
-		/// P/O Item Line sort sequence
+		/// P/O Item Line sort sequence. <br> Title: Line#, Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("P/O Item Line sort sequence")]
+		[OpenApiPropertyDescription("P/O Item Line sort sequence. <br> Title: Line#, Display: true, Editable: false")]
         public int? Seq { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasSeq => Seq != null;
 
 		/// <summary>
-		/// P/O item type
+		/// P/O item type.<br> Title: Type, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("P/O item type")]
+		[OpenApiPropertyDescription("P/O item type.<br> Title: Type, Display: true, Editable: true")]
         public int? PoItemType { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPoItemType => PoItemType != null;
 
 		/// <summary>
-		/// P/O item status
+		/// P/O item status. <br> Title: Status, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("P/O item status")]
+		[OpenApiPropertyDescription("P/O item status. <br> Title: Status, Display: true, Editable: true")]
         public int? PoItemStatus { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPoItemStatus => PoItemStatus != null;
 
 		/// <summary>
-		/// P/O date
+		/// (Ignore) P/O date
 		/// </summary>
-		[OpenApiPropertyDescription("P/O date")]
+		[OpenApiPropertyDescription("(Ignore) P/O date")]
         [DataType(DataType.DateTime)]
         public DateTime? PoDate { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -96,9 +96,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasPoDate => PoDate != null;
 
 		/// <summary>
-		/// P/O time
+		/// (Ignore) P/O time
 		/// </summary>
-		[OpenApiPropertyDescription("P/O time")]
+		[OpenApiPropertyDescription("(Ignore) P/O time")]
         [DataType(DataType.DateTime)]
         public DateTime? PoTime { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -106,9 +106,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasPoTime => PoTime != null;
 
 		/// <summary>
-		/// Estimated vendor ship date
+		/// Estimated vendor ship date . <br> Title: Ship Date, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Estimated vendor ship date")]
+		[OpenApiPropertyDescription("Estimated vendor ship date . <br> Title: Ship Date, Display: true, Editable: true")]
         [DataType(DataType.DateTime)]
         public DateTime? EtaShipDate { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -116,9 +116,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasEtaShipDate => EtaShipDate != null;
 
 		/// <summary>
-		/// Estimated date when item arrival to buyer
+		/// Estimated date when item arrival to buyer. <br> Title: Arrival Date, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Estimated date when item arrival to buyer")]
+		[OpenApiPropertyDescription("Estimated date when item arrival to buyer. <br> Title: Arrival Date, Display: true, Editable: true")]
         [DataType(DataType.DateTime)]
         public DateTime? EtaArrivalDate { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -126,9 +126,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasEtaArrivalDate => EtaArrivalDate != null;
 
 		/// <summary>
-		/// Usually it is related to shipping instruction
+		/// Usually it is related to shipping instruction. <br> Title: Cancel Date, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Usually it is related to shipping instruction")]
+		[OpenApiPropertyDescription("Usually it is related to shipping instruction. <br> Title: Cancel Date, Display: true, Editable: true")]
         [DataType(DataType.DateTime)]
         public DateTime? CancelDate { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -136,9 +136,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasCancelDate => CancelDate != null;
 
 		/// <summary>
-		/// Product product uuid
+		/// (Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Product product uuid")]
+		[OpenApiPropertyDescription("(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The ProductUuid value cannot exceed 50 characters. ")]
         public string ProductUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -146,9 +146,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasProductUuid => ProductUuid != null;
 
 		/// <summary>
-		/// Product Inventory uuid
+		/// (Readonly) Inventory Item Line uuid, load from inventory data. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Product Inventory uuid")]
+		[OpenApiPropertyDescription("(Readonly) Inventory Item Line uuid, load from inventory data. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The InventoryUuid value cannot exceed 50 characters. ")]
         public string InventoryUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -156,9 +156,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasInventoryUuid => InventoryUuid != null;
 
 		/// <summary>
-		/// Product SKU
+		/// Product SKU. <br> Title: SKU, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Product SKU")]
+		[OpenApiPropertyDescription("Product SKU. <br> Title: SKU, Display: true, Editable: true")]
         [StringLength(100, ErrorMessage = "The SKU value cannot exceed 100 characters. ")]
         public string SKU { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -166,9 +166,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasSKU => SKU != null;
 
 		/// <summary>
-		/// P/O item description
+		/// Item line description, default from ProductBasic data. <br> Title: Description, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("P/O item description")]
+		[OpenApiPropertyDescription("Item line description, default from ProductBasic data. <br> Title: Description, Display: true, Editable: true")]
         [StringLength(200, ErrorMessage = "The Description value cannot exceed 200 characters. ")]
         public string Description { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -176,9 +176,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasDescription => Description != null;
 
 		/// <summary>
-		/// P/O item notes
+		/// P/O item notes . <br> Title: Notes, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("P/O item notes")]
+		[OpenApiPropertyDescription("P/O item notes . <br> Title: Notes, Display: true, Editable: true")]
         [StringLength(500, ErrorMessage = "The Notes value cannot exceed 500 characters. ")]
         public string Notes { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -186,9 +186,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasNotes => Notes != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(10, ErrorMessage = "The Currency value cannot exceed 10 characters. ")]
         public string Currency { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -196,36 +196,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasCurrency => Currency != null;
 
 		/// <summary>
-		/// Item P/O Qty.
+		/// (Ignore) Item P/O Qty.
 		/// </summary>
-		[OpenApiPropertyDescription("Item P/O Qty.")]
+		[OpenApiPropertyDescription("(Ignore) Item P/O Qty.")]
         public decimal? PoQty { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPoQty => PoQty != null;
 
 		/// <summary>
-		/// Item Received Qty.
+		/// (Ignore) Item Received Qty.
 		/// </summary>
-		[OpenApiPropertyDescription("Item Received Qty.")]
+		[OpenApiPropertyDescription("(Ignore) Item Received Qty.")]
         public decimal? ReceivedQty { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasReceivedQty => ReceivedQty != null;
 
 		/// <summary>
-		/// Item Cancelled Qty.
+		/// (Ignore) Item Cancelled Qty.
 		/// </summary>
-		[OpenApiPropertyDescription("Item Cancelled Qty.")]
+		[OpenApiPropertyDescription("(Ignore) Item Cancelled Qty.")]
         public decimal? CancelledQty { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCancelledQty => CancelledQty != null;
 
 		/// <summary>
-		/// Item P/O price rule.
+		/// Item P/O price rule. <br> Title: Price Type, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Item P/O price rule.")]
+		[OpenApiPropertyDescription("Item P/O price rule. <br> Title: Price Type, Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The PriceRule value cannot exceed 50 characters. ")]
         public string PriceRule { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -233,144 +233,144 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasPriceRule => PriceRule != null;
 
 		/// <summary>
-		/// Item P/O price.
+		/// Item P/O price.  <br> Title: Unit Price, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Item P/O price.")]
+		[OpenApiPropertyDescription("Item P/O price.  <br> Title: Unit Price, Display: true, Editable: true")]
         public decimal? Price { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPrice => Price != null;
 
 		/// <summary>
-		/// Item total amount.
+		/// Item total amount.  <br> Title: Ext.Amount, Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Item total amount.")]
+		[OpenApiPropertyDescription("Item total amount.  <br> Title: Ext.Amount, Display: true, Editable: false")]
         public decimal? ExtAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasExtAmount => ExtAmount != null;
 
 		/// <summary>
-		/// Default Tax rate for P/O items.
+		/// Default Tax rate for P/O items.  <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Default Tax rate for P/O items.")]
+		[OpenApiPropertyDescription("Default Tax rate for P/O items.  <br> Display: false, Editable: false")]
         public decimal? TaxRate { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTaxRate => TaxRate != null;
 
 		/// <summary>
-		/// Total P/O tax amount (include shipping tax and misc tax)
+		/// Total P/O tax amount (include shipping tax and misc tax) . <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Total P/O tax amount (include shipping tax and misc tax)")]
+		[OpenApiPropertyDescription("Total P/O tax amount (include shipping tax and misc tax) . <br> Display: false, Editable: false")]
         public decimal? TaxAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTaxAmount => TaxAmount != null;
 
 		/// <summary>
-		/// P/O level discount rate.
+		/// P/O level discount rate. <br> Title: Discount Rate, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("P/O level discount rate.")]
+		[OpenApiPropertyDescription("P/O level discount rate. <br> Title: Discount Rate, Display: true, Editable: true")]
         public decimal? DiscountRate { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDiscountRate => DiscountRate != null;
 
 		/// <summary>
-		/// P/O level discount amount, base on SubTotalAmount
+		/// P/O level discount amount, base on SubTotalAmount.<br> Title: Discount Amount, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("P/O level discount amount, base on SubTotalAmount")]
+		[OpenApiPropertyDescription("P/O level discount amount, base on SubTotalAmount.<br> Title: Discount Amount, Display: true, Editable: true")]
         public decimal? DiscountAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDiscountAmount => DiscountAmount != null;
 
 		/// <summary>
-		/// Total shipping fee for all items
+		/// Total shipping fee for all items. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Total shipping fee for all items")]
+		[OpenApiPropertyDescription("Total shipping fee for all items. <br> Display: false, Editable: false")]
         public decimal? ShippingAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShippingAmount => ShippingAmount != null;
 
 		/// <summary>
-		/// tax amount of shipping fee
+		/// tax amount of shipping fee. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("tax amount of shipping fee")]
+		[OpenApiPropertyDescription("tax amount of shipping fee. <br> Display: false, Editable: false")]
         public decimal? ShippingTaxAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShippingTaxAmount => ShippingTaxAmount != null;
 
 		/// <summary>
-		/// P/O handling charge
+		/// P/O handling charge . <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("P/O handling charge")]
+		[OpenApiPropertyDescription("P/O handling charge . <br> Display: false, Editable: false")]
         public decimal? MiscAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMiscAmount => MiscAmount != null;
 
 		/// <summary>
-		/// tax amount of handling charge
+		/// tax amount of handling charge. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("tax amount of handling charge")]
+		[OpenApiPropertyDescription("tax amount of handling charge. <br> Display: false, Editable: false")]
         public decimal? MiscTaxAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMiscTaxAmount => MiscTaxAmount != null;
 
 		/// <summary>
-		/// P/O total Charg Allowance Amount
+		/// P/O total Charg Allowance Amount. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("P/O total Charg Allowance Amount")]
+		[OpenApiPropertyDescription("P/O total Charg Allowance Amount. <br> Display: false, Editable: false")]
         public decimal? ChargeAndAllowanceAmount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChargeAndAllowanceAmount => ChargeAndAllowanceAmount != null;
 
 		/// <summary>
-		/// P/O item will update inventory instock qty
+		/// P/O item will update inventory instock qty . <br> Title: Stockable, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("P/O item will update inventory instock qty")]
+		[OpenApiPropertyDescription("P/O item will update inventory instock qty . <br> Title: Stockable, Display: true, Editable: true")]
         public bool? Stockable { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasStockable => Stockable != null;
 
 		/// <summary>
-		/// P/O item will update inventory cost
+		/// P/O item will update inventory cost. <br> Title: Apply Cost, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("P/O item will update inventory cost")]
+		[OpenApiPropertyDescription("P/O item will update inventory cost. <br> Title: Apply Cost, Display: true, Editable: true")]
         public bool? Costable { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCostable => Costable != null;
 
 		/// <summary>
-		/// P/O item will apply tax
+		/// P/O item will apply tax. <br> Title: Taxable, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("P/O item will apply tax")]
+		[OpenApiPropertyDescription("P/O item will apply tax. <br> Title: Taxable, Display: true, Editable: true")]
         public bool? Taxable { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTaxable => Taxable != null;
 
 		/// <summary>
-		/// P/O item will apply to total amount
+		/// P/O item will apply to total amount . <br> Title: A/P, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("P/O item will apply to total amount")]
+		[OpenApiPropertyDescription("P/O item will apply to total amount . <br> Title: A/P, Display: true, Editable: true")]
         public bool? IsAp { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasIsAp => IsAp != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [DataType(DataType.DateTime)]
         public DateTime? UpdateDateUtc { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -378,9 +378,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasUpdateDateUtc => UpdateDateUtc != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(100, ErrorMessage = "The EnterBy value cannot exceed 100 characters. ")]
         public string EnterBy { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -388,9 +388,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasEnterBy => EnterBy != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(100, ErrorMessage = "The UpdateBy value cannot exceed 100 characters. ")]
         public string UpdateBy { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
