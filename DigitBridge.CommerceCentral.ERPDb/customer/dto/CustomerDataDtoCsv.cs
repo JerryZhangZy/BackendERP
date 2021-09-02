@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             context.RegisterClassMap(new CsvAutoMapper<CustomerDto>());
             context.RegisterClassMap(new CsvAutoMapper<CustomerAttributesDto>());
-            context.RegisterClassMap(new CsvAutoMapper<CustomerAddressDto>());
+            context.RegisterClassMap(new CsvAutoMapper<CustomerAddressDto>(1));
         }
 
         protected override void WriteCsv(CustomerDataDto data, CsvWriter csv)

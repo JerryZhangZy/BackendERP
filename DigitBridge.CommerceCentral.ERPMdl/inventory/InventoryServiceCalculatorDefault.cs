@@ -130,6 +130,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 data.Inventory = GenerateMissingInventories(data.ProductBasic, data.Inventory);
             }
+            else if(processingMode==ProcessingMode.Edit)
+            {
+                if (data.Inventory.Count == 0)
+                {
+                    data.Inventory = GenerateMissingInventories(data.ProductBasic, data.Inventory);
+                }
+            }
             //TODO: add set default for detail list logic
             /* This is generated sample code
 

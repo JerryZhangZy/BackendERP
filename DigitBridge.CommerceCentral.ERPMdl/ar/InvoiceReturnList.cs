@@ -10,6 +10,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json.Linq;
 using Helper = DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionHelper;
+using ReturnHelper = DigitBridge.CommerceCentral.ERPDb.InvoiceReturnItemsHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -29,7 +30,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.TableAllies}.*,
+(select {ReturnHelper.TableAllies}.* from {ReturnHelper.TableName} {ReturnHelper.TableAllies} where {Helper.TableAllies}.TransUuid={ReturnHelper.TableAllies}.TransUuid for json auto,include_null_values ) as InvoiceReturnItems
 ";
             return this.SQL_Select;
         }
@@ -38,6 +40,7 @@ SELECT
         {
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
+LEFT JOIN {ReturnHelper.TableName} {ReturnHelper.TableAllies} ON {Helper.TableAllies}.TransUuid={ReturnHelper.TableAllies}.TransUuid
 ";
             return this.SQL_From;
         }

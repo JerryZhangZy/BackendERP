@@ -171,6 +171,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
+                bool isValid = true;
+                if (!dto.ProductExt.HasMasterAccountNum)
+                {
+                    AddError("Add ProductExt,MasterAccountNum must required");
+                    isValid = false;
+                }
+                if (!dto.ProductExt.HasProfileNum)
+                {
+                    AddError("Add ProductExt,ProfileNum must required");
+                    isValid = false;
+                }
+                if (!isValid)
+                {
+                    return false;
+                }
                 GetDataBySku(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
                 Data.AddIgnoreSave(InventoryData.ProductBasicTable);
             }
@@ -206,6 +221,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
+                bool isValid = true;
+                if (!dto.ProductExt.HasMasterAccountNum)
+                {
+                    AddError("Add ProductExt,MasterAccountNum must required");
+                    isValid = false;
+                }
+                if (!dto.ProductExt.HasProfileNum)
+                {
+                    AddError("Add ProductExt,ProfileNum must required");
+                    isValid = false;
+                }
+                if (!isValid)
+                {
+                    return false;
+                }
                 await GetDataBySkuAsync(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt()).ConfigureAwait(false);
                 Data.AddIgnoreSave(InventoryData.ProductBasicTable);
             }
@@ -245,7 +275,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
-                GetDataBySku(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
+                GetDataBySku(dto.ProductExt.SKU, payload.MasterAccountNum, payload.ProfileNum);
                 Data.AddIgnoreSave(InventoryData.ProductBasicTable);
             }
 
@@ -285,7 +315,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
-                await GetDataBySkuAsync(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt()).ConfigureAwait(false);
+                await GetDataBySkuAsync(dto.ProductExt.SKU, payload.MasterAccountNum, payload.ProfileNum).ConfigureAwait(false);
                 Data.AddIgnoreSave(InventoryData.ProductBasicTable);
             }
 

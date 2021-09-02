@@ -57,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				PoUuid = Guid.NewGuid().ToString(); 
 		}
 		/// <summary>
-		/// Global Unique Guid for P/O
+		/// Global Unique Guid for P/O. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual string PoUuid
         {
@@ -73,7 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// JSON string, store any document fields
+		/// (Ignore) JSON string.
 		/// </summary>
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual string JsonFields

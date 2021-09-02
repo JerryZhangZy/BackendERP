@@ -39,9 +39,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 
 		/// <summary>
-		/// Each database has its own default value.
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("Each database has its own default value.")]
+		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -49,9 +49,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasDatabaseNum => DatabaseNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -59,9 +59,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasMasterAccountNum => MasterAccountNum != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -69,9 +69,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasProfileNum => ProfileNum != null;
 
 		/// <summary>
-		/// Global Unique Guid for P/O
+		/// Global Unique Guid for P/O. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for P/O")]
+		[OpenApiPropertyDescription("Global Unique Guid for P/O. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The PoUuid value cannot exceed 50 characters. ")]
         public string PoUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -79,9 +79,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasPoUuid => PoUuid != null;
 
 		/// <summary>
-		/// Global Unique Guid for P/O Item Line
+		/// Global Unique Guid for P/O Item Line. <br> Display: false, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("Global Unique Guid for P/O Item Line")]
+		[OpenApiPropertyDescription("Global Unique Guid for P/O Item Line. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The PoItemUuid value cannot exceed 50 characters. ")]
         public string PoItemUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -89,18 +89,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasPoItemUuid => PoItemUuid != null;
 
 		/// <summary>
-		/// CentralFulfillmentNum of dropship S/O
+		/// (Ignore) Reference to CentralFulfillmentNum. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("CentralFulfillmentNum of dropship S/O")]
+		[OpenApiPropertyDescription("(Ignore) Reference to CentralFulfillmentNum. <br> Display: false, Editable: false")]
         public long? CentralFulfillmentNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCentralFulfillmentNum => CentralFulfillmentNum != null;
 
 		/// <summary>
-		/// 
+		/// Shipping Carrier. <br> Title: Shipping Carrier: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Shipping Carrier. <br> Title: Shipping Carrier: Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The ShippingCarrier value cannot exceed 50 characters. ")]
         public string ShippingCarrier { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -108,9 +108,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShippingCarrier => ShippingCarrier != null;
 
 		/// <summary>
-		/// 
+		/// Shipping Method. <br> Title: Shipping Method: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Shipping Method. <br> Title: Shipping Method: Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The ShippingClass value cannot exceed 50 characters. ")]
         public string ShippingClass { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -118,45 +118,45 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShippingClass => ShippingClass != null;
 
 		/// <summary>
-		/// 
+		/// (Readonly) Original DC number. <br> Title: DC number: Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Original DC number. <br> Title: DC number: Display: false, Editable: false")]
         public int? DistributionCenterNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDistributionCenterNum => DistributionCenterNum != null;
 
 		/// <summary>
-		/// CentralOrderNum is DigitBridgeOrderId, use same DatabaseNum
+		/// (Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("CentralOrderNum is DigitBridgeOrderId, use same DatabaseNum")]
+		[OpenApiPropertyDescription("(Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false")]
         public long? CentralOrderNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCentralOrderNum => CentralOrderNum != null;
 
 		/// <summary>
-		/// The channel which sells the item. Refer to Master Account Channel Setting
+		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("The channel which sells the item. Refer to Master Account Channel Setting")]
+		[OpenApiPropertyDescription("(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false")]
         public int? ChannelNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelNum => ChannelNum != null;
 
 		/// <summary>
-		/// The unique number of this profile’s channel account
+		/// (Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("The unique number of this profile’s channel account")]
+		[OpenApiPropertyDescription("(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false")]
         public int? ChannelAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChannelAccountNum => ChannelAccountNum != null;
 
 		/// <summary>
-		/// This usually is the marketplace order ID, or merchant PO Number
+		/// (Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("This usually is the marketplace order ID, or merchant PO Number")]
+		[OpenApiPropertyDescription("(Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false")]
         [StringLength(130, ErrorMessage = "The ChannelOrderID value cannot exceed 130 characters. ")]
         public string ChannelOrderID { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -164,9 +164,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasChannelOrderID => ChannelOrderID != null;
 
 		/// <summary>
-		/// Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time.
+		/// (Readonly) Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time. <br> Title: Other Channel Order: Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time.")]
+		[OpenApiPropertyDescription("(Readonly) Secondary identifier provided by the channel. This is a secondary marketplace-generated Order ID. It is not populated most of the time. <br> Title: Other Channel Order: Display: true, Editable: false")]
         [StringLength(200, ErrorMessage = "The SecondaryChannelOrderID value cannot exceed 200 characters. ")]
         public string SecondaryChannelOrderID { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -174,9 +174,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasSecondaryChannelOrderID => SecondaryChannelOrderID != null;
 
 		/// <summary>
-		/// requested Vendor use Account to ship
+		/// (Readonly) requested Vendor use Account to ship. <br> Title: Shipping Account: Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("requested Vendor use Account to ship")]
+		[OpenApiPropertyDescription("(Readonly) requested Vendor use Account to ship. <br> Title: Shipping Account: Display: false, Editable: false")]
         [StringLength(100, ErrorMessage = "The ShippingAccount value cannot exceed 100 characters. ")]
         public string ShippingAccount { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -184,9 +184,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShippingAccount => ShippingAccount != null;
 
 		/// <summary>
-		/// Warehouse Guid
+		/// (Readonly) Warehouse uuid, load from warehouse data. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Warehouse Guid")]
+		[OpenApiPropertyDescription("(Readonly) Warehouse uuid, load from warehouse data. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The WarehouseUuid value cannot exceed 50 characters. ")]
         public string WarehouseUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -194,9 +194,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasWarehouseUuid => WarehouseUuid != null;
 
 		/// <summary>
-		/// Customer Guid
+		/// Customer uuid, load from customer data. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Customer Guid")]
+		[OpenApiPropertyDescription("Customer uuid, load from customer data. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The CustomerUuid value cannot exceed 50 characters. ")]
         public string CustomerUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -204,9 +204,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasCustomerUuid => CustomerUuid != null;
 
 		/// <summary>
-		/// The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
+		/// The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.<br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.")]
+		[OpenApiPropertyDescription("The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.<br> Display: false, Editable: false")]
         [StringLength(255, ErrorMessage = "The EndBuyerUserID value cannot exceed 255 characters. ")]
         public string EndBuyerUserID { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -214,9 +214,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasEndBuyerUserID => EndBuyerUserID != null;
 
 		/// <summary>
-		/// The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.
+		/// The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.<br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.")]
+		[OpenApiPropertyDescription("The marketplace name of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.<br> Display: false, Editable: false")]
         [StringLength(255, ErrorMessage = "The EndBuyerName value cannot exceed 255 characters. ")]
         public string EndBuyerName { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -224,9 +224,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasEndBuyerName => EndBuyerName != null;
 
 		/// <summary>
-		/// The email of the end customer
+		/// The email of the end customer。<br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("The email of the end customer")]
+		[OpenApiPropertyDescription("The email of the end customer。<br> Display: false, Editable: false")]
         [StringLength(255, ErrorMessage = "The EndBuyerEmail value cannot exceed 255 characters. ")]
         public string EndBuyerEmail { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -234,9 +234,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasEndBuyerEmail => EndBuyerEmail != null;
 
 		/// <summary>
-		/// 
+		/// Ship to name <br> Title: Ship to name: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Ship to name <br> Title: Ship to name: Display: true, Editable: true")]
         [StringLength(100, ErrorMessage = "The ShipToName value cannot exceed 100 characters. ")]
         public string ShipToName { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -244,9 +244,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToName => ShipToName != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(50, ErrorMessage = "The ShipToFirstName value cannot exceed 50 characters. ")]
         public string ShipToFirstName { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -254,9 +254,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToFirstName => ShipToFirstName != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(50, ErrorMessage = "The ShipToLastName value cannot exceed 50 characters. ")]
         public string ShipToLastName { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -264,9 +264,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToLastName => ShipToLastName != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(50, ErrorMessage = "The ShipToSuffix value cannot exceed 50 characters. ")]
         public string ShipToSuffix { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -274,9 +274,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToSuffix => ShipToSuffix != null;
 
 		/// <summary>
-		/// 
+		/// Ship to company name. <br> Title: Ship to company: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Ship to company name. <br> Title: Ship to company: Display: true, Editable: true")]
         [StringLength(100, ErrorMessage = "The ShipToCompany value cannot exceed 100 characters. ")]
         public string ShipToCompany { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -284,9 +284,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToCompany => ShipToCompany != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(100, ErrorMessage = "The ShipToCompanyJobTitle value cannot exceed 100 characters. ")]
         public string ShipToCompanyJobTitle { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -294,9 +294,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToCompanyJobTitle => ShipToCompanyJobTitle != null;
 
 		/// <summary>
-		/// 
+		/// Ship to contact <br> Title: Ship to contact: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Ship to contact <br> Title: Ship to contact: Display: true, Editable: true")]
         [StringLength(100, ErrorMessage = "The ShipToAttention value cannot exceed 100 characters. ")]
         public string ShipToAttention { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -304,49 +304,49 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToAttention => ShipToAttention != null;
 
 		/// <summary>
-		/// 
+		/// Ship to address 1 <br> Title: Ship to address 1: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
-        [StringLength(100, ErrorMessage = "The ShipToAddressLine1 value cannot exceed 100 characters. ")]
+		[OpenApiPropertyDescription("Ship to address 1 <br> Title: Ship to address 1: Display: true, Editable: true")]
+        [StringLength(200, ErrorMessage = "The ShipToAddressLine1 value cannot exceed 200 characters. ")]
         public string ShipToAddressLine1 { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipToAddressLine1 => ShipToAddressLine1 != null;
 
 		/// <summary>
-		/// 
+		/// Ship to address 2 <br> Title: Ship to address 2: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
-        [StringLength(100, ErrorMessage = "The ShipToAddressLine2 value cannot exceed 100 characters. ")]
+		[OpenApiPropertyDescription("Ship to address 2 <br> Title: Ship to address 2: Display: true, Editable: true")]
+        [StringLength(200, ErrorMessage = "The ShipToAddressLine2 value cannot exceed 200 characters. ")]
         public string ShipToAddressLine2 { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipToAddressLine2 => ShipToAddressLine2 != null;
 
 		/// <summary>
-		/// 
+		/// Ship to address 3 <br> Title: Ship to address 3: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
-        [StringLength(100, ErrorMessage = "The ShipToAddressLine3 value cannot exceed 100 characters. ")]
+		[OpenApiPropertyDescription("Ship to address 3 <br> Title: Ship to address 3: Display: true, Editable: true")]
+        [StringLength(200, ErrorMessage = "The ShipToAddressLine3 value cannot exceed 200 characters. ")]
         public string ShipToAddressLine3 { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipToAddressLine3 => ShipToAddressLine3 != null;
 
 		/// <summary>
-		/// 
+		/// Ship to city <br> Title: Ship to city: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
-        [StringLength(50, ErrorMessage = "The ShipToCity value cannot exceed 50 characters. ")]
+		[OpenApiPropertyDescription("Ship to city <br> Title: Ship to city: Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The ShipToCity value cannot exceed 100 characters. ")]
         public string ShipToCity { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipToCity => ShipToCity != null;
 
 		/// <summary>
-		/// 
+		/// Ship to state <br> Title: Ship to state: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Ship to state <br> Title: Ship to state: Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The ShipToState value cannot exceed 50 characters. ")]
         public string ShipToState { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -354,9 +354,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToState => ShipToState != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(100, ErrorMessage = "The ShipToStateFullName value cannot exceed 100 characters. ")]
         public string ShipToStateFullName { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -364,9 +364,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToStateFullName => ShipToStateFullName != null;
 
 		/// <summary>
-		/// 
+		/// Ship to zip code <br> Title: Ship to zip Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Ship to zip code <br> Title: Ship to zip Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The ShipToPostalCode value cannot exceed 50 characters. ")]
         public string ShipToPostalCode { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -374,9 +374,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToPostalCode => ShipToPostalCode != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(50, ErrorMessage = "The ShipToPostalCodeExt value cannot exceed 50 characters. ")]
         public string ShipToPostalCodeExt { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -384,29 +384,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToPostalCodeExt => ShipToPostalCodeExt != null;
 
 		/// <summary>
-		/// 
+		/// Ship to county <br> Title: Ship to county: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
-        [StringLength(50, ErrorMessage = "The ShipToCounty value cannot exceed 50 characters. ")]
+		[OpenApiPropertyDescription("Ship to county <br> Title: Ship to county: Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The ShipToCounty value cannot exceed 100 characters. ")]
         public string ShipToCounty { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipToCounty => ShipToCounty != null;
 
 		/// <summary>
-		/// 
+		/// Ship to country <br> Title: Ship to country: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
-        [StringLength(50, ErrorMessage = "The ShipToCountry value cannot exceed 50 characters. ")]
+		[OpenApiPropertyDescription("Ship to country <br> Title: Ship to country: Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The ShipToCountry value cannot exceed 100 characters. ")]
         public string ShipToCountry { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipToCountry => ShipToCountry != null;
 
 		/// <summary>
-		/// 
+		/// Ship to email <br> Title: Ship to email: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Ship to email <br> Title: Ship to email: Display: true, Editable: true")]
         [StringLength(100, ErrorMessage = "The ShipToEmail value cannot exceed 100 characters. ")]
         public string ShipToEmail { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -414,9 +414,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToEmail => ShipToEmail != null;
 
 		/// <summary>
-		/// 
+		/// Ship to phone <br> Title: Ship to phone: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Ship to phone <br> Title: Ship to phone: Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The ShipToDaytimePhone value cannot exceed 50 characters. ")]
         public string ShipToDaytimePhone { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -424,9 +424,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToDaytimePhone => ShipToDaytimePhone != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(50, ErrorMessage = "The ShipToNightPhone value cannot exceed 50 characters. ")]
         public string ShipToNightPhone { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -434,9 +434,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasShipToNightPhone => ShipToNightPhone != null;
 
 		/// <summary>
-		/// 
+		/// Bill to name <br> Title: Bill to name: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Bill to name <br> Title: Bill to name: Display: true, Editable: true")]
         [StringLength(100, ErrorMessage = "The BillToName value cannot exceed 100 characters. ")]
         public string BillToName { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -444,9 +444,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToName => BillToName != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(50, ErrorMessage = "The BillToFirstName value cannot exceed 50 characters. ")]
         public string BillToFirstName { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -454,9 +454,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToFirstName => BillToFirstName != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(50, ErrorMessage = "The BillToLastName value cannot exceed 50 characters. ")]
         public string BillToLastName { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -464,9 +464,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToLastName => BillToLastName != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(50, ErrorMessage = "The BillToSuffix value cannot exceed 50 characters. ")]
         public string BillToSuffix { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -474,9 +474,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToSuffix => BillToSuffix != null;
 
 		/// <summary>
-		/// 
+		/// Bill to company name. <br> Title: Bill to company: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Bill to company name. <br> Title: Bill to company: Display: true, Editable: true")]
         [StringLength(100, ErrorMessage = "The BillToCompany value cannot exceed 100 characters. ")]
         public string BillToCompany { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -484,9 +484,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToCompany => BillToCompany != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(100, ErrorMessage = "The BillToCompanyJobTitle value cannot exceed 100 characters. ")]
         public string BillToCompanyJobTitle { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -494,9 +494,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToCompanyJobTitle => BillToCompanyJobTitle != null;
 
 		/// <summary>
-		/// 
+		/// Bill to contact <br> Title: Bill to contact: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Bill to contact <br> Title: Bill to contact: Display: true, Editable: true")]
         [StringLength(100, ErrorMessage = "The BillToAttention value cannot exceed 100 characters. ")]
         public string BillToAttention { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -504,49 +504,49 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToAttention => BillToAttention != null;
 
 		/// <summary>
-		/// 
+		/// Bill to address 1 <br> Title: Bill to address 1: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
-        [StringLength(100, ErrorMessage = "The BillToAddressLine1 value cannot exceed 100 characters. ")]
+		[OpenApiPropertyDescription("Bill to address 1 <br> Title: Bill to address 1: Display: true, Editable: true")]
+        [StringLength(200, ErrorMessage = "The BillToAddressLine1 value cannot exceed 200 characters. ")]
         public string BillToAddressLine1 { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBillToAddressLine1 => BillToAddressLine1 != null;
 
 		/// <summary>
-		/// 
+		/// Bill to address 2 <br> Title: Bill to address 2: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
-        [StringLength(100, ErrorMessage = "The BillToAddressLine2 value cannot exceed 100 characters. ")]
+		[OpenApiPropertyDescription("Bill to address 2 <br> Title: Bill to address 2: Display: true, Editable: true")]
+        [StringLength(200, ErrorMessage = "The BillToAddressLine2 value cannot exceed 200 characters. ")]
         public string BillToAddressLine2 { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBillToAddressLine2 => BillToAddressLine2 != null;
 
 		/// <summary>
-		/// 
+		/// Bill to address 3 <br> Title: Bill to address 3: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
-        [StringLength(100, ErrorMessage = "The BillToAddressLine3 value cannot exceed 100 characters. ")]
+		[OpenApiPropertyDescription("Bill to address 3 <br> Title: Bill to address 3: Display: true, Editable: true")]
+        [StringLength(200, ErrorMessage = "The BillToAddressLine3 value cannot exceed 200 characters. ")]
         public string BillToAddressLine3 { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBillToAddressLine3 => BillToAddressLine3 != null;
 
 		/// <summary>
-		/// 
+		/// Bill to city <br> Title: Bill to city: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
-        [StringLength(50, ErrorMessage = "The BillToCity value cannot exceed 50 characters. ")]
+		[OpenApiPropertyDescription("Bill to city <br> Title: Bill to city: Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The BillToCity value cannot exceed 100 characters. ")]
         public string BillToCity { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBillToCity => BillToCity != null;
 
 		/// <summary>
-		/// 
+		/// Bill to state <br> Title: Bill to state: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Bill to state <br> Title: Bill to state: Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The BillToState value cannot exceed 50 characters. ")]
         public string BillToState { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -554,9 +554,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToState => BillToState != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(100, ErrorMessage = "The BillToStateFullName value cannot exceed 100 characters. ")]
         public string BillToStateFullName { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -564,9 +564,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToStateFullName => BillToStateFullName != null;
 
 		/// <summary>
-		/// 
+		/// Bill to zip code <br> Title: Bill to zip Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Bill to zip code <br> Title: Bill to zip Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The BillToPostalCode value cannot exceed 50 characters. ")]
         public string BillToPostalCode { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -574,9 +574,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToPostalCode => BillToPostalCode != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(50, ErrorMessage = "The BillToPostalCodeExt value cannot exceed 50 characters. ")]
         public string BillToPostalCodeExt { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -584,9 +584,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToPostalCodeExt => BillToPostalCodeExt != null;
 
 		/// <summary>
-		/// 
+		/// Bill to county <br> Title: Bill to county: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Bill to county <br> Title: Bill to county: Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The BillToCounty value cannot exceed 50 characters. ")]
         public string BillToCounty { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -594,19 +594,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToCounty => BillToCounty != null;
 
 		/// <summary>
-		/// 
+		/// Bill to country <br> Title: Bill to country: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
-        [StringLength(50, ErrorMessage = "The BillToCountry value cannot exceed 50 characters. ")]
+		[OpenApiPropertyDescription("Bill to country <br> Title: Bill to country: Display: true, Editable: true")]
+        [StringLength(100, ErrorMessage = "The BillToCountry value cannot exceed 100 characters. ")]
         public string BillToCountry { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBillToCountry => BillToCountry != null;
 
 		/// <summary>
-		/// 
+		/// Bill to email <br> Title: Bill to email: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Bill to email <br> Title: Bill to email: Display: true, Editable: true")]
         [StringLength(100, ErrorMessage = "The BillToEmail value cannot exceed 100 characters. ")]
         public string BillToEmail { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -614,9 +614,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToEmail => BillToEmail != null;
 
 		/// <summary>
-		/// 
+		/// Bill to phone <br> Title: Bill to phone: Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("Bill to phone <br> Title: Bill to phone: Display: true, Editable: true")]
         [StringLength(50, ErrorMessage = "The BillToDaytimePhone value cannot exceed 50 characters. ")]
         public string BillToDaytimePhone { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -624,9 +624,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToDaytimePhone => BillToDaytimePhone != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(50, ErrorMessage = "The BillToNightPhone value cannot exceed 50 characters. ")]
         public string BillToNightPhone { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -634,9 +634,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBillToNightPhone => BillToNightPhone != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [DataType(DataType.DateTime)]
         public DateTime? UpdateDateUtc { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -644,9 +644,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasUpdateDateUtc => UpdateDateUtc != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(100, ErrorMessage = "The EnterBy value cannot exceed 100 characters. ")]
         public string EnterBy { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -654,9 +654,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasEnterBy => EnterBy != null;
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Ignore)")]
         [StringLength(100, ErrorMessage = "The UpdateBy value cannot exceed 100 characters. ")]
         public string UpdateBy { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

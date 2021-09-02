@@ -79,7 +79,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("SKU",SqlDbType.VarChar,NotNull=true)]
         private string _sKU;
 
-        [Column("Description",SqlDbType.NVarChar,NotNull=true)]
+        [Column("Description",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _description;
 
         [Column("Notes",SqlDbType.NVarChar,NotNull=true)]
@@ -165,7 +165,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				PoItemUuid = Guid.NewGuid().ToString(); 
 		}
 		/// <summary>
-		/// Global Unique Guid for P/O Item Line
+		/// Global Unique Guid for P/O Item Line. <br> Display: false, Editable: false
 		/// </summary>
         public virtual string PoItemUuid
         {
@@ -181,7 +181,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Global Unique Guid for P/O
+		/// Global Unique Guid for P/O. <br> Display: false, Editable: false
 		/// </summary>
         public virtual string PoUuid
         {
@@ -197,7 +197,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O Item Line sort sequence
+		/// P/O Item Line sort sequence. <br> Title: Line#, Display: true, Editable: false
 		/// </summary>
         public virtual int Seq
         {
@@ -213,7 +213,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O item type
+		/// P/O item type.<br> Title: Type, Display: true, Editable: true
 		/// </summary>
         public virtual int? PoItemType
         {
@@ -234,7 +234,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O item status
+		/// P/O item status. <br> Title: Status, Display: true, Editable: true
 		/// </summary>
         public virtual int? PoItemStatus
         {
@@ -255,7 +255,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O date
+		/// (Ignore) P/O date
 		/// </summary>
         public virtual DateTime PoDate
         {
@@ -271,7 +271,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O time
+		/// (Ignore) P/O time
 		/// </summary>
         public virtual TimeSpan PoTime
         {
@@ -287,7 +287,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Estimated vendor ship date
+		/// Estimated vendor ship date . <br> Title: Ship Date, Display: true, Editable: true
 		/// </summary>
         public virtual DateTime? EtaShipDate
         {
@@ -308,7 +308,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Estimated date when item arrival to buyer
+		/// Estimated date when item arrival to buyer. <br> Title: Arrival Date, Display: true, Editable: true
 		/// </summary>
         public virtual DateTime? EtaArrivalDate
         {
@@ -329,7 +329,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Usually it is related to shipping instruction
+		/// Usually it is related to shipping instruction. <br> Title: Cancel Date, Display: true, Editable: true
 		/// </summary>
         public virtual DateTime? CancelDate
         {
@@ -350,7 +350,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Product product uuid
+		/// (Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
 		/// </summary>
         public virtual string ProductUuid
         {
@@ -366,7 +366,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Product Inventory uuid
+		/// (Readonly) Inventory Item Line uuid, load from inventory data. <br> Display: false, Editable: false
 		/// </summary>
         public virtual string InventoryUuid
         {
@@ -382,7 +382,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Product SKU
+		/// Product SKU. <br> Title: SKU, Display: true, Editable: true
 		/// </summary>
         public virtual string SKU
         {
@@ -398,7 +398,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O item description
+		/// Item line description, default from ProductBasic data. <br> Title: Description, Display: true, Editable: true
 		/// </summary>
         public virtual string Description
         {
@@ -414,7 +414,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O item notes
+		/// P/O item notes . <br> Title: Notes, Display: true, Editable: true
 		/// </summary>
         public virtual string Notes
         {
@@ -430,7 +430,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string Currency
         {
@@ -451,7 +451,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item P/O Qty.
+		/// (Ignore) Item P/O Qty.
 		/// </summary>
         public virtual decimal PoQty
         {
@@ -467,7 +467,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item Received Qty.
+		/// (Ignore) Item Received Qty.
 		/// </summary>
         public virtual decimal ReceivedQty
         {
@@ -483,7 +483,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item Cancelled Qty.
+		/// (Ignore) Item Cancelled Qty.
 		/// </summary>
         public virtual decimal CancelledQty
         {
@@ -499,7 +499,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item P/O price rule.
+		/// Item P/O price rule. <br> Title: Price Type, Display: true, Editable: true
 		/// </summary>
         public virtual string PriceRule
         {
@@ -515,7 +515,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item P/O price.
+		/// Item P/O price.  <br> Title: Unit Price, Display: true, Editable: true
 		/// </summary>
         public virtual decimal Price
         {
@@ -531,7 +531,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item total amount.
+		/// Item total amount.  <br> Title: Ext.Amount, Display: true, Editable: false
 		/// </summary>
         public virtual decimal ExtAmount
         {
@@ -547,7 +547,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Default Tax rate for P/O items.
+		/// Default Tax rate for P/O items.  <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal? TaxRate
         {
@@ -568,7 +568,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Total P/O tax amount (include shipping tax and misc tax)
+		/// Total P/O tax amount (include shipping tax and misc tax) . <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal? TaxAmount
         {
@@ -589,7 +589,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O level discount rate.
+		/// P/O level discount rate. <br> Title: Discount Rate, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? DiscountRate
         {
@@ -610,7 +610,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O level discount amount, base on SubTotalAmount
+		/// P/O level discount amount, base on SubTotalAmount.<br> Title: Discount Amount, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? DiscountAmount
         {
@@ -631,7 +631,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Total shipping fee for all items
+		/// Total shipping fee for all items. <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal? ShippingAmount
         {
@@ -652,7 +652,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// tax amount of shipping fee
+		/// tax amount of shipping fee. <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal? ShippingTaxAmount
         {
@@ -673,7 +673,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O handling charge
+		/// P/O handling charge . <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal? MiscAmount
         {
@@ -694,7 +694,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// tax amount of handling charge
+		/// tax amount of handling charge. <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal? MiscTaxAmount
         {
@@ -715,7 +715,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O total Charg Allowance Amount
+		/// P/O total Charg Allowance Amount. <br> Display: false, Editable: false
 		/// </summary>
         public virtual decimal? ChargeAndAllowanceAmount
         {
@@ -736,7 +736,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O item will update inventory instock qty
+		/// P/O item will update inventory instock qty . <br> Title: Stockable, Display: true, Editable: true
 		/// </summary>
         public virtual bool Stockable
         {
@@ -752,7 +752,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O item will update inventory cost
+		/// P/O item will update inventory cost. <br> Title: Apply Cost, Display: true, Editable: true
 		/// </summary>
         public virtual bool Costable
         {
@@ -768,7 +768,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O item will apply tax
+		/// P/O item will apply tax. <br> Title: Taxable, Display: true, Editable: true
 		/// </summary>
         public virtual bool Taxable
         {
@@ -784,7 +784,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// P/O item will apply to total amount
+		/// P/O item will apply to total amount . <br> Title: A/P, Display: true, Editable: true
 		/// </summary>
         public virtual bool IsAp
         {
@@ -800,7 +800,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
         {
@@ -821,7 +821,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string EnterBy
         {
@@ -837,7 +837,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// 
+		/// (Ignore)
 		/// </summary>
         public virtual string UpdateBy
         {

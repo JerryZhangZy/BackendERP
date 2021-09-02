@@ -1,52 +1,52 @@
 ﻿CREATE TABLE [dbo].[PoItems]
 (
-	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [PoItemUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O Item Line
+	[RowNum] BIGINT IDENTITY(1,1) NOT NULL, --(Readonly) Record Number. Required, <br> Display: false, Editable: false.
+    [PoItemUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for P/O Item Line. <br> Display: false, Editable: false
 
-    [PoUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for P/O
-    [Seq] INT NOT NULL DEFAULT 0, --P/O Item Line sort sequence
+    [PoUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for P/O. <br> Display: false, Editable: false
+    [Seq] INT NOT NULL DEFAULT 0, --P/O Item Line sort sequence. <br> Title: Line#, Display: true, Editable: false
 
-    [PoItemType] INT NULL DEFAULT 0, --P/O item type
-    [PoItemStatus] INT NULL DEFAULT 0, --P/O item status
-	[PoDate] DATE NOT NULL, --P/O date
-	[PoTime] TIME NOT NULL, --P/O time
-	[EtaShipDate] DATE NULL, --Estimated vendor ship date
-	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer 
-	[CancelDate] DATE NULL, --Usually it is related to shipping instruction
+    [PoItemType] INT NULL DEFAULT 0, --P/O item type.<br> Title: Type, Display: true, Editable: true
+    [PoItemStatus] INT NULL DEFAULT 0, --P/O item status. <br> Title: Status, Display: true, Editable: true
+	[PoDate] DATE NOT NULL, --(Ignore) P/O date
+	[PoTime] TIME NOT NULL, --(Ignore) P/O time
+	[EtaShipDate] DATE NULL, --Estimated vendor ship date . <br> Title: Ship Date, Display: true, Editable: true
+	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer. <br> Title: Arrival Date, Display: true, Editable: true
+	[CancelDate] DATE NULL, --Usually it is related to shipping instruction. <br> Title: Cancel Date, Display: true, Editable: true
 
-	[ProductUuid] Varchar(50) NOT NULL,--Product product uuid 
-	[InventoryUuid] Varchar(50) NOT NULL,--Product Inventory uuid 
-	[SKU] Varchar(100) NOT NULL,--Product SKU 
-	[Description] NVarchar(200) NOT NULL,--P/O item description 
-	[Notes] NVarchar(500) NOT NULL,--P/O item notes 
+	[ProductUuid] Varchar(50) NOT NULL,--(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
+	[InventoryUuid] Varchar(50) NOT NULL,--(Readonly) Inventory Item Line uuid, load from inventory data. <br> Display: false, Editable: false
+	[SKU] Varchar(100) NOT NULL, --Product SKU. <br> Title: SKU, Display: true, Editable: true
+	[Description] NVarchar(200) NOT NULL, --Item line description, default from ProductBasic data. <br> Title: Description, Display: true, Editable: true
+	[Notes] NVarchar(500) NOT NULL,--P/O item notes . <br> Title: Notes, Display: true, Editable: true
 
-	[Currency] VARCHAR(10) NULL,
-	[PoQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item P/O Qty. 
-	[ReceivedQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Received Qty. 
-	[CancelledQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Cancelled Qty. 
-	[PriceRule] VARCHAR(50) NOT NULL DEFAULT '', --Item P/O price rule. 
-	[Price] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item P/O price. 
-	[ExtAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount. 
-	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for P/O items. 
-	[TaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total P/O tax amount (include shipping tax and misc tax) 
-	[DiscountRate] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount rate. 
-	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount amount, base on SubTotalAmount
-	[ShippingAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total shipping fee for all items
-	[ShippingTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of shipping fee
-	[MiscAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O handling charge 
-	[MiscTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of handling charge
-	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O total Charg Allowance Amount
+	[Currency] VARCHAR(10) NULL, --(Ignore)  
+	[PoQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item P/O Qty. 
+	[ReceivedQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Received Qty. 
+	[CancelledQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Cancelled Qty. 
+	[PriceRule] VARCHAR(50) NOT NULL DEFAULT '',  --Item P/O price rule. <br> Title: Price Type, Display: true, Editable: true
+	[Price] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item P/O price.  <br> Title: Unit Price, Display: true, Editable: true
+	[ExtAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount.  <br> Title: Ext.Amount, Display: true, Editable: false
+	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for P/O items.  <br> Display: false, Editable: false
+	[TaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total P/O tax amount (include shipping tax and misc tax) . <br> Display: false, Editable: false
+	[DiscountRate] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount rate. <br> Title: Discount Rate, Display: true, Editable: true
+	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount amount, base on SubTotalAmount.<br> Title: Discount Amount, Display: true, Editable: true
+	[ShippingAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total shipping fee for all items. <br> Display: false, Editable: false
+	[ShippingTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of shipping fee. <br> Display: false, Editable: false
+	[MiscAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O handling charge . <br> Display: false, Editable: false
+	[MiscTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of handling charge. <br> Display: false, Editable: false
+	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O total Charg Allowance Amount. <br> Display: false, Editable: false
 
-	[Stockable] TINYINT NOT NULL DEFAULT 1,--P/O item will update inventory instock qty 
-	[Costable] TINYINT NOT NULL DEFAULT 1,--P/O item will update inventory cost
-	[Taxable] TINYINT NOT NULL DEFAULT 0,--P/O item will apply tax
-	[IsAp] TINYINT NOT NULL DEFAULT 0,--P/O item will apply to total amount 
+	[Stockable] TINYINT NOT NULL DEFAULT 1,--P/O item will update inventory instock qty . <br> Title: Stockable, Display: true, Editable: true
+	[Costable] TINYINT NOT NULL DEFAULT 1,--P/O item will update inventory cost. <br> Title: Apply Cost, Display: true, Editable: true
+	[Taxable] TINYINT NOT NULL DEFAULT 0,--P/O item will apply tax. <br> Title: Taxable, Display: true, Editable: true
+	[IsAp] TINYINT NOT NULL DEFAULT 0,--P/O item will apply to total amount . <br> Title: A/P, Display: true, Editable: true
 
-    [EnterDateUtc] DATETIME NULL,
-    [UpdateDateUtc] DATETIME NULL,
-    [EnterBy] Varchar(100) NOT NULL,
-    [UpdateBy] Varchar(100) NOT NULL,
-    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
+    [EnterDateUtc] DATETIME NULL, --(Ignore)  
+    [UpdateDateUtc] DATETIME NULL, --(Ignore)  
+    [EnterBy] Varchar(100) NOT NULL, --(Ignore)  
+    [UpdateBy] Varchar(100) NOT NULL, --(Ignore)  
+    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)  
     CONSTRAINT [PK_PoItems] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
 GO

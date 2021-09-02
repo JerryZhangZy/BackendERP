@@ -27,7 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _City = new QueryFilter<string>("City", "City", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> City => _City;
 
-        protected QueryFilter<string> _State = new QueryFilter<string>("State", "State", PREFIX, FilterBy.cn, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _State = new QueryFilter<string>("State", "State", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> State => _State;
 
         protected QueryFilter<string> _ZipCode = new QueryFilter<string>("ZipCode", "ZipCode", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);

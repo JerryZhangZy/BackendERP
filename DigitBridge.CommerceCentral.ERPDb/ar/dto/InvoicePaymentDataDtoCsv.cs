@@ -61,10 +61,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 switch (csv.GetField(0))
                 {
                     case "H": 
-                        if (dto != null && dto.HasInvoiceTransaction)
-                            data.Add(dto);
                         dto = new InvoiceTransactionDataDto();
                         dto.InvoiceTransaction = csv.GetRecord<InvoiceTransactionDto>();
+                        data.Add(dto);
                         break;
 
                 }
