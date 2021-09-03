@@ -34,6 +34,8 @@ namespace <#= NamespaceStructure #>
         public static IEnumerable<dynamic> MergeHeaderRecord(this <#= StructureDtoName #> dto, bool withHeaderText = false)
         {
             var result = new List<dynamic>();
+            if(!dto.has<# =StructureClass.MainTable.DtoName #>)
+                return result;
             //TODO change to merge Dto children object
             //if (withHeaderText)
             //    result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
@@ -51,10 +53,10 @@ namespace <#= NamespaceStructure #>
         {
             return null;
             //TODO change to merge Dto children object
-            //if (!dto.HasSalesOrderItems) 
-            //    return null;
-            //
             //var result = new List<dynamic>();
+            //if (!dto.HasSalesOrderItems) 
+            //    return result;
+            //
             //var salesOrderItems = new SalesOrderItems() { SalesOrderItemsAttributes = new SalesOrderItemsAttributes()};
             //
             //if (withHeaderText)

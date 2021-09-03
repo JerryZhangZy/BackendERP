@@ -28,6 +28,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		public static IEnumerable<dynamic> MergeHeaderRecord(this SalesOrderDataDto dto, bool withHeaderText = false, bool withRecordsType = false)
 		{
 			var result = new List<dynamic>();
+			if (!dto.HasSalesOrderHeader)
+				return result;
 			if (withHeaderText)
 				result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
 			result.Add(dto.SalesOrderHeader.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));

@@ -34,8 +34,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static IEnumerable<dynamic> MergeHeaderRecord(this OrderShipmentDataDto dto, bool withHeaderText = false)
         {
             var result = new List<dynamic>();
-            //TODO change to merge Dto children object
-            if (withHeaderText)
+			if (!dto.HasOrderShipmentHeader)
+				return result;
+			//TODO change to merge Dto children object
+			if (withHeaderText)
                 result.Add(dto.OrderShipmentHeader.MergeName(dto.OrderShipmentHeader));
             result.Add(dto.OrderShipmentPackage.Merge(dto.OrderShipmentCanceledItem));
             return result;
@@ -66,8 +68,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		public static IEnumerable<dynamic> MergeShipmentPackageDetailRecord(this IList<OrderShipmentShippedItemDto> dto, bool withHeaderText = false)
         {
             //TODO change to merge Dto children object
-
             var result = new List<dynamic>();
+			if (dto == null || dto.Count == 0)
+				return result;
 			var orderShipmentShippedItem = new OrderShipmentShippedItemDto();
 			if (withHeaderText)
 			{
@@ -89,11 +92,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
         public static IEnumerable<dynamic> MergeShipmentCanceledDetailRecord(this OrderShipmentDataDto dto, bool withHeaderText = false)
         {
-            //TODO change to merge Dto children object
+			//TODO change to merge Dto children object
+			var result = new List<dynamic>();
             if (!dto.HasOrderShipmentCanceledItem)
-                return null;
+                return result;
 
-            var result = new List<dynamic>();
             var orderShipmentCanceledItem = new OrderShipmentCanceledItemDto();
 
             if (withHeaderText)

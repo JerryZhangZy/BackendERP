@@ -31,13 +31,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <param name="dto">PurchaseOrderDataDto object to merge data</param>
         /// <param name="withHeaderText">Add header text line at first</param>
         /// <returns>Single dynamic object include all properties of Dto header objects</returns>
-        public static IEnumerable<dynamic> MergeHeaderRecord(this PurchaseOrderDataDto dto, bool withHeaderText = false)
+        public static IList<dynamic> MergeHeaderRecord(this PurchaseOrderDataDto dto, bool withHeaderText = false)
         {
             var result = new List<dynamic>();
+			if (!dto.HasPoHeader)
+				return result;
             //TODO change to merge Dto children object
             if (withHeaderText)
-                result.Add(dto.PoHeader.MergeName(dto.PoHeaderInfo, dto.PoHeaderAttributes));
-            result.Add(dto.PoHeader.Merge(dto.PoHeaderInfo, dto.PoHeaderAttributes));
+                result.Add(dto.PoHeader.MergeName(dto.PoHeaderInfo));
+            result.Add(dto.PoHeader.Merge(dto.PoHeaderInfo));
             return result;
         }
 
@@ -47,22 +49,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <param name="dto">SalesOrderDataDto object to merge data</param>
         /// <param name="withHeaderText">Add header text line at first</param>
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
-        public static IEnumerable<dynamic> MergeDetailRecord(this PurchaseOrderDataDto dto, bool withHeaderText = false)
+        public static IList<dynamic> MergeDetailRecord(this PurchaseOrderDataDto dto, bool withHeaderText = false)
         {
-            //return null;
-            //TODO change to merge Dto children object
-            if (!dto.HasPoItems)
-                return null;
+			var result = new List<dynamic>();
 
-            var result = new List<dynamic>();
-            var poItems = new PoItems() { PoItemsAttributes = new PoItemsAttributes() ,PoItemsRef = new PoItemsRef()};
+			if (!dto.HasPoItems)
+				return result;
+            var poItems = new PoItemsDto() {PoItemsAttributes=new PoItemsAttributesDto(), PoItemsRef = new PoItemsRefDto()};
 
             if (withHeaderText)
-                result.Add(poItems.MergeName(poItems.PoItemsAttributes,poItems.PoItemsRef));
+                result.Add(poItems.MergeName(poItems.PoItemsRef,poItems.PoItemsAttributes));
 
             foreach (var item in dto.PoItems)
             {
-                result.Add(item.Merge(item.PoItemsAttributes,item.PoItemsRef));
+                result.Add(item.Merge(item.PoItemsRef,item.PoItemsAttributes));
             }
             return result;
         }
