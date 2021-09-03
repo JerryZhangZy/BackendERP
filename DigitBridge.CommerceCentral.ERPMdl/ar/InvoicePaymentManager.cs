@@ -76,23 +76,35 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<byte[]> ExportAsync(InvoicePaymentPayload payload)
         {
             var listService = new InvoicePaymentList(dbFactory);
+            var service = new InvoicePaymentService(dbFactory);
             var invoicePaymentDataDtoCsv = new InvoicePaymentDataDtoCsv();
-            var jsonStr = await listService.GetExportDataAsync(payload);
-            var dtos = JsonConvert.DeserializeObject<List<InvoiceTransactionDto>>(jsonStr.ToString());
-            var dataDtos = new List<InvoiceTransactionDataDto>();
-            dtos.ForEach(i => dataDtos.Add(new InvoiceTransactionDataDto() { InvoiceTransaction = i }));
-            return invoicePaymentDataDtoCsv.Export(dataDtos);
+            var rowNumList =await listService.GetRowNumListAsync(payload);
+            var dtoList = new List<InvoiceTransactionDataDto>();
+            foreach (var x in rowNumList)
+            {
+                if (await service.GetDataAsync(x))
+                    dtoList.Add(service.ToDto());
+            };
+            if (dtoList.Count == 0)
+                dtoList.Add(new InvoiceTransactionDataDto());
+            return invoicePaymentDataDtoCsv.Export(dtoList);
         }
 
         public byte[] Export(InvoicePaymentPayload payload)
         {
             var listService = new InvoicePaymentList(dbFactory);
+            var service = new InvoicePaymentService(dbFactory);
             var invoicePaymentDataDtoCsv = new InvoicePaymentDataDtoCsv();
-            var jsonStr = listService.GetExportData(payload);
-            var dtos = JsonConvert.DeserializeObject<List<InvoiceTransactionDto>>(jsonStr.ToString());
-            var dataDtos = new List<InvoiceTransactionDataDto>();
-            dtos.ForEach(i => dataDtos.Add(new InvoiceTransactionDataDto() { InvoiceTransaction = i }));
-            return invoicePaymentDataDtoCsv.Export(dataDtos);
+            var rowNumList = listService.GetRowNumList(payload);
+            var dtoList = new List<InvoiceTransactionDataDto>();
+            foreach (var x in rowNumList)
+            {
+                if (service.GetData(x))
+                    dtoList.Add(service.ToDto());
+            };
+            if (dtoList.Count == 0)
+                dtoList.Add(new InvoiceTransactionDataDto());
+            return invoicePaymentDataDtoCsv.Export(dtoList);
         }
         #endregion
 

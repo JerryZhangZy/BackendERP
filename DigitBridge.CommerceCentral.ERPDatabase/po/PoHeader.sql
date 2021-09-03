@@ -19,7 +19,7 @@
 	[VendorNum] VARCHAR(50) NULL, --Vendor readable number.<br> DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique. <br> Display: false, Editable: false
 	[VendorName] NVARCHAR(100) NULL, --Vendor name. <br> Display: false, Editable: false
 
-	[Currency] VARCHAR(10) NULL, --Currency code. <br> Title: Currency, Display: true, Editable: true
+	[Currency] VARCHAR(10) NOT NULL DEFAULT '', --Currency code. <br> Title: Currency, Display: true, Editable: true
 	[SubTotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sub total amount is sumary items amount. . <br> Title: Subtotal, Display: true, Editable: false
 	[TotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total order amount. Include every charge. Related to VAT. For US orders, tax should not be included. Refer to tax info to find more detail. Reference calculation <br>(Sum of all items OrderItems[Quantity] x OrderItems[UnitPrice] ) + TotalTaxPrice + Total ShippingPrice + TotalInsurancePrice + TotalGiftOptionPrice + AdditionalCostOrDiscount +PromotionAmount + (Sum of all items OrderItems[Promotions[Amount]] + OrderItems[Promotions[ShippingAmount]] + OrderItems[RecyclingFee]). <br> Title: Order Amount, Display: true, Editable: false
 	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for P/O items. . <br> Title: Tax, Display: true, Editable: true
@@ -36,8 +36,8 @@
 
     [EnterDateUtc] DATETIME NULL, --(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
     [UpdateDateUtc] DATETIME NULL, --(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
-    [EnterBy] Varchar(100) NOT NULL, --(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
-    [UpdateBy] Varchar(100) NOT NULL, --(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
+    [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
+    [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)
     CONSTRAINT [PK_PoHeader] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]

@@ -14,13 +14,13 @@
 	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer. <br> Title: Arrival Date, Display: true, Editable: true
 	[CancelDate] DATE NULL, --Usually it is related to shipping instruction. <br> Title: Cancel Date, Display: true, Editable: true
 
-	[ProductUuid] Varchar(50) NOT NULL,--(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
-	[InventoryUuid] Varchar(50) NOT NULL,--(Readonly) Inventory Item Line uuid, load from inventory data. <br> Display: false, Editable: false
-	[SKU] Varchar(100) NOT NULL, --Product SKU. <br> Title: SKU, Display: true, Editable: true
-	[Description] NVarchar(200) NOT NULL, --Item line description, default from ProductBasic data. <br> Title: Description, Display: true, Editable: true
-	[Notes] NVarchar(500) NOT NULL,--P/O item notes . <br> Title: Notes, Display: true, Editable: true
+	[ProductUuid] Varchar(50) NOT NULL DEFAULT '',--(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
+	[InventoryUuid] Varchar(50) NOT NULL DEFAULT '',--(Readonly) Inventory Item Line uuid, load from inventory data. <br> Display: false, Editable: false
+	[SKU] Varchar(100) NOT NULL DEFAULT '', --Product SKU. <br> Title: SKU, Display: true, Editable: true
+	[Description] NVarchar(200) NOT NULL DEFAULT '', --Item line description, default from ProductBasic data. <br> Title: Description, Display: true, Editable: true
+	[Notes] NVarchar(500) NOT NULL DEFAULT '',--P/O item notes . <br> Title: Notes, Display: true, Editable: true
 
-	[Currency] VARCHAR(10) NULL, --(Ignore)  
+	[Currency] VARCHAR(10) NOT NULL DEFAULT '', --(Ignore)  
 	[PoQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item P/O Qty. 
 	[ReceivedQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Received Qty. 
 	[CancelledQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Cancelled Qty. 
@@ -44,8 +44,8 @@
 
     [EnterDateUtc] DATETIME NULL, --(Ignore)  
     [UpdateDateUtc] DATETIME NULL, --(Ignore)  
-    [EnterBy] Varchar(100) NOT NULL, --(Ignore)  
-    [UpdateBy] Varchar(100) NOT NULL, --(Ignore)  
+    [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)  
+    [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)  
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)  
     CONSTRAINT [PK_PoItems] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
