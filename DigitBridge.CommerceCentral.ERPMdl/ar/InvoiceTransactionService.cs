@@ -315,7 +315,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return dto;
         }
         #endregion
-
+         
+         
         /// <summary>
         /// Delete invoice by invoice number
         /// </summary>
@@ -327,14 +328,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Delete();
             //load data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber + "_" + (int)transType + "_" + transNum);
-            if (success)
-            {
-                success = DeleteData();
-            }
-            else
-            {
-                AddError("Data not found.");
-            }
+            success = success && DeleteData();
+            return success;
+        }
+
+        /// <summary>
+        /// Delete data by number
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual bool DeleteByNumber(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
+        {
+            if (string.IsNullOrEmpty(invoiceNumber))
+                return false;
+            //set delete mode
+            Delete();
+            //load data
+            var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber + "_" + (int)transType + "_" + transNum);
+            success = success && DeleteData();
             return success;
         }
     }
