@@ -70,22 +70,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CancelDate",SqlDbType.Date)]
         private DateTime? _cancelDate;
 
-        [Column("ProductUuid",SqlDbType.VarChar,NotNull=true)]
+        [Column("ProductUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _productUuid;
 
-        [Column("InventoryUuid",SqlDbType.VarChar,NotNull=true)]
+        [Column("InventoryUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _inventoryUuid;
 
-        [Column("SKU",SqlDbType.VarChar,NotNull=true)]
+        [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _sKU;
 
         [Column("Description",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _description;
 
-        [Column("Notes",SqlDbType.NVarChar,NotNull=true)]
+        [Column("Notes",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _notes;
 
-        [Column("Currency",SqlDbType.VarChar)]
+        [Column("Currency",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _currency;
 
         [Column("PoQty",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
@@ -148,10 +148,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
-        [Column("EnterBy",SqlDbType.VarChar,NotNull=true)]
+        [Column("EnterBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _enterBy;
 
-        [Column("UpdateBy",SqlDbType.VarChar,NotNull=true)]
+        [Column("UpdateBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _updateBy;
 
         #endregion Fields - Generated 
@@ -436,17 +436,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _currency is null) 
-					_currency = String.Empty; 
 				return _currency?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_currency = value.TruncateTo(10); 
-					OnPropertyChanged("Currency", value);
-				}
+				_currency = value.TruncateTo(10); 
+				OnPropertyChanged("Currency", value);
             }
         }
 
@@ -1029,7 +1024,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_sKU = String.Empty; 
 			_description = String.Empty; 
 			_notes = String.Empty; 
-			_currency = AllowNull ? (string)null : String.Empty; 
+			_currency = String.Empty; 
 			_poQty = default(decimal); 
 			_receivedQty = default(decimal); 
 			_cancelledQty = default(decimal); 

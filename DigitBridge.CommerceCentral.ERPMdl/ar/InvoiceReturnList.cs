@@ -105,6 +105,68 @@ LEFT JOIN {ReturnHelper.TableName} {ReturnHelper.TableAllies} ON {Helper.TableAl
             return payload;
         }
 
+        public virtual async Task<IList<long>> GetRowNumListAsync(InvoiceReturnPayload payload)
+        {
+            if (payload == null)
+                payload = new InvoiceReturnPayload();
+
+            this.LoadRequestParameter(payload);
+            var rowNumList = new List<long>();
+
+            var sql = $@"
+SELECT distinct {Helper.TableAllies}.RowNum 
+{GetSQL_from()} 
+{GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.RowNum  
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
+";
+            try
+            {
+                using var trs = new ScopedTransaction(dbFactory);
+                rowNumList = await SqlQuery.ExecuteAsync(
+                    sql,
+                    (long rowNum) => rowNum,
+                    GetSqlParameters().ToArray()
+                );
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return rowNumList;
+        }
+
+        public virtual IList<long> GetRowNumList(InvoiceReturnPayload payload)
+        {
+            if (payload == null)
+                payload = new InvoiceReturnPayload();
+
+            this.LoadRequestParameter(payload);
+            var rowNumList = new List<long>();
+            var sql = $@"
+SELECT distinct {Helper.TableAllies}.RowNum 
+{GetSQL_from()} 
+{GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.RowNum  
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
+";
+            try
+            {
+                using var trs = new ScopedTransaction(dbFactory);
+                rowNumList = SqlQuery.Execute(
+                    sql,
+                    (long rowNum) => rowNum,
+                    GetSqlParameters().ToArray()
+                );
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return rowNumList;
+        }
+
+
         //        //TODO where sql
         private string GetExportSql()
         {

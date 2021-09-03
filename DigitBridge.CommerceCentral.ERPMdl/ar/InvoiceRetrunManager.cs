@@ -77,18 +77,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var listService = new InvoiceReturnList(dbFactory);
             var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
-            var sb = await listService.GetExportDataAsync(payload);
-            var dtos = sb.ToString().JsonToObject<List<InvoiceTransactionDataDto>>(); 
-            return invoiceTransactionDataDtoCsv.Export(dtos);
+            var service = new InvoiceReturnService(dbFactory);
+            var rowNumList = await listService.GetRowNumListAsync(payload);
+            var dtoList = new List<InvoiceTransactionDataDto>();
+            foreach (var x in rowNumList)
+            {
+                if (await service.GetDataAsync(x))
+                    dtoList.Add(service.ToDto());
+            };
+            if (dtoList.Count == 0)
+                dtoList.Add(new InvoiceTransactionDataDto());
+            return invoiceTransactionDataDtoCsv.Export(dtoList);
         }
 
         public byte[] Export(InvoiceReturnPayload payload)
         {
             var listService = new InvoiceReturnList(dbFactory);
-            var invoiceReturnDataDtoCsv = new InvoiceReturnDataDtoCsv();
-            var sb = listService.GetExportData(payload);
-            var dtos = JsonConvert.DeserializeObject<List<InvoiceTransactionDataDto>>(sb.ToString());
-            return invoiceReturnDataDtoCsv.Export(dtos);
+            var invoiceTransactionDataDtoCsv = new InvoiceTransactionDataDtoCsv();
+            var service = new InvoiceReturnService(dbFactory);
+            var rowNumList = listService.GetRowNumList(payload);
+            var dtoList = new List<InvoiceTransactionDataDto>();
+            foreach (var x in rowNumList)
+            {
+                if (service.GetData(x))
+                    dtoList.Add(service.ToDto());
+            };
+            if (dtoList.Count == 0)
+                dtoList.Add(new InvoiceTransactionDataDto());
+            return invoiceTransactionDataDtoCsv.Export(dtoList);
         }
         #endregion
 

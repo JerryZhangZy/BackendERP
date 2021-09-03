@@ -71,7 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             return (TService)this;
         }
-        
+
         #region DataBase
         [XmlIgnore, JsonIgnore]
         protected IDataBaseFactory _dbFactory;
@@ -167,7 +167,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion Messages
 
         #region Methods
-        
+
         public virtual void AddValidator(IValidator<TEntity, TDto> validator)
         {
             if (_Validators == null)
@@ -268,7 +268,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual void PrepareData()
         {
             if (Data is null || Calculator is null)
-                return ;
+                return;
             Calculator.PrepareData(Data, ProcessMode);
         }
         public virtual void SetDefault()
@@ -374,10 +374,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public virtual bool GetByNumber(int masterAccountNum, int profileNum, string number)
         {
-            if (ProcessMode == ProcessingMode.Add || string.IsNullOrEmpty(number) )
+            if (ProcessMode == ProcessingMode.Add || string.IsNullOrEmpty(number))
                 return false;
             ClearData();
-            return _data.GetByNumber(masterAccountNum, profileNum, number);
+            var success = _data.GetByNumber(masterAccountNum, profileNum, number);
+            if (!success)
+                AddError("Data not found.");
+            return success;
         }
         public virtual bool GetDataById(string id)
         {
@@ -420,7 +423,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (ProcessMode == ProcessingMode.Add || string.IsNullOrEmpty(number))
                 return false;
             ClearData();
-            return await _data.GetByNumberAsync(masterAccountNum, profileNum, number);
+            var success = await _data.GetByNumberAsync(masterAccountNum, profileNum, number);
+            if (!success)
+                AddError("Data not found.");
+            return success;
         }
         public virtual async Task<bool> GetDataByIdAsync(string id)
         {

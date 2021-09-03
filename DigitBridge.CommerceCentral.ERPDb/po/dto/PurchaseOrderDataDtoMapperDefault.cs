@@ -119,11 +119,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			#region read all not null properties
 
 			if (dto.HasPoUuid) data.PoUuid = dto.PoUuid;
-			if (dto.HasCentralFulfillmentNum) data.CentralFulfillmentNum = dto.CentralFulfillmentNum;
+			if (dto.HasCentralFulfillmentNum) data.CentralFulfillmentNum = dto.CentralFulfillmentNum.ToLong();
 			if (dto.HasShippingCarrier) data.ShippingCarrier = dto.ShippingCarrier;
 			if (dto.HasShippingClass) data.ShippingClass = dto.ShippingClass;
-			if (dto.HasDistributionCenterNum) data.DistributionCenterNum = dto.DistributionCenterNum;
-			if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum;
+			if (dto.HasDistributionCenterNum) data.DistributionCenterNum = dto.DistributionCenterNum.ToInt();
+			if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum.ToLong();
 			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
 			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
 			if (dto.HasChannelOrderID) data.ChannelOrderID = dto.ChannelOrderID;
@@ -327,11 +327,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasPoUuid) data.PoUuid = dto.PoUuid;
 			if (dto.HasPoItemUuid) data.PoItemUuid = dto.PoItemUuid;
-			if (dto.HasCentralFulfillmentNum) data.CentralFulfillmentNum = dto.CentralFulfillmentNum;
+			if (dto.HasCentralFulfillmentNum) data.CentralFulfillmentNum = dto.CentralFulfillmentNum.ToLong();
 			if (dto.HasShippingCarrier) data.ShippingCarrier = dto.ShippingCarrier;
 			if (dto.HasShippingClass) data.ShippingClass = dto.ShippingClass;
-			if (dto.HasDistributionCenterNum) data.DistributionCenterNum = dto.DistributionCenterNum;
-			if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum;
+			if (dto.HasDistributionCenterNum) data.DistributionCenterNum = dto.DistributionCenterNum.ToInt();
+			if (dto.HasCentralOrderNum) data.CentralOrderNum = dto.CentralOrderNum.ToLong();
 			if (dto.HasChannelNum) data.ChannelNum = dto.ChannelNum.ToInt();
 			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
 			if (dto.HasChannelOrderID) data.ChannelOrderID = dto.ChannelOrderID;
@@ -563,6 +563,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.RowNum = data.RowNum;
 			dto.PoUuid = data.PoUuid;
 			dto.Fields = data.Fields.ToJson();
+			dto.EnterDateUtc = data.EnterDateUtc;
+			dto.DigitBridgeGuid = data.DigitBridgeGuid;
 
 			#endregion read properties
 
@@ -670,6 +672,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.PoItemUuid = data.PoItemUuid;
 			dto.PoUuid = data.PoUuid;
 			dto.Fields = data.Fields.ToJson();
+			dto.EnterDateUtc = data.EnterDateUtc;
+			dto.DigitBridgeGuid = data.DigitBridgeGuid;
 
 			#endregion read properties
 

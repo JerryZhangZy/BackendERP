@@ -239,53 +239,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return await SaveDataAsync();
-        }
-
-        ///// <summary>
-        ///// Get invoice with detail by invoiceNumber
-        ///// </summary>
-        ///// <param name="invoiceNumber"></param>
-        ///// <returns></returns>
-        //public virtual async Task<bool> GetByInvoiceNumberAsync(string invoiceNumber, InvoicePayload payload)
-        //{
-        //    if (string.IsNullOrEmpty(invoiceNumber))
-        //        return false;
-        //    List();
-
-        //    if (!(await ValidateAccountAsync(payload,invoiceNumber).ConfigureAwait(false)))
-        //        return false; 
-
-        //    var rowNum = await _data.GetRowNumAsync(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum);
-        //    if (!rowNum.HasValue)
-        //        return false;
-        //    var success = await GetDataAsync(rowNum.Value);
-        //    //if (success) ToDto();
-        //    return success;
-        //}
-
-        /// <summary>
-        /// Delete invoice by invoice number
-        /// </summary>
-        /// <param name="invoiceNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> DeleteByNumberAsync(InvoicePayload payload, string invoiceNumber)
-        {
-            if (string.IsNullOrEmpty(invoiceNumber))
-                return false;
-            //set delete mode
-            Delete();
-            //load data
-            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
-            if (success)
-            {
-                success = DeleteData();
-            }
-            else
-            {
-                AddError("Data not found.");
-            }
-            return success;
-        }
+        } 
 
         /// <summary>
         /// Get multi sale order with detail by InvoiceNumbers
@@ -312,31 +266,61 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             payload.Invoices = result;
         }
-        ///// <summary>
-        ///// Get invoice list by Uuid list
-        ///// </summary>
-        //public virtual async Task<InvoicePayload> GetListByInvoiceUuidAsync(InvoicePayload payload)
-        //{
-        //    if (payload is null || !payload.HasInvoiceUuids)
-        //    {
-        //        AddError("InvoiceUuids is required.");
-        //        payload.Messages = this.Messages;
-        //        return payload;
-        //    }
-        //    var invoiceUuids = payload.InvoiceUuids;
+        /// <summary>
+        ///  get data by number
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> GetDataAsync(InvoicePayload payload, string invoiceNumber)
+        {
+            return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
+        }
 
-        //    List();
-        //    var result = new List<InvoiceDataDto>();
-        //    foreach (var id in invoiceUuids)
-        //    {
-        //        if (!(await this.GetDataByIdAsync(id)))
-        //            continue;
-        //        result.Add(this.ToDto());
-        //        this.DetachData(this.Data);
-        //    }
-        //    payload.Invoices = result;
-        //    return payload;
-        //}
+        /// <summary>
+        /// get data by number
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual bool GetData(InvoicePayload payload, string invoiceNumber)
+        {
+            return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
+        }
+
+        /// <summary>
+        /// Delete data by number
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByNumberAsync(InvoicePayload payload, string invoiceNumber)
+        {
+            if (string.IsNullOrEmpty(invoiceNumber))
+                return false;
+            //set delete mode
+            Delete();
+            //load data
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
+            success = success && DeleteData();
+            return success;
+        }
+
+        /// <summary>
+        /// Delete data by number
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual bool DeleteByNumber(InvoicePayload payload, string invoiceNumber)
+        {
+            if (string.IsNullOrEmpty(invoiceNumber))
+                return false;
+            //set delete mode
+            Delete();
+            //load data
+            var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
+            success = success && DeleteData();
+            return success;
+        }
     }
 }
 

@@ -55,178 +55,178 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("PoItemUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _poItemUuid;
 
-        [Column("CentralFulfillmentNum",SqlDbType.BigInt)]
-        private long? _centralFulfillmentNum;
+        [Column("CentralFulfillmentNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _centralFulfillmentNum;
 
-        [Column("ShippingCarrier",SqlDbType.VarChar)]
+        [Column("ShippingCarrier",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _shippingCarrier;
 
-        [Column("ShippingClass",SqlDbType.VarChar)]
+        [Column("ShippingClass",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _shippingClass;
 
-        [Column("DistributionCenterNum",SqlDbType.Int)]
-        private int? _distributionCenterNum;
+        [Column("DistributionCenterNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _distributionCenterNum;
 
-        [Column("CentralOrderNum",SqlDbType.BigInt)]
-        private long? _centralOrderNum;
+        [Column("CentralOrderNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _centralOrderNum;
 
-        [Column("ChannelNum",SqlDbType.Int,NotNull=true)]
+        [Column("ChannelNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _channelNum;
 
         [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true)]
         private int _channelAccountNum;
 
-        [Column("ChannelOrderID",SqlDbType.VarChar,NotNull=true)]
+        [Column("ChannelOrderID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _channelOrderID;
 
-        [Column("SecondaryChannelOrderID",SqlDbType.VarChar)]
+        [Column("SecondaryChannelOrderID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _secondaryChannelOrderID;
 
-        [Column("ShippingAccount",SqlDbType.VarChar)]
+        [Column("ShippingAccount",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _shippingAccount;
 
-        [Column("WarehouseUuid",SqlDbType.VarChar)]
+        [Column("WarehouseUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _warehouseUuid;
 
-        [Column("CustomerUuid",SqlDbType.VarChar)]
+        [Column("CustomerUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _customerUuid;
 
-        [Column("EndBuyerUserID",SqlDbType.VarChar)]
+        [Column("EndBuyerUserID",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _endBuyerUserID;
 
-        [Column("EndBuyerName",SqlDbType.NVarChar)]
+        [Column("EndBuyerName",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _endBuyerName;
 
-        [Column("EndBuyerEmail",SqlDbType.VarChar)]
+        [Column("EndBuyerEmail",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _endBuyerEmail;
 
-        [Column("ShipToName",SqlDbType.NVarChar)]
+        [Column("ShipToName",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToName;
 
-        [Column("ShipToFirstName",SqlDbType.NVarChar)]
+        [Column("ShipToFirstName",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToFirstName;
 
-        [Column("ShipToLastName",SqlDbType.NVarChar)]
+        [Column("ShipToLastName",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToLastName;
 
-        [Column("ShipToSuffix",SqlDbType.NVarChar)]
+        [Column("ShipToSuffix",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToSuffix;
 
-        [Column("ShipToCompany",SqlDbType.NVarChar)]
+        [Column("ShipToCompany",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToCompany;
 
-        [Column("ShipToCompanyJobTitle",SqlDbType.NVarChar)]
+        [Column("ShipToCompanyJobTitle",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToCompanyJobTitle;
 
-        [Column("ShipToAttention",SqlDbType.NVarChar)]
+        [Column("ShipToAttention",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToAttention;
 
-        [Column("ShipToAddressLine1",SqlDbType.NVarChar)]
+        [Column("ShipToAddressLine1",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToAddressLine1;
 
-        [Column("ShipToAddressLine2",SqlDbType.NVarChar)]
+        [Column("ShipToAddressLine2",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToAddressLine2;
 
-        [Column("ShipToAddressLine3",SqlDbType.NVarChar)]
+        [Column("ShipToAddressLine3",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToAddressLine3;
 
-        [Column("ShipToCity",SqlDbType.NVarChar)]
+        [Column("ShipToCity",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToCity;
 
-        [Column("ShipToState",SqlDbType.NVarChar)]
+        [Column("ShipToState",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToState;
 
-        [Column("ShipToStateFullName",SqlDbType.NVarChar)]
+        [Column("ShipToStateFullName",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToStateFullName;
 
-        [Column("ShipToPostalCode",SqlDbType.VarChar)]
+        [Column("ShipToPostalCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _shipToPostalCode;
 
-        [Column("ShipToPostalCodeExt",SqlDbType.VarChar)]
+        [Column("ShipToPostalCodeExt",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _shipToPostalCodeExt;
 
-        [Column("ShipToCounty",SqlDbType.NVarChar)]
+        [Column("ShipToCounty",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToCounty;
 
-        [Column("ShipToCountry",SqlDbType.NVarChar)]
+        [Column("ShipToCountry",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _shipToCountry;
 
-        [Column("ShipToEmail",SqlDbType.VarChar)]
+        [Column("ShipToEmail",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _shipToEmail;
 
-        [Column("ShipToDaytimePhone",SqlDbType.VarChar)]
+        [Column("ShipToDaytimePhone",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _shipToDaytimePhone;
 
-        [Column("ShipToNightPhone",SqlDbType.VarChar)]
+        [Column("ShipToNightPhone",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _shipToNightPhone;
 
-        [Column("BillToName",SqlDbType.NVarChar)]
+        [Column("BillToName",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToName;
 
-        [Column("BillToFirstName",SqlDbType.NVarChar)]
+        [Column("BillToFirstName",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToFirstName;
 
-        [Column("BillToLastName",SqlDbType.NVarChar)]
+        [Column("BillToLastName",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToLastName;
 
-        [Column("BillToSuffix",SqlDbType.NVarChar)]
+        [Column("BillToSuffix",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToSuffix;
 
-        [Column("BillToCompany",SqlDbType.NVarChar)]
+        [Column("BillToCompany",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToCompany;
 
-        [Column("BillToCompanyJobTitle",SqlDbType.NVarChar)]
+        [Column("BillToCompanyJobTitle",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToCompanyJobTitle;
 
-        [Column("BillToAttention",SqlDbType.NVarChar)]
+        [Column("BillToAttention",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToAttention;
 
-        [Column("BillToAddressLine1",SqlDbType.NVarChar)]
+        [Column("BillToAddressLine1",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToAddressLine1;
 
-        [Column("BillToAddressLine2",SqlDbType.NVarChar)]
+        [Column("BillToAddressLine2",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToAddressLine2;
 
-        [Column("BillToAddressLine3",SqlDbType.NVarChar)]
+        [Column("BillToAddressLine3",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToAddressLine3;
 
-        [Column("BillToCity",SqlDbType.NVarChar)]
+        [Column("BillToCity",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToCity;
 
-        [Column("BillToState",SqlDbType.NVarChar)]
+        [Column("BillToState",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToState;
 
-        [Column("BillToStateFullName",SqlDbType.NVarChar)]
+        [Column("BillToStateFullName",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToStateFullName;
 
-        [Column("BillToPostalCode",SqlDbType.VarChar)]
+        [Column("BillToPostalCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _billToPostalCode;
 
-        [Column("BillToPostalCodeExt",SqlDbType.VarChar)]
+        [Column("BillToPostalCodeExt",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _billToPostalCodeExt;
 
-        [Column("BillToCounty",SqlDbType.NVarChar)]
+        [Column("BillToCounty",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToCounty;
 
-        [Column("BillToCountry",SqlDbType.NVarChar)]
+        [Column("BillToCountry",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _billToCountry;
 
-        [Column("BillToEmail",SqlDbType.VarChar)]
+        [Column("BillToEmail",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _billToEmail;
 
-        [Column("BillToDaytimePhone",SqlDbType.VarChar)]
+        [Column("BillToDaytimePhone",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _billToDaytimePhone;
 
-        [Column("BillToNightPhone",SqlDbType.VarChar)]
+        [Column("BillToNightPhone",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _billToNightPhone;
 
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
-        [Column("EnterBy",SqlDbType.VarChar,NotNull=true)]
+        [Column("EnterBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _enterBy;
 
-        [Column("UpdateBy",SqlDbType.VarChar,NotNull=true)]
+        [Column("UpdateBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _updateBy;
 
         #endregion Fields - Generated 
@@ -322,21 +322,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// (Ignore) Reference to CentralFulfillmentNum. <br> Display: false, Editable: false
 		/// </summary>
-        public virtual long? CentralFulfillmentNum
+        public virtual long CentralFulfillmentNum
         {
             get
             {
-				if (!AllowNull && _centralFulfillmentNum is null) 
-					_centralFulfillmentNum = default(long); 
 				return _centralFulfillmentNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_centralFulfillmentNum = value; 
-					OnPropertyChanged("CentralFulfillmentNum", value);
-				}
+				_centralFulfillmentNum = value; 
+				OnPropertyChanged("CentralFulfillmentNum", value);
             }
         }
 
@@ -347,17 +342,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shippingCarrier is null) 
-					_shippingCarrier = String.Empty; 
 				return _shippingCarrier?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shippingCarrier = value.TruncateTo(50); 
-					OnPropertyChanged("ShippingCarrier", value);
-				}
+				_shippingCarrier = value.TruncateTo(50); 
+				OnPropertyChanged("ShippingCarrier", value);
             }
         }
 
@@ -368,59 +358,44 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shippingClass is null) 
-					_shippingClass = String.Empty; 
 				return _shippingClass?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shippingClass = value.TruncateTo(50); 
-					OnPropertyChanged("ShippingClass", value);
-				}
+				_shippingClass = value.TruncateTo(50); 
+				OnPropertyChanged("ShippingClass", value);
             }
         }
 
 		/// <summary>
 		/// (Readonly) Original DC number. <br> Title: DC number: Display: false, Editable: false
 		/// </summary>
-        public virtual int? DistributionCenterNum
+        public virtual int DistributionCenterNum
         {
             get
             {
-				if (!AllowNull && _distributionCenterNum is null) 
-					_distributionCenterNum = default(int); 
 				return _distributionCenterNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_distributionCenterNum = value; 
-					OnPropertyChanged("DistributionCenterNum", value);
-				}
+				_distributionCenterNum = value; 
+				OnPropertyChanged("DistributionCenterNum", value);
             }
         }
 
 		/// <summary>
 		/// (Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
 		/// </summary>
-        public virtual long? CentralOrderNum
+        public virtual long CentralOrderNum
         {
             get
             {
-				if (!AllowNull && _centralOrderNum is null) 
-					_centralOrderNum = default(long); 
 				return _centralOrderNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_centralOrderNum = value; 
-					OnPropertyChanged("CentralOrderNum", value);
-				}
+				_centralOrderNum = value; 
+				OnPropertyChanged("CentralOrderNum", value);
             }
         }
 
@@ -479,17 +454,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _secondaryChannelOrderID is null) 
-					_secondaryChannelOrderID = String.Empty; 
 				return _secondaryChannelOrderID?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_secondaryChannelOrderID = value.TruncateTo(200); 
-					OnPropertyChanged("SecondaryChannelOrderID", value);
-				}
+				_secondaryChannelOrderID = value.TruncateTo(200); 
+				OnPropertyChanged("SecondaryChannelOrderID", value);
             }
         }
 
@@ -500,17 +470,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shippingAccount is null) 
-					_shippingAccount = String.Empty; 
 				return _shippingAccount?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shippingAccount = value.TruncateTo(100); 
-					OnPropertyChanged("ShippingAccount", value);
-				}
+				_shippingAccount = value.TruncateTo(100); 
+				OnPropertyChanged("ShippingAccount", value);
             }
         }
 
@@ -521,17 +486,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _warehouseUuid is null) 
-					_warehouseUuid = String.Empty; 
 				return _warehouseUuid?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_warehouseUuid = value.TruncateTo(50); 
-					OnPropertyChanged("WarehouseUuid", value);
-				}
+				_warehouseUuid = value.TruncateTo(50); 
+				OnPropertyChanged("WarehouseUuid", value);
             }
         }
 
@@ -542,17 +502,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _customerUuid is null) 
-					_customerUuid = String.Empty; 
 				return _customerUuid?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_customerUuid = value.TruncateTo(50); 
-					OnPropertyChanged("CustomerUuid", value);
-				}
+				_customerUuid = value.TruncateTo(50); 
+				OnPropertyChanged("CustomerUuid", value);
             }
         }
 
@@ -563,17 +518,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _endBuyerUserID is null) 
-					_endBuyerUserID = String.Empty; 
 				return _endBuyerUserID?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_endBuyerUserID = value.TruncateTo(255); 
-					OnPropertyChanged("EndBuyerUserID", value);
-				}
+				_endBuyerUserID = value.TruncateTo(255); 
+				OnPropertyChanged("EndBuyerUserID", value);
             }
         }
 
@@ -584,17 +534,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _endBuyerName is null) 
-					_endBuyerName = String.Empty; 
 				return _endBuyerName?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_endBuyerName = value.TruncateTo(255); 
-					OnPropertyChanged("EndBuyerName", value);
-				}
+				_endBuyerName = value.TruncateTo(255); 
+				OnPropertyChanged("EndBuyerName", value);
             }
         }
 
@@ -605,17 +550,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _endBuyerEmail is null) 
-					_endBuyerEmail = String.Empty; 
 				return _endBuyerEmail?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_endBuyerEmail = value.TruncateTo(255); 
-					OnPropertyChanged("EndBuyerEmail", value);
-				}
+				_endBuyerEmail = value.TruncateTo(255); 
+				OnPropertyChanged("EndBuyerEmail", value);
             }
         }
 
@@ -626,17 +566,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToName is null) 
-					_shipToName = String.Empty; 
 				return _shipToName?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToName = value.TruncateTo(100); 
-					OnPropertyChanged("ShipToName", value);
-				}
+				_shipToName = value.TruncateTo(100); 
+				OnPropertyChanged("ShipToName", value);
             }
         }
 
@@ -647,17 +582,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToFirstName is null) 
-					_shipToFirstName = String.Empty; 
 				return _shipToFirstName?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToFirstName = value.TruncateTo(50); 
-					OnPropertyChanged("ShipToFirstName", value);
-				}
+				_shipToFirstName = value.TruncateTo(50); 
+				OnPropertyChanged("ShipToFirstName", value);
             }
         }
 
@@ -668,17 +598,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToLastName is null) 
-					_shipToLastName = String.Empty; 
 				return _shipToLastName?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToLastName = value.TruncateTo(50); 
-					OnPropertyChanged("ShipToLastName", value);
-				}
+				_shipToLastName = value.TruncateTo(50); 
+				OnPropertyChanged("ShipToLastName", value);
             }
         }
 
@@ -689,17 +614,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToSuffix is null) 
-					_shipToSuffix = String.Empty; 
 				return _shipToSuffix?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToSuffix = value.TruncateTo(50); 
-					OnPropertyChanged("ShipToSuffix", value);
-				}
+				_shipToSuffix = value.TruncateTo(50); 
+				OnPropertyChanged("ShipToSuffix", value);
             }
         }
 
@@ -710,17 +630,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToCompany is null) 
-					_shipToCompany = String.Empty; 
 				return _shipToCompany?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToCompany = value.TruncateTo(100); 
-					OnPropertyChanged("ShipToCompany", value);
-				}
+				_shipToCompany = value.TruncateTo(100); 
+				OnPropertyChanged("ShipToCompany", value);
             }
         }
 
@@ -731,17 +646,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToCompanyJobTitle is null) 
-					_shipToCompanyJobTitle = String.Empty; 
 				return _shipToCompanyJobTitle?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToCompanyJobTitle = value.TruncateTo(100); 
-					OnPropertyChanged("ShipToCompanyJobTitle", value);
-				}
+				_shipToCompanyJobTitle = value.TruncateTo(100); 
+				OnPropertyChanged("ShipToCompanyJobTitle", value);
             }
         }
 
@@ -752,17 +662,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToAttention is null) 
-					_shipToAttention = String.Empty; 
 				return _shipToAttention?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToAttention = value.TruncateTo(100); 
-					OnPropertyChanged("ShipToAttention", value);
-				}
+				_shipToAttention = value.TruncateTo(100); 
+				OnPropertyChanged("ShipToAttention", value);
             }
         }
 
@@ -773,17 +678,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToAddressLine1 is null) 
-					_shipToAddressLine1 = String.Empty; 
 				return _shipToAddressLine1?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToAddressLine1 = value.TruncateTo(200); 
-					OnPropertyChanged("ShipToAddressLine1", value);
-				}
+				_shipToAddressLine1 = value.TruncateTo(200); 
+				OnPropertyChanged("ShipToAddressLine1", value);
             }
         }
 
@@ -794,17 +694,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToAddressLine2 is null) 
-					_shipToAddressLine2 = String.Empty; 
 				return _shipToAddressLine2?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToAddressLine2 = value.TruncateTo(200); 
-					OnPropertyChanged("ShipToAddressLine2", value);
-				}
+				_shipToAddressLine2 = value.TruncateTo(200); 
+				OnPropertyChanged("ShipToAddressLine2", value);
             }
         }
 
@@ -815,17 +710,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToAddressLine3 is null) 
-					_shipToAddressLine3 = String.Empty; 
 				return _shipToAddressLine3?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToAddressLine3 = value.TruncateTo(200); 
-					OnPropertyChanged("ShipToAddressLine3", value);
-				}
+				_shipToAddressLine3 = value.TruncateTo(200); 
+				OnPropertyChanged("ShipToAddressLine3", value);
             }
         }
 
@@ -836,17 +726,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToCity is null) 
-					_shipToCity = String.Empty; 
 				return _shipToCity?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToCity = value.TruncateTo(100); 
-					OnPropertyChanged("ShipToCity", value);
-				}
+				_shipToCity = value.TruncateTo(100); 
+				OnPropertyChanged("ShipToCity", value);
             }
         }
 
@@ -857,17 +742,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToState is null) 
-					_shipToState = String.Empty; 
 				return _shipToState?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToState = value.TruncateTo(50); 
-					OnPropertyChanged("ShipToState", value);
-				}
+				_shipToState = value.TruncateTo(50); 
+				OnPropertyChanged("ShipToState", value);
             }
         }
 
@@ -878,17 +758,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToStateFullName is null) 
-					_shipToStateFullName = String.Empty; 
 				return _shipToStateFullName?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToStateFullName = value.TruncateTo(100); 
-					OnPropertyChanged("ShipToStateFullName", value);
-				}
+				_shipToStateFullName = value.TruncateTo(100); 
+				OnPropertyChanged("ShipToStateFullName", value);
             }
         }
 
@@ -899,17 +774,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToPostalCode is null) 
-					_shipToPostalCode = String.Empty; 
 				return _shipToPostalCode?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToPostalCode = value.TruncateTo(50); 
-					OnPropertyChanged("ShipToPostalCode", value);
-				}
+				_shipToPostalCode = value.TruncateTo(50); 
+				OnPropertyChanged("ShipToPostalCode", value);
             }
         }
 
@@ -920,17 +790,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToPostalCodeExt is null) 
-					_shipToPostalCodeExt = String.Empty; 
 				return _shipToPostalCodeExt?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToPostalCodeExt = value.TruncateTo(50); 
-					OnPropertyChanged("ShipToPostalCodeExt", value);
-				}
+				_shipToPostalCodeExt = value.TruncateTo(50); 
+				OnPropertyChanged("ShipToPostalCodeExt", value);
             }
         }
 
@@ -941,17 +806,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToCounty is null) 
-					_shipToCounty = String.Empty; 
 				return _shipToCounty?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToCounty = value.TruncateTo(100); 
-					OnPropertyChanged("ShipToCounty", value);
-				}
+				_shipToCounty = value.TruncateTo(100); 
+				OnPropertyChanged("ShipToCounty", value);
             }
         }
 
@@ -962,17 +822,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToCountry is null) 
-					_shipToCountry = String.Empty; 
 				return _shipToCountry?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToCountry = value.TruncateTo(100); 
-					OnPropertyChanged("ShipToCountry", value);
-				}
+				_shipToCountry = value.TruncateTo(100); 
+				OnPropertyChanged("ShipToCountry", value);
             }
         }
 
@@ -983,17 +838,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToEmail is null) 
-					_shipToEmail = String.Empty; 
 				return _shipToEmail?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToEmail = value.TruncateTo(100); 
-					OnPropertyChanged("ShipToEmail", value);
-				}
+				_shipToEmail = value.TruncateTo(100); 
+				OnPropertyChanged("ShipToEmail", value);
             }
         }
 
@@ -1004,17 +854,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToDaytimePhone is null) 
-					_shipToDaytimePhone = String.Empty; 
 				return _shipToDaytimePhone?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToDaytimePhone = value.TruncateTo(50); 
-					OnPropertyChanged("ShipToDaytimePhone", value);
-				}
+				_shipToDaytimePhone = value.TruncateTo(50); 
+				OnPropertyChanged("ShipToDaytimePhone", value);
             }
         }
 
@@ -1025,17 +870,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _shipToNightPhone is null) 
-					_shipToNightPhone = String.Empty; 
 				return _shipToNightPhone?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shipToNightPhone = value.TruncateTo(50); 
-					OnPropertyChanged("ShipToNightPhone", value);
-				}
+				_shipToNightPhone = value.TruncateTo(50); 
+				OnPropertyChanged("ShipToNightPhone", value);
             }
         }
 
@@ -1046,17 +886,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToName is null) 
-					_billToName = String.Empty; 
 				return _billToName?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToName = value.TruncateTo(100); 
-					OnPropertyChanged("BillToName", value);
-				}
+				_billToName = value.TruncateTo(100); 
+				OnPropertyChanged("BillToName", value);
             }
         }
 
@@ -1067,17 +902,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToFirstName is null) 
-					_billToFirstName = String.Empty; 
 				return _billToFirstName?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToFirstName = value.TruncateTo(50); 
-					OnPropertyChanged("BillToFirstName", value);
-				}
+				_billToFirstName = value.TruncateTo(50); 
+				OnPropertyChanged("BillToFirstName", value);
             }
         }
 
@@ -1088,17 +918,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToLastName is null) 
-					_billToLastName = String.Empty; 
 				return _billToLastName?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToLastName = value.TruncateTo(50); 
-					OnPropertyChanged("BillToLastName", value);
-				}
+				_billToLastName = value.TruncateTo(50); 
+				OnPropertyChanged("BillToLastName", value);
             }
         }
 
@@ -1109,17 +934,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToSuffix is null) 
-					_billToSuffix = String.Empty; 
 				return _billToSuffix?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToSuffix = value.TruncateTo(50); 
-					OnPropertyChanged("BillToSuffix", value);
-				}
+				_billToSuffix = value.TruncateTo(50); 
+				OnPropertyChanged("BillToSuffix", value);
             }
         }
 
@@ -1130,17 +950,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToCompany is null) 
-					_billToCompany = String.Empty; 
 				return _billToCompany?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToCompany = value.TruncateTo(100); 
-					OnPropertyChanged("BillToCompany", value);
-				}
+				_billToCompany = value.TruncateTo(100); 
+				OnPropertyChanged("BillToCompany", value);
             }
         }
 
@@ -1151,17 +966,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToCompanyJobTitle is null) 
-					_billToCompanyJobTitle = String.Empty; 
 				return _billToCompanyJobTitle?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToCompanyJobTitle = value.TruncateTo(100); 
-					OnPropertyChanged("BillToCompanyJobTitle", value);
-				}
+				_billToCompanyJobTitle = value.TruncateTo(100); 
+				OnPropertyChanged("BillToCompanyJobTitle", value);
             }
         }
 
@@ -1172,17 +982,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToAttention is null) 
-					_billToAttention = String.Empty; 
 				return _billToAttention?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToAttention = value.TruncateTo(100); 
-					OnPropertyChanged("BillToAttention", value);
-				}
+				_billToAttention = value.TruncateTo(100); 
+				OnPropertyChanged("BillToAttention", value);
             }
         }
 
@@ -1193,17 +998,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToAddressLine1 is null) 
-					_billToAddressLine1 = String.Empty; 
 				return _billToAddressLine1?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToAddressLine1 = value.TruncateTo(200); 
-					OnPropertyChanged("BillToAddressLine1", value);
-				}
+				_billToAddressLine1 = value.TruncateTo(200); 
+				OnPropertyChanged("BillToAddressLine1", value);
             }
         }
 
@@ -1214,17 +1014,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToAddressLine2 is null) 
-					_billToAddressLine2 = String.Empty; 
 				return _billToAddressLine2?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToAddressLine2 = value.TruncateTo(200); 
-					OnPropertyChanged("BillToAddressLine2", value);
-				}
+				_billToAddressLine2 = value.TruncateTo(200); 
+				OnPropertyChanged("BillToAddressLine2", value);
             }
         }
 
@@ -1235,17 +1030,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToAddressLine3 is null) 
-					_billToAddressLine3 = String.Empty; 
 				return _billToAddressLine3?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToAddressLine3 = value.TruncateTo(200); 
-					OnPropertyChanged("BillToAddressLine3", value);
-				}
+				_billToAddressLine3 = value.TruncateTo(200); 
+				OnPropertyChanged("BillToAddressLine3", value);
             }
         }
 
@@ -1256,17 +1046,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToCity is null) 
-					_billToCity = String.Empty; 
 				return _billToCity?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToCity = value.TruncateTo(100); 
-					OnPropertyChanged("BillToCity", value);
-				}
+				_billToCity = value.TruncateTo(100); 
+				OnPropertyChanged("BillToCity", value);
             }
         }
 
@@ -1277,17 +1062,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToState is null) 
-					_billToState = String.Empty; 
 				return _billToState?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToState = value.TruncateTo(50); 
-					OnPropertyChanged("BillToState", value);
-				}
+				_billToState = value.TruncateTo(50); 
+				OnPropertyChanged("BillToState", value);
             }
         }
 
@@ -1298,17 +1078,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToStateFullName is null) 
-					_billToStateFullName = String.Empty; 
 				return _billToStateFullName?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToStateFullName = value.TruncateTo(100); 
-					OnPropertyChanged("BillToStateFullName", value);
-				}
+				_billToStateFullName = value.TruncateTo(100); 
+				OnPropertyChanged("BillToStateFullName", value);
             }
         }
 
@@ -1319,17 +1094,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToPostalCode is null) 
-					_billToPostalCode = String.Empty; 
 				return _billToPostalCode?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToPostalCode = value.TruncateTo(50); 
-					OnPropertyChanged("BillToPostalCode", value);
-				}
+				_billToPostalCode = value.TruncateTo(50); 
+				OnPropertyChanged("BillToPostalCode", value);
             }
         }
 
@@ -1340,17 +1110,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToPostalCodeExt is null) 
-					_billToPostalCodeExt = String.Empty; 
 				return _billToPostalCodeExt?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToPostalCodeExt = value.TruncateTo(50); 
-					OnPropertyChanged("BillToPostalCodeExt", value);
-				}
+				_billToPostalCodeExt = value.TruncateTo(50); 
+				OnPropertyChanged("BillToPostalCodeExt", value);
             }
         }
 
@@ -1361,17 +1126,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToCounty is null) 
-					_billToCounty = String.Empty; 
 				return _billToCounty?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToCounty = value.TruncateTo(50); 
-					OnPropertyChanged("BillToCounty", value);
-				}
+				_billToCounty = value.TruncateTo(50); 
+				OnPropertyChanged("BillToCounty", value);
             }
         }
 
@@ -1382,17 +1142,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToCountry is null) 
-					_billToCountry = String.Empty; 
 				return _billToCountry?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToCountry = value.TruncateTo(100); 
-					OnPropertyChanged("BillToCountry", value);
-				}
+				_billToCountry = value.TruncateTo(100); 
+				OnPropertyChanged("BillToCountry", value);
             }
         }
 
@@ -1403,17 +1158,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToEmail is null) 
-					_billToEmail = String.Empty; 
 				return _billToEmail?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToEmail = value.TruncateTo(100); 
-					OnPropertyChanged("BillToEmail", value);
-				}
+				_billToEmail = value.TruncateTo(100); 
+				OnPropertyChanged("BillToEmail", value);
             }
         }
 
@@ -1424,17 +1174,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToDaytimePhone is null) 
-					_billToDaytimePhone = String.Empty; 
 				return _billToDaytimePhone?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToDaytimePhone = value.TruncateTo(50); 
-					OnPropertyChanged("BillToDaytimePhone", value);
-				}
+				_billToDaytimePhone = value.TruncateTo(50); 
+				OnPropertyChanged("BillToDaytimePhone", value);
             }
         }
 
@@ -1445,17 +1190,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _billToNightPhone is null) 
-					_billToNightPhone = String.Empty; 
 				return _billToNightPhone?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_billToNightPhone = value.TruncateTo(50); 
-					OnPropertyChanged("BillToNightPhone", value);
-				}
+				_billToNightPhone = value.TruncateTo(50); 
+				OnPropertyChanged("BillToNightPhone", value);
             }
         }
 
@@ -1545,61 +1285,61 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_profileNum = default(int); 
 			_poUuid = String.Empty; 
 			_poItemUuid = String.Empty; 
-			_centralFulfillmentNum = AllowNull ? (long?)null : default(long); 
-			_shippingCarrier = AllowNull ? (string)null : String.Empty; 
-			_shippingClass = AllowNull ? (string)null : String.Empty; 
-			_distributionCenterNum = AllowNull ? (int?)null : default(int); 
-			_centralOrderNum = AllowNull ? (long?)null : default(long); 
+			_centralFulfillmentNum = default(long); 
+			_shippingCarrier = String.Empty; 
+			_shippingClass = String.Empty; 
+			_distributionCenterNum = default(int); 
+			_centralOrderNum = default(long); 
 			_channelNum = default(int); 
 			_channelAccountNum = default(int); 
 			_channelOrderID = String.Empty; 
-			_secondaryChannelOrderID = AllowNull ? (string)null : String.Empty; 
-			_shippingAccount = AllowNull ? (string)null : String.Empty; 
-			_warehouseUuid = AllowNull ? (string)null : String.Empty; 
-			_customerUuid = AllowNull ? (string)null : String.Empty; 
-			_endBuyerUserID = AllowNull ? (string)null : String.Empty; 
-			_endBuyerName = AllowNull ? (string)null : String.Empty; 
-			_endBuyerEmail = AllowNull ? (string)null : String.Empty; 
-			_shipToName = AllowNull ? (string)null : String.Empty; 
-			_shipToFirstName = AllowNull ? (string)null : String.Empty; 
-			_shipToLastName = AllowNull ? (string)null : String.Empty; 
-			_shipToSuffix = AllowNull ? (string)null : String.Empty; 
-			_shipToCompany = AllowNull ? (string)null : String.Empty; 
-			_shipToCompanyJobTitle = AllowNull ? (string)null : String.Empty; 
-			_shipToAttention = AllowNull ? (string)null : String.Empty; 
-			_shipToAddressLine1 = AllowNull ? (string)null : String.Empty; 
-			_shipToAddressLine2 = AllowNull ? (string)null : String.Empty; 
-			_shipToAddressLine3 = AllowNull ? (string)null : String.Empty; 
-			_shipToCity = AllowNull ? (string)null : String.Empty; 
-			_shipToState = AllowNull ? (string)null : String.Empty; 
-			_shipToStateFullName = AllowNull ? (string)null : String.Empty; 
-			_shipToPostalCode = AllowNull ? (string)null : String.Empty; 
-			_shipToPostalCodeExt = AllowNull ? (string)null : String.Empty; 
-			_shipToCounty = AllowNull ? (string)null : String.Empty; 
-			_shipToCountry = AllowNull ? (string)null : String.Empty; 
-			_shipToEmail = AllowNull ? (string)null : String.Empty; 
-			_shipToDaytimePhone = AllowNull ? (string)null : String.Empty; 
-			_shipToNightPhone = AllowNull ? (string)null : String.Empty; 
-			_billToName = AllowNull ? (string)null : String.Empty; 
-			_billToFirstName = AllowNull ? (string)null : String.Empty; 
-			_billToLastName = AllowNull ? (string)null : String.Empty; 
-			_billToSuffix = AllowNull ? (string)null : String.Empty; 
-			_billToCompany = AllowNull ? (string)null : String.Empty; 
-			_billToCompanyJobTitle = AllowNull ? (string)null : String.Empty; 
-			_billToAttention = AllowNull ? (string)null : String.Empty; 
-			_billToAddressLine1 = AllowNull ? (string)null : String.Empty; 
-			_billToAddressLine2 = AllowNull ? (string)null : String.Empty; 
-			_billToAddressLine3 = AllowNull ? (string)null : String.Empty; 
-			_billToCity = AllowNull ? (string)null : String.Empty; 
-			_billToState = AllowNull ? (string)null : String.Empty; 
-			_billToStateFullName = AllowNull ? (string)null : String.Empty; 
-			_billToPostalCode = AllowNull ? (string)null : String.Empty; 
-			_billToPostalCodeExt = AllowNull ? (string)null : String.Empty; 
-			_billToCounty = AllowNull ? (string)null : String.Empty; 
-			_billToCountry = AllowNull ? (string)null : String.Empty; 
-			_billToEmail = AllowNull ? (string)null : String.Empty; 
-			_billToDaytimePhone = AllowNull ? (string)null : String.Empty; 
-			_billToNightPhone = AllowNull ? (string)null : String.Empty; 
+			_secondaryChannelOrderID = String.Empty; 
+			_shippingAccount = String.Empty; 
+			_warehouseUuid = String.Empty; 
+			_customerUuid = String.Empty; 
+			_endBuyerUserID = String.Empty; 
+			_endBuyerName = String.Empty; 
+			_endBuyerEmail = String.Empty; 
+			_shipToName = String.Empty; 
+			_shipToFirstName = String.Empty; 
+			_shipToLastName = String.Empty; 
+			_shipToSuffix = String.Empty; 
+			_shipToCompany = String.Empty; 
+			_shipToCompanyJobTitle = String.Empty; 
+			_shipToAttention = String.Empty; 
+			_shipToAddressLine1 = String.Empty; 
+			_shipToAddressLine2 = String.Empty; 
+			_shipToAddressLine3 = String.Empty; 
+			_shipToCity = String.Empty; 
+			_shipToState = String.Empty; 
+			_shipToStateFullName = String.Empty; 
+			_shipToPostalCode = String.Empty; 
+			_shipToPostalCodeExt = String.Empty; 
+			_shipToCounty = String.Empty; 
+			_shipToCountry = String.Empty; 
+			_shipToEmail = String.Empty; 
+			_shipToDaytimePhone = String.Empty; 
+			_shipToNightPhone = String.Empty; 
+			_billToName = String.Empty; 
+			_billToFirstName = String.Empty; 
+			_billToLastName = String.Empty; 
+			_billToSuffix = String.Empty; 
+			_billToCompany = String.Empty; 
+			_billToCompanyJobTitle = String.Empty; 
+			_billToAttention = String.Empty; 
+			_billToAddressLine1 = String.Empty; 
+			_billToAddressLine2 = String.Empty; 
+			_billToAddressLine3 = String.Empty; 
+			_billToCity = String.Empty; 
+			_billToState = String.Empty; 
+			_billToStateFullName = String.Empty; 
+			_billToPostalCode = String.Empty; 
+			_billToPostalCodeExt = String.Empty; 
+			_billToCounty = String.Empty; 
+			_billToCountry = String.Empty; 
+			_billToEmail = String.Empty; 
+			_billToDaytimePhone = String.Empty; 
+			_billToNightPhone = String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
