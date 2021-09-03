@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<OrderShipmentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
-            var success = await srv.GetDataAsync(orderShipmentNum,payload);
+            var success = await srv.GetDataAsync(payload, orderShipmentNum.ToString());
             if (success)
             {
                 payload.OrderShipment = srv.ToDto(srv.Data);
@@ -79,50 +79,50 @@ namespace DigitBridge.CommerceCentral.ERPApi
         //    return new JsonNetResponse<OrderShipmentPayload>(payload);
         //}
 
-//        /// <summary>
-//        ///  Update order shipment 
-//        /// </summary>
-//        /// <param name="req"></param>
-//        /// <returns></returns>
-//        [FunctionName(nameof(UpdateShipments))]
-//        [OpenApiOperation(operationId: "UpdateShipments", tags: new[] { "Shipments" }, Summary = "Update one order shipment")]
-//        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-//        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-//        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-//        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(OrderShipmentPayloadUpdate), Description = "Request Body in json format")]
-//        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadUpdate))]
-//        public static async Task<JsonNetResponse<OrderShipmentPayload>> UpdateShipments(
-//[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "shipments")] HttpRequest req)
-//        {
-//            var payload = await req.GetParameters<OrderShipmentPayload>(true);
-//            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-//            var srv = new OrderShipmentService(dataBaseFactory);
-//            payload.Success = await srv.UpdateAsync(payload);
-//            payload.Messages = srv.Messages;
-//            return new JsonNetResponse<OrderShipmentPayload>(payload);
-//        }
-//        /// <summary>
-//        /// Add order shipment
-//        /// </summary>
-//        /// <param name="req"></param>
-//        /// <returns></returns>
-//        [FunctionName(nameof(AddShipments))]
-//        [OpenApiOperation(operationId: "AddShipments", tags: new[] { "Shipments" }, Summary = "Add one order shipment")]
-//        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-//        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-//        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-//        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(OrderShipmentPayloadAdd), Description = "Request Body in json format")]
-//        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadAdd))]
-//        public static async Task<JsonNetResponse<OrderShipmentPayload>> AddShipments(
-//            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "shipments")] HttpRequest req)
-//        {
-//            var payload = await req.GetParameters<OrderShipmentPayload>(true);
-//            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-//            var srv = new OrderShipmentService(dataBaseFactory);
-//            payload.Success = await srv.AddAsync(payload);
-//            payload.Messages = srv.Messages;
-//            return new JsonNetResponse<OrderShipmentPayload>(payload);
-//        }
+        //        /// <summary>
+        //        ///  Update order shipment 
+        //        /// </summary>
+        //        /// <param name="req"></param>
+        //        /// <returns></returns>
+        //        [FunctionName(nameof(UpdateShipments))]
+        //        [OpenApiOperation(operationId: "UpdateShipments", tags: new[] { "Shipments" }, Summary = "Update one order shipment")]
+        //        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(OrderShipmentPayloadUpdate), Description = "Request Body in json format")]
+        //        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadUpdate))]
+        //        public static async Task<JsonNetResponse<OrderShipmentPayload>> UpdateShipments(
+        //[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "shipments")] HttpRequest req)
+        //        {
+        //            var payload = await req.GetParameters<OrderShipmentPayload>(true);
+        //            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //            var srv = new OrderShipmentService(dataBaseFactory);
+        //            payload.Success = await srv.UpdateAsync(payload);
+        //            payload.Messages = srv.Messages;
+        //            return new JsonNetResponse<OrderShipmentPayload>(payload);
+        //        }
+        //        /// <summary>
+        //        /// Add order shipment
+        //        /// </summary>
+        //        /// <param name="req"></param>
+        //        /// <returns></returns>
+        //        [FunctionName(nameof(AddShipments))]
+        //        [OpenApiOperation(operationId: "AddShipments", tags: new[] { "Shipments" }, Summary = "Add one order shipment")]
+        //        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(OrderShipmentPayloadAdd), Description = "Request Body in json format")]
+        //        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadAdd))]
+        //        public static async Task<JsonNetResponse<OrderShipmentPayload>> AddShipments(
+        //            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "shipments")] HttpRequest req)
+        //        {
+        //            var payload = await req.GetParameters<OrderShipmentPayload>(true);
+        //            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //            var srv = new OrderShipmentService(dataBaseFactory);
+        //            payload.Success = await srv.AddAsync(payload);
+        //            payload.Messages = srv.Messages;
+        //            return new JsonNetResponse<OrderShipmentPayload>(payload);
+        //        }
 
         /// <summary>
         /// Load shipment list

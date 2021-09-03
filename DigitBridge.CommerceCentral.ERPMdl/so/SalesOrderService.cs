@@ -240,31 +240,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
-
-        /// <summary>
-        /// Delete salesorder by order number
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> DeleteByNumberAsync(SalesOrderPayload payload, string orderNumber)
-        {
-            if (string.IsNullOrEmpty(orderNumber))
-                return false;  
-            //set delete mode
-            Delete();
-            //load data
-            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-            if (success)
-            {
-                success = DeleteData();
-            }
-            else
-            {
-                AddError("Data not found.");
-            } 
-            return success;
-        }
-
         ///// <summary>
         ///// Get sale order with detail by orderNumber
         ///// </summary>
@@ -338,6 +313,62 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //    salesOrderPayload.SalesOrders = result;
         //    return salesOrderPayload;
         //}
+
+        /// <summary>
+        ///  get data by number
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> GetDataAsync(SalesOrderPayload payload, string orderNumber)
+        {
+            return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
+        }
+
+        /// <summary>
+        /// get data by number
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual bool GetData(SalesOrderPayload payload, string orderNumber)
+        {
+            return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
+        }
+
+        /// <summary>
+        /// Delete salesorder by order number
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByNumberAsync(SalesOrderPayload payload, string orderNumber)
+        {
+            if (string.IsNullOrEmpty(orderNumber))
+                return false;
+            //set delete mode
+            Delete();
+            //load data
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
+            success = success && DeleteData();
+            return success;
+        }
+
+        /// <summary>
+        /// Delete salesorder by order number
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual bool DeleteByNumber(SalesOrderPayload payload, string orderNumber)
+        {
+            if (string.IsNullOrEmpty(orderNumber))
+                return false;
+            //set delete mode
+            Delete();
+            //load data
+            var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
+            success = success && DeleteData();
+            return success;
+        }
     }
 }
 
