@@ -41,7 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<SalesOrderPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new SalesOrderService(dataBaseFactory);
-            payload.Success = await srv.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
+            payload.Success = await srv.GetDataAsync(payload, orderNumber);
             if (payload.Success)
                 payload.SalesOrder = srv.ToDto(srv.Data);
             else
