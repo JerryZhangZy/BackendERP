@@ -40,9 +40,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (withHeaderText)
                 result.Add(dto.PoHeader.MergeName(dto.PoHeaderInfo));
             result.Add(dto.PoHeader.Merge(dto.PoHeaderInfo));
-            //if (withHeaderText)
-            //    result.Add(dto.PoHeader.MergeName(dto.PoHeaderInfo, dto.PoHeaderAttributes));
-            //result.Add(dto.PoHeader.Merge(dto.PoHeaderInfo, dto.PoHeaderAttributes));
             return result;
         }
 
@@ -54,21 +51,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
         public static IList<dynamic> MergeDetailRecord(this PurchaseOrderDataDto dto, bool withHeaderText = false)
         {
-			//return null;
-			//TODO change to merge Dto children object
-
 			var result = new List<dynamic>();
 
 			if (!dto.HasPoItems)
 				return result;
-            var poItems = new PoItems() { PoItemsRef = new PoItemsRef()};
+            var poItems = new PoItemsDto() {PoItemsAttributes=new PoItemsAttributesDto(), PoItemsRef = new PoItemsRefDto()};
 
             if (withHeaderText)
-                result.Add(poItems.MergeName(poItems.PoItemsRef));
+                result.Add(poItems.MergeName(poItems.PoItemsRef,poItems.PoItemsAttributes));
 
             foreach (var item in dto.PoItems)
             {
-                result.Add(item.Merge(item.PoItemsRef));
+                result.Add(item.Merge(item.PoItemsRef,item.PoItemsAttributes));
             }
             return result;
         }

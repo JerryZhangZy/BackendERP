@@ -16,6 +16,7 @@ using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
 using Helper = DigitBridge.CommerceCentral.ERPDb.PoHeaderHelper;
+using ItemsHelper = DigitBridge.CommerceCentral.ERPDb.PoItemsHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -35,7 +36,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.TableAllies}.*,
+COALESCE(ordtp.text, '') poTypeText, 
+COALESCE(ordst.text, '') poStatusText, 
+(select {ItemsHelper.TableAllies}.* from PoItems {ItemsHelper.TableAllies} where {Helper.TableAllies}.PoUuid={ItemsHelper.TableAllies}.PoUuid for json auto,include_null_values ) as PoItems
 ";
             return this.SQL_Select;
         }
@@ -44,6 +48,9 @@ SELECT
         {
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
+ LEFT JOIN {ItemsHelper.TableName} {ItemsHelper.TableAllies} ON {Helper.TableAllies}.PoUuid={ItemsHelper.TableAllies}.PoUuid
+ LEFT JOIN @SalesOrderStatus ordst ON ({Helper.TableAllies}.PoStatus = ordst.num)
+ LEFT JOIN @SalesOrderType ordtp ON ({Helper.TableAllies}.PoType = ordtp.num)
 ";
             return this.SQL_From;
         }
@@ -51,9 +58,8 @@ SELECT
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-                        
-            //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
-            //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
+            paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
+            paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
 
             return paramList.ToArray();
         }

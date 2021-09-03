@@ -14,6 +14,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Helper = DigitBridge.CommerceCentral.ERPDb.PoHeaderHelper;
+using ItemsHelper = DigitBridge.CommerceCentral.ERPDb.PoItemsHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -21,36 +22,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         // Table prefix which use in this sql query
         protected static string PREFIX = Helper.TableAllies;
+        protected static string ITEMSPREFIX = ItemsHelper.TableAllies;
 
         // Filter fields
-        //protected QueryFilter<DateTime> _OrderDateFrom = new QueryFilter<DateTime>("OrderDateFrom", "OrderDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
-        //public QueryFilter<DateTime> OrderDateFrom => _OrderDateFrom;
+        protected QueryFilter<DateTime> _PoDateFrom = new QueryFilter<DateTime>("PoDateFrom", "PoDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime,isDate:true);
+        public QueryFilter<DateTime> PoDateFrom => _PoDateFrom;
 
-        //protected QueryFilter<DateTime> _OrderDateTo = new QueryFilter<DateTime>("OrderDateTo", "OrderDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
-        //public QueryFilter<DateTime> OrderDateTo => _OrderDateTo;
+        protected QueryFilter<DateTime> _PoDateTo = new QueryFilter<DateTime>("PoDateTo", "PoDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime,isDate:true);
+        public QueryFilter<DateTime> PoDateTo => _PoDateTo;
 
-        //protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty);
-        //public QueryFilter<string> CustomerCode => _CustomerCode;
+        protected EnumQueryFilter<SalesOrderStatus> _PoStatus = new EnumQueryFilter<SalesOrderStatus>("PoStatus", "PoStatus", PREFIX, FilterBy.eq, -1);
+        public EnumQueryFilter<SalesOrderStatus> PoStatus => _PoStatus;
 
-        //protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
-
-        //protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
+        protected EnumQueryFilter<SalesOrderType> _PoType = new EnumQueryFilter<SalesOrderType>("PoType", "PoType", PREFIX, FilterBy.eq, -1);
+        public EnumQueryFilter<SalesOrderType> PoType => _PoType;
 
         public PurchaseOrderQuery() : base(PREFIX)
         {
-            //AddFilter(_OrderDateFrom);
-            //AddFilter(_OrderDateTo);
-            //AddFilter(_CustomerCode);
-            //AddFilter(_OrderStatus);
-            //AddFilter(_OrderType);
+            AddFilter(_PoDateFrom);
+            AddFilter(_PoDateTo);
+            AddFilter(_PoStatus);
+            AddFilter(_PoType);
         }
 
         public override void InitQueryFilter()
         {
-            //_OrderDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            //_OrderDateTo.FilterValue = DateTime.Today.AddDays(7);
+            _PoDateFrom.FilterValue = DateTime.Today.AddDays(-30);
+            _PoDateTo.FilterValue = DateTime.Today.AddDays(7);
         }
     }
 }
