@@ -135,13 +135,23 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class PurchaseOrderFilter
     {
-        //public string City { get; set; }
+
+        public DateTime PoDateFrom { get; set; }
+
+        public DateTime PoDateTo { get; set; }
+
+        public string PoStatus { get; set; }
+
+        public string PoType { get; set; }
 
         public static Faker<PurchaseOrderFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<PurchaseOrderFilter>()
-                //.RuleFor(u => u.City, f => "")
+                .RuleFor(u => u.PoDateTo, f => f.Date.Past(0).Date.Date)
+                .RuleFor(u => u.PoDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
+                .RuleFor(u => u.PoStatus, f => "")
+                .RuleFor(u => u.PoType, f => "")
                 ;
             #endregion faker data rules
         }

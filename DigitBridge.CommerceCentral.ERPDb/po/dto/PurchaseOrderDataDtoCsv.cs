@@ -45,7 +45,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         protected override void WriteCsv(PurchaseOrderDataDto data, CsvWriter csv)
         {
             // combine multiple Dto to one dynamic object
-            var headerRecords = data.MergeHeaderRecord(true).ToList();            
+            var headerRecords = data.MergeHeaderRecord(true);            
             WriteEntities(csv, headerRecords, "H");
 
             // Sort property of object by orders

@@ -34,6 +34,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static IEnumerable<dynamic> MergeHeaderRecord(this WarehouseDataDto dto, bool withHeaderText = false)
         {
             var result = new List<dynamic>();
+            if (!dto.HasDistributionCenter)
+                return result;
             if (withHeaderText)
                 result.Add(dto.DistributionCenter.MergeName(dto.DistributionCenter));
             result.Add(dto.DistributionCenter.Merge(dto.DistributionCenter));
@@ -87,7 +89,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
             foreach (var item in dtoList)
             {
-                result.Add(item.Merge(item.DistributionCenter));
+                if (item.HasDistributionCenter)
+                    result.Add(item.Merge(item.DistributionCenter));
             }
             return result;
         }

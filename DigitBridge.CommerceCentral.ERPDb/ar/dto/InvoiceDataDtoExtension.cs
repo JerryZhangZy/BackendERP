@@ -34,6 +34,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static IEnumerable<dynamic> MergeHeaderRecord(this InvoiceDataDto dto, bool withHeaderText = false)
         {
             var result = new List<dynamic>();
+			if (!dto.HasInvoiceHeader)
+				return result;
             //TODO change to merge Dto children object
             if (withHeaderText)
                 result.Add(dto.InvoiceHeader.MergeName(dto.InvoiceHeaderInfo, dto.InvoiceHeaderAttributes));
