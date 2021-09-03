@@ -73,11 +73,11 @@
 //SettingForOrderDCAssignment
 //SettingForPurchaseOrder
 #>
-<#@ include file="SettingForSalesOrder.ttinclude" #>
+<#@ include file="SettingForInvoice.ttinclude" #>
 <#
     var dtoSuf = "";
     
-    var overridesetting = false;
+    var overridesetting = true;
     //rewrite setting config
     if(overridesetting)
     {
@@ -98,10 +98,10 @@
         generateStructureDtoTester = false;
 
         // generate service class
-        generateService = false;
+        generateService = true;
         generateStructureFindList = true;
 
-        generateServiceTester = false;
+        generateServiceTester = true;
    }
 #>
 <#      
