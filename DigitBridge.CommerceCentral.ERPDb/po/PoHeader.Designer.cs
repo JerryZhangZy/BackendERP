@@ -87,7 +87,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("VendorName",SqlDbType.NVarChar)]
         private string _vendorName;
 
-        [Column("Currency",SqlDbType.VarChar)]
+        [Column("Currency",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _currency;
 
         [Column("SubTotalAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
@@ -129,10 +129,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
-        [Column("EnterBy",SqlDbType.VarChar,NotNull=true)]
+        [Column("EnterBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _enterBy;
 
-        [Column("UpdateBy",SqlDbType.VarChar,NotNull=true)]
+        [Column("UpdateBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _updateBy;
 
         #endregion Fields - Generated 
@@ -432,17 +432,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _currency is null) 
-					_currency = String.Empty; 
 				return _currency?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_currency = value.TruncateTo(10); 
-					OnPropertyChanged("Currency", value);
-				}
+				_currency = value.TruncateTo(10); 
+				OnPropertyChanged("Currency", value);
             }
         }
 
@@ -779,7 +774,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_vendorUuid = AllowNull ? (string)null : String.Empty; 
 			_vendorNum = AllowNull ? (string)null : String.Empty; 
 			_vendorName = AllowNull ? (string)null : String.Empty; 
-			_currency = AllowNull ? (string)null : String.Empty; 
+			_currency = String.Empty; 
 			_subTotalAmount = default(decimal); 
 			_totalAmount = default(decimal); 
 			_taxRate = AllowNull ? (decimal?)null : default(decimal); 

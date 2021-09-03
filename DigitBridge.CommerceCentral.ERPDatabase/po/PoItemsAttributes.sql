@@ -3,7 +3,7 @@
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL, --(Readonly) Record Number. Required, <br> Display: false, Editable: false.
     [PoItemUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O Item Line <br> Display: false, Editable: false.
     [PoUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for P/O <br> Display: false, Editable: false.
-	[JsonFields] NVARCHAR(max) NULL, --JSON string, store any document fields <br> Display: false, Editable: false.
+	[JsonFields] NVARCHAR(max) NOT NULL DEFAULT '', --JSON string, store any document fields <br> Display: false, Editable: false.
 
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Ignore)
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)

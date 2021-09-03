@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("PoUuid",SqlDbType.VarChar,NotNull=true)]
         private string _poUuid;
 
-        [Column("JsonFields",SqlDbType.NVarChar)]
+        [Column("JsonFields",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _jsonFields;
 
         #endregion Fields - Generated 
@@ -80,17 +80,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _jsonFields is null) 
-					_jsonFields = String.Empty; 
 				return _jsonFields?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_jsonFields = value.TrimEnd(); 
-					OnPropertyChanged("JsonFields", value);
-				}
+				_jsonFields = value.TrimEnd(); 
+				OnPropertyChanged("JsonFields", value);
             }
         }
 
@@ -140,7 +135,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             base.Clear();
 			_poUuid = String.Empty; 
-			_jsonFields = AllowNull ? (string)null : String.Empty; 
+			_jsonFields = String.Empty; 
 			Fields.Clear(); 
             ClearChildren();
             return this;
