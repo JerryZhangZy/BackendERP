@@ -36,16 +36,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             context.RegisterClassMap(new CsvAutoMapper<PoHeaderDto>());
             context.RegisterClassMap(new CsvAutoMapper<PoHeaderInfoDto>());
-            context.RegisterClassMap(new CsvAutoMapper<PoHeaderAttributesDto>());
+            //context.RegisterClassMap(new CsvAutoMapper<PoHeaderAttributesDto>());
             context.RegisterClassMap(new CsvAutoMapper<PoItemsDto>(1));
-            context.RegisterClassMap(new CsvAutoMapper<PoItemsAttributesDto>(1));
+            //context.RegisterClassMap(new CsvAutoMapper<PoItemsAttributesDto>(1));
             context.RegisterClassMap(new CsvAutoMapper<PoItemsRefDto>(1));
         }
         
         protected override void WriteCsv(PurchaseOrderDataDto data, CsvWriter csv)
         {
             // combine multiple Dto to one dynamic object
-            var headerRecords = data.MergeHeaderRecord(true).ToList();            
+            var headerRecords = data.MergeHeaderRecord(true);            
             WriteEntities(csv, headerRecords, "H");
 
             // Sort property of object by orders
@@ -79,13 +79,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
                         }
                         dto.PoHeader = csv.GetRecord<PoHeaderDto>();
                         dto.PoHeaderInfo = csv.GetRecord<PoHeaderInfoDto>();
-                        dto.PoHeaderAttributes = csv.GetRecord<PoHeaderAttributesDto>();
+                        //dto.PoHeaderAttributes = csv.GetRecord<PoHeaderAttributesDto>();
                         break;
                     case "L":
                         if (dto.PoItems == null)
                             dto.PoItems = new List<PoItemsDto>();
                         var item = csv.GetRecord<PoItemsDto>();
-                        item.PoItemsAttributes = csv.GetRecord<PoItemsAttributesDto>();
+                        //item.PoItemsAttributes = csv.GetRecord<PoItemsAttributesDto>();
                         item.PoItemsRef = csv.GetRecord<PoItemsRefDto>();
                         dto.PoItems.Add(item);
                         break;
