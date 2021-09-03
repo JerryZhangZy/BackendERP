@@ -68,6 +68,21 @@ RTRIM({allies}JsonFields) AS JsonFields,
 ";
         }
 
+        // TODO merge SelectAll
+        public static string SelectAll(string tableAllies, string outputStructName)
+        {
+            var allies = string.IsNullOrEmpty(tableAllies) ? string.Empty : $"{tableAllies.TrimEnd()}.";
+            var outputAllies = string.IsNullOrEmpty(outputStructName) ? string.Empty : $"{outputStructName.TrimEnd()}.";
+            return $@"
+{allies}RowNum AS '{outputAllies}RowNum',
+RTRIM({allies}SalesOrderItemsUuid) AS '{outputAllies}SalesOrderItemsUuid',
+RTRIM({allies}SalesOrderUuid) AS '{outputAllies}SalesOrderUuid',
+RTRIM({allies}JsonFields) AS '{outputAllies}JsonFields',
+{allies}EnterDateUtc AS '{outputAllies}EnterDateUtc',
+{allies}DigitBridgeGuid AS '{outputAllies}DigitBridgeGuid'
+";
+        }
+
         public static string SelectAllWhere(string sqlWhere, string tableAllies = null, bool forJson = false) 
         {
             if (!sqlWhere.StartsWith("WHERE", StringComparison.CurrentCultureIgnoreCase))

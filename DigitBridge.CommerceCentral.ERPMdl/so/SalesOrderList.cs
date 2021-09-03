@@ -205,7 +205,38 @@ FOR JSON PATH
                 throw;
             }
         }
+        public virtual IList<SalesOrderData> GetSalesOrderDatas(SalesOrderQuery queryObject)
+        {
+            this.QueryObject = queryObject;
 
+            QueryObject.SetSecurityParameter(10001, 10001);
+            //this.LoadRequestParameter(payload);
+            var sqlWhere = QueryObject.GetSQLWithPrefixBySqlParameter(SalesOrderHeaderHelper.TableAllies);
+            var sql = $@"
+SELECT {SalesOrderHeaderHelper.SelectAll(SalesOrderHeaderHelper.TableAllies, SalesOrderHeaderHelper.TableName)},
+{SalesOrderHeaderInfoHelper.SelectAll(SalesOrderHeaderInfoHelper.TableAllies, SalesOrderHeaderInfoHelper.TableName)},
+{SalesOrderHeaderAttributesHelper.SelectAll(SalesOrderHeaderAttributesHelper.TableAllies, SalesOrderHeaderAttributesHelper.TableName)},
+( SELECT {SalesOrderItemsHelper.SelectAll(SalesOrderItemsHelper.TableAllies)},{SalesOrderItemsAttributesHelper.SelectAll(SalesOrderItemsAttributesHelper.TableAllies, SalesOrderItemsAttributesHelper.TableName)} 
+  FROM {SalesOrderItemsHelper.TableName} {SalesOrderItemsHelper.TableAllies} 
+  LEFT JOIN {SalesOrderItemsAttributesHelper.TableName} {SalesOrderItemsAttributesHelper.TableAllies} ON ({SalesOrderItemsAttributesHelper.TableAllies}.SalesOrderItemsUuid = {SalesOrderItemsHelper.TableAllies}.SalesOrderItemsUuid)
+  WHERE {SalesOrderItemsHelper.TableAllies}.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH
+) AS SalesOrderItems,
+(SELECT * FROM SalesOrderItemsAttributes i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderItemsAttributes
+FROM {SalesOrderHeaderHelper.TableName} {SalesOrderHeaderHelper.TableAllies}
+LEFT JOIN {SalesOrderHeaderInfoHelper.TableName} {SalesOrderHeaderInfoHelper.TableAllies} ON ({SalesOrderHeaderInfoHelper.TableAllies}.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid)
+LEFT JOIN {SalesOrderHeaderAttributesHelper.TableName} {SalesOrderHeaderAttributesHelper.TableAllies} ON ({SalesOrderHeaderAttributesHelper.TableAllies}.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid)
+WHERE {sqlWhere}
+FOR JSON PATH
+";
+            var param = QueryObject.GetSqlParametersWithPrefix(SalesOrderHeaderHelper.TableAllies);
+
+            StringBuilder sb = new StringBuilder();
+            if (ExcuteJson(sb, sql, param))
+            {
+                return sb.ToString().JsonToObject<IList<SalesOrderData>>();
+            }
+            return null;
+        }
         public virtual async Task<IList<long>> GetRowNumListAsync(SalesOrderPayload payload)
         {
             if (payload == null)
