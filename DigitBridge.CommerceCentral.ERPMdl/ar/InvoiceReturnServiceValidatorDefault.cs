@@ -34,20 +34,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var pl = (payload as InvoiceReturnPayload);
-            if (pl.InvoiceTransaction != null)
-                pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
+            if (pl is null || pl.InvoiceTransaction is null || pl.InvoiceTransaction.InvoiceTransaction is null)
+            {
+                AddError("InvoiceTransaction is require.");
+                return false;
+            }
+            pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
             return base.ValidateAccount(payload, number, processingMode);
         }
-        public override Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        public override async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var pl = (payload as InvoiceReturnPayload);
-            if (pl.InvoiceTransaction != null)
-                pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
-            return base.ValidateAccountAsync(payload, number, processingMode);
+            if (pl is null || pl.InvoiceTransaction is null || pl.InvoiceTransaction.InvoiceTransaction is null)
+            {
+                AddError("InvoiceTransaction is require.");
+                return false;
+            }
+
+            pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
+            return await base.ValidateAccountAsync(payload, number, processingMode);
         }
         public override bool Validate(InvoiceTransactionDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
+            if (dto is null || dto.InvoiceTransaction is null)
+            {
+                AddError("InvoiceTransaction is require.");
+                isValid = false;
+            }
             if (processingMode == ProcessingMode.Add)
             {
                 dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
@@ -63,6 +77,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override async Task<bool> ValidateAsync(InvoiceTransactionDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             var isValid = true;
+
+            if (dto is null || dto.InvoiceTransaction is null)
+            {
+                AddError("InvoiceTransaction is require.");
+                isValid = false;
+            }
+
             if (processingMode == ProcessingMode.Add)
             {
                 dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
