@@ -37,62 +37,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         public virtual void PrepareData(PurchaseOrderData  data, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            //if(data==null||data.SalesOrderHeader==null)
-            //    return;
-            //if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
-            //{
-            //    using var trx = new ScopedTransaction(dbFactory);
-            //    data.SalesOrderHeader.CustomerUuid = CustomerServiceHelper.GetCustomerUuidByCustomerCode(
-            //        data.SalesOrderHeader.CustomerCode, data.SalesOrderHeader.MasterAccountNum,
-            //        data.SalesOrderHeader.ProfileNum);
-            //}
-            //// get customer data
-            //GetCustomerData(data,data.SalesOrderHeader.CustomerUuid);
-
-            //if (data.SalesOrderItems != null)
-            //{
-            //    var skuList = data.SalesOrderItems
-            //        .Where(r => string.IsNullOrEmpty(r.ProductUuid) && !string.IsNullOrEmpty(r.SKU)).Select(r => r.SKU)
-            //        .Distinct().ToList();
-            //    using var trx = new ScopedTransaction(dbFactory);
-            //    var list = InventoryServiceHelper.GetKeyInfoBySkus(skuList, data.SalesOrderHeader.MasterAccountNum,
-            //        data.SalesOrderHeader.ProfileNum);
-            //    foreach (var tuple in list)
-            //    {
-            //        data.SalesOrderItems.First(r => r.SKU == tuple.Item3).ProductUuid = tuple.Item2;
-            //    }
-
-            //    // get inventory data
-            //    foreach (var item in data.SalesOrderItems)
-            //    {
-            //        if (string.IsNullOrEmpty(item.ProductUuid)) continue;
-            //        GetInventoryData(data, item.ProductUuid);
-            //    }
-            //}
+        { 
         }
-        
+
+        private DateTime now = DateTime.Now;
+
         #region Service Property
 
         //private CustomerService _customerService;
         //protected CustomerService customerService => _customerService ??= new CustomerService(dbFactory);
 
-        //private InventoryService _inventoryService;
-        //protected InventoryService inventoryService => _inventoryService ??= new InventoryService(dbFactory);
+        private InventoryService _inventoryService;
+        protected InventoryService inventoryService => _inventoryService ??= new InventoryService(dbFactory);
 
         #endregion
 
         #region GetDataWithCache
 
-        //public virtual InventoryData GetInventoryData(SalesOrderData data, string productUuid)
-        //{
-        //    return data.GetCache(productUuid, () => inventoryService.GetDataById(productUuid) ? inventoryService.Data : null);
-        //}
-
-        //public virtual CustomerData GetCustomerData(SalesOrderData data, string customerUuid)
-        //{
-        //    return data.GetCache(customerUuid, () => customerService.GetDataById(customerUuid) ? customerService.Data : null);
-        //}
+        /// <summary>
+        /// get inventory data
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="sku"></param>
+        /// <returns></returns>
+        public virtual InventoryData GetInventoryData(PurchaseOrderData data, string sku)
+        {
+            var key = data.PoHeader.MasterAccountNum + "_" + data.PoHeader.ProfileNum + '_' + sku;
+            return data.GetCache(key, () =>
+            {
+                inventoryService.GetByNumber(data.PoHeader.MasterAccountNum, data.PoHeader.ProfileNum, sku);
+                return inventoryService.Data;
+            });
+        }
 
         #endregion
 
@@ -109,72 +85,92 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             //TODO: add set default summary data logic
-            //This is generated sample code
+            //This is generated sample code 
             var sum = data.PoHeader;
-            if (sum.PoDate.IsZero()) sum.PoDate = DateTime.Today;
-            if (sum.PoTime.IsZero()) sum.PoTime = DateTime.Now.TimeOfDay;
-            /*
-            //UpdateDateUtc
+            if (sum.PoTime.IsZero()) sum.PoTime = now.TimeOfDay;
+            if (sum.PoDate.IsZero())
+            {
+                sum.PoDate = now.Date;
+                sum.PoTime = now.TimeOfDay;
+            }
+            sum.UpdateDateUtc = now;
             //EnterBy
             //UpdateBy
-            */
-
+            if (processingMode == ProcessingMode.Add)
+            {
+                if (string.IsNullOrEmpty(data.PoHeader.PoNum))
+                {
+                    data.PoHeader.PoNum = NumberGenerate.Generate();
+                }
+                //for Add mode, always reset data's uuid
+                data.PoHeader.PoUuid = Guid.NewGuid().ToString();
+            }
+            else if (processingMode == ProcessingMode.Edit)
+            {
+                //todo 
+            } 
             return true;
         }
 
         public virtual bool SetDefaultDetail(PurchaseOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            if (data is null)
+            if (data is null || data.PoItems == null || data.PoItems.Count == 0)
                 return false;
 
             //TODO: add set default for detail list logic
-            /* This is generated sample code
-
-            foreach (var item in data.InvoiceItems)
+            // This is generated sample code 
+            foreach (var item in data.PoItems)
             {
-                if (item is null || item.IsEmpty)
-                    continue;
                 SetDefault(item, data, processingMode);
             }
-
-            */
             return true;
         }
 
-        //TODO: add set default for detail line logic
-        /* This is generated sample code
-        protected virtual bool SetDefault(InvoiceItems item, PurchaseOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
+         
+        protected virtual bool SetDefault(PoItems item, PurchaseOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            if (item is null || item.IsEmpty)
-                return false;
+            item.UpdateDateUtc = now;
+            if (item.PoTime.IsZero()) item.PoTime = now.TimeOfDay;
+            if (item.PoDate.IsZero())
+            {
+                item.PoDate = now.Date;
+                item.PoTime = now.TimeOfDay;
+            }
 
-            var setting = new ERPSetting();
-            var sum = data.PoHeader;
-            //var prod = data.GetCache<ProductBasic>(ProductId);
-            //var inv = data.GetCache<Inventory>(InventoryId);
-            //var invCost = new ItemCostClass(inv);
-            var invCost = new ItemCostClass();
+            if (processingMode == ProcessingMode.Add)
+            {
+                item.PoItemUuid = Guid.NewGuid().ToString();
+            }
 
-            //InvoiceItemType
-            //InvoiceItemStatus
-            //ItemDate
-            //ItemTime
-            //ShipDate
-            //EtaArrivalDate
+            //Set SKU info
+            var inventoryData = GetInventoryData(data, item.SKU);
+            if (inventoryData != null)
+            {
+                item.ProductUuid = inventoryData.ProductBasic.ProductUuid; 
+                //TODO check this .(no WarehouseCode in po item.)
+                var inventory = inventoryService.GetInventory(inventoryData, item);
+                item.Currency = inventory.Currency;
+            }
 
-            //SKU
-            //ProductUuid
-            //InventoryUuid
-            //WarehouseUuid
-            //LotNum
-            //Description
-            //Notes
-            //UOM
-            //Currency
+            //var setting = new ERPSetting();
+            //var sum = data.SalesOrderHeader;
+            ////var prod = data.GetCache<ProductBasic>(ProductId);
+            ////var inv = data.GetCache<Inventory>(InventoryId);
+            ////var invCost = new ItemCostClass(inv);
+            //var invCost = new ItemCostClass();
+
+            ////InvoiceItemType
+            ////InvoiceItemStatus 
+            ////ShipDate
+            ////EtaArrivalDate
+
+            ////SKU 
+            ////Description
+            ////Notes 
+            ////Currency
 
             return true;
-        }
-        */
+        } 
 
 
         public virtual bool Calculate(PurchaseOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
