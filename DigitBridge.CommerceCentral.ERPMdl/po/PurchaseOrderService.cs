@@ -70,7 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // set Add mode and clear data
             Add();
 
-            if (!(await ValidateAsync(dto).ConfigureAwait(false)))
+            if (!(await ValidateAsync(dto)))
                 return false;
 
             // load data from dto
@@ -79,10 +79,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Calculate();
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync().ConfigureAwait(false);
+            return await SaveDataAsync();
         }
 
         public virtual bool Add(PurchaseOrderPayload payload)
@@ -143,10 +143,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // set Add mode and clear data
             Add();
 
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.PurchaseOrder).ConfigureAwait(false)))
+            if (!(await ValidateAsync(payload.PurchaseOrder)))
                 return false;
 
             // load data from dto
@@ -155,10 +155,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Calculate();
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync().ConfigureAwait(false);
+            return await SaveDataAsync();
         }
 
         public PurchaseOrderPayload GetPurchaseOrderByPoNumArray(PurchaseOrderPayload payload)
@@ -208,7 +208,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(ponum))
                 return false;
             Delete();
-            if (!(await ValidateAccountAsync(payload, ponum).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload, ponum)))
                 return false;
             long rowNum = 0;
             using (var tx = new ScopedTransaction(dbFactory))
@@ -257,11 +257,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             //set edit mode before validate
             Edit();
-            if (!(await ValidateAsync(dto).ConfigureAwait(false)))
+            if (!(await ValidateAsync(dto)))
                 return false;
 
             // load data 
-            await GetDataAsync(dto.PoHeader.RowNum.ToLong()).ConfigureAwait(false);
+            await GetDataAsync(dto.PoHeader.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
@@ -269,7 +269,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Calculate();
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
             return await SaveDataAsync();
@@ -317,14 +317,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             //set edit mode before validate
             Edit();
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.PurchaseOrder).ConfigureAwait(false)))
+            if (!(await ValidateAsync(payload.PurchaseOrder)))
                 return false;
 
             // load data 
-            await GetDataAsync(payload.PurchaseOrder.PoHeader.RowNum.ToLong()).ConfigureAwait(false);
+            await GetDataAsync(payload.PurchaseOrder.PoHeader.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.PurchaseOrder);
@@ -332,7 +332,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Calculate();
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
             return await SaveDataAsync();

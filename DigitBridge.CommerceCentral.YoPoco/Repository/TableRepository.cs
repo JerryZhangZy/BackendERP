@@ -37,19 +37,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
 
         public static async Task<bool> ExistsAsync(IDataBaseFactory dbFactory, TId id)
-            => await dbFactory.Db.ExistsAsync<TEntity>((object)id).ConfigureAwait(false);
+            => await dbFactory.Db.ExistsAsync<TEntity>((object)id);
 
         public static async Task<bool> ExistUniqueIdAsync(IDataBaseFactory dbFactory, string uniqueKey)
-            => await dbFactory.Db.ExistUniqueIdAsync<TEntity>((object)uniqueKey).ConfigureAwait(false);
+            => await dbFactory.Db.ExistUniqueIdAsync<TEntity>((object)uniqueKey);
 
         public static async Task<bool> ExistsAsync(IDataBaseFactory dbFactory, string sql, params object[] args)
-            => await dbFactory.Db.ExistsAsync<TEntity>(sql, args).ConfigureAwait(false); // True or False
+            => await dbFactory.Db.ExistsAsync<TEntity>(sql, args); // True or False
 
         public static async Task<T> GetValueAsync<T>(IDataBaseFactory dbFactory, string sql, params object[] args)
-            => await dbFactory.Db.ExecuteScalarAsync<T>(sql, args).ConfigureAwait(false);
+            => await dbFactory.Db.ExecuteScalarAsync<T>(sql, args);
 
         public static async Task<long> CountAsync(IDataBaseFactory dbFactory, string sql, params object[] args)
-            => await dbFactory.Db.ExecuteScalarAsync<long>(AutoSelectHelper.AddCountClause<TEntity>(sql), args).ConfigureAwait(false);
+            => await dbFactory.Db.ExecuteScalarAsync<long>(AutoSelectHelper.AddCountClause<TEntity>(sql), args);
 
         #endregion
 
@@ -72,19 +72,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
 
         public static async Task<TEntity> GetAsync(IDataBaseFactory dbFactory, TId id)
-            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>((object)id).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>((object)id))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         public static async Task<TEntity> GetAsync(IDataBaseFactory dbFactory, TId id, IEnumerable<string> columns)
-            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>(columns, (object)id).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>(columns, (object)id))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         public static async Task<TEntity> GetByIdAsync(IDataBaseFactory dbFactory, string uid)
-            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>((object)uid, true).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>((object)uid, true))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         public static async Task<TEntity> GetByIdAsync(IDataBaseFactory dbFactory, string uid, IEnumerable<string> columns)
-            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>(columns, (object)uid, true).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+            => (await dbFactory.Db.SingleOrDefaultAsync<TEntity>(columns, (object)uid, true))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         public static async Task<TEntity> GetByAsync(IDataBaseFactory dbFactory, string sql, params object[] args)
-            => (await dbFactory.Db.FirstOrDefaultAsync<TEntity>(sql, args).ConfigureAwait(false))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
+            => (await dbFactory.Db.FirstOrDefaultAsync<TEntity>(sql, args))?.SetAllowNull(false)?.SetDataBaseFactory(dbFactory)?.ConvertDbFieldsToData();
 
         #endregion Query - get single record
 
@@ -106,19 +106,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
 
         public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory)
-            => (await dbFactory.Db.FetchAsync<TEntity>().ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+            => (await dbFactory.Db.FetchAsync<TEntity>()).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         public static async Task<IEnumerable<TEntity>> FindByOrderAsync(IDataBaseFactory dbFactory, params string[] orderBy)
-            => (await dbFactory.Db.FetchAsync<TEntity>($"ORDER BY {orderBy.JoinToString(",")}").ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+            => (await dbFactory.Db.FetchAsync<TEntity>($"ORDER BY {orderBy.JoinToString(",")}")).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory, IEnumerable<string> columns, params string[] orderBy)
-            => (await dbFactory.Db.FetchAsync<TEntity>(columns, $"ORDER BY {orderBy.JoinToString(",")}").ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+            => (await dbFactory.Db.FetchAsync<TEntity>(columns, $"ORDER BY {orderBy.JoinToString(",")}")).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory, string sql, params object[] args)
-            => (await dbFactory.Db.FetchAsync<TEntity>(sql, args).ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+            => (await dbFactory.Db.FetchAsync<TEntity>(sql, args)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         public static async Task<IEnumerable<TEntity>> FindAsync(IDataBaseFactory dbFactory, string sql, IEnumerable<string> columns, params object[] args)
-            => (await dbFactory.Db.FetchAsync<TEntity>(columns, sql, args).ConfigureAwait(false)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
+            => (await dbFactory.Db.FetchAsync<TEntity>(columns, sql, args)).SetAllowNull<TEntity, TId>(false).SetDataBaseFactory<TEntity, TId>(dbFactory).ConvertDbFieldsToData<TEntity, TId>();
 
         #endregion
 
@@ -401,7 +401,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual async Task<bool> AddAsync(IDataBaseFactory DbFactory)
         {
             SetDataBaseFactory(DbFactory);
-            return await AddAsync().ConfigureAwait(false);
+            return await AddAsync();
         }
 
         public virtual async Task<bool> AddAsync()
@@ -410,11 +410,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
             object rtn;
             this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
-                rtn = await db.InsertAsync(this.SetAllowNull(false)).ConfigureAwait(false);
+                rtn = await db.InsertAsync(this.SetAllowNull(false));
             else
             {
-                await db.BeginTransactionAsync().ConfigureAwait(false);
-                rtn = await db.InsertAsync(this.SetAllowNull(false)).ConfigureAwait(false);
+                await db.BeginTransactionAsync();
+                rtn = await db.InsertAsync(this.SetAllowNull(false));
                 db.CompleteTransaction();
             }
             return (rtn != null);
@@ -423,7 +423,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual async Task<int> PutAsync(IDataBaseFactory DbFactory)
         {
             SetDataBaseFactory(DbFactory);
-            return await PutAsync().ConfigureAwait(false);
+            return await PutAsync();
         }
 
         public virtual async Task<int> PutAsync()
@@ -432,27 +432,27 @@ namespace DigitBridge.CommerceCentral.YoPoco
             int rtn;
             this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
-                rtn = await db.UpdateAsync(this.SetAllowNull(false)).ConfigureAwait(false);
+                rtn = await db.UpdateAsync(this.SetAllowNull(false));
             else
             {
-                await db.BeginTransactionAsync().ConfigureAwait(false);
-                rtn = await db.UpdateAsync(this.SetAllowNull(false)).ConfigureAwait(false);
+                await db.BeginTransactionAsync();
+                rtn = await db.UpdateAsync(this.SetAllowNull(false));
                 db.CompleteTransaction();
             }
             return rtn;
         }
         public virtual async Task<int> PatchAsync(IDataBaseFactory DbFactory)
         {
-            return await PatchAsync(DbFactory, this.ChangedProperties).ConfigureAwait(false);
+            return await PatchAsync(DbFactory, this.ChangedProperties);
         }
         public virtual async Task<int> PatchAsync(IDataBaseFactory DbFactory, IEnumerable<string> columns)
         {
             SetDataBaseFactory(DbFactory);
-            return await PatchAsync(columns).ConfigureAwait(false);
+            return await PatchAsync(columns);
         }
         public virtual async Task<int> PatchAsync()
         {
-            return await PatchAsync(this.ChangedProperties).ConfigureAwait(false);
+            return await PatchAsync(this.ChangedProperties);
         }
 
         public virtual async Task<int> PatchAsync(IEnumerable<string> columns)
@@ -461,11 +461,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
             int rtn;
             this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
-                rtn = await db.UpdateAsync(this.SetAllowNull(false), columns).ConfigureAwait(false);
+                rtn = await db.UpdateAsync(this.SetAllowNull(false), columns);
             else
             {
-                await db.BeginTransactionAsync().ConfigureAwait(false);
-                rtn = await db.UpdateAsync(this.SetAllowNull(false), columns).ConfigureAwait(false);
+                await db.BeginTransactionAsync();
+                rtn = await db.UpdateAsync(this.SetAllowNull(false), columns);
                 db.CompleteTransaction();
             }
             return rtn;
@@ -474,7 +474,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual async Task<int> DeleteAsync(IDataBaseFactory DbFactory)
         {
             SetDataBaseFactory(DbFactory);
-            return await DeleteAsync().ConfigureAwait(false);
+            return await DeleteAsync();
         }
 
         public virtual async Task<int> DeleteAsync()
@@ -483,11 +483,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
             int rtn;
             this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
-                rtn = await db.DeleteAsync(this).ConfigureAwait(false);
+                rtn = await db.DeleteAsync(this);
             else
             {
-                await db.BeginTransactionAsync().ConfigureAwait(false);
-                rtn = await db.DeleteAsync(this).ConfigureAwait(false);
+                await db.BeginTransactionAsync();
+                rtn = await db.DeleteAsync(this);
                 db.CompleteTransaction();
             }
             return rtn;
@@ -496,7 +496,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual async Task<int> DeleteAsync(IDataBaseFactory DbFactory, string sql, params object[] args)
         {
             SetDataBaseFactory(DbFactory);
-            return await DeleteAsync(sql, args).ConfigureAwait(false);
+            return await DeleteAsync(sql, args);
         }
 
         public virtual async Task<int> DeleteAsync(string sql, params object[] args)
@@ -504,11 +504,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (string.IsNullOrWhiteSpace(sql)) return 0;
             int rtn;
             if (db.IsInTransaction)
-                rtn = await db.DeleteAsync<TEntity>(sql, args).ConfigureAwait(false);
+                rtn = await db.DeleteAsync<TEntity>(sql, args);
             else
             {
-                await db.BeginTransactionAsync().ConfigureAwait(false);
-                rtn = await db.DeleteAsync<TEntity>(sql, args).ConfigureAwait(false);
+                await db.BeginTransactionAsync();
+                rtn = await db.DeleteAsync<TEntity>(sql, args);
                 db.CompleteTransaction();
             }
             return rtn;
@@ -517,14 +517,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual async Task<bool> SaveAsync(IDataBaseFactory DbFactory)
         {
             SetDataBaseFactory(DbFactory);
-            return await SaveAsync().ConfigureAwait(false);
+            return await SaveAsync();
         }
 
         public virtual async Task<bool> SaveAsync()
         {
             return (IsNew)
-                ? await AddAsync().ConfigureAwait(false)
-                : (await PutAsync().ConfigureAwait(false)) > 0;
+                ? await AddAsync()
+                : (await PutAsync()) > 0;
         }
 
         #endregion

@@ -12,14 +12,14 @@ namespace DigitBridge.CommerceCentral.ApiCommon
     {
         public async static Task<IDataBaseFactory> CreateDefaultDatabaseAsync(IPayload payload)
         {
-            var config = await MyCache.GetCommerceCentralDbConnSetting(payload.MasterAccountNum).ConfigureAwait(false);
+            var config = await MyCache.GetCommerceCentralDbConnSetting(payload.MasterAccountNum);
             payload.DatabaseNum = config.DatabaseNum;
             return DataBaseFactory.CreateDefault(config);
         }
 
         public async static Task<IDataBaseFactory> CreateDefaultDatabaseAsync(int masterAccountNum)
         {
-            var config = await MyCache.GetCommerceCentralDbConnSetting(masterAccountNum).ConfigureAwait(false);
+            var config = await MyCache.GetCommerceCentralDbConnSetting(masterAccountNum);
             return DataBaseFactory.CreateDefault(config);
         }
 

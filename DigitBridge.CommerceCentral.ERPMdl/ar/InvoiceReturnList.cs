@@ -90,8 +90,8 @@ LEFT JOIN {ReturnHelper.TableName} {ReturnHelper.TableAllies} ON {Helper.TableAl
             var result = false;
             try
             {
-                payload.InvoiceTransactionListCount = await CountAsync().ConfigureAwait(false);
-                result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
+                payload.InvoiceTransactionListCount = await CountAsync();
+                result = await ExcuteJsonAsync(sb);
                 if (result)
                     payload.InvoiceTransactionList = sb;
             }

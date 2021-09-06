@@ -255,15 +255,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedSave(OrderDCAssignmentHeaderTable))
 			{
 				OrderDCAssignmentHeader.SetDataBaseFactory(dbFactory); 
-				if (!(await OrderDCAssignmentHeader.SaveAsync().ConfigureAwait(false))) return false; 
+				if (!(await OrderDCAssignmentHeader.SaveAsync())) return false; 
 			}
 			 if (NeedSave(OrderDCAssignmentLineTable))
 			{
 				if (OrderDCAssignmentLine != null) 
-					await OrderDCAssignmentLine.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await OrderDCAssignmentLine.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delOrderDCAssignmentLine = _OrderDCAssignmentLineDeleted;
 				if (delOrderDCAssignmentLine != null)
-					await delOrderDCAssignmentLine.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delOrderDCAssignmentLine.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			if (_OnSave != null)
@@ -289,12 +289,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedDelete(OrderDCAssignmentHeaderTable))
 			{
 			OrderDCAssignmentHeader.SetDataBaseFactory(dbFactory); 
-			if ((await OrderDCAssignmentHeader.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			if ((await OrderDCAssignmentHeader.DeleteAsync()) <= 0) return false; 
 			}
 			 if (NeedDelete(OrderDCAssignmentLineTable))
 			{
 				if (OrderDCAssignmentLine != null) 
-					await OrderDCAssignmentLine.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await OrderDCAssignmentLine.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			if (_OnDelete != null)
 			{

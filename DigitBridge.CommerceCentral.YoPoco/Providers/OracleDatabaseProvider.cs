@@ -70,11 +70,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (primaryKeyName != null)
             {
                 var param = PrepareInsert(cmd, primaryKeyName);
-                await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
+                await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd);
                 return param.Value;
             }
 
-            await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
+            await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd);
             return -1;
         }
     }

@@ -403,19 +403,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
 
         public virtual async Task<bool> ExistsAsync<TEntity>(long id) where TEntity : TableRepository<TEntity, long>, new()
-            => await TableRepository<TEntity, long>.ExistsAsync(this, id).ConfigureAwait(false);
+            => await TableRepository<TEntity, long>.ExistsAsync(this, id);
 
         public virtual async Task<bool> ExistUniqueIdAsync<TEntity>(string uniqueKey) where TEntity : TableRepository<TEntity, long>, new()
-            => await TableRepository<TEntity, long>.ExistUniqueIdAsync(this, uniqueKey).ConfigureAwait(false);
+            => await TableRepository<TEntity, long>.ExistUniqueIdAsync(this, uniqueKey);
 
         public virtual async Task<bool> ExistsAsync<TEntity>(string sql, params object[] args) where TEntity : TableRepository<TEntity, long>, new()
-            => await TableRepository<TEntity, long>.ExistsAsync(this, sql, args).ConfigureAwait(false); // True or False
+            => await TableRepository<TEntity, long>.ExistsAsync(this, sql, args); // True or False
 
         public virtual async Task<T> GetValueAsync<TEntity, T>(string sql, params object[] args) where TEntity : TableRepository<TEntity, long>, new()
-            => await TableRepository<TEntity, long>.GetValueAsync<T>(this, sql, args).ConfigureAwait(false);
+            => await TableRepository<TEntity, long>.GetValueAsync<T>(this, sql, args);
 
         public virtual async Task<long> CountAsync<TEntity>(string sql, params object[] args) where TEntity : TableRepository<TEntity, long>, new()
-            => await TableRepository<TEntity, long>.CountAsync(this, sql, args).ConfigureAwait(false);
+            => await TableRepository<TEntity, long>.CountAsync(this, sql, args);
 
         #endregion
 
@@ -438,19 +438,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
 
         public virtual async Task<TEntity> GetAsync<TEntity>(long id) where TEntity : TableRepository<TEntity, long>, new()
-            => (await TableRepository<TEntity, long>.GetAsync(this, id).ConfigureAwait(false))?.SetDataBaseFactory(this);
+            => (await TableRepository<TEntity, long>.GetAsync(this, id))?.SetDataBaseFactory(this);
 
         public virtual async Task<TEntity> GetAsync<TEntity>(long id, IEnumerable<string> columns) where TEntity : TableRepository<TEntity, long>, new()
-            => (await TableRepository<TEntity, long>.GetAsync(this, id, columns).ConfigureAwait(false))?.SetDataBaseFactory(this);
+            => (await TableRepository<TEntity, long>.GetAsync(this, id, columns))?.SetDataBaseFactory(this);
 
         public virtual async Task<TEntity> GetByIdAsync<TEntity>(string uid) where TEntity : TableRepository<TEntity, long>, new()
-            => (await TableRepository<TEntity, long>.GetByIdAsync(this, uid).ConfigureAwait(false))?.SetDataBaseFactory(this);
+            => (await TableRepository<TEntity, long>.GetByIdAsync(this, uid))?.SetDataBaseFactory(this);
 
         public virtual async Task<TEntity> GetByIdAsync<TEntity>(string uid, IEnumerable<string> columns) where TEntity : TableRepository<TEntity, long>, new()
-            => (await TableRepository<TEntity, long>.GetByIdAsync(this, uid, columns).ConfigureAwait(false))?.SetDataBaseFactory(this);
+            => (await TableRepository<TEntity, long>.GetByIdAsync(this, uid, columns))?.SetDataBaseFactory(this);
 
         public virtual async Task<TEntity> GetByAsync<TEntity>(string sql, params object[] args) where TEntity : TableRepository<TEntity, long>, new()
-            => (await TableRepository<TEntity, long>.GetByAsync(this, sql, args).ConfigureAwait(false))?.SetDataBaseFactory(this);
+            => (await TableRepository<TEntity, long>.GetByAsync(this, sql, args))?.SetDataBaseFactory(this);
 
         #endregion Query - get single record
 
@@ -473,19 +473,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
 
         public virtual async Task<IEnumerable<TEntity>> FindAsync<TEntity>() where TEntity : TableRepository<TEntity, long>, new()
-            => await TableRepository<TEntity, long>.FindAsync(this).ConfigureAwait(false);
+            => await TableRepository<TEntity, long>.FindAsync(this);
 
         public virtual async Task<IEnumerable<TEntity>> FindByOrderAsync<TEntity>(params string[] orderBy) where TEntity : TableRepository<TEntity, long>, new()
-            => await TableRepository<TEntity, long>.FindByOrderAsync(this, orderBy).ConfigureAwait(false);
+            => await TableRepository<TEntity, long>.FindByOrderAsync(this, orderBy);
 
         public virtual async Task<IEnumerable<TEntity>> FindAsync<TEntity>(IEnumerable<string> columns, params string[] orderBy) where TEntity : TableRepository<TEntity, long>, new()
-            => await TableRepository<TEntity, long>.FindAsync(this, columns, orderBy).ConfigureAwait(false);
+            => await TableRepository<TEntity, long>.FindAsync(this, columns, orderBy);
 
         public virtual async Task<IEnumerable<TEntity>> FindAsync<TEntity>(string sql, params object[] args) where TEntity : TableRepository<TEntity, long>, new()
-            => await TableRepository<TEntity, long>.FindAsync(this, sql, args).ConfigureAwait(false);
+            => await TableRepository<TEntity, long>.FindAsync(this, sql, args);
 
         public virtual async Task<IEnumerable<TEntity>> FindAsync<TEntity>(string sql, IEnumerable<string> columns, params object[] args) where TEntity : TableRepository<TEntity, long>, new()
-            => await TableRepository<TEntity, long>.FindAsync(this, sql, columns, args).ConfigureAwait(false);
+            => await TableRepository<TEntity, long>.FindAsync(this, sql, columns, args);
 
         #endregion
 
@@ -501,11 +501,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public virtual async Task<TEntity> GetFromCacheAsync<TEntity>(long id, bool reNew = false) where TEntity : TableRepository<TEntity, long>, new()
             => await Cache.FromCache<Task<TEntity>>($"{typeof(TEntity).ToString()}:RowNum:{id}:async",
-                async () => await GetAsync<TEntity>(id).ConfigureAwait(false), reNew).ConfigureAwait(false);
+                async () => await GetAsync<TEntity>(id), reNew);
 
         public virtual async Task<TEntity> GetFromCacheByIdAsync<TEntity>(string uid, bool reNew = false) where TEntity : TableRepository<TEntity, long>, new()
             => await Cache.FromCache<Task<TEntity>>($"{typeof(TEntity).ToString()}:Id:{uid}:async",
-                async () => await GetByIdAsync<TEntity>(uid).ConfigureAwait(false), reNew).ConfigureAwait(false);
+                async () => await GetByIdAsync<TEntity>(uid), reNew);
 
         #endregion Query - get single record
 

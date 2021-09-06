@@ -87,7 +87,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // set Add mode and clear data
             Add();
 
-            if (!(await ValidateAsync(dto).ConfigureAwait(false)))
+            if (!(await ValidateAsync(dto)))
                 return false;
 
             // load data from dto
@@ -97,10 +97,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //LoadInvoice(dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.Value, dto.InvoiceTransaction.MasterAccountNum.Value);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync().ConfigureAwait(false);
+            return await SaveDataAsync();
         }
 
         public virtual bool Add(InvoiceTransactionPayload payload)
@@ -138,10 +138,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // set Add mode and clear data
             Add();
 
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.InvoiceTransaction).ConfigureAwait(false)))
+            if (!(await ValidateAsync(payload.InvoiceTransaction)))
                 return false;
 
             // load data from dto
@@ -151,10 +151,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //LoadInvoice(payload.InvoiceTransaction.InvoiceTransaction.InvoiceNumber, payload.ProfileNum, payload.MasterAccountNum);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync().ConfigureAwait(false);
+            return await SaveDataAsync();
         }
 
         /// <summary>
@@ -196,11 +196,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             //set edit mode before validate
             Edit();
-            if (!(await ValidateAsync(dto).ConfigureAwait(false)))
+            if (!(await ValidateAsync(dto)))
                 return false;
 
             // load data 
-            await GetDataAsync(dto.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
+            await GetDataAsync(dto.InvoiceTransaction.RowNum.ToLong());
 
             //load invoice data.
             //LoadInvoice(dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.Value, dto.InvoiceTransaction.MasterAccountNum.Value);
@@ -209,7 +209,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             FromDto(dto);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
             return await SaveDataAsync();
@@ -258,14 +258,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             //set edit mode before validate
             Edit();
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.InvoiceTransaction).ConfigureAwait(false)))
+            if (!(await ValidateAsync(payload.InvoiceTransaction)))
                 return false;
 
             // load data 
-            await GetDataAsync(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong()).ConfigureAwait(false);
+            await GetDataAsync(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong());
 
             //load invoice data.
             //LoadInvoice(payload.InvoiceTransaction.InvoiceTransaction.InvoiceNumber, payload.ProfileNum, payload.MasterAccountNum);
@@ -274,7 +274,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             FromDto(payload.InvoiceTransaction);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
             return await SaveDataAsync();
@@ -285,12 +285,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             List();
             if (string.IsNullOrEmpty(invoiceNumber)) return null;
-            return await _data.GetDataListAsync(invoiceNumber, masterAccountNum, profileNum, transType, transNum).ConfigureAwait(false);
+            return await _data.GetDataListAsync(invoiceNumber, masterAccountNum, profileNum, transType, transNum);
         }
         protected virtual async Task<List<InvoiceTransactionDataDto>> GetDtoListAsync(int masterAccountNum, int profileNum, string invoiceNumber, TransTypeEnum transType, int? transNum = null)
         {
             if (string.IsNullOrEmpty(invoiceNumber)) return null;
-            var dataList = await GetDataListAsync(masterAccountNum, profileNum, invoiceNumber, transType, transNum).ConfigureAwait(false);
+            var dataList = await GetDataListAsync(masterAccountNum, profileNum, invoiceNumber, transType, transNum);
             if (dataList == null || dataList.Count == 0) return null;
             var dtoList = new List<InvoiceTransactionDataDto>();
             foreach (var dataItem in dataList)

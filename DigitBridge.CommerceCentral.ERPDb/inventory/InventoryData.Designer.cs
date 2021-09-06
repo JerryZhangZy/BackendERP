@@ -332,36 +332,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedSave(ProductBasicTable))
 			{
 				ProductBasic.SetDataBaseFactory(dbFactory); 
-				if (!(await ProductBasic.SaveAsync().ConfigureAwait(false))) return false; 
+				if (!(await ProductBasic.SaveAsync())) return false; 
 			}
 			 if (NeedSave(ProductExtTable))
 			{
 				if (ProductExt != null) 
-					await ProductExt.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await ProductExt.SetDataBaseFactory(dbFactory).SaveAsync(); 
 			}
 
 			 if (NeedSave(ProductExtAttributesTable))
 			{
 				if (ProductExtAttributes != null) 
-					await ProductExtAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await ProductExtAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
 			}
 
 			 if (NeedSave(InventoryTable))
 			{
 				if (Inventory != null) 
-					await Inventory.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await Inventory.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delInventory = _InventoryDeleted;
 				if (delInventory != null)
-					await delInventory.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delInventory.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			 if (NeedSave(InventoryAttributesTable))
 			{
 				if (InventoryAttributes != null) 
-					await InventoryAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await InventoryAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delInventoryAttributes = InventoryAttributesDeleted;
 				if (delInventoryAttributes != null)
-					await delInventoryAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delInventoryAttributes.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			if (_OnSave != null)
@@ -387,27 +387,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedDelete(ProductBasicTable))
 			{
 			ProductBasic.SetDataBaseFactory(dbFactory); 
-			if ((await ProductBasic.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			if ((await ProductBasic.DeleteAsync()) <= 0) return false; 
 			}
 			 if (NeedDelete(ProductExtTable))
 			{
 				if (ProductExt != null) 
-					await ProductExt.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await ProductExt.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(ProductExtAttributesTable))
 			{
 				if (ProductExtAttributes != null) 
-					await ProductExtAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await ProductExtAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(InventoryTable))
 			{
 				if (Inventory != null) 
-					await Inventory.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await Inventory.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(InventoryAttributesTable))
 			{
 				if (InventoryAttributes != null) 
-					await InventoryAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await InventoryAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			if (_OnDelete != null)
 			{

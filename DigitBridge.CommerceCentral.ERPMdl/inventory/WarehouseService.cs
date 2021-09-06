@@ -69,17 +69,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // set Add mode and clear data
             Add();
 
-            if (!(await ValidateAsync(dto).ConfigureAwait(false)))
+            if (!(await ValidateAsync(dto)))
                 return false;
 
             // load data from dto
             FromDto(dto);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync().ConfigureAwait(false);
+            return await SaveDataAsync();
         }
 
         public virtual bool Add(WarehousePayload payload)
@@ -114,20 +114,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // set Add mode and clear data
             Add();
 
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.Warehouse).ConfigureAwait(false)))
+            if (!(await ValidateAsync(payload.Warehouse)))
                 return false;
 
             // load data from dto
             FromDto(payload.Warehouse);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync().ConfigureAwait(false);
+            return await SaveDataAsync();
         }
 
         /// <summary>
@@ -166,17 +166,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             //set edit mode before validate
             Edit();
-            if (!(await ValidateAsync(dto).ConfigureAwait(false)))
+            if (!(await ValidateAsync(dto)))
                 return false;
 
             // load data 
-            await GetDataAsync(dto.DistributionCenter.RowNum.ToLong()).ConfigureAwait(false);
+            await GetDataAsync(dto.DistributionCenter.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
             return await SaveDataAsync();
@@ -222,20 +222,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             //set edit mode before validate
             Edit();
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.Warehouse).ConfigureAwait(false)))
+            if (!(await ValidateAsync(payload.Warehouse)))
                 return false;
 
             // load data 
-            await GetDataAsync(payload.Warehouse.DistributionCenter.RowNum.ToLong()).ConfigureAwait(false);
+            await GetDataAsync(payload.Warehouse.DistributionCenter.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.Warehouse);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
             return await SaveDataAsync();
@@ -246,7 +246,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(warehouseCode))
                 return false;
             Delete();
-            if (!(await ValidateAccountAsync(payload, warehouseCode).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload, warehouseCode)))
                 return false;
             long rowNum = 0;
             using (var tx = new ScopedTransaction(dbFactory))

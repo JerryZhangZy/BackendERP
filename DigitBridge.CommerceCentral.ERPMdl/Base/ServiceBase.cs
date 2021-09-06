@@ -295,7 +295,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             foreach (var validator in Validators)
             {
-                if (!(await validator.ValidateAsync(Data, ProcessMode).ConfigureAwait(false)))
+                if (!(await validator.ValidateAsync(Data, ProcessMode)))
                     return false;
             }
             return true;
@@ -416,7 +416,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 NewData();
-            return await _data.GetAsync(RowNum).ConfigureAwait(false);
+            return await _data.GetAsync(RowNum);
         }
         public virtual async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
         {
@@ -434,7 +434,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 NewData();
-            return await _data.GetByIdAsync(id).ConfigureAwait(false);
+            return await _data.GetByIdAsync(id);
         }
 
         public virtual async Task<bool> SaveDataAsync()
@@ -445,7 +445,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             //PrepareData();
             Calculate();
-            return await _data.SaveAsync().ConfigureAwait(false);
+            return await _data.SaveAsync();
         }
 
         public virtual async Task<bool> DeleteDataAsync()
@@ -454,7 +454,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 return false;
-            return await _data.DeleteAsync().ConfigureAwait(false);
+            return await _data.DeleteAsync();
         }
 
         #endregion CRUD Methods
@@ -507,7 +507,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!Edit())
                 return false;
-            return await GetDataAsync(RowNum).ConfigureAwait(false);
+            return await GetDataAsync(RowNum);
         }
         /// <summary>
         /// Set ProcessMode to Edit and load data by Unique Id to edit
@@ -516,7 +516,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!Edit())
                 return false;
-            return await GetDataByIdAsync(id).ConfigureAwait(false);
+            return await GetDataByIdAsync(id);
         }
 
         #endregion Service Method - Edit process
@@ -547,7 +547,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!List())
                 return false;
-            return await GetDataAsync(RowNum).ConfigureAwait(false);
+            return await GetDataAsync(RowNum);
         }
         /// <summary>
         /// Set ProcessMode to List and load data by Unique Id to edit
@@ -556,7 +556,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!List())
                 return false;
-            return await GetDataByIdAsync(id).ConfigureAwait(false);
+            return await GetDataByIdAsync(id);
         }
         #endregion Service Method - List process
 
@@ -599,9 +599,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!Delete())
                 return false;
-            if (!(await GetDataAsync(RowNum).ConfigureAwait(false)))
+            if (!(await GetDataAsync(RowNum)))
                 return false;
-            return await DeleteDataAsync().ConfigureAwait(false);
+            return await DeleteDataAsync();
         }
         /// <summary>
         /// Set ProcessMode to Delete and delete data by Unique Id
@@ -610,9 +610,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!Delete())
                 return false;
-            if (!(await GetDataByIdAsync(id).ConfigureAwait(false)))
+            if (!(await GetDataByIdAsync(id)))
                 return false;
-            return await DeleteDataAsync().ConfigureAwait(false);
+            return await DeleteDataAsync();
         }
 
         #endregion Service Method - Delete process

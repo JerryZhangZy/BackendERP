@@ -332,36 +332,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedSave(InvoiceHeaderTable))
 			{
 				InvoiceHeader.SetDataBaseFactory(dbFactory); 
-				if (!(await InvoiceHeader.SaveAsync().ConfigureAwait(false))) return false; 
+				if (!(await InvoiceHeader.SaveAsync())) return false; 
 			}
 			 if (NeedSave(InvoiceHeaderInfoTable))
 			{
 				if (InvoiceHeaderInfo != null) 
-					await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync(); 
 			}
 
 			 if (NeedSave(InvoiceHeaderAttributesTable))
 			{
 				if (InvoiceHeaderAttributes != null) 
-					await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
 			}
 
 			 if (NeedSave(InvoiceItemsTable))
 			{
 				if (InvoiceItems != null) 
-					await InvoiceItems.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await InvoiceItems.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delInvoiceItems = _InvoiceItemsDeleted;
 				if (delInvoiceItems != null)
-					await delInvoiceItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delInvoiceItems.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			 if (NeedSave(InvoiceItemsAttributesTable))
 			{
 				if (InvoiceItemsAttributes != null) 
-					await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delInvoiceItemsAttributes = InvoiceItemsAttributesDeleted;
 				if (delInvoiceItemsAttributes != null)
-					await delInvoiceItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delInvoiceItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			if (_OnSave != null)
@@ -387,27 +387,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedDelete(InvoiceHeaderTable))
 			{
 			InvoiceHeader.SetDataBaseFactory(dbFactory); 
-			if ((await InvoiceHeader.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			if ((await InvoiceHeader.DeleteAsync()) <= 0) return false; 
 			}
 			 if (NeedDelete(InvoiceHeaderInfoTable))
 			{
 				if (InvoiceHeaderInfo != null) 
-					await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await InvoiceHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(InvoiceHeaderAttributesTable))
 			{
 				if (InvoiceHeaderAttributes != null) 
-					await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await InvoiceHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(InvoiceItemsTable))
 			{
 				if (InvoiceItems != null) 
-					await InvoiceItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await InvoiceItems.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(InvoiceItemsAttributesTable))
 			{
 				if (InvoiceItemsAttributes != null) 
-					await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await InvoiceItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			if (_OnDelete != null)
 			{

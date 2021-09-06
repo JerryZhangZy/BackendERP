@@ -224,7 +224,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedSave(DistributionCenterTable))
 			{
 				DistributionCenter.SetDataBaseFactory(dbFactory); 
-				if (!(await DistributionCenter.SaveAsync().ConfigureAwait(false))) return false; 
+				if (!(await DistributionCenter.SaveAsync())) return false; 
 			}
 			if (_OnSave != null)
 			{
@@ -249,7 +249,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedDelete(DistributionCenterTable))
 			{
 			DistributionCenter.SetDataBaseFactory(dbFactory); 
-			if ((await DistributionCenter.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			if ((await DistributionCenter.DeleteAsync()) <= 0) return false; 
 			}
 			if (_OnDelete != null)
 			{
