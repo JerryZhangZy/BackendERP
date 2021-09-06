@@ -109,32 +109,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return SaveData();
-        }
-
-        public bool GetPurchaseOrderByPoNum(PurchaseOrderPayload payload, string ponum)
-        {
-            if (string.IsNullOrEmpty(ponum))
-                return false;
-            long rowNum = 0;
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                rowNum = PurchaseOrderHelper.GetRowNumByPoNum(ponum, payload.MasterAccountNum, payload.ProfileNum);
-            }
-            return GetData(rowNum);
-        }
-
-        public async Task<bool> GetPurchaseOrderByPoNumAsync(PurchaseOrderPayload payload, string ponum)
-        {
-            if (string.IsNullOrEmpty(ponum))
-                return false;
-            long rowNum = 0;
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                rowNum = await PurchaseOrderHelper.GetRowNumByPoNumAsync(ponum, payload.MasterAccountNum, payload.ProfileNum);
-            }
-            return await GetDataAsync(rowNum);
-        }
-
+        } 
         public virtual async Task<bool> AddAsync(PurchaseOrderPayload payload)
         {
             if (payload is null || !payload.HasPurchaseOrder)
@@ -161,63 +136,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync().ConfigureAwait(false);
         }
 
-        public PurchaseOrderPayload GetPurchaseOrderByPoNumArray(PurchaseOrderPayload payload)
-        {
-            if (!payload.HasPoNums)
-                return payload;
-            var list = new List<PurchaseOrderDataDto>();
-            var msglist = new List<MessageClass>();
-            var rowNumList = new List<long>();
-            using (var trx = new ScopedTransaction(dbFactory))
-            {
-                rowNumList = PurchaseOrderHelper.GetRowNumsByPoNums(payload.PoNums, payload.MasterAccountNum, payload.ProfileNum);
-            }
-            foreach (var rowNum in rowNumList)
-            {
-                if (GetData(rowNum))
-                    list.Add(ToDto());
-            }
-            payload.PurchaseOrders = list;
-            payload.Messages = msglist;
-            return payload;
-        }
-
-        public async Task<PurchaseOrderPayload> GetPurchaseOrderByPoNumArrayAsync(PurchaseOrderPayload payload)
-        {
-            if (!payload.HasPoNums)
-                return payload;
-            var list = new List<PurchaseOrderDataDto>();
-            var msglist = new List<MessageClass>();
-            var rowNumList = new List<long>();
-            using (var trx = new ScopedTransaction(dbFactory))
-            {
-                rowNumList = await PurchaseOrderHelper.GetRowNumsByPoNumsAsync(payload.PoNums, payload.MasterAccountNum, payload.ProfileNum);
-            }
-            foreach (var rowNum in rowNumList)
-            {
-                if (await GetDataAsync(rowNum))
-                    list.Add(ToDto());
-            }
-            payload.PurchaseOrders = list;
-            payload.Messages = msglist;
-            return payload;
-        }
-
-        public async Task<bool> DeleteByPoNumAsync(PurchaseOrderPayload payload, string ponum)
-        {
-            if (string.IsNullOrEmpty(ponum))
-                return false;
-            Delete();
-            if (!(await ValidateAccountAsync(payload, ponum).ConfigureAwait(false)))
-                return false;
-            long rowNum = 0;
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                rowNum = await PurchaseOrderHelper.GetRowNumByPoNumAsync(ponum, payload.MasterAccountNum, payload.ProfileNum);
-            }
-            var success = await GetDataAsync(rowNum);
-            return success && (await DeleteDataAsync());
-        }
+         
 
         /// <summary>
         /// Update data from Dto object.
@@ -336,6 +255,82 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return await SaveDataAsync();
+        }
+
+
+        /// <summary>
+        ///  get data by number
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="poNum"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> GetDataAsync(PurchaseOrderPayload payload, string poNum)
+        {
+            return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, poNum);
+        }
+
+        /// <summary>
+        /// get data by number
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="poNum"></param>
+        /// <returns></returns>
+        public virtual bool GetData(PurchaseOrderPayload payload, string poNum)
+        {
+            return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, poNum);
+        }
+
+        /// <summary>
+        /// Delete salesorder by order number
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByNumberAsync(PurchaseOrderPayload payload, string poNum)
+        {
+            if (string.IsNullOrEmpty(poNum))
+                return false;
+            //set delete mode
+            Delete();
+            //load data
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, poNum);
+            success = success && DeleteData();
+            return success;
+        }
+
+        /// <summary>
+        /// Delete purchase order by order number
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual bool DeleteByNumber(PurchaseOrderPayload payload, string poNum)
+        {
+            if (string.IsNullOrEmpty(poNum))
+                return false;
+            //set delete mode
+            Delete();
+            //load data
+            var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, poNum);
+            success = success && DeleteData();
+            return success;
+        }
+        public virtual async Task GetListByOrderNumbersAsync(PurchaseOrderPayload payload)
+        {
+            if (payload is null || !payload.HasPoNums)
+            {
+                AddError("PoNums is required.");
+                payload.Messages = this.Messages;
+                payload.Success = false;
+            }
+            
+            var result = new List<PurchaseOrderDataDto>();
+            foreach (var orderNumber in payload.PoNums)
+            {
+                if (!(await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber)))
+                    continue;
+                result.Add(this.ToDto());
+                this.DetachData(this.Data);
+            }
+            payload.PurchaseOrders = result;
         }
 
     }

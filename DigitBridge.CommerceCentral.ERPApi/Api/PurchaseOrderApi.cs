@@ -19,79 +19,79 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
+    /// <summary>
+    /// Purchase Order Api
+    /// </summary>
     [ApiFilter(typeof(PurchaseOrderApi))]
     public static class PurchaseOrderApi
     {
+        /// <summary>
+        /// Get one purchase order
+        /// </summary>
+        /// <param name="req">HttpRequest</param>
+        /// <param name="poNum">Purchase order number.</param>
+        /// <returns></returns>
         [FunctionName(nameof(GetPurchaseOrder))]
-        [OpenApiOperation(operationId: "GetPurchaseOrder", tags: new[] { "PurchaseOrders" })]
+        [OpenApiOperation(operationId: "GetPurchaseOrder", tags: new[] { "PurchaseOrders" }, Summary = "Get one purchase order")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "poNum", Description = "PoNum", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "Purchase order number.", Description = "Purchase order number.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadGetSingle), Description = "The OK response")]
         public static async Task<JsonNetResponse<PurchaseOrderPayload>> GetPurchaseOrder(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "purchaseOrders/{poNum}")] HttpRequest req,
             string poNum)
         {
             var payload = await req.GetParameters<PurchaseOrderPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new PurchaseOrderService(dbFactory);
-            var spilterIndex = poNum.IndexOf("-");
-            var ponum = poNum;
-            if (spilterIndex > 0 && ponum.StartsWith(payload.ProfileNum.ToString()))
-            {
-                ponum = ponum.Substring(spilterIndex + 1);
-            }
-            payload.PoNums.Add(ponum);
-            if (await svc.GetPurchaseOrderByPoNumAsync(payload, ponum))
-                payload.PurchaseOrder = svc.ToDto();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new PurchaseOrderService(dataBaseFactory);
+            payload.Success = await srv.GetDataAsync(payload, poNum);
+            if (payload.Success)
+                payload.PurchaseOrder = srv.ToDto(srv.Data);
             else
-                payload.Messages = svc.Messages;
-
+                payload.Messages = srv.Messages;
             return new JsonNetResponse<PurchaseOrderPayload>(payload);
         }
-        [FunctionName(nameof(GetMultiPurchaseOrder))]
-        [OpenApiOperation(operationId: "GetMultiPurchaseOrder", tags: new[] { "PurchaseOrders" })]
+        /// <summary>
+        /// Get purchase order list by poNumbers
+        /// </summary>
+        /// <param name="req"></param> 
+        [FunctionName(nameof(GetPurchaseOrderList))]
+        [OpenApiOperation(operationId: "GetPurchaseOrderList", tags: new[] { "PurchaseOrders" }, Summary = "Get purchase order list")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "poNums", In = ParameterLocation.Query, Required = true, Type = typeof(List<string>), Summary = "PoNums", Description = "PoNum Array", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadGetMultiple), Description = "The OK response")]
-        public static async Task<JsonNetResponse<PurchaseOrderPayload>> GetMultiPurchaseOrder(
+        [OpenApiParameter(name: "poNums", In = ParameterLocation.Query, Required = true, Type = typeof(IList<string>), Summary = "Multiple purchase order number.", Description = "Array of purchase order numbers.", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadGetMultiple), Description = "Result is List<PurchaseOrderDataDto>")]
+        public static async Task<JsonNetResponse<PurchaseOrderPayload>> GetPurchaseOrderList(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "purchaseOrders")] HttpRequest req)
         {
             var payload = await req.GetParameters<PurchaseOrderPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new PurchaseOrderService(dbFactory);
-            payload =await svc.GetPurchaseOrderByPoNumArrayAsync(payload);
-
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new PurchaseOrderService(dataBaseFactory); 
+            await srv.GetListByOrderNumbersAsync(payload);
+            payload.Messages = srv.Messages;
             return new JsonNetResponse<PurchaseOrderPayload>(payload);
         }
 
+
         [FunctionName(nameof(DeletePurchaseOrder))]
-        [OpenApiOperation(operationId: "DeletePurchaseOrder", tags: new[] { "PurchaseOrders" })]
+        [OpenApiOperation(operationId: "DeletePurchaseOrder", tags: new[] { "PurchaseOrders" }, Summary = "Delete one purchase order")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "PoNum", Description = "PoNum = ProfileNumber-PoNum ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "Purchase order number.", Description = "Purchase order number.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadDelete))]
         public static async Task<JsonNetResponse<PurchaseOrderPayload>> DeletePurchaseOrder(
             [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "purchaseOrders/{poNum}")] HttpRequest req,
             string poNum)
         {
             var payload = await req.GetParameters<PurchaseOrderPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var spilterIndex = poNum.IndexOf("-");
-            var ponum = poNum;
-            if (spilterIndex > 0 && ponum.StartsWith(payload.ProfileNum.ToString()))
-            {
-                ponum = ponum.Substring(spilterIndex + 1);
-            }
-            var svc = new PurchaseOrderService(dbFactory);
-            if (await svc.DeleteByPoNumAsync(payload, ponum))
-                payload.PurchaseOrder = svc.ToDto();
-            else
-                payload.Messages = svc.Messages;
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new PurchaseOrderService(dataBaseFactory);
+            payload.Success = await srv.DeleteByNumberAsync(payload, poNum);
+            if (!payload.Success)
+                payload.Messages = srv.Messages;
             return new JsonNetResponse<PurchaseOrderPayload>(payload);
         }
         [FunctionName(nameof(AddPurchaseOrder))]

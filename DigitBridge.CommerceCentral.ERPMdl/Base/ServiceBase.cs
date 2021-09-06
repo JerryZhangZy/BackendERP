@@ -379,7 +379,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             ClearData();
             var success = _data.GetByNumber(masterAccountNum, profileNum, number);
             if (!success)
-                AddError("Data not found.");
+                AddError($"Data not found for {number}.");
             return success;
         }
         public virtual bool GetDataById(string id)
@@ -425,7 +425,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             ClearData();
             var success = await _data.GetByNumberAsync(masterAccountNum, profileNum, number);
             if (!success)
-                AddError("Data not found.");
+                AddError($"Data not found for {number}.");
             return success;
         }
         public virtual async Task<bool> GetDataByIdAsync(string id)
