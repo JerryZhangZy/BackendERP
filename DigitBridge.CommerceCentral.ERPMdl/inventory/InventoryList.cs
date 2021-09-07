@@ -158,12 +158,14 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
-                using var trs = new ScopedTransaction(dbFactory);
-                rowNumList = await SqlQuery.ExecuteAsync(
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    rowNumList = await SqlQuery.ExecuteAsync(
                     sql,
                     (long rowNum) => rowNum,
                     GetSqlParameters().ToArray()
                 );
+                }
             }
             catch (Exception ex)
             {
@@ -188,12 +190,14 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
-                using var trs = new ScopedTransaction(dbFactory);
-                rowNumList = SqlQuery.Execute(
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    rowNumList = SqlQuery.Execute(
                     sql,
                     (long rowNum) => rowNum,
                     GetSqlParameters().ToArray()
                 );
+                }
             }
             catch (Exception ex)
             {
