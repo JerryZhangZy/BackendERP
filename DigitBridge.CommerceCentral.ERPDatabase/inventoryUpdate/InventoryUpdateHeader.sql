@@ -8,10 +8,14 @@
     [InventoryUpdateUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --InventoryUpdate uuid. <br> Display: false, Editable: false.
 	[BatchNumber] VARCHAR(50) NOT NULL DEFAULT '', --Readable InventoryUpdate number, unique in same database and profile. <br> Parameter should pass ProfileNum-BatchNumber. <br> Title: InventoryUpdate Number, Display: true, Editable: true
 
-    [InventoryUpdateType] INT NOT NULL DEFAULT 0, --InventoryUpdate type. <br> Title: Type, Display: true, Editable: true
+    [InventoryUpdateType] INT NOT NULL DEFAULT 0, --InventoryUpdate type (Adjust/Damage/Cycle Count/Physical Count). <br> Title: Type, Display: true, Editable: true
     [InventoryUpdateStatus] INT NOT NULL DEFAULT 0, --InventoryUpdate status. <br> Title: Status, Display: true, Editable: true
 	[UpdateDate] DATE NOT NULL, --InventoryUpdate date. <br> Title: Date, Display: true, Editable: true
 	[UpdateTime] TIME NOT NULL, --InventoryUpdate time. <br> Title: Time, Display: true, Editable: true
+	[Processor] VARCHAR(50) NOT NULL DEFAULT '', --InventoryUpdate processor account. <br> Title: Processor, Display: true, Editable: true
+
+	[WarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Warehouse uuid, warehouse. <br> Display: false, Editable: false
+	[WarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable warehouse code, warehouse to update inventory. <br> Title: Warehouse Code, Display: true, Editable: true
 
 	[CustomerUuid] VARCHAR(50) NOT NULL, --Customer uuid, load from customer data. <br> Display: false, Editable: false
 	[CustomerCode] VARCHAR(50) NOT NULL DEFAULT '', --Customer number. use DatabaseNum-CustomerCode too load customer data. <br> Title: Customer Number, Display: true, Editable: true
