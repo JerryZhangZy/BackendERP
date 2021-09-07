@@ -121,8 +121,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             //TODO: add set default summary data logic
-            //This is generated sample code
-            var now = DateTime.Now;
+            //This is generated sample code 
             var sum = data.SalesOrderHeader;
             if (sum.OrderTime.IsZero()) sum.OrderTime = now.TimeOfDay;
             if (sum.OrderDate.IsZero())
@@ -153,6 +152,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 data.SalesOrderHeader.CustomerUuid = customerData.Customer.CustomerUuid;
                 data.SalesOrderHeader.CustomerName = customerData.Customer.CustomerName;
+                if (string.IsNullOrEmpty(data.SalesOrderHeader.Currency))
+                    data.SalesOrderHeader.Currency = customerData.Customer.Currency;
             }
             return true;
         }
@@ -190,6 +191,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //Set SKU info
             var inventoryData = GetInventoryData(data, item.SKU);
+            // currency priority: user input > customer > Sku
+            if (string.IsNullOrEmpty(item.Currency))
+                item.Currency = data.SalesOrderHeader.Currency;
             if (inventoryData != null)
             {
                 item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
@@ -199,8 +203,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.WarehouseUuid = inventory.WarehouseUuid;
                 item.LotNum = inventory.LotNum;
                 item.UOM = inventory.UOM;
-                item.Currency = inventory.Currency;
+                if (string.IsNullOrEmpty(item.Currency))
+                    item.Currency = inventory.Currency;
             }
+
 
             //var setting = new ERPSetting();
             //var sum = data.SalesOrderHeader;
@@ -216,8 +222,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             ////SKU 
             ////Description
-            ////Notes 
-            ////Currency
+            ////Notes  
 
             return true;
         }
@@ -235,10 +240,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             //TODO: add calculate summary object logic
-            /* This is generated sample code
+            //This is generated sample code
 
             var setting = new ERPSetting();
-            var sum = data.InvoiceHeader;
+            var sum = data.SalesOrderHeader;
 
             sum.ShippingAmount = sum.ShippingAmount.ToAmount();
             sum.MiscAmount = sum.MiscAmount.ToAmount();
@@ -246,12 +251,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // if exist DiscountRate, calculate discount amount, otherwise use entry discount amount
             if (!sum.DiscountRate.IsZero())
-                sum.DiscountAmount = (sum.SubTotalAmount * sum.DiscountRate.ToRate()).ToAmount();
+                sum.DiscountAmount = (sum.SubTotalAmount * sum.DiscountRate.ToRate() / 100).ToAmount();
             else
                 sum.DiscountRate = 0;
 
+            sum.DiscountAmount = sum.DiscountAmount.ToAmount();
+            //manual input max discount amount is SubTotalAmount
+            if (sum.DiscountAmount > sum.SubTotalAmount)
+                sum.DiscountAmount = sum.SubTotalAmount;
             // tax calculate should deduct discount from taxable amount
-            sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
+            //sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
+
+            var discountRate = sum.SubTotalAmount > 0 ? (sum.DiscountAmount / sum.SubTotalAmount) : 0;
+            sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate;
+            sum.TaxAmount = sum.TaxAmount.ToAmount();
+
 
             if (setting.TaxForShippingAndHandling)
             {
@@ -261,7 +275,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             sum.SalesAmount = (sum.SubTotalAmount - sum.DiscountAmount).ToAmount();
-            sum.TotalAmount =(
+            sum.TotalAmount = (
                 sum.SalesAmount +
                 sum.TaxAmount +
                 sum.ShippingAmount +
@@ -271,9 +285,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             sum.Balance = (sum.TotalAmount - sum.PaidAmount - sum.CreditAmount).ToAmount();
 
-            sum.DueDate = sum.InvoiceDate.AddDays(sum.TermsDays);
+            //sum.DueDate = sum.InvoiceDate.AddDays(sum.TermsDays);
 
-            */
             return true;
         }
 
@@ -282,7 +295,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null)
                 return false;
             //TODO: add calculate summary object logic
-            /* This is generated sample code
+            //This is generated sample code
 
             var sum = data.SalesOrderHeader;
             sum.SubTotalAmount = 0;
@@ -291,14 +304,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.UnitCost = 0;
             sum.AvgCost = 0;
             sum.LotCost = 0;
+            sum.TaxRate = sum.TaxRate.ToRate();
 
-            foreach (var item in data.InvoiceItems)
+            foreach (var item in data.SalesOrderItems)
             {
                 if (item is null || item.IsEmpty)
                     continue;
-                var inv = GetInventoryData(item.ProductUuid);
+                //var inv = GetInventoryData(data,item.ProductUuid);
 
-                SetDefault(item, data, processingMode);
+                //SetDefault(item, data, processingMode);//TODO where to call SetDefault
                 CalculateDetail(item, data, processingMode);
                 if (item.IsAr)
                 {
@@ -311,20 +325,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 sum.LotCost += item.LotCost;
             }
 
-            */
             return true;
         }
 
 
         //TODO: add set default for detail line logic
-        /* This is generated sample code
-        protected virtual bool CalculateDetail(InvoiceItems item, SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        //This is generated sample code
+        protected virtual bool CalculateDetail(SalesOrderItems item, SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;
 
             var setting = new ERPSetting();
-            var sum = data.InvoiceHeader;
+            var sum = data.SalesOrderHeader;
             //var prod = data.GetCache<ProductBasic>(ProductId);
             //var inv = data.GetCache<Inventory>(InventoryId);
             //var invCost = new ItemCostClass(inv);
@@ -337,30 +350,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.OrderQty = item.OrderQty.ToQty();
             item.ShipQty = item.ShipQty.ToQty();
             item.CancelledQty = item.CancelledQty.ToQty();
+            item.DiscountRate = item.DiscountRate.ToRate();
+            //TODO check this logic
+            //item.PackType = string.Empty;
+            //if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
+            //    item.PackQty = 1;
 
-            item.PackType = string.Empty;
-            if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
-                item.PackQty = 1;
-
-            if (item.PackQty > 1)
-            {
-                item.OrderQty = item.OrderPack * item.PackQty;
-                item.ShipQty = item.ShipPack * item.PackQty;
-                item.CancelledQty = item.CancelledPack * item.PackQty;
-            }
-            else
-            {
-                item.OrderPack = item.OrderQty;
-                item.ShipPack = item.ShipQty;
-                item.CancelledPack = item.CancelledQty;
-            }
+            //if (item.PackQty > 1)
+            //{
+            //    item.OrderQty = item.OrderPack * item.PackQty;
+            //    item.ShipQty = item.ShipPack * item.PackQty;
+            //    item.CancelledQty = item.CancelledPack * item.PackQty;
+            //}
+            //else
+            //{
+            //    item.OrderPack = item.OrderQty;
+            //    item.ShipPack = item.ShipQty;
+            //    item.CancelledPack = item.CancelledQty;
+            //}
 
             //PriceRule
             // if exist DiscountRate, calculate after discount unit price
             if (!item.DiscountRate.IsZero())
             {
-                item.DiscountPrice = (item.Price * (item.DiscountRate.ToRate() / 100)).ToPrice();
+                item.DiscountPrice = (item.Price * item.DiscountRate.ToRate()).ToPrice();
                 item.ExtAmount = (item.DiscountPrice * item.ShipQty).ToAmount();
+                //DiscountAmount=Totalprice-ExtAmount
                 item.DiscountAmount = (item.Price * item.ShipQty).ToAmount() - item.ExtAmount;
             }
             else
@@ -390,7 +405,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.MiscTaxAmount = (item.MiscAmount * item.TaxRate).ToAmount();
             }
 
-            item.ItemTotalAmount =(
+            item.ItemTotalAmount = (
                 item.ExtAmount +
                 item.TaxAmount +
                 item.ShippingAmount +
@@ -418,7 +433,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return true;
         }
-        */
+
 
         #region message
         [XmlIgnore, JsonIgnore]
