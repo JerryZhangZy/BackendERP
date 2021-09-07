@@ -46,7 +46,7 @@ namespace <#= NamespaceService #>
             get
             {
                 if (<#= privateProccessName #>Service is null)
-                    <#= privateProccessName #>Service = new <#= processName #>Service();
+                    <#= privateProccessName #>Service = new <#= processName #>Service(dbFactory);
                 return <#= privateProccessName #>Service;
             }
         }
