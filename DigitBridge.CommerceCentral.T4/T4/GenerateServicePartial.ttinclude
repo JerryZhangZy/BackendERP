@@ -69,17 +69,17 @@ namespace <#= NamespaceService #>
             // set Add mode and clear data
             Add();
 
-            if (!(await ValidateAsync(dto).ConfigureAwait(false)))
+            if (!(await ValidateAsync(dto)))
                 return false;
 
             // load data from dto
             FromDto(dto);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync().ConfigureAwait(false);
+            return await SaveDataAsync();
         }
 
         public virtual bool Add(<#= PayloadName #> payload)
@@ -114,20 +114,20 @@ namespace <#= NamespaceService #>
             // set Add mode and clear data
             Add();
 
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.<#= processName #>).ConfigureAwait(false)))
+            if (!(await ValidateAsync(payload.<#= processName #>)))
                 return false;
 
             // load data from dto
             FromDto(payload.<#= processName #>);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync().ConfigureAwait(false);
+            return await SaveDataAsync();
         }
 
         /// <summary>
@@ -166,17 +166,17 @@ namespace <#= NamespaceService #>
                 return false;
             //set edit mode before validate
             Edit();
-            if (!(await ValidateAsync(dto).ConfigureAwait(false)))
+            if (!(await ValidateAsync(dto)))
                 return false;
 
             // load data 
-            await GetDataAsync(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong()).ConfigureAwait(false);
+            await GetDataAsync(dto.<#= StructureClass.MainTable.Name #>.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
             return await SaveDataAsync();
@@ -222,20 +222,20 @@ namespace <#= NamespaceService #>
                 return false;
             //set edit mode before validate
             Edit();
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.<#= processName #>).ConfigureAwait(false)))
+            if (!(await ValidateAsync(payload.<#= processName #>)))
                 return false;
 
             // load data 
-            await GetDataAsync(payload.<#= processName #>.<#= StructureClass.MainTable.Name #>.RowNum.ToLong()).ConfigureAwait(false);
+            await GetDataAsync(payload.<#= processName #>.<#= StructureClass.MainTable.Name #>.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.<#= processName #>);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
             return await SaveDataAsync();

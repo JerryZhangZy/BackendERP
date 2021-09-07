@@ -332,36 +332,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedSave(SalesOrderHeaderTable))
 			{
 				SalesOrderHeader.SetDataBaseFactory(dbFactory); 
-				if (!(await SalesOrderHeader.SaveAsync().ConfigureAwait(false))) return false; 
+				if (!(await SalesOrderHeader.SaveAsync())) return false; 
 			}
 			 if (NeedSave(SalesOrderHeaderInfoTable))
 			{
 				if (SalesOrderHeaderInfo != null) 
-					await SalesOrderHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await SalesOrderHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync(); 
 			}
 
 			 if (NeedSave(SalesOrderHeaderAttributesTable))
 			{
 				if (SalesOrderHeaderAttributes != null) 
-					await SalesOrderHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await SalesOrderHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
 			}
 
 			 if (NeedSave(SalesOrderItemsTable))
 			{
 				if (SalesOrderItems != null) 
-					await SalesOrderItems.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await SalesOrderItems.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delSalesOrderItems = _SalesOrderItemsDeleted;
 				if (delSalesOrderItems != null)
-					await delSalesOrderItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delSalesOrderItems.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			 if (NeedSave(SalesOrderItemsAttributesTable))
 			{
 				if (SalesOrderItemsAttributes != null) 
-					await SalesOrderItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await SalesOrderItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delSalesOrderItemsAttributes = SalesOrderItemsAttributesDeleted;
 				if (delSalesOrderItemsAttributes != null)
-					await delSalesOrderItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delSalesOrderItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			if (_OnSave != null)
@@ -387,27 +387,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedDelete(SalesOrderHeaderTable))
 			{
 			SalesOrderHeader.SetDataBaseFactory(dbFactory); 
-			if ((await SalesOrderHeader.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			if ((await SalesOrderHeader.DeleteAsync()) <= 0) return false; 
 			}
 			 if (NeedDelete(SalesOrderHeaderInfoTable))
 			{
 				if (SalesOrderHeaderInfo != null) 
-					await SalesOrderHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await SalesOrderHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(SalesOrderHeaderAttributesTable))
 			{
 				if (SalesOrderHeaderAttributes != null) 
-					await SalesOrderHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await SalesOrderHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(SalesOrderItemsTable))
 			{
 				if (SalesOrderItems != null) 
-					await SalesOrderItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await SalesOrderItems.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(SalesOrderItemsAttributesTable))
 			{
 				if (SalesOrderItemsAttributes != null) 
-					await SalesOrderItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await SalesOrderItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			if (_OnDelete != null)
 			{

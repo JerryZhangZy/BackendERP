@@ -89,8 +89,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 using (var b = new Benchmark("ExcuteJsonAsync_Test"))
                 {
-                    payload.CustomerListCount = await srv.CountAsync().ConfigureAwait(false);
-                    result = await srv.ExcuteJsonAsync(sb).ConfigureAwait(false);
+                    payload.CustomerListCount = await srv.CountAsync();
+                    result = await srv.ExcuteJsonAsync(sb);
                     if (result)
                         payload.CustomerList = sb;
 
@@ -155,7 +155,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 using (var b = new Benchmark("GetCustomerDatasAsync_Test"))
                 {
-                    result = await srv.GetRowNumListAsync(payload).ConfigureAwait(false);
+                    result = await srv.GetRowNumListAsync(payload);
                 }
             }
             catch (Exception ex)

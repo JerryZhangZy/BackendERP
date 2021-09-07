@@ -80,12 +80,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
 
         public static async Task ExecuteNonQueryAsync(string cmd, params IDataParameter[] parameters) =>
-            await ExecuteNonQueryAsync(cmd, CommandType.Text, parameters).ConfigureAwait(false);
+            await ExecuteNonQueryAsync(cmd, CommandType.Text, parameters);
 
         public static async Task ExecuteNonQueryAsync(string cmd, CommandType commandType, params IDataParameter[] parameters)
         {
             using var dbCommand = DataBaseFactory.CreateCommand(cmd, commandType, parameters);
-            await ((SqlCommand)dbCommand).ExecuteNonQueryAsync().ConfigureAwait(false);
+            await ((SqlCommand)dbCommand).ExecuteNonQueryAsync();
         }
 
         public static T ExecuteScalar<T>(string commandText, params IDataParameter[] parameters) =>
@@ -106,7 +106,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
 
         public static async Task<T> ExecuteScalarAsync<T>(string commandText, params IDataParameter[] parameters) =>
-            await ExecuteScalarAsync<T>(commandText, CommandType.Text, parameters).ConfigureAwait(false);
+            await ExecuteScalarAsync<T>(commandText, CommandType.Text, parameters);
 
         public static async Task<T> ExecuteScalarAsync<T>(string commandText, CommandType commandType, params IDataParameter[] parameters)
         {
@@ -133,12 +133,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
 
         public static async Task<SqlDataReader> ExecuteCommandAsync(string commandText, params IDataParameter[] parameters) =>
-            await ExecuteCommandAsync(commandText, CommandType.Text, parameters).ConfigureAwait(false);
+            await ExecuteCommandAsync(commandText, CommandType.Text, parameters);
 
         public static async Task<SqlDataReader> ExecuteCommandAsync(string commandText, CommandType commandType, params IDataParameter[] parameters)
         {
             using var dbCommand = DataBaseFactory.CreateCommand(commandText, commandType, parameters) as SqlCommand;
-            return await dbCommand.ExecuteReaderAsync().ConfigureAwait(false);
+            return await dbCommand.ExecuteReaderAsync();
         }
 
         #region excute command and return sqlreader value to callback function, upto 20 columns
@@ -158,7 +158,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var results = new List<R>();
             using (var dataReader = (SqlDataReader)reader)
             {
-                do { while (await dataReader.ReadAsync().ConfigureAwait(false)) { results.Add(f(dataReader)); } } while (await dataReader.NextResultAsync().ConfigureAwait(false));
+                do { while (await dataReader.ReadAsync()) { results.Add(f(dataReader)); } } while (await dataReader.NextResultAsync());
             }
             return results;
         }
@@ -178,13 +178,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static async Task<SqlDataReader> CreateDefaultCommandAsync(string cmd, CommandType commandType, params IDataParameter[] parameters)
         {
-            return await ExecuteCommandAsync(cmd, commandType, parameters).ConfigureAwait(false);
+            return await ExecuteCommandAsync(cmd, commandType, parameters);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static async Task<SqlDataReader> CreateDefaultCommandAsync(string cmd, params IDataParameter[] parameters)
         {
-            return await ExecuteCommandAsync(cmd, CommandType.Text, parameters).ConfigureAwait(false);
+            return await ExecuteCommandAsync(cmd, CommandType.Text, parameters);
         }
 
         // 1 column
@@ -195,10 +195,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
             _Execute(CreateDefaultCommand(cmd, commandType, parameters), reader => func(reader.GetValue<P1>(0)));
 
         public static async Task<List<R>> ExecuteAsync<P1, R>(string cmd, Func<P1, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false), reader => func(reader.GetValue<P1>(0))).ConfigureAwait(false);
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters), reader => func(reader.GetValue<P1>(0)));
 
         public static async Task<List<R>> ExecuteAsync<P1, R>(string cmd, CommandType commandType, Func<P1, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false), reader => func(reader.GetValue<P1>(0))).ConfigureAwait(false);
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters), reader => func(reader.GetValue<P1>(0)));
 
         // 2 columns
         public static List<R> Execute<P1, P2, R>(string cmd, Func<P1, P2, R> func, params IDataParameter[] parameters) =>
@@ -209,13 +209,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, R>(string cmd,
             Func<P1, P2, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
-                reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1))).ConfigureAwait(false);
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
+                reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, R>(string cmd, CommandType commandType,
             Func<P1, P2, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
-                reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1))).ConfigureAwait(false);
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
+                reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1)));
 
         // 3 columns
         public static List<R> Execute<P1, P2, P3, R>(string cmd,
@@ -230,13 +230,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, R>(string cmd,
             Func<P1, P2, P3, R> func, params IDataParameter[] parameters) => await _ExecuteAsync(
-            await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
-                reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2))).ConfigureAwait(false);
+            await CreateDefaultCommandAsync(cmd, parameters),
+                reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, R> func, params IDataParameter[] parameters) => await _ExecuteAsync(
-            await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
-                reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2))).ConfigureAwait(false);
+            await CreateDefaultCommandAsync(cmd, commandType, parameters),
+                reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2)));
 
         // 4 columns
         public static List<R> Execute<P1, P2, P3, P4, R>(string cmd,
@@ -253,15 +253,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, R>(string cmd,
             Func<P1, P2, P3, P4, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
-                    reader.GetValue<P4>(3))).ConfigureAwait(false);
+                    reader.GetValue<P4>(3)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, R> func, params IDataParameter[] parameters) => await _ExecuteAsync(
-            await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await CreateDefaultCommandAsync(cmd, commandType, parameters),
             reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
-                reader.GetValue<P4>(3))).ConfigureAwait(false);
+                reader.GetValue<P4>(3)));
 
         // 5 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, R>(string cmd,
@@ -278,15 +278,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, R>(string cmd,
             Func<P1, P2, P3, P4, P5, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
-                    reader.GetValue<P4>(3), reader.GetValue<P5>(4))).ConfigureAwait(false);
+                    reader.GetValue<P4>(3), reader.GetValue<P5>(4)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
-                    reader.GetValue<P4>(3), reader.GetValue<P5>(4))).ConfigureAwait(false);
+                    reader.GetValue<P4>(3), reader.GetValue<P5>(4)));
 
         // 6 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, R>(string cmd,
@@ -303,15 +303,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
-                    reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5))).ConfigureAwait(false);
+                    reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
-                    reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5))).ConfigureAwait(false);
+                    reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5)));
 
         // 7 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, R>(string cmd,
@@ -328,13 +328,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
             Func<P1, P2, P3, P4, P5, P6, P7, R> func, params IDataParameter[] parameters) =>
             await _ExecuteAsync(CreateDefaultCommand(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
-                    reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6))).ConfigureAwait(false);
+                    reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, R> func, params IDataParameter[] parameters) =>
             await _ExecuteAsync(CreateDefaultCommand(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
-                    reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6))).ConfigureAwait(false);
+                    reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6)));
 
         // 8 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, R>(string cmd,
@@ -353,17 +353,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
-                    reader.GetValue<P8>(7))).ConfigureAwait(false);
+                    reader.GetValue<P8>(7)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
-                    reader.GetValue<P8>(7))).ConfigureAwait(false);
+                    reader.GetValue<P8>(7)));
 
         // 9 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, P9, R>(string cmd,
@@ -382,17 +382,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
-                    reader.GetValue<P8>(7), reader.GetValue<P9>(8))).ConfigureAwait(false);
+                    reader.GetValue<P8>(7), reader.GetValue<P9>(8)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
-                    reader.GetValue<P8>(7), reader.GetValue<P9>(8))).ConfigureAwait(false);
+                    reader.GetValue<P8>(7), reader.GetValue<P9>(8)));
 
         // 10 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, R>(string cmd,
@@ -411,17 +411,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
-                    reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9))).ConfigureAwait(false);
+                    reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
-                    reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9))).ConfigureAwait(false);
+                    reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9)));
 
         // 11 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R>(string cmd,
@@ -440,17 +440,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
-                    reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10))).ConfigureAwait(false);
+                    reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
-                    reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10))).ConfigureAwait(false);
+                    reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10)));
 
         // 12 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, R>(string cmd,
@@ -475,7 +475,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
-                    reader.GetValue<P12>(11))).ConfigureAwait(false);
+                    reader.GetValue<P12>(11)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, R> func, params IDataParameter[] parameters) =>
@@ -483,7 +483,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
-                    reader.GetValue<P12>(11))).ConfigureAwait(false);
+                    reader.GetValue<P12>(11)));
 
         // 13 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, R>(string cmd,
@@ -504,19 +504,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
-                    reader.GetValue<P12>(11), reader.GetValue<P13>(12))).ConfigureAwait(false);
+                    reader.GetValue<P12>(11), reader.GetValue<P13>(12)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
-                    reader.GetValue<P12>(11), reader.GetValue<P13>(12))).ConfigureAwait(false);
+                    reader.GetValue<P12>(11), reader.GetValue<P13>(12)));
 
         // 14 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, R>(string cmd,
@@ -537,19 +537,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
-                    reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13))).ConfigureAwait(false);
+                    reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
-                    reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13))).ConfigureAwait(false);
+                    reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13)));
 
         // 15 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, R>(string cmd,
@@ -572,21 +572,21 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
                     reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13),
-                    reader.GetValue<P15>(14))).ConfigureAwait(false);
+                    reader.GetValue<P15>(14)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
                     reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13),
-                    reader.GetValue<P15>(14))).ConfigureAwait(false);
+                    reader.GetValue<P15>(14)));
 
         // 16 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, R>(string cmd,
@@ -609,21 +609,21 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
                     reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13), reader.GetValue<P15>(14),
-                    reader.GetValue<P16>(15))).ConfigureAwait(false);
+                    reader.GetValue<P16>(15)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
                     reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13), reader.GetValue<P15>(14),
-                    reader.GetValue<P16>(15))).ConfigureAwait(false);
+                    reader.GetValue<P16>(15)));
 
         // 17 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, R>(string cmd,
@@ -646,21 +646,21 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
                     reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13), reader.GetValue<P15>(14),
-                    reader.GetValue<P16>(15), reader.GetValue<P17>(16))).ConfigureAwait(false);
+                    reader.GetValue<P16>(15), reader.GetValue<P17>(16)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
                     reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13), reader.GetValue<P15>(14),
-                    reader.GetValue<P16>(15), reader.GetValue<P17>(16))).ConfigureAwait(false);
+                    reader.GetValue<P16>(15), reader.GetValue<P17>(16)));
 
         // 18 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, R>(string cmd,
@@ -683,21 +683,21 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
                     reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13), reader.GetValue<P15>(14),
-                    reader.GetValue<P16>(15), reader.GetValue<P17>(16), reader.GetValue<P18>(17))).ConfigureAwait(false);
+                    reader.GetValue<P16>(15), reader.GetValue<P17>(16), reader.GetValue<P18>(17)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
                     reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13), reader.GetValue<P15>(14),
-                    reader.GetValue<P16>(15), reader.GetValue<P17>(16), reader.GetValue<P18>(17))).ConfigureAwait(false);
+                    reader.GetValue<P16>(15), reader.GetValue<P17>(16), reader.GetValue<P18>(17)));
 
         // 19 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, R>(string cmd,
@@ -720,21 +720,21 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
                     reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13), reader.GetValue<P15>(14),
-                    reader.GetValue<P16>(15), reader.GetValue<P17>(16), reader.GetValue<P18>(17), reader.GetValue<P19>(18))).ConfigureAwait(false);
+                    reader.GetValue<P16>(15), reader.GetValue<P17>(16), reader.GetValue<P18>(17), reader.GetValue<P19>(18)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
                     reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13), reader.GetValue<P15>(14),
-                    reader.GetValue<P16>(15), reader.GetValue<P17>(16), reader.GetValue<P18>(17), reader.GetValue<P19>(18))).ConfigureAwait(false);
+                    reader.GetValue<P16>(15), reader.GetValue<P17>(16), reader.GetValue<P18>(17), reader.GetValue<P19>(18)));
 
         // 20 columns
         public static List<R> Execute<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, R>(string cmd,
@@ -759,23 +759,23 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, R>(string cmd,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
                     reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13), reader.GetValue<P15>(14),
                     reader.GetValue<P16>(15), reader.GetValue<P17>(16), reader.GetValue<P18>(17), reader.GetValue<P19>(18),
-                    reader.GetValue<P20>(19))).ConfigureAwait(false);
+                    reader.GetValue<P20>(19)));
 
         public static async Task<List<R>> ExecuteAsync<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, R>(string cmd, CommandType commandType,
             Func<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, R> func, params IDataParameter[] parameters) =>
-            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters).ConfigureAwait(false),
+            await _ExecuteAsync(await CreateDefaultCommandAsync(cmd, commandType, parameters),
                 reader => func(reader.GetValue<P1>(0), reader.GetValue<P2>(1), reader.GetValue<P3>(2),
                     reader.GetValue<P4>(3), reader.GetValue<P5>(4), reader.GetValue<P6>(5), reader.GetValue<P7>(6),
                     reader.GetValue<P8>(7), reader.GetValue<P9>(8), reader.GetValue<P10>(9), reader.GetValue<P11>(10),
                     reader.GetValue<P12>(11), reader.GetValue<P13>(12), reader.GetValue<P14>(13), reader.GetValue<P15>(14),
                     reader.GetValue<P16>(15), reader.GetValue<P17>(16), reader.GetValue<P18>(17), reader.GetValue<P19>(18),
-                    reader.GetValue<P20>(19))).ConfigureAwait(false);
+                    reader.GetValue<P20>(19)));
 
         #endregion excute command and return sqlreader value to callback function, upto 20 columns
 
@@ -832,11 +832,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             SqlQueryResultData returnItem = new SqlQueryResultData();
 
-            using (var dataReader = await SqlQuery.ExecuteCommandAsync(sql, commandType, parameters).ConfigureAwait(false))
+            using (var dataReader = await SqlQuery.ExecuteCommandAsync(sql, commandType, parameters))
             {
                 returnItem.heading = Enumerable.Range(0, dataReader.FieldCount).Select(dataReader.GetName)
                     .Where(s => !s.StartsWith("_")).ToList();
-                while (await dataReader.ReadAsync().ConfigureAwait(false))
+                while (await dataReader.ReadAsync())
                 {
                     returnItem.data.Add(Enumerable.Range(0, dataReader.FieldCount)
                         .Where(i => !dataReader.GetName(i).StartsWith("_"))
@@ -890,7 +890,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var result = new List<T>();
             var pd = ObjectSchema.ForType(typeof(T));
 
-            var dataReader = await SqlQuery.ExecuteCommandAsync(sql, commandType, parameters).ConfigureAwait(false);
+            var dataReader = await SqlQuery.ExecuteCommandAsync(sql, commandType, parameters);
             var readerAsync = dataReader as DbDataReader;
             var factory = pd.GetFactory();
 
@@ -903,12 +903,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     {
                         if (readerAsync != null)
                         {
-                            if (!await readerAsync.ReadAsync().ConfigureAwait(false))
+                            if (!await readerAsync.ReadAsync())
                                 return result;
                         }
                         else
                         {
-                            if (!await dataReader.ReadAsync().ConfigureAwait(false))
+                            if (!await dataReader.ReadAsync())
                                 return result;
                         }
 
@@ -988,11 +988,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<bool> QueryJsonAsync(StringBuilder jsonResult, string sql, CommandType commandType, params IDataParameter[] parameters)
         {
-            using (var dataReader = await SqlQuery.ExecuteCommandAsync(sql, commandType, parameters).ConfigureAwait(false))
+            using (var dataReader = await SqlQuery.ExecuteCommandAsync(sql, commandType, parameters))
             {
                 if (dataReader is null) return false;
 
-                while (await dataReader.ReadAsync().ConfigureAwait(false))
+                while (await dataReader.ReadAsync())
                 {
                     jsonResult.Append(dataReader.GetValue(0).ToString());
                 }

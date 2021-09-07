@@ -472,7 +472,7 @@ namespace CsvHelper
 						if (hasHeaderRecord && !hasHeaderBeenWritten)
 						{
 							WriteDynamicHeader(dynamicObject);
-							await NextRecordAsync().ConfigureAwait(false);
+							await NextRecordAsync();
 						}
 					}
 					else
@@ -483,7 +483,7 @@ namespace CsvHelper
 						if (hasHeaderRecord && !hasHeaderBeenWritten && !isPrimitive)
 						{
 							WriteHeader(recordType);
-							await NextRecordAsync().ConfigureAwait(false);
+							await NextRecordAsync();
 						}
 					}
 
@@ -496,7 +496,7 @@ namespace CsvHelper
 						throw ex.InnerException;
 					}
 
-					await NextRecordAsync().ConfigureAwait(false);
+					await NextRecordAsync();
 				}
 			}
 			catch (Exception ex)
@@ -524,7 +524,7 @@ namespace CsvHelper
 					WriteHeader(recordType);
 					if (hasHeaderBeenWritten)
 					{
-						await NextRecordAsync().ConfigureAwait(false);
+						await NextRecordAsync();
 					}
 				}
 
@@ -543,7 +543,7 @@ namespace CsvHelper
 						if (hasHeaderRecord && !hasHeaderBeenWritten)
 						{
 							WriteDynamicHeader(dynamicObject);
-							await NextRecordAsync().ConfigureAwait(false);
+							await NextRecordAsync();
 						}
 					}
 					else
@@ -554,7 +554,7 @@ namespace CsvHelper
 						if (hasHeaderRecord && !hasHeaderBeenWritten && !isPrimitive)
 						{
 							WriteHeader(recordType);
-							await NextRecordAsync().ConfigureAwait(false);
+							await NextRecordAsync();
 						}
 					}
 
@@ -567,7 +567,7 @@ namespace CsvHelper
 						throw ex.InnerException;
 					}
 
-					await NextRecordAsync().ConfigureAwait(false);
+					await NextRecordAsync();
 				}
 			}
 			catch (Exception ex)
@@ -596,7 +596,7 @@ namespace CsvHelper
 					WriteHeader(recordType);
 					if (hasHeaderBeenWritten)
 					{
-						await NextRecordAsync().ConfigureAwait(false);
+						await NextRecordAsync();
 					}
 				}
 
@@ -615,7 +615,7 @@ namespace CsvHelper
 						if (hasHeaderRecord && !hasHeaderBeenWritten)
 						{
 							WriteDynamicHeader(dynamicObject);
-							await NextRecordAsync().ConfigureAwait(false);
+							await NextRecordAsync();
 						}
 					}
 					else
@@ -626,7 +626,7 @@ namespace CsvHelper
 						if (hasHeaderRecord && !hasHeaderBeenWritten && !isPrimitive)
 						{
 							WriteHeader(recordType);
-							await NextRecordAsync().ConfigureAwait(false);
+							await NextRecordAsync();
 						}
 					}
 
@@ -639,7 +639,7 @@ namespace CsvHelper
 						throw ex.InnerException;
 					}
 
-					await NextRecordAsync().ConfigureAwait(false);
+					await NextRecordAsync();
 				}
 			}
 			catch (Exception ex)
@@ -679,8 +679,8 @@ namespace CsvHelper
 		/// <inheritdoc/>
 		public virtual async Task FlushAsync()
 		{
-			await FlushBufferAsync().ConfigureAwait(false);
-			await writer.FlushAsync().ConfigureAwait(false);
+			await FlushBufferAsync();
+			await writer.FlushAsync();
 		}
 
 		/// <inheritdoc/>
@@ -819,7 +819,7 @@ namespace CsvHelper
 		/// <inheritdoc/>
 		public async ValueTask DisposeAsync()
 		{
-			await DisposeAsync(true).ConfigureAwait(false);
+			await DisposeAsync(true);
 			GC.SuppressFinalize(this);
 		}
 
@@ -831,7 +831,7 @@ namespace CsvHelper
 				return;
 			}
 
-			await FlushAsync().ConfigureAwait(false);
+			await FlushAsync();
 
 			if (disposing)
 			{
@@ -839,7 +839,7 @@ namespace CsvHelper
 
 				if (!leaveOpen)
 				{
-					await writer.DisposeAsync().ConfigureAwait(false);
+					await writer.DisposeAsync();
 				}
 			}
 

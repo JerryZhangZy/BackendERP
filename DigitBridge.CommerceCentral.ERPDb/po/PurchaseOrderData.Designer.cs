@@ -358,45 +358,45 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedSave(PoHeaderTable))
 			{
 				PoHeader.SetDataBaseFactory(dbFactory); 
-				if (!(await PoHeader.SaveAsync().ConfigureAwait(false))) return false; 
+				if (!(await PoHeader.SaveAsync())) return false; 
 			}
 			 if (NeedSave(PoHeaderInfoTable))
 			{
 				if (PoHeaderInfo != null) 
-					await PoHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await PoHeaderInfo.SetDataBaseFactory(dbFactory).SaveAsync(); 
 			}
 
 			 if (NeedSave(PoHeaderAttributesTable))
 			{
 				if (PoHeaderAttributes != null) 
-					await PoHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await PoHeaderAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
 			}
 
 			 if (NeedSave(PoItemsTable))
 			{
 				if (PoItems != null) 
-					await PoItems.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await PoItems.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delPoItems = _PoItemsDeleted;
 				if (delPoItems != null)
-					await delPoItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delPoItems.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			 if (NeedSave(PoItemsAttributesTable))
 			{
 				if (PoItemsAttributes != null) 
-					await PoItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await PoItemsAttributes.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delPoItemsAttributes = PoItemsAttributesDeleted;
 				if (delPoItemsAttributes != null)
-					await delPoItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delPoItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			 if (NeedSave(PoItemsRefTable))
 			{
 				if (PoItemsRef != null) 
-					await PoItemsRef.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await PoItemsRef.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delPoItemsRef = PoItemsRefDeleted;
 				if (delPoItemsRef != null)
-					await delPoItemsRef.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delPoItemsRef.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			if (_OnSave != null)
@@ -422,32 +422,32 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedDelete(PoHeaderTable))
 			{
 			PoHeader.SetDataBaseFactory(dbFactory); 
-			if ((await PoHeader.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			if ((await PoHeader.DeleteAsync()) <= 0) return false; 
 			}
 			 if (NeedDelete(PoHeaderInfoTable))
 			{
 				if (PoHeaderInfo != null) 
-					await PoHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await PoHeaderInfo.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(PoHeaderAttributesTable))
 			{
 				if (PoHeaderAttributes != null) 
-					await PoHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await PoHeaderAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(PoItemsTable))
 			{
 				if (PoItems != null) 
-					await PoItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await PoItems.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(PoItemsAttributesTable))
 			{
 				if (PoItemsAttributes != null) 
-					await PoItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await PoItemsAttributes.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(PoItemsRefTable))
 			{
 				if (PoItemsRef != null) 
-					await PoItemsRef.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await PoItemsRef.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			if (_OnDelete != null)
 			{

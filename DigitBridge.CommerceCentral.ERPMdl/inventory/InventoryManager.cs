@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             get
             {
                 if (_inventoryService is null)
-                    _inventoryService = new InventoryService();
+                    _inventoryService = new InventoryService(dbFactory);
                 return _inventoryService;
             }
         }

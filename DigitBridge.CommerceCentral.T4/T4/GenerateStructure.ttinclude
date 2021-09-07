@@ -400,7 +400,7 @@ namespace <#= NamespaceStructure #>
             WriteLine($"{new String('\t',indent)} if (NeedSave({StructureClass.MainTable.Name}Table))");
             WriteLine($"{new String('\t',indent)}{{");
             WriteLine($"{new String('\t',indent+1)}{StructureClass.MainTable.Name}.SetDataBaseFactory(dbFactory); ");
-            WriteLine($"{new String('\t',indent+1)}if (!(await {StructureClass.MainTable.Name}.SaveAsync().ConfigureAwait(false))) return false; ");
+            WriteLine($"{new String('\t',indent+1)}if (!(await {StructureClass.MainTable.Name}.SaveAsync())) return false; ");
             WriteLine($"{new String('\t',indent)}}}");
             foreach(var item in StructureClass.StructureTables)
             { 
@@ -411,18 +411,18 @@ namespace <#= NamespaceStructure #>
                 WriteLine($"{new String('\t',indent)} if (NeedSave({child.Table.Name}Table))");
                 WriteLine($"{new String('\t',indent)}{{");
                 WriteLine($"{new String('\t',indent+1)}if ({child.Table.Name} != null) ");
-                WriteLine($"{new String('\t',indent+2)}await {child.Table.Name}.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); ");
+                WriteLine($"{new String('\t',indent+2)}await {child.Table.Name}.SetDataBaseFactory(dbFactory).SaveAsync(); ");
                 if (!child.OneToOne && !child.Table.IsChildrenOfChildren)
                 {
                     WriteLine($"{new String('\t',indent+1)}var del{child.Table.Name} = _{child.Table.Name}Deleted;");
                     WriteLine($"{new String('\t',indent+1)}if (del{child.Table.Name} != null)");
-                    WriteLine($"{new String('\t',indent+2)}await del{child.Table.Name}.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);");
+                    WriteLine($"{new String('\t',indent+2)}await del{child.Table.Name}.SetDataBaseFactory(dbFactory).DeleteAsync();");
                 }
                 else if (child.Table.IsChildrenOfChildren)
                 {
                     WriteLine($"{new String('\t',indent+1)}var del{child.Table.Name} = {child.Table.Name}Deleted;");
                     WriteLine($"{new String('\t',indent+1)}if (del{child.Table.Name} != null)");
-                    WriteLine($"{new String('\t',indent+2)}await del{child.Table.Name}.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);");
+                    WriteLine($"{new String('\t',indent+2)}await del{child.Table.Name}.SetDataBaseFactory(dbFactory).DeleteAsync();");
                 }
                 WriteLine($"{new String('\t',indent)}}}");
                 WriteLine($"");
@@ -455,7 +455,7 @@ namespace <#= NamespaceStructure #>
             WriteLine($"{new String('\t',indent)} if (NeedDelete({StructureClass.MainTable.Name}Table))");
             WriteLine($"{new String('\t',indent)}{{");
             WriteLine($"{new String('\t',indent)}{StructureClass.MainTable.Name}.SetDataBaseFactory(dbFactory); ");
-            WriteLine($"{new String('\t',indent)}if ((await {StructureClass.MainTable.Name}.DeleteAsync().ConfigureAwait(false)) <= 0) return false; ");
+            WriteLine($"{new String('\t',indent)}if ((await {StructureClass.MainTable.Name}.DeleteAsync()) <= 0) return false; ");
             WriteLine($"{new String('\t',indent)}}}");
             foreach(var item in StructureClass.StructureTables)
             { 
@@ -466,7 +466,7 @@ namespace <#= NamespaceStructure #>
                 WriteLine($"{new String('\t',indent)} if (NeedDelete({child.Table.Name}Table))");
                 WriteLine($"{new String('\t',indent)}{{");
                 WriteLine($"{new String('\t',indent+1)}if ({child.Table.Name} != null) ");
-                WriteLine($"{new String('\t',indent+2)}await {child.Table.Name}.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); ");
+                WriteLine($"{new String('\t',indent+2)}await {child.Table.Name}.SetDataBaseFactory(dbFactory).DeleteAsync(); ");
                 WriteLine($"{new String('\t',indent)}}}");
             }
             WriteLine($"{new String('\t',indent)}if (_OnDelete != null)");

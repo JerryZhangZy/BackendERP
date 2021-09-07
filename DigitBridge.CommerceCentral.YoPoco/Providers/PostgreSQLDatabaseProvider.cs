@@ -44,10 +44,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (primaryKeyName != null)
             {
                 cmd.CommandText += $"returning {EscapeSqlIdentifier(primaryKeyName)} as NewID";
-                return await ExecuteScalarHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
+                return await ExecuteScalarHelperAsync(cancellationToken, db, cmd);
             }
 
-            await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
+            await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd);
             return -1;
         }
     }

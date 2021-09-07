@@ -224,7 +224,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedSave(InventoryLogTable))
 			{
 				InventoryLog.SetDataBaseFactory(dbFactory); 
-				if (!(await InventoryLog.SaveAsync().ConfigureAwait(false))) return false; 
+				if (!(await InventoryLog.SaveAsync())) return false; 
 			}
 			if (_OnSave != null)
 			{
@@ -249,7 +249,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedDelete(InventoryLogTable))
 			{
 			InventoryLog.SetDataBaseFactory(dbFactory); 
-			if ((await InventoryLog.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			if ((await InventoryLog.DeleteAsync()) <= 0) return false; 
 			}
 			if (_OnDelete != null)
 			{

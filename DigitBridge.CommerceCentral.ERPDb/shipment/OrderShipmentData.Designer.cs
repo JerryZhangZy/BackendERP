@@ -313,33 +313,33 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedSave(OrderShipmentHeaderTable))
 			{
 				OrderShipmentHeader.SetDataBaseFactory(dbFactory); 
-				if (!(await OrderShipmentHeader.SaveAsync().ConfigureAwait(false))) return false; 
+				if (!(await OrderShipmentHeader.SaveAsync())) return false; 
 			}
 			 if (NeedSave(OrderShipmentCanceledItemTable))
 			{
 				if (OrderShipmentCanceledItem != null) 
-					await OrderShipmentCanceledItem.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await OrderShipmentCanceledItem.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delOrderShipmentCanceledItem = _OrderShipmentCanceledItemDeleted;
 				if (delOrderShipmentCanceledItem != null)
-					await delOrderShipmentCanceledItem.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delOrderShipmentCanceledItem.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			 if (NeedSave(OrderShipmentPackageTable))
 			{
 				if (OrderShipmentPackage != null) 
-					await OrderShipmentPackage.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await OrderShipmentPackage.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delOrderShipmentPackage = _OrderShipmentPackageDeleted;
 				if (delOrderShipmentPackage != null)
-					await delOrderShipmentPackage.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delOrderShipmentPackage.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			 if (NeedSave(OrderShipmentShippedItemTable))
 			{
 				if (OrderShipmentShippedItem != null) 
-					await OrderShipmentShippedItem.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await OrderShipmentShippedItem.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delOrderShipmentShippedItem = OrderShipmentShippedItemDeleted;
 				if (delOrderShipmentShippedItem != null)
-					await delOrderShipmentShippedItem.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delOrderShipmentShippedItem.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			if (_OnSave != null)
@@ -365,22 +365,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedDelete(OrderShipmentHeaderTable))
 			{
 			OrderShipmentHeader.SetDataBaseFactory(dbFactory); 
-			if ((await OrderShipmentHeader.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			if ((await OrderShipmentHeader.DeleteAsync()) <= 0) return false; 
 			}
 			 if (NeedDelete(OrderShipmentCanceledItemTable))
 			{
 				if (OrderShipmentCanceledItem != null) 
-					await OrderShipmentCanceledItem.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await OrderShipmentCanceledItem.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(OrderShipmentPackageTable))
 			{
 				if (OrderShipmentPackage != null) 
-					await OrderShipmentPackage.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await OrderShipmentPackage.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(OrderShipmentShippedItemTable))
 			{
 				if (OrderShipmentShippedItem != null) 
-					await OrderShipmentShippedItem.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await OrderShipmentShippedItem.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			if (_OnDelete != null)
 			{

@@ -35,10 +35,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (primaryKeyName != null)
             {
                 cmd.CommandText += ";\nSELECT last_insert_rowid();";
-                return await ExecuteScalarHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
+                return await ExecuteScalarHelperAsync(cancellationToken, db, cmd);
             }
 
-            await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd).ConfigureAwait(false);
+            await ExecuteNonQueryHelperAsync(cancellationToken, db, cmd);
             return -1;
         }
 

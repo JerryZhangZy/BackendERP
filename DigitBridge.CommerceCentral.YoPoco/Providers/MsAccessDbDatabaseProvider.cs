@@ -21,9 +21,9 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public override async Task<object> ExecuteInsertAsync(CancellationToken cancellationToken, Database database, IDbCommand cmd, string primaryKeyName)
         {
-            await ExecuteNonQueryHelperAsync(cancellationToken, database, cmd).ConfigureAwait(false);
+            await ExecuteNonQueryHelperAsync(cancellationToken, database, cmd);
             cmd.CommandText = "SELECT @@IDENTITY AS NewID;";
-            return await ExecuteScalarHelperAsync(cancellationToken, database, cmd).ConfigureAwait(false);
+            return await ExecuteScalarHelperAsync(cancellationToken, database, cmd);
         }
 
         public override string BuildPageQuery(long skip, long take, SQLParts parts, ref object[] args)

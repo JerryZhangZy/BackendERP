@@ -319,7 +319,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 {
                     var con = _sharedConnection as DbConnection;
                     if (con != null)
-                        await con.OpenAsync().ConfigureAwait(false);
+                        await con.OpenAsync();
                     else
                         _sharedConnection.Open();
                 }
@@ -425,7 +425,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             if (_transactionDepth == 1)
             {
-                await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+                await OpenSharedConnectionAsync(cancellationToken);
                 _transaction = !_isolationLevel.HasValue ? _sharedConnection.BeginTransaction() : _sharedConnection.BeginTransaction(_isolationLevel.Value);
                 _transactionCancelled = false;
                 OnBeginTransaction();
@@ -737,12 +737,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             try
             {
-                await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+                await OpenSharedConnectionAsync(cancellationToken);
                 try
                 {
                     using (var cmd = CreateCommand(_sharedConnection, commandType, sql, args))
                     {
-                        return await ExecuteNonQueryHelperAsync(cancellationToken, cmd).ConfigureAwait(false);
+                        return await ExecuteNonQueryHelperAsync(cancellationToken, cmd);
                     }
                 }
                 finally
@@ -826,12 +826,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             try
             {
-                await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+                await OpenSharedConnectionAsync(cancellationToken);
                 try
                 {
                     using (var cmd = CreateCommand(_sharedConnection, commandType, sql, args))
                     {
-                        var val = await ExecuteScalarHelperAsync(cancellationToken, cmd).ConfigureAwait(false);
+                        var val = await ExecuteScalarHelperAsync(cancellationToken, cmd);
 
                         var u = Nullable.GetUnderlyingType(typeof(T));
                         if (u != null && (val == null || val == DBNull.Value))
@@ -917,14 +917,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public async Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, CommandType commandType, string sql, params object[] args)
         {
             var pocos = new List<T>();
-            await QueryAsync<T>(p => pocos.Add(p), cancellationToken, commandType, sql, args).ConfigureAwait(false);
+            await QueryAsync<T>(p => pocos.Add(p), cancellationToken, commandType, sql, args);
             return pocos;
         }
 
         public async Task<List<T>> FetchAsync<T>(CancellationToken cancellationToken, CommandType commandType, IEnumerable<string> tableColumns, string sql, params object[] args)
         {
             var pocos = new List<T>();
-            await QueryAsync<T>(p => pocos.Add(p), cancellationToken, commandType, sql, args).ConfigureAwait(false);
+            await QueryAsync<T>(p => pocos.Add(p), cancellationToken, commandType, sql, args);
             return pocos;
         }
 
@@ -1050,7 +1050,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             {
                 CurrentPage = page,
                 ItemsPerPage = itemsPerPage,
-                TotalItems = await ExecuteScalarAsync<long>(cancellationToken, sqlCount, countArgs).ConfigureAwait(false)
+                TotalItems = await ExecuteScalarAsync<long>(cancellationToken, sqlCount, countArgs)
             };
             result.TotalPages = result.TotalItems / itemsPerPage;
 
@@ -1059,7 +1059,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             OneTimeCommandTimeout = saveTimeout;
 
-            result.Items = await FetchAsync<T>(cancellationToken, sqlPage, pageArgs).ConfigureAwait(false);
+            result.Items = await FetchAsync<T>(cancellationToken, sqlPage, pageArgs);
 
             return result;
         }
@@ -1307,7 +1307,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         protected virtual async Task ExecuteReaderAsync<T>(Action<T> processPoco, CancellationToken cancellationToken, CommandType commandType, string sql,
                                                            object[] args)
         {
-            await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+            await OpenSharedConnectionAsync(cancellationToken);
             try
             {
                 using (var cmd = CreateCommand(_sharedConnection, commandType, sql, args))
@@ -1317,7 +1317,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
                     try
                     {
-                        reader = await ExecuteReaderHelperAsync(cancellationToken, cmd).ConfigureAwait(false);
+                        reader = await ExecuteReaderHelperAsync(cancellationToken, cmd);
                     }
                     catch (Exception e)
                     {
@@ -1340,7 +1340,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                             {
                                 if (readerAsync != null)
                                 {
-                                    if (!await readerAsync.ReadAsync().ConfigureAwait(false))
+                                    if (!await readerAsync.ReadAsync())
                                         return;
                                 }
                                 else
@@ -1371,14 +1371,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
         protected virtual async Task<IAsyncReader<T>> ExecuteReaderAsync<T>(CancellationToken cancellationToken, CommandType commandType, string sql,
                                                                             object[] args)
         {
-            await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+            await OpenSharedConnectionAsync(cancellationToken);
             var cmd = CreateCommand(_sharedConnection, commandType, sql, args);
             IDataReader reader = null;
             var pd = PocoData.ForType(typeof(T), _defaultMapper);
 
             try
             {
-                reader = await ExecuteReaderHelperAsync(cancellationToken, cmd).ConfigureAwait(false);
+                reader = await ExecuteReaderHelperAsync(cancellationToken, cmd);
             }
             catch (Exception e)
             {
@@ -1506,7 +1506,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 sqlCondition = sqlCondition.TrimStart().Substring(5);
 
             return await ExecuteScalarAsync<int>(cancellationToken,
-                       string.Format(_provider.GetExistsSql(), Provider.EscapeTableName(poco.TableName), sqlCondition), args).ConfigureAwait(false) != 0;
+                       string.Format(_provider.GetExistsSql(), Provider.EscapeTableName(poco.TableName), sqlCondition), args) != 0;
         }
 
         public async Task<bool> ExistUniqueIdAsync<T>(object uniqueKey)
@@ -1583,7 +1583,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         /// <inheritdoc />
         public async Task<T> SingleAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
-            => (await FetchAsync<T>(cancellationToken, sql, args).ConfigureAwait(false)).Single();
+            => (await FetchAsync<T>(cancellationToken, sql, args)).Single();
 
         /// <inheritdoc />
         public async Task<T> SingleAsync<T>(Sql sql)
@@ -1618,7 +1618,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         /// <inheritdoc />
         public async Task<T> SingleOrDefaultAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
-            => (await FetchAsync<T>(cancellationToken, sql, args).ConfigureAwait(false)).SingleOrDefault();
+            => (await FetchAsync<T>(cancellationToken, sql, args)).SingleOrDefault();
 
         /// <inheritdoc />
         public async Task<T> FirstAsync<T>(string sql, params object[] args)
@@ -1626,7 +1626,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         /// <inheritdoc />
         public async Task<T> FirstAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
-            => (await FetchAsync<T>(cancellationToken, sql, args).ConfigureAwait(false)).First();
+            => (await FetchAsync<T>(cancellationToken, sql, args)).First();
 
         /// <inheritdoc />
         public async Task<T> FirstAsync<T>(Sql sql)
@@ -1642,7 +1642,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         /// <inheritdoc />
         public async Task<T> FirstOrDefaultAsync<T>(CancellationToken cancellationToken, string sql, params object[] args)
-            => (await FetchAsync<T>(cancellationToken, sql, args).ConfigureAwait(false)).FirstOrDefault();
+            => (await FetchAsync<T>(cancellationToken, sql, args)).FirstOrDefault();
 
         /// <inheritdoc />
         public async Task<T> FirstOrDefaultAsync<T>(Sql sql)
@@ -1901,7 +1901,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             try
             {
-                await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+                await OpenSharedConnectionAsync(cancellationToken);
                 try
                 {
                     using (var cmd = CreateCommand(_sharedConnection, string.Empty))
@@ -1914,7 +1914,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
                         if (!autoIncrement)
                         {
-                            await ExecuteNonQueryHelperAsync(cancellationToken, cmd).ConfigureAwait(false);
+                            await ExecuteNonQueryHelperAsync(cancellationToken, cmd);
 
                             if (primaryKeyName != null && pd.Columns.TryGetValue(primaryKeyName, out var pkColumn))
                                 return pkColumn.GetValue(poco);
@@ -1922,7 +1922,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                                 return null;
                         }
 
-                        var id = await _provider.ExecuteInsertAsync(cancellationToken, this, cmd, primaryKeyName).ConfigureAwait(false);
+                        var id = await _provider.ExecuteInsertAsync(cancellationToken, this, cmd, primaryKeyName);
 
                         // Assign the ID back to the primary key property
                         if (primaryKeyName != null && !poco.GetType().Name.Contains("AnonymousType"))
@@ -2266,13 +2266,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             try
             {
-                await OpenSharedConnectionAsync(cancellationToken).ConfigureAwait(false);
+                await OpenSharedConnectionAsync(cancellationToken);
                 try
                 {
                     using (var cmd = CreateCommand(_sharedConnection, string.Empty))
                     {
                         PreExecuteUpdate(tableName, primaryKeyName, poco, primaryKeyValue, columns, cmd);
-                        return await ExecuteNonQueryHelperAsync(cancellationToken, cmd).ConfigureAwait(false);
+                        return await ExecuteNonQueryHelperAsync(cancellationToken, cmd);
                     }
                 }
                 finally
@@ -2826,7 +2826,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public async Task<List<T>> FetchProcAsync<T>(CancellationToken cancellationToken, string storedProcedureName, params object[] args)
         {
             var pocos = new List<T>();
-            await ExecuteReaderAsync<T>(p => pocos.Add(p), cancellationToken, CommandType.StoredProcedure, storedProcedureName, args).ConfigureAwait(false);
+            await ExecuteReaderAsync<T>(p => pocos.Add(p), cancellationToken, CommandType.StoredProcedure, storedProcedureName, args);
             return pocos;
         }
 
@@ -3020,13 +3020,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (cmd is DbCommand dbCommand)
             {
                 DoPreExecute(dbCommand);
-                var result = await dbCommand.ExecuteReaderAsync().ConfigureAwait(false);
+                var result = await dbCommand.ExecuteReaderAsync();
                 OnExecutedCommand(dbCommand);
                 return (IDataReader)result;
 
                 //var task = CommandHelper(cancellationToken, dbCommand,
-                //    async (t, c) => await c.ExecuteReaderAsync(t).ConfigureAwait(false));
-                //return (IDataReader)await task.ConfigureAwait(false);
+                //    async (t, c) => await c.ExecuteReaderAsync(t));
+                //return (IDataReader)await task;
             }
             else
                 return ExecuteReaderHelper(cmd);
@@ -3037,13 +3037,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (cmd is DbCommand dbCommand)
             {
                 DoPreExecute(dbCommand);
-                var result = await dbCommand.ExecuteNonQueryAsync().ConfigureAwait(false);
+                var result = await dbCommand.ExecuteNonQueryAsync();
                 OnExecutedCommand(dbCommand);
                 return (int)result;
 
                 //var task = CommandHelper(cancellationToken, dbCommand,
-                //    async (t, c) => await c.ExecuteNonQueryAsync(t).ConfigureAwait(false));
-                //return (int)await task.ConfigureAwait(false);
+                //    async (t, c) => await c.ExecuteNonQueryAsync(t));
+                //return (int)await task;
             }
             else
                 return ExecuteNonQueryHelper(cmd);
@@ -3079,7 +3079,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         //    try
         //    {
         //        DoPreExecute(cmd);
-        //        var result = await cmdFunc(cancellationToken, cmd).ConfigureAwait(false);
+        //        var result = await cmdFunc(cancellationToken, cmd);
         //        OnExecutedCommand(cmd);
         //        return result;
         //    }

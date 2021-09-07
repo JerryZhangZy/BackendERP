@@ -84,14 +84,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<bool> SaveAsync<TEntity>(this IList<TEntity> lst)
             where TEntity : TableRepository<TEntity, long>, new()
-            => await lst.SaveAsync<TEntity, long>().ConfigureAwait(false);
+            => await lst.SaveAsync<TEntity, long>();
 
         public static async Task<bool> SaveAsync<TEntity, TId>(this IList<TEntity> lst) where TEntity : TableRepository<TEntity, TId>, new()
         {
             var rtn = true;
             foreach (var tableRepository in lst?.Where(x => x != null))
             {
-                var rtn1 = await tableRepository.SaveAsync().ConfigureAwait(false);
+                var rtn1 = await tableRepository.SaveAsync();
                 rtn = rtn1 && rtn;
             }
             return rtn;
@@ -99,13 +99,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<int> DeleteAsync<TEntity>(this IList<TEntity> lst)
             where TEntity : TableRepository<TEntity, long>, new()
-            => await lst.DeleteAsync<TEntity, long>().ConfigureAwait(false);
+            => await lst.DeleteAsync<TEntity, long>();
 
         public static async Task<int> DeleteAsync<TEntity, TId>(this IList<TEntity> lst) where TEntity : TableRepository<TEntity, TId>, new()
         {
             var rtn = 0;
             foreach (var tableRepository in lst?.Where(x => x != null))
-                rtn += await tableRepository.DeleteAsync().ConfigureAwait(false);
+                rtn += await tableRepository.DeleteAsync();
             return rtn;
         }
 

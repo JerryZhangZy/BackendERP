@@ -95,8 +95,8 @@ SELECT
             var result = false;
             try
             {
-                payload.<#= processName #>ListCount = await CountAsync().ConfigureAwait(false);
-                result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
+                payload.<#= processName #>ListCount = await CountAsync();
+                result = await ExcuteJsonAsync(sb);
                 if (result)
                     payload.<#= processName #>List = sb;
             }

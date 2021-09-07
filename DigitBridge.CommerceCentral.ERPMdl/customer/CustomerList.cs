@@ -150,8 +150,8 @@ LEFT JOIN @CustomerStatus st ON ({Helper.TableAllies}.CustomerStatus = st.num)
             var result = false;
             try
             {
-                payload.CustomerListCount = await CountAsync().ConfigureAwait(false);
-                result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
+                payload.CustomerListCount = await CountAsync();
+                result = await ExcuteJsonAsync(sb);
                 if (result)
                     payload.CustomerList = sb;
             }
@@ -182,12 +182,14 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
-                using var trs = new ScopedTransaction(dbFactory);
-                rowNumList = await SqlQuery.ExecuteAsync(
-                    sql,
-                    (long rowNum) => rowNum,
-                    GetSqlParameters().ToArray()
-                );
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    rowNumList = await SqlQuery.ExecuteAsync(
+                        sql,
+                        (long rowNum) => rowNum,
+                        GetSqlParameters().ToArray()
+                    );
+                }
             }
             catch (Exception ex)
             {
@@ -212,12 +214,14 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
-                using var trs = new ScopedTransaction(dbFactory);
-                rowNumList = SqlQuery.Execute(
-                    sql,
-                    (long rowNum) => rowNum,
-                    GetSqlParameters().ToArray()
-                );
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    rowNumList = SqlQuery.Execute(
+                        sql,
+                        (long rowNum) => rowNum,
+                        GetSqlParameters().ToArray()
+                    );
+                }
             }
             catch (Exception ex)
             {
@@ -254,8 +258,10 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
             StringBuilder sb = new StringBuilder();
             try
             {
-                using var trs = new ScopedTransaction(dbFactory);
-                SqlQuery.QueryJson(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    SqlQuery.QueryJson(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
+                }
                 return sb;
             }
             catch (Exception ex)
@@ -280,8 +286,10 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
             StringBuilder sb = new StringBuilder();
             try
             {
-                using var trs = new ScopedTransaction(dbFactory);
-                await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
+                }
                 return sb;
             }
             catch (Exception ex)
