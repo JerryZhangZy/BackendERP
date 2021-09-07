@@ -125,12 +125,14 @@ SELECT distinct {Helper.TableAllies}.RowNum
 ";
             try
             {
-                using var trs = new ScopedTransaction(dbFactory);
-                rowNumList = await SqlQuery.ExecuteAsync(
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    rowNumList = await SqlQuery.ExecuteAsync(
                     sql,
                     (long rowNum) => rowNum,
                     GetSqlParameters().ToArray()
                 );
+                }
             }
             catch (Exception ex)
             {
@@ -153,12 +155,14 @@ SELECT distinct {Helper.TableAllies}.RowNum
 ";
             try
             {
-                using var trs = new ScopedTransaction(dbFactory);
-                rowNumList = SqlQuery.Execute(
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    rowNumList = SqlQuery.Execute(
                     sql,
                     (long rowNum) => rowNum,
                     GetSqlParameters().ToArray()
                 );
+                }
             }
             catch (Exception ex)
             {

@@ -149,17 +149,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var whereSql = string.Join(" and ", filters.Select(f => f.GetFilterSQLBySqlParameter()));
             var sqlParams = filters.Select(f=>f.GetSqlParameter()).ToArray();
             var sql = $"SELECT RowNum,CustomerUuid,CustomerCode FROM Customer WHERE {whereSql}";
-            using var trs = new ScopedTransaction(DataBaseFactory);
-            var result = SqlQuery.Execute(
+            using (var trs = new ScopedTransaction(DataBaseFactory))
+            {
+                var result = SqlQuery.Execute(
                 sql,
                 (long RowNum, string CustomerUuid, string CustomerCode) => (RowNum, CustomerUuid, CustomerCode),
                 sqlParams);
-            foreach (var tuple in result)
-            {
-                Console.WriteLine($"RowNum:{tuple.RowNum},CustomerUuid:{tuple.CustomerUuid},CustomerCode:{tuple.CustomerCode},");
             }
-
-            Console.WriteLine(whereSql);
         }
 
     }

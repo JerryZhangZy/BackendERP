@@ -161,45 +161,41 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         protected virtual bool ValidateAllMode(SalesOrderData data)
         {
+            var isValid = true;
             var dbFactory = data.dbFactory;
             if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesOrderUuid))
             {
-                IsValid = false;
+                isValid = false;
                 AddError($"Unique Id cannot be empty.");
-                return IsValid;
             }
             if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerCode))
             {
-                IsValid = false;
+                isValid = false;
                 AddError($"CustomerCode cannot be empty.");
-                return IsValid;
             }
 
             if (data.SalesOrderItems != null && data.SalesOrderItems.Count > 0)
             {
                 if (data.SalesOrderItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
                 {
-                    IsValid = false;
+                    isValid = false;
                     AddError($"SKU cannot be empty.");
-                    return IsValid;
                 }
                 //TODO  check logic
                 else if (data.SalesOrderItems.Count > data.SalesOrderItems.Select(i => i.SKU).Distinct().Count())
                 {
-                    IsValid = false;
+                    isValid = false;
                     AddError($"SKU is duplicate.");
-                    return IsValid;
                 }
 
                 if (data.SalesOrderItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
-                    IsValid = false;
+                    isValid = false;
                     AddError($"WarehouseCode cannot be empty.");
-                    return IsValid;
                 }
             }
 
-            return true;
+            return isValid;
 
         }
 
@@ -295,43 +291,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         protected virtual async Task<bool> ValidateAllModeAsync(SalesOrderData data)
         {
+            var isValid = true;
             var dbFactory = data.dbFactory;
             if (string.IsNullOrEmpty(data.SalesOrderHeader.SalesOrderUuid))
             {
-                IsValid = false;
+                isValid = false;
                 AddError($"Unique Id cannot be empty.");
-                return IsValid;
             }
             if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerCode))
             {
-                IsValid = false;
+                isValid = false;
                 AddError($"CustomerCode cannot be empty.");
-                return IsValid;
             }
             if (data.SalesOrderItems != null && data.SalesOrderItems.Count > 0)
             {
                 if (data.SalesOrderItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
                 {
-                    IsValid = false;
+                    isValid = false;
                     AddError($"SKU cannot be empty.");
-                    return IsValid;
                 }
                 //TODO  check logic
                 else if (data.SalesOrderItems.Count > data.SalesOrderItems.Select(i => i.SKU).Distinct().Count())
                 {
-                    IsValid = false;
+                    isValid = false;
                     AddError($"SKU is duplicate.");
-                    return IsValid;
                 }
 
                 if (data.SalesOrderItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
-                    IsValid = false;
+                    isValid = false;
                     AddError($"WarehouseCode cannot be empty.");
-                    return IsValid;
                 }
             }
-            return true;
+            return isValid;
 
         }
 
