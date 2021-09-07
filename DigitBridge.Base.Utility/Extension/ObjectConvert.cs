@@ -659,7 +659,8 @@ namespace DigitBridge.Base.Utility
 
         public static bool ToBool(this bool? input) => (input is null) ? false : (bool)input;
 
-        public static bool IsZero(this decimal input) => Math.Abs(input) < (decimal)0.000001;//TODO input value is 0
+        //public static bool IsZero(this decimal input) => Math.Abs(input) < (decimal)0.000001;//TODO input value is 0
+        public static bool IsZero(this decimal input) => input <= 0;
         public static bool IsZero(this decimal? input) => (input is null) ? true : input.ToDecimal().IsZero();
 
         public static bool IsZero(this double input) => Math.Abs(input) < (double)0.000001;//TODO input value is 0
@@ -691,8 +692,8 @@ namespace DigitBridge.Base.Utility
         public static bool IsZero(this TimeSpan? input) => (input is null) ? true : input.ToTimeSpan().IsZero();
 
 
-        public static decimal ToRateValue(this decimal? input) => (input is null) ? 0 : input.ToDecimal() / 100;
-        public static decimal ToRateValue(this decimal input) => input / 100;
+        public static decimal ToRateValue(this decimal? input) => (input is null) ? 0 : ToRateValue(input.Value);
+        public static decimal ToRateValue(this decimal input) => input < 0 ? 0 : (input > 100 ? 1 : (input / 100));
 
         public static decimal ToRateDisplay(this decimal? input) => (input is null) ? 0 : input.ToDecimal() * 100;
         public static decimal ToRateDisplay(this decimal input) => input * 100;
@@ -705,7 +706,7 @@ namespace DigitBridge.Base.Utility
             (input is null) ? (decimal)0 : input.ToDecimal().ToPrice();
 
         public static decimal ToPrice(this decimal input) =>
-            Math.Round(input, ObjectConvert.PriceDecimalDigits, MidpointRounding.AwayFromZero);
+           input < 0 ? 0 : Math.Round(input, ObjectConvert.PriceDecimalDigits, MidpointRounding.AwayFromZero);
 
         public static double ToPrice(this double? input) =>
             (input is null) ? (double)0 : input.ToDouble().ToPrice();
@@ -721,7 +722,7 @@ namespace DigitBridge.Base.Utility
             (input is null) ? (decimal)0 : input.ToDecimal().ToQty();
 
         public static decimal ToQty(this decimal input) =>
-            Math.Round(input, ObjectConvert.QtyDecimalDigits, MidpointRounding.AwayFromZero);
+          input < 0 ? 0 : Math.Round(input, ObjectConvert.QtyDecimalDigits, MidpointRounding.AwayFromZero);
 
         public static double ToQty(this double? input) =>
             (input is null) ? (double)0 : input.ToDouble().ToQty();
@@ -737,7 +738,7 @@ namespace DigitBridge.Base.Utility
             (input is null) ? (decimal)0 : input.ToDecimal().ToAmount();
 
         public static decimal ToAmount(this decimal input) =>
-            Math.Round(input, ObjectConvert.AmountDecimalDigits, MidpointRounding.AwayFromZero);
+          input < 0 ? 0 : Math.Round(input, ObjectConvert.AmountDecimalDigits, MidpointRounding.AwayFromZero);
 
         public static double ToAmount(this double? input) =>
             (input is null) ? (double)0 : input.ToDouble().ToAmount();
@@ -769,13 +770,13 @@ namespace DigitBridge.Base.Utility
             (input is null) ? (decimal)0 : input.ToDecimal().ToRate();
 
         public static decimal ToRate(this decimal input) =>
-            Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero);
+          input < 0 ? 0 : (input > 100 ? 100 : Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero));
 
         public static double ToRate(this double? input) =>
             (input is null) ? (double)0 : input.ToDouble().ToRate();
 
         public static double ToRate(this double input) =>
-            Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero);
+            input < 0 ? 0 : (input > 100 ? 100 : Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero));
 
 
         public static decimal RoundTo(this decimal? input, int decimalDigit = 2) =>
