@@ -75,8 +75,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static void ExecuteNonQuery(string cmd, CommandType commandType, params IDataParameter[] parameters)
         {
-            using var dbCommand = DataBaseFactory.CreateCommand(cmd, commandType, parameters);
-            dbCommand.ExecuteNonQuery();
+            using (var dbCommand = DataBaseFactory.CreateCommand(cmd, commandType, parameters))
+            {
+                dbCommand.ExecuteNonQuery();
+            }
         }
 
         public static async Task ExecuteNonQueryAsync(string cmd, params IDataParameter[] parameters) =>
@@ -84,8 +86,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task ExecuteNonQueryAsync(string cmd, CommandType commandType, params IDataParameter[] parameters)
         {
-            using var dbCommand = DataBaseFactory.CreateCommand(cmd, commandType, parameters);
-            await ((SqlCommand)dbCommand).ExecuteNonQueryAsync();
+            using (var dbCommand = DataBaseFactory.CreateCommand(cmd, commandType, parameters))
+            {
+                await ((SqlCommand)dbCommand).ExecuteNonQueryAsync();
+            }
         }
 
         public static T ExecuteScalar<T>(string commandText, params IDataParameter[] parameters) =>
@@ -110,8 +114,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<T> ExecuteScalarAsync<T>(string commandText, CommandType commandType, params IDataParameter[] parameters)
         {
-            using var dbCommand = DataBaseFactory.CreateCommand(commandText, commandType, parameters) as SqlCommand;
-            var val = await dbCommand.ExecuteScalarAsync();
+            object val;
+            using (var dbCommand = DataBaseFactory.CreateCommand(commandText, commandType, parameters) as SqlCommand)
+            {
+                val = await dbCommand.ExecuteScalarAsync();
+            }
             if (val == null) return default(T);
 
             // Handle nullable types
@@ -137,8 +144,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static async Task<SqlDataReader> ExecuteCommandAsync(string commandText, CommandType commandType, params IDataParameter[] parameters)
         {
-            using var dbCommand = DataBaseFactory.CreateCommand(commandText, commandType, parameters) as SqlCommand;
-            return await dbCommand.ExecuteReaderAsync();
+            using (var dbCommand = DataBaseFactory.CreateCommand(commandText, commandType, parameters) as SqlCommand)
+            {
+                return await dbCommand.ExecuteReaderAsync();
+            }
         }
 
         #region excute command and return sqlreader value to callback function, upto 20 columns

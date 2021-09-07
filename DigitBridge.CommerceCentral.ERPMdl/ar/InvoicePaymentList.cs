@@ -119,12 +119,14 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
-                using var trs = new ScopedTransaction(dbFactory);
-                rowNumList = await SqlQuery.ExecuteAsync(
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    rowNumList = await SqlQuery.ExecuteAsync(
                     sql,
                     (long rowNum) => rowNum,
                     GetSqlParameters().ToArray()
                 );
+                }
             }
             catch (Exception ex)
             {
@@ -149,12 +151,14 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
-                using var trs = new ScopedTransaction(dbFactory);
-                rowNumList = SqlQuery.Execute(
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    rowNumList = SqlQuery.Execute(
                     sql,
                     (long rowNum) => rowNum,
                     GetSqlParameters().ToArray()
                 );
+                }
             }
             catch (Exception ex)
             {
@@ -183,9 +187,11 @@ for json path;
 
             this.LoadRequestParameter(payload);
             var sql = GetExportSql();
-            using var trs = new ScopedTransaction(dbFactory);
             StringBuilder sb = new StringBuilder();
-            await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
+            using (var trs = new ScopedTransaction(dbFactory))
+            {
+                await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
+            }
             return sb;
         }
 
@@ -197,9 +203,11 @@ for json path;
             this.LoadRequestParameter(payload);
             var sql = GetExportSql();
 
-            using var trs = new ScopedTransaction(dbFactory);
             StringBuilder sb = new StringBuilder();
-            SqlQuery.QueryJson(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
+            using (var trs = new ScopedTransaction(dbFactory))
+            {
+                SqlQuery.QueryJson(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
+            }
             return sb;
         }
     }
