@@ -88,8 +88,8 @@ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllie
             var result = false;
             try
             {
-                payload.OrderShipmentListCount = await CountAsync().ConfigureAwait(false);
-                result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
+                payload.OrderShipmentListCount = await CountAsync();
+                result = await ExcuteJsonAsync(sb);
                 if (result)
                     payload.OrderShipmentList = sb;
             }

@@ -101,8 +101,8 @@ COALESCE(ordst.text, '') poStatusText,
             var result = false;
             try
             {
-                payload.PurchaseOrderListCount = await CountAsync().ConfigureAwait(false);
-                result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
+                payload.PurchaseOrderListCount = await CountAsync();
+                result = await ExcuteJsonAsync(sb);
                 if (result)
                     payload.PurchaseOrderList = sb;
             }

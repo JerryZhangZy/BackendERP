@@ -255,15 +255,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedSave(InvoiceTransactionTable))
 			{
 				InvoiceTransaction.SetDataBaseFactory(dbFactory); 
-				if (!(await InvoiceTransaction.SaveAsync().ConfigureAwait(false))) return false; 
+				if (!(await InvoiceTransaction.SaveAsync())) return false; 
 			}
 			 if (NeedSave(InvoiceReturnItemsTable))
 			{
 				if (InvoiceReturnItems != null) 
-					await InvoiceReturnItems.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await InvoiceReturnItems.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delInvoiceReturnItems = _InvoiceReturnItemsDeleted;
 				if (delInvoiceReturnItems != null)
-					await delInvoiceReturnItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delInvoiceReturnItems.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			if (_OnSave != null)
@@ -289,12 +289,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedDelete(InvoiceTransactionTable))
 			{
 			InvoiceTransaction.SetDataBaseFactory(dbFactory); 
-			if ((await InvoiceTransaction.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			if ((await InvoiceTransaction.DeleteAsync()) <= 0) return false; 
 			}
 			 if (NeedDelete(InvoiceReturnItemsTable))
 			{
 				if (InvoiceReturnItems != null) 
-					await InvoiceReturnItems.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await InvoiceReturnItems.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			if (_OnDelete != null)
 			{

@@ -88,17 +88,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // set Add mode and clear data
             Add();
 
-            if (!(await ValidateAsync(dto).ConfigureAwait(false)))
+            if (!(await ValidateAsync(dto)))
                 return false;
 
             // load data from dto
             FromDto(dto);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync().ConfigureAwait(false);
+            return await SaveDataAsync();
         }
 
         public virtual bool Add(InventoryPayload payload)
@@ -133,20 +133,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // set Add mode and clear data
             Add();
 
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.Inventory).ConfigureAwait(false)))
+            if (!(await ValidateAsync(payload.Inventory)))
                 return false;
 
             // load data from dto
             FromDto(payload.Inventory);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync().ConfigureAwait(false);
+            return await SaveDataAsync();
         }
 
         /// <summary>
@@ -212,12 +212,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //set edit mode before validate
             Edit();
 
-            if (!(await ValidateAsync(dto).ConfigureAwait(false)))
+            if (!(await ValidateAsync(dto)))
                 return false;
 
             if (dto.HasProductBasic)
             {
-                await EditAsync(dto.ProductBasic.RowNum.ToLong()).ConfigureAwait(false);
+                await EditAsync(dto.ProductBasic.RowNum.ToLong());
             }
             else
             {
@@ -236,14 +236,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     return false;
                 }
-                await GetDataBySkuAsync(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt()).ConfigureAwait(false);
+                await GetDataBySkuAsync(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
                 Data.AddIgnoreSave(InventoryData.ProductBasicTable);
             }
             // load data from dto
             FromDto(dto);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
             return await SaveDataAsync();
@@ -301,21 +301,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //set edit mode before validate
             Edit();
 
-            if (!(await ValidateAccountAsync(payload).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.Inventory).ConfigureAwait(false)))
+            if (!(await ValidateAsync(payload.Inventory)))
                 return false;
 
             // set Add mode and clear data
             var dto = payload.Inventory;
             if (dto.HasProductBasic)
             {
-                await EditAsync(dto.ProductBasic.RowNum.ToLong()).ConfigureAwait(false);
+                await EditAsync(dto.ProductBasic.RowNum.ToLong());
             }
             else
             {
-                await GetDataBySkuAsync(dto.ProductExt.SKU, payload.MasterAccountNum, payload.ProfileNum).ConfigureAwait(false);
+                await GetDataBySkuAsync(dto.ProductExt.SKU, payload.MasterAccountNum, payload.ProfileNum);
                 Data.AddIgnoreSave(InventoryData.ProductBasicTable);
             }
 
@@ -323,7 +323,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             FromDto(payload.Inventory);
 
             // validate data for Add processing
-            if (!(await ValidateAsync().ConfigureAwait(false)))
+            if (!(await ValidateAsync()))
                 return false;
 
             return await SaveDataAsync();
@@ -334,7 +334,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (string.IsNullOrEmpty(sku))
                 return false;
             Delete();
-            if (!(await ValidateAccountAsync(payload, sku).ConfigureAwait(false)))
+            if (!(await ValidateAccountAsync(payload, sku)))
                 return false;
             long rowNum = 0;
             using (var tx = new ScopedTransaction(dbFactory))

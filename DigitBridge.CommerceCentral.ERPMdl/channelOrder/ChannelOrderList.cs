@@ -95,8 +95,8 @@ SELECT
             var result = false;
             try
             {
-                payload.ChannelOrderListCount = await CountAsync().ConfigureAwait(false);
-                result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
+                payload.ChannelOrderListCount = await CountAsync();
+                result = await ExcuteJsonAsync(sb);
                 if (result)
                     payload.ChannelOrderList = sb;
             }

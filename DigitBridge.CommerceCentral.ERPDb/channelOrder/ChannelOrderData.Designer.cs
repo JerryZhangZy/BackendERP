@@ -282,24 +282,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedSave(OrderHeaderTable))
 			{
 				OrderHeader.SetDataBaseFactory(dbFactory); 
-				if (!(await OrderHeader.SaveAsync().ConfigureAwait(false))) return false; 
+				if (!(await OrderHeader.SaveAsync())) return false; 
 			}
 			 if (NeedSave(OrderLineTable))
 			{
 				if (OrderLine != null) 
-					await OrderLine.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await OrderLine.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delOrderLine = _OrderLineDeleted;
 				if (delOrderLine != null)
-					await delOrderLine.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delOrderLine.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			 if (NeedSave(OrderLineMerchantExtTable))
 			{
 				if (OrderLineMerchantExt != null) 
-					await OrderLineMerchantExt.SetDataBaseFactory(dbFactory).SaveAsync().ConfigureAwait(false); 
+					await OrderLineMerchantExt.SetDataBaseFactory(dbFactory).SaveAsync(); 
 				var delOrderLineMerchantExt = OrderLineMerchantExtDeleted;
 				if (delOrderLineMerchantExt != null)
-					await delOrderLineMerchantExt.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false);
+					await delOrderLineMerchantExt.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			if (_OnSave != null)
@@ -325,17 +325,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			 if (NeedDelete(OrderHeaderTable))
 			{
 			OrderHeader.SetDataBaseFactory(dbFactory); 
-			if ((await OrderHeader.DeleteAsync().ConfigureAwait(false)) <= 0) return false; 
+			if ((await OrderHeader.DeleteAsync()) <= 0) return false; 
 			}
 			 if (NeedDelete(OrderLineTable))
 			{
 				if (OrderLine != null) 
-					await OrderLine.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await OrderLine.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(OrderLineMerchantExtTable))
 			{
 				if (OrderLineMerchantExt != null) 
-					await OrderLineMerchantExt.SetDataBaseFactory(dbFactory).DeleteAsync().ConfigureAwait(false); 
+					await OrderLineMerchantExt.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			if (_OnDelete != null)
 			{

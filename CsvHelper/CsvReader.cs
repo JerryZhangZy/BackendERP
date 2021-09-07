@@ -1033,7 +1033,7 @@ namespace CsvHelper
 
 			if (hasHeaderRecord && headerRecord == null)
 			{
-				if (!await ReadAsync().ConfigureAwait(false))
+				if (!await ReadAsync())
 				{
 					yield break;
 				}
@@ -1042,7 +1042,7 @@ namespace CsvHelper
 				ValidateHeader<T>();
 			}
 
-			while (await ReadAsync().ConfigureAwait(false))
+			while (await ReadAsync())
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				T record;
@@ -1108,7 +1108,7 @@ namespace CsvHelper
 
 			if (hasHeaderRecord && headerRecord == null)
 			{
-				if (!await ReadAsync().ConfigureAwait(false))
+				if (!await ReadAsync())
 				{
 					yield break;
 				}
@@ -1117,7 +1117,7 @@ namespace CsvHelper
 				ValidateHeader(type);
 			}
 
-			while (await ReadAsync().ConfigureAwait(false))
+			while (await ReadAsync())
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				object record;
@@ -1167,7 +1167,7 @@ namespace CsvHelper
 
 			if (hasHeaderRecord && headerRecord == null)
 			{
-				if (!await ReadAsync().ConfigureAwait(false))
+				if (!await ReadAsync())
 				{
 					yield break;
 				}
@@ -1176,7 +1176,7 @@ namespace CsvHelper
 				ValidateHeader<T>();
 			}
 
-			while (await ReadAsync().ConfigureAwait(false))
+			while (await ReadAsync())
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				try

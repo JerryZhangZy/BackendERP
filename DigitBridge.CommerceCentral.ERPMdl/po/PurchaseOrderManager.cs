@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             get
             {
                 if (_purchaseOrderService is null)
-                    _purchaseOrderService = new PurchaseOrderService();
+                    _purchaseOrderService = new PurchaseOrderService(dbFactory);
                 return _purchaseOrderService;
             }
         }

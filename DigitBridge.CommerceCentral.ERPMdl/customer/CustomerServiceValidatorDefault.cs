@@ -138,14 +138,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (number == null)
                     {
                         if (!dto.Customer.RowNum.IsZero())
-                            isValid = await CustomerServiceHelper.ExistRowNumAsync(dto.Customer.RowNum.ToInt(), pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                            isValid = await CustomerServiceHelper.ExistRowNumAsync(dto.Customer.RowNum.ToInt(), pl.MasterAccountNum, pl.ProfileNum);
                         else if (dto.Customer.HasCustomerUuid)
-                            isValid = await CustomerServiceHelper.ExistIdAsync(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                            isValid = await CustomerServiceHelper.ExistIdAsync(dto.Customer.CustomerUuid, pl.MasterAccountNum, pl.ProfileNum);
                         else
                             isValid = false;
                     }
                     else
-                        isValid = await CustomerServiceHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum).ConfigureAwait(false);
+                        isValid = await CustomerServiceHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -277,17 +277,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> ValidateAsync(CustomerData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             Clear();
-            if (!(await ValidateAllModeAsync(data).ConfigureAwait(false)))
+            if (!(await ValidateAllModeAsync(data)))
                 return false;
 
             return processingMode switch
             {
-                ProcessingMode.Add => await ValidateAddAsync(data).ConfigureAwait(false),
-                ProcessingMode.Edit => await ValidateEditAsync(data).ConfigureAwait(false),
+                ProcessingMode.Add => await ValidateAddAsync(data),
+                ProcessingMode.Edit => await ValidateEditAsync(data),
                 ProcessingMode.List => false,
-                ProcessingMode.Delete => await ValidateDeleteAsync(data).ConfigureAwait(false),
-                ProcessingMode.Void => await ValidateDeleteAsync(data).ConfigureAwait(false),
-                ProcessingMode.Cancel => await ValidateDeleteAsync(data).ConfigureAwait(false),
+                ProcessingMode.Delete => await ValidateDeleteAsync(data),
+                ProcessingMode.Void => await ValidateDeleteAsync(data),
+                ProcessingMode.Cancel => await ValidateDeleteAsync(data),
                 _ => false,
             };
         }

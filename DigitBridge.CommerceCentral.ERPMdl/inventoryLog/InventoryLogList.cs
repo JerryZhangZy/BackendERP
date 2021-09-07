@@ -95,8 +95,8 @@ SELECT
             var result = false;
             try
             {
-                payload.InventoryLogListCount = await CountAsync().ConfigureAwait(false);
-                result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
+                payload.InventoryLogListCount = await CountAsync();
+                result = await ExcuteJsonAsync(sb);
                 if (result)
                     payload.InventoryLogList = sb;
             }

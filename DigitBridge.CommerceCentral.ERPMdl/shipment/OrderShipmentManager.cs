@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             get
             {
                 if (_orderShipmentService is null)
-                    _orderShipmentService = new OrderShipmentService();
+                    _orderShipmentService = new OrderShipmentService(dbFactory);
                 return _orderShipmentService;
             }
         }

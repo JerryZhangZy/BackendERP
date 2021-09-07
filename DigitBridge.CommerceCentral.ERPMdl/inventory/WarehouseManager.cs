@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             get
             {
                 if (_warehouseService is null)
-                    _warehouseService = new WarehouseService();
+                    _warehouseService = new WarehouseService(dbFactory);
                 return _warehouseService;
             }
         }

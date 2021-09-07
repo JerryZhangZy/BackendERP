@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             get
             {
                 if (_channelOrderService is null)
-                    _channelOrderService = new ChannelOrderService();
+                    _channelOrderService = new ChannelOrderService(dbFactory);
                 return _channelOrderService;
             }
         }

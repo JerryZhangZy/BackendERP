@@ -111,8 +111,8 @@ SELECT
             var result = false;
             try
             {
-                payload.WarehouseListCount = await CountAsync().ConfigureAwait(false);
-                result = await ExcuteJsonAsync(sb).ConfigureAwait(false);
+                payload.WarehouseListCount = await CountAsync();
+                result = await ExcuteJsonAsync(sb);
                 if (result)
                     payload.WarehouseList = sb;
             }

@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             get
             {
                 if (_dCAssignmentService is null)
-                    _dCAssignmentService = new DCAssignmentService();
+                    _dCAssignmentService = new DCAssignmentService(dbFactory);
                 return _dCAssignmentService;
             }
         }
