@@ -75,6 +75,10 @@
       <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForWarehouseTransfer.ttinclude">
+      <LastGenOutput>SettingForWarehouseTransfer.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForPurchaseOrder.ttinclude">
       <LastGenOutput>SettingForPurchaseOrder.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -101,6 +105,10 @@
     </None>
     <None Update="T4\SettingForChannelOrder.ttinclude">
       <LastGenOutput>SettingForChannelOrder.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForInventoryUpdate.ttinclude">
+      <LastGenOutput>SettingForWarehouseTransfer.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForSalesOrder.ttinclude">
@@ -392,6 +400,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForInvoice.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForWarehouseTransfer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForWarehouseTransfer.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\SettingForSalesOrder.cs">
       <DesignTime>True</DesignTime>

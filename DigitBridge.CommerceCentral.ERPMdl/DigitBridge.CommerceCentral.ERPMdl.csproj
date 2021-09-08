@@ -12,6 +12,8 @@
   <ItemGroup>
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="ap\" />
+    <Folder Include="inventoryUpdate\" />
+    <Folder Include="warehouseTransfer\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />
   </ItemGroup>

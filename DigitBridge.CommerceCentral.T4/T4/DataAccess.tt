@@ -72,8 +72,10 @@
 //SettingForDistributionCenter
 //SettingForOrderDCAssignment
 //SettingForPurchaseOrder
+//SettingForInventoryUpdate
+//SettingForWarehouseTransfer
 #>
-<#@ include file="SettingForSalesOrder.ttinclude" #>
+<#@ include file="SettingForInventoryUpdate.ttinclude" #>
 <#
     var dtoSuf = "";
     
