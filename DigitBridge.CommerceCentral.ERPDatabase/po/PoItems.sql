@@ -41,7 +41,10 @@
 	[Costable] TINYINT NOT NULL DEFAULT 1,--P/O item will update inventory cost. <br> Title: Apply Cost, Display: true, Editable: true
 	[Taxable] TINYINT NOT NULL DEFAULT 0,--P/O item will apply tax. <br> Title: Taxable, Display: true, Editable: true
 	[IsAp] TINYINT NOT NULL DEFAULT 0,--P/O item will apply to total amount . <br> Title: A/P, Display: true, Editable: true
-
+	
+	[WarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Warehouse uuid, load from inventory data. <br> Display: false, Editable: false
+	[WarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
+	
     [EnterDateUtc] DATETIME NULL, --(Ignore)  
     [UpdateDateUtc] DATETIME NULL, --(Ignore)  
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)  
