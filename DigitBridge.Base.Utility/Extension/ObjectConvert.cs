@@ -706,7 +706,7 @@ namespace DigitBridge.Base.Utility
             (input is null) ? (decimal)0 : input.ToDecimal().ToPrice();
 
         public static decimal ToPrice(this decimal input) =>
-           input < 0 ? 0 : Math.Round(input, ObjectConvert.PriceDecimalDigits, MidpointRounding.AwayFromZero);
+           input <= 0 ? 0 : Math.Round(input, ObjectConvert.PriceDecimalDigits, MidpointRounding.AwayFromZero);
 
         public static double ToPrice(this double? input) =>
             (input is null) ? (double)0 : input.ToDouble().ToPrice();
@@ -722,7 +722,7 @@ namespace DigitBridge.Base.Utility
             (input is null) ? (decimal)0 : input.ToDecimal().ToQty();
 
         public static decimal ToQty(this decimal input) =>
-          input < 0 ? 0 : Math.Round(input, ObjectConvert.QtyDecimalDigits, MidpointRounding.AwayFromZero);
+            Math.Round(input, ObjectConvert.QtyDecimalDigits, MidpointRounding.AwayFromZero);
 
         public static double ToQty(this double? input) =>
             (input is null) ? (double)0 : input.ToDouble().ToQty();
@@ -738,7 +738,7 @@ namespace DigitBridge.Base.Utility
             (input is null) ? (decimal)0 : input.ToDecimal().ToAmount();
 
         public static decimal ToAmount(this decimal input) =>
-          input < 0 ? 0 : Math.Round(input, ObjectConvert.AmountDecimalDigits, MidpointRounding.AwayFromZero);
+          Math.Round(input, ObjectConvert.AmountDecimalDigits, MidpointRounding.AwayFromZero);
 
         public static double ToAmount(this double? input) =>
             (input is null) ? (double)0 : input.ToDouble().ToAmount();
@@ -770,7 +770,7 @@ namespace DigitBridge.Base.Utility
             (input is null) ? (decimal)0 : input.ToDecimal().ToRate();
 
         public static decimal ToRate(this decimal input) =>
-          input < 0 ? 0 : (input > 100 ? 100 : Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero));
+          input <=0 ? 0 : (input > 1 ? 1 : Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero));
 
         public static double ToRate(this double? input) =>
             (input is null) ? (double)0 : input.ToDouble().ToRate();
