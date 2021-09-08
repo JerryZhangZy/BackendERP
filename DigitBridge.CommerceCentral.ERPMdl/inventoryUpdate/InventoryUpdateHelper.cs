@@ -33,12 +33,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT COUNT(1) FROM InventoryUpdateHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
+AND BatchNumber = @number
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -46,18 +45,15 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT COUNT(1) FROM InventoryUpdateHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
+AND BatchNumber = @number
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
@@ -65,8 +61,6 @@ AND OrderNumber = @number
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
@@ -154,42 +148,65 @@ AND ProfileNum = @profileNum";
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"));
         }
-        public static List<long> GetRowNumsByNums(IList<string> nums, int masterAccountNum, int profileNum)
+        public static long GetRowNumByNumber(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT RowNum FROM InventoryUpdateHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
+AND BatchNumber = @number
 ";
-            return SqlQuery.Execute(
-                sql,
-                (long rowNum) => rowNum,
+            return SqlQuery.ExecuteScalar<long>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("pofileNum"),
-                skus.ToParameter<string>("nums"));
-*/
-            return new List<long>();
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
         }
 
-        public static async Task<<long>> GetRowNumsByNumsAsync(IList<string> nums, int masterAccountNum, int profileNum)
+        public static async Task<long> GetRowNumByNumberAsync(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT RowNum FROM InventoryUpdateHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
+AND BatchNumber = @number
 ";
+            return await SqlQuery.ExecuteScalarAsync<long>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+        }
+
+        public static List<long> GetRowNumsByNums(IList<string> nums, int masterAccountNum, int profileNum)
+        {
+                        var sql = $@"
+            SELECT RowNum FROM InventoryUpdateHeader tbl
+            WHERE MasterAccountNum = @masterAccountNum
+            AND ProfileNum = @profileNum
+            AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([BatchNumber],'')))";
+                        return SqlQuery.Execute(
+                            sql,
+                            (long rowNum) => rowNum,
+                            masterAccountNum.ToSqlParameter("masterAccountNum"),
+                            profileNum.ToSqlParameter("pofileNum"),
+                            nums.ToParameter<string>("nums"));
+        }
+
+        public static async Task<List<long>> GetRowNumsByNumsAsync(IList<string> nums, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT RowNum FROM InventoryUpdateHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([BatchNumber],'')))";
+
             return await SqlQuery.ExecuteAsync(
                 sql,
                 (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("pofileNum"),
-                skus.ToParameter<string>("nums"));
-*/
-            return new List<long>();
+                nums.ToParameter<string>("nums"));
         }
 
     }

@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void RegisterMapper(CsvContext context)
         {
 			context.RegisterClassMap(new CsvAutoMapper<InventoryUpdateHeaderDto>());
-			context.RegisterClassMap(new CsvAutoMapper<InventoryUpdateItemsDto>());
+			context.RegisterClassMap(new CsvAutoMapper<InventoryUpdateItemsDto>(1));
         }
         
         protected override void WriteCsv(InventoryUpdateDataDto data, CsvWriter csv)
@@ -75,13 +75,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
                         }
                         dto. InventoryUpdateHeader = csv.GetRecord<InventoryUpdateHeaderDto>();
                         break;
-                    //case "L":
-                    //    if (dto.Inventory == null)
-                    //        dto.Inventory = new List<InventoryDto>();
-                    //    var item = csv.GetRecord<InventoryDto>();
-                    //    item.InventoryAttributes = csv.GetRecord<InventoryAttributesDto>();
-                    //    dto.Inventory.Add(item);
-                    //    break;
+                    case "L":
+                        if (dto.InventoryUpdateItems == null)
+                            dto.InventoryUpdateItems = new List<InventoryUpdateItemsDto>();
+                        var item = csv.GetRecord<InventoryUpdateItemsDto>();
+                        dto.InventoryUpdateItems.Add(item);
+                        break;
                 }
             }
             if (dto != null)

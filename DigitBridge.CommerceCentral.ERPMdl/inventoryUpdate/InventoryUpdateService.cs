@@ -295,6 +295,70 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
+        public bool GetInventoryUpdateByBatchNumber(InventoryUpdatePayload payload, string batchNumber)
+        {
+            if (string.IsNullOrEmpty(batchNumber))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = InventoryUpdateHelper.GetRowNumByNumber(batchNumber, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return GetData(rowNum);
+        }
+        public async Task<bool> GetInventoryUpdateByBatchNumberAsync(InventoryUpdatePayload payload, string batchNumber)
+        {
+            if (string.IsNullOrEmpty(batchNumber))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await InventoryUpdateHelper.GetRowNumByNumberAsync(batchNumber, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return await GetDataAsync(rowNum);
+        }
+
+        public InventoryUpdatePayload GetInventoryUpdatesByCodeArray(InventoryUpdatePayload payload)
+        {
+            if (!payload.HasBatchNumbers)
+                return payload;
+            var list = new List<InventoryUpdateDataDto>();
+            var msglist = new List<MessageClass>();
+            var rowNumList = new List<long>();
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNumList = InventoryUpdateHelper.GetRowNumsByNums(payload.BatchNumbers, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rowNum in rowNumList)
+            {
+                if ( GetData(rowNum))
+                    list.Add(ToDto());
+            }
+            payload.InventoryUpdates = list;
+            payload.Messages = msglist;
+            return payload;
+        }
+
+        public async Task<InventoryUpdatePayload> GetInventoryUpdatesByCodeArrayAsync(InventoryUpdatePayload payload)
+        {
+            if (!payload.HasBatchNumbers)
+                return payload;
+            var list = new List<InventoryUpdateDataDto>();
+            var msglist = new List<MessageClass>();
+            var rowNumList = new List<long>();
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNumList = await InventoryUpdateHelper.GetRowNumsByNumsAsync(payload.BatchNumbers, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rowNum in rowNumList)
+            {
+                if (await GetDataAsync(rowNum))
+                    list.Add(ToDto());
+            }
+            payload.InventoryUpdates = list;
+            payload.Messages = msglist;
+            return payload;
+        }
 
     }
 }

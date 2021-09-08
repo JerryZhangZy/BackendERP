@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "InventoryUpdateUuids", val => InventoryUpdateUuids = val.Split(",").ToList() }
+                { "BatchNumbers", val => BatchNumbers = val.Split(",").ToList() }
             };
         }
 
@@ -43,10 +43,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// (Request Parameter) Array of uuid to load multiple InventoryUpdate dto data.
         /// </summary>
         [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple InventoryUpdate dto data.")]
-        public IList<string> InventoryUpdateUuids { get; set; } = new List<string>();
+        public IList<string> BatchNumbers { get; set; } = new List<string>();
         [JsonIgnore] 
-        public virtual bool HasInventoryUpdateUuids => InventoryUpdateUuids != null && InventoryUpdateUuids.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasInventoryUpdateUuids;
+        public virtual bool HasBatchNumbers => BatchNumbers != null && BatchNumbers.Count > 0;
+        public bool ShouldSerializeBatchNumbers() => HasBatchNumbers;
 
         /// <summary>
         /// (Response Data) Array of InventoryUpdate entity object which load by uuid array.

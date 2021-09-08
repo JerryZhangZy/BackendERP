@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void RegisterMapper(CsvContext context)
         {
 			context.RegisterClassMap(new CsvAutoMapper<WarehouseTransferHeaderDto>());
-			context.RegisterClassMap(new CsvAutoMapper<WarehouseTransferItemsDto>());
+			context.RegisterClassMap(new CsvAutoMapper<WarehouseTransferItemsDto>(1));
         }
         
         protected override void WriteCsv(WarehouseTransferDataDto data, CsvWriter csv)
@@ -75,13 +75,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
                         }
                         dto. WarehouseTransferHeader = csv.GetRecord<WarehouseTransferHeaderDto>();
                         break;
-                    //case "L":
-                    //    if (dto.Inventory == null)
-                    //        dto.Inventory = new List<InventoryDto>();
-                    //    var item = csv.GetRecord<InventoryDto>();
-                    //    item.InventoryAttributes = csv.GetRecord<InventoryAttributesDto>();
-                    //    dto.Inventory.Add(item);
-                    //    break;
+                    case "L":
+                        if (dto.WarehouseTransferItems == null)
+                            dto.WarehouseTransferItems = new List<WarehouseTransferItemsDto>();
+                        var item = csv.GetRecord<WarehouseTransferItemsDto>();
+                        dto.WarehouseTransferItems.Add(item);
+                        break;
                 }
             }
             if (dto != null)

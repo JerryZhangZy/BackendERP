@@ -295,6 +295,70 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
+        public bool GetWarehouseTransferByBatchNumber(WarehouseTransferPayload payload, string batchNumber)
+        {
+            if (string.IsNullOrEmpty(batchNumber))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = WarehouseTransferHelper.GetRowNumByNumber(batchNumber, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return GetData(rowNum);
+        }
+        public async Task<bool> GetWarehouseTransferByBatchNumberAsync(WarehouseTransferPayload payload, string batchNumber)
+        {
+            if (string.IsNullOrEmpty(batchNumber))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await WarehouseTransferHelper.GetRowNumByNumberAsync(batchNumber, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return await GetDataAsync(rowNum);
+        }
+
+        public WarehouseTransferPayload GetWarehouseTransfersByCodeArray(WarehouseTransferPayload payload)
+        {
+            if (!payload.HasBatchNumbers)
+                return payload;
+            var list = new List<WarehouseTransferDataDto>();
+            var msglist = new List<MessageClass>();
+            var rowNumList = new List<long>();
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNumList = WarehouseTransferHelper.GetRowNumsByNums(payload.BatchNumbers, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rowNum in rowNumList)
+            {
+                if (GetData(rowNum))
+                    list.Add(ToDto());
+            }
+            payload.WarehouseTransfers = list;
+            payload.Messages = msglist;
+            return payload;
+        }
+
+        public async Task<WarehouseTransferPayload> GetWarehouseTransfersByCodeArrayAsync(WarehouseTransferPayload payload)
+        {
+            if (!payload.HasBatchNumbers)
+                return payload;
+            var list = new List<WarehouseTransferDataDto>();
+            var msglist = new List<MessageClass>();
+            var rowNumList = new List<long>();
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNumList = await WarehouseTransferHelper.GetRowNumsByNumsAsync(payload.BatchNumbers, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rowNum in rowNumList)
+            {
+                if (await GetDataAsync(rowNum))
+                    list.Add(ToDto());
+            }
+            payload.WarehouseTransfers = list;
+            payload.Messages = msglist;
+            return payload;
+        }
 
     }
 }

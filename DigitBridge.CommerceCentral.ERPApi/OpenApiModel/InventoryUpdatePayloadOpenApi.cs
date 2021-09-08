@@ -83,7 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// (Request) Array of uuid to get multiple InventoryUpdates.
         /// </summary>
         [OpenApiPropertyDescription("(Request) Array of uuid to get multiple InventoryUpdates.")]
-        public IList<string> InventoryUpdateUuids { get; set; }
+        public IList<string> BatchNumbers { get; set; }
 
         /// <summary>
         /// (Response) Array of InventoryUpdate which get by uuid array.
