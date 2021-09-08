@@ -368,6 +368,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasIsAp => IsAp != null;
 
 		/// <summary>
+		/// (Readonly) Warehouse uuid, load from inventory data. <br> Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Warehouse uuid, load from inventory data. <br> Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The WarehouseUuid value cannot exceed 50 characters. ")]
+        public string WarehouseUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasWarehouseUuid => WarehouseUuid != null;
+
+		/// <summary>
+		/// Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true")]
+        [StringLength(50, ErrorMessage = "The WarehouseCode value cannot exceed 50 characters. ")]
+        public string WarehouseCode { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasWarehouseCode => WarehouseCode != null;
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
 		[OpenApiPropertyDescription("(Ignore)")]
