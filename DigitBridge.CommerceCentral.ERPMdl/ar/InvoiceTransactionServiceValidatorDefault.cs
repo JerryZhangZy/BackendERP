@@ -175,20 +175,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (data.InvoiceReturnItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
                 {
                     IsValid = false;
-                    AddError($"SKU cannot be empty.");
+                    AddError($"InvoiceReturnItems.SKU cannot be empty.");
                     return IsValid;
-                }
-                else if (data.InvoiceReturnItems.Count > data.InvoiceReturnItems.Select(i => i.SKU).Distinct().Count())
-                {
-                    IsValid = false;
-                    AddError($"SKU is duplicate.");
-                    return IsValid;
-                }
-
+                } 
                 if (data.InvoiceReturnItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
                     IsValid = false;
-                    AddError($"WarehouseCode cannot be empty.");
+                    AddError($"InvoiceReturnItems.WarehouseCode cannot be empty.");
                     return IsValid;
                 }
             }
@@ -306,20 +299,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (data.InvoiceReturnItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
                 {
                     IsValid = false;
-                    AddError($"SKU cannot be empty.");
+                    AddError($"InvoiceReturnItems.SKU cannot be empty.");
                     return IsValid;
-                }
-                else if (data.InvoiceReturnItems.Count > data.InvoiceReturnItems.Select(i => i.SKU).Distinct().Count())
-                {
-                    IsValid = false;
-                    AddError($"SKU is duplicate.");
-                    return IsValid;
-                }
+                } 
 
                 if (data.InvoiceReturnItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
                     IsValid = false;
-                    AddError($"WarehouseCode cannot be empty.");
+                    AddError($"InvoiceReturnItems.WarehouseCode cannot be empty.");
                     return IsValid;
                 }
             }

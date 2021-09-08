@@ -190,21 +190,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
                 {
                     IsValid = false;
-                    AddError($"SKU cannot be empty.");
+                    AddError($"InvoiceItems.SKU cannot be empty.");
                     return IsValid;
-                }
-                //TODO  check logic
-                else if (data.InvoiceItems.Count > data.InvoiceItems.Select(i => i.SKU).Distinct().Count())
-                {
-                    IsValid = false;
-                    AddError($"SKU is duplicate.");
-                    return IsValid;
-                }
-
+                } 
                 if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
                     IsValid = false;
-                    AddError($"WarehouseCode cannot be empty.");
+                    AddError($"InvoiceItems.WarehouseCode cannot be empty.");
                     return IsValid;
                 }
             }
@@ -317,21 +309,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
                 {
                     IsValid = false;
-                    AddError($"SKU cannot be empty.");
+                    AddError($"InvoiceItems.SKU cannot be empty.");
                     return IsValid;
-                }
-                //TODO  check logic
-                else if (data.InvoiceItems.Count > data.InvoiceItems.Select(i => i.SKU).Distinct().Count())
-                {
-                    IsValid = false;
-                    AddError($"SKU is duplicate.");
-                    return IsValid;
-                }
-
+                } 
                 if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
                     IsValid = false;
-                    AddError($"WarehouseCode cannot be empty.");
+                    AddError($"InvoiceItems.WarehouseCode cannot be empty.");
                     return IsValid;
                 }
             }
