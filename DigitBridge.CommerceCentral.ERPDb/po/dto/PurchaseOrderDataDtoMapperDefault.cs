@@ -246,6 +246,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasCostable) data.Costable = dto.Costable.ToBool();
 			if (dto.HasTaxable) data.Taxable = dto.Taxable.ToBool();
 			if (dto.HasIsAp) data.IsAp = dto.IsAp.ToBool();
+			if (dto.HasWarehouseUuid) data.WarehouseUuid = dto.WarehouseUuid;
+			if (dto.HasWarehouseCode) data.WarehouseCode = dto.WarehouseCode;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -614,6 +616,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.Costable = data.Costable;
 			dto.Taxable = data.Taxable;
 			dto.IsAp = data.IsAp;
+			dto.WarehouseUuid = data.WarehouseUuid;
+			dto.WarehouseCode = data.WarehouseCode;
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;

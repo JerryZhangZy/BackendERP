@@ -45,8 +45,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #region Service Property
 
         //private CustomerService _customerService;
-        //protected CustomerService customerService => _customerService ??= new CustomerService(dbFactory);
 
+        //protected CustomerService customerService
+        //{
+        //    get
+        //    {
+        //        if (_customerService is null)
+        //            _customerService = new CustomerService(dbFactory);
+        //        return _customerService;
+        //    }
+        //}
         private InventoryService _inventoryService;
         protected InventoryService inventoryService => _inventoryService ??= new InventoryService(dbFactory);
 
@@ -62,14 +70,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual InventoryData GetInventoryData(PurchaseOrderData data, string sku)
         {
-            var key = data.PoHeader.MasterAccountNum + "_" + data.PoHeader.ProfileNum + '_' + sku;
+            var header = data.PoHeader;
+            var key = header.MasterAccountNum + "_" + header.ProfileNum + '_' + sku;
             return data.GetCache(key, () =>
             {
-                inventoryService.GetByNumber(data.PoHeader.MasterAccountNum, data.PoHeader.ProfileNum, sku);
+                inventoryService.GetByNumber(header.MasterAccountNum, header.ProfileNum, sku);
                 return inventoryService.Data;
             });
         }
-
+        ///// <summary>
+        ///// Get Customer Data by customerCode
+        ///// </summary>
+        ///// <param name="data"></param>
+        ///// <param name="customerCode"></param>
+        ///// <returns></returns>
+        //public virtual CustomerData GetCustomerData(PurchaseOrderData data, string customerCode)
+        //{
+        //    var header = data.PoHeader;
+        //    var key = header.MasterAccountNum + "_" + header.ProfileNum + '_' + customerCode;
+        //    return data.GetCache(key, () =>
+        //    {
+        //        customerService.GetByNumber(header.MasterAccountNum, header.ProfileNum, customerCode);
+        //        return customerService.Data;
+        //    });
+        //}
         #endregion
 
         public virtual bool SetDefault(PurchaseOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -108,7 +132,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             else if (processingMode == ProcessingMode.Edit)
             {
                 //todo 
-            } 
+            }
+            
             return true;
         }
 
@@ -141,15 +166,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 item.PoItemUuid = Guid.NewGuid().ToString();
             }
-
+             
             //Set SKU info
             var inventoryData = GetInventoryData(data, item.SKU);
             if (inventoryData != null)
             {
                 item.ProductUuid = inventoryData.ProductBasic.ProductUuid; 
-                //TODO check this .(no WarehouseCode in po item.)
                 var inventory = inventoryService.GetInventory(inventoryData, item);
-                item.Currency = inventory.Currency;
+                item.InventoryUuid = inventory.InventoryUuid;
+                item.WarehouseCode = inventory.WarehouseCode;
+                item.WarehouseUuid = inventory.WarehouseUuid;
+                if (string.IsNullOrEmpty(item.Currency))
+                    item.Currency = inventory.Currency;
             }
 
             //var setting = new ERPSetting();
@@ -164,10 +192,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             ////ShipDate
             ////EtaArrivalDate
 
-            ////SKU 
+           
             ////Description
             ////Notes 
-            ////Currency
 
             return true;
         } 

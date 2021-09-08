@@ -251,18 +251,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // if exist DiscountRate, calculate discount amount, otherwise use entry discount amount
             if (!sum.DiscountRate.IsZero())
-                sum.DiscountAmount = (sum.SubTotalAmount * sum.DiscountRate.ToRate() / 100).ToAmount();
+                sum.DiscountAmount = (sum.SubTotalAmount * sum.DiscountRate.ToRate()).ToAmount();
             else
                 sum.DiscountRate = 0;
 
             sum.DiscountAmount = sum.DiscountAmount.ToAmount();
             //manual input max discount amount is SubTotalAmount
+            //TODO negative number. replace with Math.Abs(sum.DiscountAmount)>Math.Abs( sum.SubTotalAmount)?
             if (sum.DiscountAmount > sum.SubTotalAmount)
                 sum.DiscountAmount = sum.SubTotalAmount;
             // tax calculate should deduct discount from taxable amount
             //sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
 
-            var discountRate = sum.SubTotalAmount > 0 ? (sum.DiscountAmount / sum.SubTotalAmount) : 0;
+            var discountRate = sum.SubTotalAmount != 0 ? (sum.DiscountAmount / sum.SubTotalAmount) : 0;
             sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate;
             sum.TaxAmount = sum.TaxAmount.ToAmount();
 
@@ -312,7 +313,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     continue;
                 //var inv = GetInventoryData(data,item.ProductUuid);
 
-                //SetDefault(item, data, processingMode);//TODO where to call SetDefault
                 CalculateDetail(item, data, processingMode);
                 if (item.IsAr)
                 {

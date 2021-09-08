@@ -180,22 +180,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (data.PoItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
                 {
                     IsValid = false;
-                    AddError($"SKU cannot be empty.");
+                    AddError($"PoItems.SKU cannot be empty.");
                     return IsValid;
-                }
-                else if (data.PoItems.Count > data.PoItems.Select(i => i.SKU).Distinct().Count())
+                } 
+                if (data.PoItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
                     IsValid = false;
-                    AddError($"SKU is duplicate.");
+                    AddError($"PoItems.WarehouseCode cannot be empty.");
                     return IsValid;
                 }
-                //TODO add WarehouseCode to db?
-                //if (data.PoItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
-                //{
-                //    IsValid = false;
-                //    AddError($"WarehouseCode cannot be empty.");
-                //    return IsValid;
-                //}
             }
 
             return true;
@@ -306,22 +299,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (data.PoItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
                 {
                     IsValid = false;
-                    AddError($"SKU cannot be empty.");
+                    AddError($"PoItems.SKU cannot be empty.");
                     return IsValid;
-                }
-                else if (data.PoItems.Count > data.PoItems.Select(i => i.SKU).Distinct().Count())
+                } 
+                if (data.PoItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
                     IsValid = false;
-                    AddError($"SKU is duplicate.");
+                    AddError($"PoItems.WarehouseCode cannot be empty.");
                     return IsValid;
                 }
-                //TODO add WarehouseCode to db?
-                //if (data.PoItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
-                //{
-                //    IsValid = false;
-                //    AddError($"WarehouseCode cannot be empty.");
-                //    return IsValid;
-                //}
             }
             return true;
 

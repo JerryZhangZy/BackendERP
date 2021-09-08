@@ -179,19 +179,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (data.SalesOrderItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
                 {
                     isValid = false;
-                    AddError($"SKU cannot be empty.");
-                }
-                //TODO  check logic
-                else if (data.SalesOrderItems.Count > data.SalesOrderItems.Select(i => i.SKU).Distinct().Count())
-                {
-                    isValid = false;
-                    AddError($"SKU is duplicate.");
-                }
-
+                    AddError($"SalesOrderItems.SKU cannot be empty.");
+                } 
                 if (data.SalesOrderItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
                     isValid = false;
-                    AddError($"WarehouseCode cannot be empty.");
+                    AddError($"SalesOrderItems.WarehouseCode cannot be empty.");
                 }
             }
 
@@ -308,19 +301,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (data.SalesOrderItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
                 {
                     isValid = false;
-                    AddError($"SKU cannot be empty.");
-                }
-                //TODO  check logic
-                else if (data.SalesOrderItems.Count > data.SalesOrderItems.Select(i => i.SKU).Distinct().Count())
-                {
-                    isValid = false;
-                    AddError($"SKU is duplicate.");
-                }
+                    AddError($"SalesOrderItems.SKU cannot be empty.");
+                } 
 
                 if (data.SalesOrderItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
                     isValid = false;
-                    AddError($"WarehouseCode cannot be empty.");
+                    AddError($"SalesOrderItems.WarehouseCode cannot be empty.");
                 }
             }
             return isValid;

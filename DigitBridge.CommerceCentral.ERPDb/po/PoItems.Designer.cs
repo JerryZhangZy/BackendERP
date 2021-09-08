@@ -145,6 +145,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("IsAp",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
         private byte _isAp;
 
+        [Column("WarehouseUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _warehouseUuid;
+
+        [Column("WarehouseCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _warehouseCode;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -795,6 +801,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Readonly) Warehouse uuid, load from inventory data. <br> Display: false, Editable: false
+		/// </summary>
+        public virtual string WarehouseUuid
+        {
+            get
+            {
+				return _warehouseUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_warehouseUuid = value.TruncateTo(50); 
+				OnPropertyChanged("WarehouseUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
+		/// </summary>
+        public virtual string WarehouseCode
+        {
+            get
+            {
+				return _warehouseCode?.TrimEnd(); 
+            }
+            set
+            {
+				_warehouseCode = value.TruncateTo(50); 
+				OnPropertyChanged("WarehouseCode", value);
+            }
+        }
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
@@ -1044,6 +1082,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_costable = default(byte); 
 			_taxable = default(byte); 
 			_isAp = default(byte); 
+			_warehouseUuid = String.Empty; 
+			_warehouseCode = String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 

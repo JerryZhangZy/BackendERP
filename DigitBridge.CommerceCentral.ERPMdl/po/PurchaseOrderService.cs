@@ -49,9 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // load data from dto
-            FromDto(dto);
-            
-            Calculate();
+            FromDto(dto); 
 
             // validate data for Add processing
             if (!Validate())
@@ -74,9 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // load data from dto
-            FromDto(dto);
-            
-            Calculate();
+            FromDto(dto); 
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -100,9 +96,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // load data from dto
-            FromDto(payload.PurchaseOrder);
-            
-            Calculate();
+            FromDto(payload.PurchaseOrder); 
 
             // validate data for Add processing
             if (!Validate())
@@ -125,9 +119,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // load data from dto
-            FromDto(payload.PurchaseOrder);
-            
-            Calculate();
+            FromDto(payload.PurchaseOrder); 
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -171,9 +163,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             GetData(dto.PoHeader.RowNum.ToLong());
 
             // load data from dto
-            FromDto(dto);
-            
-            Calculate();
+            FromDto(dto); 
 
             // validate data for Add processing
             if (!Validate())
@@ -199,9 +189,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await GetDataAsync(dto.PoHeader.RowNum.ToLong());
 
             // load data from dto
-            FromDto(dto);
-            
-            Calculate();
+            FromDto(dto); 
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -231,9 +219,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             GetData(payload.PurchaseOrder.PoHeader.RowNum.ToLong());
 
             // load data from dto
-            FromDto(payload.PurchaseOrder);
-            
-            Calculate();
+            FromDto(payload.PurchaseOrder); 
 
             // validate data for Add processing
             if (!Validate())
@@ -262,9 +248,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await GetDataAsync(payload.PurchaseOrder.PoHeader.RowNum.ToLong());
 
             // load data from dto
-            FromDto(payload.PurchaseOrder);
-            
-            Calculate();
+            FromDto(payload.PurchaseOrder); 
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
