@@ -5,12 +5,8 @@
 
     [InventoryUpdateUuid] VARCHAR(50) NOT NULL, --Order uuid. <br> Display: false, Editable: false.
     [Seq] INT NOT NULL DEFAULT 0, --Order Item Line sequence number. <br> Title: Line#, Display: true, Editable: false
-    [OrderItemType] INT NOT NULL DEFAULT 0, --Order item type. <br> Title: Type, Display: true, Editable: true
-    [InventoryUpdateItemstatus] INT NOT NULL DEFAULT 0, --Order item status. <br> Title: Status, Display: true, Editable: true
-	[ItemDate] DATE NOT NULL, --(Ignore) Order date
-	[ItemTime] TIME NOT NULL, --(Ignore) Order time
-	[ShipDate] DATE NULL, --Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
-	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer. <br> Title: Delivery Date, Display: true, Editable: true
+	[ItemDate] DATE NOT NULL, --(Ignore) Update item date
+	[ItemTime] TIME NOT NULL, --(Ignore) Update item time
 
 	[SKU] Varchar(100) NOT NULL DEFAULT '', --Product SKU. <br> Title: SKU, Display: true, Editable: true
 	[ProductUuid] VARCHAR(50) NOT NULL, --(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
@@ -21,44 +17,15 @@
 	[Description] NVarchar(200) NOT NULL DEFAULT '', --Item line description, default from ProductBasic data. <br> Title: Description, Display: true, Editable: true
 	[Notes] NVarchar(500) NOT NULL DEFAULT '',--Order item line notes. <br> Title: Notes, Display: true, Editable: true
 
-	[Currency] VARCHAR(10) NOT NULL DEFAULT '', --(Ignore)  
 	[UOM] Varchar(50) NOT NULL DEFAULT '', --(Readonly) Product unit of measure, load from ProductBasic data. <br> Title: UOM, Display: true, Editable: false
-	[PackType] Varchar(50) NOT NULL DEFAULT '', --(Ignore) Product SKU Qty pack type, for example: Case, Box, Each 
-	[PackQty] DECIMAL(24, 6) NOT NULL DEFAULT 1, --(Ignore) Item Qty each per pack. 
-	[OrderPack] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Order number of pack. 
-	[ShipPack] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Shipped number of pack. 
-	[CancelledPack] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Cancelled number of pack. 
-	[OpenPack] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Cancelled number of pack. 
-	[OrderQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Order Qty. <br> Title: Order Qty, Display: true, Editable: true
-	[ShipQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Shipped Qty. <br> Title: Shipped Qty, Display: true, Editable: false
-	[CancelledQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Cancelled Qty. <br> Title: Cancelled Qty, Display: true, Editable: false
-	[OpenQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Open Qty. 
-
-	[PriceRule] VARCHAR(50) NOT NULL DEFAULT '', --Item price rule. <br> Title: Price Type, Display: true, Editable: true
-	[Price] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item unit price. <br> Title: Unit Price, Display: true, Editable: true
-	[DiscountRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item level discount rate. <br> Title: Discount Rate, Display: true, Editable: true
-	[DiscountAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item level discount amount. <br> Title: Discount Amount, Display: true, Editable: true
-	[DiscountPrice] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item after discount price. <br> Title: Discount Price, Display: true, Editable: false
-	[ExtAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount. <br> Title: Ext.Amount, Display: true, Editable: false
-	[TaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Amount should apply tax. <br> Display: false, Editable: false
-	[NonTaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Amount should not apply tax. <br> Display: false, Editable: false
-	[TaxRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Default Tax rate for item. <br> Display: false, Editable: false
-	[TaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item level tax amount (include shipping tax and misc tax). <br> Display: false, Editable: false
-	[ShippingAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --shipping fee for this item. <br> Display: false, Editable: false
-	[ShippingTaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item level tax amount of shipping fee. <br> Display: false, Editable: false
-	[MiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item level handling charge. <br> Display: false, Editable: false
-	[MiscTaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item level tax amount of handling charge. <br> Display: false, Editable: false
-	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item level Charge and Allowance Amount. <br> Display: false, Editable: false
-	[ItemTotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount include all. <br> Display: false, Editable: false
-	[ShipAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item shipped amount. <br> Display: false, Editable: false
-	[CancelledAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item cancelled amount. <br> Display: false, Editable: false
-	[OpenAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item open amount. <br> Display: false, Editable: false
-
-	[Stockable] TINYINT NOT NULL DEFAULT 1, --item will update inventory instock qty. <br> Title: Stockable, Display: true, Editable: true
-	[IsAr] TINYINT NOT NULL DEFAULT 1,--item will add to Order total amount. <br> Title: A/R, Display: true, Editable: true
-	[Taxable] TINYINT NOT NULL DEFAULT 0,--item will apply tax. <br> Title: Taxable, Display: true, Editable: true
-	[Costable] TINYINT NOT NULL DEFAULT 1,--item will calculate total cost. <br> Title: Apply Cost, Display: true, Editable: true
-	[IsProfit] TINYINT NOT NULL DEFAULT 1,--item will calculate profit. <br> Title: Apply Profit, Display: true, Editable: true
+	[PackType] Varchar(50) NOT NULL DEFAULT '', --Product SKU Qty pack type, for example: Case, Box, Each. <br> Title: Pack, Display: true, Editable: true 
+	[PackQty] DECIMAL(24, 6) NOT NULL DEFAULT 1, --Item Qty each per pack. <br> Title: Qty/Pack, Display: true, Editable: true
+	[UpdatePack] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item updated pack (positive/negative). <br> Title: Update Pack, Display: true, Editable: true
+	[CountPack] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item count pack (use for Count only). <br> Title: Count Pack, Display: true, Editable: true
+	[BeforeInstockPack] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Readonly) Instock pack before update. <br> Title: Instock Pack, Display: true, Editable: false
+	[UpdateQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item updated qty (positive/negative). <br> Title: Update Qty, Display: true, Editable: true
+	[CountQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item count qty (use for Count only). <br> Title: Count Qty, Display: true, Editable: true
+	[BeforeInstockQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Readonly) Instock before update. <br> Title: Instock, Display: true, Editable: false
 
 	[UnitCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Unit Cost. 
 	[AvgCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Avg.Cost. 
@@ -98,9 +65,9 @@ CREATE NONCLUSTERED INDEX [BLK_InventoryUpdateItems_InventoryUpdateUuid_Seq] ON 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InventoryUpdateItems]') AND name = N'IX_InventoryUpdateItems_OrderId')
-CREATE NONCLUSTERED INDEX [IX_InventoryUpdateItems_InventoryUpdateUuid] ON [dbo].[InventoryUpdateItems]
+CREATE NONCLUSTERED INDEX [IX_InventoryUpdateItems_ProductUuid] ON [dbo].[InventoryUpdateItems]
 (
-	[InventoryUpdateUuid] ASC
+	[ProductUuid] ASC
 ) 
 GO
 

@@ -254,12 +254,14 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
-                using var trs = new ScopedTransaction(dbFactory);
-                rowNumList = await SqlQuery.ExecuteAsync(
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    rowNumList = await SqlQuery.ExecuteAsync(
                     sql,
                     (long rowNum) => rowNum,
                     GetSqlParameters().ToArray()
                 );
+                }
             }
             catch (Exception ex)
             {
@@ -284,12 +286,14 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
             {
-                using var trs = new ScopedTransaction(dbFactory);
-                rowNumList = SqlQuery.Execute(
+                using (var trs = new ScopedTransaction(dbFactory))
+                {
+                    rowNumList = SqlQuery.Execute(
                     sql,
                     (long rowNum) => rowNum,
                     GetSqlParameters().ToArray()
                 );
+                }
             }
             catch (Exception ex)
             {
@@ -316,12 +320,14 @@ AND @orderNumbers.exist('/parameters/value[text()=sql:column(''tbl.OrderNumber''
                 new SqlParameter("@profileNum",profileNum),
                 new SqlParameter("@orderNumbers",orderNumbers.ListToXml()){ DbType=DbType.Xml}
         };
-            using var trs = new ScopedTransaction(dbFactory);
-            return await SqlQuery.ExecuteAsync(
-                sql,
-                (long rowNum) => rowNum,
-                paras
-            );
+            using (var trs = new ScopedTransaction(dbFactory))
+            {
+                return await SqlQuery.ExecuteAsync(
+                    sql,
+                    (long rowNum) => rowNum,
+                    paras
+                );
+            }
         }
 
     }

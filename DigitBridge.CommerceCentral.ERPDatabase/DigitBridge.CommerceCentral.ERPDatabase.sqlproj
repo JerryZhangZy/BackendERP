@@ -66,6 +66,7 @@
     <Folder Include="channelOrder" />
     <Folder Include="dataType" />
     <Folder Include="inventoryUpdate" />
+    <Folder Include="warehouseTransfer" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -208,5 +209,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="so\SalesOrderItems_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="warehouseTransfer\WarehouseTransferHeader.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="warehouseTransfer\WarehouseTransferItems.sql" />
   </ItemGroup>
 </Project>
