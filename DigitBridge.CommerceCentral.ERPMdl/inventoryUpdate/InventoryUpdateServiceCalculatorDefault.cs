@@ -20,6 +20,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Utility.Enums;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -38,46 +39,43 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual void PrepareData(InventoryUpdateData  data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            //if(data==null||data.SalesOrderHeader==null)
-            //    return;
-            //if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
-            //{
-            //    using(var trx = new ScopedTransaction(dbFactory)){
-            //      data.SalesOrderHeader.CustomerUuid = CustomerServiceHelper.GetCustomerUuidByCustomerCode(
-            //          data.SalesOrderHeader.CustomerCode, data.SalesOrderHeader.MasterAccountNum,
-            //          data.SalesOrderHeader.ProfileNum);
-            //  }
-            //}
-            //// get customer data
-            //GetCustomerData(data,data.SalesOrderHeader.CustomerUuid);
+            if (data == null || data.InventoryUpdateHeader == null)
+                return;
+            if (!string.IsNullOrEmpty(data.InventoryUpdateHeader.WarehouseUuid))
+            {
+                var warehouse= GetWarehouseData(data,data.InventoryUpdateHeader.WarehouseUuid);
+                data.InventoryUpdateHeader.WarehouseCode = warehouse.DistributionCenter.DistributionCenterCode;
+            }
 
-            //if (data.SalesOrderItems != null)
-            //{
-            //    var skuList = data.SalesOrderItems
-            //        .Where(r => string.IsNullOrEmpty(r.ProductUuid) && !string.IsNullOrEmpty(r.SKU)).Select(r => r.SKU)
-            //        .Distinct().ToList();
-            //    using(var trx = new ScopedTransaction(dbFactory)){
-            //      var list = InventoryServiceHelper.GetKeyInfoBySkus(skuList, data.SalesOrderHeader.MasterAccountNum,
-            //          data.SalesOrderHeader.ProfileNum);
-            //      foreach (var tuple in list)
-            //      {
-            //          data.SalesOrderItems.First(r => r.SKU == tuple.Item3).ProductUuid = tuple.Item2;
-            //      }
-            //    }
-
-            //    // get inventory data
-            //    foreach (var item in data.SalesOrderItems)
-            //    {
-            //        if (string.IsNullOrEmpty(item.ProductUuid)) continue;
-            //        GetInventoryData(data, item.ProductUuid);
-            //    }
-            //}
+            if (data.InventoryUpdateItems != null)
+            {
+                var inventoryUuidList = data.InventoryUpdateItems.Select(r => r.InventoryUuid)
+                    .Distinct().ToList();
+                var productUuidList = new List<(string,string)>();
+                using (var trx = new ScopedTransaction(dbFactory))
+                {
+                    productUuidList = InventoryServiceHelper.GetProductUuidsByInventoryUuids(inventoryUuidList, data.InventoryUpdateHeader.MasterAccountNum,
+                        data.InventoryUpdateHeader.ProfileNum);
+                }
+                foreach(var tuple in productUuidList)
+                {
+                    var inventory = GetInventory(data, tuple.Item2, tuple.Item1);
+                    if (inventory != null)
+                    {
+                        var items = data.InventoryUpdateItems.First(i => i.InventoryUuid == inventory.InventoryUuid);
+                        items.SKU = inventory.SKU;
+                        items.ProductUuid = inventory.ProductUuid;
+                        items.WarehouseCode = inventory.WarehouseCode;
+                        items.WarehouseUuid = inventory.WarehouseUuid;
+                    }
+                }
+            }
         }
-        
+
         #region Service Property
 
-        //private CustomerService _customerService;
-        //protected CustomerService customerService => _customerService ??= new CustomerService(dbFactory);
+        private WarehouseService _warehouseService;
+        protected WarehouseService warehouseService => _warehouseService ??= new WarehouseService(dbFactory);
 
         //private InventoryService _inventoryService;
         //protected InventoryService inventoryService => _inventoryService ??= new InventoryService(dbFactory);
@@ -86,20 +84,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region GetDataWithCache
 
-        //public virtual InventoryData GetInventoryData(SalesOrderData data, string productUuid)
-        //{
-        //    return data.GetCache(productUuid, () => inventoryService.GetDataById(productUuid) ? inventoryService.Data : null);
-        //}
+        public virtual InventoryData GetInventoryData(InventoryUpdateData data, string productUuid)
+        {
+            return data.GetCache(productUuid, () => {
+                var inventoryService = new InventoryService(dbFactory);
+                if (inventoryService.GetDataById(productUuid))
+                    return inventoryService.Data;
+                return null;
+            });
+        }
 
-        //public virtual CustomerData GetCustomerData(SalesOrderData data, string customerUuid)
-        //{
-        //    return data.GetCache(customerUuid, () => customerService.GetDataById(customerUuid) ? customerService.Data : null);
-        //}
+        public virtual Inventory GetInventory(InventoryUpdateData data,string productUuid, string inventoryUuid)
+        {
+            var inventoryData = GetInventoryData(data, productUuid);
+            System.Diagnostics.Debug.WriteLine($"ProductUuid:{productUuid},Data:{JsonConvert.SerializeObject(inventoryData)}");
+            return inventoryData == null ? null : inventoryData.Inventory.First(i => i.InventoryUuid == inventoryUuid);
+        }
+
+        public virtual WarehouseData GetWarehouseData(InventoryUpdateData data, string warehouseUuid)
+        {
+            return data.GetCache(warehouseUuid, () => warehouseService.GetDataById(warehouseUuid) ? warehouseService.Data : null);
+        }
 
         #endregion
 
         public virtual bool SetDefault(InventoryUpdateData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
+            PrepareData(data);
             SetDefaultSummary(data, processingMode);
             SetDefaultDetail(data, processingMode);
             return true;
@@ -111,41 +122,41 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             //TODO: add set default summary data logic
-            /* This is generated sample code
-            var sum = data.InventoryUpdateHeader;
-            if (sum.InvoiceDate.IsZero()) sum.InvoiceDate = DateTime.Today;
-            if (sum.InvoiceTime.IsZero()) sum.InvoiceTime = DateTime.Now.TimeOfDay;
+           var sum = data.InventoryUpdateHeader;
+            if (sum.UpdateDate.IsZero()) sum.UpdateDate = DateTime.Today;
+            if (sum.UpdateTime.IsZero()) sum.UpdateTime = DateTime.Now.TimeOfDay;
 
+            if (!string.IsNullOrEmpty(sum.BatchNumber)) sum.BatchNumber = DateTime.Now.ToString("yyyyMMddHHmmssfff");
             //UpdateDateUtc
             //EnterBy
             //UpdateBy
-            */
+
 
             return true;
         }
 
         public virtual bool SetDefaultDetail(InventoryUpdateData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            if (data is null)
+            if (data is null||data.InventoryUpdateItems is null)
                 return false;
 
             //TODO: add set default for detail list logic
-            /* This is generated sample code
+            //This is generated sample code
 
-            foreach (var item in data.InvoiceItems)
+            foreach (var item in data.InventoryUpdateItems)
             {
                 if (item is null || item.IsEmpty)
                     continue;
                 SetDefault(item, data, processingMode);
             }
 
-            */
+
             return true;
         }
 
         //TODO: add set default for detail line logic
-        /* This is generated sample code
-        protected virtual bool SetDefault(InvoiceItems item, InventoryUpdateData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        //This is generated sample code
+        protected virtual bool SetDefault(InventoryUpdateItems item, InventoryUpdateData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;
@@ -156,7 +167,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //var inv = data.GetCache<Inventory>(InventoryId);
             //var invCost = new ItemCostClass(inv);
             var invCost = new ItemCostClass();
+            var prod = GetInventoryData(data, item.ProductUuid);
+            var inv = GetInventory(data, item.ProductUuid, item.InventoryUuid);
+            if (item.ItemDate.IsZero()) item.ItemDate = DateTime.Today;
+            if (item.ItemTime.IsZero()) item.ItemTime = DateTime.Now.TimeOfDay;
+            item.LotNum = inv.LotNum;
+            if (item.Description.IsZero()) item.Description = inv.LotDescription;
+            if (item.Notes.IsZero()) item.Notes = inv.Notes;
 
+            item.UOM = inv.UOM;
+            item.PackType = inv.PackType;
+            item.PackQty = inv.PackQty;
+
+            //item.UpdatePack;
+            //item.CountPack;
+            //item.BeforeInstockPack;
+            item.BeforeInstockPack = inv.Instock;
+
+            item.UnitCost = inv.UnitCost;
+            item.AvgCost = inv.AvgCost;
+            //item.LotCost;
+            item.LotInDate = inv.LotInDate;
+            item.LotExpDate = inv.LotExpDate;
             //InvoiceItemType
             //InvoiceItemStatus
             //ItemDate
@@ -176,12 +208,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return true;
         }
-        */
+        
 
 
         public virtual bool Calculate(InventoryUpdateData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            PrepareData(data);
             CalculateDetail(data, processingMode);
             CalculateSummary(data, processingMode);
             return true;
@@ -237,8 +268,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual bool CalculateDetail(InventoryUpdateData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            if (data is null)
+            if (data is null||data.InventoryUpdateItems is null)
                 return false;
+            var sum = data.InventoryUpdateHeader;
+            foreach(var items in data.InventoryUpdateItems)
+            {
+                switch ((InventoryUpdateType)sum.InventoryUpdateType)
+                {
+                    case InventoryUpdateType.Adjust:
+                    case InventoryUpdateType.Damage:
+                        items.CountQty = items.BeforeInstockQty - items.UpdateQty;
+                        break;
+                    case InventoryUpdateType.CycleCount:
+                    case InventoryUpdateType.PhysicalCount:
+                        items.UpdateQty = items.CountQty - items.BeforeInstockQty;
+                        break;
+                }
+            }
+            //TODO:if InventoryUpdateType=InventoryUpdateType.PhysicalCount,Must set not in items CountQty=0;
 
             //TODO: add calculate summary object logic
             /* This is generated sample code

@@ -185,9 +185,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.InventoryUpdateHeader.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            if (!string.IsNullOrEmpty(data.InventoryUpdateHeader.BatchNumber) && dbFactory.ExistUniqueId<InventoryUpdateHeader>(data.InventoryUpdateHeader.BatchNumber))
+            {
+                IsValid = false;
+                AddError($"BatchNumber: {data.InventoryUpdateHeader.BatchNumber} is duplicate.");
+            }
+            if (!dbFactory.ExistUniqueId<DistributionCenter>(data.InventoryUpdateHeader.WarehouseUuid))
+            {
+                IsValid = false;
+                AddError($"WarehouseUuid: {data.InventoryUpdateHeader.BatchNumber} not found.");
+            }
+            if (data.InventoryUpdateItems != null && data.InventoryUpdateItems.Count > 0) { 
+                foreach(var item in data.InventoryUpdateItems)
+                {
+                    if (!dbFactory.ExistUniqueId<Inventory>(item.InventoryUuid))
+                    {
+                        IsValid = false;
+                        AddError($"InventoryUuid: {data.InventoryUpdateHeader.BatchNumber} not found.");
+                    }
+                }
+            }
+            return IsValid;
 
         }
 
@@ -279,7 +298,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"RowNum: {data.InventoryUpdateHeader.RowNum} is duplicate.");
                 return IsValid;
             }
-            return true;
+            if (!string.IsNullOrEmpty(data.InventoryUpdateHeader.BatchNumber) && await dbFactory.ExistUniqueIdAsync<InventoryUpdateHeader>(data.InventoryUpdateHeader.BatchNumber))
+            {
+                IsValid = false;
+                AddError($"BatchNumber: {data.InventoryUpdateHeader.BatchNumber} is duplicate.");
+            }
+            if (!await dbFactory.ExistUniqueIdAsync<DistributionCenter>(data.InventoryUpdateHeader.WarehouseUuid))
+            {
+                IsValid = false;
+                AddError($"WarehouseUuid: {data.InventoryUpdateHeader.BatchNumber} not found.");
+            }
+            if (data.InventoryUpdateItems != null && data.InventoryUpdateItems.Count > 0)
+            {
+                foreach (var item in data.InventoryUpdateItems)
+                {
+                    if (! await dbFactory.ExistUniqueIdAsync<Inventory>(item.InventoryUuid))
+                    {
+                        IsValid = false;
+                        AddError($"InventoryUuid: {data.InventoryUpdateHeader.BatchNumber} not found.");
+                    }
+                }
+            }
+            return IsValid;
 
         }
 
@@ -342,11 +382,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.InventoryUpdateHeader.InventoryUpdateUuid = Guid.NewGuid().ToString();
+                dto.InventoryUpdateHeader.InventoryUpdateUuid = null;
                 if (dto.InventoryUpdateItems != null && dto.InventoryUpdateItems.Count > 0)
                 {
                     foreach (var detailItem in dto.InventoryUpdateItems)
-                        detailItem.InventoryUpdateItemsUuid = Guid.NewGuid().ToString();
+                        detailItem.InventoryUpdateItemsUuid = null;
                 }
   
             }
@@ -394,11 +434,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.InventoryUpdateHeader.InventoryUpdateUuid = Guid.NewGuid().ToString();
+                dto.InventoryUpdateHeader.InventoryUpdateUuid =null;
                 if (dto.InventoryUpdateItems != null && dto.InventoryUpdateItems.Count > 0)
                 {
                     foreach (var detailItem in dto.InventoryUpdateItems)
-                        detailItem.InventoryUpdateItemsUuid = Guid.NewGuid().ToString();
+                        detailItem.InventoryUpdateItemsUuid = null ;
                 }
   
             }

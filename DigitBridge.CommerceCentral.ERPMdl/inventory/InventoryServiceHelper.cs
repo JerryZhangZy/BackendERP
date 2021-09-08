@@ -184,6 +184,23 @@ AND ProfileNum = @profileNum";
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"));
         }
+        public static List<(string,string)> GetProductUuidsByInventoryUuids(IList<string> inventoryUuids, int masterAccountNum, int profileNum)
+        {
+            if (inventoryUuids == null || inventoryUuids.Count == 0)
+                return new List<(string,string)>();
+            var sql = $@"
+SELECT InventoryUuid,ProductUuid FROM Inventory tbl
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @InventoryUuid _InventoryUuid WHERE _InventoryUuid.item = COALESCE([InventoryUuid],'')))";
+
+            return SqlQuery.Execute(
+                sql,
+                (string inventoryUuid,string productUuid)=> (inventoryUuid,productUuid),
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                inventoryUuids.ToParameter<string>("InventoryUuid"));
+        }
 
         /// <summary>
         /// 
