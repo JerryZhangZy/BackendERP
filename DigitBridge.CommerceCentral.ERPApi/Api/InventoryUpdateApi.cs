@@ -92,6 +92,60 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<InventoryUpdatePayload>(payload);
         }
 
+        [FunctionName(nameof(UpdateInventoryUpdate))]
+        [OpenApiOperation(operationId: "UpdateInventoryUpdate", tags: new[] { "InventoryUpdates" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryUpdatePayloadUpdate), Description = "InventoryUpdateDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryUpdatePayloadUpdate))]
+        public static async Task<JsonNetResponse<InventoryUpdatePayload>> UpdateInventoryUpdate(
+            [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "inventoryUpdates")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryUpdatePayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new InventoryUpdateService(dbFactory);
+            if (await svc.UpdateAsync(payload))
+                payload.InventoryUpdate = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<InventoryUpdatePayload>(payload);
+        }
+
+        [FunctionName(nameof(DeleteInventoryUpdate))]
+        [OpenApiOperation(operationId: "DeleteInventoryUpdate", tags: new[] { "InventoryUpdates" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "BatchNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "BatchNumber", Description = "BatchNumber", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryUpdatePayloadDelete), Description = "The OK response")]
+        public static async Task<JsonNetResponse<InventoryUpdatePayload>> DeleteInventoryUpdate(
+            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "inventoryUpdates/{BatchNumber}")] HttpRequest req,
+            string BatchNumber)
+        {
+            var payload = await req.GetParameters<InventoryUpdatePayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new InventoryUpdateService(dbFactory);
+            var spilterIndex = BatchNumber.IndexOf("-");
+            var batchNumber = BatchNumber;
+            if (spilterIndex > 0 && batchNumber.StartsWith(payload.ProfileNum.ToString()))
+            {
+                batchNumber = BatchNumber.Substring(spilterIndex + 1);
+            }
+            payload.BatchNumbers.Add(batchNumber);
+            if (await svc.DeleteByBatchNumberAsync(payload, batchNumber))
+                payload.InventoryUpdate = null;
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<InventoryUpdatePayload>(payload);
+        }
+
         /// <summary>
         /// Load inventoryUpdate list
         /// </summary>

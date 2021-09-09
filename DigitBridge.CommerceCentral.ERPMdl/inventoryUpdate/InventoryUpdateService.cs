@@ -339,6 +339,40 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return payload;
         }
 
+        public bool DeleteByBatchNumber(InventoryUpdatePayload payload, string batchNumber)
+        {
+            if (string.IsNullOrEmpty(batchNumber))
+                return false;
+            Delete();
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = InventoryUpdateHelper.GetRowNumByNumber(batchNumber, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            var success = GetData(rowNum);
+            if (success)
+                return DeleteData();
+            AddError("Data not found");
+            return false;
+        }
+
+        public async Task<bool> DeleteByBatchNumberAsync(InventoryUpdatePayload payload, string batchNumber)
+        {
+            if (string.IsNullOrEmpty(batchNumber))
+                return false;
+            Delete();
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await InventoryUpdateHelper.GetRowNumByNumberAsync(batchNumber, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            var success = await GetDataAsync(rowNum);
+            if (success)
+                return await DeleteDataAsync();
+            AddError("Data not found");
+            return false;
+        }
+
         public async Task<InventoryUpdatePayload> GetInventoryUpdatesByCodeArrayAsync(InventoryUpdatePayload payload)
         {
             if (!payload.HasBatchNumbers)

@@ -44,12 +44,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!string.IsNullOrEmpty(data.InventoryUpdateHeader.WarehouseUuid))
             {
                 var warehouse= GetWarehouseData(data,data.InventoryUpdateHeader.WarehouseUuid);
-                data.InventoryUpdateHeader.WarehouseCode = warehouse.DistributionCenter.DistributionCenterCode;
+                if (warehouse != null)
+                {
+                    data.InventoryUpdateHeader.WarehouseCode = warehouse.DistributionCenter.DistributionCenterCode;
+                }
             }
 
             if (data.InventoryUpdateItems != null)
             {
-                var inventoryUuidList = data.InventoryUpdateItems.Select(r => r.InventoryUuid)
+                var inventoryUuidList = data.InventoryUpdateItems.Where(r=>!r.InventoryUuid.IsZero()).Select(r => r.InventoryUuid)
                     .Distinct().ToList();
                 var productUuidList = new List<(string,string)>();
                 using (var trx = new ScopedTransaction(dbFactory))
@@ -69,6 +72,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         items.WarehouseUuid = inventory.WarehouseUuid;
                     }
                 }
+
+                var tmpList = data.InventoryUpdateItems.Where(r => r.InventoryUuid.IsZero()).Select(r => new { r.SKU, r.WarehouseCode }).ToList();
+                foreach(var tuple in tmpList)
+                {
+                    //only for update items and init InventoryUuid;
+                    var inventory = dbFactory.GetBy<Inventory>("SKU=@0 AND WarehouseCode=@1", tuple.SKU.ToParameter("SKU"), tuple.WarehouseCode.ToParameter("WarehouseCode"));
+                    if (inventory != null)
+                    {
+                        var items = data.InventoryUpdateItems.First(i => i.WarehouseCode == inventory.WarehouseCode&&i.SKU==inventory.WarehouseCode);
+                        items.SKU = inventory.SKU;
+                        items.InventoryUuid = inventory.InventoryUuid;
+                        items.ProductUuid = inventory.ProductUuid;
+                        items.WarehouseCode = inventory.WarehouseCode;
+                        items.WarehouseUuid = inventory.WarehouseUuid;
+                    }
+                }
             }
         }
 
@@ -77,8 +96,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         private WarehouseService _warehouseService;
         protected WarehouseService warehouseService => _warehouseService ??= new WarehouseService(dbFactory);
 
-        //private InventoryService _inventoryService;
-        //protected InventoryService inventoryService => _inventoryService ??= new InventoryService(dbFactory);
+        private InventoryService _inventoryService;
+        protected InventoryService inventoryService => _inventoryService ??= new InventoryService(dbFactory);
 
         #endregion
 
@@ -87,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual InventoryData GetInventoryData(InventoryUpdateData data, string productUuid)
         {
             return data.GetCache(productUuid, () => {
-                var inventoryService = new InventoryService(dbFactory);
+                inventoryService.NewData();
                 if (inventoryService.GetDataById(productUuid))
                     return inventoryService.Data;
                 return null;
@@ -126,7 +145,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (sum.UpdateDate.IsZero()) sum.UpdateDate = DateTime.Today;
             if (sum.UpdateTime.IsZero()) sum.UpdateTime = DateTime.Now.TimeOfDay;
 
-            if (!string.IsNullOrEmpty(sum.BatchNumber)) sum.BatchNumber = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            if (string.IsNullOrEmpty(sum.BatchNumber)) sum.BatchNumber = DateTime.Now.ToString("yyyyMMddHHmmssfff");
             //UpdateDateUtc
             //EnterBy
             //UpdateBy

@@ -189,23 +189,23 @@ AND BatchNumber = @number
                             sql,
                             (long rowNum) => rowNum,
                             masterAccountNum.ToSqlParameter("masterAccountNum"),
-                            profileNum.ToSqlParameter("pofileNum"),
+                            profileNum.ToSqlParameter("profileNum"),
                             nums.ToParameter<string>("nums"));
         }
 
         public static async Task<List<long>> GetRowNumsByNumsAsync(IList<string> nums, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT RowNum FROM InventoryUpdateHeader tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum
-AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([BatchNumber],'')))";
+SELECT RowNum FROM InventoryUpdateHeader 
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@profileNum
+AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE(BatchNumber,'')))";
 
             return await SqlQuery.ExecuteAsync(
                 sql,
                 (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("pofileNum"),
+                profileNum.ToSqlParameter("profileNum"),
                 nums.ToParameter<string>("nums"));
         }
 

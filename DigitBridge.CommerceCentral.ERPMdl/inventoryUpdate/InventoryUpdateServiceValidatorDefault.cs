@@ -186,23 +186,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 IsValid = false;
                 AddError($"RowNum: {data.InventoryUpdateHeader.RowNum} is duplicate.");
             }
-            if (!string.IsNullOrEmpty(data.InventoryUpdateHeader.BatchNumber) && dbFactory.ExistUniqueId<InventoryUpdateHeader>(data.InventoryUpdateHeader.BatchNumber))
+            if (!string.IsNullOrEmpty(data.InventoryUpdateHeader.BatchNumber) && dbFactory.Exists<InventoryUpdateHeader>("BatchNumber=@0", data.InventoryUpdateHeader.BatchNumber.ToParameter("0")))
             {
                 IsValid = false;
                 AddError($"BatchNumber: {data.InventoryUpdateHeader.BatchNumber} is duplicate.");
             }
-            if (!dbFactory.ExistUniqueId<DistributionCenter>(data.InventoryUpdateHeader.WarehouseUuid))
-            {
-                IsValid = false;
-                AddError($"WarehouseUuid: {data.InventoryUpdateHeader.BatchNumber} not found.");
-            }
+            //if (!dbFactory.ExistUniqueId<DistributionCenter>(data.InventoryUpdateHeader.WarehouseUuid))
+            //{
+            //    IsValid = false;
+            //    AddError($"WarehouseUuid: {data.InventoryUpdateHeader.BatchNumber} not found.");
+            //}
             if (data.InventoryUpdateItems != null && data.InventoryUpdateItems.Count > 0) { 
                 foreach(var item in data.InventoryUpdateItems)
                 {
-                    if (!dbFactory.ExistUniqueId<Inventory>(item.InventoryUuid))
+                    if (!item.InventoryUuid.IsZero())
                     {
-                        IsValid = false;
-                        AddError($"InventoryUuid: {data.InventoryUpdateHeader.BatchNumber} not found.");
+                        if (!dbFactory.ExistUniqueId<Inventory>(item.InventoryUuid))
+                        {
+                            IsValid = false;
+                            AddError($"InventoryUuid: {item.InventoryUuid} not found.");
+                        }
+                    }
+                    else
+                    {
+                        if (!dbFactory.Exists<Inventory>("SKU=@0 AND WarehouseCode=@1", item.SKU.ToParameter("0"), item.WarehouseCode.ToParameter("1")))
+                        {
+                            IsValid = false;
+                            AddError($"Inventory SKU {item.SKU} With WarehouseCode {item.WarehouseCode} not found.");
+                        }
                     }
                 }
             }
@@ -298,24 +309,35 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"RowNum: {data.InventoryUpdateHeader.RowNum} is duplicate.");
                 return IsValid;
             }
-            if (!string.IsNullOrEmpty(data.InventoryUpdateHeader.BatchNumber) && await dbFactory.ExistUniqueIdAsync<InventoryUpdateHeader>(data.InventoryUpdateHeader.BatchNumber))
+            if (!string.IsNullOrEmpty(data.InventoryUpdateHeader.BatchNumber) && await dbFactory.ExistsAsync<InventoryUpdateHeader>("BatchNumber=@0",data.InventoryUpdateHeader.BatchNumber.ToParameter("0")))
             {
                 IsValid = false;
                 AddError($"BatchNumber: {data.InventoryUpdateHeader.BatchNumber} is duplicate.");
             }
-            if (!await dbFactory.ExistUniqueIdAsync<DistributionCenter>(data.InventoryUpdateHeader.WarehouseUuid))
-            {
-                IsValid = false;
-                AddError($"WarehouseUuid: {data.InventoryUpdateHeader.BatchNumber} not found.");
-            }
+            //if (!await dbFactory.ExistUniqueIdAsync<DistributionCenter>(data.InventoryUpdateHeader.WarehouseUuid))
+            //{
+            //    IsValid = false;
+            //    AddError($"WarehouseUuid: {data.InventoryUpdateHeader.BatchNumber} not found.");
+            //}
             if (data.InventoryUpdateItems != null && data.InventoryUpdateItems.Count > 0)
             {
                 foreach (var item in data.InventoryUpdateItems)
                 {
-                    if (! await dbFactory.ExistUniqueIdAsync<Inventory>(item.InventoryUuid))
+                    if (!item.InventoryUuid.IsZero())
                     {
-                        IsValid = false;
-                        AddError($"InventoryUuid: {data.InventoryUpdateHeader.BatchNumber} not found.");
+                        if (!await dbFactory.ExistUniqueIdAsync<Inventory>(item.InventoryUuid))
+                        {
+                            IsValid = false;
+                            AddError($"InventoryUuid: {item.InventoryUuid} not found.");
+                        }
+                    }
+                    else
+                    {
+                        if (!await dbFactory.ExistsAsync<Inventory>("SKU=@0 AND WarehouseCode=@1",item.SKU.ToParameter("0"),item.WarehouseCode.ToParameter("1")))
+                        {
+                            IsValid = false;
+                            AddError($"Inventory SKU {item.SKU} With WarehouseCode {item.WarehouseCode} not found.");
+                        }
                     }
                 }
             }
@@ -407,7 +429,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (dto.InventoryUpdateItems != null && dto.InventoryUpdateItems.Count > 0)
                 {
                     foreach (var detailItem in dto.InventoryUpdateItems)
+                    {
                         detailItem.InventoryUpdateItemsUuid = null;
+                        detailItem.WarehouseCode = null;
+                        detailItem.WarehouseUuid = null;
+                        detailItem.InventoryUuid = null;
+                        detailItem.ProductUuid = null;
+                    }
                 }
             }
             IsValid=isValid;
@@ -459,7 +487,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (dto.InventoryUpdateItems != null && dto.InventoryUpdateItems.Count > 0)
                 {
                     foreach (var detailItem in dto.InventoryUpdateItems)
+                    {
                         detailItem.InventoryUpdateItemsUuid = null;
+                        detailItem.WarehouseCode = null;
+                        detailItem.WarehouseUuid = null;
+                        detailItem.InventoryUuid = null;
+                        detailItem.ProductUuid = null;
+                    }
                 }
   
             }
