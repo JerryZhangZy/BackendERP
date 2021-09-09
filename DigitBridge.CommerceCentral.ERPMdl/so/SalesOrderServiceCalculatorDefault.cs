@@ -134,12 +134,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //UpdateBy
             if (processingMode == ProcessingMode.Add)
             {
-                if (string.IsNullOrEmpty(data.SalesOrderHeader.OrderNumber))
+                if (string.IsNullOrEmpty(sum.OrderNumber))
                 {
-                    data.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
+                    sum.OrderNumber = NumberGenerate.Generate();
                 }
                 //for Add mode, always reset data's uuid
-                data.SalesOrderHeader.SalesOrderUuid = Guid.NewGuid().ToString();
+                sum.SalesOrderUuid = Guid.NewGuid().ToString();
             }
             else if (processingMode == ProcessingMode.Edit)
             {
@@ -147,14 +147,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             // get customer data
-            var customerData = GetCustomerData(data, data.SalesOrderHeader.CustomerCode);
+            var customerData = GetCustomerData(data, sum.CustomerCode);
             if (customerData != null && customerData.Customer != null)
             {
-                data.SalesOrderHeader.CustomerUuid = customerData.Customer.CustomerUuid;
-                data.SalesOrderHeader.CustomerName = customerData.Customer.CustomerName;
-                if (string.IsNullOrEmpty(data.SalesOrderHeader.Currency))
-                    data.SalesOrderHeader.Currency = customerData.Customer.Currency;
+                sum.CustomerUuid = customerData.Customer.CustomerUuid;
+                sum.CustomerName = customerData.Customer.CustomerName;
+                if (string.IsNullOrEmpty(sum.Currency))
+                    sum.Currency = customerData.Customer.Currency;
             }
+            // (int)( (SalesOrderStatus) sum.OrderStatus)
+            sum.DueDate = sum.OrderDate.AddDays(sum.TermsDays);
             return true;
         }
 
@@ -183,7 +185,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.ItemDate = now.Date;
                 item.ItemTime = now.TimeOfDay;
             }
-
+            item.UpdateDateUtc = now;
             if (processingMode == ProcessingMode.Add)
             {
                 item.SalesOrderItemsUuid = Guid.NewGuid().ToString();
@@ -257,9 +259,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             sum.DiscountAmount = sum.DiscountAmount.ToAmount();
             //manual input max discount amount is SubTotalAmount
-            //TODO negative number. replace with Math.Abs(sum.DiscountAmount)>Math.Abs( sum.SubTotalAmount)?
-            if (sum.DiscountAmount > sum.SubTotalAmount)
-                sum.DiscountAmount = sum.SubTotalAmount;
+            
             // tax calculate should deduct discount from taxable amount
             //sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
 

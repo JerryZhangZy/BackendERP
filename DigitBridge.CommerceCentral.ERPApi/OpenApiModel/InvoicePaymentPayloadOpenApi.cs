@@ -56,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// (Response Data) InvoiceTransaction object which has been updated.
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) InvoiceTransaction object to update.")]
-        public InvoiceTransactionDto InvoiceTransaction { get; set; }
+        public InvoiceTransactionDataDto InvoiceTransaction { get; set; }
     }
 
 
@@ -71,7 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// (Response Data) InvoiceTransaction object.
         /// </summary>
         [OpenApiPropertyDescription("(Response) InvoiceTransaction object to get.")]
-        public InvoiceTransactionDto InvoiceTransaction { get; set; }
+        public InvoiceTransactionDataDto InvoiceTransaction { get; set; }
 
         /// <summary>
         /// (Response Data) InvoiceHeader object.

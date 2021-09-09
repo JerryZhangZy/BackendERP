@@ -216,4 +216,7 @@
   <ItemGroup>
     <None Include="warehouseTransfer\WarehouseTransferItems.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <Build Include="po\PoItems_Update.sql" />
+  </ItemGroup>
 </Project>

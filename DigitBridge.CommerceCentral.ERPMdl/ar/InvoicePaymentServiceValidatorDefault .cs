@@ -41,6 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
+            pl.InvoiceTransaction.InvoiceReturnItems = null;
             return base.ValidateAccount(payload, number, processingMode);
         }
         public override async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -53,6 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
+            pl.InvoiceTransaction.InvoiceReturnItems = null;
             return await base.ValidateAccountAsync(payload, number, processingMode);
         }
         public override bool Validate(InvoiceTransactionDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -64,10 +66,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
-                // payment shouldn't add any return item.
-                dto.InvoiceReturnItems = null;
+                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment; 
             }
+            // payment shouldn't add any return item.
+            dto.InvoiceReturnItems = null;
             return base.Validate(dto, processingMode);
         }
         public override async Task<bool> ValidateAsync(InvoiceTransactionDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -79,10 +81,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
-                // payment shouldn't add any return item.
-                dto.InvoiceReturnItems = null;
+                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;  
             }
+            // payment shouldn't add any return item.
+            dto.InvoiceReturnItems = null;
             return await base.ValidateAsync(dto, processingMode);
         }
     }
