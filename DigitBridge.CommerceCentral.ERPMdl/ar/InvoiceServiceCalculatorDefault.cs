@@ -93,10 +93,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual InventoryData GetInventoryData(InvoiceData data, string sku)
         {
-            var key = data.InvoiceHeader.MasterAccountNum + "_" + data.InvoiceHeader.ProfileNum + '_' + sku;
+            var header = data.InvoiceHeader;
+            var key = header.MasterAccountNum + "_" + header.ProfileNum + '_' + sku;
             return data.GetCache(key, () =>
             {
-                inventoryService.GetByNumber(data.InvoiceHeader.MasterAccountNum, data.InvoiceHeader.ProfileNum, sku);
+                inventoryService.GetByNumber(header.MasterAccountNum, header.ProfileNum, sku);
                 return inventoryService.Data;
             });
         }
@@ -108,19 +109,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual CustomerData GetCustomerData(InvoiceData data, string customerCode)
         {
-            var key = data.InvoiceHeader.MasterAccountNum + "_" + data.InvoiceHeader.ProfileNum + '_' + customerCode;
+            var header = data.InvoiceHeader;
+            var key = header.MasterAccountNum + "_" + header.ProfileNum + '_' + customerCode;
             return data.GetCache(key, () =>
             {
-                customerService.GetByNumber(data.InvoiceHeader.MasterAccountNum, data.InvoiceHeader.ProfileNum, customerCode);
+                customerService.GetByNumber(header.MasterAccountNum, header.ProfileNum, customerCode);
                 return customerService.Data;
             });
         }
         public virtual SalesOrderData GetSalesOrderData(InvoiceData data, string orderNumber)
         {
-            var key = data.InvoiceHeader.MasterAccountNum + "_" + data.InvoiceHeader.ProfileNum + '_' + orderNumber;
+            var header = data.InvoiceHeader;
+            var key = header.MasterAccountNum + "_" + header.ProfileNum + '_' + orderNumber;
             return data.GetCache(key, () =>
             {
-                salesOrderService.GetByNumber(data.InvoiceHeader.MasterAccountNum, data.InvoiceHeader.ProfileNum, orderNumber);
+                salesOrderService.GetByNumber(header.MasterAccountNum, header.ProfileNum, orderNumber);
                 return salesOrderService.Data;
             });
         }
@@ -154,31 +157,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (processingMode == ProcessingMode.Add)
             {
-                if (string.IsNullOrEmpty(data.InvoiceHeader.InvoiceNumber))
+                if (string.IsNullOrEmpty(sum.InvoiceNumber))
                 {
-                    data.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
+                    sum.InvoiceNumber = NumberGenerate.Generate();
                 }
 
                 //for Add mode, always reset uuid
-                data.InvoiceHeader.InvoiceUuid = Guid.NewGuid().ToString();
+                sum.InvoiceUuid = Guid.NewGuid().ToString();
             }
 
-            // Set customer info
-            var customerData = GetCustomerData(data, data.InvoiceHeader.CustomerCode);
+            // get customer data
+            var customerData = GetCustomerData(data, sum.CustomerCode);
             if (customerData != null && customerData.Customer != null)
             {
-                data.InvoiceHeader.CustomerUuid = customerData.Customer.CustomerUuid;
-                data.InvoiceHeader.CustomerName = customerData.Customer.CustomerName;
+                sum.CustomerUuid = customerData.Customer.CustomerUuid;
+                sum.CustomerName = customerData.Customer.CustomerName;
+                if (string.IsNullOrEmpty(sum.Currency))
+                    sum.Currency = customerData.Customer.Currency;
             }
 
             //Set salesorder info 
-            var salesOrderData = GetSalesOrderData(data, data.InvoiceHeader.OrderNumber);
+            var salesOrderData = GetSalesOrderData(data, sum.OrderNumber);
             if (salesOrderData != null && salesOrderData.SalesOrderHeader != null)
             {
-                data.InvoiceHeader.SalesOrderUuid = salesOrderData.SalesOrderHeader.SalesOrderUuid;
-                data.InvoiceHeader.SalesAmount = salesOrderData.SalesOrderHeader.SalesAmount;
+                sum.SalesOrderUuid = salesOrderData.SalesOrderHeader.SalesOrderUuid;
+                sum.SalesAmount = salesOrderData.SalesOrderHeader.SalesAmount;
             }
 
+            sum.DueDate = sum.InvoiceDate.AddDays(sum.TermsDays);
             //EnterBy
             //UpdateBy
 
@@ -213,12 +219,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.ItemDate = now.Date;
                 item.ItemTime = now.TimeOfDay;
             }
+            item.UpdateDateUtc = now;
 
             if (processingMode == ProcessingMode.Add)
             {
                 item.InvoiceItemsUuid = Guid.NewGuid().ToString();
             }
 
+            if (string.IsNullOrEmpty(item.Currency))
+                item.Currency = data.InvoiceHeader.Currency;
             //Set SKU info
             var inventoryData = GetInventoryData(data, item.SKU);
             if (inventoryData != null)
@@ -230,7 +239,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.WarehouseUuid = inventory.WarehouseUuid;
                 item.LotNum = inventory.LotNum;
                 item.UOM = inventory.UOM;
-                item.Currency = inventory.Currency;
+                if (string.IsNullOrEmpty(item.Currency))
+                    item.Currency = inventory.Currency;
             }
 
 
@@ -267,7 +277,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             //TODO: add calculate summary object logic
-            /* This is generated sample code
+            //This is generated sample code
 
             var setting = new ERPSetting();
             var sum = data.InvoiceHeader;
@@ -275,6 +285,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.ShippingAmount = sum.ShippingAmount.ToAmount();
             sum.MiscAmount = sum.MiscAmount.ToAmount();
             sum.ChargeAndAllowanceAmount = sum.ChargeAndAllowanceAmount.ToAmount();
+            sum.TaxRate = sum.TaxRate.ToRate();
 
             // if exist DiscountRate, calculate discount amount, otherwise use entry discount amount
             if (!sum.DiscountRate.IsZero())
@@ -283,7 +294,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 sum.DiscountRate = 0;
 
             // tax calculate should deduct discount from taxable amount
-            sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
+            //sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
+
+            var discountRate = sum.SubTotalAmount != 0 ? (sum.DiscountAmount / sum.SubTotalAmount) : 0;
+            sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate;
+            sum.TaxAmount = sum.TaxAmount.ToAmount();
 
             if (setting.TaxForShippingAndHandling)
             {
@@ -302,10 +317,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ).ToAmount();
 
             sum.Balance = (sum.TotalAmount - sum.PaidAmount - sum.CreditAmount).ToAmount();
-
-            sum.DueDate = sum.InvoiceDate.AddDays(sum.TermsDays);
-
-            */
+             
             return true;
         }
 
@@ -315,7 +327,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             //TODO: add calculate summary object logic
-            /* This is generated sample code
+            //This is generated sample code
 
             var sum = data.InvoiceHeader;
             sum.SubTotalAmount = 0;
@@ -340,14 +352,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 sum.UnitCost += item.UnitCost;
                 sum.AvgCost += item.AvgCost;
                 sum.LotCost += item.LotCost;
-            }
-
-            */
+            } 
             return true;
         }
 
         //TODO: add set default for detail line logic
-        /* This is generated sample code
+        //This is generated sample code
         protected virtual bool CalculateDetail(InvoiceItems item, InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
@@ -447,8 +457,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             return true;
-        }
-        */
+        } 
 
         #region message
         [XmlIgnore, JsonIgnore]

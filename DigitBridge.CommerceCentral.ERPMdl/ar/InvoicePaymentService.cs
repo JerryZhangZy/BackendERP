@@ -39,9 +39,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Success = true;
             payload.Messages = this.Messages;
         }
-        
 
-         
+
+
 
         //public virtual async Task<bool> AddAsync(InvoicePaymentPayload payload)
         //{
@@ -73,6 +73,35 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //    };
         //    return await base.UpdateAsync(invoiceTransactionPayload);
         //}
+
+        public async Task<bool> GetByNumberAsync(InvoicePaymentPayload payload, string invoiceNumber, int transNum)
+        { 
+            payload.Success= await base.GetByNumberAsync(payload, invoiceNumber, TransTypeEnum.Payment, transNum);
+            payload.InvoiceTransaction = this.ToDto();
+            payload.InvoiceHeader = await GetInvoiceHeaderAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
+            return payload.Success;
+        }
+
+        /// <summary>
+        /// Delete invoice by invoice number
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByNumberAsync(InvoicePaymentPayload payload, string invoiceNumber, int transNum)
+        {
+            return await base.DeleteByNumberAsync(payload, invoiceNumber, TransTypeEnum.Return, transNum);
+        }
+
+        /// <summary>
+        /// Delete data by number
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual bool DeleteByNumber(InvoicePaymentPayload payload, string invoiceNumber, int transNum)
+        {
+            return base.DeleteByNumber(payload, invoiceNumber, TransTypeEnum.Payment, transNum);
+        }
+         
     }
 }
 
