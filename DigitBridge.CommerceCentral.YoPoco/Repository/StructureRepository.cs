@@ -79,7 +79,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual void AddIgnoreDelete(string name)
         {
             if (!_IgnoreDelete.Contains(name))
-                _IgnoreDelete.Contains(name);
+                _IgnoreDelete.Add(name);
         }
 
         [XmlIgnore, JsonIgnore]

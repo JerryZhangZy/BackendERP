@@ -38,7 +38,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static InventoryPayloadAdd GetSampleData()
         {
             var data = new InventoryPayloadAdd();
-            data.Inventory = new InventoryDataDto().GetFakerData();
+            data.Inventory = new InventoryDataDto()
+            {
+                ProductExt = new ProductExtDto().GetFaker().Generate()
+            };
             return data;
         }
 

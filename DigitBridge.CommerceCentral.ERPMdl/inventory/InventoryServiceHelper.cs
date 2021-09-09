@@ -65,6 +65,38 @@ AND SKU = @number
             return result > 0;
         }
 
+        public static async Task<bool> ExistNumberInExtAsync(string number, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM ProductExt tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND SKU = @number
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+            return result > 0;
+        }
+
+        public static bool ExistNumberInExt(string number, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM ProductExt tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND SKU = @number
+";
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+            return result > 0;
+        }
+
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"
@@ -183,6 +215,23 @@ AND ProfileNum = @profileNum";
             return await SqlQuery.ExecuteAsync(sql, (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"));
+        }
+        public static List<(string,string)> GetProductUuidsByInventoryUuids(IList<string> inventoryUuids, int masterAccountNum, int profileNum)
+        {
+            if (inventoryUuids == null || inventoryUuids.Count == 0)
+                return new List<(string,string)>();
+            var sql = $@"
+SELECT InventoryUuid,ProductUuid FROM Inventory tbl
+WHERE MasterAccountNum=@masterAccountNum
+AND ProfileNum=@pofileNum
+AND (EXISTS (SELECT * FROM @InventoryUuid _InventoryUuid WHERE _InventoryUuid.item = COALESCE([InventoryUuid],'')))";
+
+            return SqlQuery.Execute(
+                sql,
+                (string inventoryUuid,string productUuid)=> (inventoryUuid,productUuid),
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                inventoryUuids.ToParameter<string>("InventoryUuid"));
         }
 
         /// <summary>
