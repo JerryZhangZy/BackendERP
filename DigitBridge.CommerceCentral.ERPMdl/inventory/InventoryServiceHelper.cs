@@ -65,6 +65,38 @@ AND SKU = @number
             return result > 0;
         }
 
+        public static async Task<bool> ExistNumberInExtAsync(string number, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM ProductExt tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND SKU = @number
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+            return result > 0;
+        }
+
+        public static bool ExistNumberInExt(string number, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM ProductExt tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND SKU = @number
+";
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+            return result > 0;
+        }
+
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"
