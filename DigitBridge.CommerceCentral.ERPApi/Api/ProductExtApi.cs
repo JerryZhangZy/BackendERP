@@ -88,8 +88,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 sku = sku.Substring(spilterIndex + 1);
             }
             var svc = new InventoryService(dbFactory);
-            if (await svc.DeleteBySkuAsync(payload,sku))
-                payload.Inventory = svc.ToDto();
+            if (await svc.DeleteBySkuAsync(payload, sku))
+            {
+                payload.Inventory = null;
+                payload.Skus.Add(sku);
+            }
             else
                 payload.Messages = svc.Messages;
             return new JsonNetResponse<InventoryPayload>(payload);

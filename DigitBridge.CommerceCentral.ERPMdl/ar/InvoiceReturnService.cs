@@ -47,6 +47,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.InvoiceTransactions = await base.GetDtoListAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, TransTypeEnum.Return, transNum);
             payload.Success = true;
         }
+
+
+        public async Task<bool> GetByNumberAsync(InvoiceReturnPayload payload, string invoiceNumber, int transNum)
+        {
+            return await base.GetByNumberAsync(payload, invoiceNumber, TransTypeEnum.Return, transNum);
+        }
+
+        /// <summary>
+        /// Delete invoice by invoice number
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByNumberAsync(InvoiceReturnPayload payload, string invoiceNumber, int transNum)
+        {
+            return await base.DeleteByNumberAsync(payload, invoiceNumber, TransTypeEnum.Return, transNum);
+        }
+
+        /// <summary>
+        /// Delete data by number
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual bool DeleteByNumber(InvoiceReturnPayload payload, string invoiceNumber, int transNum)
+        {
+            return base.DeleteByNumber(payload, invoiceNumber, TransTypeEnum.Return, transNum);
+        }
     }
 }
 

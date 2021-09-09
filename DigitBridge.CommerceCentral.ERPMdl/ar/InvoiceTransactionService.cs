@@ -57,7 +57,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Add(InvoiceTransactionDataDto dto)
         {
             if (dto is null)
+            {
+                AddError("InvoiceTransaction is required.");
                 return false;
+            }
             // set Add mode and clear data
             Add();
 
@@ -83,7 +86,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> AddAsync(InvoiceTransactionDataDto dto)
         {
             if (dto is null)
+            {
+                AddError("InvoiceTransaction is required.");
                 return false;
+            }
             // set Add mode and clear data
             Add();
 
@@ -106,7 +112,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Add(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
+            {
+                AddError("InvoiceTransaction is required.");
                 return false;
+            }
 
             // set Add mode and clear data
             Add();
@@ -133,7 +142,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> AddAsync(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
+            { 
+                AddError($"InvoiceTransaction is required.");
                 return false;
+            }
+               
 
             // set Add mode and clear data
             Add();
@@ -164,7 +177,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Update(InvoiceTransactionDataDto dto)
         {
             if (dto is null || !dto.HasInvoiceTransaction)
+            {
+                AddError("InvoiceTransaction is required.");
                 return false;
+            }
             //set edit mode before validate
             Edit();
             if (!Validate(dto))
@@ -193,7 +209,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> UpdateAsync(InvoiceTransactionDataDto dto)
         {
             if (dto is null || !dto.HasInvoiceTransaction)
+            {
+                AddError("InvoiceTransaction is required.");
                 return false;
+            }
             //set edit mode before validate
             Edit();
             if (!(await ValidateAsync(dto)))
@@ -222,7 +241,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool Update(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction || payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong() <= 0)
+            {
+                AddError("InvoiceTransaction is required.");
                 return false;
+            }
             //set edit mode before validate
             Edit();
 
@@ -255,7 +277,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
+            {
+                AddError("InvoiceTransaction is required.");
                 return false;
+            }
+                
             //set edit mode before validate
             Edit();
             if (!(await ValidateAccountAsync(payload)))
@@ -314,15 +340,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 new InvoiceDataDtoMapperDefault().WriteInvoiceHeader(invoiceHeader, dto);
             return dto;
         }
+        protected async Task<bool> GetByNumberAsync(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
+        {
+            return await base.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber + "_" + (int)transType + "_" + transNum);
+        }
         #endregion
-         
-         
+
+
         /// <summary>
         /// Delete invoice by invoice number
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByNumberAsync(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
+        protected virtual async Task<bool> DeleteByNumberAsync(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
         {
             //set delete mode
             Delete();
@@ -337,7 +367,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual bool DeleteByNumber(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
+        protected virtual bool DeleteByNumber(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
         {
             if (string.IsNullOrEmpty(invoiceNumber))
                 return false;

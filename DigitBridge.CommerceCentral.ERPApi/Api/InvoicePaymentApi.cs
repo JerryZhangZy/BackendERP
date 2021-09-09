@@ -67,7 +67,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePaymentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
-            await srv.GetPaymentWithInvoiceHeaderAsync(payload, invoiceNumber, transNum);
+            await srv.GetByNumberAsync(payload, invoiceNumber, transNum);
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
 
@@ -95,7 +95,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePaymentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
-            payload.Success = await srv.DeleteByNumberAsync(payload, invoiceNumber, TransTypeEnum.Payment, transNum);
+            payload.Success = await srv.DeleteByNumberAsync(payload, invoiceNumber, transNum);
             payload.Messages = srv.Messages;
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
@@ -119,6 +119,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
             payload.Success = await srv.UpdateAsync(payload);
+            payload.InvoiceTransaction = srv.ToDto();
             payload.Messages = srv.Messages;
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
@@ -138,7 +139,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<InvoicePaymentPayload>> AddInvoicePayments(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoicePayments")] HttpRequest req)
         {
-            var payload = await req.GetParameters<InvoicePaymentPayload>(true);
+            var payload = await req.GetParameters<InvoicePaymentPayload>(true); 
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
             payload.Success = await srv.AddAsync(payload);
@@ -155,8 +156,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadFind))]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadFind))]
         public static async Task<JsonNetResponse<InvoicePaymentPayload>> InvoicePaymentsList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoicePayments/find")] HttpRequest req)
         {

@@ -127,7 +127,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual async Task<bool> AddAsync(InventoryPayload payload)
         {
-            if (payload is null || !payload.HasInventory)
+            if (payload is null || !payload.HasInventory||!payload.Inventory.HasProductExt)
                 return false;
 
             // set Add mode and clear data
@@ -138,6 +138,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (!(await ValidateAsync(payload.Inventory)))
                 return false;
+            
+            List();
+            await GetDataBySkuAsync(payload.Inventory.ProductExt.SKU, payload.MasterAccountNum, payload.ProfileNum);
+            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
+            _ProcessMode=Base.Common.ProcessingMode.Add;
 
             // load data from dto
             FromDto(payload.Inventory);
@@ -337,6 +342,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAccountAsync(payload, sku)))
                 return false;
             long rowNum = 0;
+            Data.AddIgnoreDelete(InventoryData.ProductBasicTable);
             using (var tx = new ScopedTransaction(dbFactory))
             {
                 rowNum = await InventoryServiceHelper.GetRowNumBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
