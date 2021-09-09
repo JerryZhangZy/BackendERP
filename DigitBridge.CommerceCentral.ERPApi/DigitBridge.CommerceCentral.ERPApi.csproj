@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="JsType\ar\" />
-    <Folder Include="JsType\so\" />
+    <Folder Include="JsType\so\service\" />
+    <Folder Include="JsType\so\store\" />
   </ItemGroup>
 </Project>

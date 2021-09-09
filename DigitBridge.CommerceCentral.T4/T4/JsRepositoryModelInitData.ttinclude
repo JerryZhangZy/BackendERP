@@ -1,0 +1,31 @@
+﻿<# 
+    indent = 1;
+    // generate all properties
+    foreach(var col in table.Columns)
+    { 
+        if (col.ignoreGenerate) continue;
+        WriteLine($"{new String('\t',indent+1)}{col.JsPropertyName}: {col.JsPropertyDefaultValue},");
+    }
+
+    if(table.HasOneToOneChildren)
+    { 
+        foreach(var childTable in table.oneToOneChildren)
+        { 
+            if (childTable == null) continue;
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}{childTable.JsPropertyName}: {{}},");
+        }
+    } 
+    else if(table.HasOneToManyChildren)
+    { 
+        indent = 2;
+        foreach(var childTable in table.oneToManyChildren)
+        { 
+            if (childTable == null) continue;
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}{childTable.JsPropertyName}: [],");
+        }
+    } 
+#>
+
+

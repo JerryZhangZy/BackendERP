@@ -1,40 +1,66 @@
 ﻿<#@ template debug="false" hostspecific="true" language="C#" #>
-<#@ output extension=".js" #>
+<#@ output extension=".ts" #>
 <#@ assembly name="System.Core" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ include file="ParseSqlFile.ttinclude" #>
 <#@ include file="SettingForSalesOrder.ttinclude" #>
+import { types, getRoot, destroy, SnapshotIn, cast } from "mobx-state-tree";
+import { createModelActions } from '../../../store';
 <#      
+    var structurePropertyName = $"{structureName.First().ToString().ToLower()}{structureName.Substring(1)}";
+    var ServicePropertyName = $"{ServiceName.First().ToString().ToLower()}{ServiceName.Substring(1)}";
+    var processNameCamel = $"{processName.First().ToString().ToLower()}{processName.Substring(1)}";
     // Generate model output
 	if (tables.Count>0)
 	{
         foreach(var table in tables.Values)
         {
 #>              
-<#@ include file="GenerateJsDocRepositoryDto.ttinclude" #>
-<# 
-    dir = Path.Combine(path,JsModelFolder);
-    SaveOutputNotExists(dir, $"{table.DtoName}.js");
-#>
+<#@ include file="JsRepositoryModel.ttinclude" #>
 <#      
+
         }
     }
 #>              
-
-<#@ include file="GenerateJsDocStructureDto.ttinclude" #>
+<#@ include file="JsStructureModel.ttinclude" #>
+<#@ include file="JsStructureModelInitData.ttinclude" #>
 <# 
-    dir = Path.Combine(path,JsModelFolder);
-    SaveOutputNotExists(dir, $"{StructureDtoName}.js");
+    dir = Path.Combine(path,$"{JsModelFolder}/store");
+    SaveOutputNotExists(dir, $"{structurePropertyName}Model.ts");
+#>
+<#@ include file="JsDataStore.ttinclude" #>
+<# 
+    dir = Path.Combine(path,$"{JsModelFolder}/store");
+    SaveOutputNotExists(dir, $"{structurePropertyName}Store.ts");
+#>
+<#@ include file="JsStoreIndex.ttinclude" #>
+<# 
+    dir = Path.Combine(path,$"{JsModelFolder}/store");
+    SaveOutputNotExists(dir, $"index.ts");
+#>
+<#@ include file="JsServiceClass.ttinclude" #>
+<# 
+    dir = Path.Combine(path,$"{JsModelFolder}/service");
+    SaveOutputNotExists(dir, $"{ServicePropertyName}.ts");
+#>
+<#@ include file="JsUseService.ttinclude" #>
+<# 
+    dir = Path.Combine(path,$"{JsModelFolder}/service");
+    SaveOutputNotExists(dir, $"use{ServiceName}.ts");
+#>
+<#@ include file="JsServiceIndex.ttinclude" #>
+<# 
+    dir = Path.Combine(path,$"{JsModelFolder}/service");
+    SaveOutputNotExists(dir, $"index.ts");
 #>
 
-<#@ include file="GenerateJsDocPayload.ttinclude" #>
+<#@ include file="JsScreenUi.ttinclude" #>
 <# 
-    dir = Path.Combine(path,JsModelFolder);
-    SaveOutputNotExists(dir, $"{PayloadName}.js");
+    dir = Path.Combine(path,$"{JsModelFolder}");
+    SaveOutputNotExists(dir, $"{processNameCamel}.ui.ts");
 #>
-
 
 <#+
     public void SaveOutput(string destinationFolder, string outputFileName)

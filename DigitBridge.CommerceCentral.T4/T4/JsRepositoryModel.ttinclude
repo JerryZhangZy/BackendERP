@@ -1,0 +1,43 @@
+﻿<# 
+    indent = 1;
+    WriteLine($"/**");
+    WriteLine($" * data model of {table.Name} ");
+    WriteLine($" */ ");
+    WriteLine($"const {table.Name} = types");
+    WriteLine($"{new String('\t',indent)}.model('{table.Name}', {{");
+
+    // generate all properties
+    foreach(var col in table.Columns)
+    { 
+        if (col.ignoreGenerate) continue;
+        WriteLine($"{new String('\t',indent+1)}{col.JsPropertyName}: {col.JsPropertyModelType},");
+    }
+
+    if(table.HasOneToOneChildren)
+    { 
+        foreach(var childTable in table.oneToOneChildren)
+        { 
+            if (childTable == null) continue;
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}{childTable.JsPropertyName}: types.map(types.frozen()),");
+        }
+    } 
+    else if(table.HasOneToManyChildren)
+    { 
+        indent = 2;
+        foreach(var childTable in table.oneToManyChildren)
+        { 
+            if (childTable == null) continue;
+            WriteLine($"");
+            WriteLine($"{new String('\t',indent+1)}{childTable.JsPropertyName}: types.array(types.map(types.frozen())),");
+        }
+    } 
+
+    WriteLine($"{new String('\t',indent)}}})");
+    WriteLine($"{new String('\t',indent)}.actions((self) => {{");
+    WriteLine($"{new String('\t',indent+1)}return createModelActions(self);");
+    WriteLine($"{new String('\t',indent)}}});");
+
+#>
+
+
