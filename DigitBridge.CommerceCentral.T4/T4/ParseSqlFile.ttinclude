@@ -194,6 +194,12 @@
 
         public bool OneToOneInStructure { get; set; }
         public bool IsChildrenOfChildren { get; set; } 
+
+        public string JsPropertyName
+        {
+            get { return  $"{Name.First().ToString().ToLower()}{Name.Substring(1)}"; }
+        }
+
     }
 
     public class SqlColumnInfo
@@ -336,23 +342,164 @@
             }
         }
 
-        public string JsTypeAttr
+        public string JsMaxLength
         {
             get 
             { 
-                var t = Type.ToLower();
-                if (t == "bit" ||
-                    t == "int" ||
-                    t == "long" ||
-                    t == "byte" ||
-                    t == "short")
-                    return "Integer";
-
                 if (hasLength)
-                    return $"MaxLength: {Length}";
-                return "";
+                    return $"{Length}";
+                return string.Empty;
             }
         }
+
+        public string JsPropertyType
+        {
+            get 
+            { 
+                var reval = "string";
+                switch (Type.ToLower())
+                {
+                    case "float":
+                    case "decimal":
+                    case "bit":
+                    case "int":
+                    case "long":
+                    case "byte":
+                    case "money":
+                    case "short":
+                        reval = "number";
+                        break;
+                    case "byte[]":
+                    case "object":
+                    case "image":
+                        reval = "any";
+                        break;
+                    case "bool":
+                        reval = "boolean";
+                        break;
+                    default:
+                        reval = "string";
+                        break;
+                }
+                return reval;
+            }
+        }
+        public string JsPropertyName
+        {
+            get { return this.parameterName; }
+        }
+        public string JsPropertyDefaultValue
+        {
+            get 
+            { 
+                var reval = "''";
+                switch (JsPropertyType.ToLower())
+                {
+                    case "number":
+                        reval = "0";
+                        break;
+                    case "boolean":
+                        reval = "false";
+                        break;
+                    case "string":
+                        reval = "''";
+                        break;
+                    default:
+                        reval = "{}";
+                        break;
+                }
+                return reval;
+            }
+        }
+        public string JsPropertyModelType
+        {
+            get 
+            { 
+                var reval = "''";
+                switch (JsPropertyType.ToLower())
+                {
+                    case "number":
+                        reval = "types.optional(types.number, 0)";
+                        break;
+                    case "boolean":
+                        reval = "types.optional(types.boolean, false)";
+                        break;
+                    case "string":
+                        reval = "types.optional(types.string, '')";
+                        break;
+                    default:
+                        reval = "types.map(types.frozen())";
+                        break;
+                }
+                return reval;
+            }
+        }
+        public string JsFormat
+        {
+            get 
+            { 
+                if (isQty) return "qty";
+                if (isAmount) return "amount";
+                if (isPrice) return "price";
+                if (isCost) return "cost";
+                if (Name.Equals("TaxRate", StringComparison.CurrentCultureIgnoreCase)) return "taxRate";
+                if (isRate) return "rate";
+                if (isDateTime) return "date";
+                if (isTime) return "time";
+                if (isDecimal || isDouble) return "decimalNumber";
+                if (isInt) return "number";
+                return string.Empty;
+            }
+        }
+        public bool JsAlignRight
+        {
+            get 
+            { 
+                return (
+                    isQty ||
+                    isAmount ||
+                    isPrice ||
+                    isCost ||
+                    isRate
+                );
+            }
+        }
+        public string JsInputType
+        {
+            get 
+            { 
+                if (JsPropertyType == "number") return "DbComponentEnums.inputTypeEnum.number";
+                if (JsPropertyType == "boolean") return "DbComponentEnums.inputTypeEnum.checkbox";
+                if (isDateTime) return "DbComponentEnums.inputTypeEnum.date";
+                return "DbComponentEnums.inputTypeEnum.input";
+            }
+        }
+        public bool ignoreJsUi {
+            get { 
+                return (
+                    Name.Equals("RowNum", StringComparison.CurrentCultureIgnoreCase) || 
+                    Name.Equals("EnterDateUtc", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("DigitBridgeGuid", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("databaseNum", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("masterAccountNum", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("profileNum", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("channelNum", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("channelAccountNum", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("distributionCenterNum", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("shipToCompanyJobTitle", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("billToCompanyJobTitle", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("shipToAddressLine3", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("jsonFields", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.ToLower().EndsWith("uuid") ||
+                    Name.ToLower().EndsWith("firstname") ||
+                    Name.ToLower().EndsWith("lastname") ||
+                    Name.ToLower().EndsWith("suffix") ||
+                    Name.ToLower().EndsWith("addressline3")
+                ); 
+            }
+        }
+        
+
 
         public string propertyName
         {

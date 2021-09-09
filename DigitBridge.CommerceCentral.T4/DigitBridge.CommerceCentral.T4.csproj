@@ -20,12 +20,64 @@
 
   <ItemGroup>
     <None Update="T4\DataJavaScript.tt">
-      <LastGenOutput>DataJavaScript.js</LastGenOutput>
+      <LastGenOutput>DataJavaScript.ts</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\DataDocJavaScript.tt">
+      <LastGenOutput>DataDocJavaScript.js</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\DataAccess.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DataAccess.cs</LastGenOutput>
+    </None>
+    <None Update="T4\JsRepositoryUi.ttinclude">
+      <LastGenOutput>JsRepositoryUi.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\JsServiceClass.ttinclude">
+      <LastGenOutput>JsServiceClass.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\JsServiceIndex.ttinclude">
+      <LastGenOutput>JsServiceIndex.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\JsScreenUi.ttinclude">
+      <LastGenOutput>JsStructureUi.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\JsStructureUi.ttinclude">
+      <LastGenOutput>JsStructureUi.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\JsUseService.ttinclude">
+      <LastGenOutput>JsUseService.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\JsStoreIndex.ttinclude">
+      <LastGenOutput>JsDataStore.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\JsRepositoryModelInitData.ttinclude">
+      <LastGenOutput>JsRepositoryModelInitData.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\JsDataStore.ttinclude">
+      <LastGenOutput>JsDataStore.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\JsStructureModelInitData.ttinclude">
+      <LastGenOutput>JsDataStore.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\JsStructureModel.ttinclude">
+      <LastGenOutput>JsStructureModelInitData.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\JsRepositoryModel.ttinclude">
+      <LastGenOutput>JsRepositoryModel.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\GenerateJsDocRepositoryDto.ttinclude">
       <LastGenOutput>GenerateJsDocRepositoryDto.cs</LastGenOutput>
@@ -266,16 +318,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="T4\DataAccess.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataAccess.tt</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateJsDocStructureDto - Copy.cs">
-      <DependentUpon>GenerateJsDocStructureDto.ttinclude</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Update="T4\GenerateRepository - Copy.cs">
       <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -285,11 +327,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateJsDocRepositoryDto.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateRepository.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\GenerateRepositoryDto.cs">
       <DesignTime>True</DesignTime>
@@ -311,11 +348,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateServiceCalculator.ttinclude</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateStructureDtoExtension.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructureDtoExtension.ttinclude</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateStructureDto - Copy.cs">
       <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -331,21 +363,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureDtoTest.ttinclude</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateStructureGrandChildren.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructureGrandChildren.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateStructureOneToManyChildren.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructureOneToManyChildren.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateStructureOneToOneChildren.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructureOneToOneChildren.ttinclude</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateStructureTest.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -356,35 +373,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ReadDtoGrandChildren.ttinclude</DependentUpon>
     </Compile>
-    <Compile Update="T4\ReadDtoGrandChildrenMethod.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ReadDtoGrandChildrenMethod.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\ReadDtoObjectChildren.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ReadDtoObjectChildren.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForOrderDCAssignment.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForOrderDCAssignment.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForChannelOrder.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForChannelOrder.ttinclude</DependentUpon>
-    </Compile>
     <Compile Update="T4\SettingForCustomer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForCustomer.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForDistributionCenter.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForDistributionCenter.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\SettingForInventory.cs">
       <DesignTime>True</DesignTime>
@@ -410,11 +402,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForSalesOrder.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForShipment.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForShipment.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 

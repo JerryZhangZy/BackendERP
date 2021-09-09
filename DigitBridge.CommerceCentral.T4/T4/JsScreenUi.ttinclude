@@ -1,0 +1,27 @@
+﻿<#
+#>
+import { ScreenType, ProcessMode } from '../../types/enums';
+import { DbComponentEnums } from '../../types';
+import { btnSave } from '../default';
+import * as util from '../../util';
+
+export const <#= processNameCamel #>Ui = { 
+    page: {
+        screenType: ScreenType.PROCESSING,
+        screenid: 1001,
+        processMode: ProcessMode.LIST,
+        title: '<#= processName #>',
+        subTitle: '',
+        readonly: false,
+    },
+    header: {},
+    navbar: {},
+    section: {},
+    buttonGroup: {},
+    buttons: {
+        btnSave,
+    },
+<#@ include file="JsStructureUi.ttinclude" #>
+    grid: {},
+    modal: {},
+};

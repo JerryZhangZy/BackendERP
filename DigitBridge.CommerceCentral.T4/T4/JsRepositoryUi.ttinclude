@@ -1,0 +1,35 @@
+﻿<# 
+    indent = 2;
+    var parentName = table.JsPropertyName;
+
+    WriteLine($"{new String('\t',indent)}//#region UI control for {table.Name}");
+
+    // generate all properties
+    foreach(var col in table.Columns)
+    { 
+        if (col.ignoreGenerate || col.ignoreJsUi) continue;
+        var name = col.JsPropertyName;
+        if (uiNames.Contains(name)) continue;
+        uiNames.Add(name);
+
+        WriteLine($"{new String('\t',indent)}{col.JsPropertyName}: {{");
+        WriteLine($"{new String('\t',indent+1)}type: {col.JsInputType},");
+        WriteLine($"{new String('\t',indent+1)}parentName: '{parentName}',");
+        WriteLine($"{new String('\t',indent+1)}name: '{name}',");
+        WriteLine($"{new String('\t',indent+1)}label: '{name}',");
+        WriteLine($"{new String('\t',indent+1)}placeholder: '{name}',");
+
+        if (!string.IsNullOrEmpty(col.JsFormat))
+            WriteLine($"{new String('\t',indent+1)}format: '{col.JsFormat}',");
+        if (!string.IsNullOrEmpty(col.JsMaxLength))
+            WriteLine($"{new String('\t',indent+1)}maxLength: {col.JsMaxLength},");
+        if (col.JsAlignRight)
+            WriteLine($"{new String('\t',indent+1)}align: DbComponentEnums.alignEnum.right,");
+
+        WriteLine($"{new String('\t',indent+1)}textStyle: {{}},");
+        WriteLine($"{new String('\t',indent)}}},");
+    }
+    WriteLine($"{new String('\t',indent)}//#endregion UI control for {table.Name}");
+#>
+
+
