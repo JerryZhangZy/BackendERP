@@ -172,8 +172,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 sum.CustomerUuid = customerData.Customer.CustomerUuid;
                 sum.CustomerName = customerData.Customer.CustomerName;
-                if (string.IsNullOrEmpty(sum.Currency))
-                    sum.Currency = customerData.Customer.Currency;
+                //if (string.IsNullOrEmpty(sum.Currency))
+                //    sum.Currency = customerData.Customer.Currency;
             }
 
             //Set salesorder info 
