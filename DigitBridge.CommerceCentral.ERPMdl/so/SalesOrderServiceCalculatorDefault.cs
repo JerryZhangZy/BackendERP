@@ -152,8 +152,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 sum.CustomerUuid = customerData.Customer.CustomerUuid;
                 sum.CustomerName = customerData.Customer.CustomerName;
-                if (string.IsNullOrEmpty(sum.Currency))
-                    sum.Currency = customerData.Customer.Currency;
+                //if (string.IsNullOrEmpty(sum.Currency))
+                //    sum.Currency = customerData.Customer.Currency;
             }
             // (int)( (SalesOrderStatus) sum.OrderStatus)
             sum.DueDate = sum.OrderDate.AddDays(sum.TermsDays);
@@ -194,8 +194,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //Set SKU info
             var inventoryData = GetInventoryData(data, item.SKU);
             // currency priority: user input > customer > Sku
-            if (string.IsNullOrEmpty(item.Currency))
-                item.Currency = data.SalesOrderHeader.Currency;
+            //if (string.IsNullOrEmpty(item.Currency))
+            //    item.Currency = data.SalesOrderHeader.Currency;
             if (inventoryData != null)
             {
                 item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
@@ -205,8 +205,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.WarehouseUuid = inventory.WarehouseUuid;
                 item.LotNum = inventory.LotNum;
                 item.UOM = inventory.UOM;
-                if (string.IsNullOrEmpty(item.Currency))
-                    item.Currency = inventory.Currency;
+                //if (string.IsNullOrEmpty(item.Currency))
+                //    item.Currency = inventory.Currency;
             }
 
 
