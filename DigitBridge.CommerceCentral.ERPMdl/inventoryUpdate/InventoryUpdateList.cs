@@ -12,10 +12,12 @@ using System.Text;
 using System.Threading.Tasks;
 using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
+using DigitBridge.Base.Utility.Enums;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
 using Helper = DigitBridge.CommerceCentral.ERPDb.InventoryUpdateHeaderHelper;
+using ItemsHelper = DigitBridge.CommerceCentral.ERPDb.InventoryUpdateItemsHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -35,7 +37,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.BatchNumber()},
+{Helper.InventoryUpdateUuid()},
+{Helper.InventoryUpdateType()},
+COALESCE(iut.text, '') inventoryUpdateTypeText, 
+{ItemsHelper.InventoryUpdateItemsUuid()},
+{ItemsHelper.Seq()},
+{ItemsHelper.ItemDate()},
+{ItemsHelper.ItemTime()},
+{ItemsHelper.SKU()},
+{ItemsHelper.ProductUuid()},
+{ItemsHelper.WarehouseCode()},
+{ItemsHelper.WarehouseUuid()},
+{ItemsHelper.LotNum()},
+{ItemsHelper.BeforeInstockQty()},
+{ItemsHelper.CountPack()},
+{ItemsHelper.UpdateQty()}
 ";
             return this.SQL_Select;
         }
@@ -44,6 +61,8 @@ SELECT
         {
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
+ LEFT JOIN {ItemsHelper.TableName} {ItemsHelper.TableAllies} ON ({ItemsHelper.TableAllies}.InventoryUpdateUuid = {Helper.TableAllies}.InventoryUpdateUuid)
+ LEFT JOIN @UpdateType iut ON ({Helper.TableAllies}.InventoryUpdateType = iut.num)
 ";
             return this.SQL_From;
         }
@@ -51,9 +70,9 @@ SELECT
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-                        
+
             //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
-            //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
+            paramList.Add("@UpdateType".ToEnumParameter<InventoryUpdateType>());
 
             return paramList.ToArray();
         }

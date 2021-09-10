@@ -116,7 +116,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list = inventoryUpdateDataDtoCsv.Import(file.OpenReadStream());
+                var tlist = inventoryUpdateDataDtoCsv.Import(file.OpenReadStream());
+                var list = new List<InventoryUpdateDataDto>();
+                foreach (var item in tlist)
+                {
+                    if (!item.HasInventoryUpdateHeader)
+                    {
+                        if (item.HasInventoryUpdateItems)
+                        {
+                            foreach (var uitem in item.InventoryUpdateItems)
+                            {
+                                var data = new InventoryUpdateDataDto()
+                                {
+                                    InventoryUpdateHeader = new InventoryUpdateHeaderDto
+                                    {
+                                        WarehouseCode = uitem.WarehouseCode,
+                                        WarehouseUuid = uitem.WarehouseUuid,
+                                        DatabaseNum = payload.DatabaseNum,
+                                        ProfileNum = payload.ProfileNum,
+                                        MasterAccountNum = payload.MasterAccountNum,
+                                        InventoryUpdateType = (int)payload.InventoryUpdateType,
+                                    },
+                                    InventoryUpdateItems = new List<InventoryUpdateItemsDto>() { uitem }
+                                };
+                                list.Add(data);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        list.Add(item);
+                    }
+                }
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
@@ -153,7 +184,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list =inventoryUpdateDataDtoCsv.Import(file.OpenReadStream());
+                var tlist =inventoryUpdateDataDtoCsv.Import(file.OpenReadStream());
+                var list = new List<InventoryUpdateDataDto>();
+                foreach(var item in tlist)
+                {
+                    if (!item.HasInventoryUpdateHeader)
+                    {
+                        if (item.HasInventoryUpdateItems)
+                        {
+                            foreach(var uitem in item.InventoryUpdateItems)
+                            {
+                                var data = new InventoryUpdateDataDto()
+                                {
+                                    InventoryUpdateHeader=new InventoryUpdateHeaderDto
+                                    {
+                                        WarehouseCode=uitem.WarehouseCode,
+                                        WarehouseUuid=uitem.WarehouseUuid,
+                                        DatabaseNum=payload.DatabaseNum,
+                                        ProfileNum=payload.ProfileNum,
+                                        MasterAccountNum=payload.MasterAccountNum,
+                                        InventoryUpdateType= (int)payload.InventoryUpdateType,
+                                    },
+                                    InventoryUpdateItems = new List<InventoryUpdateItemsDto>() { uitem }
+                                };
+                                list.Add(data);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        list.Add(item);
+                    }
+                }
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
