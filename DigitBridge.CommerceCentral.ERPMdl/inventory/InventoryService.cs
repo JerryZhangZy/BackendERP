@@ -127,7 +127,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual async Task<bool> AddAsync(InventoryPayload payload)
         {
-            if (payload is null || !payload.HasInventory||!payload.Inventory.HasProductExt)
+            if (payload is null || !payload.HasInventory || !payload.Inventory.HasProductExt)
                 return false;
 
             // set Add mode and clear data
@@ -138,11 +138,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (!(await ValidateAsync(payload.Inventory)))
                 return false;
-            
+
             List();
             await GetDataBySkuAsync(payload.Inventory.ProductExt.SKU, payload.MasterAccountNum, payload.ProfileNum);
             Data.AddIgnoreSave(InventoryData.ProductBasicTable);
-            _ProcessMode=Base.Common.ProcessingMode.Add;
+            _ProcessMode = Base.Common.ProcessingMode.Add;
 
             // load data from dto
             FromDto(payload.Inventory);
@@ -409,19 +409,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var inventory = new Inventory();
             if (inventoryData == null || inventoryData.Inventory == null || inventoryData.Inventory.Count == 0) return inventory;
             //TODO Add this logic.
-            //if (sourceData.InventoryUuid != null)
-            //{
-            //    inventory = inventoryData.Inventory.Where(i => i.InventoryUuid == sourceData.InventoryUuid).FirstOrDefault();
-            //}
-            switch (skuType)
+            if (sourceData.InventoryUuid != null)
             {
-                //TODO get inventory by sku type.
-                //case SKUType.ApparelAndShoes: inventory=  inventoryData.Inventory.Where(i => i.SKU == sourceData.SKU && i.WarehouseCode == sourceData.WarehouseCode &&i.ColorPatternCode==sourceData.ColorPatternCode).FirstOrDefault();break;
-                //case SKUType.FoodAndVitamin: inventory=  inventoryData.Inventory.Where(i => i.SKU == sourceData.SKU && i.WarehouseCode == sourceData.WarehouseCode).FirstOrDefault();break;
-                //case SKUType.ElectronicAndComputer: inventory=  inventoryData.Inventory.Where(i => i.SKU == sourceData.SKU && i.WarehouseCode == sourceData.WarehouseCode).FirstOrDefault();break;
-                //case SKUType.Application: inventory=  inventoryData.Inventory.Where(i => i.SKU == sourceData.SKU && i.WarehouseCode == sourceData.WarehouseCode).FirstOrDefault();break;
-                //case SKUType.Furniture: inventory=  inventoryData.Inventory.Where(i => i.SKU == sourceData.SKU && i.WarehouseCode == sourceData.WarehouseCode).FirstOrDefault();break;
-                default: inventory = inventoryData.Inventory.Where(i => i.SKU == sourceData.SKU && i.WarehouseCode == sourceData.WarehouseCode).FirstOrDefault(); break;
+                inventory = inventoryData.Inventory.Where(i => i.InventoryUuid == sourceData.InventoryUuid).FirstOrDefault();
+            }
+            else
+            {
+                switch (skuType)
+                {
+                    //TODO get inventory by sku type.
+                    //case SKUType.ApparelAndShoes: inventory=  inventoryData.Inventory.Where(i => i.SKU == sourceData.SKU && i.WarehouseCode == sourceData.WarehouseCode &&i.ColorPatternCode==sourceData.ColorPatternCode).FirstOrDefault();break;
+                    //case SKUType.FoodAndVitamin: inventory=  inventoryData.Inventory.Where(i => i.SKU == sourceData.SKU && i.WarehouseCode == sourceData.WarehouseCode).FirstOrDefault();break;
+                    //case SKUType.ElectronicAndComputer: inventory=  inventoryData.Inventory.Where(i => i.SKU == sourceData.SKU && i.WarehouseCode == sourceData.WarehouseCode).FirstOrDefault();break;
+                    //case SKUType.Application: inventory=  inventoryData.Inventory.Where(i => i.SKU == sourceData.SKU && i.WarehouseCode == sourceData.WarehouseCode).FirstOrDefault();break;
+                    //case SKUType.Furniture: inventory=  inventoryData.Inventory.Where(i => i.SKU == sourceData.SKU && i.WarehouseCode == sourceData.WarehouseCode).FirstOrDefault();break;
+                    default: inventory = inventoryData.Inventory.Where(i => i.SKU == sourceData.SKU && i.WarehouseCode == sourceData.WarehouseCode).FirstOrDefault(); break;
+                }
             }
             if (inventory == null)
                 inventory = new Inventory();
