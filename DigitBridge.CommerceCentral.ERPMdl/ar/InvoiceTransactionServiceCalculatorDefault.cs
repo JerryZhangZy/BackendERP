@@ -176,6 +176,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     item.InvoiceWarehouseCode = invoiceItem.WarehouseCode;
                     item.InvoiceWarehouseUuid = invoiceItem.WarehouseUuid;
+                    item.InvoiceDiscountPrice = invoiceItem.DiscountPrice.ToPrice();  
                 }
                 
             } 
@@ -190,7 +191,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.WarehouseUuid = inventory.WarehouseUuid;
                 item.LotNum = inventory.LotNum;
                 item.UOM = inventory.UOM;
-                item.Currency = inventory.Currency;
+                //item.Currency = inventory.Currency;
             }
 
             return true;
@@ -210,10 +211,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             //TODO: add calculate summary object logic
-            /* This is generated sample code
+            //This is generated sample code
 
             var setting = new ERPSetting();
-            var sum = data.InvoiceHeader;
+            var sum = data.InvoiceTransaction;
 
             sum.ShippingAmount = sum.ShippingAmount.ToAmount();
             sum.MiscAmount = sum.MiscAmount.ToAmount();
@@ -225,8 +226,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             else
                 sum.DiscountRate = 0;
 
+            sum.DiscountAmount = sum.DiscountAmount.ToAmount();
+            //manual input max discount amount is SubTotalAmount
+
             // tax calculate should deduct discount from taxable amount
-            sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
+            //sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
+
+            var discountRate = sum.SubTotalAmount != 0 ? (sum.DiscountAmount / sum.SubTotalAmount) : 0;
+            sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate;
+            sum.TaxAmount = sum.TaxAmount.ToAmount();
+
 
             if (setting.TaxForShippingAndHandling)
             {
@@ -236,7 +245,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             sum.SalesAmount = (sum.SubTotalAmount - sum.DiscountAmount).ToAmount();
-            sum.TotalAmount =(
+            sum.TotalAmount = (
                 sum.SalesAmount +
                 sum.TaxAmount +
                 sum.ShippingAmount +
@@ -244,11 +253,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 sum.ChargeAndAllowanceAmount
                 ).ToAmount();
 
-            sum.Balance = (sum.TotalAmount - sum.PaidAmount - sum.CreditAmount).ToAmount();
+            //sum.Balance = (sum.TotalAmount - sum.PaidAmount - sum.CreditAmount).ToAmount();
 
-            sum.DueDate = sum.InvoiceDate.AddDays(sum.TermsDays);
+            //sum.DueDate = sum.InvoiceDate.AddDays(sum.TermsDays);
 
-            */
             return true;
         }
 
@@ -256,23 +264,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (data is null)
                 return false;
-
             //TODO: add calculate summary object logic
-            /* This is generated sample code
+            //This is generated sample code
 
             var sum = data.InvoiceTransaction;
             sum.SubTotalAmount = 0;
             sum.TaxableAmount = 0;
-            sum.NonTaxableAmount = 0;
-            sum.UnitCost = 0;
-            sum.AvgCost = 0;
-            sum.LotCost = 0;
+            sum.NonTaxableAmount = 0; 
+            sum.TaxRate = sum.TaxRate.ToRate();
 
-            foreach (var item in data.InvoiceItems)
+            foreach (var item in data.InvoiceReturnItems)
             {
                 if (item is null || item.IsEmpty)
                     continue;
-                SetDefault(item, data, processingMode);
+                //var inv = GetInventoryData(data,item.ProductUuid);
+
                 CalculateDetail(item, data, processingMode);
                 if (item.IsAr)
                 {
@@ -280,24 +286,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     sum.TaxableAmount += item.TaxableAmount;
                     sum.NonTaxableAmount += item.NonTaxableAmount;
                 }
-                sum.UnitCost += item.UnitCost;
-                sum.AvgCost += item.AvgCost;
-                sum.LotCost += item.LotCost;
+                //sum.UnitCost += item.UnitCost;
+                //sum.AvgCost += item.AvgCost;
+                //sum.LotCost += item.LotCost;
             }
 
-            */
             return true;
         }
 
         //TODO: add set default for detail line logic
-        /* This is generated sample code
-        protected virtual bool CalculateDetail(InvoiceItems item, InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        //This is generated sample code
+        protected virtual bool CalculateDetail(InvoiceReturnItems item, InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;
 
             var setting = new ERPSetting();
-            var sum = data.InvoiceHeader;
+            var sum = data.InvoiceTransaction;
             //var prod = data.GetCache<ProductBasic>(ProductId);
             //var inv = data.GetCache<Inventory>(InventoryId);
             //var invCost = new ItemCostClass(inv);
@@ -307,9 +312,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.ShippingAmount = item.ShippingAmount.ToAmount();
             item.MiscAmount = item.MiscAmount.ToAmount();
             item.ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount();
-            item.OrderQty = item.OrderQty.ToQty();
-            item.ShipQty = item.ShipQty.ToQty();
-            item.CancelledQty = item.CancelledQty.ToQty();
+            item.ReturnQty = item.ReturnQty<0?0: item.ReturnQty.ToQty();
+            item.ReceiveQty = item.ReceiveQty<0?0:item.ReceiveQty.ToQty();
+            item.StockQty = item.StockQty<0?0: item.StockQty.ToQty();
+            item.NonStockQty = item.NonStockQty < 0 ? 0 : item.StockQty.ToQty();
+            item.Price = item.Price.ToPrice();
+            //item.ReceiveQty= item.StockQty + item.NonStockQty // Are they equal.?
 
             item.PackType = string.Empty;
             if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
@@ -317,30 +325,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (item.PackQty > 1)
             {
-                item.OrderQty = item.OrderPack * item.PackQty;
-                item.ShipQty = item.ShipPack * item.PackQty;
-                item.CancelledQty = item.CancelledPack * item.PackQty;
+                item.ReceiveQty = item.ReceivePack * item.PackQty;
+                item.ReturnQty= item.ReturnPack * item.PackQty;
+                //item.CancelledQty = item.CancelledPack * item.PackQty;
             }
             else
             {
-                item.OrderPack = item.OrderQty;
-                item.ShipPack = item.ShipQty;
-                item.CancelledPack = item.CancelledQty;
+                item.ReceivePack = item.ReceiveQty;
+                item.ReturnPack = item.ReturnQty;
+                //item.CancelledPack = item.CancelledQty;
             }
 
             //PriceRule
             // if exist DiscountRate, calculate after discount unit price
-            if (!item.DiscountRate.IsZero())
-            {
-                item.DiscountPrice = (item.Price * (item.DiscountRate.ToRate() / 100)).ToPrice();
-                item.ExtAmount = (item.DiscountPrice * item.ShipQty).ToAmount();
-                item.DiscountAmount = (item.Price * item.ShipQty).ToAmount() - item.ExtAmount;
-            }
-            else
-            {
-                item.DiscountPrice = item.Price;
-                item.ExtAmount = (item.Price * item.ShipQty).ToAmount() - item.DiscountAmount.ToAmount();
-            }
+
+            item.ExtAmount = ((item.Price- item.InvoiceDiscountPrice) * item.ReceiveQty).ToAmount();
 
             if (item.Taxable)
             {
@@ -363,35 +362,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.MiscTaxAmount = (item.MiscAmount * item.TaxRate).ToAmount();
             }
 
-            item.ItemTotalAmount =(
-                item.ExtAmount +
-                item.TaxAmount +
-                item.ShippingAmount +
-                item.ShippingTaxAmount +
-                item.MiscAmount +
-                item.MiscTaxAmount +
-                item.ChargeAndAllowanceAmount
-                ).ToAmount();
+            //item.ItemTotalAmount =(
+            //    item.ExtAmount +
+            //    item.TaxAmount +
+            //    item.ShippingAmount +
+            //    item.ShippingTaxAmount +
+            //    item.MiscAmount +
+            //    item.MiscTaxAmount +
+            //    item.ChargeAndAllowanceAmount
+            //    ).ToAmount();
 
-            item.UnitCost = invCost.UnitCost;
-            item.AvgCost = invCost.AvgCost;
-            item.LotCost = invCost.AvgCost;
-            if (!item.Costable)
-            {
-                item.UnitCost = 0;
-                item.AvgCost = 0;
-                item.LotCost = 0;
-            }
-            else if (!item.IsProfit)
-            {
-                item.UnitCost = item.ExtAmount;
-                item.AvgCost = item.ExtAmount;
-                item.LotCost = item.ExtAmount;
-            }
+            //item.UnitCost = invCost.UnitCost;
+            //item.AvgCost = invCost.AvgCost;
+            //item.LotCost = invCost.AvgCost;
+            //if (!item.Costable)
+            //{
+            //    item.UnitCost = 0;
+            //    item.AvgCost = 0;
+            //    item.LotCost = 0;
+            //}
+            //else if (!item.IsProfit)
+            //{
+            //    item.UnitCost = item.ExtAmount;
+            //    item.AvgCost = item.ExtAmount;
+            //    item.LotCost = item.ExtAmount;
+            //}
 
             return true;
-        }
-        */
+        } 
 
         #region message
         [XmlIgnore, JsonIgnore]

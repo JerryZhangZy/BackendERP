@@ -172,8 +172,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 sum.CustomerUuid = customerData.Customer.CustomerUuid;
                 sum.CustomerName = customerData.Customer.CustomerName;
-                if (string.IsNullOrEmpty(sum.Currency))
-                    sum.Currency = customerData.Customer.Currency;
+                //if (string.IsNullOrEmpty(sum.Currency))
+                //    sum.Currency = customerData.Customer.Currency;
             }
 
             //Set salesorder info 
@@ -181,7 +181,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (salesOrderData != null && salesOrderData.SalesOrderHeader != null)
             {
                 sum.SalesOrderUuid = salesOrderData.SalesOrderHeader.SalesOrderUuid;
-                sum.SalesAmount = salesOrderData.SalesOrderHeader.SalesAmount;
+                //TODO check this.
+                //sum.SalesAmount = salesOrderData.SalesOrderHeader.SalesAmount;
             }
 
             sum.DueDate = sum.InvoiceDate.AddDays(sum.TermsDays);
@@ -226,8 +227,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.InvoiceItemsUuid = Guid.NewGuid().ToString();
             }
 
-            if (string.IsNullOrEmpty(item.Currency))
-                item.Currency = data.InvoiceHeader.Currency;
+            //if (string.IsNullOrEmpty(item.Currency))
+            //    item.Currency = data.InvoiceHeader.Currency;
             //Set SKU info
             var inventoryData = GetInventoryData(data, item.SKU);
             if (inventoryData != null)
@@ -239,8 +240,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.WarehouseUuid = inventory.WarehouseUuid;
                 item.LotNum = inventory.LotNum;
                 item.UOM = inventory.UOM;
-                if (string.IsNullOrEmpty(item.Currency))
-                    item.Currency = inventory.Currency;
+                //if (string.IsNullOrEmpty(item.Currency))
+                //    item.Currency = inventory.Currency;
             }
 
 

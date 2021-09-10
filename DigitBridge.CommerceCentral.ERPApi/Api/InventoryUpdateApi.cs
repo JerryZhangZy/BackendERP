@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
+using DigitBridge.Base.Utility.Enums;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
@@ -221,12 +222,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "InventoryUpdateType", In = ParameterLocation.Path, Required = true, Type = typeof(InventoryUpdateType), Summary = "InventoryUpdateType", Description = "InventoryUpdateType", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryUpdatePayload))]
         public static async Task<InventoryUpdatePayload> ImportInventoryUpdate(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "inventoryUpdates/import")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "inventoryUpdates/import/{InventoryUpdateType}")] HttpRequest req, int InventoryUpdateType)
         { 
             var payload = await req.GetParameters<InventoryUpdatePayload>();
+            payload.InventoryUpdateType = (InventoryUpdateType)InventoryUpdateType;
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var files = req.Form.Files;
             var svc = new InventoryUpdateManager(dbFactory);
