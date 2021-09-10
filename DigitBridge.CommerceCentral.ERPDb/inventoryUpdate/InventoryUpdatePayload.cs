@@ -16,6 +16,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using DigitBridge.Base.Utility;
+using DigitBridge.Base.Utility.Enums;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -36,6 +37,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             };
         }
 
+        [JsonIgnore]
+        public InventoryUpdateType InventoryUpdateType { get; set; } = InventoryUpdateType.Adjust;
 
         #region multiple Dto list
 

@@ -77,10 +77,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 foreach(var tuple in tmpList)
                 {
                     //only for update items and init InventoryUuid;
-                    var inventory = dbFactory.GetBy<Inventory>("SKU=@0 AND WarehouseCode=@1", tuple.SKU.ToParameter("SKU"), tuple.WarehouseCode.ToParameter("WarehouseCode"));
+                    var inventory = dbFactory.GetBy<Inventory>("where SKU=@0 AND WarehouseCode=@1", tuple.SKU.ToParameter("SKU"), tuple.WarehouseCode.ToParameter("WarehouseCode"));
                     if (inventory != null)
                     {
-                        var items = data.InventoryUpdateItems.First(i => i.WarehouseCode == inventory.WarehouseCode&&i.SKU==inventory.WarehouseCode);
+                        var items = data.InventoryUpdateItems.First(i => i.WarehouseCode == inventory.WarehouseCode&&i.SKU==inventory.SKU);
                         items.SKU = inventory.SKU;
                         items.InventoryUuid = inventory.InventoryUuid;
                         items.ProductUuid = inventory.ProductUuid;
