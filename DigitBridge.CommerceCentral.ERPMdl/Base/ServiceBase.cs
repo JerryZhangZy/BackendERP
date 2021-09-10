@@ -374,9 +374,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public virtual bool GetByNumber(int masterAccountNum, int profileNum, string number)
         {
-            if (ProcessMode == ProcessingMode.Add || string.IsNullOrEmpty(number))
-                return false;
-            ClearData();
+            NewData();
+            if (string.IsNullOrEmpty(number))
+                return false; 
             var success = _data.GetByNumber(masterAccountNum, profileNum, number);
             if (!success)
                 AddError($"Data not found for {number}.");
@@ -420,9 +420,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public virtual async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
         {
-            if (ProcessMode == ProcessingMode.Add || string.IsNullOrEmpty(number))
-                return false;
-            ClearData();
+            NewData();
+            if (string.IsNullOrEmpty(number))
+                return false; 
             var success = await _data.GetByNumberAsync(masterAccountNum, profileNum, number);
             if (!success)
                 AddError($"Data not found for {number}.");
