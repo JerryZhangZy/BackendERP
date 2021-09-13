@@ -53,6 +53,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string SKU(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SKU) AS {name ?? "SKU".ToCamelCase(camelCase)} ";
         public static string Description(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Description) AS {name ?? "Description".ToCamelCase(camelCase)} ";
         public static string Notes(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Notes) AS {name ?? "Notes".ToCamelCase(camelCase)} ";
+        public static string ItemTotalAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ItemTotalAmount AS {name ?? "ItemTotalAmount".ToCamelCase(camelCase)} ";
         public static string Currency(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Currency) AS {name ?? "Currency".ToCamelCase(camelCase)} ";
         public static string PoQty(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.PoQty AS {name ?? "PoQty".ToCamelCase(camelCase)} ";
         public static string ReceivedQty(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ReceivedQty AS {name ?? "ReceivedQty".ToCamelCase(camelCase)} ";
@@ -62,6 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ExtAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ExtAmount AS {name ?? "ExtAmount".ToCamelCase(camelCase)} ";
         public static string TaxRate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TaxRate AS {name ?? "TaxRate".ToCamelCase(camelCase)} ";
         public static string TaxAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TaxAmount AS {name ?? "TaxAmount".ToCamelCase(camelCase)} ";
+        public static string DiscountPrice(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DiscountPrice AS {name ?? "DiscountPrice".ToCamelCase(camelCase)} ";
         public static string DiscountRate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DiscountRate AS {name ?? "DiscountRate".ToCamelCase(camelCase)} ";
         public static string DiscountAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DiscountAmount AS {name ?? "DiscountAmount".ToCamelCase(camelCase)} ";
         public static string ShippingAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShippingAmount AS {name ?? "ShippingAmount".ToCamelCase(camelCase)} ";
@@ -72,7 +74,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string Stockable(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Stockable AS {name ?? "Stockable".ToCamelCase(camelCase)} ";
         public static string Costable(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Costable AS {name ?? "Costable".ToCamelCase(camelCase)} ";
         public static string Taxable(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Taxable AS {name ?? "Taxable".ToCamelCase(camelCase)} ";
+        public static string TaxableAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TaxableAmount AS {name ?? "TaxableAmount".ToCamelCase(camelCase)} ";
+        public static string NonTaxableAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.NonTaxableAmount AS {name ?? "NonTaxableAmount".ToCamelCase(camelCase)} ";
         public static string IsAp(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.IsAp AS {name ?? "IsAp".ToCamelCase(camelCase)} ";
+        public static string WarehouseUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseUuid) AS {name ?? "WarehouseUuid".ToCamelCase(camelCase)} ";
+        public static string WarehouseCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseCode) AS {name ?? "WarehouseCode".ToCamelCase(camelCase)} ";
         public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
         public static string UpdateDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc".ToCamelCase(camelCase)} ";
         public static string EnterBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy".ToCamelCase(camelCase)} ";
@@ -101,6 +107,7 @@ RTRIM({allies}InventoryUuid) AS InventoryUuid,
 RTRIM({allies}SKU) AS SKU,
 RTRIM({allies}Description) AS Description,
 RTRIM({allies}Notes) AS Notes,
+{allies}ItemTotalAmount AS ItemTotalAmount,
 RTRIM({allies}Currency) AS Currency,
 {allies}PoQty AS PoQty,
 {allies}ReceivedQty AS ReceivedQty,
@@ -110,6 +117,7 @@ RTRIM({allies}PriceRule) AS PriceRule,
 {allies}ExtAmount AS ExtAmount,
 {allies}TaxRate AS TaxRate,
 {allies}TaxAmount AS TaxAmount,
+{allies}DiscountPrice AS DiscountPrice,
 {allies}DiscountRate AS DiscountRate,
 {allies}DiscountAmount AS DiscountAmount,
 {allies}ShippingAmount AS ShippingAmount,
@@ -120,7 +128,11 @@ RTRIM({allies}PriceRule) AS PriceRule,
 {allies}Stockable AS Stockable,
 {allies}Costable AS Costable,
 {allies}Taxable AS Taxable,
+{allies}TaxableAmount AS TaxableAmount,
+{allies}NonTaxableAmount AS NonTaxableAmount,
 {allies}IsAp AS IsAp,
+RTRIM({allies}WarehouseUuid) AS WarehouseUuid,
+RTRIM({allies}WarehouseCode) AS WarehouseCode,
 {allies}EnterDateUtc AS EnterDateUtc,
 {allies}UpdateDateUtc AS UpdateDateUtc,
 RTRIM({allies}EnterBy) AS EnterBy,
