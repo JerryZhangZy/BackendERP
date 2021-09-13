@@ -55,6 +55,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.TotalAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.TaxRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
 					.RuleFor(u => u.TaxAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.TaxableAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.NonTaxableAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.DiscountRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
 					.RuleFor(u => u.DiscountAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.ShippingAmount, f => f.Random.Decimal(1, 1000, 6))

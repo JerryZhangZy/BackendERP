@@ -102,6 +102,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("TaxAmount",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _taxAmount;
 
+        [Column("TaxableAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _taxableAmount;
+
+        [Column("NonTaxableAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _nonTaxableAmount;
+
         [Column("DiscountRate",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _discountRate;
 
@@ -516,6 +522,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Readonly) Amount should apply tax. <br> Title: Taxable Amount, Display: true, Editable: false
+		/// </summary>
+        public virtual decimal TaxableAmount
+        {
+            get
+            {
+				return _taxableAmount; 
+            }
+            set
+            {
+				_taxableAmount = value; 
+				OnPropertyChanged("TaxableAmount", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Amount should not apply tax. <br> Title: NonTaxable, Display: true, Editable: false
+		/// </summary>
+        public virtual decimal NonTaxableAmount
+        {
+            get
+            {
+				return _nonTaxableAmount; 
+            }
+            set
+            {
+				_nonTaxableAmount = value; 
+				OnPropertyChanged("NonTaxableAmount", value);
+            }
+        }
+
+		/// <summary>
 		/// P/O level discount rate. <br> Title: Discount, Display: true, Editable: true
 		/// </summary>
         public virtual decimal? DiscountRate
@@ -779,6 +817,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_totalAmount = default(decimal); 
 			_taxRate = AllowNull ? (decimal?)null : default(decimal); 
 			_taxAmount = AllowNull ? (decimal?)null : default(decimal); 
+			_taxableAmount = default(decimal); 
+			_nonTaxableAmount = default(decimal); 
 			_discountRate = AllowNull ? (decimal?)null : default(decimal); 
 			_discountAmount = AllowNull ? (decimal?)null : default(decimal); 
 			_shippingAmount = AllowNull ? (decimal?)null : default(decimal); 

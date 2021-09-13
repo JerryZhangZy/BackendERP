@@ -233,6 +233,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasTaxAmount => TaxAmount != null;
 
 		/// <summary>
+		/// (Readonly) Amount should apply tax. <br> Title: Taxable Amount, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Amount should apply tax. <br> Title: Taxable Amount, Display: true, Editable: false")]
+        public decimal? TaxableAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasTaxableAmount => TaxableAmount != null;
+
+		/// <summary>
+		/// (Readonly) Amount should not apply tax. <br> Title: NonTaxable, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Amount should not apply tax. <br> Title: NonTaxable, Display: true, Editable: false")]
+        public decimal? NonTaxableAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasNonTaxableAmount => NonTaxableAmount != null;
+
+		/// <summary>
 		/// P/O level discount rate. <br> Title: Discount, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("P/O level discount rate. <br> Title: Discount, Display: true, Editable: true")]

@@ -186,6 +186,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasNotes => Notes != null;
 
 		/// <summary>
+		/// Item total amount include all. <br> Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Item total amount include all. <br> Display: false, Editable: false")]
+        public decimal? ItemTotalAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasItemTotalAmount => ItemTotalAmount != null;
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
 		[OpenApiPropertyDescription("(Ignore)")]
@@ -267,6 +276,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTaxAmount => TaxAmount != null;
+
+		/// <summary>
+		/// Item after discount price. <br> Title: Discount Price, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Item after discount price. <br> Title: Discount Price, Display: true, Editable: false")]
+        public decimal? DiscountPrice { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasDiscountPrice => DiscountPrice != null;
 
 		/// <summary>
 		/// P/O level discount rate. <br> Title: Discount Rate, Display: true, Editable: true
@@ -357,6 +375,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTaxable => Taxable != null;
+
+		/// <summary>
+		/// (Readonly) Amount should apply tax. <br> Title: Taxable Amount, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Amount should apply tax. <br> Title: Taxable Amount, Display: true, Editable: false")]
+        public decimal? TaxableAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasTaxableAmount => TaxableAmount != null;
+
+		/// <summary>
+		/// (Readonly) Amount should not apply tax. <br> Title: NonTaxable, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Amount should not apply tax. <br> Title: NonTaxable, Display: true, Editable: false")]
+        public decimal? NonTaxableAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasNonTaxableAmount => NonTaxableAmount != null;
 
 		/// <summary>
 		/// P/O item will apply to total amount . <br> Title: A/P, Display: true, Editable: true

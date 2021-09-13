@@ -20,6 +20,7 @@
 	[Description] NVarchar(200) NOT NULL DEFAULT '', --Item line description, default from ProductBasic data. <br> Title: Description, Display: true, Editable: true
 	[Notes] NVarchar(500) NOT NULL DEFAULT '',--P/O item notes . <br> Title: Notes, Display: true, Editable: true
 
+	[ItemTotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount include all. <br> Display: false, Editable: false
 	[Currency] VARCHAR(10) NOT NULL DEFAULT '', --(Ignore)  
 	[PoQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item P/O Qty. 
 	[ReceivedQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Received Qty. 
@@ -29,6 +30,7 @@
 	[ExtAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount.  <br> Title: Ext.Amount, Display: true, Editable: false
 	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for P/O items.  <br> Display: false, Editable: false
 	[TaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total P/O tax amount (include shipping tax and misc tax) . <br> Display: false, Editable: false
+	[DiscountPrice] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item after discount price. <br> Title: Discount Price, Display: true, Editable: false
 	[DiscountRate] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount rate. <br> Title: Discount Rate, Display: true, Editable: true
 	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --P/O level discount amount, base on SubTotalAmount.<br> Title: Discount Amount, Display: true, Editable: true
 	[ShippingAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total shipping fee for all items. <br> Display: false, Editable: false
@@ -40,6 +42,8 @@
 	[Stockable] TINYINT NOT NULL DEFAULT 1,--P/O item will update inventory instock qty . <br> Title: Stockable, Display: true, Editable: true
 	[Costable] TINYINT NOT NULL DEFAULT 1,--P/O item will update inventory cost. <br> Title: Apply Cost, Display: true, Editable: true
 	[Taxable] TINYINT NOT NULL DEFAULT 0,--P/O item will apply tax. <br> Title: Taxable, Display: true, Editable: true
+	[TaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Readonly) Amount should apply tax. <br> Title: Taxable Amount, Display: true, Editable: false
+	[NonTaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Readonly) Amount should not apply tax. <br> Title: NonTaxable, Display: true, Editable: false
 	[IsAp] TINYINT NOT NULL DEFAULT 0,--P/O item will apply to total amount . <br> Title: A/P, Display: true, Editable: true
 	
 	[WarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Warehouse uuid, load from inventory data. <br> Display: false, Editable: false
