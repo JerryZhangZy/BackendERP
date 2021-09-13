@@ -58,6 +58,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string TotalAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TotalAmount AS {name ?? "TotalAmount".ToCamelCase(camelCase)} ";
         public static string TaxRate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TaxRate AS {name ?? "TaxRate".ToCamelCase(camelCase)} ";
         public static string TaxAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TaxAmount AS {name ?? "TaxAmount".ToCamelCase(camelCase)} ";
+        public static string TaxableAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TaxableAmount AS {name ?? "TaxableAmount".ToCamelCase(camelCase)} ";
+        public static string NonTaxableAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.NonTaxableAmount AS {name ?? "NonTaxableAmount".ToCamelCase(camelCase)} ";
         public static string DiscountRate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DiscountRate AS {name ?? "DiscountRate".ToCamelCase(camelCase)} ";
         public static string DiscountAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DiscountAmount AS {name ?? "DiscountAmount".ToCamelCase(camelCase)} ";
         public static string ShippingAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShippingAmount AS {name ?? "ShippingAmount".ToCamelCase(camelCase)} ";
@@ -99,6 +101,8 @@ RTRIM({allies}Currency) AS Currency,
 {allies}TotalAmount AS TotalAmount,
 {allies}TaxRate AS TaxRate,
 {allies}TaxAmount AS TaxAmount,
+{allies}TaxableAmount AS TaxableAmount,
+{allies}NonTaxableAmount AS NonTaxableAmount,
 {allies}DiscountRate AS DiscountRate,
 {allies}DiscountAmount AS DiscountAmount,
 {allies}ShippingAmount AS ShippingAmount,

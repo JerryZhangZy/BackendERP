@@ -85,6 +85,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("Notes",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _notes;
 
+        [Column("ItemTotalAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _itemTotalAmount;
+
         [Column("Currency",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _currency;
 
@@ -111,6 +114,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("TaxAmount",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _taxAmount;
+
+        [Column("DiscountPrice",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _discountPrice;
 
         [Column("DiscountRate",SqlDbType.Decimal,IsDefault=true)]
         private decimal? _discountRate;
@@ -141,6 +147,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("Taxable",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
         private byte _taxable;
+
+        [Column("TaxableAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _taxableAmount;
+
+        [Column("NonTaxableAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _nonTaxableAmount;
 
         [Column("IsAp",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
         private byte _isAp;
@@ -436,6 +448,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Item total amount include all. <br> Display: false, Editable: false
+		/// </summary>
+        public virtual decimal ItemTotalAmount
+        {
+            get
+            {
+				return _itemTotalAmount; 
+            }
+            set
+            {
+				_itemTotalAmount = value; 
+				OnPropertyChanged("ItemTotalAmount", value);
+            }
+        }
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
         public virtual string Currency
@@ -586,6 +614,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
 					_taxAmount = value; 
 					OnPropertyChanged("TaxAmount", value);
 				}
+            }
+        }
+
+		/// <summary>
+		/// Item after discount price. <br> Title: Discount Price, Display: true, Editable: false
+		/// </summary>
+        public virtual decimal DiscountPrice
+        {
+            get
+            {
+				return _discountPrice; 
+            }
+            set
+            {
+				_discountPrice = value; 
+				OnPropertyChanged("DiscountPrice", value);
             }
         }
 
@@ -781,6 +825,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_taxable = value ? (byte)1 : (byte)0; 
 				OnPropertyChanged("Taxable", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Amount should apply tax. <br> Title: Taxable Amount, Display: true, Editable: false
+		/// </summary>
+        public virtual decimal TaxableAmount
+        {
+            get
+            {
+				return _taxableAmount; 
+            }
+            set
+            {
+				_taxableAmount = value; 
+				OnPropertyChanged("TaxableAmount", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Amount should not apply tax. <br> Title: NonTaxable, Display: true, Editable: false
+		/// </summary>
+        public virtual decimal NonTaxableAmount
+        {
+            get
+            {
+				return _nonTaxableAmount; 
+            }
+            set
+            {
+				_nonTaxableAmount = value; 
+				OnPropertyChanged("NonTaxableAmount", value);
             }
         }
 
@@ -1062,6 +1138,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_sKU = String.Empty; 
 			_description = String.Empty; 
 			_notes = String.Empty; 
+			_itemTotalAmount = default(decimal); 
 			_currency = String.Empty; 
 			_poQty = default(decimal); 
 			_receivedQty = default(decimal); 
@@ -1071,6 +1148,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_extAmount = default(decimal); 
 			_taxRate = AllowNull ? (decimal?)null : default(decimal); 
 			_taxAmount = AllowNull ? (decimal?)null : default(decimal); 
+			_discountPrice = default(decimal); 
 			_discountRate = AllowNull ? (decimal?)null : default(decimal); 
 			_discountAmount = AllowNull ? (decimal?)null : default(decimal); 
 			_shippingAmount = AllowNull ? (decimal?)null : default(decimal); 
@@ -1081,6 +1159,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_stockable = default(byte); 
 			_costable = default(byte); 
 			_taxable = default(byte); 
+			_taxableAmount = default(decimal); 
+			_nonTaxableAmount = default(decimal); 
 			_isAp = default(byte); 
 			_warehouseUuid = String.Empty; 
 			_warehouseCode = String.Empty; 
