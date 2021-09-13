@@ -24,4 +24,5 @@ export const <#= processNameCamel #>Ui = {
 <#@ include file="JsStructureUi.ttinclude" #>
     grid: {},
     modal: {},
+    menu: {},
 };
