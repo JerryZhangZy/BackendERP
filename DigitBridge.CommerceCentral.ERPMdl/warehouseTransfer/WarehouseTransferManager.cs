@@ -116,11 +116,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list = warehouseTransferDataDtoCsv.Import(file.OpenReadStream());
+                var tlist = warehouseTransferDataDtoCsv.Import(file.OpenReadStream());
+                var list = new List<WarehouseTransferDataDto>();
+                foreach (var item in tlist)
+                {
+                    if (!item.HasWarehouseTransferHeader)
+                    {
+                        if (item.HasWarehouseTransferItems)
+                        {
+                            foreach (var uitem in item.WarehouseTransferItems)
+                            {
+                                var data = new WarehouseTransferDataDto()
+                                {
+                                    WarehouseTransferHeader = new WarehouseTransferHeaderDto
+                                    {
+                                        FromWarehouseCode = uitem.FromWarehouseCode,
+                                        FromWarehouseUuid = uitem.FromWarehouseUuid,
+                                        ToWarehouseCode = uitem.ToWarehouseCode,
+                                        ToWarehouseUuid = uitem.ToWarehouseUuid,
+                                        DatabaseNum = payload.DatabaseNum,
+                                        ProfileNum = payload.ProfileNum,
+                                        MasterAccountNum = payload.MasterAccountNum,
+                                        WarehouseTransferType = (int)payload.InventoryUpdateType
+                                    },
+                                    WarehouseTransferItems = new List<WarehouseTransferItemsDto>() { uitem }
+                                };
+                                list.Add(data);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        list.Add(item);
+                    }
+                }
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.WarehouseTransfer = item;
                     if (warehouseTransferService.Add(payload))
@@ -153,11 +186,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list =warehouseTransferDataDtoCsv.Import(file.OpenReadStream());
+                var tlist = warehouseTransferDataDtoCsv.Import(file.OpenReadStream());
+                var list = new List<WarehouseTransferDataDto>();
+                foreach (var item in tlist)
+                {
+                    if (!item.HasWarehouseTransferHeader)
+                    {
+                        if (item.HasWarehouseTransferItems)
+                        {
+                            foreach (var uitem in item.WarehouseTransferItems)
+                            {
+                                var data = new WarehouseTransferDataDto()
+                                {
+                                    WarehouseTransferHeader = new WarehouseTransferHeaderDto
+                                    {
+                                        FromWarehouseCode = uitem.FromWarehouseCode,
+                                        FromWarehouseUuid = uitem.FromWarehouseUuid,
+                                        ToWarehouseCode=uitem.ToWarehouseCode,
+                                        ToWarehouseUuid=uitem.ToWarehouseUuid,
+                                        DatabaseNum = payload.DatabaseNum,
+                                        ProfileNum = payload.ProfileNum,
+                                        MasterAccountNum = payload.MasterAccountNum,
+                                        WarehouseTransferType=(int)payload.InventoryUpdateType
+                                    },
+                                    WarehouseTransferItems = new List<WarehouseTransferItemsDto>() { uitem }
+                                };
+                                list.Add(data);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        list.Add(item);
+                    }
+                }
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.WarehouseTransfer = item;
                     if (await warehouseTransferService.AddAsync(payload))

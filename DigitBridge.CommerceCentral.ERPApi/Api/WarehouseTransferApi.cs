@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -92,6 +93,60 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<WarehouseTransferPayload>(payload);
         }
 
+        [FunctionName(nameof(UpdateWarehouseTransfer))]
+        [OpenApiOperation(operationId: "UpdateWarehouseTransfer", tags: new[] { "WarehouseTransfers" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadUpdate), Description = "WarehouseTransferDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadUpdate))]
+        public static async Task<JsonNetResponse<WarehouseTransferPayload>> UpdateWarehouseTransfer(
+            [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "warehouseTransfers")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<WarehouseTransferPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new WarehouseTransferService(dbFactory);
+            if (await svc.UpdateAsync(payload))
+                payload.WarehouseTransfer = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<WarehouseTransferPayload>(payload);
+        }
+
+        [FunctionName(nameof(DeleteWarehouseTransfer))]
+        [OpenApiOperation(operationId: "DeleteWarehouseTransfer", tags: new[] { "WarehouseTransfers" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "BatchNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "BatchNumber", Description = "BatchNumber", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehouseTransferPayloadDelete), Description = "The OK response")]
+        public static async Task<JsonNetResponse<WarehouseTransferPayload>> DeleteWarehouseTransfer(
+            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "warehouseTransfers/{BatchNumber}")] HttpRequest req,
+            string BatchNumber)
+        {
+            var payload = await req.GetParameters<WarehouseTransferPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new WarehouseTransferService(dbFactory);
+            var spilterIndex = BatchNumber.IndexOf("-");
+            var batchNumber = BatchNumber;
+            if (spilterIndex > 0 && batchNumber.StartsWith(payload.ProfileNum.ToString()))
+            {
+                batchNumber = BatchNumber.Substring(spilterIndex + 1);
+            }
+            payload.BatchNumbers.Add(batchNumber);
+            if (await svc.DeleteByBatchNumberAsync(payload, batchNumber))
+                payload.WarehouseTransfer = null;
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<WarehouseTransferPayload>(payload);
+        }
+
         /// <summary>
         /// Load warehouseTransfer list
         /// </summary>
@@ -166,13 +221,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "ImportWarehouseTransfer", tags: new[] { "WarehouseTransfers" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "InventoryUpdateType", In = ParameterLocation.Path, Required = true, Type = typeof(InventoryUpdateType), Summary = "InventoryUpdateType", Description = "InventoryUpdateType", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehouseTransferPayload))]
         public static async Task<WarehouseTransferPayload> ImportWarehouseTransfer(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "warehouseTransfers/import")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "warehouseTransfers/import/{InventoryUpdateType}")] HttpRequest req, int InventoryUpdateType)
         { 
             var payload = await req.GetParameters<WarehouseTransferPayload>();
+            payload.InventoryUpdateType = (InventoryUpdateType)InventoryUpdateType;
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var files = req.Form.Files;
             var svc = new WarehouseTransferManager(dbFactory);

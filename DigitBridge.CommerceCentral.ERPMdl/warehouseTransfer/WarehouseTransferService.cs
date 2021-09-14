@@ -360,6 +360,41 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return payload;
         }
 
+        public bool DeleteByBatchNumber(WarehouseTransferPayload payload, string batchNumber)
+        {
+            if (string.IsNullOrEmpty(batchNumber))
+                return false;
+            Delete();
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = WarehouseTransferHelper.GetRowNumByNumber(batchNumber, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            var success = GetData(rowNum);
+            if (success)
+                return DeleteData();
+            AddError("Data not found");
+            return false;
+        }
+
+        public async Task<bool> DeleteByBatchNumberAsync(WarehouseTransferPayload payload, string batchNumber)
+        {
+            if (string.IsNullOrEmpty(batchNumber))
+                return false;
+            Delete();
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await WarehouseTransferHelper.GetRowNumByNumberAsync(batchNumber, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            var success = await GetDataAsync(rowNum);
+            if (success)
+                return await DeleteDataAsync();
+            AddError("Data not found");
+            return false;
+        }
+
+
     }
 }
 
