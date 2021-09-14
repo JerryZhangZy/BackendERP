@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Text;
 using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
-using DigitBridge.Base.Utility.Enums;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Helper = DigitBridge.CommerceCentral.ERPDb.WarehouseTransferHeaderHelper;
@@ -32,7 +31,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", ITEMSPREFIX, FilterBy.eq, string.Empty);
         public QueryFilter<string> WarehouseCode => _WarehouseCode;
 
-        protected EnumQueryFilter<InventoryUpdateType> _UpdateType = new EnumQueryFilter<InventoryUpdateType>("InventoryUpdateType", "InventoryUpdateType", PREFIX, FilterBy.eq, 0);
+        protected EnumQueryFilter<InventoryUpdateType> _UpdateType = new EnumQueryFilter<InventoryUpdateType>("WarehouseTransferType", "WarehouseTransferType", PREFIX, FilterBy.eq, 0);
         public EnumQueryFilter<InventoryUpdateType> UpdateType => _UpdateType;
 
         public WarehouseTransferQuery() : base(PREFIX)

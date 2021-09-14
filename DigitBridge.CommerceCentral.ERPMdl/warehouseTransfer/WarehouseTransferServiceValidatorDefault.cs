@@ -185,9 +185,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.WarehouseTransferHeader.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            if (!string.IsNullOrEmpty(data.WarehouseTransferHeader.BatchNumber) && dbFactory.Exists<WarehouseTransferHeader>("BatchNumber=@0", data.WarehouseTransferHeader.BatchNumber.ToParameter("0")))
+            {
+                IsValid = false;
+                AddError($"BatchNumber: {data.WarehouseTransferHeader.BatchNumber} is duplicate.");
+            }
+            return IsValid;
 
         }
 
@@ -277,9 +281,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 IsValid = false;
                 AddError($"RowNum: {data.WarehouseTransferHeader.RowNum} is duplicate.");
-                return IsValid;
             }
-            return true;
+            if (!string.IsNullOrEmpty(data.WarehouseTransferHeader.BatchNumber) && await dbFactory.ExistsAsync<WarehouseTransferHeader>("BatchNumber=@0", data.WarehouseTransferHeader.BatchNumber.ToParameter("0")))
+            {
+                IsValid = false;
+                AddError($"BatchNumber: {data.WarehouseTransferHeader.BatchNumber} is duplicate.");
+            }
+            return IsValid;
 
         }
 
@@ -342,13 +350,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.WarehouseTransferHeader.WarehouseTransferUuid = Guid.NewGuid().ToString();
+                dto.WarehouseTransferHeader.WarehouseTransferUuid = null;
+                if (string.IsNullOrEmpty(dto.WarehouseTransferHeader.FromWarehouseCode) && string.IsNullOrEmpty(dto.WarehouseTransferHeader.FromWarehouseUuid))
+                {
+                    isValid = false;
+                    AddError($"FromWarehouseCode&FromWarehouseUuid at lease one");
+                }
+                if (string.IsNullOrEmpty(dto.WarehouseTransferHeader.ToWarehouseCode) && string.IsNullOrEmpty(dto.WarehouseTransferHeader.ToWarehouseUuid))
+                {
+                    isValid = false;
+                    AddError($"ToWarehouseCode&ToWarehouseUuid at lease one");
+                }
                 if (dto.WarehouseTransferItems != null && dto.WarehouseTransferItems.Count > 0)
                 {
                     foreach (var detailItem in dto.WarehouseTransferItems)
-                        detailItem.WarehouseTransferItemsUuid = Guid.NewGuid().ToString();
+                    {
+                        if(string.IsNullOrEmpty(detailItem.SKU))
+                            AddError($"WarehouseTransferItems.SKU Required");
+                        if(string.IsNullOrEmpty(detailItem.FromWarehouseCode)&&string.IsNullOrEmpty(detailItem.FromWarehouseUuid))
+                            AddError($"WarehouseTransferItems.ToWarehouseCode&ToWarehouseUuid at lease one");
+                        if(string.IsNullOrEmpty(detailItem.FromWarehouseCode)&&string.IsNullOrEmpty(detailItem.ToWarehouseUuid))
+                            AddError($"WarehouseTransferItems.ToWarehouseCode&ToWarehouseUuid at lease one");
+                        detailItem.WarehouseTransferItemsUuid = null;
+                    }
                 }
-  
+ 
             }
             else if (processingMode == ProcessingMode.Edit)
             {
@@ -394,13 +420,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.WarehouseTransferHeader.WarehouseTransferUuid = Guid.NewGuid().ToString();
+                dto.WarehouseTransferHeader.WarehouseTransferUuid = null;
+                if (string.IsNullOrEmpty(dto.WarehouseTransferHeader.FromWarehouseCode) && string.IsNullOrEmpty(dto.WarehouseTransferHeader.FromWarehouseUuid))
+                {
+                    isValid = false;
+                    AddError($"FromWarehouseCode&FromWarehouseUuid at lease one");
+                }
+                if (string.IsNullOrEmpty(dto.WarehouseTransferHeader.ToWarehouseCode) && string.IsNullOrEmpty(dto.WarehouseTransferHeader.ToWarehouseUuid))
+                {
+                    isValid = false;
+                    AddError($"ToWarehouseCode&ToWarehouseUuid at lease one");
+                }
                 if (dto.WarehouseTransferItems != null && dto.WarehouseTransferItems.Count > 0)
                 {
                     foreach (var detailItem in dto.WarehouseTransferItems)
-                        detailItem.WarehouseTransferItemsUuid = Guid.NewGuid().ToString();
+                    {
+                        if (string.IsNullOrEmpty(detailItem.SKU))
+                            AddError($"WarehouseTransferItems.SKU Required");
+                        if (string.IsNullOrEmpty(detailItem.FromWarehouseCode) && string.IsNullOrEmpty(detailItem.FromWarehouseUuid))
+                            AddError($"WarehouseTransferItems.ToWarehouseCode&ToWarehouseUuid at lease one");
+                        if (string.IsNullOrEmpty(detailItem.FromWarehouseCode) && string.IsNullOrEmpty(detailItem.ToWarehouseUuid))
+                            AddError($"WarehouseTransferItems.ToWarehouseCode&ToWarehouseUuid at lease one");
+                        detailItem.WarehouseTransferItemsUuid = null;
+                    }
                 }
-  
+
             }
             else if (processingMode == ProcessingMode.Edit)
             {

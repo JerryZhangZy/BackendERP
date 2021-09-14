@@ -144,7 +144,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (sum.UpdateDate.IsZero()) sum.UpdateDate = DateTime.Today;
             if (sum.UpdateTime.IsZero()) sum.UpdateTime = DateTime.Now.TimeOfDay;
 
-            if (string.IsNullOrEmpty(sum.BatchNumber)) sum.BatchNumber = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            if (string.IsNullOrEmpty(sum.BatchNumber)) sum.BatchNumber = NumberGenerate.Generate();
             //UpdateDateUtc
             //EnterBy
             //UpdateBy
