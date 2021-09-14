@@ -70,6 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data from dto
             FromDto(dto);
+            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
 
             // validate data for Add processing
             if (!Validate())
@@ -93,6 +94,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data from dto
             FromDto(dto);
+            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -117,6 +119,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data from dto
             FromDto(payload.Inventory);
+            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
 
             // validate data for Add processing
             if (!Validate())
@@ -192,8 +195,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     return false;
                 }
                 GetDataBySku(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
-                Data.AddIgnoreSave(InventoryData.ProductBasicTable);
             }
+            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
 
             // load data from dto
             FromDto(dto);
@@ -242,8 +245,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     return false;
                 }
                 await GetDataBySkuAsync(dto.ProductExt.SKU, dto.ProductExt.MasterAccountNum.ToInt(), dto.ProductExt.ProfileNum.ToInt());
-                Data.AddIgnoreSave(InventoryData.ProductBasicTable);
             }
+            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
             // load data from dto
             FromDto(dto);
 
@@ -281,8 +284,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             else
             {
                 GetDataBySku(dto.ProductExt.SKU, payload.MasterAccountNum, payload.ProfileNum);
-                Data.AddIgnoreSave(InventoryData.ProductBasicTable);
             }
+            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
 
             // load data from dto
             FromDto(payload.Inventory);
@@ -321,8 +324,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             else
             {
                 await GetDataBySkuAsync(dto.ProductExt.SKU, payload.MasterAccountNum, payload.ProfileNum);
-                Data.AddIgnoreSave(InventoryData.ProductBasicTable);
             }
+            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
 
             // load data from dto
             FromDto(payload.Inventory);

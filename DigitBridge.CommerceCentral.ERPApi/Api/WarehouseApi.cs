@@ -70,82 +70,82 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
         }
 
-        [FunctionName(nameof(DeleteWarehouse))]
-        [OpenApiOperation(operationId: "DeleteWarehouse", tags: new[] { "Warehouses" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "WarehouseCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "WarehouseCode", Description = "WarehouseCode", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadDelete), Description = "The OK response")]
-        public static async Task<JsonNetResponse<WarehousePayload>> DeleteWarehouse(
-            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "warehouses/{WarehouseCode}")] HttpRequest req,
-            string WarehouseCode)
-        {
-            var payload = await req.GetParameters<WarehousePayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new WarehouseService(dbFactory);
-            var spilterIndex = WarehouseCode.IndexOf("-");
-            var warehouseCode = WarehouseCode;
-            if (spilterIndex > 0 && warehouseCode.StartsWith(payload.ProfileNum.ToString()))
-            {
-                warehouseCode = WarehouseCode.Substring(spilterIndex + 1);
-            }
-            payload.WarehouseCodes.Add(warehouseCode);
-            if (await svc.DeleteByWarehouseCodeAsync(payload, warehouseCode))
-                payload.Warehouse = svc.ToDto();
-            else
-            {
-                payload.Messages = svc.Messages;
-                payload.Success = false;
-            }
-            return new JsonNetResponse<WarehousePayload>(payload);
-        }
+        //[FunctionName(nameof(DeleteWarehouse))]
+        //[OpenApiOperation(operationId: "DeleteWarehouse", tags: new[] { "Warehouses" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "WarehouseCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "WarehouseCode", Description = "WarehouseCode", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadDelete), Description = "The OK response")]
+        //public static async Task<JsonNetResponse<WarehousePayload>> DeleteWarehouse(
+        //    [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "warehouses/{WarehouseCode}")] HttpRequest req,
+        //    string WarehouseCode)
+        //{
+        //    var payload = await req.GetParameters<WarehousePayload>();
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var svc = new WarehouseService(dbFactory);
+        //    var spilterIndex = WarehouseCode.IndexOf("-");
+        //    var warehouseCode = WarehouseCode;
+        //    if (spilterIndex > 0 && warehouseCode.StartsWith(payload.ProfileNum.ToString()))
+        //    {
+        //        warehouseCode = WarehouseCode.Substring(spilterIndex + 1);
+        //    }
+        //    payload.WarehouseCodes.Add(warehouseCode);
+        //    if (await svc.DeleteByWarehouseCodeAsync(payload, warehouseCode))
+        //        payload.Warehouse = svc.ToDto();
+        //    else
+        //    {
+        //        payload.Messages = svc.Messages;
+        //        payload.Success = false;
+        //    }
+        //    return new JsonNetResponse<WarehousePayload>(payload);
+        //}
 
-        [FunctionName(nameof(AddWarehouse))]
-        [OpenApiOperation(operationId: "AddWarehouse", tags: new[] { "Warehouses" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehousePayloadAdd), Description = "WarehouseDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadAdd))]
-        public static async Task<JsonNetResponse<WarehousePayload>> AddWarehouse(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "warehouses")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<WarehousePayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new WarehouseService(dbFactory);
-            if (await svc.AddAsync(payload))
-                payload.Warehouse = svc.ToDto();
-            else
-            {
-                payload.Messages = svc.Messages;
-                payload.Success = false;
-            }
-            return new JsonNetResponse<WarehousePayload>(payload);
-        }
+        //[FunctionName(nameof(AddWarehouse))]
+        //[OpenApiOperation(operationId: "AddWarehouse", tags: new[] { "Warehouses" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehousePayloadAdd), Description = "WarehouseDataDto ")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadAdd))]
+        //public static async Task<JsonNetResponse<WarehousePayload>> AddWarehouse(
+        //    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "warehouses")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<WarehousePayload>(true);
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var svc = new WarehouseService(dbFactory);
+        //    if (await svc.AddAsync(payload))
+        //        payload.Warehouse = svc.ToDto();
+        //    else
+        //    {
+        //        payload.Messages = svc.Messages;
+        //        payload.Success = false;
+        //    }
+        //    return new JsonNetResponse<WarehousePayload>(payload);
+        //}
 
-        [FunctionName(nameof(UpdateWarehouse))]
-        [OpenApiOperation(operationId: "UpdateWarehouse", tags: new[] { "Warehouses" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehousePayloadUpdate), Description = "WarehouseDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadUpdate))]
-        public static async Task<JsonNetResponse<WarehousePayload>> UpdateWarehouse(
-            [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "warehouses")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<WarehousePayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new WarehouseService(dbFactory);
-            if (await svc.UpdateAsync(payload))
-                payload.Warehouse = svc.ToDto();
-            else
-            {
-                payload.Messages = svc.Messages;
-                payload.Success = false;
-            }
-            return new JsonNetResponse<WarehousePayload>(payload);
-        }
+        //[FunctionName(nameof(UpdateWarehouse))]
+        //[OpenApiOperation(operationId: "UpdateWarehouse", tags: new[] { "Warehouses" })]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WarehousePayloadUpdate), Description = "WarehouseDataDto ")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadUpdate))]
+        //public static async Task<JsonNetResponse<WarehousePayload>> UpdateWarehouse(
+        //    [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "warehouses")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<WarehousePayload>(true);
+        //    var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var svc = new WarehouseService(dbFactory);
+        //    if (await svc.UpdateAsync(payload))
+        //        payload.Warehouse = svc.ToDto();
+        //    else
+        //    {
+        //        payload.Messages = svc.Messages;
+        //        payload.Success = false;
+        //    }
+        //    return new JsonNetResponse<WarehousePayload>(payload);
+        //}
 
         /// <summary>
         /// Load warehouse list
@@ -167,20 +167,20 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<WarehousePayload>(payload);
         }
 
-        /// <summary>
-        /// Add shipment
-        /// </summary>
-        [FunctionName(nameof(Sample_Warehouse_Post))]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiOperation(operationId: "WarehouseAddSample", tags: new[] { "Sample" }, Summary = "Get new sample of warehouse")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadAdd))]
-        public static async Task<JsonNetResponse<WarehousePayloadAdd>> Sample_Warehouse_Post(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/warehouses")] HttpRequest req)
-        {
-            return new JsonNetResponse<WarehousePayloadAdd>(WarehousePayloadAdd.GetSampleData());
-        }
+        ///// <summary>
+        ///// Add shipment
+        ///// </summary>
+        //[FunctionName(nameof(Sample_Warehouse_Post))]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiOperation(operationId: "WarehouseAddSample", tags: new[] { "Sample" }, Summary = "Get new sample of warehouse")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WarehousePayloadAdd))]
+        //public static async Task<JsonNetResponse<WarehousePayloadAdd>> Sample_Warehouse_Post(
+        //    [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/warehouses")] HttpRequest req)
+        //{
+        //    return new JsonNetResponse<WarehousePayloadAdd>(WarehousePayloadAdd.GetSampleData());
+        //}
 
         /// <summary>
         /// find shipment

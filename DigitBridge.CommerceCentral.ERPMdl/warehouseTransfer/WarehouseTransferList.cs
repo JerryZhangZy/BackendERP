@@ -12,10 +12,12 @@ using System.Text;
 using System.Threading.Tasks;
 using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
+using DigitBridge.Base.Utility.Enums;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
 using Helper = DigitBridge.CommerceCentral.ERPDb.WarehouseTransferHeaderHelper;
+using ItemsHelper = DigitBridge.CommerceCentral.ERPDb.WarehouseTransferItemsHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -43,7 +45,11 @@ SELECT
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
- FROM {Helper.TableName} {Helper.TableAllies} 
+ FROM { Helper.TableName} { Helper.TableAllies}
+            LEFT JOIN { ItemsHelper.TableName}
+            { ItemsHelper.TableAllies}
+            ON({ ItemsHelper.TableAllies}.InventoryUpdateUuid = { Helper.TableAllies}.InventoryUpdateUuid)
+ LEFT JOIN @UpdateType iut ON({ Helper.TableAllies}.InventoryUpdateType = iut.num)
 ";
             return this.SQL_From;
         }
@@ -51,10 +57,7 @@ SELECT
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-                        
-            //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
-            //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
-
+            paramList.Add("@UpdateType".ToEnumParameter<InventoryUpdateType>());
             return paramList.ToArray();
         }
         
