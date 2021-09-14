@@ -57,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         /// <param name="req"></param> 
         [FunctionName(nameof(GetPurchaseOrderList))]
-        [OpenApiOperation(operationId: "GetPurchaseOrderList", tags: new[] { "PurchaseOrders" }, Summary = "Get purchase order list")]
+        [OpenApiOperation(operationId: "GetPurchaseOrderList", tags: new[] { "PurchaseOrders" }, Summary = "Get purchase order list by purchase order numbers.")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -95,7 +95,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<PurchaseOrderPayload>(payload);
         }
         [FunctionName(nameof(AddPurchaseOrder))]
-        [OpenApiOperation(operationId: "AddPurchaseOrder", tags: new[] { "PurchaseOrders" })]
+        [OpenApiOperation(operationId: "AddPurchaseOrder", tags: new[] { "PurchaseOrders" }, Summary = "Add one purchase order")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -118,7 +118,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         [FunctionName(nameof(UpdatePurchaseOrder))]
-        [OpenApiOperation(operationId: "UpdatePurchaseOrder", tags: new[] { "PurchaseOrders" })]
+        [OpenApiOperation(operationId: "UpdatePurchaseOrder", tags: new[] { "PurchaseOrders" }, Summary = "Update one purchase order")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -141,10 +141,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         /// <summary>
-        /// Load customer list
+        /// Get purchase order list by criteria.
         /// </summary>
         [FunctionName(nameof(PurchaseOrderList))]
-        [OpenApiOperation(operationId: "PurchaseOrderList", tags: new[] { "PurchaseOrders" }, Summary = "Load productex list data")]
+        [OpenApiOperation(operationId: "PurchaseOrderList", tags: new[] { "PurchaseOrders" }, Summary = "Get purchase order list by criteria.")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]

@@ -293,7 +293,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByNumberAsync(InvoicePayload payload, string invoiceNumber)
+        public virtual async Task<bool> DeleteByInvoiceNumberAsync(InvoicePayload payload, string invoiceNumber)
         {
             if (string.IsNullOrEmpty(invoiceNumber))
                 return false;

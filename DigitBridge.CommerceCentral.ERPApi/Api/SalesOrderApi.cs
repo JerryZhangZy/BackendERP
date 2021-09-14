@@ -117,8 +117,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new SalesOrderService(dataBaseFactory);
             payload.Success = await srv.UpdateAsync(payload);
-            if (!payload.Success)
-                payload.Messages = srv.Messages;
+            payload.SalesOrder = srv.ToDto();
+            payload.Messages = srv.Messages;
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
         /// <summary>

@@ -41,7 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "TransUuids", val => TransUuids = val.Split(",").ToList() }
+                { "TransUuids", val => TransUuids = val.Split(",").Distinct().ToList() }
             };
         }
 

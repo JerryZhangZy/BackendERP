@@ -133,7 +133,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 //todo 
             }
-
+            if (data.PoHeaderInfo != null) {
+                data.PoHeaderInfo.UpdateDateUtc = now; 
+            }
             return true;
         }
 
