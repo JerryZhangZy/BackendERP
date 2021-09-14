@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DigitBridge.Base.Utility.Enums
+namespace DigitBridge.Base.Common
 {
     public enum InventoryUpdateType:int
     {
