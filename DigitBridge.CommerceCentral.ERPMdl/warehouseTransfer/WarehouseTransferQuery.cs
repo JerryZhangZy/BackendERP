@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Text;
 using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
-using DigitBridge.Base.Utility.Enums;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Helper = DigitBridge.CommerceCentral.ERPDb.WarehouseTransferHeaderHelper;
