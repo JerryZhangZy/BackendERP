@@ -207,6 +207,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (sum.TransferDate.IsZero()) sum.TransferDate = DateTime.Today;
             if (sum.TransferTime.IsZero()) sum.TransferTime = DateTime.Now.TimeOfDay;
             sum.UpdateDateUtc = DateTime.Now;
+            if (string.IsNullOrEmpty(sum.BatchNumber)) sum.BatchNumber = NumberGenerate.Generate();
             //UpdateDateUtc
             //EnterBy
             //UpdateBy
