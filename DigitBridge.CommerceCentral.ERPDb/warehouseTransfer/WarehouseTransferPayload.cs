@@ -16,6 +16,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using DigitBridge.Base.Utility;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -47,6 +48,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] 
         public virtual bool HasBatchNumbers => BatchNumbers != null && BatchNumbers.Count > 0;
         public bool ShouldSerializeBatchNumbers() => HasBatchNumbers;
+
+
+        [JsonIgnore]
+        public InventoryUpdateType InventoryUpdateType { get; set; } = InventoryUpdateType.Adjust;
 
         /// <summary>
         /// (Response Data) Array of WarehouseTransfer entity object which load by uuid array.

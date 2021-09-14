@@ -376,10 +376,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             NewData();
             if (string.IsNullOrEmpty(number))
-                return false; 
+            {
+                AddError($"Data not found for {number}.");
+                return false;
+            }
             var success = _data.GetByNumber(masterAccountNum, profileNum, number);
             if (!success)
-                AddError($"Data not found for {number}.");
+                AddError($"Data not found for {number.Split("_")[0]}.");
             return success;
         }
         public virtual bool GetDataById(string id)
@@ -422,10 +425,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             NewData();
             if (string.IsNullOrEmpty(number))
-                return false; 
+            {
+                AddError($"Data not found for {number}.");
+                return false;
+            }
+
             var success = await _data.GetByNumberAsync(masterAccountNum, profileNum, number);
             if (!success)
-                AddError($"Data not found for {number}.");
+                AddError($"Data not found for {number.Split("_")[0]}.");
             return success;
         }
         public virtual async Task<bool> GetDataByIdAsync(string id)

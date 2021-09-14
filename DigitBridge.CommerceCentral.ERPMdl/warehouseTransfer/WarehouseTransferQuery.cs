@@ -31,7 +31,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", ITEMSPREFIX, FilterBy.eq, string.Empty);
         public QueryFilter<string> WarehouseCode => _WarehouseCode;
 
-        protected EnumQueryFilter<InventoryUpdateType> _UpdateType = new EnumQueryFilter<InventoryUpdateType>("InventoryUpdateType", "InventoryUpdateType", PREFIX, FilterBy.eq, 0);
+        protected EnumQueryFilter<InventoryUpdateType> _UpdateType = new EnumQueryFilter<InventoryUpdateType>("WarehouseTransferType", "WarehouseTransferType", PREFIX, FilterBy.eq, 0);
         public EnumQueryFilter<InventoryUpdateType> UpdateType => _UpdateType;
 
         public WarehouseTransferQuery() : base(PREFIX)

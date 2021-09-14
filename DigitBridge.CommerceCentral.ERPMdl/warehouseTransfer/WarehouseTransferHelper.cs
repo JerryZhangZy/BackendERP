@@ -190,7 +190,7 @@ AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([BatchNumber],'
                 sql,
                 (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("pofileNum"),
+                profileNum.ToSqlParameter("profileNum"),
                 nums.ToParameter<string>("nums"));
         }
 
@@ -206,7 +206,7 @@ AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([BatchNumber],'
                 sql,
                 (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("pofileNum"),
+                profileNum.ToSqlParameter("profileNum"),
                 nums.ToParameter<string>("nums"));
         }
 

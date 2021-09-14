@@ -101,10 +101,10 @@ AND TransType = @3
                 new SqlParameter("@3",transType)
             };
 
-            if (invoiceNumberAndTranNum.Length > 1)
+            if (invoiceNumberAndTranNum.Length > 2)
             {
                 sql += " AND TransNum=@4";
-                paras.Add(new SqlParameter("@4", invoiceNumberAndTranNum[1].ToInt()));
+                paras.Add(new SqlParameter("@4", invoiceNumberAndTranNum[2].ToInt()));
             }
 
             var obj = dbFactory.GetBy<InvoiceTransaction>(sql, paras.ToArray());

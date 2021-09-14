@@ -35,7 +35,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.BatchNumber()},
+{Helper.WarehouseTransferUuid()},
+{Helper.WarehouseTransferType()},
+COALESCE(iut.text, '') warehouseTransferTypeText, 
+{ItemsHelper.WarehouseTransferItemsUuid()},
+{ItemsHelper.Seq()},
+{ItemsHelper.ItemDate()},
+{ItemsHelper.ItemTime()},
+{ItemsHelper.SKU()},
+{ItemsHelper.ProductUuid()},
+{ItemsHelper.FromWarehouseCode()},
+{ItemsHelper.ToWarehouseUuid()},
+{ItemsHelper.LotNum()},
+{ItemsHelper.FromBeforeInstockQty()},
+{ItemsHelper.ToBeforeInstockQty()},
+{ItemsHelper.TransferQty()},
+{ItemsHelper.TransferPack()}
 ";
             return this.SQL_Select;
         }
@@ -46,8 +62,8 @@ SELECT
  FROM { Helper.TableName} { Helper.TableAllies}
             LEFT JOIN { ItemsHelper.TableName}
             { ItemsHelper.TableAllies}
-            ON({ ItemsHelper.TableAllies}.InventoryUpdateUuid = { Helper.TableAllies}.InventoryUpdateUuid)
- LEFT JOIN @UpdateType iut ON({ Helper.TableAllies}.InventoryUpdateType = iut.num)
+            ON({ ItemsHelper.TableAllies}.WarehouseTransferUuid = { Helper.TableAllies}.WarehouseTransferUuid)
+ LEFT JOIN @UpdateType iut ON({ Helper.TableAllies}.WarehouseTransferType = iut.num)
 ";
             return this.SQL_From;
         }

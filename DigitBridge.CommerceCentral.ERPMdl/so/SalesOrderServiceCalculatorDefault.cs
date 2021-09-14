@@ -157,6 +157,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             // (int)( (SalesOrderStatus) sum.OrderStatus)
             sum.DueDate = sum.OrderDate.AddDays(sum.TermsDays);
+
+            if (data.SalesOrderHeaderInfo != null)
+            {
+                data.SalesOrderHeaderInfo.UpdateDateUtc = now;
+            }
             return true;
         }
 

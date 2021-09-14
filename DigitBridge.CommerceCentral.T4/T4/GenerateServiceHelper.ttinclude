@@ -204,7 +204,7 @@ AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
                 sql,
                 (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("pofileNum"),
+                profileNum.ToSqlParameter("profileNum"),
                 nums.ToParameter<string>("nums"));
 */
             return new List<long>();
@@ -223,7 +223,7 @@ AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
                 sql,
                 (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("pofileNum"),
+                profileNum.ToSqlParameter("profileNum"),
                 nums.ToParameter<string>("nums"));
 */
             return new List<long>();
