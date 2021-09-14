@@ -189,7 +189,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //EnterBy
             //UpdateBy
 
-
+            if (data.InvoiceHeaderInfo != null)
+            {
+                data.InvoiceHeaderInfo.UpdateDateUtc = now;
+            }
             return true;
         }
 
