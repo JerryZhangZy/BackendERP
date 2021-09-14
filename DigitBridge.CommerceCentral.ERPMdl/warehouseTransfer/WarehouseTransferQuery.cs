@@ -11,9 +11,11 @@ using System.Collections.Generic;
 using System.Text;
 using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
+using DigitBridge.Base.Utility.Enums;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Helper = DigitBridge.CommerceCentral.ERPDb.WarehouseTransferHeaderHelper;
+using ItemsHelper = DigitBridge.CommerceCentral.ERPDb.WarehouseTransferItemsHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -21,30 +23,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         // Table prefix which use in this sql query
         protected static string PREFIX = Helper.TableAllies;
+        protected static string ITEMSPREFIX = ItemsHelper.TableAllies;
 
         // Filter fields
-        //protected QueryFilter<DateTime> _OrderDateFrom = new QueryFilter<DateTime>("OrderDateFrom", "OrderDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
-        //public QueryFilter<DateTime> OrderDateFrom => _OrderDateFrom;
+        protected QueryFilter<string> _SKU = new QueryFilter<string>("SKU", "SKU", ITEMSPREFIX, FilterBy.eq, string.Empty);
+        public QueryFilter<string> SKU => _SKU;
 
-        //protected QueryFilter<DateTime> _OrderDateTo = new QueryFilter<DateTime>("OrderDateTo", "OrderDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
-        //public QueryFilter<DateTime> OrderDateTo => _OrderDateTo;
+        protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", ITEMSPREFIX, FilterBy.eq, string.Empty);
+        public QueryFilter<string> WarehouseCode => _WarehouseCode;
 
-        //protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty);
-        //public QueryFilter<string> CustomerCode => _CustomerCode;
-
-        //protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
-
-        //protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
+        protected EnumQueryFilter<InventoryUpdateType> _UpdateType = new EnumQueryFilter<InventoryUpdateType>("InventoryUpdateType", "InventoryUpdateType", PREFIX, FilterBy.eq, 0);
+        public EnumQueryFilter<InventoryUpdateType> UpdateType => _UpdateType;
 
         public WarehouseTransferQuery() : base(PREFIX)
         {
-            //AddFilter(_OrderDateFrom);
-            //AddFilter(_OrderDateTo);
-            //AddFilter(_CustomerCode);
-            //AddFilter(_OrderStatus);
-            //AddFilter(_OrderType);
+            AddFilter(_SKU);
+            AddFilter(_WarehouseCode);
+            AddFilter(_UpdateType);
         }
 
         public override void InitQueryFilter()
