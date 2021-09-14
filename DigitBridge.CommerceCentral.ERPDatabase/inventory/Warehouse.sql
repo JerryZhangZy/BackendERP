@@ -90,7 +90,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_Warehouse_DistributionCenterNum] ON [dbo].[
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Warehouse]') AND name = N'FK_Warehouse_DistributionCenterNum')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_Warehouse_DistributionCenterNum] ON [dbo].[Warehouse]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_Warehouse_WarehouseCode] ON [dbo].[Warehouse]
 (
 	[MasterAccountNum] ASC,
 	[ProfileNum] ASC,

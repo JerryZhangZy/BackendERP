@@ -2,8 +2,8 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
-using DigitBridge.Base.Utility.Enums;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;

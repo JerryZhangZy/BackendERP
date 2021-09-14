@@ -67,6 +67,7 @@
     <Folder Include="dataType" />
     <Folder Include="inventoryUpdate" />
     <Folder Include="warehouseTransfer" />
+    <Folder Include="inventory\utility" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -218,6 +219,11 @@
     <None Include="warehouseTransfer\WarehouseTransferItems.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="po\PoItems_Update.sql" />
+    <None Include="po\PoItems_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\utility\add_inventory_from_productBasic.sql" />
+    <None Include="inventory\utility\add_productExt_from_productBasic.sql" />
+    <None Include="inventory\utility\link_to_productBasic.sql" />
   </ItemGroup>
 </Project>

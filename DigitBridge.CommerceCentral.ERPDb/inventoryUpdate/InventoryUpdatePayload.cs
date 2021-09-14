@@ -16,7 +16,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using DigitBridge.Base.Utility;
-using DigitBridge.Base.Utility.Enums;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {

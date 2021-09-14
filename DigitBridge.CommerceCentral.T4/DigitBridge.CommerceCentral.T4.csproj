@@ -44,7 +44,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\JsScreenUi.ttinclude">
-      <LastGenOutput>JsStructureUi.cs</LastGenOutput>
+      <LastGenOutput>JsScreenUi.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\JsStructureUi.ttinclude">
@@ -367,6 +367,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\JsScreenUi.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsScreenUi.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\ReadDtoGrandChildren.cs">
       <DesignTime>True</DesignTime>
