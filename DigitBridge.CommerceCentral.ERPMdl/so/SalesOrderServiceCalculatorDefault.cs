@@ -34,6 +34,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.ServiceMessage = serviceMessage;
             this.dbFactory = dbFactory;
         }
+        public SalesOrderServiceCalculatorDefault(IDataBaseFactory dbFactory)
+        {
+            this.dbFactory = dbFactory;
+        }
 
         protected IDataBaseFactory dbFactory { get; set; }
 
@@ -264,7 +268,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             sum.DiscountAmount = sum.DiscountAmount.ToAmount();
             //manual input max discount amount is SubTotalAmount
-            
+
             // tax calculate should deduct discount from taxable amount
             //sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
 
@@ -385,7 +389,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
-                item.DiscountPrice = item.Price;
+                item.DiscountPrice = item.Price;//TODO Check this logic
                 item.ExtAmount = (item.Price * item.ShipQty).ToAmount() - item.DiscountAmount.ToAmount();
             }
 
