@@ -32,27 +32,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Calculate_Item_DiscountRate_Test()
         {
+
             var data = GetFakerData();
-            data = SaveData(GetFakerData());
+            data = SaveData(data);
+            var item = data.SalesOrderItems.OrderByDescending(j => j.DiscountRate).FirstOrDefault();
+            var rowNum = item.RowNum;
+            decimal min = 0.1m, mid = 0.5m, max = 1;
+            var random = new Faker().Random;
+            // make sure DiscountRate is between min and mid;
+            item.DiscountRate = random.Decimal(min, mid).ToRate();
+            while (item.DiscountRate.IsZero())
+            {
+                item.DiscountRate = random.Decimal(min, mid).ToRate();
+            }
+
+            data = SaveData(data);
+
             var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
-            var item = data.SalesOrderItems.Where(i => i.DiscountRate > 0).OrderByDescending(j => j.DiscountRate).FirstOrDefault();
+            item = data.SalesOrderItems.Where(i => i.RowNum == rowNum).FirstOrDefault();
             Assert.False(item == null, "SalesOrderItems not found.");
 
-            var discountRate_New = new Faker().Random.Decimal(0.1m, 1).ToRate();// get a non zero rate
+            var discountRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate
 
-            var discountRate_Interval = Math.Abs(item.DiscountRate - discountRate_New);// 
-            var discountPrice_Interval = (item.Price * discountRate_Interval.ToRate()).ToPrice();
+            var discountRate_Interval = Math.Abs(item.DiscountRate - discountRate_New).ToRate();// 
+            var discountPrice_Interval = (item.Price * discountRate_Interval).ToPrice();
             var itemTotalAmount_Interval = (discountPrice_Interval * item.ShipQty).ToAmount();
             var itemTotalAmount_Original = item.ItemTotalAmount;
 
             item.DiscountRate = discountRate_New;
             calculator.CalculateDetail(data, ProcessingMode.Edit);
 
-            var itemTotalAmount_New = item.ItemTotalAmount;
-
-
-
-            var result = Math.Abs(itemTotalAmount_New - itemTotalAmount_Original) == Math.Abs(itemTotalAmount_Interval);
+            var result = Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original) == Math.Abs(itemTotalAmount_Interval);
             Assert.False(result == false, "DiscountRate test failed.");
         }
 
@@ -61,24 +71,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public void Calculate_Item_DiscountAmount_Test()
         {
             var data = GetFakerData();
+            data = SaveData(data);
             var item = data.SalesOrderItems.OrderByDescending(j => Math.Abs(j.DiscountPrice)).FirstOrDefault();
+            var rowNum = item.RowNum;
             //make sure this item is using DiscountAmount
             item.DiscountRate = 0;
-            item.DiscountAmount = new Faker().Random.Decimal(-10000, 10000).ToPrice();
-            data = SaveData(GetFakerData());
+            int min = 1, mid = 5000, max = 10000;
+            var random = new Faker().Random;
+            item.DiscountAmount = random.Decimal(min, mid).ToDecimal().ToAmount();
+            data = SaveData(data);
 
             var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
-            item = data.SalesOrderItems.Where(i => i.DiscountRate == 0).OrderByDescending(j => Math.Abs(j.DiscountAmount)).FirstOrDefault();
+            item = data.SalesOrderItems.Where(i => i.RowNum == rowNum).FirstOrDefault();
+            //item = data.SalesOrderItems.Where(i => i.DiscountRate == 0).OrderByDescending(j => Math.Abs(j.DiscountAmount)).FirstOrDefault();
             Assert.False(item == null, "SalesOrderItems not found.");
-            var discountAmount_New = new Faker().Random.Decimal(-10000, 10000).ToPrice();//get a new random discount price
+
+            var discountAmount_New = random.Decimal(mid, max).ToDecimal().ToAmount();//get a new random discount amount
             var discountAmount_Interval = item.DiscountAmount - discountAmount_New;
             var itemTotalAmount_Original = item.ItemTotalAmount;
 
             item.DiscountAmount = discountAmount_New;
             calculator.CalculateDetail(data, ProcessingMode.Edit);
 
-            var itemTotalAmount_New = item.ItemTotalAmount;
-            var result = Math.Abs(itemTotalAmount_New - itemTotalAmount_Original) == Math.Abs(discountAmount_Interval);
+            var result = Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original) == Math.Abs(discountAmount_Interval);
             Assert.False(result == false, "DiscountAmount test failed.");
         }
 

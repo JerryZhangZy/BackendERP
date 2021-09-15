@@ -382,7 +382,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // if exist DiscountRate, calculate after discount unit price
             if (!item.DiscountRate.IsZero())
             {
-                item.DiscountPrice = (item.Price * item.DiscountRate.ToRate()).ToPrice();
+                item.DiscountPrice = (item.Price * item.DiscountRate).ToPrice();
                 item.ExtAmount = (item.DiscountPrice * item.ShipQty).ToAmount();
                 //DiscountAmount=Totalprice-ExtAmount
                 item.DiscountAmount = (item.Price * item.ShipQty).ToAmount() - item.ExtAmount;
