@@ -56,17 +56,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var discountRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate
 
             var discountRate_Interval = Math.Abs(item.DiscountRate - discountRate_New).ToRate();// 
-            var discountPrice_Interval = (item.Price * discountRate_Interval).ToPrice();
+            var discountPrice_Interval = (item.Price * discountRate_Interval).ToPrice();// this may cause error
             var itemTotalAmount_Interval = (discountPrice_Interval * item.ShipQty).ToAmount();
             var itemTotalAmount_Original = item.ItemTotalAmount;
 
             item.DiscountRate = discountRate_New;
             calculator.CalculateDetail(data, ProcessingMode.Edit);
+            var actualResult = Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original);
+            var expectResult = Math.Abs(itemTotalAmount_Interval);
+            var success = actualResult == expectResult;
+            if (!success)
+            {
+                //check error range.
+                var errorRange = 0.0001m;
+                var rate = actualResult / expectResult;
+                success = rate < (1 + errorRange) && rate >= (1 - errorRange);
+                if (success)
+                {
+                    System.Diagnostics.Trace.WriteLine($"The error is within the error range. Actual result is  {actualResult},expect is {expectResult} ");
+                } 
+            }
 
-            var rate = Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original) / Math.Abs(itemTotalAmount_Interval);
-            var errorRange = 0.0001m;
-            var success = rate > (1 - errorRange) && (rate < 1 + errorRange);
-            Assert.False(success == false, $"DiscountRate test failed. actual is {Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original) },expect is {Math.Abs(itemTotalAmount_Interval)} ");
+            Assert.False(success == false, $"DiscountRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
         }
 
         [Fact()]
