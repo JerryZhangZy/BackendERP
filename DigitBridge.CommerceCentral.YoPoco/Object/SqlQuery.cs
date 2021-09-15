@@ -1,4 +1,5 @@
 using DigitBridge.Base.Utility;
+using DigitBridge.Base.Utility.Model;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using System;
@@ -1016,7 +1017,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
             foreach (var val in items.ToList())
                 table.Rows.Add(val);
             return table;
-            return items.ToDataTableFromObject();
         }
 
         private static DataTable ToDataTableFromObject<T>(this IEnumerable<T> data)
@@ -1079,6 +1079,29 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
             sqlParam.TypeName = typeName;
             sqlParam.Value = data.ToDataTable();
+            return sqlParam;
+        }
+
+        public static SqlParameter ToStringArrayListParameters(this IEnumerable<StringArray> data,string name)
+        {
+            SqlParameter sqlParam = new SqlParameter(name.ToParameterName(), SqlDbType.Structured);
+            sqlParam.TypeName = "dbo.StringArrayListTableType";
+            var table = new DataTable();
+            table.Columns.Add("item0", typeof(string));
+            table.Columns.Add("item1", typeof(string));
+            table.Columns.Add("item2", typeof(string));
+            table.Columns.Add("item3", typeof(string));
+            table.Columns.Add("item4", typeof(string));
+            table.Columns.Add("item5", typeof(string));
+            table.Columns.Add("item6", typeof(string));
+            table.Columns.Add("item7", typeof(string));
+            table.Columns.Add("item8", typeof(string));
+            table.Columns.Add("item9", typeof(string));
+            foreach (var x in data)
+            {
+                table.Rows.Add(x.Item0, x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9);
+            }
+            sqlParam.Value = table;
             return sqlParam;
         }
 
