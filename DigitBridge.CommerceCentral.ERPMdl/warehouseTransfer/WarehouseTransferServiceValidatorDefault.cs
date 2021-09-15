@@ -20,6 +20,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Utility.Model;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -363,18 +364,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 if (dto.WarehouseTransferItems != null && dto.WarehouseTransferItems.Count > 0)
                 {
+                    var list = dto.WarehouseTransferItems.Select(x => new StringArray() { Item0 = x.SKU, Item1 = x.FromWarehouseCode }).Distinct().ToList();
+                    var list2 = dto.WarehouseTransferItems.Select(x => new StringArray() { Item0 = x.SKU, Item1 = x.ToWarehouseCode }).Distinct().ToList();
+                    list = list.Union(list2).ToList();
+                    using (var trx = new ScopedTransaction(dbFactory))
+                    {
+                        list = InventoryServiceHelper.ExistInventoryBySkuWithWarehouseCodes(list, dto.WarehouseTransferHeader.MasterAccountNum.ToInt(), dto.WarehouseTransferHeader.ProfileNum.ToInt());
+                        if (list.Count > 0)
+                        {
+                            foreach (var item in list)
+                            {
+                                AddError($"SKU:{item.Item0} ,WarehouseCode:{item.Item1} data not found");
+                            }
+                            isValid = false;
+                        }
+                    }
                     foreach (var detailItem in dto.WarehouseTransferItems)
                     {
-                        if(string.IsNullOrEmpty(detailItem.SKU))
-                            AddError($"WarehouseTransferItems.SKU Required");
-                        if(string.IsNullOrEmpty(detailItem.FromWarehouseCode)&&string.IsNullOrEmpty(detailItem.FromWarehouseUuid))
-                            AddError($"WarehouseTransferItems.ToWarehouseCode&ToWarehouseUuid at lease one");
-                        if(string.IsNullOrEmpty(detailItem.FromWarehouseCode)&&string.IsNullOrEmpty(detailItem.ToWarehouseUuid))
-                            AddError($"WarehouseTransferItems.ToWarehouseCode&ToWarehouseUuid at lease one");
                         detailItem.WarehouseTransferItemsUuid = null;
                     }
                 }
- 
+
             }
             else if (processingMode == ProcessingMode.Edit)
             {
@@ -393,7 +403,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (dto.WarehouseTransferItems != null && dto.WarehouseTransferItems.Count > 0)
                 {
                     foreach (var detailItem in dto.WarehouseTransferItems)
+                    {
                         detailItem.WarehouseTransferItemsUuid = null;
+                        detailItem.ProductUuid = null;
+                        detailItem.FromWarehouseCode = null;
+                        detailItem.FromInventoryUuid = null;
+                        detailItem.FromWarehouseUuid = null;
+                        detailItem.ToWarehouseCode = null;
+                        detailItem.ToInventoryUuid = null;
+                        detailItem.ToWarehouseUuid = null;
+                    }
                 }
             }
             IsValid=isValid;
@@ -433,14 +452,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 if (dto.WarehouseTransferItems != null && dto.WarehouseTransferItems.Count > 0)
                 {
+                    var list = dto.WarehouseTransferItems.Select(x => new StringArray() { Item0 = x.SKU, Item1 = x.FromWarehouseCode }).Distinct().ToList();
+                    var list2 = dto.WarehouseTransferItems.Select(x => new StringArray() { Item0 = x.SKU, Item1 = x.ToWarehouseCode }).Distinct().ToList();
+                    list = list.Union(list2).ToList();
+                    using (var trx = new ScopedTransaction(dbFactory))
+                    {
+                        list = await InventoryServiceHelper.ExistInventoryBySkuWithWarehouseCodesAsync(list, dto.WarehouseTransferHeader.MasterAccountNum.ToInt(), dto.WarehouseTransferHeader.ProfileNum.ToInt());
+                        if (list.Count > 0)
+                        {
+                            foreach (var item in list)
+                            {
+                                AddError($"SKU:{item.Item0} ,WarehouseCode:{item.Item1} data not found");
+                            }
+                            isValid = false;
+                        }
+                    }
                     foreach (var detailItem in dto.WarehouseTransferItems)
                     {
-                        if (string.IsNullOrEmpty(detailItem.SKU))
-                            AddError($"WarehouseTransferItems.SKU Required");
-                        if (string.IsNullOrEmpty(detailItem.FromWarehouseCode) && string.IsNullOrEmpty(detailItem.FromWarehouseUuid))
-                            AddError($"WarehouseTransferItems.ToWarehouseCode&ToWarehouseUuid at lease one");
-                        if (string.IsNullOrEmpty(detailItem.FromWarehouseCode) && string.IsNullOrEmpty(detailItem.ToWarehouseUuid))
-                            AddError($"WarehouseTransferItems.ToWarehouseCode&ToWarehouseUuid at lease one");
                         detailItem.WarehouseTransferItemsUuid = null;
                     }
                 }
@@ -463,7 +491,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (dto.WarehouseTransferItems != null && dto.WarehouseTransferItems.Count > 0)
                 {
                     foreach (var detailItem in dto.WarehouseTransferItems)
+                    {
                         detailItem.WarehouseTransferItemsUuid = null;
+                        detailItem.ProductUuid = null;
+                        detailItem.FromWarehouseCode = null;
+                        detailItem.FromInventoryUuid = null;
+                        detailItem.FromWarehouseUuid = null;
+                        detailItem.ToWarehouseCode = null;
+                        detailItem.ToInventoryUuid = null;
+                        detailItem.ToWarehouseUuid = null;
+                    }
                 }
   
             }

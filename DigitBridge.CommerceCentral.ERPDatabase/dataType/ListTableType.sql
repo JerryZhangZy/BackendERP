@@ -46,3 +46,18 @@ CREATE TYPE dbo.EnumListTableType AS TABLE
     [text] VARCHAR(200) NOT NULL
 );
 GO
+
+CREATE TYPE dbo.StringArrayListTableType AS TABLE
+(
+    item0 VARCHAR(200) NOT NULL,
+    item1 VARCHAR(200) NOT NULL,
+    item2 VARCHAR(200) NULL,
+    item3 VARCHAR(200) NULL,
+    item4 VARCHAR(200) NULL,
+    item5 VARCHAR(200) NULL,
+    item6 VARCHAR(200) NULL,
+    item7 VARCHAR(200) NULL,
+    item8 VARCHAR(200) NULL,
+    item9 VARCHAR(200) NULL
+);
+GO

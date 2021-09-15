@@ -23,6 +23,7 @@ using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Utility.Model;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -311,6 +312,82 @@ AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("pofileNum"),
                 skus.ToParameter<string>("SKU"));
+        }
+
+        public static List<StringArray> ExistInventoryBySkuWithWarehouseCodes(List<StringArray> param,int masterAccountNum, int profileNum)
+        {
+            var rlist= new List<StringArray>(0);
+            if (param == null || param.Count == 0)
+                return rlist;
+
+            var result = GetInventoryKeyInfoBySkuWithWarehouseCodes(param, masterAccountNum, profileNum);
+            if (result.Count == 0)
+                return param;
+            if (result.Count == param.Count)
+                return rlist;
+            foreach(var item in param)
+            {
+                if (!result.Exists(r => r.Item0 == item.Item0 && r.Item1 == item.Item1))
+                    rlist.Add(item);
+            }
+            return rlist;
+        }
+
+        public static async Task< List<StringArray>> ExistInventoryBySkuWithWarehouseCodesAsync(List<StringArray> param,int masterAccountNum, int profileNum)
+        {
+            var rlist= new List<StringArray>(0);
+            if (param == null || param.Count == 0)
+                return rlist;
+
+            var result =await GetInventoryKeyInfoBySkuWithWarehouseCodesAsync(param, masterAccountNum, profileNum);
+            if (result.Count == 0)
+                return param;
+            if (result.Count == param.Count)
+                return rlist;
+            foreach(var item in param)
+            {
+                if (!result.Exists(r => r.Item0 == item.Item0 && r.Item1 == item.Item1))
+                    rlist.Add(item);
+            }
+            return rlist;
+        }
+
+        public static List<StringArray> GetInventoryKeyInfoBySkuWithWarehouseCodes(List<StringArray> param,int masterAccountNum, int profileNum)
+        {
+            if (param == null || param.Count == 0)
+                return new List<StringArray>(0);
+            var sql = $@" 
+SELECT SKU,WarehouseCode,InventoryUuid,ProductUuid FROM Inventory inv WHERE Exists (SELECT item0 AS SKU,item1 AS WarehouseCode FROM @SKUTable st WHERE inv.SKU=st.item0 AND inv.WarehouseCode=st.item1)
+";
+            var sqlParameters = new IDataParameter[3]
+            {
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                param.ToStringArrayListParameters("SKUTable")
+            };
+            return SqlQuery.Execute(
+                sql,
+                (string sku,string warehouseCode,string inventoryUuid,string productUuid) =>new StringArray() { Item0=sku, Item1=warehouseCode, Item2=inventoryUuid,Item3=productUuid},
+                sqlParameters);
+        }
+
+        public static async Task<List<StringArray>> GetInventoryKeyInfoBySkuWithWarehouseCodesAsync(List<StringArray> param,int masterAccountNum, int profileNum)
+        {
+            if (param == null || param.Count == 0)
+                return new List<StringArray>(0);
+            var sql = $@" 
+SELECT SKU,WarehouseCode,InventoryUuid FROM Inventory inv WHERE Exists (SELECT item0 AS SKU,item1 AS WarehouseCode FROM @SKUTable st WHERE inv.SKU=st.item0 AND inv.WarehouseCode=st.item1)
+";
+            var sqlParameters = new IDataParameter[3]
+            {
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                param.ToStringArrayListParameters("SKUTable")
+            };
+            return await SqlQuery.ExecuteAsync(
+                sql,
+                (string sku,string warehouseCode,string inventoryUuid) =>new StringArray() { Item0=sku, Item1=warehouseCode, Item2=inventoryUuid},
+                sqlParameters);
         }
     }
 }
