@@ -32,7 +32,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Calculate_Item_DiscountRate_Test()
         {
-
             var data = GetFakerData();
             data = SaveData(data);
             var item = data.SalesOrderItems.OrderByDescending(j => j.DiscountRate).FirstOrDefault();
@@ -41,6 +40,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var random = new Faker().Random;
             // make sure DiscountRate is between min and mid;
             item.DiscountRate = random.Decimal(min, mid).ToRate();
+            // make sure not affect by taxamount
+            item.Taxable = false;
             while (item.DiscountRate.IsZero())
             {
                 item.DiscountRate = random.Decimal(min, mid).ToRate();
@@ -62,8 +63,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             item.DiscountRate = discountRate_New;
             calculator.CalculateDetail(data, ProcessingMode.Edit);
 
-            var result = Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original) == Math.Abs(itemTotalAmount_Interval);
-            Assert.False(result == false, "DiscountRate test failed.");
+            var rate = Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original) / Math.Abs(itemTotalAmount_Interval);
+            var errorRange = 0.0001m;
+            var success = rate > (1 - errorRange) && (rate < 1 + errorRange);
+            Assert.False(success == false, $"DiscountRate test failed. actual is {Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original) },expect is {Math.Abs(itemTotalAmount_Interval)} ");
         }
 
         [Fact()]
@@ -76,6 +79,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var rowNum = item.RowNum;
             //make sure this item is using DiscountAmount
             item.DiscountRate = 0;
+            // make sure not affect by taxamount
+            item.Taxable = false;
             int min = 1, mid = 5000, max = 10000;
             var random = new Faker().Random;
             item.DiscountAmount = random.Decimal(min, mid).ToDecimal().ToAmount();
