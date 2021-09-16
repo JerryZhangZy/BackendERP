@@ -133,8 +133,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 //todo 
             }
-            if (data.PoHeaderInfo != null) {
-                data.PoHeaderInfo.UpdateDateUtc = now; 
+            if (data.PoHeaderInfo != null)
+            {
+                data.PoHeaderInfo.UpdateDateUtc = now;
             }
             return true;
         }
@@ -281,7 +282,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (item is null || item.IsEmpty)
                     continue;
                 SetDefault(item, data, processingMode);
-                CalculateDetail(item, data, processingMode); 
+                CalculateDetail(item, data, processingMode);
                 if (item.IsAp)
                 {
                     sum.SubTotalAmount += item.ExtAmount;
@@ -292,7 +293,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //sum.AvgCost += item.AvgCost;
                 //sum.LotCost += item.LotCost;
             }
- 
+
             return true;
         }
 
@@ -316,7 +317,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount();
             item.PoQty = item.PoQty.ToQty();
             item.ReceivedQty = item.ReceivedQty.ToQty();
-            item.CancelledQty = item.CancelledQty.ToQty(); 
+            item.CancelledQty = item.CancelledQty.ToQty();
             //item.PackType = string.Empty;
             //if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
             //    item.PackQty = 1;
@@ -345,7 +346,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             else
             {
                 item.DiscountPrice = item.Price;
-                item.ExtAmount = (item.Price * item.ReceivedQty).ToAmount() - item.DiscountAmount.ToAmount();
+                item.ExtAmount = (item.Price * item.ReceivedQty - item.DiscountAmount).ToAmount();
             }
 
             if (item.Taxable)
@@ -354,6 +355,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.NonTaxableAmount = 0;
                 if (item.TaxRate.IsZero())
                     item.TaxRate = sum.TaxRate;
+                item.TaxRate = item.TaxRate.ToRate();
             }
             else
             {
@@ -369,7 +371,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.MiscTaxAmount = (item.MiscAmount * item.TaxRate).ToAmount();
             }
 
-            item.ItemTotalAmount =(
+            item.ItemTotalAmount = (
                 item.ExtAmount +
                 item.TaxAmount +
                 item.ShippingAmount +
@@ -396,7 +398,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //}
 
             return true;
-        } 
+        }
 
         #region message
         [XmlIgnore, JsonIgnore]

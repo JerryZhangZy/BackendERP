@@ -312,7 +312,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             sum.SalesAmount = (sum.SubTotalAmount - sum.DiscountAmount).ToAmount();
-            sum.TotalAmount =(
+            sum.TotalAmount = (
                 sum.SalesAmount +
                 sum.TaxAmount +
                 sum.ShippingAmount +
@@ -321,7 +321,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ).ToAmount();
 
             sum.Balance = (sum.TotalAmount - sum.PaidAmount - sum.CreditAmount).ToAmount();
-             
+
             return true;
         }
 
@@ -356,7 +356,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 sum.UnitCost += item.UnitCost;
                 sum.AvgCost += item.AvgCost;
                 sum.LotCost += item.LotCost;
-            } 
+            }
             return true;
         }
 
@@ -410,7 +410,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             else
             {
                 item.DiscountPrice = item.Price;
-                item.ExtAmount = (item.Price * item.ShipQty).ToAmount() - item.DiscountAmount.ToAmount();
+                item.ExtAmount = (item.Price * item.ShipQty - item.DiscountAmount).ToAmount();
             }
 
             if (item.Taxable)
@@ -419,6 +419,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.NonTaxableAmount = 0;
                 if (item.TaxRate.IsZero())
                     item.TaxRate = sum.TaxRate;
+                item.TaxRate = item.TaxRate.ToRate();
             }
             else
             {
@@ -434,7 +435,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.MiscTaxAmount = (item.MiscAmount * item.TaxRate).ToAmount();
             }
 
-            item.ItemTotalAmount =(
+            item.ItemTotalAmount = (
                 item.ExtAmount +
                 item.TaxAmount +
                 item.ShippingAmount +
@@ -461,7 +462,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             return true;
-        } 
+        }
 
         #region message
         [XmlIgnore, JsonIgnore]
