@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -478,6 +479,182 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Messages = msgList;
 
             return payload;
+        }
+        public async Task<bool> UpdateByInventoryUpdateAsync(InventoryUpdateData data)
+        {
+            //no data,no header,or no items,return;
+            if (data == null || data.InventoryUpdateHeader == null||data.InventoryUpdateItems==null)
+                return false;
+            var header = data.InventoryUpdateHeader;
+            var inventoryUuid = data.InventoryUpdateHeader.InventoryUpdateUuid;
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                await InventoryServiceHelper.UpdateInventoryInStockAsync(inventoryUuid, -1);
+            }
+            //if remove all items or delete inventoryupdate
+            if (data.InventoryUpdateItems.Count == 0)
+            {
+                using (var trx = new ScopedTransaction(dbFactory))
+                {
+                    await InventoryLogServiceHelper.DeleteInventoryLogsByLogUuidAsync(inventoryUuid);
+                }
+                return true;
+            }
+            var detailItems = data.InventoryUpdateItems;
+            var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
+            var list = new List<InventoryLog>();
+            var saveOrUpdateList = new List<InventoryLog>();
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                list = await InventoryLogServiceHelper.GetInventoryLogListByLogUuidAsync(inventoryUuid);
+            }
+            foreach (var item in detailItems)
+            {
+                var line = list.FirstOrDefault(r => r.LogItemUuid == item.InventoryUpdateItemsUuid);
+                if (line == null)//Update
+                {
+                    line = new InventoryLog
+                    {
+                        DatabaseNum = header.DatabaseNum,
+                        MasterAccountNum = header.MasterAccountNum,
+                        ProfileNum = header.ProfileNum,
+                        InventoryLogUuid = Guid.NewGuid().ToString(),
+                        LogUuid = inventoryUuid,
+                        BatchNum = batchNum,
+                        LogNumber = header.BatchNumber,
+                        LogItemUuid = item.InventoryUpdateItemsUuid,
+                        LogDate = DateTime.Today,
+                        LogTime = DateTime.Now.TimeOfDay,
+                        LogBy = "",
+                        SKU = item.SKU,
+                        Description = item.Description,
+                        WarehouseCode = item.WarehouseCode,
+                        LotNum = item.LotNum,
+                        LotInDate = item.LotInDate,
+                        LotExpDate = item.LotExpDate,
+                        UOM = item.UOM,
+                        LogQty = item.UpdateQty,
+                        BeforeInstock = item.BeforeInstockQty,
+                        EnterBy = ""
+                    };
+                    switch ((InventoryUpdateType)header.InventoryUpdateType)
+                    {
+                        case InventoryUpdateType.Adjust:
+                            line.LogType = LogType.Adjust.ToString();
+                            break;
+                        case InventoryUpdateType.Damage:
+                            line.LogType = LogType.Damage.ToString();
+                            break;
+                        case InventoryUpdateType.CycleCount:
+                            line.LogType = LogType.CycleCount.ToString();
+                            break;
+                        case InventoryUpdateType.PhysicalCount:
+                            line.LogType = LogType.PhysicalCount.ToString();
+                            break;
+                    }
+                }
+                else//Add
+                {
+                    line.SKU = item.SKU;
+                    line.Description = item.Description;
+                    line.WarehouseCode = item.WarehouseCode;
+                    line.LotNum = item.LotNum;
+                    line.LotInDate = item.LotInDate;
+                    line.LotExpDate = item.LotExpDate;
+                    line.UOM = item.UOM;
+                    line.LogQty = item.UpdateQty;
+                    line.BeforeInstock = item.BeforeInstockQty;
+                }
+                saveOrUpdateList.Add(line);
+            }
+            var suItemsUuid = saveOrUpdateList.Select(r => r.LogItemUuid).ToList();
+            var deleteList = list.Where(r => !suItemsUuid.Contains(r.LogItemUuid)).ToList();// new List<InventoryLog>();
+
+            await saveOrUpdateList.SetDataBaseFactory(dbFactory).SaveAsync();
+
+            await deleteList.SetDataBaseFactory(dbFactory).DeleteAsync();
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                await InventoryServiceHelper.UpdateInventoryInStockAsync(inventoryUuid, 1);
+            }
+            return true;
+        }
+
+        public Task<bool> UpdateByInvoiceReturnAsync(InvoiceTransactionData data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateByShipmentAsync(OrderShipmentData data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> UpdateByWarehouseTransferAsync(WarehouseTransferData data)
+        {
+            if (data == null || data.WarehouseTransferHeader == null)
+                return false;
+            var header = data.WarehouseTransferHeader;
+            var detailItems = data.WarehouseTransferItems;
+            var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
+            var logUuid = data.WarehouseTransferHeader.WarehouseTransferUuid;
+            var list = new List<InventoryLog>();
+            foreach (var item in detailItems)
+            {
+                var line = new InventoryLog
+                {
+                    DatabaseNum = header.DatabaseNum,
+                    MasterAccountNum = header.MasterAccountNum,
+                    ProfileNum = header.ProfileNum,
+                    InventoryLogUuid = Guid.NewGuid().ToString(),
+                    LogUuid = logUuid,
+                    BatchNum = batchNum,
+                    LogNumber = header.BatchNumber,
+                    LogItemUuid = $"From_{item.WarehouseTransferItemsUuid}",
+                    LogDate = DateTime.Today,
+                    LogTime = DateTime.Now.TimeOfDay,
+                    LogBy = "",
+                    LogType=LogType.TransferFrom.ToString(),
+                    SKU = item.SKU,
+                    Description = item.Description,
+                    WarehouseCode = item.FromWarehouseCode,
+                    LotNum = item.LotNum,
+                    LotInDate = item.LotInDate,
+                    LotExpDate = item.LotExpDate,
+                    UOM = item.UOM,
+                    LogQty = -item.TransferQty,
+                    BeforeInstock = item.FromBeforeInstockPack,
+                    EnterBy = ""
+                };
+                list.Add(line); 
+                line = new InventoryLog
+                {
+                    DatabaseNum = header.DatabaseNum,
+                    MasterAccountNum = header.MasterAccountNum,
+                    ProfileNum = header.ProfileNum,
+                    InventoryLogUuid = Guid.NewGuid().ToString(),
+                    LogUuid = logUuid,
+                    LogType=LogType.TransferTo.ToString(),
+                    BatchNum = batchNum,
+                    LogNumber = header.BatchNumber,
+                    LogItemUuid = $"To_{item.WarehouseTransferItemsUuid}",
+                    LogDate = DateTime.Today,
+                    LogTime = DateTime.Now.TimeOfDay,
+                    LogBy = "",
+                    SKU = item.SKU,
+                    Description = item.Description,
+                    WarehouseCode = item.ToWarehouseCode,
+                    LotNum = item.LotNum,
+                    LotInDate = item.LotInDate,
+                    LotExpDate = item.LotExpDate,
+                    UOM = item.UOM,
+                    LogQty = item.TransferQty,
+                    BeforeInstock = item.ToBeforeInstockPack,
+                    EnterBy = ""
+                };
+                list.Add(line);
+            }
+            return await list.SetDataBaseFactory(dbFactory).SaveAsync();
         }
     }
 }

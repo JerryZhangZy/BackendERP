@@ -397,8 +397,24 @@ SELECT SKU,WarehouseCode,InventoryUuid FROM Inventory inv WHERE Exists (SELECT i
         public static async Task<bool> UpdateInventoryCost(ItemCostClass cost)
         {
             if (cost == null || string.IsNullOrWhiteSpace(cost.InventoryUuid)) return false;
-
             // TODO create and test helper function to update inventory cost
+            var sqlUpdate = $@"
+UPDATE Inventory inv 
+SET
+inv.BaseCost={cost.BaseCost},
+inv.ShippingAmount={cost.ShippingAmount},
+inv.MiscAmount={cost.MiscAmount},
+inv.ChargeAndAllowanceAmount={cost.ChargeAndAllowanceAmount},
+inv.TaxRate={cost.TaxRate},
+inv.TaxAmount={cost.TaxAmount},
+inv.UnitCost={cost.UnitCost},
+inv.AvgCost={cost.AvgCost},
+inv.SalesCost={cost.SalesCost},
+inv.Instock={cost.Instock}
+WHERE inv.InventoryUuid='{cost.InventoryUuid}'
+";
+            SqlQuery.ExecuteNonQuery (sqlUpdate);
+
             //string sqlUpdate = string.Format("" +
             //    "UPDATE ind " +
             //    "SET " +
@@ -433,6 +449,56 @@ SELECT SKU,WarehouseCode,InventoryUuid FROM Inventory inv WHERE Exists (SELECT i
         {
             if (string.IsNullOrEmpty(LogUuid)) return 0;
             //if (InvoiceVoid(invs_num)) return 0;
+            var add_minus = "-";
+            if (isAdd < 0) add_minus = "+";
+            var sql = $@"
+update Inventory 
+set Instock=inv.Instock {add_minus} il.Qty 
+from Inventory inv ,
+(select InventoryUuid,sum(coalesce(LogQty,0)) as Qty from InventoryLog where LogUuid='{LogUuid}' group by InventoryUuid) il 
+where inv.InventoryUuid=il.InventoryUuid
+";
+            SqlQuery.ExecuteNonQuery(sql);
+
+            //var add_minus = "-";
+            //if (isAdd < 0) add_minus = "+";
+
+            //string sql = @"
+            //    "UPDATE inv_data SET in_stock = ind.in_stock {0} logm.qty " +
+            //    "FROM inv_data ind INNER JOIN " +
+            //    "(SELECT lg.prod_cd, lg.whs_num, SUM(COALESCE(lg.prod_qty,0)) as qty " +
+            //    "FROM invt_log lg " +
+            //    "INNER JOIN invoice ins ON ins.invs_num = lg.invs_num AND ins.invs_cd = lg.invs_cd " +
+            //    "WHERE COALESCE(lg.prod_qty,0) != 0 AND COALESCE(lg.prod_comp,'') != 'C' " +
+            //    "AND ins.invs_num = {1} " +
+            //    "AND ins.invs_cd = {2} " +
+            //    "GROUP BY lg.prod_cd, lg.whs_num) as logm " +
+            //    "ON ind.prod_cd = logm.prod_cd AND ind.whs_num = logm.whs_num "
+            //    , add_minus, invs_num, invs_cd);
+
+            //var result = OmsDatabase.GetValue<int>(sSelect);
+            //return result;
+            return 0;
+        }
+        /// <summary>
+        /// If InentoryLog records created or changed
+        /// need use SQL to update instock in inventory table.
+        /// </summary>
+        public static async Task<int> UpdateInventoryInStockAsync(string LogUuid, int isAdd)
+        {
+            if (string.IsNullOrEmpty(LogUuid)) return 0;
+            //if (InvoiceVoid(invs_num)) return 0;
+            var add_minus = "-";
+            if (isAdd < 0) add_minus = "+";
+            var sql = $@"
+update Inventory 
+set Instock=inv.Instock {add_minus} il.Qty 
+from Inventory inv ,
+(select InventoryUuid,sum(coalesce(LogQty,0)) as Qty from InventoryLog where LogUuid='{LogUuid}' group by InventoryUuid) il 
+where inv.InventoryUuid=il.InventoryUuid
+";
+            await SqlQuery.ExecuteNonQueryAsync(sql);
+
             //var add_minus = "-";
             //if (isAdd < 0) add_minus = "+";
 
@@ -462,9 +528,17 @@ SELECT SKU,WarehouseCode,InventoryUuid FROM Inventory inv WHERE Exists (SELECT i
         {
             if (string.IsNullOrEmpty(SalesOrderUuid)) return 0;
             //if (SoCancel(ord_num)) return 0;
-            //var add_minus = "+";
-            //if (isAdd < 0) add_minus = "-";
+            var add_minus = "+";
+            if (isAdd < 0) add_minus = "-";
 
+            var sql = $@"update Inventory 
+set OpenSoQty=inv.OpenSoQty {add_minus} so.Qty 
+from Inventory inv ,
+(select InventoryUuid,sum(coalesce(OrderQty,0)-coalesce(CancelledQty,0)-coalesce(ShipQty,0)) as Qty from SalesOrderItems where SalesOrderUuid='{SalesOrderUuid}' group by InventoryUuid) so 
+where inv.InventoryUuid=so.InventoryUuid
+";
+            SqlQuery.ExecuteNonQuery(sql);
+            return 0;
             //string sSelect = string.Format("UPDATE inv_data SET order_qty = ind.order_qty {0} olgm.qty " +
             //    " FROM inv_data ind inner join " +
             //    " (select olg.prod_cd, olg.whs_num, " +
@@ -479,7 +553,6 @@ SELECT SKU,WarehouseCode,InventoryUuid FROM Inventory inv WHERE Exists (SELECT i
 
             //var result = OmsDatabase.GetValue<int>(sSelect);
             //return result;
-            return 0;
         }
 
     }
