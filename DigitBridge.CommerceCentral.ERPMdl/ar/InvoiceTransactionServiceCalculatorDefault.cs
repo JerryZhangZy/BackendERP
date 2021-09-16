@@ -347,6 +347,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.NonTaxableAmount = 0;
                 if (item.TaxRate.IsZero())
                     item.TaxRate = sum.TaxRate;
+                item.TaxRate = item.TaxRate.ToRate();
             }
             else
             {
