@@ -55,7 +55,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         }
         public void Dispose()
         {
-        } 
+        }
+
+        private SalesOrderData SaveData(SalesOrderData data)
+        {
+            var success = true;
+            var service = new SalesOrderService(DataBaseFactory);
+            success = success && service.Add();
+            service.AttachData(data);
+            //srv.Calculate();
+            success = success && service.SaveData();
+            var rowNum = service.Data.SalesOrderHeader.RowNum;
+            service.List();
+            success = success && service.GetData(rowNum);
+            Assert.False(success == false, "Init data failed.");
+
+            var items = service.Data.SalesOrderItems;
+            success = items != null && items.Count > 0;
+            Assert.False(success == false, "SalesOrderItems not found.");
+            return service.Data;
+        }
     }
 }
 

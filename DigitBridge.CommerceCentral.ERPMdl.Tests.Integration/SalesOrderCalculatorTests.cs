@@ -61,7 +61,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var itemTotalAmount_Original = item.ItemTotalAmount;
 
             item.DiscountRate = discountRate_New;
-            calculator.CalculateDetail(data, ProcessingMode.Edit);
+            calculator.CalculateDetail(item, data, ProcessingMode.Edit);
             var actualResult = Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original);
             var expectResult = Math.Abs(itemTotalAmount_Interval);
             var success = actualResult == expectResult;
@@ -74,10 +74,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 if (success)
                 {
                     System.Diagnostics.Trace.WriteLine($"The error is within the error range. Actual result is  {actualResult},expect is {expectResult} ");
-                } 
+                }
             }
 
-            Assert.False(success == false, $"DiscountRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
+            Assert.False(success == false, $"Item discountRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
         }
 
         [Fact()]
@@ -107,30 +107,273 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var itemTotalAmount_Original = item.ItemTotalAmount;
 
             item.DiscountAmount = discountAmount_New;
-            calculator.CalculateDetail(data, ProcessingMode.Edit);
+            calculator.CalculateDetail(item, data, ProcessingMode.Edit);
 
             var result = Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original) == Math.Abs(discountAmount_Interval);
-            Assert.False(result == false, "DiscountAmount test failed.");
+            Assert.False(result == false, "Item discountAmount test failed.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void Calculate_Item_TaxRate_Taxable_Test()
+        {
+            var data = GetFakerData();
+            data = SaveData(data);
+            var item = data.SalesOrderItems.OrderByDescending(j => j.TaxRate).FirstOrDefault();
+            var rowNum = item.RowNum;
+            decimal min = 0.1m, mid = 0.5m, max = 1;
+            var random = new Faker().Random;
+            // make sure TaxRate is between min and mid;
+            item.TaxRate = random.Decimal(min, mid).ToRate();
+            // make sure tax rate work.
+            item.Taxable = true;
+            while (item.TaxRate.IsZero())
+            {
+                item.TaxRate = random.Decimal(min, mid).ToRate();
+            }
+
+            data = SaveData(data);
+
+            var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
+            item = data.SalesOrderItems.Where(i => i.RowNum == rowNum).FirstOrDefault();
+            Assert.False(item == null, "SalesOrderItems not found.");
+
+            var taxRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate
+
+            var taxRate_Interval = Math.Abs(item.TaxRate - taxRate_New).ToRate();//  
+            var itemTotalAmount_Interval = (item.TaxableAmount * taxRate_Interval).ToAmount();
+            var itemTotalAmount_Original = item.ItemTotalAmount;
+            var setting = new ERPSetting();
+            if (setting.TaxForShippingAndHandling)
+            {
+                var shippingTaxAmount_Interval = (item.ShippingAmount * taxRate_Interval).ToAmount();
+                var miscTaxAmount = (item.MiscAmount * taxRate_Interval).ToAmount();
+                itemTotalAmount_Interval = (itemTotalAmount_Interval + shippingTaxAmount_Interval + miscTaxAmount).ToAmount();
+            }
+
+            item.TaxRate = taxRate_New;
+            calculator.CalculateDetail(item, data, ProcessingMode.Edit);
+            var actualResult = Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original);
+            var expectResult = Math.Abs(itemTotalAmount_Interval);
+            var success = actualResult == expectResult;
+            if (!success)
+            {
+                //check error range.
+                var errorRange = 0.0001m;
+                var rate = actualResult / expectResult;
+                success = rate < (1 + errorRange) && rate >= (1 - errorRange);
+                if (success)
+                {
+                    System.Diagnostics.Trace.WriteLine($"The error is within the error range. Actual result is  {actualResult},expect is {expectResult} ");
+                }
+            }
+
+            Assert.False(success == false, $"Item taxRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void Calculate_Item_TaxRate_NonTaxable_Test()
+        {
+            var data = GetFakerData();
+            data = SaveData(data);
+            var item = data.SalesOrderItems.OrderByDescending(j => j.TaxRate).FirstOrDefault();
+            var rowNum = item.RowNum;
+            decimal min = 0.1m, mid = 0.5m, max = 1;
+            var random = new Faker().Random;
+            // make sure TaxRate is between min and mid;
+            item.TaxRate = random.Decimal(min, mid).ToRate();
+            // tax rate won't work.
+            item.Taxable = false;
+            while (item.TaxRate.IsZero())
+            {
+                item.TaxRate = random.Decimal(min, mid).ToRate();
+            }
+
+            data = SaveData(data);
+
+            var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
+            item = data.SalesOrderItems.Where(i => i.RowNum == rowNum).FirstOrDefault();
+            Assert.False(item == null, "SalesOrderItems not found.");
+
+            var taxRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate 
+
+            var itemTotalAmount_Original = item.ItemTotalAmount;
+
+            item.TaxRate = taxRate_New;
+            calculator.CalculateDetail(item, data, ProcessingMode.Edit);
+            var actualResult = item.ItemTotalAmount;
+            var expectResult = itemTotalAmount_Original;
+            var success = actualResult == expectResult;
+
+            Assert.False(success == false, $"Item taxRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
         }
 
 
-        private SalesOrderData SaveData(SalesOrderData data)
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void Calculate_Sum_DiscountRate_Test()
         {
-            var success = true;
-            var service = new SalesOrderService(DataBaseFactory);
-            success = success && service.Add();
-            service.AttachData(data);
-            //srv.Calculate();
-            success = success && service.SaveData();
-            var uuid = service.Data.SalesOrderHeader.SalesOrderUuid;
-            service.List();
-            success = success && service.GetDataById(uuid);
-            Assert.False(success == false, "Init data failed.");
+            var data = GetFakerData();
+            data = SaveData(data);
+            var sum = data.SalesOrderHeader;
+            decimal min = 0.1m, mid = 0.5m, max = 1;
+            var random = new Faker().Random;
+            // make sure DiscountRate is between min and mid;
+            sum.DiscountRate = random.Decimal(min, mid).ToRate(); 
+            while (sum.DiscountRate.IsZero())
+            {
+                sum.DiscountRate = random.Decimal(min, mid).ToRate();
+            }
+            //make sure not affect by tax amount.
+            foreach (var item in data.SalesOrderItems)
+            {
+                item.Taxable = false;
+            }
+            data = SaveData(data);
 
-            var items = service.Data.SalesOrderItems;
-            success = items != null && items.Count > 0;
-            Assert.False(success == false, "SalesOrderItems not found.");
-            return service.Data;
+            var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
+            sum = data.SalesOrderHeader;
+            Assert.False(sum == null, "SalesOrderHeader not found.");
+
+            var discountRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate
+
+            var discountRate_Interval = Math.Abs(sum.DiscountRate - discountRate_New).ToRate();// 
+            var discountAmount_Interval = (sum.SubTotalAmount * discountRate_Interval).ToAmount();//this may casuse error.
+            var sum_TotalAmount_Original = sum.TotalAmount;
+
+            sum.DiscountRate = discountRate_New;
+            calculator.CalculateSummary(data, ProcessingMode.Edit);
+            var actualResult = Math.Abs(sum.TotalAmount - sum_TotalAmount_Original);
+            var expectResult = Math.Abs(discountAmount_Interval);
+            var success = actualResult == expectResult;
+            if (!success)
+            {
+                //check error range.
+                var errorRange = 0.000001m;
+                var rate = actualResult / expectResult;
+                success = rate < (1 + errorRange) && rate >= (1 - errorRange);
+                if (success)
+                {
+                    System.Diagnostics.Trace.WriteLine($"The error is within the error range. Actual result is  {actualResult},expect is {expectResult} ");
+                }
+            }
+
+            Assert.False(success == false, $"Summary discountRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void Calculate_Sum_DiscountAmount_Test()
+        {
+            var data = GetFakerData();
+            data = SaveData(data);
+            var sum = data.SalesOrderHeader; 
+            int min = 1, mid = 5000, max = 10000;
+            var random = new Faker().Random;
+            // make sure DiscountRate is using disacount amount.
+            sum.DiscountRate = 0;
+            while (sum.DiscountAmount.IsZero())
+            {
+                sum.DiscountAmount = random.Decimal(min, mid).ToAmount();
+            }
+            //make sure not affect by tax amount.
+            foreach (var item in data.SalesOrderItems)
+            {
+                item.Taxable = false;
+            }
+            data = SaveData(data);
+
+            var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
+            sum = data.SalesOrderHeader;
+            Assert.False(sum == null, "SalesOrderHeader not found.");
+
+            var discountAmount_New = random.Decimal(mid, max).ToAmount();  // get a different non zero rate
+
+            var discountAmount_Interval = Math.Abs(sum.DiscountAmount - discountAmount_New).ToAmount();//  
+            var sum_TotalAmount_Original = sum.TotalAmount;
+
+            sum.DiscountAmount = discountAmount_New;
+            calculator.CalculateSummary(data, ProcessingMode.Edit);
+            var actualResult = Math.Abs(sum.TotalAmount - sum_TotalAmount_Original);
+            var expectResult = Math.Abs(discountAmount_Interval);
+            var success = actualResult == expectResult; 
+            Assert.False(success == false, $"Summary discountAmount doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void Calculate_Sum_TaxRate_With_Item_NonTaxable_Test()
+        {
+            var data = GetFakerData();
+            data = SaveData(data);
+            var sum = data.SalesOrderHeader;
+            decimal min = 0.1m, mid = 0.5m, max = 1;
+            var random = new Faker().Random;
+            // make sure DiscountRate is between min and mid;
+            sum.TaxRate = random.Decimal(min, mid).ToRate();
+            while (sum.TaxRate.IsZero())
+            {
+                sum.TaxRate = random.Decimal(min, mid).ToRate();
+            }
+            //make sure not affect by tax amount.
+            foreach (var item in data.SalesOrderItems)
+            {
+                item.Taxable = false;
+            }
+            data = SaveData(data);
+
+            var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory); 
+
+            var taxRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate
+
+            var taxRate_Interval = Math.Abs(sum.TaxRate - taxRate_New).ToRate();//  
+            var taxRate_Amount_Interval = (sum.TaxableAmount * taxRate_Interval).ToAmount();
+            var sumTotalAmount_Original = sum.TotalAmount; 
+            sum.TaxRate = taxRate_New;
+            calculator.CalculateSummary(data, ProcessingMode.Edit);
+            var actualResult = Math.Abs(sum.TotalAmount - sumTotalAmount_Original);
+            var expectResult = Math.Abs(taxRate_Amount_Interval);
+            var success = actualResult == expectResult; 
+            Assert.False(success == false, $"Sum taxRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        //TODO not finished.
+        public void Calculate_Sum_TaxRate_With_Item_Taxable_Test()
+        {
+            var data = GetFakerData();
+            data = SaveData(data);
+            var sum = data.SalesOrderHeader;
+            decimal min = 0.1m, mid = 0.5m, max = 1;
+            var random = new Faker().Random;
+            // make sure DiscountRate is between min and mid;
+            sum.TaxRate = random.Decimal(min, mid).ToRate();
+            while (sum.TaxRate.IsZero())
+            {
+                sum.TaxRate = random.Decimal(min, mid).ToRate();
+            }
+            //make sure not affect by tax amount.
+            foreach (var item in data.SalesOrderItems)
+            {
+                item.Taxable = true;
+            }
+            data = SaveData(data);
+
+            var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
+
+            var taxRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate
+
+            var taxRate_Interval = Math.Abs(sum.TaxRate - taxRate_New).ToRate();//  
+            var taxRate_Amount_Interval = (sum.TaxableAmount * taxRate_Interval).ToAmount();
+            var sumTotalAmount_Original = sum.TotalAmount;
+            sum.TaxRate = taxRate_New;
+            calculator.CalculateSummary(data, ProcessingMode.Edit);
+            var actualResult = Math.Abs(sum.TotalAmount - sumTotalAmount_Original);
+            var expectResult = Math.Abs(taxRate_Amount_Interval);
+            var success = actualResult == expectResult;
+            Assert.False(success == false, $"Sum taxRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
         }
     }
 }
