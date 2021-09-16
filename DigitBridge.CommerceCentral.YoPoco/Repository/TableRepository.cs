@@ -230,6 +230,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return;
         }
 
+        [XmlIgnore, JsonIgnore]
+        protected virtual IList<string> _IgnoreUpdate { get; } = new List<string>();
+        protected virtual bool IgnoreUpdate(string name) => !_IgnoreUpdate.Contains(name);
+        public virtual void AddIgnoreUpdate(string name)
+        {
+            if (!_IgnoreUpdate.Contains(name))
+                _IgnoreUpdate.Add(name);
+        }
+
         #endregion Properties
 
         #region Property Changed
@@ -300,11 +309,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
             int rtn;
             this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
-                rtn = db.Update(this.SetAllowNull(false));
+                if (_IgnoreUpdate != null && _IgnoreUpdate.Count > 0)
+                    rtn = db.Update(this.SetAllowNull(false), _IgnoreUpdate);
+                else
+                    rtn = db.Update(this.SetAllowNull(false));
             else
             {
                 db.BeginTransaction();
-                rtn = db.Update(this.SetAllowNull(false));
+                if (_IgnoreUpdate != null && _IgnoreUpdate.Count > 0)
+                    rtn = db.Update(this.SetAllowNull(false), _IgnoreUpdate);
+                else
+                    rtn = db.Update(this.SetAllowNull(false));
                 db.CompleteTransaction();
             }
             return rtn;
@@ -432,11 +447,17 @@ namespace DigitBridge.CommerceCentral.YoPoco
             int rtn;
             this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
-                rtn = await db.UpdateAsync(this.SetAllowNull(false));
+                if (_IgnoreUpdate != null && _IgnoreUpdate.Count > 0)
+                    rtn = await db.UpdateAsync(this.SetAllowNull(false), _IgnoreUpdate);
+                else
+                    rtn = await db.UpdateAsync(this.SetAllowNull(false));
             else
             {
                 await db.BeginTransactionAsync();
-                rtn = await db.UpdateAsync(this.SetAllowNull(false));
+                if (_IgnoreUpdate != null && _IgnoreUpdate.Count > 0)
+                    rtn = await db.UpdateAsync(this.SetAllowNull(false), _IgnoreUpdate);
+                else
+                    rtn = await db.UpdateAsync(this.SetAllowNull(false));
                 db.CompleteTransaction();
             }
             return rtn;
