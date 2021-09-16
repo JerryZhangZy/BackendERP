@@ -155,15 +155,12 @@ WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND LogUuid = @logUuid
 ";
-            var numList = new List<long>();
-            using var reader= await SqlQuery.ExecuteCommandAsync(sql,CommandType.Text,
+            return await SqlQuery.ExecuteAsync(sql,CommandType.Text,
+                (long rowNum)=>rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"),
                 logUuid.ToSqlParameter("logUuid")
             );
-            while (await reader.ReadAsync())
-                numList.Add(reader.GetInt64(0));
-            return numList;
         }
         public static long GetRowNumByInventoryLogUuid(string logUuid, int masterAccountNum, int profileNum)
         {
@@ -179,6 +176,26 @@ AND InventoryLogUuid = @logUuid
                 logUuid.ToSqlParameter("logUuid")
             );
             return result;
+        }
+
+        public static List<InventoryLog> GetInventoryLogListByLogUuid(string logUuid)
+        {
+            var sql = $@"
+SELECT * FROM InventoryLog tbl
+WHERE LogUuid = @logUuid
+";
+            return SqlQuery.Query<InventoryLog>(sql, CommandType.Text,
+                logUuid.ToSqlParameter("logUuid")).ToList();
+        }
+
+        public static async Task<List<InventoryLog>> GetInventoryLogListByLogUuidAsync(string logUuid)
+        {
+            var sql = $@"
+SELECT * FROM InventoryLog tbl
+WHERE LogUuid = @logUuid
+";
+            return (await SqlQuery.QueryAsync<InventoryLog>(sql, CommandType.Text,
+                logUuid.ToSqlParameter("logUuid"))).ToList();
         }
 
         public static async Task<long> GetRowNumByInventoryLogUuidAsync(string inventoryLogUuid, int masterAccountNum, int profileNum)
@@ -197,6 +214,23 @@ AND InventoryLogUuid = @inventoryLogUuid
             return result;
         }
 
+        public static void DeleteInventoryLogsByLogUuid(string logUuid)
+        {
+            var sql = $@"
+DELETE FROM InventoryLog tbl
+WHERE LogUuid = @logUuid
+";
+            SqlQuery.ExecuteNonQuery(sql, logUuid.ToSqlParameter("logUuid"));
+        }
+
+        public static async Task DeleteInventoryLogsByLogUuidAsync(string logUuid)
+        {
+            var sql = $@"
+DELETE FROM InventoryLog tbl
+WHERE LogUuid = @logUuid
+";
+            await SqlQuery.ExecuteNonQueryAsync(sql, logUuid.ToSqlParameter("logUuid"));
+        }
     }
 }
 

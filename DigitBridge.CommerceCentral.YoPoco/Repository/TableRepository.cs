@@ -310,14 +310,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
             this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
                 if (_IgnoreUpdate != null && _IgnoreUpdate.Count > 0)
-                    rtn = db.Update(this.SetAllowNull(false), _IgnoreUpdate);
+                    rtn = db.UpdateWithIgnore(this.SetAllowNull(false),null, _IgnoreUpdate);
                 else
                     rtn = db.Update(this.SetAllowNull(false));
             else
             {
                 db.BeginTransaction();
                 if (_IgnoreUpdate != null && _IgnoreUpdate.Count > 0)
-                    rtn = db.Update(this.SetAllowNull(false), _IgnoreUpdate);
+                    rtn = db.UpdateWithIgnore(this.SetAllowNull(false), null, _IgnoreUpdate);
                 else
                     rtn = db.Update(this.SetAllowNull(false));
                 db.CompleteTransaction();

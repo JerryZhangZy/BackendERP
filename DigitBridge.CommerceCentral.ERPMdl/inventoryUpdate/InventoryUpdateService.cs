@@ -393,6 +393,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Messages = msglist;
             return payload;
         }
+        private InventoryLogService _inventoryLogService;
+
+        protected InventoryLogService InventoryLogService
+        {
+            get
+            {
+                if (_inventoryLogService == null)
+                    _inventoryLogService = new InventoryLogService();
+                return _inventoryLogService;
+            }
+        }
+
+        public override async Task<bool> SaveDataAsync()
+        {
+            if (base.SaveData())
+            {
+                await _inventoryLogService.UpdateByInventoryUpdateAsync(_data);
+                return true;
+            }
+            return false;
+        }
 
     }
 }
