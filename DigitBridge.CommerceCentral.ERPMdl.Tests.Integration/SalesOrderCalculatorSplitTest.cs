@@ -25,7 +25,7 @@ using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
-    public partial class SalesOrderCalculatorTests
+    public partial class SalesOrderCalculatorSplitTest
     {
 
         [Fact()]
