@@ -1050,7 +1050,7 @@ export const salesOrderUi = {
 			textStyle: {},
 		},
 		stockable: {
-			type: DbComponentEnums.inputTypeEnum.number,
+			type: DbComponentEnums.inputTypeEnum.checkbox,
 			parentName: 'salesOrderItems',
 			name: 'stockable',
 			label: 'stockable',
@@ -1058,7 +1058,7 @@ export const salesOrderUi = {
 			textStyle: {},
 		},
 		isAr: {
-			type: DbComponentEnums.inputTypeEnum.number,
+			type: DbComponentEnums.inputTypeEnum.checkbox,
 			parentName: 'salesOrderItems',
 			name: 'isAr',
 			label: 'isAr',
@@ -1066,7 +1066,7 @@ export const salesOrderUi = {
 			textStyle: {},
 		},
 		taxable: {
-			type: DbComponentEnums.inputTypeEnum.number,
+			type: DbComponentEnums.inputTypeEnum.checkbox,
 			parentName: 'salesOrderItems',
 			name: 'taxable',
 			label: 'taxable',
@@ -1074,7 +1074,7 @@ export const salesOrderUi = {
 			textStyle: {},
 		},
 		costable: {
-			type: DbComponentEnums.inputTypeEnum.number,
+			type: DbComponentEnums.inputTypeEnum.checkbox,
 			parentName: 'salesOrderItems',
 			name: 'costable',
 			label: 'costable',
@@ -1082,7 +1082,7 @@ export const salesOrderUi = {
 			textStyle: {},
 		},
 		isProfit: {
-			type: DbComponentEnums.inputTypeEnum.number,
+			type: DbComponentEnums.inputTypeEnum.checkbox,
 			parentName: 'salesOrderItems',
 			name: 'isProfit',
 			label: 'isProfit',
@@ -1133,5 +1133,6 @@ export const salesOrderUi = {
 
     grid: {},
     modal: {},
+    menu: {},
 };
 

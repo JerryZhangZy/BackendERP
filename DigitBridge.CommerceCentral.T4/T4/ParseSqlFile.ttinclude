@@ -364,7 +364,6 @@
                     case "bit":
                     case "int":
                     case "long":
-                    case "byte":
                     case "money":
                     case "short":
                         reval = "number";
@@ -375,6 +374,7 @@
                         reval = "any";
                         break;
                     case "bool":
+                    case "byte":
                         reval = "boolean";
                         break;
                     default:
