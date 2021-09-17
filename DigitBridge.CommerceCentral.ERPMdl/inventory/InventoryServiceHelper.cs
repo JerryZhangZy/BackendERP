@@ -488,16 +488,16 @@ where inv.InventoryUuid=il.InventoryUuid
         {
             if (string.IsNullOrEmpty(LogUuid)) return 0;
             //if (InvoiceVoid(invs_num)) return 0;
-            var add_minus = "-";
-            if (isAdd < 0) add_minus = "+";
+            var add_minus = "+";
+            if (isAdd < 0) add_minus = "-";
             var sql = $@"
 update Inventory 
 set Instock=inv.Instock {add_minus} il.Qty 
 from Inventory inv ,
-(select InventoryUuid,sum(coalesce(LogQty,0)) as Qty from InventoryLog where LogUuid='{LogUuid}' group by InventoryUuid) il 
+(select InventoryUuid,sum(coalesce(LogQty,0)) as Qty from InventoryLog where LogUuid=@LogUuid group by InventoryUuid) il 
 where inv.InventoryUuid=il.InventoryUuid
 ";
-            await SqlQuery.ExecuteNonQueryAsync(sql);
+            await SqlQuery.ExecuteNonQueryAsync(sql,LogUuid.ToSqlParameter("LogUuid"));
 
             //var add_minus = "-";
             //if (isAdd < 0) add_minus = "+";
