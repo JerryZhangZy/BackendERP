@@ -32,7 +32,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
     /// </summary>
     public partial class SalesOrderCalculatorTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        private SalesOrderData data;
+        private SalesOrderData _data;
+        private SalesOrderData data
+        {
+            get
+            {
+                if (_data == null)
+                    PrepareData();
+                return _data;
+            }
+            set
+            {
+                _data = value;
+            }
+        }
+
+        private SalesOrderData GetCopy()
+        {
+            var mapper = new SalesOrderDataDtoMapperDefault();
+            var dto = new SalesOrderDataDto();
+            var copyData = new SalesOrderData();
+            mapper.WriteDto(data, dto);
+            mapper.ReadDto(copyData, dto);
+            return copyData;
+
+        }
+
         //protected SalesOrderData GetFakerData()
         //{
         //    return SalesOrderDataTests.GetFakerData();
@@ -49,13 +74,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Configuration = fixture.Configuration;
 
             InitForTest();
-
-            PrepareData();
         }
         protected void InitForTest()
         {
             var Seq = 0;
-            DataBaseFactory = new DataBaseFactory(Configuration["dsn"]); 
+            DataBaseFactory = new DataBaseFactory(Configuration["dsn"]);
         }
         public void Dispose()
         {
@@ -74,9 +97,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                     item.DiscountRate = random.Decimal(min, max).ToRate();
                 }
             }
-            data = SaveData(fakerData);
+            SaveData(fakerData);
         }
-        private SalesOrderData SaveData(SalesOrderData data)
+        private void SaveData(SalesOrderData data)
         {
             var success = true;
             var service = new SalesOrderService(DataBaseFactory);
@@ -92,7 +115,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var items = service.Data.SalesOrderItems;
             success = items != null && items.Count > 0;
             Assert.False(success == false, "SalesOrderItems not found.");
-            return service.Data;
+            _data = service.Data;
         }
     }
 }
