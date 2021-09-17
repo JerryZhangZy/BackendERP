@@ -27,21 +27,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
     public partial class SalesOrderCalculatorTests
     {
-
         [Fact()]
-        //[Fact(Skip = SkipReason)]
-        public void Calculate_Item_DiscountRate_Test()
+        public dynamic Calculate_Item_DiscountRate_Test()
         {
-            var data = GetFakerData();
-            data = SaveData(data);
             var item = data.SalesOrderItems.OrderByDescending(j => j.DiscountRate).FirstOrDefault();
             var rowNum = item.RowNum;
             decimal min = 0.1m, mid = 0.5m, max = 1;
             var random = new Faker().Random;
             // make sure DiscountRate is between min and mid;
             item.DiscountRate = random.Decimal(min, mid).ToRate();
-            // make sure not affect by taxamount
-            item.Taxable = false;
+            //// make sure not affect by taxamount
+            //item.Taxable = false;
             while (item.DiscountRate.IsZero())
             {
                 item.DiscountRate = random.Decimal(min, mid).ToRate();
@@ -49,21 +45,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             data = SaveData(data);
 
-            var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
+
             item = data.SalesOrderItems.Where(i => i.RowNum == rowNum).FirstOrDefault();
             Assert.False(item == null, "SalesOrderItems not found.");
 
             var discountRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate
-
+            var discountRate_Original = item.DiscountRate;
             var discountRate_Interval = Math.Abs(item.DiscountRate - discountRate_New).ToRate();// 
-            var discountPrice_Interval = (item.Price * discountRate_Interval).ToPrice();// this may cause error
-            var itemTotalAmount_Interval = (discountPrice_Interval * item.ShipQty).ToAmount();
-            var itemTotalAmount_Original = item.ItemTotalAmount;
+            var discountPrice_Interval = (item.Price * discountRate_Interval).ToPrice();// this may cause error 
+            var extAmount_Interval = (discountPrice_Interval * item.ShipQty).ToAmount();
+            var taxAmount_Interval = item.Taxable ? (extAmount_Interval * item.TaxRate).ToAmount() : 0;
 
-            item.DiscountRate = discountRate_New;
-            calculator.CalculateDetail(data, ProcessingMode.Edit);
-            var actualResult = Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original);
-            var expectResult = Math.Abs(itemTotalAmount_Interval);
+            var newData = data.Clone();
+            var newItem = newData.SalesOrderItems.Where(i => i.RowNum == item.RowNum).FirstOrDefault();
+            newItem.DiscountRate = discountRate_New;
+            var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
+            calculator.CalculateDetail(newData, ProcessingMode.Edit);
+            var actualResult = Math.Abs(newItem.ItemTotalAmount - item.ItemTotalAmount);
+            var expectResult = Math.Abs(extAmount_Interval + taxAmount_Interval);
             var success = actualResult == expectResult;
             if (!success)
             {
@@ -78,14 +77,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             }
 
             Assert.False(success == false, $"Item discountRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
+
+            return new
+            {
+                Original = discountRate_Original,
+                New = discountRate_New,
+                Affect_Sum_ExtAmount = item.IsAr ? extAmount_Interval : 0,
+                Affect_Sum_ExtAmount_TaxableAmount = item.IsAr && item.Taxable ? extAmount_Interval : 0,
+                Affect_Item_Total = expectResult
+            };
         }
 
         [Fact()]
-        //[Fact(Skip = SkipReason)]
-        public void Calculate_Item_DiscountAmount_Test()
+        public dynamic Calculate_Item_DiscountAmount_Test()
         {
-            var data = GetFakerData();
-            data = SaveData(data);
             var item = data.SalesOrderItems.OrderByDescending(j => Math.Abs(j.DiscountPrice)).FirstOrDefault();
             var rowNum = item.RowNum;
             //make sure this item is using DiscountAmount
@@ -103,35 +108,43 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.False(item == null, "SalesOrderItems not found.");
 
             var discountAmount_New = random.Decimal(mid, max).ToDecimal().ToAmount();//get a new random discount amount
-            var discountAmount_Interval = item.DiscountAmount - discountAmount_New;
-            var itemTotalAmount_Original = item.ItemTotalAmount;
+            var discountAmount_Original = item.DiscountAmount;
+            var extAmount_Interval = discountAmount_Original - discountAmount_New;
+            var taxAmount_Interval = item.Taxable ? (extAmount_Interval * item.TaxRate).ToAmount() : 0;
+            var expectResult = Math.Abs(extAmount_Interval + taxAmount_Interval);
 
-            item.DiscountAmount = discountAmount_New;
-            calculator.CalculateDetail(data, ProcessingMode.Edit);
 
-            var result = Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original) == Math.Abs(discountAmount_Interval);
+            var newData = data.Clone();
+            var newItem = newData.SalesOrderItems.Where(i => i.RowNum == item.RowNum).FirstOrDefault();
+            newItem.DiscountAmount = discountAmount_New;
+            calculator.CalculateDetail(newData, ProcessingMode.Edit);
+
+            var result = Math.Abs(newItem.ItemTotalAmount - item.ItemTotalAmount) == expectResult;
             Assert.False(result == false, "Item discountAmount test failed.");
-        }
 
+            return new
+            {
+                Original = discountAmount_Original,
+                New = discountAmount_New,
+                Affect_Sum_ExtAmount = item.IsAr ? extAmount_Interval : 0,
+                Affect_Sum_ExtAmount_TaxableAmount = item.IsAr && item.Taxable ? extAmount_Interval : 0,
+                Affect_Item_Total = expectResult
+            };
+        }
         [Fact()]
-        //[Fact(Skip = SkipReason)]
-        public void Calculate_Item_TaxRate_Taxable_Test()
+        public dynamic Calculate_Item_TaxRate_Test()
         {
-            var data = GetFakerData();
-            data = SaveData(data);
             var item = data.SalesOrderItems.OrderByDescending(j => j.TaxRate).FirstOrDefault();
             var rowNum = item.RowNum;
             decimal min = 0.1m, mid = 0.5m, max = 1;
             var random = new Faker().Random;
             // make sure TaxRate is between min and mid;
             item.TaxRate = random.Decimal(min, mid).ToRate();
-            // make sure tax rate work.
-            item.Taxable = true;
+
             while (item.TaxRate.IsZero())
             {
                 item.TaxRate = random.Decimal(min, mid).ToRate();
             }
-
             data = SaveData(data);
 
             var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
@@ -139,22 +152,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.False(item == null, "SalesOrderItems not found.");
 
             var taxRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate
+            var taxRate_Original = item.TaxRate;
+            var taxRate_Interval = Math.Abs(item.TaxRate - taxRate_New).ToRate();//   
+            var taxAmount_Interval = item.Taxable ? (item.TaxableAmount * taxRate_Interval).ToAmount() : 0;
+            var expectResult = taxAmount_Interval;
 
-            var taxRate_Interval = Math.Abs(item.TaxRate - taxRate_New).ToRate();//  
-            var itemTotalAmount_Interval = (item.TaxableAmount * taxRate_Interval).ToAmount();
-            var itemTotalAmount_Original = item.ItemTotalAmount;
             var setting = new ERPSetting();
             if (setting.TaxForShippingAndHandling)
             {
                 var shippingTaxAmount_Interval = (item.ShippingAmount * taxRate_Interval).ToAmount();
-                var miscTaxAmount = (item.MiscAmount * taxRate_Interval).ToAmount();
-                itemTotalAmount_Interval = (itemTotalAmount_Interval + shippingTaxAmount_Interval + miscTaxAmount).ToAmount();
+                var miscTaxAmount_Interval = (item.MiscAmount * taxRate_Interval).ToAmount();
+                expectResult = (taxAmount_Interval + shippingTaxAmount_Interval + miscTaxAmount_Interval).ToAmount();
             }
 
-            item.TaxRate = taxRate_New;
-            calculator.CalculateDetail(data, ProcessingMode.Edit);
-            var actualResult = Math.Abs(item.ItemTotalAmount - itemTotalAmount_Original);
-            var expectResult = Math.Abs(itemTotalAmount_Interval);
+
+            var newData = data.Clone();
+            var newItem = newData.SalesOrderItems.Where(i => i.RowNum == item.RowNum).FirstOrDefault();
+            newItem.TaxRate = taxRate_New;
+            calculator.CalculateDetail(newData, ProcessingMode.Edit);
+            var actualResult = Math.Abs(newItem.ItemTotalAmount - item.ItemTotalAmount);
+            expectResult = Math.Abs(expectResult);
             var success = actualResult == expectResult;
             if (!success)
             {
@@ -169,53 +186,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             }
 
             Assert.False(success == false, $"Item taxRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
-        }
 
-        [Fact()]
-        //[Fact(Skip = SkipReason)]
-        public void Calculate_Item_TaxRate_NonTaxable_Test()
-        {
-            var data = GetFakerData();
-            data = SaveData(data);
-            var item = data.SalesOrderItems.OrderByDescending(j => j.TaxRate).FirstOrDefault();
-            var rowNum = item.RowNum;
-            decimal min = 0.1m, mid = 0.5m, max = 1;
-            var random = new Faker().Random;
-            // make sure TaxRate is between min and mid;
-            item.TaxRate = random.Decimal(min, mid).ToRate();
-            // tax rate won't work.
-            item.Taxable = false;
-            while (item.TaxRate.IsZero())
+            return new
             {
-                item.TaxRate = random.Decimal(min, mid).ToRate();
-            }
-
-            data = SaveData(data);
-
-            var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
-            item = data.SalesOrderItems.Where(i => i.RowNum == rowNum).FirstOrDefault();
-            Assert.False(item == null, "SalesOrderItems not found.");
-
-            var taxRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate 
-
-            var itemTotalAmount_Original = item.ItemTotalAmount;
-
-            item.TaxRate = taxRate_New;
-            calculator.CalculateDetail(data, ProcessingMode.Edit);
-            var actualResult = item.ItemTotalAmount;
-            var expectResult = itemTotalAmount_Original;
-            var success = actualResult == expectResult;
-
-            Assert.False(success == false, $"Item taxRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
+                Original = taxRate_Original,
+                New = taxRate_New,
+                Affect_Sum_ExtAmount = 0,
+                Affect_Sum_ExtAmount_TaxableAmount = 0,
+                Affect_Item_Total = expectResult
+            };
         }
 
 
         [Fact()]
-        //[Fact(Skip = SkipReason)]
-        public void Calculate_Sum_DiscountRate_Test()
+        public dynamic Calculate_Sum_DiscountRate_Test()
         {
-            var data = GetFakerData();
-            data = SaveData(data);
+            //var data = GetFakerData();
+            //data = SaveData(data);
             decimal min = 0.1m, mid = 0.5m, max = 1;
             var random = new Faker().Random;
             // make sure DiscountRate is between min and mid;
@@ -224,25 +211,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 data.SalesOrderHeader.DiscountRate = random.Decimal(min, mid).ToRate();
             }
-            //make sure not affect by tax amount.
-            foreach (var item in data.SalesOrderItems)
-            {
-                item.Taxable = false;
-            }
+
             data = SaveData(data);
 
             var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
 
+            var discountRate_Original = data.SalesOrderHeader.DiscountRate;
             var discountRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate
 
-            var discountRate_Interval = Math.Abs(data.SalesOrderHeader.DiscountRate - discountRate_New).ToRate();// 
+            var discountRate_Interval = Math.Abs(discountRate_New - discountRate_New).ToRate();// 
             var discountAmount_Interval = (data.SalesOrderHeader.SubTotalAmount * discountRate_Interval).ToAmount();//this may casuse error.
-            var sum_TotalAmount_Original = data.SalesOrderHeader.TotalAmount;
 
-            data.SalesOrderHeader.DiscountRate = discountRate_New;
-            calculator.CalculateSummary(data, ProcessingMode.Edit);
-            var actualResult = Math.Abs(data.SalesOrderHeader.TotalAmount - sum_TotalAmount_Original);
-            var expectResult = Math.Abs(discountAmount_Interval);
+            var affectTax_Percent = data.SalesOrderHeader.SubTotalAmount != 0 ? (discountAmount_Interval / data.SalesOrderHeader.SubTotalAmount) : 0;
+            var taxAmount_Interval = (data.SalesOrderHeader.TaxableAmount * affectTax_Percent * data.SalesOrderHeader.TaxRate).ToAmount();
+
+
+            var newData = data.Clone();
+            newData.SalesOrderHeader.DiscountRate = discountRate_New;
+            calculator.CalculateSummary(newData, ProcessingMode.Edit);
+            var actualResult = Math.Abs(newData.SalesOrderHeader.TotalAmount - data.SalesOrderHeader.TotalAmount);
+            var expectResult = Math.Abs(taxAmount_Interval - discountAmount_Interval);
             var success = actualResult == expectResult;
             if (!success)
             {
@@ -257,14 +245,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             }
 
             Assert.False(success == false, $"Summary discountRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
-        }
 
+            return new
+            {
+                Original = discountRate_Original,
+                New = discountRate_New,
+                Affect_Sum_ExtAmount = 0,
+                Affect_Sum_ExtAmount_TaxableAmount = 0,
+                Affect_Item_Total = 0,
+                Affect_Sum_Total = expectResult
+            };
+        }
         [Fact()]
-        //[Fact(Skip = SkipReason)]
-        public void Calculate_Sum_DiscountAmount_Test()
+        public dynamic Calculate_Sum_DiscountAmount_Test()
         {
-            var data = GetFakerData();
-            data = SaveData(data);
             int min = 1, mid = 5000, max = 10000;
             var random = new Faker().Random;
             // make sure DiscountRate is using disacount amount.
@@ -281,61 +275,35 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             data = SaveData(data);
             var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
 
-            var discountAmount_New = random.Decimal(mid, max).ToAmount();  // get a different non zero rate
+            var discountAmount_Original = data.SalesOrderHeader.DiscountAmount;
+            var discountAmount_New = random.Decimal(mid, max).ToAmount();  // get a different non zero rate 
+            var discountAmount_Interval = Math.Abs(discountAmount_Original - discountAmount_New).ToAmount();//  
 
-            var discountAmount_Interval = Math.Abs(data.SalesOrderHeader.DiscountAmount - discountAmount_New).ToAmount();//  
-            var sum_TotalAmount_Original = data.SalesOrderHeader.TotalAmount;
+            var affectTax_Percent = data.SalesOrderHeader.SubTotalAmount != 0 ? (discountAmount_Interval / data.SalesOrderHeader.SubTotalAmount) : 0;
+            var taxAmount_Interval = (data.SalesOrderHeader.TaxableAmount * affectTax_Percent * data.SalesOrderHeader.TaxRate).ToAmount();
 
-            data.SalesOrderHeader.DiscountAmount = discountAmount_New;
-            calculator.CalculateSummary(data, ProcessingMode.Edit);
-            var actualResult = Math.Abs(data.SalesOrderHeader.TotalAmount - sum_TotalAmount_Original);
-            var expectResult = Math.Abs(discountAmount_Interval);
+
+            var newData = data.Clone();
+            newData.SalesOrderHeader.DiscountAmount = discountAmount_New;
+            calculator.CalculateSummary(newData, ProcessingMode.Edit);
+            var actualResult = Math.Abs(newData.SalesOrderHeader.TotalAmount - data.SalesOrderHeader.TotalAmount);
+            var expectResult = Math.Abs(taxAmount_Interval - discountAmount_Interval);
             var success = actualResult == expectResult;
             Assert.False(success == false, $"Summary discountAmount doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
-        }
-
-        [Fact()]
-        //[Fact(Skip = SkipReason)]
-        public void Calculate_Sum_TaxRate_With_Item_NonTaxable_Test()
-        {
-            var data = GetFakerData();
-            data = SaveData(data);
-            decimal min = 0.1m, mid = 0.5m, max = 1;
-            var random = new Faker().Random;
-            // make sure DiscountRate is between min and mid;
-            data.SalesOrderHeader.TaxRate = random.Decimal(min, mid).ToRate();
-            while (data.SalesOrderHeader.TaxRate.IsZero())
+            return new
             {
-                data.SalesOrderHeader.TaxRate = random.Decimal(min, mid).ToRate();
-            }
-            //make sure not affect by tax amount.
-            foreach (var item in data.SalesOrderItems)
-            {
-                item.Taxable = false;
-            }
-            data = SaveData(data);
-            var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
-
-            var taxRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate
-
-            var taxRate_Interval = Math.Abs(data.SalesOrderHeader.TaxRate - taxRate_New).ToRate();//  
-            var taxRate_Amount_Interval = (data.SalesOrderHeader.TaxableAmount * taxRate_Interval).ToAmount();
-            var sumTotalAmount_Original = data.SalesOrderHeader.TotalAmount;
-            data.SalesOrderHeader.TaxRate = taxRate_New;
-            calculator.CalculateSummary(data, ProcessingMode.Edit);
-            var actualResult = Math.Abs(data.SalesOrderHeader.TotalAmount - sumTotalAmount_Original);
-            var expectResult = Math.Abs(taxRate_Amount_Interval);
-            var success = actualResult == expectResult;
-            Assert.False(success == false, $"Sum taxRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
+                Original = discountAmount_Original,
+                New = discountAmount_New,
+                Affect_Sum_ExtAmount = 0,
+                Affect_Sum_ExtAmount_TaxableAmount = 0,
+                Affect_Item_Total = 0,
+                Affect_Sum_Total = expectResult
+            };
         }
-
         [Fact()]
-        //[Fact(Skip = SkipReason)]
-        //TODO not finished.
-        public void Calculate_Sum_TaxRate_With_Item_Taxable_Test()
+        public dynamic Calculate_Sum_TaxRate_Test()
         {
-            var data = GetFakerData();
-            data = SaveData(data);
+
             decimal min = 0.1m, mid = 0.5m, max = 1;
             var random = new Faker().Random;
             // make sure DiscountRate is between min and mid;
@@ -345,38 +313,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 data.SalesOrderHeader.TaxRate = random.Decimal(min, mid).ToRate();
             }
 
-            foreach (var item in data.SalesOrderItems)
-            {
-                //make sure the item tax rate not zero. so it won't be affect by sum tax rate.
-                while (item.TaxRate.IsZero())
-                {
-                    item.TaxRate = random.Decimal(min, max).ToRate();
-                }
-                item.Taxable = true;
-            }
             data = SaveData(data);
-
             var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
 
-            var taxRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate
+            var taxRate_New = random.Decimal(mid, max).ToRate();  // get a different non zero rate 
+            var taxRate_Original = data.SalesOrderHeader.TaxRate;
+            var taxRate_Interval = Math.Abs(taxRate_Original - taxRate_New).ToRate();//  
+            var sum = data.SalesOrderHeader;
+            var taxAmount_Interval = (sum.TaxableAmount * taxRate_Interval).ToAmount();
 
+            var setting = new ERPSetting();
+            if (setting.TaxForShippingAndHandling)
+            {
+                taxAmount_Interval = (taxAmount_Interval + (sum.ShippingAmount * taxRate_Interval).ToAmount() + (sum.MiscAmount * taxRate_Interval).ToAmount()).ToAmount();
+            }
 
-            var sum_DiscountRate = data.SalesOrderHeader.DiscountAmount / data.SalesOrderHeader.SubTotalAmount;
-            var sumTaxableAmount = (data.SalesOrderHeader.TaxableAmount * (1 - sum_DiscountRate));
-
-
-            var taxRate_Interval = Math.Abs(data.SalesOrderHeader.TaxRate - taxRate_New).ToRate();//  
-            var taxRate_Amount_Interval = (sumTaxableAmount * taxRate_Interval).ToAmount();
-            var sumTotalAmount_Original = data.SalesOrderHeader.TotalAmount;
-            data.SalesOrderHeader.TaxRate = taxRate_New;
-            calculator.CalculateSummary(data, ProcessingMode.Edit);
-            var actualResult = Math.Abs(data.SalesOrderHeader.TotalAmount - sumTotalAmount_Original);
-            var expectResult = Math.Abs(taxRate_Amount_Interval);
+            var newData = data.Clone();
+            newData.SalesOrderHeader.TaxRate = taxRate_New;
+            calculator.CalculateSummary(newData, ProcessingMode.Edit);
+            var actualResult = Math.Abs(newData.SalesOrderHeader.TotalAmount - data.SalesOrderHeader.TotalAmount);
+            var expectResult = Math.Abs(taxAmount_Interval);
             var success = actualResult == expectResult;
             if (!success)
             {
                 //check error range.
-                var errorRange = 0.0000001m;
+                var errorRange = 0.000001m;
                 var rate = actualResult / expectResult;
                 success = rate < (1 + errorRange) && rate >= (1 - errorRange);
                 if (success)
@@ -385,6 +346,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 }
             }
             Assert.False(success == false, $"Sum taxRate doesn't pass test. Actual result is  {actualResult},expect is {expectResult} ");
+
+
+            var itemTotalAmount_Original = 0m;
+            foreach (var item in data.SalesOrderItems)
+            {
+                itemTotalAmount_Original += item.ItemTotalAmount;
+            }
+
+            var itemTotalAmount_New = 0m;
+            foreach (var item in newData.SalesOrderItems)
+            {
+                itemTotalAmount_New += item.ItemTotalAmount;
+            }
+
+            return new
+            {
+                Original = taxRate_Original,
+                New = taxRate_New,
+                Affect_Sum_ExtAmount = 0,
+                Affect_Sum_ExtAmount_TaxableAmount = 0,
+                Affect_Item_Total = Math.Abs(itemTotalAmount_New - itemTotalAmount_Original),
+                Affect_Sum_Total = expectResult
+            };
         }
     }
 }

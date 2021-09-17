@@ -274,8 +274,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var discountRate = sum.SubTotalAmount != 0 ? (sum.DiscountAmount / sum.SubTotalAmount) : 0;
             sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate;
             sum.TaxAmount = sum.TaxAmount.ToAmount();
-
-            //remove this item.
+             
             var setting = new ERPSetting();
             if (setting.TaxForShippingAndHandling)
             {
@@ -328,10 +327,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     sum.SubTotalAmount += item.ExtAmount;
                     sum.TaxableAmount += item.TaxableAmount;
-                    sum.NonTaxableAmount += item.NonTaxableAmount;
-
-                    sum.ShippingAmount += item.ShippingAmount;
-                    sum.MiscAmount += item.MiscAmount;
+                    sum.NonTaxableAmount += item.NonTaxableAmount; 
                 }
                 sum.UnitCost += item.UnitCost;
                 sum.AvgCost += item.AvgCost;
