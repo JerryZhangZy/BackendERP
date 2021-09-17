@@ -347,7 +347,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 Delete();
 
                 //use default get and delete
-                if (await GetDataAsync(rowNum) &&await DeleteDataAsync())
+                if (await GetDataAsync(rowNum) && await DeleteDataAsync())
                     payload.InventoryLogs.Add(ToDto());
                 else
                     msgList.AddRange(Messages);
@@ -367,7 +367,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //Validate Account
                 isValid = InventoryLogServiceHelper.ExistId(inventoryLogUuid, payload.MasterAccountNum, payload.ProfileNum);
             }
-            return isValid&& GetDataById(inventoryLogUuid);
+            return isValid && GetDataById(inventoryLogUuid);
         }
         public async Task<bool> GetInventoryLogByInventoryLogUuidAsync(InventoryLogPayload payload, string inventoryLogUuid)
         {
@@ -379,7 +379,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //Validate Account
                 isValid = await InventoryLogServiceHelper.ExistIdAsync(inventoryLogUuid, payload.MasterAccountNum, payload.ProfileNum);
             }
-            return isValid&& await GetDataByIdAsync(inventoryLogUuid);
+            return isValid && await GetDataByIdAsync(inventoryLogUuid);
         }
 
         public InventoryLogPayload GetListByLogUuid(InventoryLogPayload payload)
@@ -393,7 +393,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     //Get RowNum and Validate Account
-                    rowNumList.AddRange(InventoryLogServiceHelper.GetRowNumsByLogUuid(logUuid,payload.MasterAccountNum,payload.ProfileNum));
+                    rowNumList.AddRange(InventoryLogServiceHelper.GetRowNumsByLogUuid(logUuid, payload.MasterAccountNum, payload.ProfileNum));
                 }
             }
             foreach (var rowNum in rowNumList)
@@ -415,7 +415,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     //Get RowNum and Validate Account
-                    rowNumList.AddRange(await InventoryLogServiceHelper.GetRowNumsByLogUuidAsync(logUuid,payload.MasterAccountNum,payload.ProfileNum));
+                    rowNumList.AddRange(await InventoryLogServiceHelper.GetRowNumsByLogUuidAsync(logUuid, payload.MasterAccountNum, payload.ProfileNum));
                 }
             }
             foreach (var rowNum in rowNumList)
@@ -503,7 +503,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             dbFactory.Db.Execute("DELETE FROM InventoryLog WHERE LogUuid = @0", logUuid.ToSqlParameter("logUuid"));
         }
 
-        private void UpdateInventoryInStock(string logUuid,int isAdd)
+        private void UpdateInventoryInStock(string logUuid, int isAdd)
         {
             var add_minus = "+";
             if (isAdd < 0) add_minus = "-";
@@ -514,10 +514,10 @@ from Inventory inv ,
 (select InventoryUuid,sum(coalesce(LogQty,0)) as Qty from InventoryLog where LogUuid=@0 group by InventoryUuid) il 
 where inv.InventoryUuid=il.InventoryUuid
 ";
-            dbFactory.Db.Execute(sql,logUuid.ToSqlParameter("LogUuid"));
+            dbFactory.Db.Execute(sql, logUuid.ToSqlParameter("LogUuid"));
         }
 
-        private async Task UpdateInventoryInStockAsync(string logUuid,int isAdd)
+        private async Task UpdateInventoryInStockAsync(string logUuid, int isAdd)
         {
             var add_minus = "+";
             if (isAdd < 0) add_minus = "-";
@@ -528,7 +528,7 @@ from Inventory inv ,
 (select InventoryUuid,sum(coalesce(LogQty,0)) as Qty from InventoryLog where LogUuid=@0 group by InventoryUuid) il 
 where inv.InventoryUuid=il.InventoryUuid
 ";
-            await dbFactory.Db.ExecuteAsync(sql,logUuid.ToSqlParameter("LogUuid"));
+            await dbFactory.Db.ExecuteAsync(sql, logUuid.ToSqlParameter("LogUuid"));
         }
 
         public async Task<bool> UpdateByInventoryUpdateAsync(InventoryUpdateData data)
@@ -540,20 +540,15 @@ where inv.InventoryUuid=il.InventoryUuid
             var logUuid = data.InventoryUpdateHeader.InventoryUpdateUuid;
             await ClearInventoryLogByLogUuidAsync(logUuid);
             //if remove all items or delete inventoryupdate
-            if (data.InventoryUpdateItems==null|| data.InventoryUpdateItems.Count == 0)
+            if (data.InventoryUpdateItems == null || data.InventoryUpdateItems.Count == 0)
             {
                 return true;
             }
 
             var detailItems = data.InventoryUpdateItems;
             var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
-            var list = new List<InventoryLog>();
 
-            foreach (var item in detailItems)
-            {
-                list.Add(ConvertInventoryUpdateItemsToInventoryLog(header,item,batchNum,logUuid));
-            }
-
+            var list = ConvertInventoryUpdateItemsToInventoryLog(header, detailItems, batchNum, logUuid);
             await list.SetDataBaseFactory(dbFactory).SaveAsync();
 
             await UpdateInventoryInStockAsync(logUuid, 1);
@@ -569,19 +564,14 @@ where inv.InventoryUuid=il.InventoryUuid
             var logUuid = data.InventoryUpdateHeader.InventoryUpdateUuid;
             ClearInventoryLogByLogUuid(logUuid);
             //if remove all items or delete inventoryupdate
-            if (data.InventoryUpdateItems==null|| data.InventoryUpdateItems.Count == 0)
+            if (data.InventoryUpdateItems == null || data.InventoryUpdateItems.Count == 0)
             {
                 return true;
             }
 
             var detailItems = data.InventoryUpdateItems;
             var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
-            var list = new List<InventoryLog>();
-
-            foreach (var item in detailItems)
-            {
-                list.Add(ConvertInventoryUpdateItemsToInventoryLog(header,item,batchNum,logUuid));
-            }
+            var list = ConvertInventoryUpdateItemsToInventoryLog(header, detailItems, batchNum, logUuid);
 
             list.SetDataBaseFactory(dbFactory).Save();
 
@@ -589,50 +579,53 @@ where inv.InventoryUuid=il.InventoryUuid
             return true;
         }
 
-        private InventoryLog ConvertInventoryUpdateItemsToInventoryLog(InventoryUpdateHeader header,InventoryUpdateItems item,long batchNum,string logUuid)
+        private IList<InventoryLog> ConvertInventoryUpdateItemsToInventoryLog(InventoryUpdateHeader header, IList<InventoryUpdateItems> detailItems, long batchNum, string logUuid)
         {
-            var line = new InventoryLog
+            var list = new List<InventoryLog>();
+            foreach (var item in detailItems)
             {
-                DatabaseNum = header.DatabaseNum,
-                MasterAccountNum = header.MasterAccountNum,
-                ProfileNum = header.ProfileNum,
-                InventoryLogUuid = Guid.NewGuid().ToString(),
-                InventoryUuid = item.InventoryUuid,
-                ProductUuid = item.ProductUuid,
-                LogUuid = logUuid,
-                BatchNum = batchNum,
-                LogNumber = header.BatchNumber,
-                LogItemUuid = item.InventoryUpdateItemsUuid,
-                LogDate = DateTime.Today,
-                LogTime = DateTime.Now.TimeOfDay,
-                LogBy = "InventoryUpdate",
-                SKU = item.SKU,
-                Description = item.Description,
-                WarehouseCode = item.WarehouseCode,
-                LotNum = item.LotNum,
-                LotInDate = item.LotInDate,
-                LotExpDate = item.LotExpDate,
-                UOM = item.UOM,
-                LogQty = item.UpdateQty,
-                BeforeInstock = item.BeforeInstockQty,
-                EnterBy = ""
-            };
-            switch ((InventoryUpdateType)header.InventoryUpdateType)
-            {
-                case InventoryUpdateType.Adjust:
-                    line.LogType = LogType.Adjust.ToString();
-                    break;
-                case InventoryUpdateType.Damage:
-                    line.LogType = LogType.Damage.ToString();
-                    break;
-                case InventoryUpdateType.CycleCount:
-                    line.LogType = LogType.CycleCount.ToString();
-                    break;
-                case InventoryUpdateType.PhysicalCount:
-                    line.LogType = LogType.PhysicalCount.ToString();
-                    break;
+                var line = new InventoryLog
+                {
+                    DatabaseNum = header.DatabaseNum,
+                    MasterAccountNum = header.MasterAccountNum,
+                    ProfileNum = header.ProfileNum,
+                    InventoryLogUuid = Guid.NewGuid().ToString(),
+                    InventoryUuid = item.InventoryUuid,
+                    ProductUuid = item.ProductUuid,
+                    LogUuid = logUuid,
+                    BatchNum = batchNum,
+                    LogNumber = header.BatchNumber,
+                    LogItemUuid = item.InventoryUpdateItemsUuid,
+                    LogDate = DateTime.Today,
+                    LogTime = DateTime.Now.TimeOfDay,
+                    LogBy = "InventoryUpdate",
+                    SKU = item.SKU,
+                    Description = item.Description,
+                    WarehouseCode = item.WarehouseCode,
+                    LotNum = item.LotNum,
+                    LotInDate = item.LotInDate,
+                    LotExpDate = item.LotExpDate,
+                    UOM = item.UOM,
+                    LogQty = item.UpdateQty,
+                    BeforeInstock = item.BeforeInstockQty,
+                    EnterBy = ""
+                };
+                switch ((InventoryUpdateType)header.InventoryUpdateType)
+                {
+                    case InventoryUpdateType.Adjust:
+                        line.LogType = InventoyLogType.Adjust.ToString();
+                        break;
+                    case InventoryUpdateType.Damage:
+                        line.LogType = InventoyLogType.Damage.ToString();
+                        break;
+                    case InventoryUpdateType.CycleCount:
+                    case InventoryUpdateType.PhysicalCount:
+                        line.LogType = InventoyLogType.Count.ToString();
+                        break;
+                }
+                list.Add(line);
             }
-            return line;
+            return list;
         }
 
         public Task<bool> UpdateByInvoiceReturnAsync(InvoiceTransactionData data)
@@ -645,6 +638,28 @@ where inv.InventoryUuid=il.InventoryUuid
             throw new NotImplementedException();
         }
 
+        public bool UpdateByWarehouseTransfer(WarehouseTransferData data)
+        {
+            if (data == null || data.WarehouseTransferHeader == null)
+                return false;
+            var header = data.WarehouseTransferHeader;
+            var logUuid = data.WarehouseTransferHeader.WarehouseTransferUuid;
+            ClearInventoryLogByLogUuid(logUuid);
+            //if remove all items or delete inventoryupdate
+            if (data.WarehouseTransferItems == null || data.WarehouseTransferItems.Count == 0)
+            {
+                return true;
+            }
+            var detailItems = data.WarehouseTransferItems;
+            var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
+
+            var list = ConvertWarehouseTransferItemsToInventoryLogList(header, detailItems, batchNum, logUuid);
+
+            list.SetDataBaseFactory(dbFactory).Save();
+
+            UpdateInventoryInStock(logUuid, 1);
+            return true;
+        }
         public async Task<bool> UpdateByWarehouseTransferAsync(WarehouseTransferData data)
         {
             if (data == null || data.WarehouseTransferHeader == null)
@@ -660,6 +675,16 @@ where inv.InventoryUuid=il.InventoryUuid
             var detailItems = data.WarehouseTransferItems;
             var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
 
+            var list = ConvertWarehouseTransferItemsToInventoryLogList(header, detailItems, batchNum, logUuid);
+
+            await list.SetDataBaseFactory(dbFactory).SaveAsync();
+
+            UpdateInventoryInStock(logUuid, 1);
+            return true;
+        }
+
+        private IList<InventoryLog> ConvertWarehouseTransferItemsToInventoryLogList(WarehouseTransferHeader header, IList<WarehouseTransferItems> detailItems, long batchNum, string logUuid)
+        {
             var list = new List<InventoryLog>();
             foreach (var item in detailItems)
             {
@@ -669,14 +694,16 @@ where inv.InventoryUuid=il.InventoryUuid
                     MasterAccountNum = header.MasterAccountNum,
                     ProfileNum = header.ProfileNum,
                     InventoryLogUuid = Guid.NewGuid().ToString(),
+                    InventoryUuid=item.FromInventoryUuid,
+                    ProductUuid=item.ProductUuid,
                     LogUuid = logUuid,
                     BatchNum = batchNum,
                     LogNumber = header.BatchNumber,
                     LogItemUuid = $"From_{item.WarehouseTransferItemsUuid}",
                     LogDate = DateTime.Today,
                     LogTime = DateTime.Now.TimeOfDay,
-                    LogBy = "",
-                    LogType=LogType.TransferFrom.ToString(),
+                    LogBy = "WarehouseTransfer",
+                    LogType = InventoyLogType.FromWarehouse.ToString(),
                     SKU = item.SKU,
                     Description = item.Description,
                     WarehouseCode = item.FromWarehouseCode,
@@ -684,19 +711,21 @@ where inv.InventoryUuid=il.InventoryUuid
                     LotInDate = item.LotInDate,
                     LotExpDate = item.LotExpDate,
                     UOM = item.UOM,
-                    LogQty = -item.TransferQty,
+                    LogQty = - item.TransferQty,
                     BeforeInstock = item.FromBeforeInstockPack,
                     EnterBy = ""
                 };
-                list.Add(line); 
+                list.Add(line);
                 line = new InventoryLog
                 {
                     DatabaseNum = header.DatabaseNum,
                     MasterAccountNum = header.MasterAccountNum,
                     ProfileNum = header.ProfileNum,
                     InventoryLogUuid = Guid.NewGuid().ToString(),
+                    InventoryUuid = item.ToInventoryUuid,
+                    ProductUuid = item.ProductUuid,
                     LogUuid = logUuid,
-                    LogType=LogType.TransferTo.ToString(),
+                    LogType = InventoyLogType.ToWarehouse.ToString(),
                     BatchNum = batchNum,
                     LogNumber = header.BatchNumber,
                     LogItemUuid = $"To_{item.WarehouseTransferItemsUuid}",
@@ -716,10 +745,7 @@ where inv.InventoryUuid=il.InventoryUuid
                 };
                 list.Add(line);
             }
-            await list.SetDataBaseFactory(dbFactory).SaveAsync();
-
-            UpdateInventoryInStock(logUuid, 1);
-            return true;
+            return list;
         }
     }
 }

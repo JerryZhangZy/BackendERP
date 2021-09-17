@@ -82,7 +82,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                             x.ProductUuid = inventory.ProductUuid;
                             x.FromWarehouseCode = inventory.WarehouseCode;
                             x.FromWarehouseUuid = inventory.WarehouseUuid;
-                            x.FromInventoryUuid = inventory.WarehouseUuid;
+                            x.FromInventoryUuid = inventory.InventoryUuid;
                         });
                     }
                 }
@@ -101,7 +101,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                             x.ProductUuid = inventory.ProductUuid;
                             x.FromWarehouseCode = inventory.WarehouseCode;
                             x.FromWarehouseUuid = inventory.WarehouseUuid;
-                            x.FromInventoryUuid = inventory.WarehouseUuid;
+                            x.FromInventoryUuid = inventory.InventoryUuid;
                         });
                     }
                 }
@@ -127,12 +127,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                             x.SKU = inventory.SKU;
                             x.ToWarehouseCode = inventory.WarehouseCode;
                             x.ToWarehouseUuid = inventory.WarehouseUuid;
-                            x.ToInventoryUuid = inventory.WarehouseUuid;
+                            x.ToInventoryUuid = inventory.InventoryUuid;
                         });
                     }
                 }
 
-                tmpList = data.WarehouseTransferItems.Where(r => r.ToInventoryUuid.IsZero()).Select(r => new { r.SKU, WarehouseCode=r.FromWarehouseCode }).Distinct().ToList();
+                tmpList = data.WarehouseTransferItems.Where(r => r.ToInventoryUuid.IsZero()).Select(r => new { r.SKU, WarehouseCode=r.ToWarehouseCode }).Distinct().ToList();
                 foreach (var tuple in tmpList)
                 {
                     //only for update items and init InventoryUuid;
@@ -145,7 +145,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                             x.SKU = inventory.SKU;
                             x.ToWarehouseCode = inventory.WarehouseCode;
                             x.ToWarehouseUuid = inventory.WarehouseUuid;
-                            x.ToInventoryUuid = inventory.WarehouseUuid;
+                            x.ToInventoryUuid = inventory.InventoryUuid;
                         });
                     }
                 }
