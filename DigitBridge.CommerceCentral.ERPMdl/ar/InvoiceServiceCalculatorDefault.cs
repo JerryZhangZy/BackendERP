@@ -35,7 +35,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.ServiceMessage = serviceMessage;
             this.dbFactory = dbFactory;
         }
-
+        public InvoiceServiceCalculatorDefault(IDataBaseFactory dbFactory)
+        {
+            this.dbFactory = dbFactory;
+        }
         public virtual void PrepareData(InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
 
@@ -362,7 +365,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         //TODO: add set default for detail line logic
         //This is generated sample code
-        protected virtual bool CalculateDetail(InvoiceItems item, InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool CalculateDetail(InvoiceItems item, InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;
@@ -403,7 +406,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // if exist DiscountRate, calculate after discount unit price
             if (!item.DiscountRate.IsZero())
             {
-                item.DiscountPrice = (item.Price * (item.DiscountRate.ToRate() / 100)).ToPrice();
+                item.DiscountPrice = (item.Price * item.DiscountRate.ToRate()).ToPrice();
                 item.ExtAmount = (item.DiscountPrice * item.ShipQty).ToAmount();
                 item.DiscountAmount = (item.Price * item.ShipQty).ToAmount() - item.ExtAmount;
             }
