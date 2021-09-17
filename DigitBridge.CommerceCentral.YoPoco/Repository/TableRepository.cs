@@ -231,12 +231,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
 
         [XmlIgnore, JsonIgnore]
-        protected virtual IList<string> _IgnoreUpdate { get; } = new List<string>();
+        protected virtual IList<string> _IgnoreUpdate { get; private set; } = new List<string>();
         protected virtual bool IgnoreUpdate(string name) => !_IgnoreUpdate.Contains(name);
         public virtual void AddIgnoreUpdate(string name)
         {
             if (!_IgnoreUpdate.Contains(name))
                 _IgnoreUpdate.Add(name);
+        }
+        public virtual void SetIgnoreUpdateColumns(IList<string> columns)
+        {
+            if (columns != null)
+            {
+                _IgnoreUpdate = columns;
+            }
         }
 
         #endregion Properties

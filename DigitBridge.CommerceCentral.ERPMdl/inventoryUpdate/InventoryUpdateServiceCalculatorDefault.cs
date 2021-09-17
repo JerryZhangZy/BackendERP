@@ -64,11 +64,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     var inventory = GetInventory(data, tuple.Item2, tuple.Item1);
                     if (inventory != null)
                     {
-                        var items = data.InventoryUpdateItems.First(i => i.InventoryUuid == inventory.InventoryUuid);
-                        items.SKU = inventory.SKU;
-                        items.ProductUuid = inventory.ProductUuid;
-                        items.WarehouseCode = inventory.WarehouseCode;
-                        items.WarehouseUuid = inventory.WarehouseUuid;
+                        var items = data.InventoryUpdateItems.Where(i => i.InventoryUuid == inventory.InventoryUuid).ToList();
+                        items.ForEach(x =>
+                        {
+                            x.SKU = inventory.SKU;
+                            x.InventoryUuid = inventory.InventoryUuid;
+                            x.ProductUuid = inventory.ProductUuid;
+                            x.WarehouseCode = inventory.WarehouseCode;
+                            x.WarehouseUuid = inventory.WarehouseUuid;
+                        });
                     }
                 }
 
@@ -79,12 +83,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     var inventory = dbFactory.GetBy<Inventory>("where SKU=@0 AND WarehouseCode=@1", tuple.SKU.ToParameter("SKU"), tuple.WarehouseCode.ToParameter("WarehouseCode"));
                     if (inventory != null)
                     {
-                        var items = data.InventoryUpdateItems.First(i => i.WarehouseCode == inventory.WarehouseCode&&i.SKU==inventory.SKU);
-                        items.SKU = inventory.SKU;
-                        items.InventoryUuid = inventory.InventoryUuid;
-                        items.ProductUuid = inventory.ProductUuid;
-                        items.WarehouseCode = inventory.WarehouseCode;
-                        items.WarehouseUuid = inventory.WarehouseUuid;
+                        var items = data.InventoryUpdateItems.Where(i => i.WarehouseCode == inventory.WarehouseCode&&i.SKU==inventory.SKU).ToList();
+                        items.ForEach(x =>
+                        {
+                            x.SKU = inventory.SKU;
+                            x.InventoryUuid = inventory.InventoryUuid;
+                            x.ProductUuid = inventory.ProductUuid;
+                            x.WarehouseCode = inventory.WarehouseCode;
+                            x.WarehouseUuid = inventory.WarehouseUuid;
+                        });
                     }
                 }
             }

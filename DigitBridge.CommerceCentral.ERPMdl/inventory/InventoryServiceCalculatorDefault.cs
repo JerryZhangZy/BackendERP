@@ -128,7 +128,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (processingMode == ProcessingMode.Add)
             {
-                data.Inventory = GenerateMissingInventories(data.ProductBasic, data.Inventory);
+                data.Inventory = GenerateMissingInventories(data.ProductExt, data.Inventory);
             }
             if (data.Inventory != null && data.Inventory.Count > 0)
             {
@@ -157,7 +157,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             */
             return true;
         }
-        protected IList<Inventory> GenerateMissingInventories(ProductBasic product, IList<Inventory> inventories)
+        protected IList<Inventory> GenerateMissingInventories(ProductExt product, IList<Inventory> inventories)
         {
             var warehouseList = new List<DistributionCenter>();
             using (var tx = new ScopedTransaction(dbFactory))
@@ -175,7 +175,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return inventories;
         }
 
-        protected Inventory GenerateSingleInventory(ProductBasic product, DistributionCenter warehouse)
+        protected Inventory GenerateSingleInventory(ProductExt product, DistributionCenter warehouse)
         {
             return new Inventory()
             {
@@ -189,27 +189,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 #region ProductExt
 
-                //StyleCode = ext.StyleCode,
-                //ColorPatternCode = ext.ColorPatternCode,
-                //SizeType = ext.SizeType,
-                //SizeCode = ext.SizeCode,
-                //WidthCode = ext.WidthCode,
-                //LengthCode = ext.LengthCode,
-                //PriceRule = ext.PriceRule,
-                //LeadTimeDay = ext.LeadTimeDay,
-                //PoSize = ext.PoSize,
-                //MinStock = ext.MinStock,
+                StyleCode = product.StyleCode,
+                ColorPatternCode = product.ColorPatternCode,
+                SizeType = product.SizeType,
+                SizeCode = product.SizeCode,
+                WidthCode = product.WidthCode,
+                LengthCode = product.LengthCode,
+                PriceRule = product.PriceRule,
+                LeadTimeDay = product.LeadTimeDay,
+                PoSize = product.PoSize,
+                MinStock = product.MinStock,
 
-                //Currency = ext.Currency,
-                //UOM = ext.UOM,
-                //QtyPerPallot = ext.QtyPerPallot,
-                //QtyPerCase = ext.QtyPerCase,
-                //QtyPerBox = ext.QtyPerBox,
-                //PackType = ext.PackType,
-                //PackQty = ext.PackQty,
-                //DefaultPackType = ext.DefaultPackType,
+                Currency = product.Currency,
+                UOM = product.UOM,
+                QtyPerPallot = product.QtyPerPallot,
+                QtyPerCase = product.QtyPerCase,
+                QtyPerBox = product.QtyPerBox,
+                PackType = product.PackType,
+                PackQty = product.PackQty,
+                DefaultPackType = product.DefaultPackType,
 
-                //SalesCost = ext.SalesCost,
+                SalesCost = product.SalesCost,
 
                 #endregion
 

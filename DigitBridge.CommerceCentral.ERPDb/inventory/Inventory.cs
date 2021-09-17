@@ -16,15 +16,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
     {
         public void AddIgnoreStockRelatedColumns()
         {
-            AddIgnoreUpdate("Instock");
-            AddIgnoreUpdate("OnHand");
-            AddIgnoreUpdate("OpenSoQty");
-            AddIgnoreUpdate("OpenFulfillmentQty");
-            AddIgnoreUpdate("AvaQty");
-            AddIgnoreUpdate("OpenPoQty");
-            AddIgnoreUpdate("OpenInTransitQty");
-            AddIgnoreUpdate("OpenWipQty");
-            AddIgnoreUpdate("ProjectedQty");
+            var ignoreColumns = new List<string>{ "Instock", "OnHand", "OpenSoQty", "OpenFulfillmentQty", "AvaQty", "OpenPoQty", "OpenInTransitQty", "OpenWipQty", "ProjectedQty" };
+            SetIgnoreUpdateColumns(ignoreColumns);
         }
     }
 }
