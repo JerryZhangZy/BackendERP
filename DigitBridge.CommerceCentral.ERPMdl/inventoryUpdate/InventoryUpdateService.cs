@@ -400,16 +400,48 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             get
             {
                 if (_inventoryLogService == null)
-                    _inventoryLogService = new InventoryLogService();
+                    _inventoryLogService = new InventoryLogService(dbFactory);
                 return _inventoryLogService;
             }
         }
 
         public override async Task<bool> SaveDataAsync()
         {
+            if (await base.SaveDataAsync())
+            {
+                await InventoryLogService.UpdateByInventoryUpdateAsync(_data);
+                return true;
+            }
+            return false;
+        }
+
+        public override bool SaveData()
+        {
             if (base.SaveData())
             {
-                await _inventoryLogService.UpdateByInventoryUpdateAsync(_data);
+                InventoryLogService.UpdateByInventoryUpdate(_data);
+                return true;
+            }
+            return false;
+        }
+
+        public override async Task<bool> DeleteDataAsync()
+        {
+            if (await base.DeleteDataAsync())
+            {
+                _data.InventoryUpdateItems.Clear();
+                await InventoryLogService.UpdateByInventoryUpdateAsync(_data);
+                return true;
+            }
+            return false;
+        }
+
+        public override bool DeleteData()
+        {
+            if (base.DeleteData())
+            {
+                _data.InventoryUpdateItems.Clear();
+                InventoryLogService.UpdateByInventoryUpdate(_data);
                 return true;
             }
             return false;

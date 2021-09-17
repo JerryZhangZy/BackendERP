@@ -217,7 +217,7 @@ AND InventoryLogUuid = @inventoryLogUuid
         public static void DeleteInventoryLogsByLogUuid(string logUuid)
         {
             var sql = $@"
-DELETE FROM InventoryLog tbl
+DELETE FROM InventoryLog
 WHERE LogUuid = @logUuid
 ";
             SqlQuery.ExecuteNonQuery(sql, logUuid.ToSqlParameter("logUuid"));
@@ -226,7 +226,7 @@ WHERE LogUuid = @logUuid
         public static async Task DeleteInventoryLogsByLogUuidAsync(string logUuid)
         {
             var sql = $@"
-DELETE FROM InventoryLog tbl
+DELETE FROM InventoryLog
 WHERE LogUuid = @logUuid
 ";
             await SqlQuery.ExecuteNonQueryAsync(sql, logUuid.ToSqlParameter("logUuid"));
