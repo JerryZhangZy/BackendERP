@@ -362,66 +362,66 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         }
 
         [Fact()]
-        public void Calculate_Test()
+        public void Calculate_Test1()
         {
-            var testData = GetFakerData();
-            var dObj = CalculateTestHelper.GetSum1();
-            while (testData.SalesOrderItems.Count > dObj.Items.Length)
-            {
-                testData.SalesOrderItems.RemoveAt(0);
-            }
+            var dObj = CalculateTestHelper.GetSumCase1();
+            Calculate_Test(dObj);
+        }
+
+        [Fact()]
+        public void Calculate_Test2()
+        {
+            var dObj = CalculateTestHelper.GetSumCase2();
+            Calculate_Test(dObj);
+        }
+
+        [Fact()]
+        public void Calculate_Test3()
+        {
+            var dObj = CalculateTestHelper.GetSumCase3();
+            Calculate_Test(dObj);
+        }
+
+        private void Calculate_Test(dynamic dObj)
+        {
+            //var dObj = CalculateTestHelper.GetData1();
+            int length = dObj.Items.Length;
+            var testData = GetFakerData(length);
+
             for (int i = 0; i < dObj.Items.Length; i++)
             {
-                if (testData.SalesOrderItems.Count == i)
-                {
-                    testData.SalesOrderItems.Add(GetFakerData().SalesOrderItems[0]);
-                }
-                CopyItem(testData.SalesOrderItems[i], dObj.Items[i].Item);
+                CalculateTestHelper.CopyItem(testData.SalesOrderItems[i], dObj.Items[i].Item);
             }
-            CopySum(testData.SalesOrderHeader, dObj.Sum);
+            CalculateTestHelper.CopySum(testData.SalesOrderHeader, dObj.Sum);
+
             var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
-            calculator.CalculateSummary(testData, ProcessingMode.Edit);
-            var success = testData.SalesOrderHeader.TotalAmount == dObj.TotalAmount; 
+            calculator.Calculate(testData, ProcessingMode.Edit);
+
+            var success = testData.SalesOrderHeader.TotalAmount == dObj.TotalAmount;
             if (!success)
             {
-                //check error range.
-                var errorRange = 0.0001m;
-                var rate = testData.SalesOrderHeader.TotalAmount / dObj.TotalAmount;
-                success = rate < (1 + errorRange) && rate >= (1 - errorRange);
-                if (success)
+                success = CheckErrInRange(dObj.TotalAmount, testData.SalesOrderHeader.TotalAmount);
+            }
+            Assert.False(success == false, $"Summary doesn't pass test. Actual result is  {testData.SalesOrderHeader.TotalAmount},expect is {dObj.TotalAmount} ");
+
+            for (int i = 0; i < dObj.Items.Length; i++)
+            {
+                success = dObj.Items[i].Result.ItemTotalAmount == testData.SalesOrderItems[i].ItemTotalAmount;
+                if (!success)
                 {
-                    System.Diagnostics.Trace.WriteLine($"The error is within the error range. Actual result is  {testData.SalesOrderHeader.TotalAmount },expect is {dObj.TotalAmount} ");
+                    success = CheckErrInRange(dObj.Items[i].Result.ItemTotalAmount, testData.SalesOrderItems[i].ItemTotalAmount);
+                    Assert.False(success == false, $"item {i} doesn't pass test. Actual result is  {testData.SalesOrderItems[i].ItemTotalAmount},expect is {dObj.Items[i].Result.ItemTotalAmount} ");
                 }
             }
-            Assert.False(success == false, $"Summary discountAmount doesn't pass test. Actual result is  {testData.SalesOrderHeader.TotalAmount},expect is {dObj.TotalAmount} ");
+        }
+        //check error range.
+        private bool CheckErrInRange(decimal expectedResult, decimal actualResult)
+        {
+            var errorRange = 0.0001m;
+            var rate = expectedResult / actualResult;
+            return rate < (1 + errorRange) && rate >= (1 - errorRange);
+        }
 
-        }
-        private void CopySum(SalesOrderHeader sum, dynamic newSum)
-        {
-            sum.MiscTaxAmount = newSum.MiscTaxAmount;
-            sum.ShippingTaxAmount = newSum.ShippingTaxAmount;
-            sum.TaxRate = newSum.TaxRate;
-            sum.DiscountRate = newSum.DiscountRate;
-            sum.DiscountAmount = newSum.DiscountAmount;
-            sum.ShippingAmount = newSum.ShippingAmount;
-            sum.MiscAmount = newSum.MiscAmount;
-            sum.ChargeAndAllowanceAmount = newSum.ChargeAndAllowanceAmount;
-        }
-        private void CopyItem(SalesOrderItems item, dynamic newItem)
-        {
-            item.DiscountRate = newItem.DiscountRate;
-            item.DiscountAmount = newItem.DiscountAmount;
-            item.ShipQty = newItem.ShipQty;
-            item.Price = newItem.Price;
-            item.TaxRate = newItem.TaxRate;
-            item.ShippingAmount = newItem.ShippingAmount;
-            item.MiscAmount = newItem.MiscAmount;
-            item.ChargeAndAllowanceAmount = newItem.ChargeAndAllowanceAmount;
-            item.IsAr = newItem.IsAr;
-            item.Taxable = newItem.Taxable;
-            item.Costable = newItem.Costable;
-            item.IsProfit = newItem.IsProfit;
-        }
     }
 }
 

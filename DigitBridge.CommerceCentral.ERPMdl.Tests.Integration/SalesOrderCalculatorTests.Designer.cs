@@ -56,11 +56,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             mapper.ReadDto(copyData, dto);
             return copyData;
 
-        } 
-        protected SalesOrderData GetFakerData()
-        {
-            return SalesOrderDataTests.GetFakerData();
         }
+        protected SalesOrderData GetFakerData(int itemCount)
+        {
+            var testData = SalesOrderDataTests.GetFakerData();
+            while (testData.SalesOrderItems.Count > itemCount)
+            {
+                testData.SalesOrderItems.RemoveAt(0);
+            }
+            while (testData.SalesOrderItems.Count < itemCount)
+            {
+                testData.SalesOrderItems.Add(SalesOrderDataTests.GetFakerData().SalesOrderItems[0]);
+            }
+            return testData;
+        }
+
         protected const string SkipReason = "Debug Helper Function";
 
         protected TestFixture<StartupTest> Fixture { get; }
