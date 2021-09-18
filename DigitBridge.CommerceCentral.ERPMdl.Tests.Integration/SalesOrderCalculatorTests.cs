@@ -22,6 +22,7 @@ using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
 using DigitBridge.Base.Common;
+using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -305,7 +306,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             }
 
             var taxRate_Interval = Math.Abs(data.SalesOrderHeader.TaxRate - newData.SalesOrderHeader.TaxRate).ToRate();//  
-            var sum = data.SalesOrderHeader; 
+            var sum = data.SalesOrderHeader;
             var affectTax_Percent = sum.SubTotalAmount != 0 ? (sum.DiscountAmount / sum.SubTotalAmount) : 0;
             var taxAmount_Interval = ((sum.TaxableAmount * (1 - affectTax_Percent)) * taxRate_Interval).ToAmount();
 
@@ -358,6 +359,68 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             data.SalesOrderHeader.TaxRate = newData.SalesOrderHeader.TaxRate;
             SaveData(data);
             return obj;
+        }
+
+        [Fact()]
+        public void Calculate_Test()
+        {
+            var testData = GetFakerData();
+            var dObj = CalculateTestHelper.GetSum1();
+            while (testData.SalesOrderItems.Count > dObj.Items.Length)
+            {
+                testData.SalesOrderItems.RemoveAt(0);
+            }
+            for (int i = 0; i < dObj.Items.Length; i++)
+            {
+                if (testData.SalesOrderItems.Count == i)
+                {
+                    testData.SalesOrderItems.Add(GetFakerData().SalesOrderItems[0]);
+                }
+                CopyItem(testData.SalesOrderItems[i], dObj.Items[i].Item);
+            }
+            CopySum(testData.SalesOrderHeader, dObj.Sum);
+            var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
+            calculator.CalculateSummary(testData, ProcessingMode.Edit);
+            var success = testData.SalesOrderHeader.TotalAmount == dObj.TotalAmount; 
+            if (!success)
+            {
+                //check error range.
+                var errorRange = 0.0001m;
+                var rate = testData.SalesOrderHeader.TotalAmount / dObj.TotalAmount;
+                success = rate < (1 + errorRange) && rate >= (1 - errorRange);
+                if (success)
+                {
+                    System.Diagnostics.Trace.WriteLine($"The error is within the error range. Actual result is  {testData.SalesOrderHeader.TotalAmount },expect is {dObj.TotalAmount} ");
+                }
+            }
+            Assert.False(success == false, $"Summary discountAmount doesn't pass test. Actual result is  {testData.SalesOrderHeader.TotalAmount},expect is {dObj.TotalAmount} ");
+
+        }
+        private void CopySum(SalesOrderHeader sum, dynamic newSum)
+        {
+            sum.MiscTaxAmount = newSum.MiscTaxAmount;
+            sum.ShippingTaxAmount = newSum.ShippingTaxAmount;
+            sum.TaxRate = newSum.TaxRate;
+            sum.DiscountRate = newSum.DiscountRate;
+            sum.DiscountAmount = newSum.DiscountAmount;
+            sum.ShippingAmount = newSum.ShippingAmount;
+            sum.MiscAmount = newSum.MiscAmount;
+            sum.ChargeAndAllowanceAmount = newSum.ChargeAndAllowanceAmount;
+        }
+        private void CopyItem(SalesOrderItems item, dynamic newItem)
+        {
+            item.DiscountRate = newItem.DiscountRate;
+            item.DiscountAmount = newItem.DiscountAmount;
+            item.ShipQty = newItem.ShipQty;
+            item.Price = newItem.Price;
+            item.TaxRate = newItem.TaxRate;
+            item.ShippingAmount = newItem.ShippingAmount;
+            item.MiscAmount = newItem.MiscAmount;
+            item.ChargeAndAllowanceAmount = newItem.ChargeAndAllowanceAmount;
+            item.IsAr = newItem.IsAr;
+            item.Taxable = newItem.Taxable;
+            item.Costable = newItem.Costable;
+            item.IsProfit = newItem.IsProfit;
         }
     }
 }

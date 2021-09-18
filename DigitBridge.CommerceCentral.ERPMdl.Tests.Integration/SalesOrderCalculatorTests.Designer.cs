@@ -56,12 +56,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             mapper.ReadDto(copyData, dto);
             return copyData;
 
+        } 
+        protected SalesOrderData GetFakerData()
+        {
+            return SalesOrderDataTests.GetFakerData();
         }
-
-        //protected SalesOrderData GetFakerData()
-        //{
-        //    return SalesOrderDataTests.GetFakerData();
-        //} 
         protected const string SkipReason = "Debug Helper Function";
 
         protected TestFixture<StartupTest> Fixture { get; }
