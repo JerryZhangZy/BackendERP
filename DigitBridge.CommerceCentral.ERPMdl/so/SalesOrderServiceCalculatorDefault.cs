@@ -274,7 +274,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var discountRate = sum.SubTotalAmount != 0 ? (sum.DiscountAmount / sum.SubTotalAmount) : 0;
             sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate;
             sum.TaxAmount = sum.TaxAmount.ToAmount();
-             
+
             var setting = new ERPSetting();
             if (setting.TaxForShippingAndHandling)
             {
@@ -308,9 +308,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //This is generated sample code
 
             var sum = data.SalesOrderHeader;
+            //sum.SubTotalAmount = 0;
+            //sum.TaxableAmount = 0;
+            //sum.NonTaxableAmount = 0;
+            //sum.UnitCost = 0;
+            //sum.AvgCost = 0;
+            //sum.LotCost = 0;
             sum.SubTotalAmount = 0;
+            sum.SalesAmount = 0;
+            sum.TotalAmount = 0;
             sum.TaxableAmount = 0;
             sum.NonTaxableAmount = 0;
+            sum.TaxAmount = 0; 
+            sum.Balance = 0;
             sum.UnitCost = 0;
             sum.AvgCost = 0;
             sum.LotCost = 0;
@@ -327,7 +337,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     sum.SubTotalAmount += item.ExtAmount;
                     sum.TaxableAmount += item.TaxableAmount;
-                    sum.NonTaxableAmount += item.NonTaxableAmount; 
+                    sum.NonTaxableAmount += item.NonTaxableAmount;
                 }
                 sum.UnitCost += item.UnitCost;
                 sum.AvgCost += item.AvgCost;
@@ -345,6 +355,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (item is null || item.IsEmpty)
                 return false;
 
+            item.UnitCost = 0;
+            item.AvgCost = 0;
+            item.LotCost = 0;
+            item.ItemTotalAmount = 0;
+            item.ShipAmount = 0;
+            item.CancelledAmount = 0;
+            item.OpenAmount = 0;
+            item.MiscTaxAmount = 0;
+            item.TaxAmount = 0;
+            item.DiscountPrice = 0;
+            item.ExtAmount = 0;
+            item.TaxableAmount = 0;
+            item.NonTaxableAmount = 0;
+            item.ShippingTaxAmount = 0;
+
             var setting = new ERPSetting();
             var sum = data.SalesOrderHeader;
             //var prod = data.GetCache<ProductBasic>(ProductId);
@@ -359,6 +384,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.OrderQty = item.OrderQty.ToQty();
             item.ShipQty = item.ShipQty.ToQty();
             item.CancelledQty = item.CancelledQty.ToQty();
+            item.OpenQty = item.OpenQty.ToQty();
             item.DiscountRate = item.DiscountRate.ToRate();
             //TODO 
             item.PackType = string.Empty;
@@ -393,6 +419,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.DiscountPrice = item.Price;
                 item.ExtAmount = (item.Price * item.ShipQty - item.DiscountAmount).ToAmount();
             }
+            item.ShipAmount = (item.Price * item.ShipQty).ToAmount();
+            item.CancelledAmount = (item.Price * item.CancelledQty).ToAmount();
+            item.OpenAmount = (item.Price * item.OpenQty).ToAmount();
 
             if (item.Taxable)
             {

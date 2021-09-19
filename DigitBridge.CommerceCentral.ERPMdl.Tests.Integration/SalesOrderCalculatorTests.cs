@@ -22,6 +22,7 @@ using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
 using DigitBridge.Base.Common;
+using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -305,7 +306,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             }
 
             var taxRate_Interval = Math.Abs(data.SalesOrderHeader.TaxRate - newData.SalesOrderHeader.TaxRate).ToRate();//  
-            var sum = data.SalesOrderHeader; 
+            var sum = data.SalesOrderHeader;
             var affectTax_Percent = sum.SubTotalAmount != 0 ? (sum.DiscountAmount / sum.SubTotalAmount) : 0;
             var taxAmount_Interval = ((sum.TaxableAmount * (1 - affectTax_Percent)) * taxRate_Interval).ToAmount();
 
@@ -359,6 +360,68 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             SaveData(data);
             return obj;
         }
+
+        [Fact()]
+        public void Calculate_Test1()
+        {
+            var dObj = CalculateTestHelper.GetSumCase1();
+            Calculate_Test(dObj);
+        }
+
+        [Fact()]
+        public void Calculate_Test2()
+        {
+            var dObj = CalculateTestHelper.GetSumCase2();
+            Calculate_Test(dObj);
+        }
+
+        [Fact()]
+        public void Calculate_Test3()
+        {
+            var dObj = CalculateTestHelper.GetSumCase3();
+            Calculate_Test(dObj);
+        }
+
+        private void Calculate_Test(dynamic dObj)
+        {
+            //var dObj = CalculateTestHelper.GetData1();
+            int length = dObj.Items.Length;
+            var testData = GetFakerData(length);
+
+            for (int i = 0; i < dObj.Items.Length; i++)
+            {
+                CalculateTestHelper.CopyItem(testData.SalesOrderItems[i], dObj.Items[i].Item);
+            }
+            CalculateTestHelper.CopySum(testData.SalesOrderHeader, dObj.Sum);
+
+            var calculator = new SalesOrderServiceCalculatorDefault(DataBaseFactory);
+            calculator.Calculate(testData, ProcessingMode.Edit);
+
+            var success = testData.SalesOrderHeader.TotalAmount == dObj.TotalAmount;
+            if (!success)
+            {
+                success = CheckErrInRange(dObj.TotalAmount, testData.SalesOrderHeader.TotalAmount);
+            }
+            Assert.False(success == false, $"Summary doesn't pass test. Actual result is  {testData.SalesOrderHeader.TotalAmount},expect is {dObj.TotalAmount} ");
+
+            for (int i = 0; i < dObj.Items.Length; i++)
+            {
+                success = dObj.Items[i].Result.ItemTotalAmount == testData.SalesOrderItems[i].ItemTotalAmount;
+                if (!success)
+                {
+                    success = CheckErrInRange(dObj.Items[i].Result.ItemTotalAmount, testData.SalesOrderItems[i].ItemTotalAmount);
+                    Assert.False(success == false, $"item {i} doesn't pass test. Actual result is  {testData.SalesOrderItems[i].ItemTotalAmount},expect is {dObj.Items[i].Result.ItemTotalAmount} ");
+                }
+            }
+        }
+        //check error range.
+        private bool CheckErrInRange(decimal expectedResult, decimal actualResult)
+        {
+            var errorRange = 0.0001m;
+            var rate = expectedResult / actualResult;
+            return rate < (1 + errorRange) && rate >= (1 - errorRange);
+        }
+
     }
 }
 
