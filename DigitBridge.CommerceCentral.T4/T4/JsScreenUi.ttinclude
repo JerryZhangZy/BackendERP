@@ -2,9 +2,20 @@
 #>
 import { ScreenType, ProcessMode } from '../../types/enums';
 import { DbComponentEnums } from '../../types';
+import { IconNames } from '../../components/icon';
 import { btnSave } from '../default';
 import * as util from '../../util';
 
+<# 
+    foreach(var item1 in StructureClass.StructureTables)
+    { 
+        var child1 = item1.Value;
+        if (child1 == null) continue;
+        if (child1.Table.IsChildrenOfChildren) continue;
+        if (child1.OneToOne) continue;
+        WriteLine($"import {{ {child1.Table.JsPropertyName}Grid }} from './{child1.Table.JsPropertyName}.grid';");
+    }
+#>
 export const <#= processNameCamel #>Ui = { 
     page: {
         screenType: ScreenType.PROCESSING,
@@ -22,7 +33,18 @@ export const <#= processNameCamel #>Ui = {
         btnSave,
     },
 <#@ include file="JsStructureUi.ttinclude" #>
-    grid: {},
+    grid: {
+<# 
+    foreach(var item2 in StructureClass.StructureTables)
+    { 
+        var child2 = item2.Value;
+        if (child2 == null) continue;
+        if (child2.Table.IsChildrenOfChildren) continue;
+        if (child2.OneToOne) continue;
+        WriteLine($"{new String('\t',2)}{child2.Table.JsPropertyName}: {child2.Table.JsPropertyName}Grid,");
+    }
+#>
+    },
     modal: {},
     menu: {},
 };

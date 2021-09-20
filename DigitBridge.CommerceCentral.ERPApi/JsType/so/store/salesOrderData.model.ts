@@ -163,7 +163,7 @@ const SalesOrderItems = types
 		itemTime: types.optional(types.string, ''),
 		shipDate: types.optional(types.string, ''),
 		etaArrivalDate: types.optional(types.string, ''),
-		sKU: types.optional(types.string, ''),
+		sku: types.optional(types.string, ''),
 		productUuid: types.optional(types.string, ''),
 		inventoryUuid: types.optional(types.string, ''),
 		warehouseUuid: types.optional(types.string, ''),
@@ -172,7 +172,7 @@ const SalesOrderItems = types
 		description: types.optional(types.string, ''),
 		notes: types.optional(types.string, ''),
 		currency: types.optional(types.string, ''),
-		uOM: types.optional(types.string, ''),
+		uom: types.optional(types.string, ''),
 		packType: types.optional(types.string, ''),
 		packQty: types.optional(types.number, 0),
 		orderPack: types.optional(types.number, 0),
@@ -202,11 +202,11 @@ const SalesOrderItems = types
 		shipAmount: types.optional(types.number, 0),
 		cancelledAmount: types.optional(types.number, 0),
 		openAmount: types.optional(types.number, 0),
-		stockable: types.optional(types.number, 0),
-		isAr: types.optional(types.number, 0),
-		taxable: types.optional(types.number, 0),
-		costable: types.optional(types.number, 0),
-		isProfit: types.optional(types.number, 0),
+		stockable: types.optional(types.boolean, false),
+		isAr: types.optional(types.boolean, false),
+		taxable: types.optional(types.boolean, false),
+		costable: types.optional(types.boolean, false),
+		isProfit: types.optional(types.boolean, false),
 		unitCost: types.optional(types.number, 0),
 		avgCost: types.optional(types.number, 0),
 		lotCost: types.optional(types.number, 0),
@@ -245,11 +245,28 @@ const SalesOrderItemsAttributes = types
 
 
               
+/**
+ * data model of DataVersion
+ */
+const DataVersion = types
+	.model('DataVersion', {
+		data: types.optional(types.number, 0),
+		salesOrderItems: types.optional(types.number, 0),
+	})
+	.actions((self) => {
+		return createModelActions(self);
+	});
+const dataVersionInit = {
+	data: 0,
+	salesOrderItems: 0,
+};
+
 export const SalesOrderDataModel = types
 	.model('SalesOrderData', {
-		salesOrderHeader: types.maybe(SalesOrderHeader),
-		salesOrderHeaderInfo: types.maybe(SalesOrderHeaderInfo),
-		salesOrderHeaderAttributes: types.maybe(SalesOrderHeaderAttributes),
+		dataVersion: types.optional(DataVersion, dataVersionInit),
+		salesOrderHeader: types.optional(SalesOrderHeader, {}),
+		salesOrderHeaderInfo: types.optional(SalesOrderHeaderInfo, {}),
+		salesOrderHeaderAttributes: types.optional(SalesOrderHeaderAttributes, {}),
 		salesOrderItems: types.array(SalesOrderItems),
 	})
 	.actions((self) => {
@@ -262,6 +279,7 @@ export const SalesOrderDataModel = types
  * init data of SalesOrderData 
  */ 
 export const salesOrderDataInit = {
+	dataVersion: dataVersionInit,
 	salesOrderHeader: {
 		databaseNum: 0,
 		masterAccountNum: 0,
@@ -394,7 +412,7 @@ export const salesOrderDataInit = {
 		itemTime: '',
 		shipDate: '',
 		etaArrivalDate: '',
-		sKU: '',
+		sku: '',
 		productUuid: '',
 		inventoryUuid: '',
 		warehouseUuid: '',
@@ -403,7 +421,7 @@ export const salesOrderDataInit = {
 		description: '',
 		notes: '',
 		currency: '',
-		uOM: '',
+		uom: '',
 		packType: '',
 		packQty: 0,
 		orderPack: 0,
@@ -433,11 +451,11 @@ export const salesOrderDataInit = {
 		shipAmount: 0,
 		cancelledAmount: 0,
 		openAmount: 0,
-		stockable: 0,
-		isAr: 0,
-		taxable: 0,
-		costable: 0,
-		isProfit: 0,
+		stockable: false,
+		isAr: false,
+		taxable: false,
+		costable: false,
+		isProfit: false,
 		unitCost: 0,
 		avgCost: 0,
 		lotCost: 0,

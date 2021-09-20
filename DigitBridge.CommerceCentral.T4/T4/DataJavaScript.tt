@@ -28,12 +28,12 @@ import { createModelActions } from '../../../store';
 <#@ include file="JsStructureModelInitData.ttinclude" #>
 <# 
     dir = Path.Combine(path,$"{JsModelFolder}/store");
-    SaveOutputNotExists(dir, $"{structurePropertyName}Model.ts");
+    SaveOutputNotExists(dir, $"{structurePropertyName}.model.ts");
 #>
 <#@ include file="JsDataStore.ttinclude" #>
 <# 
     dir = Path.Combine(path,$"{JsModelFolder}/store");
-    SaveOutputNotExists(dir, $"{structurePropertyName}Store.ts");
+    SaveOutputNotExists(dir, $"{structurePropertyName}.store.ts");
 #>
 <#@ include file="JsStoreIndex.ttinclude" #>
 <# 
@@ -55,11 +55,25 @@ import { createModelActions } from '../../../store';
     dir = Path.Combine(path,$"{JsModelFolder}/service");
     SaveOutputNotExists(dir, $"index.ts");
 #>
-
 <#@ include file="JsScreenUi.ttinclude" #>
 <# 
     dir = Path.Combine(path,$"{JsModelFolder}");
     SaveOutputNotExists(dir, $"{processNameCamel}.ui.ts");
+#>
+<# 
+    foreach(var item in StructureClass.StructureTables)
+    { 
+        var child = item.Value;
+        if (child == null) continue;
+        if (child.Table.IsChildrenOfChildren) continue;
+        if (child.OneToOne) continue;
+        var table = child.Table;
+#>
+<#@ include file="JsRepositoryGrid.ttinclude" #>
+<# 
+        dir = Path.Combine(path,$"{JsModelFolder}");
+        SaveOutputNotExists(dir, $"{table.JsPropertyName}.gird.ts");
+    } 
 #>
 
 <#+

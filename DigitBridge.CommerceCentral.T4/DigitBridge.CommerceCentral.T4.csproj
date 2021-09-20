@@ -19,6 +19,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="T4\DataDocJavaScript.js">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataDocJavaScript.tt</DependentUpon>
+    </None>
+    <None Update="T4\DataJavaScript.ts">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataJavaScript.tt</DependentUpon>
+    </None>
     <None Update="T4\DataJavaScript.tt">
       <LastGenOutput>DataJavaScript.ts</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -30,6 +40,10 @@
     <None Update="T4\DataAccess.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DataAccess.cs</LastGenOutput>
+    </None>
+    <None Update="T4\JsRepositoryGrid.ttinclude">
+      <LastGenOutput>JsRepositoryGrid.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\JsRepositoryUi.ttinclude">
       <LastGenOutput>JsRepositoryUi.cs</LastGenOutput>
@@ -68,11 +82,11 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\JsStructureModelInitData.ttinclude">
-      <LastGenOutput>JsDataStore.cs</LastGenOutput>
+      <LastGenOutput>JsStructureModelInitData.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\JsStructureModel.ttinclude">
-      <LastGenOutput>JsStructureModelInitData.cs</LastGenOutput>
+      <LastGenOutput>JsStructureModel.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\JsRepositoryModel.ttinclude">
@@ -368,10 +382,35 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\JsRepositoryGrid.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsRepositoryGrid.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\JsScreenUi.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>JsScreenUi.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\JsStructureModel - Copy.cs">
+      <DependentUpon>JsStructureModel.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\JsStructureModel.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsStructureModel.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\JsStructureModelInitData.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsStructureModelInitData.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\JsStructureUi.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsStructureUi.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\ReadDtoGrandChildren.cs">
       <DesignTime>True</DesignTime>

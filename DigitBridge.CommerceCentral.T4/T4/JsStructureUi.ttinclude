@@ -8,6 +8,7 @@
         var child = item.Value;
         if (child == null) continue;
         if (child.Table.IsChildrenOfChildren) continue;
+        if (!child.OneToOne) continue;
 
         var table = child.Table;
 #>
