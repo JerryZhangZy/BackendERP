@@ -197,7 +197,7 @@
 
         public string JsPropertyName
         {
-            get { return  $"{Name.First().ToString().ToLower()}{Name.Substring(1)}"; }
+            get { return $"{Name.First().ToString().ToLower()}{Name.Substring(1)}"; }
         }
 
     }
@@ -474,6 +474,30 @@
                 return "DbComponentEnums.inputTypeEnum.input";
             }
         }
+        public string JsGridColumnWidth
+        {
+            get 
+            { 
+                if (
+                    JsPropertyType == "number" ||
+                    JsPropertyType == "boolean" ||
+                    isDateTime
+                ) return "1";
+                if (int.TryParse(Length, out int len)) {
+                    if (len <= 50) return "2";
+                }
+                return "4";
+            }
+        }
+        public string JsGridSortType
+        {
+            get 
+            { 
+                if (JsPropertyType == "number") return "DbComponentEnums.gridSortEnum.number";
+                if (isDateTime) return "DbComponentEnums.gridSortEnum.date";
+                return "DbComponentEnums.gridSortEnum.string";
+            }
+        }
         public bool ignoreJsUi {
             get { 
                 return (
@@ -511,7 +535,12 @@
         }
         public string parameterName
         {
-            get { return $"{Name.First().ToString().ToLower()}{Name.Substring(1)}"; }
+            get 
+            { 
+                if (Name.Equals("sku", StringComparison.CurrentCultureIgnoreCase)) return "sku";
+                if (Name.Equals("uom", StringComparison.CurrentCultureIgnoreCase)) return "uom";
+                return $"{Name.First().ToString().ToLower()}{Name.Substring(1)}"; 
+            }
         }
         public bool ignoreGenerate {
             get { 

@@ -41,6 +41,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DataAccess.cs</LastGenOutput>
     </None>
+    <None Update="T4\JsRepositoryGrid.ttinclude">
+      <LastGenOutput>JsRepositoryGrid.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\JsRepositoryUi.ttinclude">
       <LastGenOutput>JsRepositoryUi.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -78,7 +82,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\JsStructureModelInitData.ttinclude">
-      <LastGenOutput>JsDataStore.cs</LastGenOutput>
+      <LastGenOutput>JsStructureModelInitData.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\JsStructureModel.ttinclude">
@@ -378,6 +382,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\JsRepositoryGrid.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsRepositoryGrid.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\JsScreenUi.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -392,6 +401,16 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>JsStructureModel.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\JsStructureModelInitData.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsStructureModelInitData.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\JsStructureUi.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsStructureUi.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\ReadDtoGrandChildren.cs">
       <DesignTime>True</DesignTime>

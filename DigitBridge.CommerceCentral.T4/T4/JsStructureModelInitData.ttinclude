@@ -4,6 +4,7 @@
     WriteLine($" * init data of {structureName} ");
     WriteLine($" */ ");
     WriteLine($"export const {structurePropertyName}Init = {{");
+    WriteLine($"{new String('\t',indent)}dataVersion: dataVersionInit,");
 
     foreach(var item in StructureClass.StructureTables)
     { 
