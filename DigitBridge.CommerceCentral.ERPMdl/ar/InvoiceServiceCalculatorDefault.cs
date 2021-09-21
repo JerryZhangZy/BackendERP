@@ -337,9 +337,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //This is generated sample code
 
             var sum = data.InvoiceHeader;
+            //sum.SubTotalAmount = 0;
+            //sum.TaxableAmount = 0;
+            //sum.NonTaxableAmount = 0;
+            //sum.UnitCost = 0;
+            //sum.AvgCost = 0;
+            //sum.LotCost = 0;
             sum.SubTotalAmount = 0;
+            sum.SalesAmount = 0;
+            sum.TotalAmount = 0;
             sum.TaxableAmount = 0;
             sum.NonTaxableAmount = 0;
+            sum.TaxAmount = 0;
+            sum.Balance = 0;
             sum.UnitCost = 0;
             sum.AvgCost = 0;
             sum.LotCost = 0;
@@ -369,6 +379,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (item is null || item.IsEmpty)
                 return false;
+
+            item.UnitCost = 0;
+            item.AvgCost = 0;
+            item.LotCost = 0;
+            item.ItemTotalAmount = 0; 
+            item.CancelledAmount = 0;
+            item.OpenAmount = 0;
+            item.MiscTaxAmount = 0;
+            item.TaxAmount = 0;
+            item.DiscountPrice = 0;
+            item.ExtAmount = 0;
+            item.TaxableAmount = 0;
+            item.NonTaxableAmount = 0;
+            item.ShippingTaxAmount = 0;
 
             var setting = new ERPSetting();
             var sum = data.InvoiceHeader;

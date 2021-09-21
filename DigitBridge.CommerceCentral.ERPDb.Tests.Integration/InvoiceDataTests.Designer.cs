@@ -42,6 +42,18 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 			return InvoiceData; 
         }
 
+        public static InvoiceData GetFakerDataWithFixedItem(int itemCount)
+        {
+            var InvoiceData = new InvoiceData();
+            InvoiceData.InvoiceHeader = InvoiceHeaderTests.GetFakerData().Generate();
+            InvoiceData.InvoiceHeaderInfo = InvoiceHeaderInfoTests.GetFakerData().Generate();
+            InvoiceData.InvoiceHeaderAttributes = InvoiceHeaderAttributesTests.GetFakerData().Generate();
+            InvoiceData.InvoiceItems = InvoiceItemsTests.GetFakerData().Generate(itemCount);
+            foreach (var ln in InvoiceData.InvoiceItems)
+                ln.InvoiceItemsAttributes = InvoiceItemsAttributesTests.GetFakerData().Generate();
+            return InvoiceData;
+        }
+
         public static List<InvoiceData> GetFakerData(int count)
         {
 			var InvoiceDatas = new List<InvoiceData>(); 
