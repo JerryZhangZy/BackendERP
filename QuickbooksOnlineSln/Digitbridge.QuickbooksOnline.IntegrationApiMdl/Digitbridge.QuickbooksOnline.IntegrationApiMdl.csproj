@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="UneedgoHelper.Dotnet.Common" Version="1.0.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Digitbridge.QuickbooksOnline.Db\Digitbridge.QuickbooksOnline.Db.csproj" />
+    <ProjectReference Include="..\Digitbridge.QuickbooksOnline.QuickBooksConnection\Digitbridge.QuickbooksOnline.QuickBooksConnection.csproj" />
+  </ItemGroup>
+
+</Project>
