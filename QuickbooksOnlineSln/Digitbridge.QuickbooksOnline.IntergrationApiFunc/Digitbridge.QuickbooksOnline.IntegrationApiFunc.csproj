@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aliencube.AzureFunctions.Extensions.OpenApi" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
+    <PackageReference Include="Microsoft.OpenApi" Version="1.2.3" />
+    <PackageReference Include="UneedgoHelper.DotNet.Common.IO" Version="1.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Digitbridge.QuickbooksOnline.IntegrationApiMdl\Digitbridge.QuickbooksOnline.IntegrationApiMdl.csproj" />
+    <ProjectReference Include="..\Digitbridge.QuickbooksOnline.QuickBooksConnection\Digitbridge.QuickbooksOnline.QuickBooksConnection.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+    <None Update="TokenReceiverWebRequestParameter.Settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="OpenApi\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="DigitBridge.Base.Common">
+      <HintPath>..\DigitBridge.Base.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="DigitBridge.Base.Utility">
+      <HintPath>..\DigitBridge.Base.Utility.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties local_1settings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+</Project>
