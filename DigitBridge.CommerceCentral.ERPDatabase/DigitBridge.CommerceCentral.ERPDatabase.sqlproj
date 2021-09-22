@@ -68,6 +68,7 @@
     <Folder Include="inventoryUpdate" />
     <Folder Include="warehouseTransfer" />
     <Folder Include="inventory\utility" />
+    <Folder Include="qbo" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -225,5 +226,10 @@
     <None Include="inventory\utility\add_inventory_from_productBasic.sql" />
     <None Include="inventory\utility\add_productExt_from_productBasic.sql" />
     <None Include="inventory\utility\link_to_productBasic.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="qbo\QuickBooksChnlAccSetting.sql" />
+    <Build Include="qbo\QuickBooksConnectionInfo.sql" />
+    <Build Include="qbo\QuickBooksIntegrationSetting.sql" />
   </ItemGroup>
 </Project>
