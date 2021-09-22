@@ -250,6 +250,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //    item.Currency = inventory.Currency;
             }
 
+            //Set salesorder info 
+            var salesOrderData = GetSalesOrderData(data, data.InvoiceHeader.OrderNumber);
+            if (salesOrderData != null && salesOrderData.SalesOrderItems != null && salesOrderData.SalesOrderItems.Count > 0)
+            {
+                //salesOrderData.SalesOrderItems.Where(i => i.s == item.)
+                //item.OrderAmount=
+                //item.OrderPack
+                //item.OrderQty 
+            }
 
             //var setting = new ERPSetting();
             //var sum = data.InvoiceHeader;
@@ -383,7 +392,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.UnitCost = 0;
             item.AvgCost = 0;
             item.LotCost = 0;
-            item.ItemTotalAmount = 0; 
+            item.ItemTotalAmount = 0;
             item.CancelledAmount = 0;
             item.OpenAmount = 0;
             item.MiscTaxAmount = 0;
@@ -418,12 +427,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.OrderQty = item.OrderPack * item.PackQty;
                 item.ShipQty = item.ShipPack * item.PackQty;
                 item.CancelledQty = item.CancelledPack * item.PackQty;
+                item.OpenQty = item.OpenPack * item.PackQty;
             }
             else
             {
                 item.OrderPack = item.OrderQty;
                 item.ShipPack = item.ShipQty;
                 item.CancelledPack = item.CancelledQty;
+                item.OpenPack = item.OpenQty;
             }
 
             //PriceRule
@@ -439,6 +450,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.DiscountPrice = item.Price;
                 item.ExtAmount = (item.Price * item.ShipQty - item.DiscountAmount).ToAmount();
             }
+            item.CancelledAmount = (item.Price * item.CancelledQty).ToAmount();
+            item.OpenAmount = item.Price * item.OpenQty;
 
             if (item.Taxable)
             {
