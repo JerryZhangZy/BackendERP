@@ -31,45 +31,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
     public partial class SalesOrderCalculatorTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
-    {
-        private SalesOrderData _data;
-        private SalesOrderData data
-        {
-            get
-            {
-                if (_data == null)
-                    PrepareData();
-                return _data;
-            }
-            set
-            {
-                _data = value;
-            }
-        }
-
-        private SalesOrderData GetCopy()
-        {
-            var mapper = new SalesOrderDataDtoMapperDefault();
-            var dto = new SalesOrderDataDto();
-            var copyData = new SalesOrderData();
-            mapper.WriteDto(data, dto);
-            mapper.ReadDto(copyData, dto);
-            return copyData;
-
-        }
+    { 
         protected SalesOrderData GetFakerData(int itemCount)
         {
-            var testData = SalesOrderDataTests.GetFakerData();
-            while (testData.SalesOrderItems.Count > itemCount)
-            {
-                testData.SalesOrderItems.RemoveAt(0);
-            }
-            while (testData.SalesOrderItems.Count < itemCount)
-            {
-                testData.SalesOrderItems.Add(SalesOrderDataTests.GetFakerData().SalesOrderItems[0]);
-            }
-            return testData;
-        }
+            SalesOrderDataTests.ItemCount = itemCount;
+            return SalesOrderDataTests.GetFakerData(); 
+        } 
 
         protected const string SkipReason = "Debug Helper Function";
 
@@ -91,41 +58,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         }
         public void Dispose()
         {
-        }
-        protected void PrepareData()
-        {
-            var fakerData = SalesOrderDataTests.GetFakerData();
-            decimal min = 0, max = 1;
-            var random = new Faker().Random;
-
-            foreach (var item in fakerData.SalesOrderItems)
-            {
-                //make sure item.tax rate non zero. then it won't be affect by sum tax rate.
-                while (item.TaxRate.IsZero())
-                {
-                    item.DiscountRate = random.Decimal(min, max).ToRate();
-                }
-            }
-            SaveData(fakerData);
-        }
-        private void SaveData(SalesOrderData data)
-        {
-            var success = true;
-            var service = new SalesOrderService(DataBaseFactory);
-            success = success && service.Add();
-            service.AttachData(data);
-            //srv.Calculate();
-            success = success && service.SaveData();
-            var rowNum = service.Data.SalesOrderHeader.RowNum;
-            service.List();
-            success = success && service.GetData(rowNum);
-            Assert.False(success == false, "Init data failed.");
-
-            var items = service.Data.SalesOrderItems;
-            success = items != null && items.Count > 0;
-            Assert.False(success == false, "SalesOrderItems not found.");
-            _data = service.Data;
-        }
+        } 
     }
 }
 

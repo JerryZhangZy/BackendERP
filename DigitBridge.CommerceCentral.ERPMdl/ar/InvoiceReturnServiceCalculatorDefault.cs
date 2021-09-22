@@ -26,11 +26,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// <summary>
     /// Represents a default InvoiceTransactionService Calculator class.
     /// </summary>
-    public partial class InvoiceTransactionServiceCalculatorDefault : ICalculator<InvoiceTransactionData>
+    public partial class InvoiceReturnServiceCalculatorDefault : ICalculator<InvoiceTransactionData>
     {
         protected IDataBaseFactory dbFactory { get; set; }
 
-        public InvoiceTransactionServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        public InvoiceReturnServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
         {
             this.ServiceMessage = serviceMessage;
             this.dbFactory = dbFactory;
@@ -48,9 +48,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         private InventoryService _inventoryService;
         protected InventoryService inventoryService => _inventoryService ??= new InventoryService(dbFactory);
-
-        private InvoiceService _invoiceService;
-        protected InvoiceService invoiceService => _invoiceService ??= new InvoiceService(dbFactory);
 
         protected CustomerService _customerService;
         protected CustomerService customerService
@@ -81,17 +78,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return inventoryService.Data;
             });
         }
-
-        public virtual InvoiceData GetInvoiceData(InvoiceTransactionData data, string invoiceNumber)
-        {
-            var key = data.InvoiceTransaction.MasterAccountNum + "_" + data.InvoiceTransaction.ProfileNum + '_' + invoiceNumber;
-            return data.GetCache(key, () =>
-            {
-                invoiceService.GetByNumber(data.InvoiceTransaction.MasterAccountNum, data.InvoiceTransaction.ProfileNum, invoiceNumber);
-                return invoiceService.Data;
-            });
-        }
-
         /// <summary>
         /// Get Customer Data by customerCode
         /// </summary>
@@ -145,12 +131,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             //Set default for invoice
-            var invoiceData = GetInvoiceData(data, sum.InvoiceNumber);
+            var invoiceData = data.InvoiceData;
             if (invoiceData != null && invoiceData.InvoiceHeader != null)
             {
                 sum.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
                 //sum.BankAccountCode = invoiceData.InvoiceHeader 
-                sum.Currency = invoiceData.InvoiceHeader.Currency;  
+                sum.Currency = invoiceData.InvoiceHeader.Currency;
                 sum.TaxRate = invoiceData.InvoiceHeader.TaxRate;
                 //sum.TaxableAmount = invoiceData.InvoiceHeader.TaxableAmount;
                 //sum.NonTaxableAmount = invoiceData.InvoiceHeader.NonTaxableAmount;
@@ -213,7 +199,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             //Set default for invoice
-            var invoiceData = GetInvoiceData(data, data.InvoiceTransaction.InvoiceNumber);
+            var invoiceData = data.InvoiceData;
             if (invoiceData != null)
             {
                 item.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
