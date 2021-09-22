@@ -406,6 +406,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await GetDataBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
         }
 
+        public List<Inventory> GetInventoriesBySkus(IList<string> skus,string warehouseCode)
+        {
+            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND (EXISTS (SELECT * FROM @1 _SKU WHERE _SKU.item = COALESCE([SKU],'')))", 
+                warehouseCode.ToSqlParameter("WarehouseCode"), skus.ToParameter<string>("SKU")).ToList();
+        }
+        public Inventory GetInventoryBySku(string sku,string warehouseCode)
+        {
+            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND SKU=@1", 
+                warehouseCode.ToSqlParameter("WarehouseCode"), sku.ToSqlParameter("SKU")).FirstOrDefault();
+        }
+
 
         public Inventory GetInventory(InventoryData inventoryData, dynamic sourceData, SKUType skuType = SKUType.GeneralMerchandise)
         {
