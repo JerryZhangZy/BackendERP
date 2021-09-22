@@ -319,7 +319,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.TotalAmount = 0;
             sum.TaxableAmount = 0;
             sum.NonTaxableAmount = 0;
-            sum.TaxAmount = 0; 
+            sum.TaxAmount = 0;
             sum.Balance = 0;
             sum.UnitCost = 0;
             sum.AvgCost = 0;
@@ -396,12 +396,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.OrderQty = item.OrderPack * item.PackQty;
                 item.ShipQty = item.ShipPack * item.PackQty;
                 item.CancelledQty = item.CancelledPack * item.PackQty;
+                item.OpenQty = item.OpenPack * item.PackQty;
             }
             else
             {
                 item.OrderPack = item.OrderQty;
                 item.ShipPack = item.ShipQty;
                 item.CancelledPack = item.CancelledQty;
+                item.OpenPack = item.OpenQty;
             }
 
             //PriceRule

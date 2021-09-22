@@ -16,10 +16,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class InvoiceTransactionData
     {
-        ///// <summary>
-        ///// Load original invoicedata.
-        ///// </summary>
-        //public InvoiceData _InvoiceData;
+        /// <summary>
+        /// Load original invoicedata.
+        /// </summary>
+        public InvoiceData InvoiceData;
 
 
         //public override void CheckIntegrityOthers()
