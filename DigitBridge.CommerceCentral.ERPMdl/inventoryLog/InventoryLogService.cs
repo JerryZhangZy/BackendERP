@@ -716,17 +716,7 @@ where inv.InventoryUuid=il.InventoryUuid
                             LotNum = item.LotNum,
                             UOM = item.UOM,
                             LogQty = item.StockQty,
-                            EnterBy = "",
-                            LotInDate = inv.LotInDate,
-                            LotExpDate = inv.LotExpDate,
-                            StyleCode = inv.StyleCode,
-                            ColorPatternCode = inv.ColorPatternCode,
-                            SizeCode = inv.SizeCode,
-                            WidthCode = inv.WidthCode,
-                            LengthCode = inv.LengthCode,
-                            BeforeBaseCost = inv.BaseCost,
-                            BeforeUnitCost = inv.UnitCost,
-                            BeforeAvgCost = inv.AvgCost,
+                            EnterBy = ""
                         };
                         if (inv != null)
                         {
@@ -769,17 +759,7 @@ where inv.InventoryUuid=il.InventoryUuid
                             LotNum = item.LotNum,
                             UOM = item.UOM,
                             LogQty = item.NonStockQty,
-                            EnterBy = "",
-                            LotInDate = inv.LotInDate,
-                            LotExpDate = inv.LotExpDate,
-                            StyleCode = inv.StyleCode,
-                            ColorPatternCode = inv.ColorPatternCode,
-                            SizeCode = inv.SizeCode,
-                            WidthCode = inv.WidthCode,
-                            LengthCode = inv.LengthCode,
-                            BeforeBaseCost = inv.BaseCost,
-                            BeforeUnitCost = inv.UnitCost,
-                            BeforeAvgCost = inv.AvgCost,
+                            EnterBy = ""
                         };
                         if (inv != null)
                         {
@@ -820,7 +800,7 @@ where inv.InventoryUuid=il.InventoryUuid
             if (string.IsNullOrEmpty(OrderShipmentUuid))
                 return false;
             //if data!=null ,use default UpdateByShipmentAsync(data) method,else clear log and update inventory;
-            if (_orderShipmentService.GetDataById(OrderShipmentUuid))
+            if (OrderShipmentService.GetDataById(OrderShipmentUuid))
             {
                 return UpdateByShipment(_orderShipmentService.Data);
             }
@@ -895,16 +875,16 @@ where inv.InventoryUuid=il.InventoryUuid
                 var invList = InventoryService.GetInventoriesBySkus(skus, warehouse.DistributionCenterCode);
                 foreach (var item in package.OrderShipmentShippedItem) 
                 {
-                    var inv = invList.First(r => r.SKU == item.SKU);
+                    var inv = invList.FirstOrDefault(r => r.SKU == item.SKU);
                     var line = new InventoryLog
                     {
                         DatabaseNum = header.DatabaseNum,
                         MasterAccountNum = header.MasterAccountNum,
                         ProfileNum = header.ProfileNum,
                         InventoryLogUuid = Guid.NewGuid().ToString(),
-                        InventoryUuid = inv.InventoryUuid,
-                        ProductUuid = inv.ProductUuid,
                         LogUuid = logUuid,
+                        SKU=item.SKU,
+                        WarehouseCode=warehouse.DistributionCenterCode,
                         BatchNum = batchNum,
                         LogNumber = header.OrderShipmentUuid,
                         LogItemUuid =item.OrderShipmentShippedItemUuid,
@@ -912,25 +892,31 @@ where inv.InventoryUuid=il.InventoryUuid
                         LogTime = DateTime.Now.TimeOfDay,
                         LogBy = "Shipments",
                         LogType = InventoyLogType.Shipment.ToString(),
-                        SKU = inv.SKU,
-                        Description = inv.LpnDescription,
-                        WarehouseCode = inv.WarehouseCode,
-                        LotNum = inv.LotNum,
-                        LotInDate = inv.LotInDate,
-                        LotExpDate = inv.LotExpDate,
-                        StyleCode=inv.StyleCode,
-                        ColorPatternCode=inv.ColorPatternCode,
-                        SizeCode=inv.SizeCode,
-                        WidthCode=inv.WidthCode,
-                        LengthCode=inv.LengthCode,
-                        BeforeBaseCost=inv.BaseCost,
-                        BeforeUnitCost=inv.UnitCost,
-                        BeforeAvgCost=inv.AvgCost,
-                        UOM = inv.UOM,
                         LogQty = item.ShippedQty,
-                        BeforeInstock = inv.Instock,
                         EnterBy = ""
                     };
+                    if (inv != null)
+                    {
+                        line.InventoryUuid = inv.InventoryUuid;
+                        line.ProductUuid = inv.ProductUuid;
+                        line.SKU = inv.SKU;
+                        line.Description = inv.LpnDescription;
+                        line.WarehouseCode = inv.WarehouseCode;
+                        line.LotNum = inv.LotNum;
+                        line.LotInDate = inv.LotInDate;
+                        line.LotExpDate = inv.LotExpDate;
+                        line.StyleCode = inv.StyleCode;
+                        line.ColorPatternCode = inv.ColorPatternCode;
+                        line.SizeCode = inv.SizeCode;
+                        line.WidthCode = inv.WidthCode;
+                        line.LengthCode = inv.LengthCode;
+                        line.BeforeBaseCost = inv.BaseCost;
+                        line.BeforeUnitCost = inv.UnitCost;
+                        line.BeforeAvgCost = inv.AvgCost;
+                        line.BeforeInstock = inv.Instock;
+                        line.UOM = inv.UOM;
+
+                    }
                     list.Add(line);
                 }
             }
