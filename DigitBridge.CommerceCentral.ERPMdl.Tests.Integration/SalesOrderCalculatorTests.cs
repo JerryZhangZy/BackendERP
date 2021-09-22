@@ -27,7 +27,7 @@ using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
     public partial class SalesOrderCalculatorTests
-    { 
+    {
         [Fact()]
         public void Calculate_Test1()
         {
@@ -69,7 +69,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 success = CheckErrInRange(dObj.TotalAmount, testData.SalesOrderHeader.TotalAmount);
             }
-            Assert.False(success == false, $"Summary doesn't pass test. Actual result is  {testData.SalesOrderHeader.TotalAmount},expect is {dObj.TotalAmount} ");
+            Assert.False(!success, $"Summary doesn't pass test. Actual result is  {testData.SalesOrderHeader.TotalAmount},expect is {dObj.TotalAmount} ");
 
             for (int i = 0; i < dObj.Items.Length; i++)
             {
@@ -77,7 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 if (!success)
                 {
                     success = CheckErrInRange(dObj.Items[i].Result.ItemTotalAmount, testData.SalesOrderItems[i].ItemTotalAmount);
-                    Assert.False(success == false, $"item {i} doesn't pass test. Actual result is  {testData.SalesOrderItems[i].ItemTotalAmount},expect is {dObj.Items[i].Result.ItemTotalAmount} ");
+                    Assert.False(!success, $"item {i} doesn't pass test. Actual result is  {testData.SalesOrderItems[i].ItemTotalAmount},expect is {dObj.Items[i].Result.ItemTotalAmount} ");
                 }
             }
         }
