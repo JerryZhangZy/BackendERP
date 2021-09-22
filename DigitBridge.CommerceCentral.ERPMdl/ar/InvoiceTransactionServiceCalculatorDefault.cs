@@ -51,6 +51,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         private InvoiceService _invoiceService;
         protected InvoiceService invoiceService => _invoiceService ??= new InvoiceService(dbFactory);
+
+        protected CustomerService _customerService;
+        protected CustomerService customerService
+        {
+            get
+            {
+                if (_customerService is null)
+                    _customerService = new CustomerService(dbFactory);
+                return _customerService;
+            }
+        }
         #endregion
 
         #region GetDataWithCache
@@ -81,7 +92,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             });
         }
 
-
+        /// <summary>
+        /// Get Customer Data by customerCode
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="customerCode"></param>
+        /// <returns></returns>
+        public virtual CustomerData GetCustomerData(InvoiceTransactionData data, string customerCode)
+        {
+            var key = data.InvoiceTransaction.MasterAccountNum + "_" + data.InvoiceTransaction.ProfileNum + '_' + customerCode;
+            return data.GetCache(key, () =>
+            {
+                customerService.GetByNumber(data.InvoiceTransaction.MasterAccountNum, data.InvoiceTransaction.ProfileNum, customerCode);
+                return customerService.Data;
+            });
+        }
         #endregion
 
         public virtual bool SetDefault(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -93,41 +118,63 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual bool SetDefaultSummary(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            if (data is null || data.InvoiceTransaction == null)
+            var sum = data.InvoiceTransaction;
+            if (data is null || sum == null)
                 return false;
 
-            if (data.InvoiceTransaction.TransTime.IsZero()) data.InvoiceTransaction.TransTime = now.TimeOfDay;
-            if (data.InvoiceTransaction.TransDate.IsZero())
+            if (sum.TransTime.IsZero()) sum.TransTime = now.TimeOfDay;
+            if (sum.TransDate.IsZero())
             {
-                data.InvoiceTransaction.TransDate = now.Date;
-                data.InvoiceTransaction.TransTime = now.TimeOfDay;
+                sum.TransDate = now.Date;
+                sum.TransTime = now.TimeOfDay;
             }
-            data.InvoiceTransaction.UpdateDateUtc = now;
+            sum.UpdateDateUtc = now;
 
             if (processingMode == ProcessingMode.Add)
             {
                 //set default tran num  
-                if (data.InvoiceTransaction.TransNum.IsZero())
+                if (sum.TransNum.IsZero())
                 {
                     using (var tx = new ScopedTransaction(dbFactory))
                     {
-                        data.InvoiceTransaction.TransNum = InvoiceTransactionHelper.GetTranSeqNum(data.InvoiceTransaction.InvoiceNumber, data.InvoiceTransaction.ProfileNum.ToInt());
+                        sum.TransNum = InvoiceTransactionHelper.GetTranSeqNum(sum.InvoiceNumber, sum.ProfileNum.ToInt());
                     }
                 }
                 //for Add mode, always reset uuid
-                data.InvoiceTransaction.TransUuid = Guid.NewGuid().ToString();
+                sum.TransUuid = Guid.NewGuid().ToString();
             }
 
             //Set default for invoice
-            var invoiceData = GetInvoiceData(data, data.InvoiceTransaction.InvoiceNumber);
-            if (invoiceData != null)
+            var invoiceData = GetInvoiceData(data, sum.InvoiceNumber);
+            if (invoiceData != null && invoiceData.InvoiceHeader != null)
             {
-                data.InvoiceTransaction.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
+                sum.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
+                //sum.BankAccountCode = invoiceData.InvoiceHeader 
+                sum.Currency = invoiceData.InvoiceHeader.Currency;  
+                sum.TaxRate = invoiceData.InvoiceHeader.TaxRate;
+                //sum.TaxableAmount = invoiceData.InvoiceHeader.TaxableAmount;
+                //sum.NonTaxableAmount = invoiceData.InvoiceHeader.NonTaxableAmount;
+                //sum.ShippingAmount = invoiceData.InvoiceHeader.ShippingAmount;
+                //sum.ShippingTaxAmount = invoiceData.InvoiceHeader.ShippingTaxAmount;
+                //sum.MiscAmount = invoiceData.InvoiceHeader.MiscAmount;
+                //sum.MiscTaxAmount = invoiceData.InvoiceHeader.MiscTaxAmount;
+                //sum.ChargeAndAllowanceAmount = invoiceData.InvoiceHeader.ChargeAndAllowanceAmount;
+                //sum.DiscountAmount = invoiceData.InvoiceHeader.DiscountAmount;//todo
+                //sum.DiscountRate = invoiceData.InvoiceHeader.DiscountRate;//todo 
+                //sum.SalesAmount = invoiceData.InvoiceHeader.SalesAmount; 
+
+                //var customerData = GetCustomerData(data, invoiceData.InvoiceHeader.CustomerCode);
+                //if (customerData != null && customerData.Customer != null)
+                //{
+                //    //sum.BankAccountCode
+                //    //sum.BankAccountUuid
+                //    //sum.CreditAccount= 
+                //    //sum.PaidBy=
+                //}
             }
 
             //EnterBy
-            //UpdateBy
-
+            //UpdateBy 
 
             return true;
         }
@@ -157,7 +204,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 item.ReturnDate = now.Date;
                 item.ReturnTime = now.TimeOfDay;
-            } 
+            }
 
             if (processingMode == ProcessingMode.Add)
             {
@@ -171,29 +218,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 item.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
                 //item.InvoiceDiscountPrice=invoiceData.InvoiceHeader.DiscountAmount
-                var invoiceItem= invoiceData.InvoiceItems.Where(i => i.InvoiceItemsUuid == item.InvoiceItemsUuid).FirstOrDefault();
+                var invoiceItem = invoiceData.InvoiceItems.Where(i => i.InvoiceItemsUuid == item.InvoiceItemsUuid).FirstOrDefault();
                 if (invoiceItem != null)
                 {
                     item.InvoiceWarehouseCode = invoiceItem.WarehouseCode;
                     item.InvoiceWarehouseUuid = invoiceItem.WarehouseUuid;
-                    item.InvoiceDiscountPrice = invoiceItem.DiscountPrice.ToPrice();  
+                    item.InvoiceDiscountPrice = invoiceItem.DiscountPrice.ToPrice();
+                    item.Description = invoiceItem.Description;
+                    item.InventoryUuid = item.InventoryUuid;
+                    item.IsAr = item.IsAr;
+                    item.LotNum = item.LotNum;
+                    item.Notes = item.Notes;
+                    item.PackType = invoiceItem.PackType;
+                    item.PackQty = invoiceItem.PackQty;
+                    item.Price = invoiceItem.Price;
+                    item.ProductUuid = invoiceItem.ProductUuid;
+                    item.TaxRate = invoiceItem.TaxRate;
+                    item.UOM = invoiceItem.UOM;
+                    item.SKU = invoiceItem.SKU;
+                    item.Currency = invoiceItem.Currency;
                 }
-                
-            } 
-            //Set SKU info
-            var inventoryData = GetInventoryData(data, item.SKU);
-            if (inventoryData != null)
-            {
-                item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
-                var inventory = inventoryService.GetInventory(inventoryData, item);
-                item.InventoryUuid = inventory.InventoryUuid;
-                item.WarehouseCode = inventory.WarehouseCode;
-                item.WarehouseUuid = inventory.WarehouseUuid;
-                item.LotNum = inventory.LotNum;
-                item.UOM = inventory.UOM;
-                //item.Currency = inventory.Currency;
             }
-
             return true;
         }
 
@@ -268,9 +313,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //This is generated sample code
 
             var sum = data.InvoiceTransaction;
+            //sum.SubTotalAmount = 0;
+            //sum.TaxableAmount = 0;
+            //sum.NonTaxableAmount = 0;
             sum.SubTotalAmount = 0;
+            sum.SalesAmount = 0;
+            sum.TotalAmount = 0;
             sum.TaxableAmount = 0;
-            sum.NonTaxableAmount = 0; 
+            sum.NonTaxableAmount = 0;
+            sum.TaxAmount = 0;
             sum.TaxRate = sum.TaxRate.ToRate();
 
             foreach (var item in data.InvoiceReturnItems)
@@ -286,9 +337,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     sum.TaxableAmount += item.TaxableAmount;
                     sum.NonTaxableAmount += item.NonTaxableAmount;
                 }
-                //sum.UnitCost += item.UnitCost;
-                //sum.AvgCost += item.AvgCost;
-                //sum.LotCost += item.LotCost;
             }
 
             return true;
@@ -312,9 +360,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.ShippingAmount = item.ShippingAmount.ToAmount();
             item.MiscAmount = item.MiscAmount.ToAmount();
             item.ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount();
-            item.ReturnQty = item.ReturnQty<0?0: item.ReturnQty.ToQty();
-            item.ReceiveQty = item.ReceiveQty<0?0:item.ReceiveQty.ToQty();
-            item.StockQty = item.StockQty<0?0: item.StockQty.ToQty();
+            item.ReturnQty = item.ReturnQty < 0 ? 0 : item.ReturnQty.ToQty();
+            item.ReceiveQty = item.ReceiveQty < 0 ? 0 : item.ReceiveQty.ToQty();
+            item.StockQty = item.StockQty < 0 ? 0 : item.StockQty.ToQty();
             item.NonStockQty = item.NonStockQty < 0 ? 0 : item.StockQty.ToQty();
             item.Price = item.Price.ToPrice();
             //item.ReceiveQty= item.StockQty + item.NonStockQty // Are they equal.?
@@ -326,7 +374,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (item.PackQty > 1)
             {
                 item.ReceiveQty = item.ReceivePack * item.PackQty;
-                item.ReturnQty= item.ReturnPack * item.PackQty;
+                item.ReturnQty = item.ReturnPack * item.PackQty;
                 //item.CancelledQty = item.CancelledPack * item.PackQty;
             }
             else
@@ -336,61 +384,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //item.CancelledPack = item.CancelledQty;
             }
 
-            //PriceRule
-            // if exist DiscountRate, calculate after discount unit price
-
-            item.ExtAmount = ((item.Price- item.InvoiceDiscountPrice) * item.ReceiveQty).ToAmount();
+            item.ExtAmount = (item.InvoiceDiscountPrice * item.ReceiveQty).ToAmount();
 
             if (item.Taxable)
             {
                 item.TaxableAmount = item.ExtAmount;
                 item.NonTaxableAmount = 0;
-                if (item.TaxRate.IsZero())
-                    item.TaxRate = sum.TaxRate;
-                item.TaxRate = item.TaxRate.ToRate();
             }
             else
             {
                 item.TaxableAmount = 0;
                 item.NonTaxableAmount = item.ExtAmount;
-                item.TaxRate = 0;
             }
             item.TaxAmount = (item.TaxableAmount * item.TaxRate).ToAmount();
 
-            if (setting.TaxForShippingAndHandling)
-            {
-                item.ShippingTaxAmount = (item.ShippingAmount * item.TaxRate).ToAmount();
-                item.MiscTaxAmount = (item.MiscAmount * item.TaxRate).ToAmount();
-            }
-
-            //item.ItemTotalAmount =(
-            //    item.ExtAmount +
-            //    item.TaxAmount +
-            //    item.ShippingAmount +
-            //    item.ShippingTaxAmount +
-            //    item.MiscAmount +
-            //    item.MiscTaxAmount +
-            //    item.ChargeAndAllowanceAmount
-            //    ).ToAmount();
-
-            //item.UnitCost = invCost.UnitCost;
-            //item.AvgCost = invCost.AvgCost;
-            //item.LotCost = invCost.AvgCost;
-            //if (!item.Costable)
+            //TODO copy from invoice item  or calculate by percent receivedQty/shipQty
+            //if (setting.TaxForShippingAndHandling)
             //{
-            //    item.UnitCost = 0;
-            //    item.AvgCost = 0;
-            //    item.LotCost = 0;
+            //    item.ShippingTaxAmount = (item.ShippingAmount * item.TaxRate).ToAmount();
+            //    item.MiscTaxAmount = (item.MiscAmount * item.TaxRate).ToAmount();
             //}
-            //else if (!item.IsProfit)
-            //{
-            //    item.UnitCost = item.ExtAmount;
-            //    item.AvgCost = item.ExtAmount;
-            //    item.LotCost = item.ExtAmount;
-            //}
-
             return true;
-        } 
+        }
 
         #region message
         [XmlIgnore, JsonIgnore]
