@@ -481,6 +481,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return payload;
         }
 
+        private InventoryService _inventoryService;
+        protected InventoryService InventoryService
+        {
+            get
+            {
+                if (_inventoryService == null)
+                    _inventoryService = new InventoryService(dbFactory);
+                return _inventoryService;
+            }
+        }
+
         private void ClearInventoryLogByLogUuid(string logUuid)
         {
             UpdateInventoryInStock(logUuid, -1);
@@ -493,14 +504,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await DeleteInventoryLogByLogUuidAsync(logUuid);
         }
 
-        private async Task DeleteInventoryLogByLogUuidAsync(string logUuid)
-        {
-            await dbFactory.Db.ExecuteAsync("DELETE FROM InventoryLog WHERE LogUuid = @0", logUuid.ToSqlParameter("logUuid"));
-        }
-
         private void DeleteInventoryLogByLogUuid(string logUuid)
         {
             dbFactory.Db.Execute("DELETE FROM InventoryLog WHERE LogUuid = @0", logUuid.ToSqlParameter("logUuid"));
+        }
+
+        private async Task DeleteInventoryLogByLogUuidAsync(string logUuid)
+        {
+            await dbFactory.Db.ExecuteAsync("DELETE FROM InventoryLog WHERE LogUuid = @0", logUuid.ToSqlParameter("logUuid"));
         }
 
         private void UpdateInventoryInStock(string logUuid, int isAdd)
@@ -531,6 +542,7 @@ where inv.InventoryUuid=il.InventoryUuid
             await dbFactory.Db.ExecuteAsync(sql, logUuid.ToSqlParameter("LogUuid"));
         }
 
+        #region UpdateByInventoryUpdate
         public async Task<bool> UpdateByInventoryUpdateAsync(InventoryUpdateData data)
         {
             //no data,no header,or no items,return;
@@ -627,17 +639,306 @@ where inv.InventoryUuid=il.InventoryUuid
             }
             return list;
         }
+        #endregion
 
-        public Task<bool> UpdateByInvoiceReturnAsync(InvoiceTransactionData data)
+        #region UpdateByInvoiceReturn
+        public bool UpdateByInvoiceReturn(InvoiceTransactionData data)
         {
-            throw new NotImplementedException();
+            if (data == null || data.InvoiceTransaction == null)
+                return false;
+            var header = data.InvoiceTransaction;
+            var logUuid = data.InvoiceTransaction.InvoiceUuid;
+            ClearInventoryLogByLogUuid(logUuid);
+            //if remove all items or delete inventoryupdate
+            if (data.InvoiceReturnItems == null || data.InvoiceReturnItems.Count == 0)
+            {
+                return true;
+            }
+            var detailItems = data.InvoiceReturnItems;
+            var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
+            var list = ConvertInvoiceReturnItemsToInventoryLogList(header, detailItems, batchNum, logUuid);
+            list.SetDataBaseFactory(dbFactory).Save();
+
+            UpdateInventoryInStock(logUuid, 1);
+            return true;
         }
 
-        public Task<bool> UpdateByShipmentAsync(OrderShipmentData data)
+        public async Task<bool> UpdateByInvoiceReturnAsync(InvoiceTransactionData data)
         {
-            throw new NotImplementedException();
+            if (data == null || data.InvoiceTransaction == null)
+                return false;
+            var header = data.InvoiceTransaction;
+            var logUuid = data.InvoiceTransaction.InvoiceUuid;
+            await ClearInventoryLogByLogUuidAsync(logUuid);
+            //if remove all items or delete inventoryupdate
+            if (data.InvoiceReturnItems == null || data.InvoiceReturnItems.Count == 0)
+            {
+                return true;
+            }
+            var detailItems = data.InvoiceReturnItems;
+            var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
+            var list = ConvertInvoiceReturnItemsToInventoryLogList(header, detailItems, batchNum, logUuid);
+            await list.SetDataBaseFactory(dbFactory).SaveAsync();
+
+            await UpdateInventoryInStockAsync(logUuid, 1);
+            return true;
         }
 
+        private IList<InventoryLog> ConvertInvoiceReturnItemsToInventoryLogList(InvoiceTransaction header, IList<InvoiceReturnItems> detailItems, long batchNum, string logUuid)
+        {
+            var list = new List<InventoryLog>();
+            foreach (var item in detailItems)
+            {
+                if (item.Stockable)
+                {
+                    if (item.StockQty > 0)
+                    {
+                        var inv = InventoryService.GetInventoryBySku(item.SKU, item.WarehouseCode);
+                        var line = new InventoryLog
+                        {
+                            DatabaseNum = header.DatabaseNum,
+                            MasterAccountNum = header.MasterAccountNum,
+                            ProfileNum = header.ProfileNum,
+                            InventoryLogUuid = Guid.NewGuid().ToString(),
+                            InventoryUuid = item.InventoryUuid,
+                            ProductUuid = item.ProductUuid,
+                            LogUuid = logUuid,
+                            BatchNum = batchNum,
+                            LogNumber = header.InvoiceNumber,
+                            LogItemUuid = item.InvoiceItemsUuid,
+                            LogDate = DateTime.Today,
+                            LogTime = DateTime.Now.TimeOfDay,
+                            LogBy = "InvoiceReturn",
+                            LogType = InventoyLogType.InvoiceReturn.ToString(),
+                            SKU = item.SKU,
+                            Description = item.Description,
+                            WarehouseCode = item.WarehouseCode,
+                            LotNum = item.LotNum,
+                            UOM = item.UOM,
+                            LogQty = item.StockQty,
+                            EnterBy = "",
+                            LotInDate = inv.LotInDate,
+                            LotExpDate = inv.LotExpDate,
+                            StyleCode = inv.StyleCode,
+                            ColorPatternCode = inv.ColorPatternCode,
+                            SizeCode = inv.SizeCode,
+                            WidthCode = inv.WidthCode,
+                            LengthCode = inv.LengthCode,
+                            BeforeBaseCost = inv.BaseCost,
+                            BeforeUnitCost = inv.UnitCost,
+                            BeforeAvgCost = inv.AvgCost,
+                        };
+                        if (inv != null)
+                        {
+                            line.LotInDate = inv.LotInDate;
+                            line.LotExpDate = inv.LotExpDate;
+                            line.StyleCode = inv.StyleCode;
+                            line.ColorPatternCode = inv.ColorPatternCode;
+                            line.SizeCode = inv.SizeCode;
+                            line.WidthCode = inv.WidthCode;
+                            line.LengthCode = inv.LengthCode;
+                            line.BeforeBaseCost = inv.BaseCost;
+                            line.BeforeUnitCost = inv.UnitCost;
+                            line.BeforeAvgCost = inv.AvgCost;
+
+                        }
+                        list.Add(line);
+                    }
+                    if (item.NonStockQty>0)
+                    {
+                        var inv = InventoryService.GetInventoryBySku(item.SKU, item.DamageWarehouseCode);
+                        var line = new InventoryLog
+                        {
+                            DatabaseNum = header.DatabaseNum,
+                            MasterAccountNum = header.MasterAccountNum,
+                            ProfileNum = header.ProfileNum,
+                            InventoryLogUuid = Guid.NewGuid().ToString(),
+                            InventoryUuid = item.InventoryUuid,
+                            ProductUuid = item.ProductUuid,
+                            LogUuid = logUuid,
+                            BatchNum = batchNum,
+                            LogNumber = header.InvoiceNumber,
+                            LogItemUuid = item.InvoiceItemsUuid,
+                            LogDate = DateTime.Today,
+                            LogTime = DateTime.Now.TimeOfDay,
+                            LogBy = "InvoiceReturn",
+                            LogType = InventoyLogType.InvoiceReturn.ToString(),
+                            SKU = item.SKU,
+                            Description = item.Description,
+                            WarehouseCode = item.DamageWarehouseCode,                           
+                            LotNum = item.LotNum,
+                            UOM = item.UOM,
+                            LogQty = item.NonStockQty,
+                            EnterBy = "",
+                            LotInDate = inv.LotInDate,
+                            LotExpDate = inv.LotExpDate,
+                            StyleCode = inv.StyleCode,
+                            ColorPatternCode = inv.ColorPatternCode,
+                            SizeCode = inv.SizeCode,
+                            WidthCode = inv.WidthCode,
+                            LengthCode = inv.LengthCode,
+                            BeforeBaseCost = inv.BaseCost,
+                            BeforeUnitCost = inv.UnitCost,
+                            BeforeAvgCost = inv.AvgCost,
+                        };
+                        if (inv != null)
+                        {
+                            line.LotInDate = inv.LotInDate;
+                            line.LotExpDate = inv.LotExpDate;
+                            line.StyleCode = inv.StyleCode;
+                            line.ColorPatternCode = inv.ColorPatternCode;
+                            line.SizeCode = inv.SizeCode;
+                            line.WidthCode = inv.WidthCode;
+                            line.LengthCode = inv.LengthCode;
+                            line.BeforeBaseCost = inv.BaseCost;
+                            line.BeforeUnitCost = inv.UnitCost;
+                            line.BeforeAvgCost = inv.AvgCost;
+                        }
+                        list.Add(line);
+                    }
+                }
+            }
+            return list;
+        }
+        #endregion
+
+        #region UpdateByShipment
+        private OrderShipmentService _orderShipmentService;
+
+        protected OrderShipmentService OrderShipmentService
+        {
+            get
+            {
+                if (_orderShipmentService == null)
+                    _orderShipmentService = new OrderShipmentService(dbFactory);
+                return _orderShipmentService;
+            }
+        }
+
+        public bool UpdateByShipment(string OrderShipmentUuid)
+        {
+            if (string.IsNullOrEmpty(OrderShipmentUuid))
+                return false;
+            //if data!=null ,use default UpdateByShipmentAsync(data) method,else clear log and update inventory;
+            if (_orderShipmentService.GetDataById(OrderShipmentUuid))
+            {
+                return UpdateByShipment(_orderShipmentService.Data);
+            }
+            ClearInventoryLogByLogUuid(OrderShipmentUuid);
+            return true;
+        }
+
+        public async Task<bool> UpdateByShipmentAsync(string OrderShipmentUuid)
+        {
+            if (string.IsNullOrEmpty(OrderShipmentUuid))
+                return false;
+            //if data!=null ,use default UpdateByShipmentAsync(data) method,else clear log and update inventory;
+            if (await _orderShipmentService.GetDataByIdAsync(OrderShipmentUuid))
+            {
+                return await UpdateByShipmentAsync(_orderShipmentService.Data);
+            }
+            await ClearInventoryLogByLogUuidAsync(OrderShipmentUuid);
+            return true;
+        }
+
+        public bool UpdateByShipment(OrderShipmentData data)
+        {
+            if (data == null || data.OrderShipmentHeader == null)
+                return false;
+            var header = data.OrderShipmentHeader;
+            var logUuid = data.OrderShipmentHeader.OrderShipmentUuid;
+            ClearInventoryLogByLogUuid(logUuid);
+            if (data.OrderShipmentPackage == null || data.OrderShipmentPackage.Count == 0)
+            {
+                return true;
+            }
+            var packages = data.OrderShipmentPackage;
+            var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
+
+            var list = ConvertShipmentsToInventoryLogList(header, packages,batchNum, logUuid);
+
+            list.SetDataBaseFactory(dbFactory).Save();
+
+            UpdateInventoryInStock(logUuid, 1);
+            return true;
+        }
+        
+        public async Task<bool> UpdateByShipmentAsync(OrderShipmentData data)
+        {
+            if (data == null || data.OrderShipmentHeader == null)
+                return false;
+            var header = data.OrderShipmentHeader;
+            var logUuid = data.OrderShipmentHeader.OrderShipmentUuid;
+            await ClearInventoryLogByLogUuidAsync(logUuid);
+            if (data.OrderShipmentPackage == null || data.OrderShipmentPackage.Count == 0)
+            {
+                return true;
+            }
+            var packages = data.OrderShipmentPackage;
+            var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
+
+            var list = ConvertShipmentsToInventoryLogList(header, packages,batchNum, logUuid);
+
+            await list.SetDataBaseFactory(dbFactory).SaveAsync();
+
+            await UpdateInventoryInStockAsync(logUuid, 1);
+            return true;
+        }
+
+        private IList<InventoryLog> ConvertShipmentsToInventoryLogList(OrderShipmentHeader header,IList<OrderShipmentPackage> packages, long batchNum, string logUuid)
+        {
+            var list = new List<InventoryLog>();
+            var warehouse = dbFactory.Get<DistributionCenter>(header.DistributionCenterNum.ToInt());
+            foreach (var package in packages)
+            {
+                var skus = package.OrderShipmentShippedItem.Select(r => r.SKU).Distinct().ToList();
+                var invList = InventoryService.GetInventoriesBySkus(skus, warehouse.DistributionCenterCode);
+                foreach (var item in package.OrderShipmentShippedItem) 
+                {
+                    var inv = invList.First(r => r.SKU == item.SKU);
+                    var line = new InventoryLog
+                    {
+                        DatabaseNum = header.DatabaseNum,
+                        MasterAccountNum = header.MasterAccountNum,
+                        ProfileNum = header.ProfileNum,
+                        InventoryLogUuid = Guid.NewGuid().ToString(),
+                        InventoryUuid = inv.InventoryUuid,
+                        ProductUuid = inv.ProductUuid,
+                        LogUuid = logUuid,
+                        BatchNum = batchNum,
+                        LogNumber = header.OrderShipmentUuid,
+                        LogItemUuid =item.OrderShipmentShippedItemUuid,
+                        LogDate = DateTime.Today,
+                        LogTime = DateTime.Now.TimeOfDay,
+                        LogBy = "Shipments",
+                        LogType = InventoyLogType.Shipment.ToString(),
+                        SKU = inv.SKU,
+                        Description = inv.LpnDescription,
+                        WarehouseCode = inv.WarehouseCode,
+                        LotNum = inv.LotNum,
+                        LotInDate = inv.LotInDate,
+                        LotExpDate = inv.LotExpDate,
+                        StyleCode=inv.StyleCode,
+                        ColorPatternCode=inv.ColorPatternCode,
+                        SizeCode=inv.SizeCode,
+                        WidthCode=inv.WidthCode,
+                        LengthCode=inv.LengthCode,
+                        BeforeBaseCost=inv.BaseCost,
+                        BeforeUnitCost=inv.UnitCost,
+                        BeforeAvgCost=inv.AvgCost,
+                        UOM = inv.UOM,
+                        LogQty = item.ShippedQty,
+                        BeforeInstock = inv.Instock,
+                        EnterBy = ""
+                    };
+                    list.Add(line);
+                }
+            }
+            return list;
+        }
+        #endregion
+
+        #region UpdateByWarehouseTransfer
         public bool UpdateByWarehouseTransfer(WarehouseTransferData data)
         {
             if (data == null || data.WarehouseTransferHeader == null)
@@ -660,6 +961,7 @@ where inv.InventoryUuid=il.InventoryUuid
             UpdateInventoryInStock(logUuid, 1);
             return true;
         }
+
         public async Task<bool> UpdateByWarehouseTransferAsync(WarehouseTransferData data)
         {
             if (data == null || data.WarehouseTransferHeader == null)
@@ -747,6 +1049,7 @@ where inv.InventoryUuid=il.InventoryUuid
             }
             return list;
         }
+        #endregion
     }
 }
 
