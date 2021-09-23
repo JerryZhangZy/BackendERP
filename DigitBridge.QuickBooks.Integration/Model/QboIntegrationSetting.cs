@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -74,23 +74,23 @@ namespace DigitBridge.QuickBooks.Integration.Model
 		/// </summary>
 		public string QboSalesTaxItemName { get; set; }
 		public int QboSalesTaxItemId { get; set; }
-		/// <summary>
+        /// <summary>
 		/// Item for Service provided to customer, ex: item handling
-		/// </summary>
+        /// </summary>
 		public string QboHandlingServiceItemName { get; set; }
 		public int QboHandlingServiceItemId { get; set; }
-		/// <summary>
+        /// <summary>
 		/// Item for daily summary defualt discount item
-		/// </summary>
+        /// </summary>
 		public string QboDiscountItemName { get; set; }
 		public int QboDiscountItemId { get; set; }
-		/// <summary>
+        /// <summary>
 		/// Item for daily summary defualt shipping cost item
-		/// </summary>
+        /// </summary>
 		public string QboShippingItemName { get; set; }
 		public int QboShippingItemId { get; set; }
 
-		/// <summary>
+        /// <summary>
 		/// Income Account for Handling Service Item
 		/// </summary>
 		public string QboHandlingServiceAccName { get; set; }
@@ -109,26 +109,66 @@ namespace DigitBridge.QuickBooks.Integration.Model
 		public int QboItemAssetAccId { get; set; }
 		/// <summary>
 		/// For New/Default? Item creation
-		/// </summary>
+        /// </summary>
 		public string QboItemExpenseAccName { get; set; }
 		public int QboItemExpenseAccId { get; set; }
-		/// <summary>
+        /// <summary>
 		/// For New/Default? Item creation
-		/// </summary>
+        /// </summary>
 		public string QboItemIncomeAccName { get; set; }
 		public int QboItemIncomeAccId { get; set; }
-		/// <summary>
+        /// <summary>
 		/// 0: None, 1: Seperate Bill
-		/// </summary>
+        /// </summary>
 		public int QboPostageRule { get; set; }
-		/// <summary>
+        /// <summary>
 		/// 0: None, 1: All, 2: Paid, 3: Unpaid
-		/// </summary>
+        /// </summary>
 		public int QboInvoiceImportRule { get; set; }
-		/// <summary>
+        /// <summary>
 		/// 0: None, 1: All
-		/// </summary>
+        /// </summary>
 		public int QboSalesOrderImportRule { get; set; }
+
+
+		/// <summary>
+		/// summary ChargeAndAllowance cost name
+		/// </summary>
+		public string QboChargeAndAllowanceName { get; set; }
+		/// <summary>
+		/// summary ChargeAndAllowance cost id
+		/// </summary>
+		public int QboChargeAndAllowanceId { get; set; }
+
+		/// <summary>
+		/// summary misc cost name
+		/// </summary>
+		public string QboMiscName { get; set; }
+		/// <summary>
+		/// summary misc cost id
+		/// </summary>
+		public int QboMiscId { get; set; }
+		/// <summary>
+		/// summary discount
+		/// </summary>
+		public string QboDiscountName { get; set; }
+		public int QboDiscountId { get; set; }
+		/// <summary>
+		/// summary Tax cost name
+		/// </summary>
+		public string QboTaxName { get; set; }
+		/// <summary>
+		/// summary Tax cost id
+		/// </summary>
+		public int QboTaxId { get; set; }
+		/// <summary>
+		/// summary shipping cost name
+		/// </summary>
+		public string QboShippingName { get; set; }
+		/// <summary>
+		/// summary shipping cost id
+		/// </summary>
+		public int QboShippingId { get; set; }
 		/// <summary>
 		///    Uninitialized = 0, Active = 1, Inactive = 100, Error = 255
 		/// </summary>
@@ -136,5 +176,5 @@ namespace DigitBridge.QuickBooks.Integration.Model
 		public DateTime QboImportOrderAfterUpdateDate { get; set; }
 		public DateTime EnterDate { get; set; }
 		public DateTime LastUpdate { get; set; }
-	}
+    }
 }
