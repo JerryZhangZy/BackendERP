@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UneedgoHelper.DotNet.Common;
 
-namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
+namespace DigitBridge.QuickBooks.Integration.Infrastructure
 {
     public class QboOAuth
     {
