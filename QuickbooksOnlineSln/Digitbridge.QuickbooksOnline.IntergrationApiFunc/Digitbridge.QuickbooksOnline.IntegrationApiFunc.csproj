@@ -37,5 +37,5 @@
       <HintPath>..\DigitBridge.Base.Utility.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ProjectExtensions><VisualStudio><UserProperties local_1settings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 </Project>

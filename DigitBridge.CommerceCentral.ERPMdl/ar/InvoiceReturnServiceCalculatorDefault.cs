@@ -132,32 +132,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //Set default for invoice
             var invoiceData = data.InvoiceData;
-            if (invoiceData != null && invoiceData.InvoiceHeader != null)
-            {
-                sum.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
-                //sum.BankAccountCode = invoiceData.InvoiceHeader 
-                sum.Currency = invoiceData.InvoiceHeader.Currency;
-                sum.TaxRate = invoiceData.InvoiceHeader.TaxRate;
-                //sum.TaxableAmount = invoiceData.InvoiceHeader.TaxableAmount;
-                //sum.NonTaxableAmount = invoiceData.InvoiceHeader.NonTaxableAmount;
-                //sum.ShippingAmount = invoiceData.InvoiceHeader.ShippingAmount;
-                //sum.ShippingTaxAmount = invoiceData.InvoiceHeader.ShippingTaxAmount;
-                //sum.MiscAmount = invoiceData.InvoiceHeader.MiscAmount;
-                //sum.MiscTaxAmount = invoiceData.InvoiceHeader.MiscTaxAmount;
-                //sum.ChargeAndAllowanceAmount = invoiceData.InvoiceHeader.ChargeAndAllowanceAmount;
-                //sum.DiscountAmount = invoiceData.InvoiceHeader.DiscountAmount;//todo
-                //sum.DiscountRate = invoiceData.InvoiceHeader.DiscountRate;//todo 
-                //sum.SalesAmount = invoiceData.InvoiceHeader.SalesAmount; 
 
-                //var customerData = GetCustomerData(data, invoiceData.InvoiceHeader.CustomerCode);
-                //if (customerData != null && customerData.Customer != null)
-                //{
-                //    //sum.BankAccountCode
-                //    //sum.BankAccountUuid
-                //    //sum.CreditAccount= 
-                //    //sum.PaidBy=
-                //}
-            }
+            sum.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
+            //sum.BankAccountCode = invoiceData.InvoiceHeader 
+            sum.Currency = invoiceData.InvoiceHeader.Currency;
+            sum.TaxRate = invoiceData.InvoiceHeader.TaxRate;
+            //sum.DiscountAmount = invoiceData.InvoiceHeader.DiscountAmount;
+            //sum.DiscountRate = invoiceData.InvoiceHeader.DiscountRate;
+            //sum.TaxableAmount = invoiceData.InvoiceHeader.TaxableAmount;
+            //sum.NonTaxableAmount = invoiceData.InvoiceHeader.NonTaxableAmount;
+            //sum.ShippingAmount = invoiceData.InvoiceHeader.ShippingAmount;
+            //sum.ShippingTaxAmount = invoiceData.InvoiceHeader.ShippingTaxAmount;
+            //sum.MiscAmount = invoiceData.InvoiceHeader.MiscAmount;
+            //sum.MiscTaxAmount = invoiceData.InvoiceHeader.MiscTaxAmount;
+            //sum.ChargeAndAllowanceAmount = invoiceData.InvoiceHeader.ChargeAndAllowanceAmount;
+
+            //sum.SalesAmount = invoiceData.InvoiceHeader.SalesAmount; 
+
+            //var customerData = GetCustomerData(data, invoiceData.InvoiceHeader.CustomerCode);
+            //if (customerData != null && customerData.Customer != null)
+            //{
+            //    //sum.BankAccountCode
+            //    //sum.BankAccountUuid
+            //    //sum.CreditAccount= 
+            //    //sum.PaidBy=
+            //} 
 
             //EnterBy
             //UpdateBy 
@@ -250,45 +249,50 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.ShippingAmount = sum.ShippingAmount.ToAmount();
             sum.MiscAmount = sum.MiscAmount.ToAmount();
             sum.ChargeAndAllowanceAmount = sum.ChargeAndAllowanceAmount.ToAmount();
+            sum.TaxRate = sum.TaxRate.ToRate();
 
-            // if exist DiscountRate, calculate discount amount, otherwise use entry discount amount
-            if (!sum.DiscountRate.IsZero())
-                sum.DiscountAmount = (sum.SubTotalAmount * sum.DiscountRate.ToRate()).ToAmount();
+            var invoiceData = data.InvoiceData;
+
+            (bool isAllReturned, decimal totalReturnedSalesAmount, decimal totalReturnedTaxAmount) = IsAllReturned();
+            if (isAllReturned)
+            {
+                sum.TaxAmount = invoiceData.InvoiceHeader.TaxAmount - totalReturnedTaxAmount;
+                sum.SalesAmount = invoiceData.InvoiceHeader.SalesAmount - totalReturnedSalesAmount;
+            }
             else
-                sum.DiscountRate = 0;
+            {
+                var discountRate = invoiceData.InvoiceHeader.TotalAmount == 0 ? 0 : (invoiceData.InvoiceHeader.DiscountAmount / invoiceData.InvoiceHeader.TotalAmount).ToRate();
+                sum.DiscountAmount = (sum.SubTotalAmount * (1 - discountRate)).ToAmount();
 
-            sum.DiscountAmount = sum.DiscountAmount.ToAmount();
-            //manual input max discount amount is SubTotalAmount
-
-            // tax calculate should deduct discount from taxable amount
-            //sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
-
-            var discountRate = sum.SubTotalAmount != 0 ? (sum.DiscountAmount / sum.SubTotalAmount) : 0;
-            sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate;
-            sum.TaxAmount = sum.TaxAmount.ToAmount();
-
-
+                sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate) * invoiceData.InvoiceHeader.TaxRate).ToAmount();
+                sum.SalesAmount = (sum.SubTotalAmount - sum.DiscountAmount).ToAmount();
+            }
             if (setting.TaxForShippingAndHandling)
             {
                 sum.ShippingTaxAmount = (sum.ShippingAmount * sum.TaxRate).ToAmount();
                 sum.MiscTaxAmount = (sum.MiscAmount * sum.TaxRate).ToAmount();
-                sum.TaxAmount = (sum.TaxAmount + sum.ShippingTaxAmount + sum.MiscTaxAmount).ToAmount();
             }
 
-            sum.SalesAmount = (sum.SubTotalAmount - sum.DiscountAmount).ToAmount();
+
             sum.TotalAmount = (
                 sum.SalesAmount +
-                sum.TaxAmount +
-                sum.ShippingAmount +
-                sum.MiscAmount +
+                sum.TaxAmount -
+                sum.ShippingAmount -
+                sum.ShippingTaxAmount -
+                sum.MiscAmount -
+                sum.MiscTaxAmount -
                 sum.ChargeAndAllowanceAmount
                 ).ToAmount();
 
-            //sum.Balance = (sum.TotalAmount - sum.PaidAmount - sum.CreditAmount).ToAmount();
-
-            //sum.DueDate = sum.InvoiceDate.AddDays(sum.TermsDays);
-
             return true;
+        }
+        //TODO calculate all return of this invoice number..
+        private (bool, decimal, decimal) IsAllReturned()
+        { 
+            var isAllReturned = false;//  (all return item in db)- (current return item in db) + (current returnitem in memory)== invoice items.
+            var totalReturnedSalesAmount = 0;//invoiceheader.SalesAmount- ((all return transaction SalesAmount in db) -(current return transaction SalesAmount in db))
+            var totalReturnedTaxAmount = 0;//invoiceheader.TaxAmount- ((all return transaction TaxAmount in db) -(current return transaction TaxAmount in db))
+            return (isAllReturned, totalReturnedSalesAmount, totalReturnedTaxAmount);
         }
 
         public virtual bool CalculateDetail(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -308,6 +312,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.TaxableAmount = 0;
             sum.NonTaxableAmount = 0;
             sum.TaxAmount = 0;
+            sum.DiscountAmount = 0;
             sum.TaxRate = sum.TaxRate.ToRate();
 
             foreach (var item in data.InvoiceReturnItems)
@@ -335,27 +340,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (item is null || item.IsEmpty)
                 return false;
 
-            var setting = new ERPSetting();
-            var sum = data.InvoiceTransaction;
-            //var prod = data.GetCache<ProductBasic>(ProductId);
-            //var inv = data.GetCache<Inventory>(InventoryId);
-            //var invCost = new ItemCostClass(inv);
-            var invCost = new ItemCostClass();
+            //var setting = new ERPSetting();
+            //var sum = data.InvoiceTransaction;
+            ////var prod = data.GetCache<ProductBasic>(ProductId);
+            ////var inv = data.GetCache<Inventory>(InventoryId);
+            ////var invCost = new ItemCostClass(inv);
+            //var invCost = new ItemCostClass();
 
-            item.Price = item.Price.ToPrice();
-            item.ShippingAmount = item.ShippingAmount.ToAmount();
-            item.MiscAmount = item.MiscAmount.ToAmount();
-            item.ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount();
+            //item.Price = item.Price.ToPrice();
+            //item.ShippingAmount = item.ShippingAmount.ToAmount();
+            //item.MiscAmount = item.MiscAmount.ToAmount();
+            //item.ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount(); 
+            //item.StockQty = item.StockQty < 0 ? 0 : item.StockQty.ToQty();
+            //item.NonStockQty = item.NonStockQty < 0 ? 0 : item.StockQty.ToQty(); 
+            //item.ReceiveQty= item.StockQty + item.NonStockQty // Are they equal.?
             item.ReturnQty = item.ReturnQty < 0 ? 0 : item.ReturnQty.ToQty();
             item.ReceiveQty = item.ReceiveQty < 0 ? 0 : item.ReceiveQty.ToQty();
-            item.StockQty = item.StockQty < 0 ? 0 : item.StockQty.ToQty();
-            item.NonStockQty = item.NonStockQty < 0 ? 0 : item.StockQty.ToQty();
-            item.Price = item.Price.ToPrice();
-            //item.ReceiveQty= item.StockQty + item.NonStockQty // Are they equal.?
 
-            item.PackType = string.Empty;
-            if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
-                item.PackQty = 1;
+            //item.PackType = string.Empty;
+            //if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
+            //    item.PackQty = 1;
 
             if (item.PackQty > 1)
             {
@@ -370,7 +374,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //item.CancelledPack = item.CancelledQty;
             }
 
-            item.ExtAmount = (item.InvoiceDiscountPrice * item.ReceiveQty).ToAmount();
+            item.ExtAmount = (item.InvoiceDiscountPrice * item.ReturnQty).ToAmount();
 
             if (item.Taxable)
             {
