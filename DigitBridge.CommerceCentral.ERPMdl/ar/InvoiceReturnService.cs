@@ -22,7 +22,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override InvoiceTransactionService Init()
         {
             SetDtoMapper(new InvoiceTransactionDataDtoMapperDefault());
-            SetCalculator(new InvoiceTransactionServiceCalculatorDefault(this, this.dbFactory));
+            SetCalculator(new InvoiceReturnServiceCalculatorDefault(this, this.dbFactory));
             AddValidator(new InvoiceReturnServiceValidatorDefault(this, this.dbFactory));
             return this;
         }
