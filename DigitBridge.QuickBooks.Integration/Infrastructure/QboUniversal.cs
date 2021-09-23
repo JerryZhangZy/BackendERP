@@ -15,7 +15,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using UneedgoHelper.DotNet.Common;
 
-namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
+namespace DigitBridge.QuickBooks.Integration.Infrastructure
 {
     public class QboUniversal
     {
@@ -29,8 +29,8 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
 
         public QboUniversal() { }
         private async Task<QboUniversal> InitializeAsync(
-            QboConnectionInfo qboConnectionInfo, 
-            QboConnectionConfig qboConnectionConfig) 
+            QboConnectionInfo qboConnectionInfo,
+            QboConnectionConfig qboConnectionConfig)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
                 _qboConnectionTokenStatus = new QboConnectionTokenStatus();
             }
             catch (Exception ex)
-            { 
+            {
                 string additionalMsg = "Qbo Connection GetServiceContext Error" + CommonConst.NewLine;
                 throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
             }
@@ -88,12 +88,12 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
             try
             {
                 // Check if the refresh token is too old, offical set life = 100 days
-                if ( (DateTime.Now.ToUniversalTime() - _qboConnectionInfo.LastRefreshTokUpdate).TotalDays > 80 )
+                if ((DateTime.Now.ToUniversalTime() - _qboConnectionInfo.LastRefreshTokUpdate).TotalDays > 80)
                 {
                     await UpdateRefreshToken();
-                } 
+                }
                 // Check if the access token is too old, offical set life = 1 hr
-                if( (DateTime.Now.ToUniversalTime() - _qboConnectionInfo.LastAccessTokUpdate).TotalHours >= 0.75 )
+                if ((DateTime.Now.ToUniversalTime() - _qboConnectionInfo.LastAccessTokUpdate).TotalHours >= 0.75)
                 {
                     await RefreshAccessToken();
                 }
@@ -145,7 +145,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
                     _qboConnectionInfo.LastAccessTokUpdate = DateTime.Now.ToUniversalTime();
                     // Flag tokens as updated
                     _qboConnectionTokenStatus.AccessTokenStatus = ConnectionTokenStatus.Updated;
-                    
+
                     if (!_qboConnectionInfo.RefreshToken.Equals(tokenResp.RefreshToken))
                     {
                         _qboConnectionInfo.RefreshToken = tokenResp.RefreshToken;
@@ -155,14 +155,15 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
                         _qboConnectionTokenStatus.RefreshTokenStatus = ConnectionTokenStatus.Updated;
                     }
                 }
-                else if(runAfterRefreshUpdated == false)
+                else if (runAfterRefreshUpdated == false)
                 {
                     await UpdateRefreshToken();
-                }else
+                }
+                else
                 {
                     throw new Exception("Refresh Access Token use the Updated Refresh Token Failed, " +
                         $"Check Auth Code For User: {_qboConnectionInfo.MasterAccountNum} {_qboConnectionInfo.ProfileNum}, " +
-                        $"Error Msg: {tokenResp.Error}" );
+                        $"Error Msg: {tokenResp.Error}");
                 }
             }
             catch (Exception ex)
@@ -172,23 +173,23 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
                 throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
             }
         }
-        public async Task<Invoice> CreateInvoiceIfAbsent(Invoice invoice) 
+        public async Task<Invoice> CreateInvoiceIfAbsent(Invoice invoice)
         {
             Invoice invoiceCreated = null;
             try
             {
-                if( !await InvoiceExist(invoice.DocNumber) )
+                if (!await InvoiceExist(invoice.DocNumber))
                 {
-                    invoiceCreated = _dataService.Add<Invoice>(invoice);
+                    invoiceCreated = _dataService.Add(invoice);
                 }
-                
+
                 return invoiceCreated;
             }
             catch (Exception ex)
             {
                 throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex);
             }
-            
+
         }
 
         /// <summary>
@@ -204,8 +205,8 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
                 string qboQureyStr = $"select * from {transaction.GetType().Name} Where DocNumber = '{transaction.DocNumber}'";
                 SalesTransaction latestTransaction = queryService.ExecuteIdsQuery(qboQureyStr).FirstOrDefault();
 
-                return (latestTransaction != null, 
-                    latestTransaction != null && latestTransaction.SyncToken.Equals( transaction.SyncToken )); 
+                return (latestTransaction != null,
+                    latestTransaction != null && latestTransaction.SyncToken.Equals(transaction.SyncToken));
             }
             catch (Exception ex)
             {
@@ -221,7 +222,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
                 QueryService<Invoice> queryService = new QueryService<Invoice>(_serviceContext);
                 invoice = queryService.ExecuteIdsQuery($"select * from Invoice Where DocNumber = '{docNumber}'").FirstOrDefault();
 
-                return ! (invoice == null);
+                return !(invoice == null);
             }
             catch (Exception ex)
             {
@@ -249,8 +250,8 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
             Invoice invoiceUpdated = null;
             try
             {
-                invoiceUpdated = _dataService.Update<Invoice>(invoice);
-                
+                invoiceUpdated = _dataService.Update(invoice);
+
                 return invoiceUpdated;
             }
             catch (Exception ex)
@@ -266,7 +267,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
             {
                 if (!await SalesReceiptExist(salesReceipt.DocNumber))
                 {
-                    salesReceiptCreated = _dataService.Add<SalesReceipt>(salesReceipt);
+                    salesReceiptCreated = _dataService.Add(salesReceipt);
                 }
 
                 return salesReceiptCreated;
@@ -282,8 +283,8 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
             SalesReceipt salesReceiptUpdated = null;
             try
             {
-                salesReceiptUpdated = _dataService.Update<SalesReceipt>(salesReceipt);
-                
+                salesReceiptUpdated = _dataService.Update(salesReceipt);
+
                 return salesReceiptUpdated;
             }
             catch (Exception ex)
@@ -349,7 +350,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<Item> GetItemByName(String name)
+        public async Task<Item> GetItemByName(string name)
         {
             Item item;
             try
@@ -364,7 +365,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
             return item;
         }
 
-        public async Task<Item> CreateDefaultInventoryItem(String name)
+        public async Task<Item> CreateDefaultInventoryItem(string name)
         {
             Item item = new Item();
             try
@@ -420,7 +421,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
                 item.PurchaseTaxIncluded = true;
                 item.PurchaseTaxIncludedSpecified = true;
 
-                item.UnitPrice = new Decimal(100.00);
+                item.UnitPrice = new decimal(100.00);
                 item.UnitPriceSpecified = true;
 
                 item.TrackQtyOnHand = true;
@@ -450,7 +451,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
                     Value = assetAccount.Id
                 };
 
-                Item itemCreated = _dataService.Add<Item>(item);
+                Item itemCreated = _dataService.Add(item);
 
                 return itemCreated;
             }
@@ -460,7 +461,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
             }
         }
 
-        public async Task<Item> CreateDefaultNonInventoryItem(String name, String taxAccName = null, int taxAccId = -1)
+        public async Task<Item> CreateDefaultNonInventoryItem(string name, string taxAccName = null, int taxAccId = -1)
         {
             Item item = new Item();
             try
@@ -469,21 +470,21 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
                 List<Account> candidateAccount = new List<Account>();
                 Account targetAccount = null;
 
-                if( name.ToLower().Contains("discount") )
+                if (name.ToLower().Contains("discount"))
                 {
-                    candidateAccount = 
+                    candidateAccount =
                         accounts.Where(
-                            t => t.AccountType == AccountTypeEnum.Income && 
+                            t => t.AccountType == AccountTypeEnum.Income &&
                             t.AccountSubType.ToLower().Contains("discount")
                         ).ToList();
 
                     Account DefaultDiscountAccount = candidateAccount.Where(
                     n => n.Name.Equals(QboUniversalConsts.DefaultDiscountAccountName)).FirstOrDefault();
 
-                    targetAccount = DefaultDiscountAccount != null ? 
+                    targetAccount = DefaultDiscountAccount != null ?
                         DefaultDiscountAccount : candidateAccount.First();
                 }
-                else if( name.ToLower().Contains("ship"))
+                else if (name.ToLower().Contains("ship"))
                 {
                     candidateAccount =
                         accounts.Where(
@@ -497,7 +498,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
                     targetAccount = DefaultShippingAccount != null ?
                         DefaultShippingAccount : candidateAccount.First();
                 }
-                else if(name.ToLower().Contains("tax"))
+                else if (name.ToLower().Contains("tax"))
                 {
                     if (taxAccId == 0)
                     {
@@ -507,18 +508,19 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
                         newAccount.AccountType = AccountTypeEnum.OtherCurrentLiability;
                         newAccount.AccountTypeSpecified = true;
 
-                        targetAccount = _dataService.Add<Account>(newAccount);
+                        targetAccount = _dataService.Add(newAccount);
                     }
                     else
                     {
-                        targetAccount = accounts.Where( t => t.Id.Equals( taxAccId.ToString() ) ).First();
+                        targetAccount = accounts.Where(t => t.Id.Equals(taxAccId.ToString())).First();
                     }
-                }else
+                }
+                else
                 {
                     return null;
                 }
 
-                if(targetAccount == null)
+                if (targetAccount == null)
                 {
                     return null;
                 }
@@ -546,7 +548,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
                     Value = targetAccount.Id
                 };
 
-                Item itemCreated = _dataService.Add<Item>(item);
+                Item itemCreated = _dataService.Add(item);
 
                 return itemCreated;
             }
@@ -606,7 +608,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Infrastructure
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<Customer> GetCustomerById(String id)
+        public async Task<Customer> GetCustomerById(string id)
         {
             Customer customer;
             try

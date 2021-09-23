@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DigitBridge.QuickBooks.Integration.Db.Infrastructure
+namespace DigitBridge.QuickBooks.Integration.Model
 {
     public class QboOrderItemLine
     {
