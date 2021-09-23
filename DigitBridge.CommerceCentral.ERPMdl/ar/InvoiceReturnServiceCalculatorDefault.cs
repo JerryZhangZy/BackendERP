@@ -252,27 +252,47 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.TaxRate = sum.TaxRate.ToRate();
 
             var invoiceData = data.InvoiceData;
-            var discountRate = invoiceData.InvoiceHeader.TotalAmount == 0 ? 0 : (invoiceData.InvoiceHeader.DiscountAmount / invoiceData.InvoiceHeader.TotalAmount).ToRate();
-            sum.DiscountAmount = (sum.SubTotalAmount * (1 - discountRate)).ToAmount(); 
-            sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate) * invoiceData.InvoiceHeader.TaxRate).ToAmount();
 
+            (bool isAllReturned, decimal totalReturnedSalesAmount, decimal totalReturnedTaxAmount) = IsAllReturned();
+            if (isAllReturned)
+            {
+                sum.TaxAmount = invoiceData.InvoiceHeader.TaxAmount - totalReturnedTaxAmount;
+                sum.SalesAmount = invoiceData.InvoiceHeader.SalesAmount - totalReturnedSalesAmount;
+            }
+            else
+            {
+                var discountRate = invoiceData.InvoiceHeader.TotalAmount == 0 ? 0 : (invoiceData.InvoiceHeader.DiscountAmount / invoiceData.InvoiceHeader.TotalAmount).ToRate();
+                sum.DiscountAmount = (sum.SubTotalAmount * (1 - discountRate)).ToAmount();
+
+                sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate) * invoiceData.InvoiceHeader.TaxRate).ToAmount();
+                sum.SalesAmount = (sum.SubTotalAmount - sum.DiscountAmount).ToAmount();
+            }
             if (setting.TaxForShippingAndHandling)
             {
                 sum.ShippingTaxAmount = (sum.ShippingAmount * sum.TaxRate).ToAmount();
                 sum.MiscTaxAmount = (sum.MiscAmount * sum.TaxRate).ToAmount();
-                sum.TaxAmount = (sum.TaxAmount + sum.ShippingTaxAmount + sum.MiscTaxAmount).ToAmount();
             }
 
-            sum.SalesAmount = (sum.SubTotalAmount - sum.DiscountAmount).ToAmount();
+
             sum.TotalAmount = (
                 sum.SalesAmount +
                 sum.TaxAmount -
                 sum.ShippingAmount -
+                sum.ShippingTaxAmount -
                 sum.MiscAmount -
+                sum.MiscTaxAmount -
                 sum.ChargeAndAllowanceAmount
                 ).ToAmount();
 
             return true;
+        }
+        //TODO calculate all return of this invoice number..
+        private (bool, decimal, decimal) IsAllReturned()
+        { 
+            var isAllReturned = false;//  (all return item in db)- (current return item in db) + (current returnitem in memory)== invoice items.
+            var totalReturnedSalesAmount = 0;//invoiceheader.SalesAmount- ((all return transaction SalesAmount in db) -(current return transaction SalesAmount in db))
+            var totalReturnedTaxAmount = 0;//invoiceheader.TaxAmount- ((all return transaction TaxAmount in db) -(current return transaction TaxAmount in db))
+            return (isAllReturned, totalReturnedSalesAmount, totalReturnedTaxAmount);
         }
 
         public virtual bool CalculateDetail(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
