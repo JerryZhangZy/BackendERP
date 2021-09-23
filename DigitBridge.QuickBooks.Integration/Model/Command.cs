@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Digitbridge.QuickbooksOnline.Db.Model
+namespace DigitBridge.QuickBooks.Integration.Model
 {
     public class Command
     {

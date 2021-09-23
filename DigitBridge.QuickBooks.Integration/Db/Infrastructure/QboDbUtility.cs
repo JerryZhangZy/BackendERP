@@ -1,7 +1,5 @@
-﻿using Digitbridge.QuickbooksOnline.Db.Model;
-using Microsoft.Data.SqlClient;
+﻿using DigitBridge.QuickBooks.Integration.Model;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
