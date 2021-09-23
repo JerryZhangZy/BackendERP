@@ -1,10 +1,8 @@
-﻿using Digitbridge.QuickbooksOnline.Db.Model;
-using DigitBridge.QuickBooks.Integration.Db.Infrastructure;
+﻿using DigitBridge.QuickBooks.Integration.Infrastructure;
+using DigitBridge.QuickBooks.Integration.Model;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using UneedgoHelper.DotNet.Common;
 using UneedgoHelper.DotNet.Data.MsSql;
