@@ -129,9 +129,49 @@ namespace DigitBridge.QuickBooks.Integration.Model
 		/// 0: None, 1: All
         /// </summary>
 		public int QboSalesOrderImportRule { get; set; }
-        /// <summary>
+
+
+		/// <summary>
+		/// summary ChargeAndAllowance cost name
+		/// </summary>
+		public string QboChargeAndAllowanceName { get; set; }
+		/// <summary>
+		/// summary ChargeAndAllowance cost id
+		/// </summary>
+		public int QboChargeAndAllowanceId { get; set; }
+
+		/// <summary>
+		/// summary misc cost name
+		/// </summary>
+		public string QboMiscName { get; set; }
+		/// <summary>
+		/// summary misc cost id
+		/// </summary>
+		public int QboMiscId { get; set; }
+		/// <summary>
+		/// summary discount
+		/// </summary>
+		public string QboDiscountName { get; set; }
+		public int QboDiscountId { get; set; }
+		/// <summary>
+		/// summary Tax cost name
+		/// </summary>
+		public string QboTaxName { get; set; }
+		/// <summary>
+		/// summary Tax cost id
+		/// </summary>
+		public int QboTaxId { get; set; }
+		/// <summary>
+		/// summary shipping cost name
+		/// </summary>
+		public string QboShippingName { get; set; }
+		/// <summary>
+		/// summary shipping cost id
+		/// </summary>
+		public int QboShippingId { get; set; }
+		/// <summary>
 		///    Uninitialized = 0, Active = 1, Inactive = 100, Error = 255
-        /// </summary>
+		/// </summary>
 		public int QboSettingStatus { get; set; }
 		public DateTime QboImportOrderAfterUpdateDate { get; set; }
 		public DateTime EnterDate { get; set; }

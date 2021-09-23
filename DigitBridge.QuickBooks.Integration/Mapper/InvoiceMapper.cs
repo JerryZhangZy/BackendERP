@@ -1,4 +1,5 @@
 ﻿using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.QuickBooks.Integration.Model;
 using Intuit.Ipp.Data;
 using System;
 using System.Collections.Generic;
