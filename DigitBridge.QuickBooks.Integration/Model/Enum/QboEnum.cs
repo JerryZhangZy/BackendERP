@@ -18,4 +18,9 @@ namespace DigitBridge.QuickBooks.Integration
         PerMarketPlace = 0,
         PerOrder = 1
     }
+    public enum SalesTaxExportRule
+    {
+        DoNotExportSalesTaxFromDigitbridge = 0,
+        ExportToDefaultSaleTaxItemAccount = 1
+    }
 }
