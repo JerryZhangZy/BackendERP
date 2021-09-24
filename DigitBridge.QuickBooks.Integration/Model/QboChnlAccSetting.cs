@@ -2,145 +2,59 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DigitBridge.QuickBooks.Integration
+namespace DigitBridge.QuickBooks.Integration.Model
 {
-	public class QboIntegrationSetting
+	public class QboChnlAccSetting
 	{
-		public long IntegrationSettingNum { get; set; }
+		public long ChannelAccSettingNum { get; set; }
 		public int MasterAccountNum { get; set; }
 		public int ProfileNum { get; set; }
 		/// <summary>
-		/// 0: All, 1: Shipped
+		/// Central Channel Account name, Max 10 chars ( because of qbo doc Number 21 chars restrictions )
 		/// </summary>
-		public int ExportByOrderStatus { get; set; }
+		public string ChannelAccountName { get; set; }
 		/// <summary>
-		/// 0: Invoice, 1: Sales Receipt, 2: Daily Summary Sales Receipt, 3: Daily Summary Invoice, 4. Do Not Export Sales Order
+		/// Central Channel Account Number
 		/// </summary>
-		public int ExportOrderAs { get; set; }
+		public int ChannelAccountNum { get; set; }
 		/// <summary>
-		/// 0: By Date Exported, 1: By Payment Date 
+		/// Central Channel name
 		/// </summary>
-		public int ExportOrderDateType { get; set; }
-		public DateTime ExportOrderFromDate { get; set; }
-		public DateTime ExportOrderToDate { get; set; }
+		public string ChannelName { get; set; }
 		/// <summary>
-		/// 0: By Date Exported, 1: By Shipping Date, 1: By Payment Date
+		/// Central Channel Number
 		/// </summary>
-		public int DailySummaryOrderDateType { get; set; }
+		public int ChannelNum { get; set; }
 		/// <summary>
-		/// 0: Per Marketplace, 1: Per Order
+		/// Use if select Create Customer Records per Marketplace
 		/// </summary>
-		public int QboCustomerCreateRule { get; set; }
+		public string ChannelQboCustomerName { get; set; }
 		/// <summary>
-		/// Item handling option while creating Invoice/Sales Receipt in Qbo when matching item not found
-		/// 0: Default Item, 1: Skip Order if is not in QBO, 2. Create New Item if is not in QBO
+		/// Use if select Create Customer Records per Marketplace
 		/// </summary>
-		public int QboItemCreateRule { get; set; }
+		public int ChannelQboCustomerId { get; set; }
 		/// <summary>
-		/// 1: Export To default QboSalesTaxAcc, 0: Do not export sales tax from Digitbridge
+		/// Account for fee in this Marketplace
 		/// </summary>
-		public int SalesTaxExportRule { get; set; }
+		public string ChannelQboFeeAcountName { get; set; }
 		/// <summary>
-		/// Customized Field Name for EndCustomerPoNum in Qbo Invoice/Sells Receipt
+		/// Account for fee in this Marketplace
 		/// </summary>
-		public string QboEndCustomerPoNumCustFieldName { get; set; }
+		public int ChannelQboFeeAcountId { get; set; }
 		/// <summary>
-		/// Customized Field Id for EndCustomerPoNum in Qbo Invoice/Sells Receipt
+		/// Account for collecting money in this Mrketplace
 		/// </summary>
-		public int QboEndCustomerPoNumCustFieldId { get; set; }
+		public string ChannelQboBankAcountName { get; set; }
 		/// <summary>
-		/// Customized Field Name for Central Channel Order Id in Qbo Invoice/Sells Receipt
+		/// Account for collecting money in this Mrketplace
 		/// </summary>
-		public string QboChnlOrderIdCustFieldName { get; set; }
-		/// <summary>
-		/// Customized Field Id for Central Channel Order Id in Qbo Invoice/Sells Receipt
-		/// </summary>
-		public int QboChnlOrderIdCustFieldId { get; set; }
-		/// <summary>
-		///  Customized Field Name for Central Secondary Channel Order Name in Qbo Invoice/Sells Receipt
-		/// </summary>
-		public string Qbo2ndChnlOrderIdCustFieldName { get; set; }
-		/// <summary>
-		/// Customized Field Name for Central Secondary Channel Order Id in Qbo Invoice/Sells Receipt 
-		/// </summary>
-		public int Qbo2ndChnlOrderIdCustFieldId { get; set; }
-		/// <summary>
-		/// Used when unmatched Item found from Central orders
-		/// </summary>
-		public string QboDefaultItemName { get; set; }
-		public int QboDefaultItemId { get; set; }
-		/// <summary>
-		/// Non-Inventory Item for Central calculated sales tax line
-		/// </summary>
-		public string QboSalesTaxItemName { get; set; }
-		public int QboSalesTaxItemId { get; set; }
-		/// <summary>
-		/// Item for Service provided to customer, ex: item handling
-		/// </summary>
-		public string QboHandlingServiceItemName { get; set; }
-		public int QboHandlingServiceItemId { get; set; }
-		/// <summary>
-		/// Item for daily summary defualt discount item
-		/// </summary>
-		public string QboDiscountItemName { get; set; }
-		public int QboDiscountItemId { get; set; }
-		/// <summary>
-		/// Item for daily summary defualt shipping cost item
-		/// </summary>
-		public string QboShippingItemName { get; set; }
-		public int QboShippingItemId { get; set; }
-
-		public int QboMiscItemId { get; set; } 
-		public string QboMiscItemName { get; set; }
-
-		public int QboChargeAndAllowanceItemId { get; set; }
-		public string QboChargeAndAllowanceItemName { get; set; } 
-
-		/// <summary>
-		/// Income Account for Handling Service Item
-		/// </summary>
-		public string QboHandlingServiceAccName { get; set; }
-		public int QboHandlingServiceAccId { get; set; }
-		/// <summary>
-		/// Type: Other Current Liabilities, Detail Type: Sales Tax Payable
-		/// </summary>
-		public string QboSalesTaxAccName { get; set; }
-		public int QboSalesTaxAccId { get; set; }
-		public string QboDiscountAccName { get; set; }
-		public int QboDiscountAccId { get; set; }
-		/// <summary>
-		/// For New/Default? Item creation
-		/// </summary>
-		public string QboItemAssetAccName { get; set; }
-		public int QboItemAssetAccId { get; set; }
-		/// <summary>
-		/// For New/Default? Item creation
-		/// </summary>
-		public string QboItemExpenseAccName { get; set; }
-		public int QboItemExpenseAccId { get; set; }
-		/// <summary>
-		/// For New/Default? Item creation
-		/// </summary>
-		public string QboItemIncomeAccName { get; set; }
-		public int QboItemIncomeAccId { get; set; }
-		/// <summary>
-		/// 0: None, 1: Seperate Bill
-		/// </summary>
-		public int QboPostageRule { get; set; }
-		/// <summary>
-		/// 0: None, 1: All, 2: Paid, 3: Unpaid
-		/// </summary>
-		public int QboInvoiceImportRule { get; set; }
-		/// <summary>
-		/// 0: None, 1: All
-		/// </summary>
-		public int QboSalesOrderImportRule { get; set; }
-		/// <summary>
-		///    Uninitialized = 0, Active = 1, Inactive = 100, Error = 255
-		/// </summary>
-		public int QboSettingStatus { get; set; }
-		public DateTime QboImportOrderAfterUpdateDate { get; set; }
+		public int ChannelQboBankAcountId { get; set; }
 		public DateTime EnterDate { get; set; }
 		public DateTime LastUpdate { get; set; }
+		/// <summary>
+		/// Last DateTime that the system exported the orders in this ChannelAccount
+		/// </summary>
+		public DateTime DailySummaryLastExport { get; set; }
+
 	}
 }
