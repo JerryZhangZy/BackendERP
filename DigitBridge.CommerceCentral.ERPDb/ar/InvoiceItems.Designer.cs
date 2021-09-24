@@ -400,7 +400,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_sKU = value.TruncateTo(100); 
+                _sKU = value.TruncateTo(100); 
 				OnPropertyChanged("SKU", value);
             }
         }
@@ -544,7 +544,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_uOM = value.TruncateTo(50); 
+                _uOM = value.TruncateTo(50); 
 				OnPropertyChanged("UOM", value);
             }
         }
@@ -1339,8 +1339,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_itemDate = new DateTime().MinValueSql(); 
 			_itemTime = new TimeSpan().MinValueSql(); 
 			_shipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
-			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
-			_sKU = String.Empty; 
+			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql();
+            _sKU = String.Empty; 
 			_productUuid = String.Empty; 
 			_inventoryUuid = String.Empty; 
 			_warehouseUuid = String.Empty; 
@@ -1348,8 +1348,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_lotNum = String.Empty; 
 			_description = String.Empty; 
 			_notes = String.Empty; 
-			_currency = String.Empty; 
-			_uOM = String.Empty; 
+			_currency = String.Empty;
+            _uOM = String.Empty; 
 			_packType = String.Empty; 
 			_packQty = default(decimal); 
 			_orderPack = default(decimal); 

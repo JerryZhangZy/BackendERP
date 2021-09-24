@@ -13,4 +13,14 @@ namespace DigitBridge.QuickBooks.Integration
         DailySummaryInvoice = 3,
         DoNotExport = 4
     }
+    public enum CustomerCreateRule
+    {
+        PerMarketPlace = 0,
+        PerOrder = 1
+    }
+    public enum SalesTaxExportRule
+    {
+        DoNotExportSalesTaxFromDigitbridge = 0,
+        ExportToDefaultSaleTaxItemAccount = 1
+    }
 }

@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -50,6 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.InvoiceTime, f => f.Date.Timespan())
 					.RuleFor(u => u.DueDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.BillDate, f => f.Date.Past(0).Date)
+					.RuleFor(u => u.ShipDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.CustomerUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.CustomerCode, f => f.Lorem.Word())
 					.RuleFor(u => u.CustomerName, f => f.Company.CompanyName())

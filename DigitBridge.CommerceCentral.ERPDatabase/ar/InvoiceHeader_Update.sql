@@ -19,5 +19,15 @@ BEGIN
 	(
 		[OrderNumber] ASC
 	) 
-END					
+END	
 
+-- 09/24/2021 By junxian
+IF COL_LENGTH('InvoiceHeader', 'ShipDate') IS NULL					
+BEGIN					
+    ALTER TABLE InvoiceHeader ADD [ShipDate] DATE NULL
+	--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_ShipDate')
+	CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_ShipDate] ON [dbo].[InvoiceHeader]
+	(
+		[ShipDate] ASC
+	) 
+END	 
