@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPMdl\DigitBridge.CommerceCentral.ERPMdl.csproj" />
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.YoPoco\DigitBridge.CommerceCentral.YoPoco.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Db\Dto\" />

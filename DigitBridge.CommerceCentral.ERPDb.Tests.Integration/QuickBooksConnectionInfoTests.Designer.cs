@@ -36,8 +36,15 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
             #region faker data rules
             return new Faker<QuickBooksConnectionInfo>()
+					.RuleFor(u => u.ConnectionProfileNum, f => default(long))
 					.RuleFor(u => u.MasterAccountNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.ClientId, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.ClientSecret, f => f.Lorem.Sentence().TruncateTo(500))
+					.RuleFor(u => u.RealmId, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.AuthCode, f => f.Lorem.Word())
+					.RuleFor(u => u.RefreshToken, f => f.Lorem.Sentence().TruncateTo(200))
+					.RuleFor(u => u.AccessToken, f => f.Lorem.Sentence().TruncateTo(1500))
 					.RuleFor(u => u.RequestState, f => f.Address.State())
 					.RuleFor(u => u.QboOAuthTokenStatus, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.LastRefreshTokUpdate, f => f.Date.Past(0).Date)
@@ -151,14 +158,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            data.Patch(new[] { "RequestState", "RequestState" });
+            data.Patch(new[] { "ClientSecret", "AuthCode" });
             DataBaseFactory.Commit();
 
             var dataGet = DataBaseFactory.GetFromCache<QuickBooksConnectionInfo>(data.RowNum);
-            var result = dataGet.RequestState != dataOrig.RequestState &&
-                            dataGet.RequestState != dataOrig.RequestState &&
-                            dataGet.RequestState == newData.RequestState &&
-                            dataGet.RequestState == newData.RequestState;
+            var result = dataGet.ClientSecret != dataOrig.ClientSecret &&
+                            dataGet.AuthCode != dataOrig.AuthCode &&
+                            dataGet.ClientSecret == newData.ClientSecret &&
+                            dataGet.AuthCode == newData.AuthCode;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -232,6 +239,64 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void AddList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var ClientId = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.ClientId = ClientId);
+            list.SetDataBaseFactory<QuickBooksConnectionInfo>(DataBaseFactory)
+                .Save<QuickBooksConnectionInfo>();
+
+            var cnt = DataBaseFactory.Count<QuickBooksConnectionInfo>("WHERE ClientId = @0", ClientId);
+            var result = cnt.Equals(list.Count());
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void SaveList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var ClientId = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.ClientId = ClientId);
+            list.SetDataBaseFactory<QuickBooksConnectionInfo>(DataBaseFactory)
+                .Save<QuickBooksConnectionInfo>();
+
+            var NewAuthCode = Guid.NewGuid().ToString();
+            var listFind = DataBaseFactory.Find<QuickBooksConnectionInfo>("WHERE ClientId = @0 ORDER BY RowNum", ClientId).ToList();
+            listFind.ToList().ForEach(x => x.AuthCode = NewAuthCode);
+            listFind.Save<QuickBooksConnectionInfo>();
+
+            list = DataBaseFactory.Find<QuickBooksConnectionInfo>("WHERE ClientId = @0 ORDER BY RowNum", ClientId).ToList();
+            var result = list.Where(x => x.AuthCode == NewAuthCode).Count() == listFind.Count();
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void DeleteList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var ClientId = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.ClientId = ClientId);
+            list.SetDataBaseFactory<QuickBooksConnectionInfo>(DataBaseFactory)
+                .Save();
+
+            var listFind = DataBaseFactory.Find<QuickBooksConnectionInfo>("WHERE ClientId = @0 ORDER BY RowNum", ClientId).ToList();
+            listFind.Delete();
+
+            var cnt = DataBaseFactory.Count<QuickBooksConnectionInfo>("WHERE ClientId = @0", ClientId);
+            var result = cnt == 0;
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
@@ -301,14 +366,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            await data.PatchAsync(new[] { "RequestState", "RequestState" });
+            await data.PatchAsync(new[] { "ClientSecret", "AuthCode" });
             DataBaseFactory.Commit();
 
             var dataGet = await DataBaseFactory.GetFromCacheAsync<QuickBooksConnectionInfo>(data.RowNum);
-            var result = dataGet.RequestState != dataOrig.RequestState &&
-                            dataGet.RequestState != dataOrig.RequestState &&
-                            dataGet.RequestState == newData.RequestState &&
-                            dataGet.RequestState == newData.RequestState;
+            var result = dataGet.ClientSecret != dataOrig.ClientSecret &&
+                            dataGet.AuthCode != dataOrig.AuthCode &&
+                            dataGet.ClientSecret == newData.ClientSecret &&
+                            dataGet.AuthCode == newData.AuthCode;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -378,6 +443,67 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task AddListAsync_Test()
+        {
+            var list = FakerData.Generate(10);
+            var ClientId = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.ClientId = ClientId);
+            await list
+                .SetDataBaseFactory<QuickBooksConnectionInfo>(DataBaseFactory)
+                .SaveAsync<QuickBooksConnectionInfo>();
+
+            var cnt = await DataBaseFactory.CountAsync<QuickBooksConnectionInfo>("WHERE ClientId = @0", ClientId);
+            var result = cnt.Equals(list.Count());
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task SaveListAsync_Test()
+        {
+            var list = FakerData.Generate(10);
+            var ClientId = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.ClientId = ClientId);
+            await list
+                .SetDataBaseFactory<QuickBooksConnectionInfo>(DataBaseFactory)
+                .SaveAsync<QuickBooksConnectionInfo>();
+
+            var NewAuthCode = Guid.NewGuid().ToString();
+            var listFind = (await DataBaseFactory.FindAsync<QuickBooksConnectionInfo>("WHERE ClientId = @0 ORDER BY RowNum", ClientId)).ToList();
+            listFind.ToList().ForEach(x => x.AuthCode = NewAuthCode);
+            await listFind.SaveAsync<QuickBooksConnectionInfo>();
+
+            list = DataBaseFactory.Find<QuickBooksConnectionInfo>("WHERE ClientId = @0 ORDER BY RowNum", ClientId).ToList();
+            var result = list.Where(x => x.AuthCode == NewAuthCode).Count() == listFind.Count();
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task DeleteListAsync_Test()
+        {
+            var list = FakerData.Generate(10);
+            var ClientId = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.ClientId = ClientId);
+            await list
+                .SetDataBaseFactory<QuickBooksConnectionInfo>(DataBaseFactory)
+                .SaveAsync();
+
+            var listFind = (await DataBaseFactory.FindAsync<QuickBooksConnectionInfo>("WHERE ClientId = @0 ORDER BY RowNum", ClientId)).ToList();
+            await listFind.DeleteAsync();
+
+            var cnt = await DataBaseFactory.CountAsync<QuickBooksConnectionInfo>("WHERE ClientId = @0", ClientId);
+            var result = cnt == 0;
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]

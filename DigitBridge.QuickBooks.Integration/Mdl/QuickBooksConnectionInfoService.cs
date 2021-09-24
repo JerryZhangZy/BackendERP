@@ -81,6 +81,11 @@ namespace DigitBridge.QuickBooks.Integration
             return await SaveDataAsync();
         }
 
+        public void Add()
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual bool Add(QuickBooksConnectionInfoPayload payload)
         {
             if (payload is null || !payload.HasQuickBooksConnectionInfo)

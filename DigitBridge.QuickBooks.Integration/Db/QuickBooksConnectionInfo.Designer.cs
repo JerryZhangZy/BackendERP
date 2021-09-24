@@ -42,11 +42,45 @@ namespace DigitBridge.QuickBooks.Integration
         public QuickBooksConnectionInfo(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         #region Fields - Generated 
+		[ResultColumn(Name = "ConnectionProfileNum", IncludeInAutoSelect = IncludeInAutoSelect.Yes)] 
+		protected long _connectionProfileNum; 
+		[XmlIgnore, IgnoreCompare] 
+		public virtual long ConnectionProfileNum
+		{
+			get => _connectionProfileNum;
+			set => _connectionProfileNum = value;
+		}
+		[XmlIgnore, IgnoreCompare] 
+		public override long RowNum
+		{
+			get => ConnectionProfileNum.ToLong();
+			set => ConnectionProfileNum = value.ToLong();
+		}
+		[JsonIgnore, XmlIgnore, IgnoreCompare] 
+		public override bool IsNew => ConnectionProfileNum <= 0; 
         [Column("MasterAccountNum",SqlDbType.Int,NotNull=true)]
         private int _masterAccountNum;
 
         [Column("ProfileNum",SqlDbType.Int,NotNull=true)]
         private int _profileNum;
+
+        [Column("ClientId",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
+        private string _clientId;
+
+        [Column("ClientSecret",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
+        private string _clientSecret;
+
+        [Column("RealmId",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _realmId;
+
+        [Column("AuthCode",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
+        private string _authCode;
+
+        [Column("RefreshToken",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
+        private string _refreshToken;
+
+        [Column("AccessToken",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
+        private string _accessToken;
 
         [Column("RequestState",SqlDbType.NVarChar)]
         private string _requestState;
@@ -111,6 +145,102 @@ namespace DigitBridge.QuickBooks.Integration
             {
 				_profileNum = value; 
 				OnPropertyChanged("ProfileNum", value);
+            }
+        }
+
+		/// <summary>
+		/// Encrypted,ClientId
+		/// </summary>
+        public virtual string ClientId
+        {
+            get
+            {
+				return _clientId?.TrimEnd(); 
+            }
+            set
+            {
+				_clientId = value.TruncateTo(500); 
+				OnPropertyChanged("ClientId", value);
+            }
+        }
+
+		/// <summary>
+		/// Encrypted,ClientSecret
+		/// </summary>
+        public virtual string ClientSecret
+        {
+            get
+            {
+				return _clientSecret?.TrimEnd(); 
+            }
+            set
+            {
+				_clientSecret = value.TruncateTo(500); 
+				OnPropertyChanged("ClientSecret", value);
+            }
+        }
+
+		/// <summary>
+		/// Encrypted,RealmId
+		/// </summary>
+        public virtual string RealmId
+        {
+            get
+            {
+				return _realmId?.TrimEnd(); 
+            }
+            set
+            {
+				_realmId = value.TruncateTo(200); 
+				OnPropertyChanged("RealmId", value);
+            }
+        }
+
+		/// <summary>
+		/// Encrypted,AuthCode
+		/// </summary>
+        public virtual string AuthCode
+        {
+            get
+            {
+				return _authCode?.TrimEnd(); 
+            }
+            set
+            {
+				_authCode = value.TruncateTo(200); 
+				OnPropertyChanged("AuthCode", value);
+            }
+        }
+
+		/// <summary>
+		/// RefreshToken
+		/// </summary>
+        public virtual string RefreshToken
+        {
+            get
+            {
+				return _refreshToken?.TrimEnd(); 
+            }
+            set
+            {
+				_refreshToken = value.TruncateTo(200); 
+				OnPropertyChanged("RefreshToken", value);
+            }
+        }
+
+		/// <summary>
+		/// AccessToken
+		/// </summary>
+        public virtual string AccessToken
+        {
+            get
+            {
+				return _accessToken?.TrimEnd(); 
+            }
+            set
+            {
+				_accessToken = value.TruncateTo(1500); 
+				OnPropertyChanged("AccessToken", value);
             }
         }
 
@@ -294,14 +424,22 @@ namespace DigitBridge.QuickBooks.Integration
         {
 			base.ClearMetaData(); 
 			ConnectionUuid = Guid.NewGuid().ToString(); 
+			_connectionProfileNum = 0; 
             return;
         }
 
         public override QuickBooksConnectionInfo Clear()
         {
             base.Clear();
+			_connectionProfileNum = default(long); 
 			_masterAccountNum = default(int); 
 			_profileNum = default(int); 
+			_clientId = String.Empty; 
+			_clientSecret = String.Empty; 
+			_realmId = String.Empty; 
+			_authCode = String.Empty; 
+			_refreshToken = String.Empty; 
+			_accessToken = String.Empty; 
 			_requestState = AllowNull ? (string)null : String.Empty; 
 			_qboOAuthTokenStatus = AllowNull ? (int?)null : default(int); 
 			_lastRefreshTokUpdate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
