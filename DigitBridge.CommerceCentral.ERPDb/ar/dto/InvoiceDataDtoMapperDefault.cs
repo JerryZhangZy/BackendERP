@@ -85,6 +85,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (dto.HasInvoiceTime) data.InvoiceTime = dto.InvoiceTime.ToTimeSpan();
             if (dto.HasDueDate) data.DueDate = dto.DueDate;
             if (dto.HasBillDate) data.BillDate = dto.BillDate;
+            if (dto.HasShipDate) data.ShipDate = dto.ShipDate;
             if (dto.HasCustomerUuid) data.CustomerUuid = dto.CustomerUuid;
             if (dto.HasCustomerCode) data.CustomerCode = dto.CustomerCode;
             if (dto.HasCustomerName) data.CustomerName = dto.CustomerName;
@@ -405,6 +406,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.DueDate = data.DueDate;
             if (!data.BillDate.IsZero())
                 dto.BillDate = data.BillDate;
+            if (!data.ShipDate.IsZero())
+                dto.ShipDate = data.ShipDate;
             dto.CustomerUuid = data.CustomerUuid;
             dto.CustomerCode = data.CustomerCode;
             dto.CustomerName = data.CustomerName;

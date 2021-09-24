@@ -167,10 +167,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBillDate => BillDate != null;
 
-		/// <summary>
-		/// Customer uuid, load from customer data. <br> Display: false, Editable: false
+        /// <summary>
+		/// Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
 		/// </summary>
-		[OpenApiPropertyDescription("Customer uuid, load from customer data. <br> Display: false, Editable: false")]
+		[OpenApiPropertyDescription("Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true")]
+        [DataType(DataType.DateTime)]
+        public DateTime? ShipDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasShipDate => ShipDate != null;
+
+        /// <summary>
+        /// Customer uuid, load from customer data. <br> Display: false, Editable: false
+        /// </summary>
+        [OpenApiPropertyDescription("Customer uuid, load from customer data. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The CustomerUuid value cannot exceed 50 characters. ")]
         public string CustomerUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
