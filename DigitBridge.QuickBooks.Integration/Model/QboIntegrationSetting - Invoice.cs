@@ -46,5 +46,9 @@ namespace DigitBridge.QuickBooks.Integration
         /// summary Tax cost id
         /// </summary>
         public int QboTaxId { get; set; }
+        public int QboEndCustomerPoNumCustFieldId { get; set; }
+        public int QboCustomerCreateRule { get; set; }
+        public object QboChnlOrderIdCustFieldId { get; set; }
+        public object Qbo2ndChnlOrderIdCustFieldId { get; set; }
     }
 }
