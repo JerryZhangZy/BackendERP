@@ -119,7 +119,7 @@ namespace DigitBridge.QuickBooks.Integration
                     Value = _setting.QboSalesTaxItemId.ToString(),
                     name = _setting.QboSalesTaxItemName,
                 }
-            }; 
+            };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
             line.Description = QboMappingConsts.SalesTaxItemDescription + invoiceHeader.InvoiceNumber;
@@ -140,7 +140,7 @@ namespace DigitBridge.QuickBooks.Integration
                 invoice.ShipDate = invoiceHeader.ShipDate.Value;
                 invoice.ShipDateSpecified = true;
                 invoice.TrackingNum = invoiceInfo.OrderShipmentNum.ToString();
-                invoice.ShipMethodRef = new ReferenceType() { Value = invoiceInfo.ShippingCarrier };
+                invoice.ShipMethodRef = new ReferenceType() { Value = invoiceInfo.ShippingCarrier + " " + invoiceInfo.ShippingClass };
             }
             //TODO
             //invoice.PrivateNote = invoiceInfo.s//qboSalesOrder.PrivateNote = fulfilledOrder.OrderHeader.SellerPrivateNote;
