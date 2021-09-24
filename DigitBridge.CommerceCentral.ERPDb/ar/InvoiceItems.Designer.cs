@@ -68,7 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private DateTime? _etaArrivalDate;
 
         [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _sku;
+        private string _sKU;
 
         [Column("ProductUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _productUuid;
@@ -95,7 +95,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private string _currency;
 
         [Column("UOM",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _uom;
+        private string _uOM;
 
         [Column("PackType",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _packType;
@@ -396,11 +396,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _sku?.TrimEnd(); 
+				return _sKU?.TrimEnd(); 
             }
             set
             {
-				_sku = value.TruncateTo(100); 
+                _sKU = value.TruncateTo(100); 
 				OnPropertyChanged("SKU", value);
             }
         }
@@ -540,11 +540,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _uom?.TrimEnd(); 
+				return _uOM?.TrimEnd(); 
             }
             set
             {
-				_uom = value.TruncateTo(50); 
+                _uOM = value.TruncateTo(50); 
 				OnPropertyChanged("UOM", value);
             }
         }
@@ -1339,8 +1339,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_itemDate = new DateTime().MinValueSql(); 
 			_itemTime = new TimeSpan().MinValueSql(); 
 			_shipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
-			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
-			_sku = String.Empty; 
+			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql();
+            _sKU = String.Empty; 
 			_productUuid = String.Empty; 
 			_inventoryUuid = String.Empty; 
 			_warehouseUuid = String.Empty; 
@@ -1348,8 +1348,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_lotNum = String.Empty; 
 			_description = String.Empty; 
 			_notes = String.Empty; 
-			_currency = String.Empty; 
-			_uom = String.Empty; 
+			_currency = String.Empty;
+            _uOM = String.Empty; 
 			_packType = String.Empty; 
 			_packQty = default(decimal); 
 			_orderPack = default(decimal); 
