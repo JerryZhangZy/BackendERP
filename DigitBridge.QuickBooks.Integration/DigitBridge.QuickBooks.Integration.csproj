@@ -10,8 +10,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPMdl\DigitBridge.CommerceCentral.ERPMdl.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Db\Dto\" />
     <Folder Include="Model\Enum\" />
   </ItemGroup>
 

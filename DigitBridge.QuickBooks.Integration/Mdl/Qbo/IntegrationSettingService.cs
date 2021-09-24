@@ -88,7 +88,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                 List<QboChnlAccSetting> accSettings =
                        accSettingsDtb.DatatableToList<QboChnlAccSetting>();
 
-                reponse.IntegrationSetting = intergrationSetting;
+                //reponse.IntegrationSetting = intergrationSetting;
                 reponse.ChnlAccSettings = accSettings;
 
                 return reponse;
