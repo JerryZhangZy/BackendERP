@@ -52,6 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string InvoiceTime(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.InvoiceTime AS {name ?? "InvoiceTime".ToCamelCase(camelCase)} ";
         public static string DueDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DueDate AS {name ?? "DueDate".ToCamelCase(camelCase)} ";
         public static string BillDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.BillDate AS {name ?? "BillDate".ToCamelCase(camelCase)} ";
+        public static string ShipDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShipDate AS {name ?? "ShipDate".ToCamelCase(camelCase)} ";
         public static string CustomerUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CustomerUuid) AS {name ?? "CustomerUuid".ToCamelCase(camelCase)} ";
         public static string CustomerCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CustomerCode) AS {name ?? "CustomerCode".ToCamelCase(camelCase)} ";
         public static string CustomerName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CustomerName) AS {name ?? "CustomerName".ToCamelCase(camelCase)} ";
@@ -105,6 +106,7 @@ RTRIM({allies}OrderNumber) AS OrderNumber,
 {allies}InvoiceTime AS InvoiceTime,
 {allies}DueDate AS DueDate,
 {allies}BillDate AS BillDate,
+{allies}ShipDate AS ShipDate,
 RTRIM({allies}CustomerUuid) AS CustomerUuid,
 RTRIM({allies}CustomerCode) AS CustomerCode,
 RTRIM({allies}CustomerName) AS CustomerName,
