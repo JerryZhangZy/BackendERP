@@ -125,12 +125,15 @@ namespace DigitBridge.QuickBooks.Integration
             line.Description = QboMappingConsts.SalesTaxItemDescription + invoiceHeader.InvoiceNumber;
             return line;
         }
-        protected Invoice ToQboInvoiceSummary(InvoiceData invoiceData, string customerId)
+
+        #region Map Qbo invoice 
+
+        protected Invoice ToQboInvoice(InvoiceData invoiceData)
         {
             var invoice = new Invoice();
             var invoiceHeader = invoiceData.InvoiceHeader;
             var invoiceInfo = invoiceData.InvoiceHeaderInfo;
-            invoice.CustomerRef = new ReferenceType() { Value = customerId };
+
             invoice.TotalAmt = invoiceHeader.TotalAmount;
             invoice.TxnDate = invoiceHeader.InvoiceDate;
             invoice.TxnDateSpecified = true;
@@ -147,6 +150,14 @@ namespace DigitBridge.QuickBooks.Integration
             //invoice.CustomerMemo = new MemoRef() { Value = qboSalesOrder.CustomerMemo };//qboSalesOrder.CustomerMemo = fulfilledOrder.OrderHeader.SellerPublicNote;
             invoice.DocNumber = invoiceHeader.InvoiceNumber;//qboSalesOrder.DocNumber = fulfilledOrder.OrderHeader.DigitbridgeOrderId;
 
+
+            AppendAddressToInvoice(invoice, invoiceInfo);
+            AppendCustomFieldToInvoice(invoice, invoiceInfo);
+            AppendCustomerToInvoice(invoice, invoiceHeader);
+            return invoice;
+        }
+        private void AppendCustomFieldToInvoice(Invoice invoice, InvoiceHeaderInfo invoiceInfo)
+        {
             // Map Invoice customized fields
             List<CustomField> customFields = new List<CustomField>();
 
@@ -169,35 +180,54 @@ namespace DigitBridge.QuickBooks.Integration
             customFields.Add(secChnlOrderIdCustomField);
 
             invoice.CustomField = customFields.ToArray();
-
+        }
+        private void AppendCustomerToInvoice(Invoice invoice, InvoiceHeader invoiceHeader)
+        {
+            string customerId;
             if (_setting.QboCustomerCreateRule == (int)CustomerCreateRule.PerMarketPlace)
             {
-                PhysicalAddress shippingAddress = new PhysicalAddress();
-                shippingAddress.Line1 = invoiceInfo.ShipToName;
-                shippingAddress.Line2 = invoiceInfo.ShipToAddressLine1;
-                shippingAddress.Line3 = invoiceInfo.ShipToAddressLine2;
-                shippingAddress.Line4 = invoiceInfo.ShipToAddressLine3;
-                shippingAddress.PostalCode = invoiceInfo.ShipToPostalCode;
-                shippingAddress.City = invoiceInfo.ShipToCity;
-                shippingAddress.Country = invoiceInfo.ShipToCountry;
-                shippingAddress.CountrySubDivisionCode = invoiceInfo.ShipToState;
-
-                invoice.ShipAddr = shippingAddress;
-
-                PhysicalAddress billingAddress = new PhysicalAddress();
-                billingAddress.Line1 = invoiceInfo.BillToName;
-                billingAddress.Line2 = invoiceInfo.BillToAddressLine1;
-                billingAddress.Line3 = invoiceInfo.BillToAddressLine2;
-                billingAddress.Line4 = invoiceInfo.BillToAddressLine3;
-                billingAddress.PostalCode = invoiceInfo.BillToPostalCode;
-                billingAddress.City = invoiceInfo.BillToCity;
-                billingAddress.Country = invoiceInfo.BillToCountry;
-                billingAddress.CountrySubDivisionCode = invoiceInfo.BillToState;
-
-                invoice.BillAddr = billingAddress;
+                //get ChannelQboCustomerId
+                customerId = CustomerMapper.GetMarketPlaceCustomer(_setting);
             }
-            return invoice;
+            else //if (_setting.QboCustomerCreateRule == (int)CustomerCreateRule.PerOrder)
+            {
+                customerId = invoiceHeader.CustomerCode;//todo check this.
+            }
+            invoice.CustomerRef = new ReferenceType() { Value = customerId };
         }
+        private void AppendAddressToInvoice(Invoice invoice, InvoiceHeaderInfo invoiceInfo)
+        {
+            if (_setting.QboCustomerCreateRule != (int)CustomerCreateRule.PerMarketPlace)
+            {
+                return;
+            }
+            PhysicalAddress shippingAddress = new PhysicalAddress();
+            shippingAddress.Line1 = invoiceInfo.ShipToName;
+            shippingAddress.Line2 = invoiceInfo.ShipToAddressLine1;
+            shippingAddress.Line3 = invoiceInfo.ShipToAddressLine2;
+            shippingAddress.Line4 = invoiceInfo.ShipToAddressLine3;
+            shippingAddress.PostalCode = invoiceInfo.ShipToPostalCode;
+            shippingAddress.City = invoiceInfo.ShipToCity;
+            shippingAddress.Country = invoiceInfo.ShipToCountry;
+            shippingAddress.CountrySubDivisionCode = invoiceInfo.ShipToState;
+
+            invoice.ShipAddr = shippingAddress;
+
+            PhysicalAddress billingAddress = new PhysicalAddress();
+            billingAddress.Line1 = invoiceInfo.BillToName;
+            billingAddress.Line2 = invoiceInfo.BillToAddressLine1;
+            billingAddress.Line3 = invoiceInfo.BillToAddressLine2;
+            billingAddress.Line4 = invoiceInfo.BillToAddressLine3;
+            billingAddress.PostalCode = invoiceInfo.BillToPostalCode;
+            billingAddress.City = invoiceInfo.BillToCity;
+            billingAddress.Country = invoiceInfo.BillToCountry;
+            billingAddress.CountrySubDivisionCode = invoiceInfo.BillToState;
+
+            invoice.BillAddr = billingAddress;
+        }
+
+        #endregion
+
         protected IList<Line> ItemsToQboLine(IList<InvoiceItems> items)
         {
             var lines = new List<Line>();
@@ -206,8 +236,7 @@ namespace DigitBridge.QuickBooks.Integration
                 lines.Add(ItemToQboLine(item));
             }
             return lines;
-        }
-
+        } 
         protected List<Line> ToQboLines(InvoiceData invoiceData)
         {
             var lines = new List<Line>();
@@ -220,9 +249,9 @@ namespace DigitBridge.QuickBooks.Integration
                 lines.Add(TaxCostToQboLine(invoiceData.InvoiceHeader));
             return lines;
         }
-        public Invoice ToQboInvoice(InvoiceData invoiceData, string customerId)
+        public Invoice ToInvoice(InvoiceData invoiceData)
         {
-            var invoice = ToQboInvoiceSummary(invoiceData, customerId);
+            var invoice = ToQboInvoice(invoiceData);
             invoice.Line = ToQboLines(invoiceData).ToArray();
             return invoice;
         }
