@@ -17,6 +17,7 @@
 	[InvoiceTime] TIME NOT NULL, --Invoice time. <br> Title: Time, Display: true, Editable: true
 	[DueDate] DATE NULL, --Balance Due date. <br> Title: Date, Display: true, Editable: false
 	[BillDate] DATE NULL, --(Ignore) Next Billing date.
+	[ShipDate] DATE NULL, --Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
 
 	[CustomerUuid] VARCHAR(50) NOT NULL, --Customer uuid, load from customer data. <br> Display: false, Editable: false
 	[CustomerCode] VARCHAR(50) NOT NULL DEFAULT '', --Customer number. use DatabaseNum-CustomerCode too load customer data. <br> Title: Customer Number, Display: true, Editable: true

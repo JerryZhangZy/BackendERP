@@ -16,6 +16,7 @@
   <ItemGroup>
     <Folder Include="Db\Dto\" />
     <Folder Include="Model\Enum\" />
+    <Folder Include="Doc\" />
   </ItemGroup>
 
 </Project>

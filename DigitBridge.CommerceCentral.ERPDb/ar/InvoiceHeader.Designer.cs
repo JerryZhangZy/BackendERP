@@ -81,6 +81,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("BillDate",SqlDbType.Date)]
         private DateTime? _billDate;
 
+        [Column("ShipDate",SqlDbType.Date)]
+        private DateTime? _shipDate;
+
         [Column("CustomerUuid",SqlDbType.VarChar,NotNull=true)]
         private string _customerUuid;
 
@@ -395,6 +398,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				{
 					_billDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
 					OnPropertyChanged("BillDate", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
+		/// </summary>
+        public virtual DateTime? ShipDate
+        {
+            get
+            {
+				if (!AllowNull && _shipDate is null) 
+					_shipDate = new DateTime().MinValueSql(); 
+				return _shipDate; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_shipDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("ShipDate", value);
 				}
             }
         }
@@ -925,6 +949,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_invoiceTime = new TimeSpan().MinValueSql(); 
 			_dueDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_billDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_shipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_customerUuid = String.Empty; 
 			_customerCode = String.Empty; 
 			_customerName = String.Empty; 
