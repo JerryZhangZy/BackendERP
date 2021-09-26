@@ -267,6 +267,23 @@ namespace DigitBridge.QuickBooks.Integration
             return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
         }
 
+        public virtual IList<QuickBooksConnectionInfoData> GetDataByPayload(IPayload payload)
+        {
+            var rowNumList = new List<long>();
+            using(var trx=new ScopedTransaction(dbFactory))
+            {
+                rowNumList = QuickBooksConnectionInfoServiceHelper.GetRowNumsByAccount(payload.MasterAccountNum, payload.ProfileNum);
+            }
+            var resultlist = new List<QuickBooksConnectionInfoData>();
+            foreach(var rowNum in rowNumList)
+            {
+                NewData();
+                if (GetData(rowNum))
+                    resultlist.Add(Data);
+            }
+            return resultlist;
+        }
+
         /// <summary>
         /// Delete data by number
         /// </summary>

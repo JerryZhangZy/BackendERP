@@ -8,8 +8,7 @@ namespace DigitBridge.QuickBooks.Integration.Model
 {
     public class IntegrationSettingApiRespondType
     {
-        public QboIntegrationSetting IntegrationSetting { get; set; }
-        public List<QboChnlAccSetting> ChnlAccSettings { get; set; }
+        public QuickBooksSettingInfoData SettingInfo { get; set; }
     }
 
     public class IntegrationSettingApiReqType

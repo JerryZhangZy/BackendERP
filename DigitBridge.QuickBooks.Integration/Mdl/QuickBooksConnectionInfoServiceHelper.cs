@@ -190,6 +190,21 @@ AND OrderNumber = @number
             return 0;
         }
 
+        public static List<long> GetRowNumsByAccount(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT ConnectionProfileNum FROM QuickBooksConnectionInfo tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+
+            return SqlQuery.Execute(
+                sql,
+                (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"));
+        }
+        
+
         public static List<long> GetRowNumsByNums(IList<string> nums, int masterAccountNum, int profileNum)
         {
 /*

@@ -34,7 +34,7 @@ namespace DigitBridge.QuickBooks.Integration
     [ExplicitColumns]
     [TableName("QuickBooksChnlAccSetting")]
     [PrimaryKey("RowNum", AutoIncrement = true)]
-    [UniqueId("SettingUuid")]
+    [UniqueId("ChnlAccSettingUuid")]
     [DtoName("QuickBooksChnlAccSettingDto")]
     public partial class QuickBooksChnlAccSetting : TableRepository<QuickBooksChnlAccSetting, long>
     {
@@ -55,6 +55,9 @@ namespace DigitBridge.QuickBooks.Integration
         [Column("SettingUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _settingUuid;
 
+        [Column("ChnlAccSettingUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _chnlAccSettingUuid;
+
         [Column("ChannelAccountName",SqlDbType.NVarChar,NotNull=true)]
         private string _channelAccountName;
 
@@ -74,11 +77,11 @@ namespace DigitBridge.QuickBooks.Integration
 
         #region Properties - Generated 
 		[IgnoreCompare] 
-		public override string UniqueId => SettingUuid; 
+		public override string UniqueId => ChnlAccSettingUuid; 
 		public override void CheckUniqueId() 
 		{
-			if (string.IsNullOrEmpty(SettingUuid)) 
-				SettingUuid = Guid.NewGuid().ToString(); 
+			if (string.IsNullOrEmpty(ChnlAccSettingUuid)) 
+				ChnlAccSettingUuid = Guid.NewGuid().ToString(); 
 		}
 		/// <summary>
 		/// (Readonly) Database Number. <br> Display: false, Editable: false.
@@ -141,6 +144,22 @@ namespace DigitBridge.QuickBooks.Integration
             {
 				_settingUuid = value.TruncateTo(50); 
 				OnPropertyChanged("SettingUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// ChnlAccSetting uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string ChnlAccSettingUuid
+        {
+            get
+            {
+				return _chnlAccSettingUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_chnlAccSettingUuid = value.TruncateTo(50); 
+				OnPropertyChanged("ChnlAccSettingUuid", value);
             }
         }
 
@@ -273,7 +292,7 @@ namespace DigitBridge.QuickBooks.Integration
         public override void ClearMetaData()
         {
 			base.ClearMetaData(); 
-			SettingUuid = Guid.NewGuid().ToString(); 
+			ChnlAccSettingUuid = Guid.NewGuid().ToString(); 
             return;
         }
 
@@ -284,6 +303,7 @@ namespace DigitBridge.QuickBooks.Integration
 			_masterAccountNum = default(int); 
 			_profileNum = default(int); 
 			_settingUuid = String.Empty; 
+			_chnlAccSettingUuid = String.Empty; 
 			_channelAccountName = String.Empty; 
 			_channelAccountNum = default(int); 
 			_jsonFields = String.Empty; 

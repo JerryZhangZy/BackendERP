@@ -33,16 +33,16 @@ namespace DigitBridge.QuickBooks.Integration
         public QuickBooksSettingInfoData(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         [JsonIgnore, XmlIgnore]
-        public new bool IsNew => QuickBooksChnlAccSetting.IsNew;
+        public new bool IsNew => QuickBooksIntegrationSetting.IsNew;
 
         [JsonIgnore, XmlIgnore]
-        public new string UniqueId => QuickBooksChnlAccSetting.UniqueId;
+        public new string UniqueId => QuickBooksIntegrationSetting.UniqueId;
         
 		 [JsonIgnore, XmlIgnore] 
-		public static string QuickBooksChnlAccSettingTable ="QuickBooksChnlAccSetting ";
+		public static string QuickBooksIntegrationSettingTable ="QuickBooksIntegrationSetting ";
 		
 		 [JsonIgnore, XmlIgnore] 
-		public static string QuickBooksIntegrationSettingTable ="QuickBooksIntegrationSetting ";
+		public static string QuickBooksChnlAccSettingTable ="QuickBooksChnlAccSetting ";
 		
         #region CRUD Methods
 
@@ -55,13 +55,13 @@ namespace DigitBridge.QuickBooks.Integration
         }
         public virtual bool ChildrenEquals(QuickBooksSettingInfoData other)
         {
-			if (QuickBooksChnlAccSetting == null && other.QuickBooksChnlAccSetting != null || QuickBooksChnlAccSetting != null && other.QuickBooksChnlAccSetting == null) 
-				return false; 
-			if (QuickBooksChnlAccSetting != null && other.QuickBooksChnlAccSetting != null && !QuickBooksChnlAccSetting.Equals(other.QuickBooksChnlAccSetting)) 
-				return false; 
 			if (QuickBooksIntegrationSetting == null && other.QuickBooksIntegrationSetting != null || QuickBooksIntegrationSetting != null && other.QuickBooksIntegrationSetting == null) 
 				return false; 
 			if (QuickBooksIntegrationSetting != null && other.QuickBooksIntegrationSetting != null && !QuickBooksIntegrationSetting.Equals(other.QuickBooksIntegrationSetting)) 
+				return false; 
+			if (QuickBooksChnlAccSetting == null && other.QuickBooksChnlAccSetting != null || QuickBooksChnlAccSetting != null && other.QuickBooksChnlAccSetting == null) 
+				return false; 
+			if (QuickBooksChnlAccSetting != null && other.QuickBooksChnlAccSetting != null && !QuickBooksChnlAccSetting.EqualsList(other.QuickBooksChnlAccSetting)) 
 				return false; 
             return true;
         }
@@ -69,9 +69,9 @@ namespace DigitBridge.QuickBooks.Integration
         // Check Children table Integrity
         public override QuickBooksSettingInfoData CheckIntegrity()
         {
-			if (QuickBooksChnlAccSetting is null) return this; 
-			QuickBooksChnlAccSetting.CheckIntegrity(); 
-			CheckIntegrityQuickBooksIntegrationSetting(); 
+			if (QuickBooksIntegrationSetting is null) return this; 
+			QuickBooksIntegrationSetting.CheckIntegrity(); 
+			CheckIntegrityQuickBooksChnlAccSetting(); 
 			CheckIntegrityOthers(); 
             return this;
         }
@@ -79,8 +79,9 @@ namespace DigitBridge.QuickBooks.Integration
         partial void ClearOthers();
         public override void Clear()
         {
-			QuickBooksChnlAccSetting?.Clear(); 
 			QuickBooksIntegrationSetting?.Clear(); 
+			QuickBooksChnlAccSetting = new List<QuickBooksChnlAccSetting>(); 
+			ClearQuickBooksChnlAccSettingDeleted(); 
 			ClearOthers(); 
 			if (_OnClear != null)
 				_OnClear(this);
@@ -90,15 +91,17 @@ namespace DigitBridge.QuickBooks.Integration
         public override void New()
         {
             Clear();
-			QuickBooksChnlAccSetting = NewQuickBooksChnlAccSetting(); 
 			QuickBooksIntegrationSetting = NewQuickBooksIntegrationSetting(); 
+			QuickBooksChnlAccSetting = new List<QuickBooksChnlAccSetting>(); 
+			AddQuickBooksChnlAccSetting(NewQuickBooksChnlAccSetting()); 
+			ClearQuickBooksChnlAccSettingDeleted(); 
             return;
         }
 
         public virtual void CopyFrom(QuickBooksSettingInfoData data)
         {
-			CopyQuickBooksChnlAccSettingFrom(data); 
 			CopyQuickBooksIntegrationSettingFrom(data); 
+			CopyQuickBooksChnlAccSettingFrom(data); 
             CheckIntegrity();
             return;
         }
@@ -108,17 +111,17 @@ namespace DigitBridge.QuickBooks.Integration
 			var newData = new QuickBooksSettingInfoData(); 
 			newData.New(); 
 			newData?.CopyFrom(this); 
-			newData.QuickBooksChnlAccSetting.ClearMetaData(); 
 			newData.QuickBooksIntegrationSetting.ClearMetaData(); 
+			newData.QuickBooksChnlAccSetting.ClearMetaData(); 
             newData.CheckIntegrity();
             return newData;
         }
 
         public override bool Get(long RowNum)
         {
-			var obj = GetQuickBooksChnlAccSetting(RowNum); 
+			var obj = GetQuickBooksIntegrationSetting(RowNum); 
 			if (obj is null) return false; 
-			QuickBooksChnlAccSetting = obj; 
+			QuickBooksIntegrationSetting = obj; 
 			GetOthers(); 
 			if (_OnAfterLoad != null)
 				_OnAfterLoad(this);
@@ -127,9 +130,9 @@ namespace DigitBridge.QuickBooks.Integration
 
         public override bool GetById(string SettingUuid)
         {
-			var obj = GetQuickBooksChnlAccSettingBySettingUuid(SettingUuid); 
+			var obj = GetQuickBooksIntegrationSettingBySettingUuid(SettingUuid); 
 			if (obj is null) return false; 
-			QuickBooksChnlAccSetting = obj; 
+			QuickBooksIntegrationSetting = obj; 
 			GetOthers(); 
 			if (_OnAfterLoad != null)
 				_OnAfterLoad(this);
@@ -139,28 +142,31 @@ namespace DigitBridge.QuickBooks.Integration
         protected virtual void GetOthers()
         {
             
-			if (string.IsNullOrEmpty(QuickBooksChnlAccSetting.SettingUuid)) return; 
-			QuickBooksIntegrationSetting = GetQuickBooksIntegrationSettingBySettingUuid(QuickBooksChnlAccSetting.SettingUuid); 
+			if (string.IsNullOrEmpty(QuickBooksIntegrationSetting.SettingUuid)) return; 
+			QuickBooksChnlAccSetting = GetQuickBooksChnlAccSettingBySettingUuid(QuickBooksIntegrationSetting.SettingUuid); 
         }
 
         public override bool Save()
         {
-			if (QuickBooksChnlAccSetting is null || string.IsNullOrEmpty(QuickBooksChnlAccSetting.SettingUuid)) return false; 
+			if (QuickBooksIntegrationSetting is null || string.IsNullOrEmpty(QuickBooksIntegrationSetting.SettingUuid)) return false; 
 			CheckIntegrity();
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin();
 
-			 if (NeedSave(QuickBooksChnlAccSettingTable))
-			{
-				QuickBooksChnlAccSetting.SetDataBaseFactory(dbFactory);
-				if (!QuickBooksChnlAccSetting.Save()) return false;
-			}
-
 			 if (NeedSave(QuickBooksIntegrationSettingTable))
 			{
-				if (QuickBooksIntegrationSetting != null) 
-					QuickBooksIntegrationSetting.SetDataBaseFactory(dbFactory)?.Save();
+				QuickBooksIntegrationSetting.SetDataBaseFactory(dbFactory);
+				if (!QuickBooksIntegrationSetting.Save()) return false;
+			}
+
+			 if (NeedSave(QuickBooksChnlAccSettingTable))
+			{
+				if (QuickBooksChnlAccSetting != null) 
+					QuickBooksChnlAccSetting.SetDataBaseFactory(dbFactory)?.Save();
+				var delQuickBooksChnlAccSetting = _QuickBooksChnlAccSettingDeleted;
+				if (delQuickBooksChnlAccSetting != null)
+					delQuickBooksChnlAccSetting.SetDataBaseFactory(dbFactory)?.Delete();
 			}
 
 			if (_OnSave != null)
@@ -179,20 +185,20 @@ namespace DigitBridge.QuickBooks.Integration
 
         public override bool Delete()
         {
-			if (QuickBooksChnlAccSetting is null || string.IsNullOrEmpty(QuickBooksChnlAccSetting.SettingUuid)) return false; 
+			if (QuickBooksIntegrationSetting is null || string.IsNullOrEmpty(QuickBooksIntegrationSetting.SettingUuid)) return false; 
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
 
-			 if (NeedDelete(QuickBooksChnlAccSettingTable))
-			{
-				QuickBooksChnlAccSetting.SetDataBaseFactory(dbFactory); 
-				if (QuickBooksChnlAccSetting.Delete() <= 0) return false; 
-			}
 			 if (NeedDelete(QuickBooksIntegrationSettingTable))
 			{
-				if (QuickBooksIntegrationSetting != null) 
-					QuickBooksIntegrationSetting?.SetDataBaseFactory(dbFactory)?.Delete(); 
+				QuickBooksIntegrationSetting.SetDataBaseFactory(dbFactory); 
+				if (QuickBooksIntegrationSetting.Delete() <= 0) return false; 
+			}
+			 if (NeedDelete(QuickBooksChnlAccSettingTable))
+			{
+				if (QuickBooksChnlAccSetting != null) 
+					QuickBooksChnlAccSetting?.SetDataBaseFactory(dbFactory)?.Delete(); 
 			}
 			if (_OnDelete != null)
 			{
@@ -211,9 +217,9 @@ namespace DigitBridge.QuickBooks.Integration
 
         public override async Task<bool> GetAsync(long RowNum)
         {
-			var obj = await GetQuickBooksChnlAccSettingAsync(RowNum); 
+			var obj = await GetQuickBooksIntegrationSettingAsync(RowNum); 
 			if (obj is null) return false; 
-			QuickBooksChnlAccSetting = obj; 
+			QuickBooksIntegrationSetting = obj; 
 			await GetOthersAsync(); 
 			if (_OnAfterLoad != null)
 				_OnAfterLoad(this);
@@ -222,9 +228,9 @@ namespace DigitBridge.QuickBooks.Integration
 
         public override async Task<bool> GetByIdAsync(string SettingUuid)
         {
-			var obj = await GetQuickBooksChnlAccSettingBySettingUuidAsync(SettingUuid); 
+			var obj = await GetQuickBooksIntegrationSettingBySettingUuidAsync(SettingUuid); 
 			if (obj is null) return false; 
-			QuickBooksChnlAccSetting = obj; 
+			QuickBooksIntegrationSetting = obj; 
 			await GetOthersAsync(); 
 			if (_OnAfterLoad != null)
 				_OnAfterLoad(this);
@@ -234,27 +240,30 @@ namespace DigitBridge.QuickBooks.Integration
         protected virtual async Task GetOthersAsync()
         {
             
-			if (string.IsNullOrEmpty(QuickBooksChnlAccSetting.SettingUuid)) return; 
-			QuickBooksIntegrationSetting = await GetQuickBooksIntegrationSettingBySettingUuidAsync(QuickBooksChnlAccSetting.SettingUuid); 
+			if (string.IsNullOrEmpty(QuickBooksIntegrationSetting.SettingUuid)) return; 
+			QuickBooksChnlAccSetting = await GetQuickBooksChnlAccSettingBySettingUuidAsync(QuickBooksIntegrationSetting.SettingUuid); 
         }
 
         public override async Task<bool> SaveAsync()
         {
-			if (QuickBooksChnlAccSetting is null || string.IsNullOrEmpty(QuickBooksChnlAccSetting.SettingUuid)) return false; 
+			if (QuickBooksIntegrationSetting is null || string.IsNullOrEmpty(QuickBooksIntegrationSetting.SettingUuid)) return false; 
 			CheckIntegrity(); 
 			if (_OnBeforeSave != null)
 				if (!_OnBeforeSave(this)) return false;
 			dbFactory.Begin(); 
 
-			 if (NeedSave(QuickBooksChnlAccSettingTable))
-			{
-				QuickBooksChnlAccSetting.SetDataBaseFactory(dbFactory); 
-				if (!(await QuickBooksChnlAccSetting.SaveAsync())) return false; 
-			}
 			 if (NeedSave(QuickBooksIntegrationSettingTable))
 			{
-				if (QuickBooksIntegrationSetting != null) 
-					await QuickBooksIntegrationSetting.SetDataBaseFactory(dbFactory).SaveAsync(); 
+				QuickBooksIntegrationSetting.SetDataBaseFactory(dbFactory); 
+				if (!(await QuickBooksIntegrationSetting.SaveAsync())) return false; 
+			}
+			 if (NeedSave(QuickBooksChnlAccSettingTable))
+			{
+				if (QuickBooksChnlAccSetting != null) 
+					await QuickBooksChnlAccSetting.SetDataBaseFactory(dbFactory).SaveAsync(); 
+				var delQuickBooksChnlAccSetting = _QuickBooksChnlAccSettingDeleted;
+				if (delQuickBooksChnlAccSetting != null)
+					await delQuickBooksChnlAccSetting.SetDataBaseFactory(dbFactory).DeleteAsync();
 			}
 
 			if (_OnSave != null)
@@ -273,19 +282,19 @@ namespace DigitBridge.QuickBooks.Integration
 
         public override async Task<bool> DeleteAsync()
         {
-			if (QuickBooksChnlAccSetting is null || string.IsNullOrEmpty(QuickBooksChnlAccSetting.SettingUuid)) return false; 
+			if (QuickBooksIntegrationSetting is null || string.IsNullOrEmpty(QuickBooksIntegrationSetting.SettingUuid)) return false; 
 			if (_OnBeforeDelete != null)
 				if (!_OnBeforeDelete(this)) return false;
 			dbFactory.Begin(); 
-			 if (NeedDelete(QuickBooksChnlAccSettingTable))
-			{
-			QuickBooksChnlAccSetting.SetDataBaseFactory(dbFactory); 
-			if ((await QuickBooksChnlAccSetting.DeleteAsync()) <= 0) return false; 
-			}
 			 if (NeedDelete(QuickBooksIntegrationSettingTable))
 			{
-				if (QuickBooksIntegrationSetting != null) 
-					await QuickBooksIntegrationSetting.SetDataBaseFactory(dbFactory).DeleteAsync(); 
+			QuickBooksIntegrationSetting.SetDataBaseFactory(dbFactory); 
+			if ((await QuickBooksIntegrationSetting.DeleteAsync()) <= 0) return false; 
+			}
+			 if (NeedDelete(QuickBooksChnlAccSettingTable))
+			{
+				if (QuickBooksChnlAccSetting != null) 
+					await QuickBooksChnlAccSetting.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			if (_OnDelete != null)
 			{
@@ -303,52 +312,6 @@ namespace DigitBridge.QuickBooks.Integration
 
         #endregion CRUD Methods
 
-
-        #region QuickBooksChnlAccSetting - Generated 
-    
-
-        // one to one children
-        protected QuickBooksChnlAccSetting _QuickBooksChnlAccSetting;
-
-        public virtual QuickBooksChnlAccSetting QuickBooksChnlAccSetting 
-        { 
-            get => _QuickBooksChnlAccSetting;
-            set => _QuickBooksChnlAccSetting = value?.SetParent(this); 
-        }
-
-        public virtual void CopyQuickBooksChnlAccSettingFrom(QuickBooksSettingInfoData data) => 
-            QuickBooksChnlAccSetting?.CopyFrom(data.QuickBooksChnlAccSetting, new string[] {"SettingUuid"});
-
-        public virtual QuickBooksChnlAccSetting NewQuickBooksChnlAccSetting() => new QuickBooksChnlAccSetting(dbFactory).SetParent(this);
-
-        public virtual QuickBooksChnlAccSetting GetQuickBooksChnlAccSetting(long RowNum) =>
-            (RowNum <= 0) ? null : dbFactory.Get<QuickBooksChnlAccSetting>(RowNum);
-
-        public virtual QuickBooksChnlAccSetting GetQuickBooksChnlAccSettingBySettingUuid(string SettingUuid) =>
-            (string.IsNullOrEmpty(SettingUuid)) ? null : dbFactory.GetById<QuickBooksChnlAccSetting>(SettingUuid);
-
-        public virtual bool SaveQuickBooksChnlAccSetting(QuickBooksChnlAccSetting data) =>
-            (data is null) ? false : data.Save();
-
-        public virtual int DeleteQuickBooksChnlAccSetting(QuickBooksChnlAccSetting data) =>
-            (data is null) ? 0 : data.Delete();
-
-        public virtual async Task<QuickBooksChnlAccSetting> GetQuickBooksChnlAccSettingAsync(long RowNum) =>
-            (RowNum <= 0) ? null : await dbFactory.GetAsync<QuickBooksChnlAccSetting>(RowNum);
-
-        public virtual async Task<QuickBooksChnlAccSetting> GetQuickBooksChnlAccSettingBySettingUuidAsync(string SettingUuid) =>
-            (string.IsNullOrEmpty(SettingUuid)) ? null : await dbFactory.GetByIdAsync<QuickBooksChnlAccSetting>(SettingUuid);
-
-        public virtual async Task<bool> SaveQuickBooksChnlAccSettingAsync(QuickBooksChnlAccSetting data) =>
-            (data is null) ? false : await data.SaveAsync();
-
-        public virtual async Task<int> DeleteQuickBooksChnlAccSettingAsync(QuickBooksChnlAccSetting data) =>
-            (data is null) ? 0 : await data.DeleteAsync();
-
-
-
-
-        #endregion QuickBooksChnlAccSetting - Generated 
 
         #region QuickBooksIntegrationSetting - Generated 
     
@@ -391,20 +354,123 @@ namespace DigitBridge.QuickBooks.Integration
         public virtual async Task<int> DeleteQuickBooksIntegrationSettingAsync(QuickBooksIntegrationSetting data) =>
             (data is null) ? 0 : await data.DeleteAsync();
 
-        public virtual QuickBooksIntegrationSetting CheckIntegrityQuickBooksIntegrationSetting()
-        {
-            if (QuickBooksIntegrationSetting is null || QuickBooksChnlAccSetting is null) 
-                return QuickBooksIntegrationSetting;
-            QuickBooksIntegrationSetting.SetParent(this);
-            if (QuickBooksIntegrationSetting.SettingUuid != QuickBooksChnlAccSetting.SettingUuid)
-                QuickBooksIntegrationSetting.SettingUuid = QuickBooksChnlAccSetting.SettingUuid;
-            QuickBooksIntegrationSetting.CheckIntegrity();
-            return QuickBooksIntegrationSetting;
-        }
 
 
 
         #endregion QuickBooksIntegrationSetting - Generated 
+
+        #region QuickBooksChnlAccSetting - Generated 
+        // One to many children
+        protected IList<QuickBooksChnlAccSetting> _QuickBooksChnlAccSettingDeleted;
+        public virtual QuickBooksChnlAccSetting AddQuickBooksChnlAccSettingDeleted(QuickBooksChnlAccSetting del) 
+        {
+            if (_QuickBooksChnlAccSettingDeleted is null)
+                _QuickBooksChnlAccSettingDeleted = new List<QuickBooksChnlAccSetting>();
+            var lst = _QuickBooksChnlAccSettingDeleted.ToList();
+            lst.Add(del);
+            _QuickBooksChnlAccSettingDeleted = lst;
+            return del;
+        } 
+
+        public virtual IList<QuickBooksChnlAccSetting> AddQuickBooksChnlAccSettingDeleted(IList<QuickBooksChnlAccSetting> del) 
+        {
+            if (_QuickBooksChnlAccSettingDeleted is null)
+                _QuickBooksChnlAccSettingDeleted = new List<QuickBooksChnlAccSetting>();
+            var lst = _QuickBooksChnlAccSettingDeleted.ToList();
+            lst.AddRange(del);
+            _QuickBooksChnlAccSettingDeleted = lst;
+            return del;
+        } 
+
+        public virtual void SetQuickBooksChnlAccSettingDeleted(IList<QuickBooksChnlAccSetting> del) =>
+            _QuickBooksChnlAccSettingDeleted = del;
+
+        public virtual void ClearQuickBooksChnlAccSettingDeleted() =>
+            _QuickBooksChnlAccSettingDeleted = null;
+
+
+        protected IList<QuickBooksChnlAccSetting> _QuickBooksChnlAccSetting;
+
+        public virtual IList<QuickBooksChnlAccSetting> QuickBooksChnlAccSetting 
+        { 
+            get 
+            {
+                if (_QuickBooksChnlAccSetting is null)
+                    _QuickBooksChnlAccSetting = new List<QuickBooksChnlAccSetting>();
+                return _QuickBooksChnlAccSetting;
+            } 
+            set
+            {
+                if (value != null)
+                {
+                    var valueList = value.ToList();
+                    valueList.ForEach(i => i?.SetParent(this));
+                    _QuickBooksChnlAccSetting = valueList;
+                }
+                else
+                    _QuickBooksChnlAccSetting = null;
+            } 
+        }
+
+        public virtual void CopyQuickBooksChnlAccSettingFrom(QuickBooksSettingInfoData data) 
+        {
+            if  (data is null) return;
+            var lstDeleted = QuickBooksChnlAccSetting?.CopyFrom(data.QuickBooksChnlAccSetting, new string[] {"SettingUuid"});
+            SetQuickBooksChnlAccSettingDeleted(lstDeleted);
+            foreach (var c in QuickBooksChnlAccSetting)
+                c?.CopyChildrenFrom(data.QuickBooksChnlAccSetting?.FindByRowNum(c.RowNum));
+        } 
+
+        public virtual QuickBooksChnlAccSetting NewQuickBooksChnlAccSetting() => new QuickBooksChnlAccSetting(dbFactory);
+
+        public virtual QuickBooksChnlAccSetting AddQuickBooksChnlAccSetting(QuickBooksChnlAccSetting obj) => 
+            QuickBooksChnlAccSetting.AddOrReplace(obj.SetParent(this));
+
+        public virtual QuickBooksChnlAccSetting RemoveQuickBooksChnlAccSetting(QuickBooksChnlAccSetting obj) => 
+            AddQuickBooksChnlAccSettingDeleted(QuickBooksChnlAccSetting.RemoveObject(obj.SetParent(this)));
+
+        public virtual IList<QuickBooksChnlAccSetting> GetQuickBooksChnlAccSettingBySettingUuid(string SettingUuid) =>
+            (string.IsNullOrEmpty(SettingUuid)) 
+                ? null 
+                : dbFactory.Find<QuickBooksChnlAccSetting>("WHERE SettingUuid = @0 ORDER BY RowNum ", SettingUuid).ToList();
+
+        public virtual bool SaveQuickBooksChnlAccSetting(IList<QuickBooksChnlAccSetting> data) =>
+            (data is null) ? false : data.Save();
+
+        public virtual int DeleteQuickBooksChnlAccSetting(IList<QuickBooksChnlAccSetting> data) =>
+            (data is null) ? 0 : data.Delete();
+
+        public virtual async Task<IList<QuickBooksChnlAccSetting>> GetQuickBooksChnlAccSettingBySettingUuidAsync(string SettingUuid) =>
+            (string.IsNullOrEmpty(SettingUuid)) 
+                ? null
+                : (await dbFactory.FindAsync<QuickBooksChnlAccSetting>("WHERE SettingUuid = @0 ORDER BY RowNum ", SettingUuid)).ToList();
+
+        public virtual async Task<bool> SaveQuickBooksChnlAccSettingAsync(IList<QuickBooksChnlAccSetting> data) =>
+            (data is null) ? false : await data.SaveAsync();
+
+        public virtual async Task<int> DeleteQuickBooksChnlAccSettingAsync(IList<QuickBooksChnlAccSetting> data) =>
+            (data is null) ? 0 : await data.DeleteAsync();
+
+        public virtual IList<QuickBooksChnlAccSetting> CheckIntegrityQuickBooksChnlAccSetting()
+        {
+            if (QuickBooksChnlAccSetting is null || QuickBooksIntegrationSetting is null) 
+                return QuickBooksChnlAccSetting;
+            var seq = 0;
+            QuickBooksChnlAccSetting.RemoveEmpty();
+            var children = QuickBooksChnlAccSetting.ToList();
+            foreach (var child in children.Where(x => x != null))
+            {
+                child.SetParent(this);
+                if (child.SettingUuid != QuickBooksIntegrationSetting.SettingUuid)
+                    child.SettingUuid = QuickBooksIntegrationSetting.SettingUuid;
+                child.CheckIntegrity();
+            }
+            return children;
+        }
+
+
+
+        #endregion QuickBooksChnlAccSetting - Generated 
 
 
     }

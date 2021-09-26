@@ -42,6 +42,7 @@ namespace DigitBridge.QuickBooks.Integration
         public static string MasterAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MasterAccountNum AS {name ?? "MasterAccountNum".ToCamelCase(camelCase)} ";
         public static string ProfileNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum".ToCamelCase(camelCase)} ";
         public static string SettingUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SettingUuid) AS {name ?? "SettingUuid".ToCamelCase(camelCase)} ";
+        public static string ChnlAccSettingUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ChnlAccSettingUuid) AS {name ?? "ChnlAccSettingUuid".ToCamelCase(camelCase)} ";
         public static string ChannelAccountName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ChannelAccountName) AS {name ?? "ChannelAccountName".ToCamelCase(camelCase)} ";
         public static string ChannelAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelAccountNum AS {name ?? "ChannelAccountNum".ToCamelCase(camelCase)} ";
         public static string JsonFields(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.JsonFields) AS {name ?? "JsonFields".ToCamelCase(camelCase)} ";
@@ -61,6 +62,7 @@ namespace DigitBridge.QuickBooks.Integration
 {allies}MasterAccountNum AS MasterAccountNum,
 {allies}ProfileNum AS ProfileNum,
 RTRIM({allies}SettingUuid) AS SettingUuid,
+RTRIM({allies}ChnlAccSettingUuid) AS ChnlAccSettingUuid,
 RTRIM({allies}ChannelAccountName) AS ChannelAccountName,
 {allies}ChannelAccountNum AS ChannelAccountNum,
 RTRIM({allies}JsonFields) AS JsonFields,

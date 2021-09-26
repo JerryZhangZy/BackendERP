@@ -113,7 +113,7 @@ namespace DigitBridge.QuickBooks.Integration
 
             //TODO: add set default summary data logic
             /* This is generated sample code
-            var sum = data.QuickBooksChnlAccSetting;
+            var sum = data.QuickBooksIntegrationSetting;
             if (sum.InvoiceDate.IsZero()) sum.InvoiceDate = DateTime.Today;
             if (sum.InvoiceTime.IsZero()) sum.InvoiceTime = DateTime.Now.TimeOfDay;
 
@@ -152,7 +152,7 @@ namespace DigitBridge.QuickBooks.Integration
                 return false;
 
             var setting = new ERPSetting();
-            var sum = data.QuickBooksChnlAccSetting;
+            var sum = data.QuickBooksIntegrationSetting;
             //var prod = data.GetCache<ProductBasic>(ProductId);
             //var inv = data.GetCache<Inventory>(InventoryId);
             //var invCost = new ItemCostClass(inv);
@@ -244,7 +244,7 @@ namespace DigitBridge.QuickBooks.Integration
             //TODO: add calculate summary object logic
             /* This is generated sample code
 
-            var sum = data.QuickBooksChnlAccSetting;
+            var sum = data.QuickBooksIntegrationSetting;
             sum.SubTotalAmount = 0;
             sum.TaxableAmount = 0;
             sum.NonTaxableAmount = 0;

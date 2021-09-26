@@ -11,110 +11,34 @@ using DigitBridge.QuickBooks.Integration.Db.Infrastructure;
 using DigitBridge.QuickBooks.Integration.Connection.Model;
 using DigitBridge.QuickBooks.Integration.Infrastructure;
 using DigitBridge.QuickBooks.Integration.Model;
+using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl
 {
     public class UserCredentialService
     {
-        private QboDbConfig _dbConfig;
-        private QboConnectionConfig _qboConnectionConfig;
-        private QboConnectionInfoDb _qboConnectionInfoDb;
-        private QboConnectionInfo _qboConnectionInfo;
-        private MsSqlUniversal _msSql;
-        private int _masterAccNum;
-        private int _profileNum;
+        protected QuickBooksConnectionInfoService quickBooksConnectionInfoService;
+        protected QuickBooksSettingInfoService quickBooksSettingInfoService;
+        protected IPayload payload;
+        protected IDataBaseFactory dbFactory;
+        //private QboConnectionConfig _qboConnectionConfig;
+        //private QboConnectionInfo _qboConnectionInfo;
+        //private MsSqlUniversal _msSql;
+        //private int _masterAccNum;
+        //private int _profileNum;
 
-        private UserCredentialService(MsSqlUniversal msSql, QboDbConfig dbConfig,
-            QboConnectionConfig qboConnectionConfig, QboConnectionInfoDb qboConnectionInfoDb,
-            int masterAccNum, int profileNum)
+        private UserCredentialService(IPayload pl,IDataBaseFactory dataBaseFactory)
         {
-            _msSql = msSql;
-            _dbConfig = dbConfig;
-            _qboConnectionConfig = qboConnectionConfig;
-            _qboConnectionInfoDb = qboConnectionInfoDb;
-            _masterAccNum = masterAccNum;
-            _profileNum = profileNum;
+            payload = pl;
+            dbFactory = dataBaseFactory;
+            quickBooksConnectionInfoService = new QuickBooksConnectionInfoService(dbFactory);
+            quickBooksSettingInfoService = new QuickBooksSettingInfoService(dbFactory);
         }
 
-        private UserCredentialService(MsSqlUniversal msSql, QboDbConfig dbConfig,
-            QboConnectionConfig qboConnectionConfig, QboConnectionInfoDb qboConnectionInfoDb,
-            QboConnectionInfo qboConnectionInfo)
+
+        public static async Task<UserCredentialService> CreateAsync(IPayload pl, IDataBaseFactory dataBaseFactory)
         {
-            _msSql = msSql;
-            _dbConfig = dbConfig;
-            _qboConnectionConfig = qboConnectionConfig;
-            _qboConnectionInfoDb = qboConnectionInfoDb;
-            _qboConnectionInfo = qboConnectionInfo;
-        }
-
-        public static async Task<UserCredentialService> CreateAsync(QboDbConfig dbConfig,
-            QboConnectionConfig qboConnectionConfig, string requstState)
-        {
-            try
-            {
-                MsSqlUniversal msSql = await MsSqlUniversal.CreateAsync(
-                        dbConfig.QuickBooksDbConnectionString
-                        , dbConfig.UseAzureManagedIdentity
-                        , dbConfig.TokenProviderConnectionString
-                        , dbConfig.AzureTenantId
-                        );
-
-                QboConnectionInfoDb qboConnectionInfoDb = new QboConnectionInfoDb(
-                    dbConfig.QuickBooksDbConnectionInfoTableName, msSql, dbConfig.CryptKey);
-
-                // get qboConnectionInfo by requestStates
-                DataTable conInfoTb = await qboConnectionInfoDb.GetConnectionInfoByRequestStateAsync(requstState);
-
-                List<QboConnectionInfo> qboConnectionInfos =
-                    conInfoTb.DatatableToList<QboConnectionInfo>();
-
-                if (qboConnectionInfos.Count != 1)
-                {
-                    return null;
-                }
-
-                QboConnectionInfo qboConnectionInfo = qboConnectionInfos.FirstOrDefault();
-
-                var quickBooksOnlineUserCredential =
-                    new UserCredentialService(
-                        msSql, dbConfig, qboConnectionConfig,
-                        qboConnectionInfoDb, qboConnectionInfo);
-
-                return quickBooksOnlineUserCredential;
-            }
-            catch (Exception ex)
-            {
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex);
-            }
-        }
-
-        public static async Task<UserCredentialService> CreateAsync(QboDbConfig dbConfig,
-            QboConnectionConfig qboConnectionConfig, string masterAccNum, string profileNum)
-        {
-            try
-            {
-                MsSqlUniversal msSql = await MsSqlUniversal.CreateAsync(
-                        dbConfig.QuickBooksDbConnectionString
-                        , dbConfig.UseAzureManagedIdentity
-                        , dbConfig.TokenProviderConnectionString
-                        , dbConfig.AzureTenantId
-                        );
-
-                QboConnectionInfoDb qboConnectionInfoDb = new QboConnectionInfoDb(
-                    dbConfig.QuickBooksDbConnectionInfoTableName, msSql, dbConfig.CryptKey);
-
-                var quickBooksOnlineUserCredential =
-                    new UserCredentialService(
-                        msSql, dbConfig, qboConnectionConfig,
-                        qboConnectionInfoDb, masterAccNum.ForceToInt(), profileNum.ForceToInt()
-                        );
-
-                return quickBooksOnlineUserCredential;
-            }
-            catch (Exception ex)
-            {
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex);
-            }
+            return new UserCredentialService(pl, dataBaseFactory);
         }
 
         /// <summary>
@@ -126,22 +50,17 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
         {
             try
             {
-                // get qboConnectionInfo by requestStates
-                DataTable conInfoTb = await _qboConnectionInfoDb.GetConnectionInfoByCommandAsync(
-                    new Command(_masterAccNum, _profileNum));
+                var result = quickBooksConnectionInfoService.GetDataByPayload(payload);
 
-                List<QboConnectionInfo> qboConnectionInfos =
-                    conInfoTb.DatatableToList<QboConnectionInfo>();
-
-                if (qboConnectionInfos.Count != 1)
+                if (result.Count != 1)
                 {
-                    return (false, $"QboConnectionInfo not found for MasterAccountNum: {_masterAccNum} " +
-                        $"and ProfileNum : {_profileNum}, it might has not been initialized yet.");
+                    return (false, $"QboConnectionInfo not found for MasterAccountNum: {payload.MasterAccountNum} " +
+                        $"and ProfileNum : {payload.ProfileNum}, it might has not been initialized yet.");
                 }
 
-                QboConnectionInfo qboConnectionInfo = qboConnectionInfos.FirstOrDefault();
+                var connectionInfo = result.FirstOrDefault();
 
-                return (true, qboConnectionInfo.QboOAuthTokenStatus.ForceToTrimString());
+                return (true, connectionInfo.QuickBooksConnectionInfo.QboOAuthTokenStatus.ForceToTrimString());
             }
             catch (Exception ex)
             {
@@ -158,51 +77,23 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             try
             {
                 // Get qboConnectionInfo 
-                DataTable conInfoTb = await _qboConnectionInfoDb.GetConnectionInfoByCommandAsync(
-                    new Command(_masterAccNum, _profileNum));
+                var connections = quickBooksConnectionInfoService.GetDataByPayload(payload);
 
-                List<QboConnectionInfo> qboConnectionInfos =
-                    conInfoTb.DatatableToList<QboConnectionInfo>();
-
-                if (qboConnectionInfos.Count < 1)
+                if (connections.Count < 1)
                 {
-                    return (false, $"QboConnectionInfo not found for MasterAccountNum: {_masterAccNum} " +
-                        $"and ProfileNum : {_profileNum}, it might has not been initialized yet,");
+                    return (false, $"QboConnectionInfo not found for MasterAccountNum: {payload.MasterAccountNum} " +
+                        $"and ProfileNum : {payload.ProfileNum}, it might has not been initialized yet,");
+                }
+                foreach (var conn in connections)
+                {
+                    await quickBooksConnectionInfoService.DeleteAsync(conn.QuickBooksConnectionInfo.RowNum);
                 }
 
-                await _qboConnectionInfoDb.DeleteConnectionInfoByCommandAsync(
-                     new Command(_masterAccNum, _profileNum));
+                var settings = quickBooksSettingInfoService.GetDataByPayload(payload);
 
-                // Get qboIntegrationSetting
-                QboIntegrationSettingDb qboIntegrationSettingDb =
-                    new QboIntegrationSettingDb(_dbConfig.QuickBooksDbIntegrationSettingTableName, _msSql);
-
-                DataTable settingTb = await qboIntegrationSettingDb.GetIntegrationSettingAsync(new Command(_masterAccNum, _profileNum));
-
-                List<QboIntegrationSetting> qboIntergrationSettings =
-                    settingTb.DatatableToList<QboIntegrationSetting>();
-
-                if (qboIntergrationSettings.Count > 0)
+                foreach (var setting in settings)
                 {
-                    await qboIntegrationSettingDb.DeleteIntegrationSettingAsync(
-                        new Command(_masterAccNum, _profileNum));
-                }
-
-                // Get qboChnlAccSetting
-                QboChnlAccSettingDb qboChnlAccSettingDb =
-                    new QboChnlAccSettingDb(_dbConfig.QuickBooksChannelAccSettingTableName, _msSql);
-
-                DataTable chnlSettingTb = await qboChnlAccSettingDb.GetChnlAccSettingsAsync(new Command(_masterAccNum, _profileNum));
-
-                List<QboChnlAccSetting> qboChnlAccSettings =
-                    chnlSettingTb.DatatableToList<QboChnlAccSetting>();
-
-                int chnlAccSettingCount = qboChnlAccSettings.Count;
-
-                if (chnlAccSettingCount > 0)
-                {
-                    await qboChnlAccSettingDb.DeleteChnlAccSettingsAsync(
-                        new Command(_masterAccNum, _profileNum), chnlAccSettingCount);
+                    await quickBooksSettingInfoService.DeleteAsync(setting.QuickBooksIntegrationSetting.RowNum);
                 }
 
                 return (true, "");
@@ -216,64 +107,35 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
         public async Task<(bool, string)> HandleTokens(string realmId, string authCode)
         {
             string errMsg = "";
+            var connectInfo = quickBooksConnectionInfoService.GetDataByPayload(payload).FirstOrDefault();
+            var accessToken = "";
+            var refreshToken = "";
 
-            try
+            // Get AccessToken and RefreshToken in QboOAuth
+            (refreshToken, accessToken) =
+                await QboOAuth.GetBearerTokenAsync(authCode);
+
+            if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
             {
-                string clientId = CryptoUtility.DecrypTextTripleDES(_qboConnectionInfo.ClientId, _dbConfig.CryptKey);
-                string clientSecret = CryptoUtility.DecrypTextTripleDES(_qboConnectionInfo.ClientSecret, _dbConfig.CryptKey);
-                string accessToken = "";
-                string refreshToken = "";
-
-                // Get AccessToken and RefreshToken in QboOAuth
-                (refreshToken, accessToken) =
-                    await QboOAuth.GetBearerToken(_qboConnectionConfig, clientId, clientSecret, authCode);
-
-                if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
-                {
-                    errMsg = "Get QuickBooks Online Bearer Token Failed.";
-                    return (false, errMsg);
-                }
-
-                // Store Tokens
-                await _qboConnectionInfoDb.InitiateToken(
-                    accessToken, refreshToken,
-                    CryptoUtility.EncrypTextTripleDES(realmId, _dbConfig.CryptKey),
-                    CryptoUtility.EncrypTextTripleDES(authCode, _dbConfig.CryptKey),
-                    new Command(_qboConnectionInfo.MasterAccountNum, _qboConnectionInfo.ProfileNum)
-                    );
-
-                _qboConnectionInfo.RealmId = realmId;
-                _qboConnectionInfo.AuthCode = authCode;
-                _qboConnectionInfo.AccessToken = accessToken;
-                _qboConnectionInfo.LastAccessTokUpdate = DateTime.UtcNow;
-                _qboConnectionInfo.LastRefreshTokUpdate = DateTime.UtcNow;
-                _qboConnectionInfo.RefreshToken = refreshToken;
-
-                // Test Connectivity
-                QboUniversal qboUniversal = await QboUniversal.CreateAsync(_qboConnectionInfo, _qboConnectionConfig);
-
-                // Update initialStatus in QboConnectionInfo table in DP
-                await _qboConnectionInfoDb.UpdateQboOAuthTokenStatusAsync(
-                    new Command(_qboConnectionInfo.MasterAccountNum, _qboConnectionInfo.ProfileNum),
-                    QboOAuthTokenStatus.Success);
-
-                return (true, errMsg);
+                errMsg = "Get QuickBooks Online Bearer Token Failed.";
+                return (false, errMsg);
             }
-            catch (Exception ex)
-            {
-                try
-                {
-                    await _qboConnectionInfoDb.UpdateQboOAuthTokenStatusAsync(
-                    new Command(_qboConnectionInfo.MasterAccountNum, _qboConnectionInfo.ProfileNum),
-                    QboOAuthTokenStatus.Error);
-                }
-                catch (Exception ex_)
-                {
-                    throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex_);
-                }
 
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex);
-            }
+            // Store Tokens
+            connectInfo.QuickBooksConnectionInfo.RealmId = realmId;
+            connectInfo.QuickBooksConnectionInfo.AuthCode = authCode;
+            connectInfo.QuickBooksConnectionInfo.AccessToken = accessToken;
+            connectInfo.QuickBooksConnectionInfo.LastAccessTokUpdate = DateTime.UtcNow;
+            connectInfo.QuickBooksConnectionInfo.LastRefreshTokUpdate = DateTime.UtcNow;
+            connectInfo.QuickBooksConnectionInfo.RefreshToken = refreshToken;
+
+            // Test Connectivity
+            //QboUniversal qboUniversal = await QboUniversal.CreateAsync(_qboConnectionInfo, _qboConnectionConfig);
+
+            // Update initialStatus in QboConnectionInfo table in DP
+            quickBooksConnectionInfoService.AttachData(connectInfo);
+            await quickBooksConnectionInfoService.SaveDataAsync();
+            return (true, errMsg);
         }
 
         /// <summary>
@@ -287,24 +149,13 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
         {
             try
             {
-                //UserCredentilApiReqType oAuthRedirectUrlApiReq =
-                //    JsonConvert.DeserializeObject<UserCredentilApiReqType>(requestBody);
-
-                //(bool isReqBodyValid, string reqBodyErrMsg) =
-                //    ValidateReqBody(oAuthRedirectUrlApiReq);
-
-                //if (!isReqBodyValid)
-                //{
-                //    return (false, reqBodyErrMsg);
-                //}
 
                 string decryptedClientId =
-                    CryptoUtility.DecrypTextTripleDES(_qboConnectionConfig.AppClientId, _dbConfig.CryptKey);
+                    CryptoUtility.DecrypTextTripleDES(MyAppSetting.AppClientId, MyAppSetting.CryptKey);
                 string decryptedClientSecret =
-                    CryptoUtility.DecrypTextTripleDES(_qboConnectionConfig.AppClientSecret, _dbConfig.CryptKey);
+                    CryptoUtility.DecrypTextTripleDES(MyAppSetting.AppClientSecret, MyAppSetting.CryptKey);
 
-                string authorizationUrl = await QboOAuth.GetAuthorizationURL(_qboConnectionConfig, decryptedClientId,
-                    decryptedClientSecret);
+                string authorizationUrl = await QboOAuth.GetAuthorizationURLAsync();
 
                 Uri url = new Uri(authorizationUrl);
                 string state = HttpUtility.ParseQueryString(url.Query).Get("state");
@@ -313,21 +164,37 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                 {
                     return (false, "Get redirect url to Quickbook Online login failed.");
                 }
+                var connectionInfos= quickBooksConnectionInfoService.GetDataByPayload(payload);
 
-                bool isConfigExist =
-                    await _qboConnectionInfoDb.ExistsConnectionInfoAsync(
-                        new Command(_masterAccNum, _profileNum));
+                bool isConfigExist = connectionInfos.Any();
 
                 if (isConfigExist)
                 {
-                    await _qboConnectionInfoDb.UpdateClientCredentialAsync(
-                        new Command(_masterAccNum, _profileNum), _qboConnectionConfig.AppClientId, _qboConnectionConfig.AppClientSecret, state);
+                    var first = connectionInfos.First();
+                    first.QuickBooksConnectionInfo.RequestState = state;
+                    quickBooksConnectionInfoService.AttachData(first);
+                    await quickBooksConnectionInfoService.SaveDataAsync();
+                    //await _qboConnectionInfoDb.UpdateClientCredentialAsync(
+                    //    new Command(_masterAccNum, _profileNum), _qboConnectionConfig.AppClientId, _qboConnectionConfig.AppClientSecret, state);
                 }
                 else
                 {
                     // Add unique constrian
-                    await _qboConnectionInfoDb.AddConnectionInfoAsync(
-                        new Command(_masterAccNum, _profileNum), _qboConnectionConfig.AppClientId, _qboConnectionConfig.AppClientSecret, state);
+                    var connection = new QuickBooksConnectionInfoData()
+                    {
+                        QuickBooksConnectionInfo = new QuickBooksConnectionInfo
+                        {
+                            MasterAccountNum = payload.MasterAccountNum,
+                            DatabaseNum = payload.DatabaseNum,
+                            ProfileNum = payload.ProfileNum,
+                            ClientId = MyAppSetting.AppClientId,
+                            ClientSecret = MyAppSetting.AppClientSecret,
+                            RequestState = state,
+                            ConnectionUuid = Guid.NewGuid().ToString()
+                        }
+                    };
+                    quickBooksConnectionInfoService.AttachData(connection);
+                    await quickBooksConnectionInfoService.SaveDataAsync();
                 }
 
                 return (true, authorizationUrl);

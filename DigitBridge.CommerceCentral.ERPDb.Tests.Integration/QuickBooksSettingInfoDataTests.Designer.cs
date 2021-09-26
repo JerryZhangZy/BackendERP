@@ -32,18 +32,18 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
     {
         public static QuickBooksSettingInfoData GetFakerData()
         {
-			var QuickBooksSettingInfoData = new QuickBooksSettingInfoData(); 
-			QuickBooksSettingInfoData.QuickBooksChnlAccSetting = QuickBooksChnlAccSettingTests.GetFakerData().Generate(); 
-			QuickBooksSettingInfoData.QuickBooksIntegrationSetting = QuickBooksIntegrationSettingTests.GetFakerData().Generate(); 
-			return QuickBooksSettingInfoData; 
+		var QuickBooksSettingInfoData = new QuickBooksSettingInfoData(); 
+		QuickBooksSettingInfoData.QuickBooksIntegrationSetting = QuickBooksIntegrationSettingTests.GetFakerData().Generate(); 
+		QuickBooksSettingInfoData.QuickBooksChnlAccSetting = QuickBooksChnlAccSettingTests.GetFakerData().Generate(10); 
+		return QuickBooksSettingInfoData; 
         }
 
         public static List<QuickBooksSettingInfoData> GetFakerData(int count)
         {
-			var QuickBooksSettingInfoDatas = new List<QuickBooksSettingInfoData>(); 
-			for (int i = 0; i < count; i++) 
-				QuickBooksSettingInfoDatas.Add(GetFakerData()); 
-			return QuickBooksSettingInfoDatas; 
+		var QuickBooksSettingInfoDatas = new List<QuickBooksSettingInfoData>(); 
+		for (int i = 0; i < count; i++) 
+			QuickBooksSettingInfoDatas.Add(GetFakerData()); 
+		return QuickBooksSettingInfoDatas; 
         }
 
         protected const string SkipReason = "Debug Helper Function";
@@ -72,9 +72,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 		//[Fact(Skip = SkipReason)]
 		public void Clone_Test()
 		{
-            var id = DataBaseFactory.GetValue<QuickBooksChnlAccSetting, string>(@"
+            var id = DataBaseFactory.GetValue<QuickBooksIntegrationSetting, string>(@"
 SELECT TOP 1 ins.SettingUuid 
-FROM QuickBooksChnlAccSetting ins 
+FROM QuickBooksIntegrationSetting ins 
+INNER JOIN (
+    SELECT it.SettingUuid, COUNT(1) AS cnt FROM QuickBooksChnlAccSetting it GROUP BY it.SettingUuid
+) itm ON (itm.SettingUuid = ins.SettingUuid)
+WHERE itm.cnt > 0
 ");
 
 
@@ -110,15 +114,19 @@ FROM QuickBooksChnlAccSetting ins
         {
             Save_Test();
 
-            var id = DataBaseFactory.GetValue<QuickBooksChnlAccSetting, string>(@"
+            var id = DataBaseFactory.GetValue<QuickBooksIntegrationSetting, string>(@"
 SELECT TOP 1 ins.SettingUuid 
-FROM QuickBooksChnlAccSetting ins 
+FROM QuickBooksIntegrationSetting ins 
+INNER JOIN (
+    SELECT it.SettingUuid, COUNT(1) AS cnt FROM QuickBooksChnlAccSetting it GROUP BY it.SettingUuid
+) itm ON (itm.SettingUuid = ins.SettingUuid)
+WHERE itm.cnt > 0
 ");
 
 
             var data = new QuickBooksSettingInfoData(DataBaseFactory);
             data.GetById(id);
-            var rowNum = data.QuickBooksChnlAccSetting.RowNum;
+            var rowNum = data.QuickBooksIntegrationSetting.RowNum;
 
             var dataUpdate = GetFakerData();
             dataUpdate.SetDataBaseFactory(DataBaseFactory);
@@ -142,9 +150,13 @@ FROM QuickBooksChnlAccSetting ins
         {
             Save_Test();
 
-            var id = DataBaseFactory.GetValue<QuickBooksChnlAccSetting, string>(@"
+            var id = DataBaseFactory.GetValue<QuickBooksIntegrationSetting, string>(@"
 SELECT TOP 1 ins.SettingUuid 
-FROM QuickBooksChnlAccSetting ins 
+FROM QuickBooksIntegrationSetting ins 
+INNER JOIN (
+    SELECT it.SettingUuid, COUNT(1) AS cnt FROM QuickBooksChnlAccSetting it GROUP BY it.SettingUuid
+) itm ON (itm.SettingUuid = ins.SettingUuid)
+WHERE itm.cnt > 0
 ");
 
 
@@ -156,7 +168,7 @@ FROM QuickBooksChnlAccSetting ins
             data.Delete();
             DataBaseFactory.Commit();
 
-            var result = DataBaseFactory.ExistUniqueId<QuickBooksChnlAccSetting>(data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<QuickBooksIntegrationSetting>(data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -187,15 +199,19 @@ FROM QuickBooksChnlAccSetting ins
         {
             await SaveAsync_Test();
 
-            var id = await DataBaseFactory.GetValueAsync<QuickBooksChnlAccSetting, string>(@"
+            var id = await DataBaseFactory.GetValueAsync<QuickBooksIntegrationSetting, string>(@"
 SELECT TOP 1 ins.SettingUuid 
-FROM QuickBooksChnlAccSetting ins 
+FROM QuickBooksIntegrationSetting ins 
+INNER JOIN (
+    SELECT it.SettingUuid, COUNT(1) AS cnt FROM QuickBooksChnlAccSetting it GROUP BY it.SettingUuid
+) itm ON (itm.SettingUuid = ins.SettingUuid)
+WHERE itm.cnt > 0
 ");
 
 
             var data = new QuickBooksSettingInfoData(DataBaseFactory);
             await data.GetByIdAsync(id);
-            var rowNum = data.QuickBooksChnlAccSetting.RowNum;
+            var rowNum = data.QuickBooksIntegrationSetting.RowNum;
 
             var dataUpdate = GetFakerData();
             dataUpdate.SetDataBaseFactory(DataBaseFactory);
@@ -219,9 +235,13 @@ FROM QuickBooksChnlAccSetting ins
         {
             await SaveAsync_Test();
 
-            var id = await DataBaseFactory.GetValueAsync<QuickBooksChnlAccSetting, string>(@"
+            var id = await DataBaseFactory.GetValueAsync<QuickBooksIntegrationSetting, string>(@"
 SELECT TOP 1 ins.SettingUuid 
-FROM QuickBooksChnlAccSetting ins 
+FROM QuickBooksIntegrationSetting ins 
+INNER JOIN (
+    SELECT it.SettingUuid, COUNT(1) AS cnt FROM QuickBooksChnlAccSetting it GROUP BY it.SettingUuid
+) itm ON (itm.SettingUuid = ins.SettingUuid)
+WHERE itm.cnt > 0
 ");
 
 
@@ -233,7 +253,7 @@ FROM QuickBooksChnlAccSetting ins
             await data.DeleteAsync();
             DataBaseFactory.Commit();
 
-            var result = DataBaseFactory.ExistUniqueId<QuickBooksChnlAccSetting>(data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<QuickBooksIntegrationSetting>(data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }

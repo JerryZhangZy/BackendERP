@@ -5,7 +5,8 @@
 	[MasterAccountNum] INT NOT NULL, --(Readonly) Login user account. <br> Display: false, Editable: false.
 	[ProfileNum] INT NOT NULL, --(Readonly) Login user profile. <br> Display: false, Editable: false.
 
-	[SettingUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Setting uuid. <br> Display: false, Editable: false.
+	[SettingUuid] VARCHAR(50) NOT NULL DEFAULT '', --Setting uuid. <br> Display: false, Editable: false.
+	[ChnlAccSettingUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --ChnlAccSetting uuid. <br> Display: false, Editable: false.
 	[ChannelAccountName] nvarchar(150) NOT NULL, -- Central Channel Account name, Max 10 chars ( because of qbo doc Number 21 chars restrictions )
 	[ChannelAccountNum] int NOT NULL, -- Central Channel Account Number
 
@@ -18,9 +19,9 @@
     CONSTRAINT [PK_QuickBooksChnlAccSetting] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
 GO
-CREATE UNIQUE NONCLUSTERED INDEX [UK_QuickBooksChnlAccSetting_OrderShipmentUuid] ON [dbo].[QuickBooksChnlAccSetting]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_QuickBooksChnlAccSetting_ChnlAccSettingUuid] ON [dbo].[QuickBooksChnlAccSetting]
 (
-    [SettingUuid] ASC
+    [ChnlAccSettingUuid] ASC
 ) 
 GO
 CREATE UNIQUE NONCLUSTERED INDEX [UK_QuickBooksChnlAccSetting_MasterAccountNum_ProfileNum_ChannelAccountNum] ON [dbo].[QuickBooksChnlAccSetting]

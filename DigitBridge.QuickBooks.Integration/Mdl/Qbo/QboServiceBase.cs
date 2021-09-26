@@ -1,4 +1,5 @@
-﻿using DigitBridge.CommerceCentral.YoPoco;
+﻿using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.QuickBooks.Integration.Connection.Model;
 using DigitBridge.QuickBooks.Integration.Infrastructure;
 using Intuit.Ipp.Core;
@@ -12,13 +13,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using UneedgoHelper.DotNet.Common;
 using Task = System.Threading.Tasks.Task;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
-    public class QboServiceBase
+    public class QboServiceBase: IMessage
     {
         protected OAuth2Client _auth2Client;
         protected DataService _dataService;
@@ -29,6 +32,34 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         protected IDataBaseFactory dbFactory;
 
         public QboServiceBase() { }
+
+
+        #region Messages
+        protected IList<MessageClass> _messages;
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get
+            {
+                if (_messages is null)
+                    _messages = new List<MessageClass>();
+                return _messages;
+            }
+            set { _messages = value; }
+        }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             Messages.Add(message, MessageLevel.Info, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Warning, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Error, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Fatal, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Debug, code);
+
+        #endregion Messages
+
         private async Task<QboServiceBase> InitializeAsync(
             QuickBooksConnectionInfo qboConnectionInfo,IDataBaseFactory databaseFactory)
         {
@@ -155,6 +186,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                         _qboConnectionInfo.LastRefreshTokUpdate = DateTime.Now.ToUniversalTime();
                         // Flag tokens as updated
                         _qboConnectionTokenStatus.RefreshTokenStatus = ConnectionTokenStatus.Updated;
+                        await _qboConnectionInfo.SetDataBaseFactory(dbFactory).SaveAsync();
                     }
                 }
                 else if (runAfterRefreshUpdated == false)
@@ -187,6 +219,22 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             {
                 throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex);
             }
+        }
+
+
+        /// <summary>
+        /// Return ( isTransactionExist, isTransactioniUpToDate )
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
+        public async Task<(bool, bool)> IsSalesTransactionExistAndUpToDateAsync(SalesTransaction transaction)
+        {
+            var queryService = new QueryService<SalesTransaction>(_serviceContext);
+            var qboQureyStr = $"select * from {transaction.GetType().Name} Where DocNumber = '{transaction.DocNumber}'";
+            var latestTransaction = queryService.ExecuteIdsQuery(qboQureyStr).FirstOrDefault();
+
+            return (latestTransaction != null,
+                latestTransaction != null && latestTransaction.SyncToken.Equals(transaction.SyncToken));
         }
     }
 }

@@ -10,62 +10,41 @@ namespace DigitBridge.QuickBooks.Integration.Infrastructure
 {
     public class QboOAuth
     {
-        public static async Task<string> GetAuthorizationURL(QboConnectionConfig qboConnectionConfig,
-            string clientId, string clientSecret)
+        public static async Task<string> GetAuthorizationURLAsync()
         {
-            string authUrl = "";
-            try
-            {
-                // Instantiate object
-                OAuth2Client auth2Client = new OAuth2Client(clientId, clientSecret
-                    , qboConnectionConfig.RedirectUrl, qboConnectionConfig.Environment);
+            // Instantiate object
+            OAuth2Client auth2Client = new OAuth2Client(MyAppSetting.AppClientId, MyAppSetting.AppClientSecret
+                , MyAppSetting.RedirectUrl, MyAppSetting.Environment);
 
-                //Prepare scopes
-                List<OidcScopes> scopes = new List<OidcScopes>();
-                scopes.Add(OidcScopes.OpenId);
-                scopes.Add(OidcScopes.Email);
-                scopes.Add(OidcScopes.Accounting);
-                scopes.Add(OidcScopes.Profile);
-                scopes.Add(OidcScopes.Phone);
-                scopes.Add(OidcScopes.Address);
+            //Prepare scopes
+            List<OidcScopes> scopes = new List<OidcScopes>();
+            scopes.Add(OidcScopes.OpenId);
+            scopes.Add(OidcScopes.Email);
+            scopes.Add(OidcScopes.Accounting);
+            scopes.Add(OidcScopes.Profile);
+            scopes.Add(OidcScopes.Phone);
+            scopes.Add(OidcScopes.Address);
 
-                //Get the authorization URL
-                authUrl = auth2Client.GetAuthorizationURL(scopes);
-
-                return authUrl;
-            }
-            catch (Exception ex)
-            {
-                string additionalMsg = "Qbo getOAuthRedirectUrl Error." + CommonConst.NewLine;
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
-            }
+            //Get the authorization URL
+            return auth2Client.GetAuthorizationURL(scopes);
         }
 
-        public static async Task<(string, string)> GetBearerToken(QboConnectionConfig qboConnectionConfig,
-            string clientId, string clientSecret, string authCode)
+        public static async Task<(string, string)> GetBearerTokenAsync(string authCode)
         {
             string refreshToken = "";
             string accessToken = "";
-            try
-            {
-                // Instantiate object
-                OAuth2Client auth2Client = new OAuth2Client(clientId, clientSecret
-                    , qboConnectionConfig.RedirectUrl, qboConnectionConfig.Environment);
+            // Instantiate object
+            OAuth2Client auth2Client = new OAuth2Client(MyAppSetting.AppClientId, MyAppSetting.AppClientSecret
+                , MyAppSetting.RedirectUrl, MyAppSetting.Environment);
 
-                // Get OAuth2 Bearer token
-                var tokenResponse = await auth2Client.GetBearerTokenAsync(authCode);
+            // Get OAuth2 Bearer token
+            var tokenResponse = await auth2Client.GetBearerTokenAsync(authCode);
 
-                // Retrieve access_token and refresh_token
-                accessToken = tokenResponse.AccessToken;
-                refreshToken = tokenResponse.RefreshToken;
+            // Retrieve access_token and refresh_token
+            accessToken = tokenResponse.AccessToken;
+            refreshToken = tokenResponse.RefreshToken;
 
-                return (refreshToken, accessToken);
-            }
-            catch (Exception ex)
-            {
-                string additionalMsg = "Qbo getOAuthRedirectUrl Error." + CommonConst.NewLine;
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
-            }
+            return (refreshToken, accessToken);
         }
 
     }

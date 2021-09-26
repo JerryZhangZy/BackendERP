@@ -1,3 +1,6 @@
+
+
+              
               
     
 
@@ -40,6 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.MasterAccountNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.SettingUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.ChnlAccSettingUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.ChannelAccountName, f => f.Company.CompanyName())
 					.RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.Fields, (f, u) => u.Fields.SetValues(f.Random.JObject()))
@@ -174,7 +178,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataUpdate = DataBaseFactory.GetById<QuickBooksChnlAccSetting>(dataNew.UniqueId);
 			var dataChanged = FakerData.Generate();
-            dataUpdate?.CopyFrom(dataChanged, new[] {"SettingUuid"});
+            dataUpdate?.CopyFrom(dataChanged, new[] {"ChnlAccSettingUuid"});
 
             DataBaseFactory.Begin();
             dataUpdate.Save();
@@ -231,6 +235,64 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void AddList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var SettingUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.SettingUuid = SettingUuid);
+            list.SetDataBaseFactory<QuickBooksChnlAccSetting>(DataBaseFactory)
+                .Save<QuickBooksChnlAccSetting>();
+
+            var cnt = DataBaseFactory.Count<QuickBooksChnlAccSetting>("WHERE SettingUuid = @0", SettingUuid);
+            var result = cnt.Equals(list.Count());
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void SaveList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var SettingUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.SettingUuid = SettingUuid);
+            list.SetDataBaseFactory<QuickBooksChnlAccSetting>(DataBaseFactory)
+                .Save<QuickBooksChnlAccSetting>();
+
+            var NewJsonFields = Guid.NewGuid().ToString();
+            var listFind = DataBaseFactory.Find<QuickBooksChnlAccSetting>("WHERE SettingUuid = @0 ORDER BY RowNum", SettingUuid).ToList();
+            listFind.ToList().ForEach(x => x.JsonFields = NewJsonFields);
+            listFind.Save<QuickBooksChnlAccSetting>();
+
+            list = DataBaseFactory.Find<QuickBooksChnlAccSetting>("WHERE SettingUuid = @0 ORDER BY RowNum", SettingUuid).ToList();
+            var result = list.Where(x => x.JsonFields == NewJsonFields).Count() == listFind.Count();
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public void DeleteList_Test()
+        {
+            var list = FakerData.Generate(10);
+            var SettingUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.SettingUuid = SettingUuid);
+            list.SetDataBaseFactory<QuickBooksChnlAccSetting>(DataBaseFactory)
+                .Save();
+
+            var listFind = DataBaseFactory.Find<QuickBooksChnlAccSetting>("WHERE SettingUuid = @0 ORDER BY RowNum", SettingUuid).ToList();
+            listFind.Delete();
+
+            var cnt = DataBaseFactory.Count<QuickBooksChnlAccSetting>("WHERE SettingUuid = @0", SettingUuid);
+            var result = cnt == 0;
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
@@ -324,7 +386,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var dataUpdate = await DataBaseFactory.GetByIdAsync<QuickBooksChnlAccSetting>(dataNew.UniqueId);
             var dataChanged = FakerData.Generate();
-            dataUpdate?.CopyFrom(dataChanged, new[] { "SettingUuid" });
+            dataUpdate?.CopyFrom(dataChanged, new[] { "ChnlAccSettingUuid" });
 
             DataBaseFactory.Begin();
             await dataUpdate.SaveAsync();
@@ -377,6 +439,67 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task AddListAsync_Test()
+        {
+            var list = FakerData.Generate(10);
+            var SettingUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.SettingUuid = SettingUuid);
+            await list
+                .SetDataBaseFactory<QuickBooksChnlAccSetting>(DataBaseFactory)
+                .SaveAsync<QuickBooksChnlAccSetting>();
+
+            var cnt = await DataBaseFactory.CountAsync<QuickBooksChnlAccSetting>("WHERE SettingUuid = @0", SettingUuid);
+            var result = cnt.Equals(list.Count());
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task SaveListAsync_Test()
+        {
+            var list = FakerData.Generate(10);
+            var SettingUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.SettingUuid = SettingUuid);
+            await list
+                .SetDataBaseFactory<QuickBooksChnlAccSetting>(DataBaseFactory)
+                .SaveAsync<QuickBooksChnlAccSetting>();
+
+            var NewJsonFields = Guid.NewGuid().ToString();
+            var listFind = (await DataBaseFactory.FindAsync<QuickBooksChnlAccSetting>("WHERE SettingUuid = @0 ORDER BY RowNum", SettingUuid)).ToList();
+            listFind.ToList().ForEach(x => x.JsonFields = NewJsonFields);
+            await listFind.SaveAsync<QuickBooksChnlAccSetting>();
+
+            list = DataBaseFactory.Find<QuickBooksChnlAccSetting>("WHERE SettingUuid = @0 ORDER BY RowNum", SettingUuid).ToList();
+            var result = list.Where(x => x.JsonFields == NewJsonFields).Count() == listFind.Count();
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task DeleteListAsync_Test()
+        {
+            var list = FakerData.Generate(10);
+            var SettingUuid = Guid.NewGuid().ToString();
+
+            list.ForEach(x => x.SettingUuid = SettingUuid);
+            await list
+                .SetDataBaseFactory<QuickBooksChnlAccSetting>(DataBaseFactory)
+                .SaveAsync();
+
+            var listFind = (await DataBaseFactory.FindAsync<QuickBooksChnlAccSetting>("WHERE SettingUuid = @0 ORDER BY RowNum", SettingUuid)).ToList();
+            await listFind.DeleteAsync();
+
+            var cnt = await DataBaseFactory.CountAsync<QuickBooksChnlAccSetting>("WHERE SettingUuid = @0", SettingUuid);
+            var result = cnt == 0;
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
         //[Fact(Skip = SkipReason)]

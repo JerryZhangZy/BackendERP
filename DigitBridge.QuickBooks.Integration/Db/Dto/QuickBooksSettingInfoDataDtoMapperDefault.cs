@@ -36,46 +36,23 @@ namespace DigitBridge.QuickBooks.Integration
                 data.New();
             }
 
-			if (dto.QuickBooksChnlAccSetting != null)
-			{
-				if (data.QuickBooksChnlAccSetting is null)
-					data.QuickBooksChnlAccSetting = data.NewQuickBooksChnlAccSetting();
-				ReadQuickBooksChnlAccSetting(data.QuickBooksChnlAccSetting, dto.QuickBooksChnlAccSetting);
-			}
 			if (dto.QuickBooksIntegrationSetting != null)
 			{
 				if (data.QuickBooksIntegrationSetting is null)
 					data.QuickBooksIntegrationSetting = data.NewQuickBooksIntegrationSetting();
 				ReadQuickBooksIntegrationSetting(data.QuickBooksIntegrationSetting, dto.QuickBooksIntegrationSetting);
 			}
+			if (dto.QuickBooksChnlAccSetting != null)
+			{
+				if (data.QuickBooksChnlAccSetting is null)
+					data.QuickBooksChnlAccSetting = new List<QuickBooksChnlAccSetting>();
+				var deleted = ReadQuickBooksChnlAccSetting(data.QuickBooksChnlAccSetting, dto.QuickBooksChnlAccSetting);
+				data.SetQuickBooksChnlAccSettingDeleted(deleted);
+			}
 
             data.CheckIntegrity();
             return data;
         }
-
-		protected virtual void ReadQuickBooksChnlAccSetting(QuickBooksChnlAccSetting data, QuickBooksChnlAccSettingDto dto)
-		{
-			if (data is null || dto is null)
-				return;
-
-			#region read all not null properties
-
-			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
-			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
-			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
-			if (dto.HasSettingUuid) data.SettingUuid = dto.SettingUuid;
-			if (dto.HasChannelAccountName) data.ChannelAccountName = dto.ChannelAccountName;
-			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
-			if (dto.HasFields) data.Fields.LoadJson(dto.Fields);
-			if (dto.HasLastUpdate) data.LastUpdate = dto.LastUpdate;
-			if (dto.HasDailySummaryLastExport) data.DailySummaryLastExport = dto.DailySummaryLastExport;
-
-			#endregion read properties
-
-			data.CheckIntegrity();
-			return;
-		}
-
 
 		protected virtual void ReadQuickBooksIntegrationSetting(QuickBooksIntegrationSetting data, QuickBooksIntegrationSettingDto dto)
 		{
@@ -107,6 +84,57 @@ namespace DigitBridge.QuickBooks.Integration
 		}
 
 
+		protected virtual void ReadQuickBooksChnlAccSetting(QuickBooksChnlAccSetting data, QuickBooksChnlAccSettingDto dto)
+		{
+			if (data is null || dto is null)
+				return;
+
+			#region read all not null properties
+
+			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
+			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
+			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+			if (dto.HasSettingUuid) data.SettingUuid = dto.SettingUuid;
+			if (dto.HasChnlAccSettingUuid) data.ChnlAccSettingUuid = dto.ChnlAccSettingUuid;
+			if (dto.HasChannelAccountName) data.ChannelAccountName = dto.ChannelAccountName;
+			if (dto.HasChannelAccountNum) data.ChannelAccountNum = dto.ChannelAccountNum.ToInt();
+			if (dto.HasFields) data.Fields.LoadJson(dto.Fields);
+			if (dto.HasLastUpdate) data.LastUpdate = dto.LastUpdate;
+			if (dto.HasDailySummaryLastExport) data.DailySummaryLastExport = dto.DailySummaryLastExport;
+
+			#endregion read properties
+
+			data.CheckIntegrity();
+			return;
+		}
+
+		protected virtual IList<QuickBooksChnlAccSetting> ReadQuickBooksChnlAccSetting(IList<QuickBooksChnlAccSetting> data, IList<QuickBooksChnlAccSettingDto> dto)
+		{
+			if (data is null || dto is null)
+				return null;
+			var lstOrig = new List<QuickBooksChnlAccSetting>(data.Where(x => x != null).ToList());
+			data.Clear();
+			foreach (var itemDto in dto)
+			{
+				if (itemDto == null) continue;
+
+				var obj = itemDto.RowNum > 0
+					? lstOrig.Find(x => x.RowNum == itemDto.RowNum)
+					: lstOrig.Find(x => x.ChnlAccSettingUuid == itemDto.ChnlAccSettingUuid);
+				if (obj is null)
+					obj = new QuickBooksChnlAccSetting().SetAllowNull(false);
+				else
+					lstOrig.Remove(obj);
+
+				data.Add(obj);
+
+				ReadQuickBooksChnlAccSetting(obj, itemDto);
+
+			}
+			return lstOrig;
+		}
+
+
 
         #endregion read from dto to data
 
@@ -121,43 +149,18 @@ namespace DigitBridge.QuickBooks.Integration
 
             data.CheckIntegrity();
 
-			if (data.QuickBooksChnlAccSetting != null)
-			{
-				dto.QuickBooksChnlAccSetting = new QuickBooksChnlAccSettingDto();
-				WriteQuickBooksChnlAccSetting(data.QuickBooksChnlAccSetting, dto.QuickBooksChnlAccSetting);
-			}
 			if (data.QuickBooksIntegrationSetting != null)
 			{
 				dto.QuickBooksIntegrationSetting = new QuickBooksIntegrationSettingDto();
 				WriteQuickBooksIntegrationSetting(data.QuickBooksIntegrationSetting, dto.QuickBooksIntegrationSetting);
 			}
+			if (data.QuickBooksChnlAccSetting != null)
+			{
+				dto.QuickBooksChnlAccSetting = new List<QuickBooksChnlAccSettingDto>();
+				WriteQuickBooksChnlAccSetting(data.QuickBooksChnlAccSetting, dto.QuickBooksChnlAccSetting);
+			}
             return dto;
         }
-
-		protected virtual void WriteQuickBooksChnlAccSetting(QuickBooksChnlAccSetting data, QuickBooksChnlAccSettingDto dto)
-		{
-			if (data is null || dto is null)
-				return;
-
-			#region write all properties with null
-
-			dto.RowNum = data.RowNum;
-			dto.DatabaseNum = data.DatabaseNum;
-			dto.MasterAccountNum = data.MasterAccountNum;
-			dto.ProfileNum = data.ProfileNum;
-			dto.SettingUuid = data.SettingUuid;
-			dto.ChannelAccountName = data.ChannelAccountName;
-			dto.ChannelAccountNum = data.ChannelAccountNum;
-			dto.Fields = data.Fields.ToJson();
-			dto.EnterDateUtc = data.EnterDateUtc;
-			dto.LastUpdate = data.LastUpdate;
-			dto.DailySummaryLastExport = data.DailySummaryLastExport;
-			dto.DigitBridgeGuid = data.DigitBridgeGuid;
-
-			#endregion read properties
-
-			return;
-		}
 
 		protected virtual void WriteQuickBooksIntegrationSetting(QuickBooksIntegrationSetting data, QuickBooksIntegrationSettingDto dto)
 		{
@@ -188,6 +191,53 @@ namespace DigitBridge.QuickBooks.Integration
 
 			return;
 		}
+
+		protected virtual void WriteQuickBooksChnlAccSetting(QuickBooksChnlAccSetting data, QuickBooksChnlAccSettingDto dto)
+		{
+			if (data is null || dto is null)
+				return;
+
+			#region write all properties with null
+
+			dto.RowNum = data.RowNum;
+			dto.DatabaseNum = data.DatabaseNum;
+			dto.MasterAccountNum = data.MasterAccountNum;
+			dto.ProfileNum = data.ProfileNum;
+			dto.SettingUuid = data.SettingUuid;
+			dto.ChnlAccSettingUuid = data.ChnlAccSettingUuid;
+			dto.ChannelAccountName = data.ChannelAccountName;
+			dto.ChannelAccountNum = data.ChannelAccountNum;
+			dto.Fields = data.Fields.ToJson();
+			dto.EnterDateUtc = data.EnterDateUtc;
+			dto.LastUpdate = data.LastUpdate;
+			dto.DailySummaryLastExport = data.DailySummaryLastExport;
+			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+
+			#endregion read properties
+
+			return;
+		}
+		protected virtual void WriteQuickBooksChnlAccSetting(IList<QuickBooksChnlAccSetting> data, IList<QuickBooksChnlAccSettingDto> dto)
+		{
+			if (data is null || dto is null)
+				return;
+
+			dto.Clear();
+
+			#region write all list items and properties with null
+
+			foreach (var itemData in data)
+			{
+				if (itemData is null) continue;
+				var obj = new QuickBooksChnlAccSettingDto();
+				dto.Add(obj);
+				WriteQuickBooksChnlAccSetting(itemData, obj);
+			}
+
+			#endregion write all list items and properties with null
+			return;
+		}
+
 
 
         #endregion write to dto from data

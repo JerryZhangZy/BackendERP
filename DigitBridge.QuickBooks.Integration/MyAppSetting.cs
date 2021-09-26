@@ -61,5 +61,12 @@ namespace DigitBridge.QuickBooks.Integration
                 return _config.GetSection("QuickBooks")["AppClientSecret"];
             }
         }
+        public static string CryptKey
+        {
+            get
+            {
+                return _config.GetSection("QuickBooks")["CryptKey"];
+            }
+        }
     }
 }

@@ -1,6 +1,8 @@
-﻿using DigitBridge.QuickBooks.Integration.Connection.Model;
+﻿using DigitBridge.CommerceCentral.YoPoco;
+using DigitBridge.QuickBooks.Integration.Connection.Model;
 using DigitBridge.QuickBooks.Integration.Db.Infrastructure;
 using DigitBridge.QuickBooks.Integration.Infrastructure;
+using DigitBridge.QuickBooks.Integration.Mdl.Qbo;
 using DigitBridge.QuickBooks.Integration.Model;
 using Intuit.Ipp.Data;
 using Newtonsoft.Json;
@@ -17,79 +19,30 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
 {
     public class IntegrationSettingService
     {
-        private QboDbConfig _dbConfig;
-        private QboIntegrationSettingDb _qboIntegrationSettingDb;
-        private QboChnlAccSettingDb _qboChnlAccSettingDb;
-        private QboConnectionInfoDb _qboConnectionInfoDb;
-        private QboConnectionConfig _qboConnectionConfig;
-        private MsSqlUniversal _msSql;
-        private int _masterAccNum;
-        private int _profileNum;
+        private QuickBooksConnectionInfoService quickBooksConnectionInfoService;
+        private QuickBooksSettingInfoService quickBooksSettingInfoService;
+        private IDataBaseFactory dbFactory;
+        private IPayload payload;
 
-        private IntegrationSettingService(MsSqlUniversal msSql, QboDbConfig dbConfig,
-            QboConnectionConfig qboConnectionConfig, QboIntegrationSettingDb qboIntegrationSettingDb,
-            QboChnlAccSettingDb qboChnlAccSettingDb, QboConnectionInfoDb qboConnectionInfoDb, int masterAccNum, int profileNum)
+        private IntegrationSettingService(IDataBaseFactory dataBaseFactory,IPayload pl)
         {
-            _msSql = msSql;
-            _dbConfig = dbConfig;
-            _qboConnectionConfig = qboConnectionConfig;
-            _qboIntegrationSettingDb = qboIntegrationSettingDb;
-            _qboChnlAccSettingDb = qboChnlAccSettingDb;
-            _qboConnectionInfoDb = qboConnectionInfoDb;
-            _masterAccNum = masterAccNum;
-            _profileNum = profileNum;
+            payload = pl;
+            dbFactory = dataBaseFactory;
+            quickBooksConnectionInfoService = new QuickBooksConnectionInfoService(dbFactory);
+            quickBooksSettingInfoService = new QuickBooksSettingInfoService(dbFactory);
         }
 
-        public static async Task<IntegrationSettingService> CreateAsync(QboDbConfig dbConfig,
-            QboConnectionConfig qboConnectionConfig, int masterAccNum, int profileNum)
+        public static async Task<IntegrationSettingService> CreateAsync(IDataBaseFactory dataBaseFactory, IPayload payload)
         {
-            try
-            {
-                MsSqlUniversal msSql = await MsSqlUniversal.CreateAsync(
-                        dbConfig.QuickBooksDbConnectionString
-                        , dbConfig.UseAzureManagedIdentity
-                        , dbConfig.TokenProviderConnectionString
-                        , dbConfig.AzureTenantId
-                        );
-
-                QboIntegrationSettingDb qboIntegrationSettingDb =
-                    new QboIntegrationSettingDb(dbConfig.QuickBooksDbIntegrationSettingTableName, msSql);
-
-                QboChnlAccSettingDb qboChnlAccSettingDb = new QboChnlAccSettingDb(
-                    dbConfig.QuickBooksChannelAccSettingTableName, msSql);
-
-                QboConnectionInfoDb qboConnectionInfoDb = new QboConnectionInfoDb(
-                    dbConfig.QuickBooksDbConnectionInfoTableName, msSql, dbConfig.CryptKey);
-
-                var quickbooksOnlineIntergrationSetting =
-                    new IntegrationSettingService(
-                        msSql, dbConfig, qboConnectionConfig, qboIntegrationSettingDb,
-                        qboChnlAccSettingDb, qboConnectionInfoDb, masterAccNum, profileNum
-                        );
-
-                return quickbooksOnlineIntergrationSetting;
-            }
-            catch (Exception ex)
-            {
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex);
-            }
+                return new IntegrationSettingService(dataBaseFactory,payload);
         }
 
         public async Task<IntegrationSettingApiRespondType> GetIntegrationSetting()
         {
-            IntegrationSettingApiRespondType reponse = new IntegrationSettingApiRespondType();
+            var reponse = new IntegrationSettingApiRespondType();
             try
             {
-                DataTable settingTb = await _qboIntegrationSettingDb.GetIntegrationSettingAsync(new Command(_masterAccNum, _profileNum));
-                QboIntegrationSetting intergrationSetting = settingTb.
-                                                                DatatableToList<QboIntegrationSetting>().FirstOrDefault();
-
-                DataTable accSettingsDtb = await _qboChnlAccSettingDb.GetChnlAccSettingsAsync(new Command(_masterAccNum, _profileNum));
-                List<QboChnlAccSetting> accSettings =
-                       accSettingsDtb.DatatableToList<QboChnlAccSetting>();
-
-                //reponse.IntegrationSetting = intergrationSetting;
-                reponse.ChnlAccSettings = accSettings;
+                reponse.SettingInfo = quickBooksSettingInfoService.GetDataByPayload(payload).FirstOrDefault();
 
                 return reponse;
             }
@@ -106,14 +59,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
 
             try
             {
-                //var settings = new JsonSerializerSettings
-                //{
-                //    NullValueHandling = NullValueHandling.Ignore,
-                //    MissingMemberHandling = MissingMemberHandling.Ignore
-                //};
-
-                IntegrationSettingApiReqType settingReqType =
-                    JsonConvert.DeserializeObject<IntegrationSettingApiReqType>(requestBody);
+                var settingReqType =JsonConvert.DeserializeObject<IntegrationSettingApiReqType>(requestBody);
 
                 (bool isReqBodyValid, string reqBodyErrMsg) = ValidateReqBody(settingReqType);
 
@@ -124,15 +70,18 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
 
                 await HandleQboDefaultItems(settingReqType.IntegrationSetting);
 
-                await _qboIntegrationSettingDb.AddIntegrationSettingAsync(
-                    settingReqType.IntegrationSetting.ObjectToDataTable(
-)
-                    );
+                //TODO:
+//                quickBooksSettingInfoService.
 
-                await _qboChnlAccSettingDb.AddChnlAccSettingAsync(
-                   settingReqType.ChnlAccSettings.ListToDataTable(
-)
-                   );
+//                await _qboIntegrationSettingDb.AddIntegrationSettingAsync(
+//                    settingReqType.IntegrationSetting.ObjectToDataTable(
+//)
+//                    );
+
+//                await _qboChnlAccSettingDb.AddChnlAccSettingAsync(
+//                   settingReqType.ChnlAccSettings.ListToDataTable(
+//)
+//                   );
 
                 return (!hasError, errMsg);
             }
@@ -166,41 +115,41 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                     return (false, existenceErrMsg);
                 }
 
-                // [ExportOrderFromDate] is only allowed for set once for now.
-                DateTime exportOrderFromDate = await _qboIntegrationSettingDb.GetExportOrderFromDate(new Command(_masterAccNum, _profileNum));
+                //// [ExportOrderFromDate] is only allowed for set once for now.
+                //DateTime exportOrderFromDate = await _qboIntegrationSettingDb.GetExportOrderFromDate(new Command(_masterAccNum, _profileNum));
 
-                if (settingReqType.IntegrationSetting.ExportOrderFromDate == default)
-                {
-                    settingReqType.IntegrationSetting.ExportOrderFromDate = exportOrderFromDate;
-                }
-                else
-                {
-                    if (!settingReqType.IntegrationSetting.ExportOrderFromDate.Equals(exportOrderFromDate))
-                    {
-                        return (false, "The exportOrderFromDate is only allowed for set once, an inqury is required for updating. ");
-                    }
-                }
+                //if (settingReqType.IntegrationSetting.ExportOrderFromDate == default)
+                //{
+                //    settingReqType.IntegrationSetting.ExportOrderFromDate = exportOrderFromDate;
+                //}
+                //else
+                //{
+                //    if (!settingReqType.IntegrationSetting.ExportOrderFromDate.Equals(exportOrderFromDate))
+                //    {
+                //        return (false, "The exportOrderFromDate is only allowed for set once, an inqury is required for updating. ");
+                //    }
+                //}
 
-                await HandleQboDefaultItems(settingReqType.IntegrationSetting);
+                //await HandleQboDefaultItems(settingReqType.IntegrationSetting);
 
-                await _qboIntegrationSettingDb.UpdateIntegrationSettingAsync(
-                    settingReqType.IntegrationSetting.ObjectToDataTable(),
-                    new Command
-                        (
-                            settingReqType.IntegrationSetting.MasterAccountNum,
-                            settingReqType.IntegrationSetting.ProfileNum
-                        )
-                    );
+                //await _qboIntegrationSettingDb.UpdateIntegrationSettingAsync(
+                //    settingReqType.IntegrationSetting.ObjectToDataTable(),
+                //    new Command
+                //        (
+                //            settingReqType.IntegrationSetting.MasterAccountNum,
+                //            settingReqType.IntegrationSetting.ProfileNum
+                //        )
+                //    );
 
-                foreach (ChnlAccSettingReqType chnlAccSettingReq in settingReqType.ChnlAccSettings)
-                {
-                    await _qboChnlAccSettingDb.UpdateChnlAccSettingAsync(
-                       chnlAccSettingReq.ObjectToDataTable(),
-                       chnlAccSettingReq.MasterAccountNum,
-                       chnlAccSettingReq.ProfileNum,
-                       chnlAccSettingReq.ChannelAccountNum
-                       );
-                }
+                //foreach (ChnlAccSettingReqType chnlAccSettingReq in settingReqType.ChnlAccSettings)
+                //{
+                //    await _qboChnlAccSettingDb.UpdateChnlAccSettingAsync(
+                //       chnlAccSettingReq.ObjectToDataTable(),
+                //       chnlAccSettingReq.MasterAccountNum,
+                //       chnlAccSettingReq.ProfileNum,
+                //       chnlAccSettingReq.ChannelAccountNum
+                //       );
+                //}
 
                 return (!hasError, errMsg);
             }
@@ -215,14 +164,10 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             UserInitialDataApiResponseType response = new UserInitialDataApiResponseType();
             try
             {
-                QboUniversal qboUniversal = await ConnectToQbo(_qboConnectionConfig);
+                var customerService = new QboCustomerService();
+                var inventoryService = new QboInventoryService();
 
-                if (qboUniversal == null)
-                {
-                    return null;
-                }
-
-                List<Customer> customers = await qboUniversal.GetCustomers();
+                List<Customer> customers = await customerService.GetCustomersAsync();
 
                 List<CustomerPair> customerPairs = customers.Select(x => new CustomerPair()
                 {
@@ -230,7 +175,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                     Id = x.Id.ForceToInt(),
                 }).ToList();
 
-                List<Item> items = await qboUniversal.GetItems();
+                List<Item> items = await inventoryService.GetItemsAsync();
 
                 List<InventoryItemPair> inventoryItemPairs =
                     items.Where(t => t.Type == ItemTypeEnum.Inventory)
@@ -248,7 +193,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                        Id = x.Id.ForceToInt(),
                    }).ToList();
 
-                List<Account> accounts = await qboUniversal.GetAccounts();
+                List<Account> accounts = await inventoryService.GetAccountsAsync();
 
                 List<OtherCurrentLiabilitiesAccountPair> otherCurrentLiabilitiesAccountPairs =
                     accounts.Where(t => t.AccountType == AccountTypeEnum.OtherCurrentLiability)
@@ -258,7 +203,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                         Id = x.Id.ForceToInt(),
                     }).ToList();
 
-                CompanyInfo companyInfo = await qboUniversal.GetCompanyInfo();
+                CompanyInfo companyInfo = await customerService.GetCompanyInfoAsync();
 
                 response.Customers = customerPairs;
                 response.InventoryItems = inventoryItemPairs;
@@ -276,9 +221,9 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             {
                 try
                 {
-                    await _qboConnectionInfoDb.UpdateQboOAuthTokenStatusAsync(
-                    new Command(_masterAccNum, _profileNum),
-                    QboOAuthTokenStatus.Error);
+                    //await _qboConnectionInfoDb.UpdateQboOAuthTokenStatusAsync(
+                    //new Command(_masterAccNum, _profileNum),
+                    //QboOAuthTokenStatus.Error);
                 }
                 catch (Exception ex_)
                 {
@@ -300,13 +245,12 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             string errMsg = "";
             try
             {
-                QboUniversal qboUniversal = await ConnectToQbo(_qboConnectionConfig);
-
+                var inventoryService = new QboInventoryService();
                 if (!string.IsNullOrEmpty(integrationSetting.QboDefaultItemName) &&
                     integrationSetting.QboDefaultItemId == 0)
                 {
                     Item defaultInventoryItem =
-                        await qboUniversal.CreateDefaultInventoryItem(integrationSetting.QboDefaultItemName);
+                        await inventoryService.CreateDefaultInventoryItemAsync(integrationSetting.QboDefaultItemName);
                     if (defaultInventoryItem != null)
                     {
                         integrationSetting.QboDefaultItemId = defaultInventoryItem.Id.ForceToInt();
@@ -322,7 +266,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                     integrationSetting.QboDiscountItemId == 0)
                 {
                     Item defaultDiscountItem =
-                        await qboUniversal.CreateDefaultNonInventoryItem(integrationSetting.QboDiscountItemName);
+                        await inventoryService.CreateDefaultNonInventoryItemAsync(integrationSetting.QboDiscountItemName);
                     if (defaultDiscountItem != null)
                     {
                         integrationSetting.QboDiscountItemId = defaultDiscountItem.Id.ForceToInt();
@@ -338,7 +282,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                     integrationSetting.QboShippingItemId == 0)
                 {
                     Item defaultShipppingItem =
-                       await qboUniversal.CreateDefaultNonInventoryItem(integrationSetting.QboShippingItemName);
+                       await inventoryService.CreateDefaultNonInventoryItemAsync(integrationSetting.QboShippingItemName);
                     if (defaultShipppingItem != null)
                     {
                         integrationSetting.QboShippingItemId = defaultShipppingItem.Id.ForceToInt();
@@ -355,7 +299,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                 {
                     // pass account id and account name
                     Item defaultTaxItem =
-                       await qboUniversal.CreateDefaultNonInventoryItem(
+                       await inventoryService.CreateDefaultNonInventoryItemAsync(
                            integrationSetting.QboSalesTaxItemName,
                            integrationSetting.QboSalesTaxAccName,
                            integrationSetting.QboSalesTaxItemId);
@@ -380,69 +324,6 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             }
         }
 
-        private async Task<QboUniversal> ConnectToQbo(QboConnectionConfig qboConnectionConfig)
-        {
-            try
-            {
-                DataTable conInfoTb = await _qboConnectionInfoDb.GetConnectionInfoByCommandAsync(
-                    new Command(_masterAccNum, _profileNum));
-
-                List<QboConnectionInfo> qboConnectionInfos =
-                    conInfoTb.DatatableToList<QboConnectionInfo>();
-
-                QboConnectionInfo qboConnectionInfo = qboConnectionInfos.FirstOrDefault();
-
-                if (qboConnectionInfos.Count != 1 || string.IsNullOrEmpty(qboConnectionInfo.AuthCode))
-                {
-                    return null;
-                }
-
-                // Decrypt sensitive credentials
-                qboConnectionInfo.ClientId = CryptoUtility.DecrypTextTripleDES(qboConnectionInfo.ClientId, _dbConfig.CryptKey);
-                qboConnectionInfo.ClientSecret = CryptoUtility.DecrypTextTripleDES(qboConnectionInfo.ClientSecret, _dbConfig.CryptKey);
-                qboConnectionInfo.AuthCode = CryptoUtility.DecrypTextTripleDES(qboConnectionInfo.AuthCode, _dbConfig.CryptKey);
-                qboConnectionInfo.RealmId = CryptoUtility.DecrypTextTripleDES(qboConnectionInfo.RealmId, _dbConfig.CryptKey);
-
-                // Initialize Qbo connection.
-                QboUniversal qboUniversal = await QboUniversal.CreateAsync(qboConnectionInfo, qboConnectionConfig);
-
-                // Udpate Refresh Token in Database if it got updated during Qbo connection initailizaion.
-                if (qboUniversal._qboConnectionTokenStatus.RefreshTokenStatus == ConnectionTokenStatus.Updated)
-                {
-                    await _qboConnectionInfoDb.UpdateQboRefreshTokenAsync(qboUniversal._qboConnectionInfo.RefreshToken,
-                        qboUniversal._qboConnectionInfo.LastRefreshTokUpdate,
-                        new Command(_masterAccNum, _profileNum)
-                        );
-                }
-                // Udpate Access Token in Database if it got refreshed during Qbo connection initailizaion.
-                if (qboUniversal._qboConnectionTokenStatus.AccessTokenStatus == ConnectionTokenStatus.Updated)
-                {
-                    await _qboConnectionInfoDb.UpdateQboAccessTokenAsync(qboUniversal._qboConnectionInfo.AccessToken,
-                        qboUniversal._qboConnectionInfo.LastAccessTokUpdate,
-                        new Command(_masterAccNum, _profileNum)
-                        );
-                }
-                return qboUniversal;
-            }
-            catch (Exception ex)
-            {
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex);
-            }
-        }
-
-        public async Task<bool> IsQboIntegrationSettingExist()
-        {
-            try
-            {
-                return await _qboIntegrationSettingDb.ExistsIntegrationSettingAsync(
-                    new Command(_masterAccNum, _profileNum));
-            }
-            catch (Exception ex)
-            {
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex);
-            }
-        }
-
         private async Task<(bool, string)> CheckAllPatchTargetsExist(IntegrationSettingApiReqType intgSettingApiReqType)
         {
             bool isAllExist = true;
@@ -450,7 +331,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
 
             try
             {
-                bool isIntgSettingExist = await IsQboIntegrationSettingExist();
+                var settingInfo = quickBooksSettingInfoService.GetDataByPayload(payload).FirstOrDefault();
+                bool isIntgSettingExist = settingInfo != null;
 
                 if (!isIntgSettingExist)
                 {
@@ -461,9 +343,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                 {
                     foreach (ChnlAccSettingReqType chnlAccSettingReqType in intgSettingApiReqType.ChnlAccSettings)
                     {
-                        bool isCurChnlAccSettingsExist =
-                            await _qboChnlAccSettingDb.ExistsChnlAccSettingAsync(
-                                new Command(_masterAccNum, _profileNum), chnlAccSettingReqType.ChannelAccountNum);
+                        bool isCurChnlAccSettingsExist = settingInfo.QuickBooksChnlAccSetting.Any(r => r.ChannelAccountNum == chnlAccSettingReqType.ChannelAccountNum);
                         if (!isCurChnlAccSettingsExist)
                         {
                             isAllExist = false;
@@ -497,8 +377,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
 
                 if (string.IsNullOrEmpty(apiReqTypeErrMsg))
                 {
-                    if (intgSettingApiReq.IntegrationSetting.MasterAccountNum != _masterAccNum ||
-                        intgSettingApiReq.IntegrationSetting.ProfileNum != _profileNum)
+                    if (intgSettingApiReq.IntegrationSetting.MasterAccountNum != payload.MasterAccountNum ||
+                        intgSettingApiReq.IntegrationSetting.ProfileNum != payload.ProfileNum)
                     {
                         isValid = false;
                         errMsg += " MasterAccountNumber and ProfileNumber in Request Body " +
@@ -559,8 +439,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
 
                     foreach (ChnlAccSettingReqType chnlAccSettingPostType in intgSettingApiReq.ChnlAccSettings)
                     {
-                        if (chnlAccSettingPostType.MasterAccountNum != _masterAccNum ||
-                                chnlAccSettingPostType.ProfileNum != _profileNum)
+                        if (chnlAccSettingPostType.MasterAccountNum != payload.MasterAccountNum ||
+                                chnlAccSettingPostType.ProfileNum != payload.ProfileNum)
                         {
                             isValid = false;
                             errMsg += " MasterAccountNumber and ProfileNumber in Request Body " +

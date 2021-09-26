@@ -154,6 +154,20 @@ AND ProfileNum = @profileNum";
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"));
         }
+
+        public static List<long> GetRowNumsByAccount(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT RowNum FROM QuickBooksIntegrationSetting tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+
+            return SqlQuery.Execute(
+                sql,
+                (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"));
+        }
         public static long GetRowNumByNumber(string number, int masterAccountNum, int profileNum)
         {
 /*

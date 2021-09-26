@@ -79,6 +79,16 @@ namespace DigitBridge.QuickBooks.Integration
         public bool HasSettingUuid => SettingUuid != null;
 
 		/// <summary>
+		/// ChnlAccSetting uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("ChnlAccSetting uuid. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The ChnlAccSettingUuid value cannot exceed 50 characters. ")]
+        public string ChnlAccSettingUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasChnlAccSettingUuid => ChnlAccSettingUuid != null;
+
+		/// <summary>
 		/// Central Channel Account name, Max 10 chars ( because of qbo doc Number 21 chars restrictions )
 		/// </summary>
 		[OpenApiPropertyDescription("Central Channel Account name, Max 10 chars ( because of qbo doc Number 21 chars restrictions )")]

@@ -24,13 +24,13 @@ namespace DigitBridge.QuickBooks.Integration
     [Serializable()]
     public partial class QuickBooksSettingInfoDataDto
     {
-        public QuickBooksChnlAccSettingDto QuickBooksChnlAccSetting { get; set; }
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        public bool HasQuickBooksChnlAccSetting => QuickBooksChnlAccSetting != null;
-
         public QuickBooksIntegrationSettingDto QuickBooksIntegrationSetting { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasQuickBooksIntegrationSetting => QuickBooksIntegrationSetting != null;
+
+        public IList<QuickBooksChnlAccSettingDto> QuickBooksChnlAccSetting { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public bool HasQuickBooksChnlAccSetting => QuickBooksChnlAccSetting != null;
 
     }
 }
