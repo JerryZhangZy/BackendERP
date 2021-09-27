@@ -22,4 +22,12 @@ namespace DigitBridge.QuickBooks.Integration
         public static readonly string SummaryMiscLineDescription = "Misc Cost Line for Invoice DigitBridge invoice number: ";
         public static readonly string SummaryChargeAndAllowanceLineDescription = "ChargeAndAllowance Cost Line for Invoice DigitBridge invoice number: ";
     }
+
+    public class ReturnMappingConsts
+    {
+        public static readonly string SummaryShippingLineDescription = "Shipping Cost Line for Invoice Return. Invoice number: {0}, Tran number:{1}"; 
+        public static readonly string SalesTaxItemDescription = "Tax should return for Invoice Return. Invoice number: {0}, Tran number:{1} "; 
+        public static readonly string SummaryMiscLineDescription = "Misc Cost Line for Invoice Return. Invoice number: {0}, Tran number:{1}";
+        public static readonly string SummaryChargeAndAllowanceLineDescription = "ChargeAndAllowance Cost Line for Invoice Return. Invoice number: {0}, Tran number:{1}";
+    }
 }
