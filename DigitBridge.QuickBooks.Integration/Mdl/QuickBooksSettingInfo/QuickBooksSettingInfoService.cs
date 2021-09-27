@@ -80,6 +80,15 @@ namespace DigitBridge.QuickBooks.Integration
 
             return await SaveDataAsync();
         }
+        public virtual async Task<bool> GetByPayloadAsync(IPayload payload)
+        {
+            var rowNum = 0L;
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await QuickBooksSettingInfoHelper.GetSettingRowNumAsync(payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return await GetDataAsync(rowNum);
+        }
 
         public virtual bool Add(QuickBooksSettingInfoPayload payload)
         {
@@ -294,23 +303,6 @@ namespace DigitBridge.QuickBooks.Integration
             var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             success = success && DeleteData();
             return success;
-        }
-
-        public virtual IList<QuickBooksSettingInfoData> GetDataByPayload(IPayload payload)
-        {
-            var rowNumList = new List<long>();
-            using (var trx = new ScopedTransaction(dbFactory))
-            {
-                rowNumList = QuickBooksSettingInfoHelper.GetRowNumsByAccount(payload.MasterAccountNum, payload.ProfileNum);
-            }
-            var resultlist = new List<QuickBooksSettingInfoData>();
-            foreach (var rowNum in rowNumList)
-            {
-                NewData();
-                if (GetData(rowNum))
-                    resultlist.Add(Data);
-            }
-            return resultlist;
         }
     }
 }

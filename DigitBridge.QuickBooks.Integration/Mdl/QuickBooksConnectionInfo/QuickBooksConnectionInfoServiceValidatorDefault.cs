@@ -100,7 +100,7 @@ namespace DigitBridge.QuickBooks.Integration
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (!string.IsNullOrEmpty(number))
-                        isValid = QuickBooksConnectionInfoServiceHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = QuickBooksConnectionInfoServiceHelper.ExistConnectionInfo(pl.MasterAccountNum, pl.ProfileNum);
                     else if(!dto.QuickBooksConnectionInfo.RowNum.IsZero())
                         isValid = QuickBooksConnectionInfoServiceHelper.ExistRowNum(dto.QuickBooksConnectionInfo.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
                 }

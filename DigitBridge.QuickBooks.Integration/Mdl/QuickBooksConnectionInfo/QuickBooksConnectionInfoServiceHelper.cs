@@ -31,23 +31,63 @@ namespace DigitBridge.QuickBooks.Integration
     /// </summary>
     public static class QuickBooksConnectionInfoServiceHelper
     {
-        public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
+        public static bool ExistConnectionInfo( int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
 SELECT COUNT(1) FROM QuickBooksConnectionInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND OrderNumber = @number
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum"),
-                number.ToSqlParameter("number")
+                profileNum.ToSqlParameter("profileNum")
             );
             return result > 0;
-*/
-            return true;
+        }
+
+        public static async Task<bool> ExistConnectionInfoAsync( int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM QuickBooksConnectionInfo tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+";
+            var result =await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum")
+            );
+            return result > 0;
+        }
+
+        public static long GetConnectionInfoRowNum(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT Top 1 ConnectionProfileNum FROM QuickBooksConnectionInfo 
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+            return SqlQuery.Execute(sql, (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum")).FirstOrDefault();
+        }
+
+        public static async Task<long> GetConnectionInfoRowNumAsync(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT Top 1 ConnectionProfileNum FROM QuickBooksConnectionInfo 
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+            return (await SqlQuery.ExecuteAsync(sql, (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"))).FirstOrDefault();
+        }
+
+        public static async Task<long> GetConnectionInfoRowNumByRequestStateAsync(string requestState)
+        {
+            var sql = $@"
+SELECT Top 1 ConnectionProfileNum FROM QuickBooksConnectionInfo 
+WHERE RequestState = @requestState";
+            return (await SqlQuery.ExecuteAsync(sql, (long rowNum) => rowNum,
+                requestState.ToSqlParameter("requestState"))).FirstOrDefault();
         }
 
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
@@ -133,16 +173,6 @@ AND ConnectionProfileNum= @rowNum
             return result > 0;
         }
         
-        public static List<long> GetRowNums(int masterAccountNum, int profileNum)
-        {
-            var sql = $@"
-SELECT ConnectionProfileNum FROM QuickBooksConnectionInfo tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum";
-            return SqlQuery.Execute(sql, (long rowNum) => rowNum,
-                masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum"));
-        }
 
         public static async Task<List<long>> GetRowNumsAsync(int masterAccountNum, int profileNum)
         {

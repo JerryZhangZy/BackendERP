@@ -1,10 +1,8 @@
-﻿using DigitBridge.QuickBooks.Integration.Infrastructure;
-using Intuit.Ipp.Data;
+﻿using Intuit.Ipp.Data;
 using Intuit.Ipp.QueryFilter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo

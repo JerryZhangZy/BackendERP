@@ -58,6 +58,49 @@ namespace DigitBridge.QuickBooks.Integration
             return SaveData();
         }
 
+        public virtual async Task<bool> GetByPayloadAsync(IPayload payload)
+        {
+            var rowNum = 0L;
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await QuickBooksConnectionInfoServiceHelper.GetConnectionInfoRowNumAsync(payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return await GetDataAsync(rowNum);
+        }
+
+        public virtual async Task<bool> GetByRequestStateAsync(string state)
+        {
+            var rowNum = 0L;
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await QuickBooksConnectionInfoServiceHelper.GetConnectionInfoRowNumByRequestStateAsync(state);
+            }
+            return await GetDataAsync(rowNum);
+        }
+
+        public virtual async Task<bool> UpdateConnectionInfoStateAsync(IPayload payload,string state)
+        {
+            if(await GetByPayloadAsync(payload))
+            {
+                Data.QuickBooksConnectionInfo.RequestState = state;
+            }
+            else
+            {
+                NewData();
+                Data.QuickBooksConnectionInfo = new QuickBooksConnectionInfo
+                {
+                    MasterAccountNum = payload.MasterAccountNum,
+                    DatabaseNum = payload.DatabaseNum,
+                    ProfileNum = payload.ProfileNum,
+                    ClientId = MyAppSetting.AppClientId,
+                    ClientSecret = MyAppSetting.AppClientSecret,
+                    RequestState = state,
+                    ConnectionUuid = Guid.NewGuid().ToString()
+                };
+            }
+            return await SaveDataAsync();
+        }
+
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
@@ -265,23 +308,6 @@ namespace DigitBridge.QuickBooks.Integration
         public virtual bool GetData(QuickBooksConnectionInfoPayload payload, string orderNumber)
         {
             return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-        }
-
-        public virtual IList<QuickBooksConnectionInfoData> GetDataByPayload(IPayload payload)
-        {
-            var rowNumList = new List<long>();
-            using(var trx=new ScopedTransaction(dbFactory))
-            {
-                rowNumList = QuickBooksConnectionInfoServiceHelper.GetRowNumsByAccount(payload.MasterAccountNum, payload.ProfileNum);
-            }
-            var resultlist = new List<QuickBooksConnectionInfoData>();
-            foreach(var rowNum in rowNumList)
-            {
-                NewData();
-                if (GetData(rowNum))
-                    resultlist.Add(Data);
-            }
-            return resultlist;
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace DigitBridge.QuickBooks.Integration.Model
 {
     public class IntegrationSettingApiRespondType
     {
-        public QuickBooksSettingInfoData SettingInfo { get; set; }
+        public QuickBooksSettingInfoDataDto SettingInfo { get; set; }
     }
 
     public class IntegrationSettingApiReqType

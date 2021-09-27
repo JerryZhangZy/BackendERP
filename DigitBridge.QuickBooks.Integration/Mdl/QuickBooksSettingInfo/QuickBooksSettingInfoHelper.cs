@@ -31,6 +31,56 @@ namespace DigitBridge.QuickBooks.Integration
     /// </summary>
     public static class QuickBooksSettingInfoHelper
     {
+        public static bool ExistSettingInfo(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM QuickBooksIntegrationSetting tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+";
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum")
+            );
+            return result > 0;
+        }
+
+        public static async Task<bool> ExistSettingInfoAsync(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM QuickBooksIntegrationSetting tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum")
+            );
+            return result > 0;
+        }
+
+        public static long GetSettingInfoRowNum(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT Top 1 RowNum FROM QuickBooksIntegrationSetting 
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+            return SqlQuery.Execute(sql, (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum")).FirstOrDefault();
+        }
+
+        public static async Task<long> GetSettingRowNumAsync(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT Top 1 RowNum FROM QuickBooksIntegrationSetting 
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+            return (await SqlQuery.ExecuteAsync(sql, (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"))).FirstOrDefault();
+        }
+
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
 /*

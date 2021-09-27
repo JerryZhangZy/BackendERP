@@ -35,19 +35,14 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
 
         public async Task<IntegrationSettingApiRespondType> GetIntegrationSetting()
         {
-            var reponse = new IntegrationSettingApiRespondType();
-            try
+            if(await quickBooksSettingInfoService.GetByPayloadAsync(payload))
             {
-                reponse.SettingInfo = quickBooksSettingInfoService.GetDataByPayload(payload).FirstOrDefault();
-
-                return reponse;
+                return new IntegrationSettingApiRespondType { SettingInfo = quickBooksSettingInfoService.ToDto() };
             }
-            catch (Exception ex)
-            {
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex);
-            }
+            return new IntegrationSettingApiRespondType();
         }
 
+        //Add
         public async Task<(bool, string)> PostIntegrationSetting(string requestBody)
         {
             bool hasError = false;
@@ -87,6 +82,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             }
         }
 
+        //Update
         public async Task<(bool, string)> PatchIntegrationSetting(string requestBody)
         {
             bool hasError = false;
@@ -327,16 +323,14 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
 
             try
             {
-                var settingInfo = quickBooksSettingInfoService.GetDataByPayload(payload).FirstOrDefault();
-                bool isIntgSettingExist = settingInfo != null;
-
-                if (!isIntgSettingExist)
+                if (!await quickBooksSettingInfoService.GetByPayloadAsync(payload))
                 {
                     isAllExist = false;
                     errMsg += "The targeted Integration Setting does not exist. ";
                 }
                 else
                 {
+                    var settingInfo = quickBooksSettingInfoService.Data;
                     foreach (ChnlAccSettingReqType chnlAccSettingReqType in intgSettingApiReqType.ChnlAccSettings)
                     {
                         bool isCurChnlAccSettingsExist = settingInfo.QuickBooksChnlAccSetting.Any(r => r.ChannelAccountNum == chnlAccSettingReqType.ChannelAccountNum);
@@ -474,7 +468,6 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
 
             return (isValid, errMsg);
         }
-
 
     }
 }
