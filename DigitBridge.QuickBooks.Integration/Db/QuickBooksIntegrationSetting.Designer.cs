@@ -440,20 +440,6 @@ namespace DigitBridge.QuickBooks.Integration
             return;
         }
 
-
-		public override QuickBooksIntegrationSetting ConvertDbFieldsToData()
-		{
-			base.ConvertDbFieldsToData();
-			Fields.LoadFromValueString(JsonFields);
-			return this;
-		}
-		public override QuickBooksIntegrationSetting ConvertDataFieldsToDb()
-		{
-			base.ConvertDataFieldsToDb();
-			JsonFields = Fields.ToValueString();
-			return this;
-		}
-
         #endregion Methods - Generated 
     }
 }

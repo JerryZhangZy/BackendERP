@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using UneedgoHelper.DotNet.Common;
-using UneedgoHelper.DotNet.Data.MsSql;
 using System.Web;
-using System.Data;
 using System.Linq;
-using DigitBridge.QuickBooks.Integration.Db.Infrastructure;
-using DigitBridge.QuickBooks.Integration.Connection.Model;
-using DigitBridge.QuickBooks.Integration.Infrastructure;
-using DigitBridge.QuickBooks.Integration.Model;
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl

@@ -337,20 +337,6 @@ namespace DigitBridge.QuickBooks.Integration
             return;
         }
 
-
-		public override QuickBooksChnlAccSetting ConvertDbFieldsToData()
-		{
-			base.ConvertDbFieldsToData();
-			Fields.LoadFromValueString(JsonFields);
-			return this;
-		}
-		public override QuickBooksChnlAccSetting ConvertDataFieldsToDb()
-		{
-			base.ConvertDataFieldsToDb();
-			JsonFields = Fields.ToValueString();
-			return this;
-		}
-
         #endregion Methods - Generated 
     }
 }

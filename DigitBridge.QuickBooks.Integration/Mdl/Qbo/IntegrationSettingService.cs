@@ -1,7 +1,4 @@
 ﻿using DigitBridge.CommerceCentral.YoPoco;
-using DigitBridge.QuickBooks.Integration.Connection.Model;
-using DigitBridge.QuickBooks.Integration.Db.Infrastructure;
-using DigitBridge.QuickBooks.Integration.Infrastructure;
 using DigitBridge.QuickBooks.Integration.Mdl.Qbo;
 using DigitBridge.QuickBooks.Integration.Model;
 using Intuit.Ipp.Data;
@@ -13,7 +10,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UneedgoHelper.DotNet.Common;
-using UneedgoHelper.DotNet.Data.MsSql;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl
 {
