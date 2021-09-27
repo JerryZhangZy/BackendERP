@@ -154,17 +154,17 @@ namespace DigitBridge.QuickBooks.Integration
             };
 
             //TODO
-            //invoice.PrivateNote = invoiceInfo.s//qboSalesOrder.PrivateNote = fulfilledOrder.OrderHeader.SellerPrivateNote;
-            //invoice.CustomerMemo = new MemoRef() { Value = qboSalesOrder.CustomerMemo };//qboSalesOrder.CustomerMemo = fulfilledOrder.OrderHeader.SellerPublicNote;
+            //refund.PrivateNote = invoiceInfo.s//qboSalesOrder.PrivateNote = fulfilledOrder.OrderHeader.SellerPrivateNote;
+            //refund.CustomerMemo = new MemoRef() { Value = qboSalesOrder.CustomerMemo };//qboSalesOrder.CustomerMemo = fulfilledOrder.OrderHeader.SellerPublicNote;
 
             var invoiceInfo = tranData.InvoiceData.InvoiceHeaderInfo;
             var invoiceHeader = tranData.InvoiceData.InvoiceHeader;
-            AppendAddressToInvoice(refund, invoiceInfo);
-            AppendCustomFieldToInvoice(refund, invoiceInfo);
-            AppendCustomerToInvoice(refund, invoiceHeader);
+            //AppendAddressToRefund(refund, invoiceInfo);
+            AppendCustomFieldToRefund(refund, invoiceInfo);
+            AppendCustomerToRefund(refund, invoiceHeader);
             return refund;
         }
-        private void AppendCustomFieldToInvoice(RefundReceipt refund, InvoiceHeaderInfo invoiceInfo)
+        private void AppendCustomFieldToRefund(RefundReceipt refund, InvoiceHeaderInfo invoiceInfo)
         {
             // Map Invoice customized fields
             List<CustomField> customFields = new List<CustomField>();
@@ -189,7 +189,7 @@ namespace DigitBridge.QuickBooks.Integration
 
             refund.CustomField = customFields.ToArray();
         }
-        private void AppendCustomerToInvoice(RefundReceipt refund, InvoiceHeader invoiceHeader)
+        private void AppendCustomerToRefund(RefundReceipt refund, InvoiceHeader invoiceHeader)
         {
             string customerId;
             if (_setting.QboCustomerCreateRule == (int)CustomerCreateRule.PerMarketPlace)
@@ -203,7 +203,7 @@ namespace DigitBridge.QuickBooks.Integration
             }
             refund.CustomerRef = new ReferenceType() { Value = customerId };
         }
-        private void AppendAddressToInvoice(RefundReceipt refund, InvoiceHeaderInfo invoiceInfo)
+        private void AppendAddressToRefund(RefundReceipt refund, InvoiceHeaderInfo invoiceInfo)
         {
             if (_setting.QboCustomerCreateRule != (int)CustomerCreateRule.PerMarketPlace)
             {
