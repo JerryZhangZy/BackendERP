@@ -1,25 +1,24 @@
-﻿using DigitBridge.Base.Utility;
-using DigitBridge.CommerceCentral.ERPDb;
+﻿using DigitBridge.CommerceCentral.ERPDb;
 using Intuit.Ipp.Data;
+using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace DigitBridge.QuickBooks.Integration
 {
-    public class InvoiceMapper
+    public class InvoiceReturnMapper
     {
         private QboIntegrationSetting _setting { get; set; }
-        public InvoiceMapper(QboIntegrationSetting setting)
+        public InvoiceReturnMapper(QboIntegrationSetting setting)
         {
             this._setting = setting;
             PrepareSetting();
         }
-
         protected void PrepareSetting()
         {
             _setting.QboShippingItemId = string.IsNullOrEmpty(_setting.QboShippingItemId) ? QboMappingConsts.SippingCostRefValue : _setting.QboShippingItemId;
         }
-
-        protected Line ItemToQboLine(InvoiceItems item)
+        protected Line ItemToQboLine(InvoiceReturnItems item)
         {
             Line line = new Line();
 
@@ -31,9 +30,9 @@ namespace DigitBridge.QuickBooks.Integration
             line.AnyIntuitObject = new SalesItemLineDetail()
             {
                 ItemRef = new ReferenceType() { Value = item.InvoiceItemsUuid },
-                Qty = item.ShipQty,
+                Qty = item.ReceiveQty,
                 QtySpecified = true,
-                AnyIntuitObject = item.DiscountPrice,
+                AnyIntuitObject = item.InvoiceDiscountPrice,
                 ItemElementName = ItemChoiceType.UnitPrice,
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
@@ -41,46 +40,28 @@ namespace DigitBridge.QuickBooks.Integration
             //TODO check in Qbo invoice page Amount=Qty*AnyIntuitObject
             return line;
         }
-        protected Line DiscountToQboLine(InvoiceHeader invoiceHeader)
+        protected Line ShippingCostToQboLine(InvoiceTransaction tran)
         {
             Line line = new Line();
-            line.AnyIntuitObject = new SalesItemLineDetail()
-            {
-                ItemRef = new ReferenceType()
-                {
-                    Value = _setting.QboDiscountItemId.ToString(),
-                    name = _setting.QboDiscountItemName,
-                }
-            };
-            line.Amount = invoiceHeader.DiscountAmount;
-            line.DetailType = LineDetailTypeEnum.DiscountLineDetail;//LineDetailTypeEnum.SalesItemLineDetail  //TODO Try this.
-            line.AmountSpecified = true;
-            line.DetailTypeSpecified = true;
-            line.Description = QboMappingConsts.SummaryDiscountLineDescription + invoiceHeader.InvoiceNumber;
-            return line;
-        }
-        protected Line ShippingCostToQboLine(InvoiceHeader invoiceHeader)
-        {
-            Line line = new Line();
-            line.Amount = invoiceHeader.ShippingAmount;
+            line.Amount = tran.ShippingAmount * -1;//TODO check this in qbo refund.
             line.AmountSpecified = true;
             line.AnyIntuitObject = new SalesItemLineDetail()
             {
                 ItemRef = new ReferenceType()
                 {
-                    Value = _setting.QboShippingItemId,
+                    Value = _setting.QboShippingItemId.ToString(),
                     name = _setting.QboShippingItemName,
                 }
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
-            line.Description = QboMappingConsts.SummaryShippingLineDescription + invoiceHeader.InvoiceNumber;
+            line.Description = string.Format(ReturnMappingConsts.SummaryShippingLineDescription, tran.InvoiceNumber, tran.TransNum);
             return line;
         }
-        protected Line MiscCostToQboLine(InvoiceHeader invoiceHeader)
+        protected Line MiscCostToQboLine(InvoiceTransaction tran)
         {
             Line line = new Line();
-            line.Amount = invoiceHeader.MiscAmount;
+            line.Amount = tran.MiscAmount * -1;//TODO check this in qbo refund.
             line.AmountSpecified = true;
             line.AnyIntuitObject = new SalesItemLineDetail()
             {
@@ -92,13 +73,13 @@ namespace DigitBridge.QuickBooks.Integration
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
-            line.Description = QboMappingConsts.SummaryMiscLineDescription + invoiceHeader.InvoiceNumber;
+            line.Description = string.Format(ReturnMappingConsts.SummaryMiscLineDescription, tran.InvoiceNumber, tran.TransNum);
             return line;
         }
-        protected Line ChargeAndAllowanceCostToQboLine(InvoiceHeader invoiceHeader)
+        protected Line ChargeAndAllowanceCostToQboLine(InvoiceTransaction tran)
         {
             Line line = new Line();
-            line.Amount = invoiceHeader.ChargeAndAllowanceAmount;
+            line.Amount = tran.ChargeAndAllowanceAmount * -1;//TODO check this in qbo refund.
             line.AmountSpecified = true;
             line.AnyIntuitObject = new SalesItemLineDetail()
             {
@@ -110,13 +91,13 @@ namespace DigitBridge.QuickBooks.Integration
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
-            line.Description = QboMappingConsts.SummaryChargeAndAllowanceLineDescription + invoiceHeader.InvoiceNumber;
+            line.Description = string.Format(ReturnMappingConsts.SummaryChargeAndAllowanceLineDescription, tran.InvoiceNumber, tran.TransNum);
             return line;
         }
-        protected Line TaxCostToQboLine(InvoiceHeader invoiceHeader)
+        protected Line TaxCostToQboLine(InvoiceTransaction tran)
         {
             Line line = new Line();
-            line.Amount = invoiceHeader.TaxAmount;
+            line.Amount = tran.TaxAmount;
             line.AmountSpecified = true;
             line.AnyIntuitObject = new SalesItemLineDetail()
             {
@@ -128,41 +109,62 @@ namespace DigitBridge.QuickBooks.Integration
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
-            line.Description = QboMappingConsts.SalesTaxItemDescription + invoiceHeader.InvoiceNumber;
+            line.Description = string.Format(ReturnMappingConsts.SalesTaxItemDescription, tran.InvoiceNumber, tran.TransNum);
             return line;
         }
 
-        #region Map Qbo invoice 
-
-        protected Invoice ToQboInvoice(InvoiceData invoiceData)
+        protected IList<Line> ItemsToQboLine(IList<InvoiceReturnItems> items)
         {
-            var invoice = new Invoice();
-            var invoiceHeader = invoiceData.InvoiceHeader;
-            var invoiceInfo = invoiceData.InvoiceHeaderInfo;
-
-            invoice.TotalAmt = invoiceHeader.TotalAmount;
-            invoice.TxnDate = invoiceHeader.InvoiceDate;
-            invoice.TxnDateSpecified = true;
-
-            if (!invoiceHeader.ShipDate.IsZero())
+            var lines = new List<Line>();
+            foreach (var item in items)
             {
-                invoice.ShipDate = invoiceHeader.ShipDate.Value;
-                invoice.ShipDateSpecified = true;
-                invoice.TrackingNum = invoiceInfo.OrderShipmentNum.ToString();
-                invoice.ShipMethodRef = new ReferenceType() { Value = invoiceInfo.ShippingCarrier + " " + invoiceInfo.ShippingClass };
+                lines.Add(ItemToQboLine(item));
             }
-            //TODO
-            //invoice.PrivateNote = invoiceInfo.s//qboSalesOrder.PrivateNote = fulfilledOrder.OrderHeader.SellerPrivateNote;
-            //invoice.CustomerMemo = new MemoRef() { Value = qboSalesOrder.CustomerMemo };//qboSalesOrder.CustomerMemo = fulfilledOrder.OrderHeader.SellerPublicNote;
-            invoice.DocNumber = invoiceHeader.InvoiceNumber;//qboSalesOrder.DocNumber = fulfilledOrder.OrderHeader.DigitbridgeOrderId;
-
-
-            AppendAddressToInvoice(invoice, invoiceInfo);
-            AppendCustomFieldToInvoice(invoice, invoiceInfo);
-            AppendCustomerToInvoice(invoice, invoiceHeader);
-            return invoice;
+            return lines;
         }
-        private void AppendCustomFieldToInvoice(Invoice invoice, InvoiceHeaderInfo invoiceInfo)
+        protected List<Line> ToQboLines(InvoiceTransactionData tranData)
+        {
+            var lines = new List<Line>();
+            lines.AddRange(ItemsToQboLine(tranData.InvoiceReturnItems));
+            lines.Add(ShippingCostToQboLine(tranData.InvoiceTransaction));
+            lines.Add(MiscCostToQboLine(tranData.InvoiceTransaction));
+            lines.Add(ChargeAndAllowanceCostToQboLine(tranData.InvoiceTransaction));
+            if (_setting.SalesTaxExportRule == (int)SalesTaxExportRule.ExportToDefaultSaleTaxItemAccount)
+                lines.Add(TaxCostToQboLine(tranData.InvoiceTransaction));
+            return lines;
+        }
+
+
+        #region Map Qbo RefundReceipt 
+
+        protected RefundReceipt ToQboRefundReceipt(InvoiceTransactionData tranData)
+        {
+            var refund = new RefundReceipt();
+            var tran = tranData.InvoiceTransaction;
+            refund.DocNumber = tran.InvoiceNumber + "_" + tran.TransNum;//tran.TransUuid//TODO check use which one. 
+            refund.TotalAmt = tran.TotalAmount;
+            refund.TxnDate = tran.TransDate;
+            refund.TxnDateSpecified = true;
+            //refund.PaymentMethodRef = new ReferenceType() 
+            //{ };
+            refund.DepositToAccountRef = new ReferenceType() //required.
+            {
+                Value = tran.BankAccountUuid,//TODO check which account.(BankAccountCode,CreditAccount,DebitAccount,BankAccountUuid) 
+                type = ""//Bank?Credit?Debit or All? this is an option.
+            };
+
+            //TODO
+            //refund.PrivateNote = invoiceInfo.s//qboSalesOrder.PrivateNote = fulfilledOrder.OrderHeader.SellerPrivateNote;
+            //refund.CustomerMemo = new MemoRef() { Value = qboSalesOrder.CustomerMemo };//qboSalesOrder.CustomerMemo = fulfilledOrder.OrderHeader.SellerPublicNote;
+
+            var invoiceInfo = tranData.InvoiceData.InvoiceHeaderInfo;
+            var invoiceHeader = tranData.InvoiceData.InvoiceHeader;
+            //AppendAddressToRefund(refund, invoiceInfo);
+            AppendCustomFieldToRefund(refund, invoiceInfo);
+            AppendCustomerToRefund(refund, invoiceHeader);
+            return refund;
+        }
+        private void AppendCustomFieldToRefund(RefundReceipt refund, InvoiceHeaderInfo invoiceInfo)
         {
             // Map Invoice customized fields
             List<CustomField> customFields = new List<CustomField>();
@@ -185,9 +187,9 @@ namespace DigitBridge.QuickBooks.Integration
             secChnlOrderIdCustomField.Type = CustomFieldTypeEnum.StringType;
             customFields.Add(secChnlOrderIdCustomField);
 
-            invoice.CustomField = customFields.ToArray();
+            refund.CustomField = customFields.ToArray();
         }
-        private void AppendCustomerToInvoice(Invoice invoice, InvoiceHeader invoiceHeader)
+        private void AppendCustomerToRefund(RefundReceipt refund, InvoiceHeader invoiceHeader)
         {
             string customerId;
             if (_setting.QboCustomerCreateRule == (int)CustomerCreateRule.PerMarketPlace)
@@ -199,9 +201,9 @@ namespace DigitBridge.QuickBooks.Integration
             {
                 customerId = invoiceHeader.CustomerCode;//todo check this.
             }
-            invoice.CustomerRef = new ReferenceType() { Value = customerId };
+            refund.CustomerRef = new ReferenceType() { Value = customerId };
         }
-        private void AppendAddressToInvoice(Invoice invoice, InvoiceHeaderInfo invoiceInfo)
+        private void AppendAddressToRefund(RefundReceipt refund, InvoiceHeaderInfo invoiceInfo)
         {
             if (_setting.QboCustomerCreateRule != (int)CustomerCreateRule.PerMarketPlace)
             {
@@ -217,7 +219,7 @@ namespace DigitBridge.QuickBooks.Integration
             shippingAddress.Country = invoiceInfo.ShipToCountry;
             shippingAddress.CountrySubDivisionCode = invoiceInfo.ShipToState;
 
-            invoice.ShipAddr = shippingAddress;
+            refund.ShipAddr = shippingAddress;
 
             PhysicalAddress billingAddress = new PhysicalAddress();
             billingAddress.Line1 = invoiceInfo.BillToName;
@@ -229,37 +231,15 @@ namespace DigitBridge.QuickBooks.Integration
             billingAddress.Country = invoiceInfo.BillToCountry;
             billingAddress.CountrySubDivisionCode = invoiceInfo.BillToState;
 
-            invoice.BillAddr = billingAddress;
+            refund.BillAddr = billingAddress;
         }
 
         #endregion
-
-        protected IList<Line> ItemsToQboLine(IList<InvoiceItems> items)
+        public RefundReceipt ToRefundReceipt(InvoiceTransactionData tranData)
         {
-            var lines = new List<Line>();
-            foreach (var item in items)
-            {
-                lines.Add(ItemToQboLine(item));
-            }
-            return lines;
-        }
-        protected List<Line> ToQboLines(InvoiceData invoiceData)
-        {
-            var lines = new List<Line>();
-            lines.AddRange(ItemsToQboLine(invoiceData.InvoiceItems));
-            lines.Add(DiscountToQboLine(invoiceData.InvoiceHeader));
-            lines.Add(ShippingCostToQboLine(invoiceData.InvoiceHeader));
-            lines.Add(MiscCostToQboLine(invoiceData.InvoiceHeader));
-            lines.Add(ChargeAndAllowanceCostToQboLine(invoiceData.InvoiceHeader));
-            if (_setting.SalesTaxExportRule == (int)SalesTaxExportRule.ExportToDefaultSaleTaxItemAccount)
-                lines.Add(TaxCostToQboLine(invoiceData.InvoiceHeader));
-            return lines;
-        }
-        public Invoice ToInvoice(InvoiceData invoiceData)
-        {
-            var invoice = ToQboInvoice(invoiceData);
-            invoice.Line = ToQboLines(invoiceData).ToArray();
-            return invoice;
+            var refund = ToQboRefundReceipt(tranData);
+            refund.Line = ToQboLines(tranData).ToArray();
+            return refund;
         }
     }
 }
