@@ -11,6 +11,12 @@ namespace DigitBridge.QuickBooks.Integration
         public InvoiceMapper(QboIntegrationSetting setting)
         {
             this._setting = setting;
+            PrepareSetting();
+        }
+
+        protected void PrepareSetting()
+        {
+            _setting.QboShippingItemId = string.IsNullOrEmpty(_setting.QboShippingItemId) ? QboMappingConsts.SippingCostRefValue : _setting.QboShippingItemId;
         }
 
         protected Line ItemToQboLine(InvoiceItems item)
@@ -62,7 +68,7 @@ namespace DigitBridge.QuickBooks.Integration
             {
                 ItemRef = new ReferenceType()
                 {
-                    Value = _setting.QboShippingItemId.ToString(),
+                    Value = _setting.QboShippingItemId,
                     name = _setting.QboShippingItemName,
                 }
             };
@@ -236,7 +242,7 @@ namespace DigitBridge.QuickBooks.Integration
                 lines.Add(ItemToQboLine(item));
             }
             return lines;
-        } 
+        }
         protected List<Line> ToQboLines(InvoiceData invoiceData)
         {
             var lines = new List<Line>();

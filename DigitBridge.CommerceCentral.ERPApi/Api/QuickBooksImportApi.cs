@@ -1,5 +1,4 @@
 ﻿using DigitBridge.CommerceCentral.ApiCommon;
-using DigitBridge.QuickBooks.Integration.Infrastructure;
 using DigitBridge.QuickBooks.Integration.Mdl;
 using DigitBridge.QuickBooks.Integration.Model;
 using Microsoft.AspNetCore.Http;

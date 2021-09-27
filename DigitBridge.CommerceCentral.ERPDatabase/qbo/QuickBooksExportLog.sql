@@ -23,12 +23,6 @@
 ) 
 GO
 
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[QuickBooksExportLog]') AND name = N'FK_QuickBooksExportLog_QuickBooksExportUuid')
-CREATE NONCLUSTERED INDEX [FK_QuickBooksExportLog_QuickBooksExportUuid] ON [dbo].[QuickBooksExportLog]
-(
-	[QuickBooksExportUuid] ASC
-) 
-GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[QuickBooksExportLog]') AND name = N'UK_QuickBooksExportLog_QuickBooksExportLogUuid')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_QuickBooksExportLog_QuickBooksExportLogUuid] ON [dbo].[QuickBooksExportLog]
 (

@@ -1,4 +1,5 @@
-﻿using DigitBridge.QuickBooks.Integration.Model;
+﻿using DigitBridge.CommerceCentral.YoPoco;
+using DigitBridge.QuickBooks.Integration.Model;
 using System;
 using System.Data;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace DigitBridge.QuickBooks.Integration.Db.Infrastructure
             }
         }
 
-        public static string GetSummaryOrderAndLineWhereFilter(QboSyncStatus status, Command command, DateTime start,
+        public static string GetSummaryOrderAndLineWhereFilter(QboSyncStatus status, IPayload payload, DateTime start,
             DateTime end, int chnlAccNum = -1)
         {
             try
@@ -47,7 +48,7 @@ namespace DigitBridge.QuickBooks.Integration.Db.Infrastructure
 
                 string chnlAccFilterStr = chnlAccNum != -1 ? $"and ChannelAccountNum = {chnlAccNum}" : "";
                 return $"Where QboSyncStatus = {(int)status} " +
-                $"and MasterAccountNum = {command.MasterAccountNum} and ProfileNum = {command.ProfileNum} " +
+                $"and MasterAccountNum = {payload.MasterAccountNum} and ProfileNum = {payload.ProfileNum} " +
                 $"and EnterDate BETWEEN '{start}' and '{end}' " + chnlAccFilterStr;
             }
             catch (Exception ex)
@@ -56,7 +57,7 @@ namespace DigitBridge.QuickBooks.Integration.Db.Infrastructure
             }
         }
 
-        public static string GetOrderAndLineWhereFilter(QboSyncStatus status, Command command, DateTime start, 
+        public static string GetOrderAndLineWhereFilter(QboSyncStatus status, IPayload payload, DateTime start, 
             DateTime end, int chnlAccNum = -1)
         {
             try
@@ -66,7 +67,7 @@ namespace DigitBridge.QuickBooks.Integration.Db.Infrastructure
 
                 string chnlAccFilterStr = chnlAccNum != -1 ? $"and ChannelAccountNum = {chnlAccNum}" : "";
                 return $"Where QboSyncStatus = {(int)status} " +
-                $"and MasterAccountNum = {command.MasterAccountNum} and ProfileNum = {command.ProfileNum} " +
+                $"and MasterAccountNum = {payload.MasterAccountNum} and ProfileNum = {payload.ProfileNum} " +
                 $"and CentralCreateTime BETWEEN '{start}' and '{end}' " + chnlAccFilterStr;
             }
             catch (Exception ex)

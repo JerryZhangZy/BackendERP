@@ -19,16 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="T4\DataDocJavaScript.js">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataDocJavaScript.tt</DependentUpon>
-    </None>
-    <None Update="T4\DataJavaScript.ts">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataJavaScript.tt</DependentUpon>
-    </None>
     <None Update="T4\DataJavaScript.tt">
       <LastGenOutput>DataJavaScript.ts</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -139,6 +129,18 @@
     </None>
     <None Update="T4\GenerateServiceValidator.ttinclude">
       <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForQuickBooksSetting.ttinclude">
+      <LastGenOutput>SettingForQuickBooksSetting.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForQuickBooksExportLog.ttinclude">
+      <LastGenOutput>SettingForQuickBooksExportLog.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="T4\SettingForQuickBooksConnectionInfo.ttinclude">
+      <LastGenOutput>SettingForQuickBooksConnectionInfo.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForWarehouseTransfer.ttinclude">
@@ -357,11 +359,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepositoryPartialClass.ttinclude</DependentUpon>
     </Compile>
-    <Compile Update="T4\GenerateServiceCalculator.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateServiceCalculator.ttinclude</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateStructureDto - Copy.cs">
       <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -436,11 +433,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForInvoice.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForWarehouseTransfer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForWarehouseTransfer.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\SettingForSalesOrder.cs">
       <DesignTime>True</DesignTime>
