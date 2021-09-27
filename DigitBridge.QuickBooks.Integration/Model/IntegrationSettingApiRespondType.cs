@@ -1,5 +1,4 @@
-﻿using DigitBridge.QuickBooks.Integration.Db.Infrastructure;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,8 +7,7 @@ namespace DigitBridge.QuickBooks.Integration.Model
 {
     public class IntegrationSettingApiRespondType
     {
-        public QboIntegrationSetting IntegrationSetting { get; set; }
-        public List<QboChnlAccSetting> ChnlAccSettings { get; set; }
+        public QuickBooksSettingInfoDataDto SettingInfo { get; set; }
     }
 
     public class IntegrationSettingApiReqType

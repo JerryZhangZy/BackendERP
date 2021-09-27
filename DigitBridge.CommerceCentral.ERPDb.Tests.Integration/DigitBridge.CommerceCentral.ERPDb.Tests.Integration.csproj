@@ -29,6 +29,7 @@
       <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
       <ProjectReference Include="..\DigitBridge.CommerceCentral.XUnit.Common\DigitBridge.CommerceCentral.XUnit.Common.csproj" />
       <ProjectReference Include="..\DigitBridge.CommerceCentral.YoPoco\DigitBridge.CommerceCentral.YoPoco.csproj" />
+      <ProjectReference Include="..\DigitBridge.QuickBooks.Integration\DigitBridge.QuickBooks.Integration.csproj" />
     </ItemGroup>
 
 </Project>

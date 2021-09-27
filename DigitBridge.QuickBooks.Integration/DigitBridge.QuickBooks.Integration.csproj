@@ -3,6 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Connection\Model\QboConnectionInfo.cs" />
+    <Compile Remove="Db\Infrastructure\QboDbUtility.cs" />
+    <Compile Remove="Model\Command.cs" />
+    <Compile Remove="Model\QboOrderItemLine.cs" />
+    <Compile Remove="Model\QboSalesOrder.cs" />
+    <Compile Remove="Model\QboSalesOrderWrapper.cs" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="IppDotNetSdkForQuickBooksApiV3" Version="14.3.0" />
     <PackageReference Include="UneedgoHelper.Dotnet.Common" Version="1.0.0.16" />
@@ -10,9 +19,13 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPMdl\DigitBridge.CommerceCentral.ERPMdl.csproj" />
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.YoPoco\DigitBridge.CommerceCentral.YoPoco.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\Enum\" />
+    <Folder Include="Connection\Model\" />
+    <Folder Include="Db\Dto\" />
+    <Folder Include="Db\Infrastructure\" />
     <Folder Include="Doc\" />
   </ItemGroup>
 

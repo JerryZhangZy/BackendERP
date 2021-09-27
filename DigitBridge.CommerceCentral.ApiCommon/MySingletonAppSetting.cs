@@ -38,6 +38,8 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         
         public static string OrchestrationDbTenantId => GetValueByName("OrchestrationDbTenantId");
 
+        public static string CryptKey => GetValueByName("CryptKey");
+
         public static bool UseAzureManagedIdentity
         {
             get
