@@ -6,10 +6,10 @@ using System.Text;
 
 namespace DigitBridge.QuickBooks.Integration
 {
-    public class RefundMapper
+    public class InvoiceReturnMapper
     {
         private QboIntegrationSetting _setting { get; set; }
-        public RefundMapper(QboIntegrationSetting setting)
+        public InvoiceReturnMapper(QboIntegrationSetting setting)
         {
             this._setting = setting;
             PrepareSetting();
