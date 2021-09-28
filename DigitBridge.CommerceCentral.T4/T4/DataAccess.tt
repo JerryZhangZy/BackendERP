@@ -75,7 +75,7 @@
 //SettingForInventoryUpdate
 //SettingForWarehouseTransfer
 #>
-<#@ include file="SettingForQuickBooksSetting.ttinclude" #>
+<#@ include file="SettingForInvoice.ttinclude" #>
 <#
     var dtoSuf = "";
     
