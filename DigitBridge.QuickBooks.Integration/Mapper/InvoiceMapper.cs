@@ -1,6 +1,7 @@
 ﻿using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using Intuit.Ipp.Data;
+using System;
 using System.Collections.Generic;
 
 namespace DigitBridge.QuickBooks.Integration
@@ -16,6 +17,7 @@ namespace DigitBridge.QuickBooks.Integration
 
         protected void PrepareSetting()
         {
+            _setting.QboInvoiceNumberFieldName = string.IsNullOrEmpty(_setting.QboInvoiceNumberFieldName) ? QboMappingConsts.QboInvoiceNumberFieldDefaultName : _setting.QboInvoiceNumberFieldName;
             _setting.QboShippingItemId = string.IsNullOrEmpty(_setting.QboShippingItemId) ? QboMappingConsts.SippingCostRefValue : _setting.QboShippingItemId;
         }
 
@@ -27,13 +29,12 @@ namespace DigitBridge.QuickBooks.Integration
             line.Amount = item.IsAr ? item.ExtAmount : 0;//TODO check this one
             line.AmountSpecified = true;
             line.LineNum = item.InvoiceItemsUuid;
-
             line.AnyIntuitObject = new SalesItemLineDetail()
             {
                 ItemRef = new ReferenceType() { Value = item.InvoiceItemsUuid },
                 Qty = item.ShipQty,
                 QtySpecified = true,
-                AnyIntuitObject = item.DiscountPrice,
+                AnyIntuitObject = item.IsAr ? item.DiscountPrice : 0,//TODO check this one
                 ItemElementName = ItemChoiceType.UnitPrice,
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
@@ -44,18 +45,19 @@ namespace DigitBridge.QuickBooks.Integration
         protected Line DiscountToQboLine(InvoiceHeader invoiceHeader)
         {
             Line line = new Line();
-            line.AnyIntuitObject = new SalesItemLineDetail()
+            line.Amount = invoiceHeader.DiscountAmount;
+            line.AmountSpecified = true;
+            line.DetailType = LineDetailTypeEnum.DiscountLineDetail;
+            line.DetailTypeSpecified = true;
+            line.AnyIntuitObject = new DiscountLineDetail()
             {
-                ItemRef = new ReferenceType()
+                PercentBased = false,
+                DiscountAccountRef = new ReferenceType()
                 {
-                    Value = _setting.QboDiscountItemId.ToString(),
-                    name = _setting.QboDiscountItemName,
+                    Value = QboMappingConsts.DiscountRefValue,
+                    name = QboMappingConsts.DiscountRefName,
                 }
             };
-            line.Amount = invoiceHeader.DiscountAmount;
-            line.DetailType = LineDetailTypeEnum.DiscountLineDetail;//LineDetailTypeEnum.SalesItemLineDetail  //TODO Try this.
-            line.AmountSpecified = true;
-            line.DetailTypeSpecified = true;
             line.Description = QboMappingConsts.SummaryDiscountLineDescription + invoiceHeader.InvoiceNumber;
             return line;
         }
@@ -134,16 +136,29 @@ namespace DigitBridge.QuickBooks.Integration
 
         #region Map Qbo invoice 
 
-        protected Invoice ToQboInvoice(InvoiceData invoiceData)
+        protected Invoice ToQboInvoice(InvoiceData invoiceData, bool isAdd = true)
         {
             var invoice = new Invoice();
             var invoiceHeader = invoiceData.InvoiceHeader;
             var invoiceInfo = invoiceData.InvoiceHeaderInfo;
 
-            invoice.TotalAmt = invoiceHeader.TotalAmount;
+            invoice.DocNumber = invoiceHeader.InvoiceNumber;
+            //invoice.TotalAmt = invoiceHeader.TotalAmount;
+            //invoice.TotalAmtSpecified = true;
+            if (invoiceHeader.DueDate.HasValue)
+                invoice.DueDate = invoiceHeader.DueDate.Value;
+            //invoice.SalesTermRef // invoiceHeader.Terms
             invoice.TxnDate = invoiceHeader.InvoiceDate;
             invoice.TxnDateSpecified = true;
-
+            var now = DateTime.Now;
+            invoice.MetaData = new ModificationMetaData()
+            {
+                LastUpdatedTime = now
+            };
+            if (isAdd)
+            {
+                invoice.MetaData.CreateTime = now;
+            }
             if (!invoiceHeader.ShipDate.IsZero())
             {
                 invoice.ShipDate = invoiceHeader.ShipDate.Value;
@@ -154,22 +169,29 @@ namespace DigitBridge.QuickBooks.Integration
             //TODO
             //invoice.PrivateNote = invoiceInfo.s//qboSalesOrder.PrivateNote = fulfilledOrder.OrderHeader.SellerPrivateNote;
             //invoice.CustomerMemo = new MemoRef() { Value = qboSalesOrder.CustomerMemo };//qboSalesOrder.CustomerMemo = fulfilledOrder.OrderHeader.SellerPublicNote;
-            invoice.DocNumber = invoiceHeader.InvoiceNumber;//qboSalesOrder.DocNumber = fulfilledOrder.OrderHeader.DigitbridgeOrderId;
-
-
+            
             AppendAddressToInvoice(invoice, invoiceInfo);
-            AppendCustomFieldToInvoice(invoice, invoiceInfo);
+            AppendCustomFieldToInvoice(invoice, invoiceInfo, invoiceHeader.InvoiceNumber);
             AppendCustomerToInvoice(invoice, invoiceHeader);
             return invoice;
         }
-        private void AppendCustomFieldToInvoice(Invoice invoice, InvoiceHeaderInfo invoiceInfo)
+        private void AppendCustomFieldToInvoice(Invoice invoice, InvoiceHeaderInfo invoiceInfo, string invoiceNumber)
         {
             // Map Invoice customized fields
             List<CustomField> customFields = new List<CustomField>();
 
+            CustomField invoiceNumberField = new CustomField();
+            invoiceNumberField.DefinitionId = _setting.QboInvoiceNumberFieldID;
+            //invoiceNumberField.Name = _setting.QboInvoiceNumberFieldName;
+            invoiceNumberField.Type = CustomFieldTypeEnum.StringType;
+            invoiceNumberField.AnyIntuitObject = invoiceNumber;// stirng value for this field.
+            customFields.Add(invoiceNumberField);
+
+
             CustomField endCustoerPoNumCustField = new CustomField();
-            endCustoerPoNumCustField.AnyIntuitObject = _setting.QboEndCustomerPoNumCustFieldId.ToString(); //endCustoerPoNumCustField.DefinitionId = _setting.QboEndCustomerPoNumCustFieldId.ToString();
-            endCustoerPoNumCustField.AnyIntuitObject = invoiceInfo.CustomerPoNum; //endCustoerPoNumCustField.AnyIntuitObject = qboSalesOrder.EndCustomerPoNum; 
+            endCustoerPoNumCustField.DefinitionId = _setting.QboEndCustomerPoNumCustFieldId.ToString();
+            //endCustoerPoNumCustField.Name = _setting.QboEndCustomerPoNumCustFieldName;
+            endCustoerPoNumCustField.AnyIntuitObject = invoiceInfo.CustomerPoNum;
             endCustoerPoNumCustField.Type = CustomFieldTypeEnum.StringType;
             customFields.Add(endCustoerPoNumCustField);
 
@@ -255,9 +277,9 @@ namespace DigitBridge.QuickBooks.Integration
                 lines.Add(TaxCostToQboLine(invoiceData.InvoiceHeader));
             return lines;
         }
-        public Invoice ToInvoice(InvoiceData invoiceData)
+        public Invoice ToInvoice(InvoiceData invoiceData, bool isAdd = true)
         {
-            var invoice = ToQboInvoice(invoiceData);
+            var invoice = ToQboInvoice(invoiceData, isAdd);
             invoice.Line = ToQboLines(invoiceData).ToArray();
             return invoice;
         }
