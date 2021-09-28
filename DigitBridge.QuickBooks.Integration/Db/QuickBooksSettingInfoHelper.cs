@@ -23,13 +23,13 @@ using DigitBridge.CommerceCentral.YoPoco;
 namespace DigitBridge.QuickBooks.Integration
 {
     /// <summary>
-    /// Represents a QuickBooksChnlAccSetting SQL Helper Static Class.
+    /// Represents a QuickBooksSettingInfo SQL Helper Static Class.
     /// NOTE: This class is generated from a T4 template Once - you want re-generate it, you need delete cs file and generate again
     /// </summary>
-    public static class QuickBooksChnlAccSettingHelper
+    public static class QuickBooksSettingInfoHelper
     {
-        public static readonly string TableName = "QuickBooksChnlAccSetting";
-        public static readonly string TableAllies = "qbcas";
+        public static readonly string TableName = "QuickBooksSettingInfo";
+        public static readonly string TableAllies = "qbsi";
 
         public static string From(string TableAllies = null) => $"FROM {TableName} {TableAllies ?? TableAllies} ";
         public static string InnerJoin(string TableAllies = null) => $"INNER JOIN {TableName} {TableAllies ?? TableAllies} ";
@@ -42,13 +42,10 @@ namespace DigitBridge.QuickBooks.Integration
         public static string MasterAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MasterAccountNum AS {name ?? "MasterAccountNum".ToCamelCase(camelCase)} ";
         public static string ProfileNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum".ToCamelCase(camelCase)} ";
         public static string SettingUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SettingUuid) AS {name ?? "SettingUuid".ToCamelCase(camelCase)} ";
-        public static string ChnlAccSettingUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ChnlAccSettingUuid) AS {name ?? "ChnlAccSettingUuid".ToCamelCase(camelCase)} ";
-        public static string ChannelAccountName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ChannelAccountName) AS {name ?? "ChannelAccountName".ToCamelCase(camelCase)} ";
-        public static string ChannelAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelAccountNum AS {name ?? "ChannelAccountNum".ToCamelCase(camelCase)} ";
-        public static string JsonFields(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.JsonFields) AS {name ?? "JsonFields".ToCamelCase(camelCase)} ";
+        public static string IntegrationSettingJsonFields(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.IntegrationSettingJsonFields) AS {name ?? "IntegrationSettingJsonFields".ToCamelCase(camelCase)} ";
+        public static string ChannelAccountSettingJsonFields(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ChannelAccountSettingJsonFields) AS {name ?? "ChannelAccountSettingJsonFields".ToCamelCase(camelCase)} ";
+        public static string UpdateDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc".ToCamelCase(camelCase)} ";
         public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
-        public static string LastUpdate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.LastUpdate AS {name ?? "LastUpdate".ToCamelCase(camelCase)} ";
-        public static string DailySummaryLastExport(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DailySummaryLastExport AS {name ?? "DailySummaryLastExport".ToCamelCase(camelCase)} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";
 
         #endregion - static SQL fileds statement
@@ -62,13 +59,10 @@ namespace DigitBridge.QuickBooks.Integration
 {allies}MasterAccountNum AS MasterAccountNum,
 {allies}ProfileNum AS ProfileNum,
 RTRIM({allies}SettingUuid) AS SettingUuid,
-RTRIM({allies}ChnlAccSettingUuid) AS ChnlAccSettingUuid,
-RTRIM({allies}ChannelAccountName) AS ChannelAccountName,
-{allies}ChannelAccountNum AS ChannelAccountNum,
-RTRIM({allies}JsonFields) AS JsonFields,
+RTRIM({allies}IntegrationSettingJsonFields) AS IntegrationSettingJsonFields,
+RTRIM({allies}ChannelAccountSettingJsonFields) AS ChannelAccountSettingJsonFields,
+{allies}UpdateDateUtc AS UpdateDateUtc,
 {allies}EnterDateUtc AS EnterDateUtc,
-{allies}LastUpdate AS LastUpdate,
-{allies}DailySummaryLastExport AS DailySummaryLastExport,
 {allies}DigitBridgeGuid AS DigitBridgeGuid
 ";
         }

@@ -333,14 +333,14 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                     var settingInfo = quickBooksSettingInfoService.Data;
                     foreach (ChnlAccSettingReqType chnlAccSettingReqType in intgSettingApiReqType.ChnlAccSettings)
                     {
-                        bool isCurChnlAccSettingsExist = settingInfo.QuickBooksChnlAccSetting.Any(r => r.ChannelAccountNum == chnlAccSettingReqType.ChannelAccountNum);
-                        if (!isCurChnlAccSettingsExist)
-                        {
-                            isAllExist = false;
-                            errMsg += $" The targeted Channel Account Setting : {chnlAccSettingReqType.ChannelAccountName} " +
-                                $"does not exist. ";
-                            break;
-                        }
+                        //bool isCurChnlAccSettingsExist = settingInfo.QuickBooksChnlAccSetting.Any(r => r.ChannelAccountNum == chnlAccSettingReqType.ChannelAccountNum);
+                        //if (!isCurChnlAccSettingsExist)
+                        //{
+                        //    isAllExist = false;
+                        //    errMsg += $" The targeted Channel Account Setting : {chnlAccSettingReqType.ChannelAccountName} " +
+                        //        $"does not exist. ";
+                        //    break;
+                        //}
                     }
                 }
             }

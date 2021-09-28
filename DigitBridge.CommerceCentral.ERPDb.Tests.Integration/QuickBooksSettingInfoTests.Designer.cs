@@ -1,5 +1,4 @@
               
-              
     
 
 //-------------------------------------------------------------------------
@@ -28,30 +27,22 @@ using DigitBridge.QuickBooks.Integration;
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     /// <summary>
-    /// Represents a Tester for QuickBooksIntegrationSetting.
+    /// Represents a Tester for QuickBooksSettingInfo.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class QuickBooksIntegrationSettingTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class QuickBooksSettingInfoTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        public static Faker<QuickBooksIntegrationSetting> GetFakerData()
+        public static Faker<QuickBooksSettingInfo> GetFakerData()
         {
             #region faker data rules
-            return new Faker<QuickBooksIntegrationSetting>()
+            return new Faker<QuickBooksSettingInfo>()
 					.RuleFor(u => u.DatabaseNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.MasterAccountNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.SettingUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.ChannelAccountName, f => f.Company.CompanyName())
-					.RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.ExportByOrderStatus, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.ExportOrderAs, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.ExportOrderDateType, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.ExportOrderFromDate, f => f.Date.Past(0).Date)
-					.RuleFor(u => u.QboSettingStatus, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.QboImportOrderAfterUpdateDate, f => f.Date.Past(0).Date)
-					.RuleFor(u => u.Fields, (f, u) => u.Fields.SetValues(f.Random.JObject()))
-					.RuleFor(u => u.EnterDate, f => f.Date.Past(0).Date)
-					.RuleFor(u => u.LastUpdate, f => f.Date.Past(0).Date)
+					.RuleFor(u => u.IntegrationSettingJsonFields, f => f.Lorem.Sentence())
+					.RuleFor(u => u.ChannelAccountSettingJsonFields, f => f.Lorem.Sentence())
+					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					;
             #endregion faker data rules
         }
@@ -60,10 +51,10 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
-        public Faker<QuickBooksIntegrationSetting> FakerData { get; set; }
+        public Faker<QuickBooksSettingInfo> FakerData { get; set; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public QuickBooksIntegrationSettingTests(TestFixture<StartupTest> fixture) 
+        public QuickBooksSettingInfoTests(TestFixture<StartupTest> fixture) 
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -117,7 +108,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 			data.Add();
             DataBaseFactory.Commit();
 
-            var dataGet = DataBaseFactory.GetFromCacheById<QuickBooksIntegrationSetting>(data.UniqueId);
+            var dataGet = DataBaseFactory.GetFromCacheById<QuickBooksSettingInfo>(data.UniqueId);
             var result = data.Equals(dataGet);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -127,7 +118,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Put_Test()
         {
-            var list = DataBaseFactory.Find<QuickBooksIntegrationSetting>("SELECT TOP 1 * FROM QuickBooksIntegrationSetting").ToList();
+            var list = DataBaseFactory.Find<QuickBooksSettingInfo>("SELECT TOP 1 * FROM QuickBooksSettingInfo").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -137,7 +128,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.Put();
             DataBaseFactory.Commit();
 
-            var dataGet = DataBaseFactory.GetFromCacheById<QuickBooksIntegrationSetting>(data.UniqueId);
+            var dataGet = DataBaseFactory.GetFromCacheById<QuickBooksSettingInfo>(data.UniqueId);
             var result = data.Equals(dataGet);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -147,24 +138,24 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Patch_Test()
         {
-            var list = DataBaseFactory.Find<QuickBooksIntegrationSetting>("SELECT TOP 1 * FROM QuickBooksIntegrationSetting").ToList();
+            var list = DataBaseFactory.Find<QuickBooksSettingInfo>("SELECT TOP 1 * FROM QuickBooksSettingInfo").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
-            var dataOrig = new QuickBooksIntegrationSetting();
+            var dataOrig = new QuickBooksSettingInfo();
             dataOrig?.CopyFrom(data);
 
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            data.Patch(new[] { "ChannelAccountName", "JsonFields" });
+            data.Patch(new[] { "IntegrationSettingJsonFields", "ChannelAccountSettingJsonFields" });
             DataBaseFactory.Commit();
 
-            var dataGet = DataBaseFactory.GetFromCache<QuickBooksIntegrationSetting>(data.RowNum);
-            var result = dataGet.ChannelAccountName != dataOrig.ChannelAccountName &&
-                            dataGet.JsonFields != dataOrig.JsonFields &&
-                            dataGet.ChannelAccountName == newData.ChannelAccountName &&
-                            dataGet.JsonFields == newData.JsonFields;
+            var dataGet = DataBaseFactory.GetFromCache<QuickBooksSettingInfo>(data.RowNum);
+            var result = dataGet.IntegrationSettingJsonFields != dataOrig.IntegrationSettingJsonFields &&
+                            dataGet.ChannelAccountSettingJsonFields != dataOrig.ChannelAccountSettingJsonFields &&
+                            dataGet.IntegrationSettingJsonFields == newData.IntegrationSettingJsonFields &&
+                            dataGet.ChannelAccountSettingJsonFields == newData.ChannelAccountSettingJsonFields;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -179,7 +170,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             dataNew.Save();
             DataBaseFactory.Commit();
 
-            var dataUpdate = DataBaseFactory.GetById<QuickBooksIntegrationSetting>(dataNew.UniqueId);
+            var dataUpdate = DataBaseFactory.GetById<QuickBooksSettingInfo>(dataNew.UniqueId);
 			var dataChanged = FakerData.Generate();
             dataUpdate?.CopyFrom(dataChanged, new[] {"SettingUuid"});
 
@@ -187,7 +178,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             dataUpdate.Save();
             DataBaseFactory.Commit();
 
-            var dataGet = DataBaseFactory.GetFromCacheById<QuickBooksIntegrationSetting>(dataUpdate.UniqueId);
+            var dataGet = DataBaseFactory.GetFromCacheById<QuickBooksSettingInfo>(dataUpdate.UniqueId);
             var result = dataUpdate.Equals(dataGet);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -197,7 +188,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
         { 
-            var list = DataBaseFactory.Find<QuickBooksIntegrationSetting>("SELECT TOP 1 * FROM QuickBooksIntegrationSetting").ToList();
+            var list = DataBaseFactory.Find<QuickBooksSettingInfo>("SELECT TOP 1 * FROM QuickBooksSettingInfo").ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -205,7 +196,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.Delete();
             DataBaseFactory.Commit();
 
-            var result = DataBaseFactory.ExistUniqueId<QuickBooksIntegrationSetting>(data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<QuickBooksSettingInfo>(data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -214,12 +205,12 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            //var list = DataBaseFactory.Find<QuickBooksIntegrationSetting>().ToList();
+            //var list = DataBaseFactory.Find<QuickBooksSettingInfo>().ToList();
             //var listData = list.FirstOrDefault();
-            //var data = DataBaseFactory.Get<QuickBooksIntegrationSetting>(listData.RowNum);
+            //var data = DataBaseFactory.Get<QuickBooksSettingInfo>(listData.RowNum);
             //var result = data.Equals(listData);
 
-            var list = DataBaseFactory.Find<QuickBooksIntegrationSetting>("SELECT TOP 1 * FROM QuickBooksIntegrationSetting").ToList();
+            var list = DataBaseFactory.Find<QuickBooksSettingInfo>("SELECT TOP 1 * FROM QuickBooksSettingInfo").ToList();
             var listData = list.FirstOrDefault(); 
             var result = listData!=null;
 
@@ -230,9 +221,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetById_Test()
         {
-            var list = DataBaseFactory.Find<QuickBooksIntegrationSetting>("SELECT TOP 1 * FROM QuickBooksIntegrationSetting").ToList();
+            var list = DataBaseFactory.Find<QuickBooksSettingInfo>("SELECT TOP 1 * FROM QuickBooksSettingInfo").ToList();
             var listData = list.FirstOrDefault();
-            var data = DataBaseFactory.GetById<QuickBooksIntegrationSetting>(listData.UniqueId);
+            var data = DataBaseFactory.GetById<QuickBooksSettingInfo>(listData.UniqueId);
             var result = data.Equals(listData);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -243,10 +234,10 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetFromCacheById_Test()
         {
-            var list = DataBaseFactory.Find<QuickBooksIntegrationSetting>("SELECT TOP 1 * FROM QuickBooksIntegrationSetting").ToList();
+            var list = DataBaseFactory.Find<QuickBooksSettingInfo>("SELECT TOP 1 * FROM QuickBooksSettingInfo").ToList();
             var data = list.FirstOrDefault();
-            var data1 = DataBaseFactory.GetFromCacheById<QuickBooksIntegrationSetting>(data.UniqueId);
-            var data2 = DataBaseFactory.GetFromCacheById<QuickBooksIntegrationSetting>(data.UniqueId);
+            var data1 = DataBaseFactory.GetFromCacheById<QuickBooksSettingInfo>(data.UniqueId);
+            var data2 = DataBaseFactory.GetFromCacheById<QuickBooksSettingInfo>(data.UniqueId);
 
             var result = data1 == data2;
 
@@ -267,7 +258,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await data.AddAsync();
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<QuickBooksIntegrationSetting>(data.UniqueId);
+            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<QuickBooksSettingInfo>(data.UniqueId);
             var result = data.Equals(dataGet);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -277,7 +268,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task PutAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<QuickBooksIntegrationSetting>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<QuickBooksSettingInfo>()).ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -287,7 +278,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await data.PutAsync();
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<QuickBooksIntegrationSetting>(data.UniqueId);
+            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<QuickBooksSettingInfo>(data.UniqueId);
             var result = data.Equals(dataGet);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -297,24 +288,24 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task PatchAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<QuickBooksIntegrationSetting>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<QuickBooksSettingInfo>()).ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
-            var dataOrig = new QuickBooksIntegrationSetting();
+            var dataOrig = new QuickBooksSettingInfo();
             dataOrig?.CopyFrom(data);
 
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            await data.PatchAsync(new[] { "ChannelAccountName", "JsonFields" });
+            await data.PatchAsync(new[] { "IntegrationSettingJsonFields", "ChannelAccountSettingJsonFields" });
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheAsync<QuickBooksIntegrationSetting>(data.RowNum);
-            var result = dataGet.ChannelAccountName != dataOrig.ChannelAccountName &&
-                            dataGet.JsonFields != dataOrig.JsonFields &&
-                            dataGet.ChannelAccountName == newData.ChannelAccountName &&
-                            dataGet.JsonFields == newData.JsonFields;
+            var dataGet = await DataBaseFactory.GetFromCacheAsync<QuickBooksSettingInfo>(data.RowNum);
+            var result = dataGet.IntegrationSettingJsonFields != dataOrig.IntegrationSettingJsonFields &&
+                            dataGet.ChannelAccountSettingJsonFields != dataOrig.ChannelAccountSettingJsonFields &&
+                            dataGet.IntegrationSettingJsonFields == newData.IntegrationSettingJsonFields &&
+                            dataGet.ChannelAccountSettingJsonFields == newData.ChannelAccountSettingJsonFields;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -329,7 +320,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await dataNew.SaveAsync();
             DataBaseFactory.Commit();
 
-            var dataUpdate = await DataBaseFactory.GetByIdAsync<QuickBooksIntegrationSetting>(dataNew.UniqueId);
+            var dataUpdate = await DataBaseFactory.GetByIdAsync<QuickBooksSettingInfo>(dataNew.UniqueId);
             var dataChanged = FakerData.Generate();
             dataUpdate?.CopyFrom(dataChanged, new[] { "SettingUuid" });
 
@@ -337,7 +328,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await dataUpdate.SaveAsync();
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<QuickBooksIntegrationSetting>(dataUpdate.UniqueId);
+            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<QuickBooksSettingInfo>(dataUpdate.UniqueId);
             var result = dataUpdate.Equals(dataGet);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -347,7 +338,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<QuickBooksIntegrationSetting>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<QuickBooksSettingInfo>()).ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -355,7 +346,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await data.DeleteAsync();
             DataBaseFactory.Commit();
 
-            var result = await DataBaseFactory.ExistUniqueIdAsync<QuickBooksIntegrationSetting>(data.UniqueId);
+            var result = await DataBaseFactory.ExistUniqueIdAsync<QuickBooksSettingInfo>(data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -364,9 +355,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<QuickBooksIntegrationSetting>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<QuickBooksSettingInfo>()).ToList();
             var listData = list.FirstOrDefault();
-            var data = await DataBaseFactory.GetAsync<QuickBooksIntegrationSetting>(listData.RowNum);
+            var data = await DataBaseFactory.GetAsync<QuickBooksSettingInfo>(listData.RowNum);
             var result = data.Equals(listData);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -376,9 +367,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetByIdAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<QuickBooksIntegrationSetting>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<QuickBooksSettingInfo>()).ToList();
             var listData = list.FirstOrDefault();
-            var data = await DataBaseFactory.GetByIdAsync<QuickBooksIntegrationSetting>(listData.UniqueId);
+            var data = await DataBaseFactory.GetByIdAsync<QuickBooksSettingInfo>(listData.UniqueId);
             var result = data.Equals(listData);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -389,10 +380,10 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetFromCacheByIdAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<QuickBooksIntegrationSetting>("SELECT TOP 1 * FROM QuickBooksIntegrationSetting")).ToList();
+            var list = (await DataBaseFactory.FindAsync<QuickBooksSettingInfo>("SELECT TOP 1 * FROM QuickBooksSettingInfo")).ToList();
             var data = list.FirstOrDefault();
-            var data1 = await DataBaseFactory.GetFromCacheByIdAsync<QuickBooksIntegrationSetting>(data.UniqueId);
-            var data2 = await DataBaseFactory.GetFromCacheByIdAsync<QuickBooksIntegrationSetting>(data.UniqueId);
+            var data1 = await DataBaseFactory.GetFromCacheByIdAsync<QuickBooksSettingInfo>(data.UniqueId);
+            var data2 = await DataBaseFactory.GetFromCacheByIdAsync<QuickBooksSettingInfo>(data.UniqueId);
 
             var result = data1 == data2;
 

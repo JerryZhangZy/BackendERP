@@ -40,6 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.InvoiceUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.InvoiceNumber, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.QboDocNumber, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.SalesOrderUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.OrderNumber, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.InvoiceType, f => f.Random.Int(1, 100))
@@ -184,14 +185,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            data.Patch(new[] { "InvoiceNumber", "OrderNumber" });
+            data.Patch(new[] { "InvoiceNumber", "QboDocNumber" });
             DataBaseFactory.Commit();
 
             var dataGet = DataBaseFactory.GetFromCache<InvoiceHeader>(data.RowNum);
             var result = dataGet.InvoiceNumber != dataOrig.InvoiceNumber &&
-                            dataGet.OrderNumber != dataOrig.OrderNumber &&
+                            dataGet.QboDocNumber != dataOrig.QboDocNumber &&
                             dataGet.InvoiceNumber == newData.InvoiceNumber &&
-                            dataGet.OrderNumber == newData.OrderNumber;
+                            dataGet.QboDocNumber == newData.QboDocNumber;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -293,13 +294,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             list.SetDataBaseFactory<InvoiceHeader>(DataBaseFactory)
                 .Save<InvoiceHeader>();
 
-            var NewOrderNumber = Guid.NewGuid().ToString();
+            var NewQboDocNumber = Guid.NewGuid().ToString();
             var listFind = DataBaseFactory.Find<InvoiceHeader>("WHERE SalesOrderUuid = @0 ORDER BY RowNum", SalesOrderUuid).ToList();
-            listFind.ToList().ForEach(x => x.OrderNumber = NewOrderNumber);
+            listFind.ToList().ForEach(x => x.QboDocNumber = NewQboDocNumber);
             listFind.Save<InvoiceHeader>();
 
             list = DataBaseFactory.Find<InvoiceHeader>("WHERE SalesOrderUuid = @0 ORDER BY RowNum", SalesOrderUuid).ToList();
-            var result = list.Where(x => x.OrderNumber == NewOrderNumber).Count() == listFind.Count();
+            var result = list.Where(x => x.QboDocNumber == NewQboDocNumber).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -392,14 +393,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            await data.PatchAsync(new[] { "InvoiceNumber", "OrderNumber" });
+            await data.PatchAsync(new[] { "InvoiceNumber", "QboDocNumber" });
             DataBaseFactory.Commit();
 
             var dataGet = await DataBaseFactory.GetFromCacheAsync<InvoiceHeader>(data.RowNum);
             var result = dataGet.InvoiceNumber != dataOrig.InvoiceNumber &&
-                            dataGet.OrderNumber != dataOrig.OrderNumber &&
+                            dataGet.QboDocNumber != dataOrig.QboDocNumber &&
                             dataGet.InvoiceNumber == newData.InvoiceNumber &&
-                            dataGet.OrderNumber == newData.OrderNumber;
+                            dataGet.QboDocNumber == newData.QboDocNumber;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -499,13 +500,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 .SetDataBaseFactory<InvoiceHeader>(DataBaseFactory)
                 .SaveAsync<InvoiceHeader>();
 
-            var NewOrderNumber = Guid.NewGuid().ToString();
+            var NewQboDocNumber = Guid.NewGuid().ToString();
             var listFind = (await DataBaseFactory.FindAsync<InvoiceHeader>("WHERE SalesOrderUuid = @0 ORDER BY RowNum", SalesOrderUuid)).ToList();
-            listFind.ToList().ForEach(x => x.OrderNumber = NewOrderNumber);
+            listFind.ToList().ForEach(x => x.QboDocNumber = NewQboDocNumber);
             await listFind.SaveAsync<InvoiceHeader>();
 
             list = DataBaseFactory.Find<InvoiceHeader>("WHERE SalesOrderUuid = @0 ORDER BY RowNum", SalesOrderUuid).ToList();
-            var result = list.Where(x => x.OrderNumber == NewOrderNumber).Count() == listFind.Count();
+            var result = list.Where(x => x.QboDocNumber == NewQboDocNumber).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }

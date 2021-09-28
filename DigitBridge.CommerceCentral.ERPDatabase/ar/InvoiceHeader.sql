@@ -7,6 +7,7 @@
 
     [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Invoice uuid. <br> Display: false, Editable: false.
 	[InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT '', --Readable invoice number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
+	[QboDocNumber] VARCHAR(50) NOT NULL DEFAULT '', --Readable QboDocNumber, when push record to quickbook update number. <br> when push record to quickbook update number.
 
     [SalesOrderUuid] VARCHAR(50) NOT NULL DEFAULT '', --Link to Order uuid. <br> Display: false, Editable: false.
 	[OrderNumber] VARCHAR(50) NOT NULL DEFAULT '', --Link to order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: false

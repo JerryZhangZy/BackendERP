@@ -149,7 +149,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         [Display(Name = "messages")]
         [DataMember(Name = "messages")]
-        public IList<MessageClass> Messages { get; set; }
+        public IList<MessageClass> Messages { get; set; } = new List<MessageClass>();
         [JsonIgnore] public virtual bool HasMessages => Messages != null && Messages.Count > 0;
         public bool ShouldSerializeMessages() => HasMessages;
 
