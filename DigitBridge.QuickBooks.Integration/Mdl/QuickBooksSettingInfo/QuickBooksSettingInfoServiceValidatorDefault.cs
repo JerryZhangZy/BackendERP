@@ -100,9 +100,9 @@ namespace DigitBridge.QuickBooks.Integration
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (!string.IsNullOrEmpty(number))
-                        isValid = QuickBooksSettingInfoHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = QuickBooksSettingInfoServiceHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
                     else if(!dto.QuickBooksSettingInfo.RowNum.IsZero())
-                        isValid = QuickBooksSettingInfoHelper.ExistRowNum(dto.QuickBooksSettingInfo.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
+                        isValid = QuickBooksSettingInfoServiceHelper.ExistRowNum(dto.QuickBooksSettingInfo.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -130,9 +130,9 @@ namespace DigitBridge.QuickBooks.Integration
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
                     if (!string.IsNullOrEmpty(number))
-                        isValid = await QuickBooksSettingInfoHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
+                        isValid = await QuickBooksSettingInfoServiceHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
                     else if(!dto.QuickBooksSettingInfo.RowNum.IsZero())
-                        isValid = await QuickBooksSettingInfoHelper.ExistRowNumAsync(dto.QuickBooksSettingInfo.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
+                        isValid = await QuickBooksSettingInfoServiceHelper.ExistRowNumAsync(dto.QuickBooksSettingInfo.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
                 }
                 if (!isValid)
                     AddError($"Data not found.");

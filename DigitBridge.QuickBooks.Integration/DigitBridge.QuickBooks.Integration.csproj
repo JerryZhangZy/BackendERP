@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Compile Remove="Connection\Model\QboConnectionInfo.cs" />
-    <Compile Remove="Db\Infrastructure\QboDbUtility.cs" />
     <Compile Remove="Model\Command.cs" />
     <Compile Remove="Model\QboOrderItemLine.cs" />
     <Compile Remove="Model\QboSalesOrder.cs" />
@@ -25,7 +24,6 @@
   <ItemGroup>
     <Folder Include="Connection\Model\" />
     <Folder Include="Db\Dto\" />
-    <Folder Include="Db\Infrastructure\" />
     <Folder Include="Doc\" />
   </ItemGroup>
 

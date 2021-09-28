@@ -334,11 +334,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="T4\DataAccess.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataAccess.tt</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateRepository - Copy.cs">
       <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -438,11 +433,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForInvoice.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForQuickBooksSetting.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForQuickBooksSetting.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\SettingForSalesOrder.cs">
       <DesignTime>True</DesignTime>

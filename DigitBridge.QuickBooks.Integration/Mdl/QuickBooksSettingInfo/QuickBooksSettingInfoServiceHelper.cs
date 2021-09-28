@@ -29,7 +29,7 @@ namespace DigitBridge.QuickBooks.Integration
     /// Represents a QuickBooksSettingInfoHelper SQL Helper Static Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public static class QuickBooksSettingInfoHelper
+    public static class QuickBooksSettingInfoServiceHelper
     {
         public static bool ExistSettingInfo(int masterAccountNum, int profileNum)
         {

@@ -86,7 +86,7 @@ namespace DigitBridge.QuickBooks.Integration
             var rowNum = 0L;
             using (var trx = new ScopedTransaction(dbFactory))
             {
-                rowNum = await QuickBooksSettingInfoHelper.GetSettingRowNumAsync(payload.MasterAccountNum, payload.ProfileNum);
+                rowNum = await QuickBooksSettingInfoServiceHelper.GetSettingRowNumAsync(payload.MasterAccountNum, payload.ProfileNum);
             }
             return await GetDataAsync(rowNum);
         }
