@@ -75,33 +75,33 @@
 //SettingForInventoryUpdate
 //SettingForWarehouseTransfer
 #>
-<#@ include file="SettingForInventoryUpdate.ttinclude" #>
+<#@ include file="SettingForQuickBooksConnectionInfo.ttinclude" #>
 <#
     var dtoSuf = "";
     
-    var overridesetting = false;
+    var overridesetting = true;
     //rewrite setting config
     if(overridesetting)
     {
-        generateModel = false;
-        generateDto = false;
+        generateModel = true;
+        generateDto = true;
         generateModelHelper = false;
 
         // generate tester class for each table repository
         generateTester = false;
 
         // generate structure repository class contain multiple table
-        generateStructureRepository = false;
-        generateStructureTester = false;
+        generateStructureRepository = true;
+        generateStructureTester = true;
 
         // generate structure Dto class
-        generateStructureDto = false;
+        generateStructureDto = true;
         generateStructureDtoCsv = false;
         generateStructureDtoTester = false;
 
         // generate service class
         generateService = false;
-        generateStructureFindList = true;
+        generateStructureFindList = false;
 
         generateServiceTester = false;
    }

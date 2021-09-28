@@ -10,6 +10,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
     public static class MySingletonAppSetting
     {
         private static IConfigurationRoot _config = new ConfigurationBuilder().
+                    SetBasePath(Environment.CurrentDirectory).
                     AddJsonFile("local.settings.json", optional: true, reloadOnChange: true).
                     AddEnvironmentVariables().
                     Build();
@@ -22,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
                 return value.Equals("true", StringComparison.InvariantCultureIgnoreCase);
             }
         }
-        
+
         public static bool UseOrchestration
         {
             get
@@ -35,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
 
         public static string DBConnectionString => GetValueByName("DBConnectionString");
         public static string DbTenantId => GetValueByName("DbTenantId");
-        
+
         public static string OrchestrationDbTenantId => GetValueByName("OrchestrationDbTenantId");
 
         public static string CryptKey => GetValueByName("CryptKey");
@@ -74,7 +75,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         {
             try
             {
-                string value = _config[name]; 
+                string value = _config[name];
                 if (value == null)
                 {
                     //local file read from values

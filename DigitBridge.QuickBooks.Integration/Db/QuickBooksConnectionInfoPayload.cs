@@ -27,38 +27,19 @@ namespace DigitBridge.QuickBooks.Integration
     public class QuickBooksConnectionInfoPayload : PayloadBase
     {
         /// <summary>
-        /// Delegate function to load request parameter to payload property.
+        /// (Request and Response Data) Single QuickBooksConnectionInfo entity object which load by Number.
         /// </summary>
-        public override IDictionary<string, Action<string>> GetOtherParameters()
-        {
-            return new Dictionary<string, Action<string>>
-            {
-                { "ConnectionUuids", val => ConnectionUuids = val.Split(",").ToList() }
-            };
-        }
-
-
-        #region multiple Dto list
-
+        [OpenApiPropertyDescription("(Response Data) Single entity object which load by Number.")]
+        public string OAuthUrl { get; set; }
+        [JsonIgnore] public virtual bool HasOAuthUrl =>!string.IsNullOrEmpty(OAuthUrl);
+        public bool ShouldSerializeOAuthUrl() => HasOAuthUrl;
         /// <summary>
-        /// (Request Parameter) Array of uuid to load multiple QuickBooksConnectionInfo dto data.
+        /// (Request and Response Data) Single QuickBooksConnectionInfo entity object which load by Number.
         /// </summary>
-        [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple QuickBooksConnectionInfo dto data.")]
-        public IList<string> ConnectionUuids { get; set; } = new List<string>();
-        [JsonIgnore] 
-        public virtual bool HasConnectionUuids => ConnectionUuids != null && ConnectionUuids.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasConnectionUuids;
-
-        /// <summary>
-        /// (Response Data) Array of QuickBooksConnectionInfo entity object which load by uuid array.
-        /// </summary>
-        [OpenApiPropertyDescription("(Response Data) Array of entity object which load by uuid array.")]
-        public IList<QuickBooksConnectionInfoDataDto> QuickBooksConnectionInfos { get; set; }
-        [JsonIgnore] public virtual bool HasQuickBooksConnectionInfos => QuickBooksConnectionInfos != null && QuickBooksConnectionInfos.Count > 0;
-        public bool ShouldSerializeQuickBooksConnectionInfos() => HasQuickBooksConnectionInfos;
-
-        #endregion multiple Dto list
-
+        [OpenApiPropertyDescription("(Response Data) Single entity object which load by Number.")]
+        public string TokenReceiverReturnUrl { get; set; }
+        [JsonIgnore] public virtual bool HasTokenReceiverReturnUrl => !string.IsNullOrEmpty(TokenReceiverReturnUrl);
+        public bool ShouldSerializeTokenReceiverReturnUrl() => HasTokenReceiverReturnUrl;
 
         #region single Dto object
 
@@ -72,26 +53,6 @@ namespace DigitBridge.QuickBooks.Integration
 
         #endregion single Dto object
 
-
-        #region list service
-
-        /// <summary>
-        /// (Response Data) List result which load filter and paging.
-        /// </summary>
-        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
-        [JsonConverter(typeof(StringBuilderConverter))]
-        public StringBuilder QuickBooksConnectionInfoList { get; set; }
-        [JsonIgnore] public virtual bool HasQuickBooksConnectionInfoList => QuickBooksConnectionInfoList != null && QuickBooksConnectionInfoList.Length > 0;
-        public bool ShouldSerializeQuickBooksConnectionInfoList() => HasQuickBooksConnectionInfoList;
-
-        /// <summary>
-        /// (Response Data) List result count which load filter and paging.
-        /// </summary>
-        public int QuickBooksConnectionInfoListCount { get; set; }
-        [JsonIgnore] public virtual bool HasQuickBooksConnectionInfoListCount => QuickBooksConnectionInfoListCount > 0;
-        public bool ShouldSerializeQuickBooksConnectionInfoListCount() => HasQuickBooksConnectionInfoListCount;
-
-        #endregion list service
     }
 }
 

@@ -230,7 +230,7 @@
   <ItemGroup>
     <Build Include="qbo\QuickBooksChnlAccSetting.sql" />
     <Build Include="qbo\QuickBooksConnectionInfo.sql" />
-    <Build Include="qbo\QuickBooksIntegrationSetting.sql" />
+    <Build Include="qbo\QuickBooksSettingInfo.sql" />
     <None Include="qbo\QuickBooksExportLog.sql" />
   </ItemGroup>
 </Project>

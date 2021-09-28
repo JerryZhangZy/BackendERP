@@ -1,4 +1,6 @@
-﻿using DigitBridge.CommerceCentral.ApiCommon;
+﻿using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.ApiCommon;
+using DigitBridge.QuickBooks.Integration;
 using DigitBridge.QuickBooks.Integration.Mdl;
 using DigitBridge.QuickBooks.Integration.Model;
 using Microsoft.AspNetCore.Http;
@@ -24,171 +26,63 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
     [ApiFilter(typeof(QuickBooksUserCredentialApi))]
     public static class QuickBooksUserCredentialApi
     {
-        //[FunctionName(nameof(GetOAuthUrl))]
-        //public static async Task<IActionResult> GetOAuthUrl(
-        //    [HttpTrigger(AuthorizationLevel.Function, "get", Route = "oauthUrl")] HttpRequest req,
-        //     ILogger log, ExecutionContext context, ClaimsPrincipal claimsPrincipal)
-        //{
-        //    log.LogInformation("C# HTTP trigger GET GetOAuthUrl function processed a request.");
-        //    try
-        //    {
-        //        string masterAccountNum = MyAppHelper.GetHeaderQueryValue(req, MyHttpHeaderName.MasterAccountNum);
-        //        string profileNum = MyAppHelper.GetHeaderQueryValue(req, MyHttpHeaderName.ProfileNum);
+        [FunctionName(nameof(GetOAuthUrl))]
+        [OpenApiOperation(operationId: "GetOAuthUrl", tags: new[] { "QuickBooksUserCredential" }, Summary = "Get OAuth Url")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(QuickBooksConnectionInfoPayload), Description = "The OK response")]
+        public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> GetOAuthUrl(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "QboUserCredential/oauthUrl")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<QuickBooksConnectionInfoPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = await UserCredentialService.CreateAsync(dataBaseFactory);
+            (bool isSuccess, string respond) = await srv.OAuthUrlAsync(payload);
+            if (isSuccess)
+            {
+                payload.OAuthUrl = respond;
+            }
+            else
+            {
+                payload.Success = false;
+                payload.Messages.AddError(respond);
+            }
+            return new JsonNetResponse<QuickBooksConnectionInfoPayload>(payload);
+        }
 
-        //        if (string.IsNullOrEmpty(masterAccountNum) || string.IsNullOrEmpty(profileNum))
-        //        {
-        //            DigitBridgeHttpResponse errorResponse = new DigitBridgeHttpResponse()
-        //            {
-        //                Id = HttpResponseCodeID.BAD_REQUEST,
-        //                Status = "400",
-        //                Title = "Missing Parameters in Header",
-        //                Error = new ErrorInfo() { Title = "MasterAccountNum and ProfileNum are required but not provided." }
-        //            };
-        //            return new ObjectResult(errorResponse)
-        //            {
-        //                StatusCode = (int)HttpStatusCode.BadRequest
-        //            };
-        //        }
+        [FunctionName(nameof(TokenReceiver))]
+        [OpenApiParameter(name: "MasterAccountNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "ProfileNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> TokenReceiver(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "QboUserCredential/TokenReceiver/{MasterAccountNum}/{ProfileNum}")] HttpRequest req,int MasterAccountNum,int ProfileNum)
+        {
+                var payload = new QuickBooksConnectionInfoPayload()
+                {
+                    ProfileNum = ProfileNum,
+                    MasterAccountNum = MasterAccountNum
+                };
+                var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+                var srv = await UserCredentialService.CreateAsync(dataBaseFactory);
 
-        //        MyAppSetting appSetting = new MyAppSetting(context);
+                string authCode = req.Query["code"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "code").ForceToTrimString();
+                string requestState = req.Query["state"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "state").ForceToTrimString();
+                string realmId = req.Query["realmId"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "realmId").ForceToTrimString();
 
-        //        QboDbConfig dbConfig = new QboDbConfig(
-        //            appSetting.DBConnectionValue,
-        //            appSetting.AzureUseManagedIdentity,
-        //            appSetting.AzureTokenProviderConnectionString,
-        //            appSetting.AzureTenantId,
-        //            appSetting.CentralOrderTableName,
-        //            appSetting.CentralItemLineTableName,
-        //            appSetting.QuickBooksConnectionInfoTableName,
-        //            appSetting.QuickBooksIntegrationSettingTableName,
-        //            appSetting.QuickBooksChannelAccSettingTableName,
-        //            appSetting.CryptKey);
+                (bool isSuccess, string respond) = await srv.HandleTokensAsync(realmId, authCode,requestState);
 
-        //        QboConnectionConfig qboConnectionConfig = new QboConnectionConfig(
-        //            appSetting.RedirectUrl,
-        //            appSetting.Environment,
-        //            appSetting.BaseUrl,
-        //            appSetting.MinorVersion,
-        //            appSetting.AppClientId,
-        //            appSetting.AppClientSecret);
+                if (!isSuccess)
+                {
+                    payload.Success = false;
+                    payload.Messages.AddError("Error Getting Token From Quickbooks");
+                }
+                else
+                {
+                    payload.TokenReceiverReturnUrl = respond;
+                }
 
-        //        var userCredential = await UserCredentialService.CreateAsync(
-        //            dbConfig, qboConnectionConfig, masterAccountNum, profileNum);
-
-        //        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-
-        //        (bool isSuccess, string respond) = await userCredential.OAuthUrl();
-
-        //        if (!isSuccess)
-        //        {
-        //            DigitBridgeHttpResponse errorResponse = new DigitBridgeHttpResponse()
-        //            {
-        //                Id = HttpResponseCodeID.BAD_REQUEST,
-        //                Status = "400",
-        //                Title = "Failed to Get Quickbooks Online Login Redirect Url",
-        //                Error = new ErrorInfo() { Title = respond }
-        //            };
-        //        }
-
-        //        return new OkObjectResult(
-        //            new UserCredentilApiResponseType
-        //            {
-        //                RedirectUrl = respond
-        //            });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.LogError("Exception: " + ex.Message);
-        //        string errMsg = ExceptionUtility.FormatMessage(MethodBase.GetCurrentMethod(), ex);
-        //        ObjectResult or = new ObjectResult(new { exception = errMsg })
-        //        {
-        //            StatusCode = (int)HttpStatusCode.InternalServerError
-        //        };
-        //        return or;
-        //    }
-        //}
-
-        //[FunctionName(nameof(TokenReceiver))]
-        //public static async Task<IActionResult> TokenReceiver(
-        //    [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "tokenReceiver")] HttpRequest req,
-        //     ILogger log, ExecutionContext context, ClaimsPrincipal claimsPrincipal)
-        //{
-        //    log.LogInformation("C# HTTP trigger Post TokenReceiver function processed a request.");
-        //    try
-        //    {
-
-        //        // Check if the request is Valid
-        //        MyAppSetting appSetting = new MyAppSetting(context);
-
-        //        List<RequestParameterType> requestParamters = appSetting.WebRequestParameters
-        //           .FirstOrDefault(p => p.RequestName == context.FunctionName).RequestParameters;
-
-        //        bool ret;
-        //        string errMsg;
-
-        //        (ret, errMsg) = MyAppHelper.ValidateRequestFromQuery(req, requestParamters);
-
-        //        if (ret == false)
-        //        {
-        //            return new ObjectResult(new { error = errMsg })
-        //            {
-        //                StatusCode = (int)HttpStatusCode.BadRequest
-        //            };
-        //        }
-
-        //        string authCode = MyAppHelper.GetHeaderQueryValue(req, "code").ForceToTrimString();
-        //        string requestState = MyAppHelper.GetHeaderQueryValue(req, "state").ForceToTrimString();
-        //        string realmId = MyAppHelper.GetHeaderQueryValue(req, "realmId").ForceToTrimString();
-
-        //        QboDbConfig dbConfig = new QboDbConfig(
-        //            appSetting.DBConnectionValue,
-        //            appSetting.AzureUseManagedIdentity,
-        //            appSetting.AzureTokenProviderConnectionString,
-        //            appSetting.AzureTenantId,
-        //            appSetting.CentralOrderTableName,
-        //            appSetting.CentralItemLineTableName,
-        //            appSetting.QuickBooksConnectionInfoTableName,
-        //            appSetting.QuickBooksIntegrationSettingTableName,
-        //            appSetting.QuickBooksChannelAccSettingTableName,
-        //            appSetting.CryptKey);
-
-        //        QboConnectionConfig qboConnectionConfig = new QboConnectionConfig(
-        //            appSetting.RedirectUrl,
-        //            appSetting.Environment,
-        //            appSetting.BaseUrl,
-        //            appSetting.MinorVersion,
-        //            appSetting.AppClientId,
-        //            appSetting.AppClientSecret);
-
-        //        var userCredential = await UserCredentialService.CreateAsync(
-        //            dbConfig, qboConnectionConfig, requestState);
-
-        //        (bool isSuccess, string respond) = await userCredential.HandleTokens(realmId, authCode);
-
-        //        if (!isSuccess)
-        //        {
-        //            DigitBridgeHttpResponse errorResponse = new DigitBridgeHttpResponse()
-        //            {
-        //                Id = HttpResponseCodeID.BAD_REQUEST,
-        //                Status = "400",
-        //                Title = "Error Getting Token From Quickbooks",
-        //                Error = new ErrorInfo() { Title = respond }
-        //            };
-        //        }
-
-        //        return new RedirectResult(appSetting.TokenReceiverReturnUrl) { Permanent = true };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.LogError("Exception: " + ex.Message);
-        //        string errMsg = ExceptionUtility.FormatMessage(MethodBase.GetCurrentMethod(), ex);
-        //        ObjectResult or = new ObjectResult(new { exception = errMsg })
-        //        {
-        //            StatusCode = (int)HttpStatusCode.InternalServerError
-        //        };
-        //        return or;
-        //    }
-        //}
+                return new JsonNetResponse<QuickBooksConnectionInfoPayload>(payload);
+        }
         ///// <summary>
         ///// Return the QboOAuthTokenStatus for User in <int> 0 : Uninitialized, 1 : Success, 2: Error
         ///// </summary>
