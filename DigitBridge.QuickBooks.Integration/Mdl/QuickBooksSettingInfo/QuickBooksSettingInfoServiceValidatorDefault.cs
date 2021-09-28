@@ -90,9 +90,9 @@ namespace DigitBridge.QuickBooks.Integration
             if (processingMode == ProcessingMode.Add)
             {
                 //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-                dto.QuickBooksIntegrationSetting.MasterAccountNum = pl.MasterAccountNum;
-                dto.QuickBooksIntegrationSetting.ProfileNum = pl.ProfileNum;
-                dto.QuickBooksIntegrationSetting.DatabaseNum = pl.DatabaseNum;
+                dto.QuickBooksSettingInfo.MasterAccountNum = pl.MasterAccountNum;
+                dto.QuickBooksSettingInfo.ProfileNum = pl.ProfileNum;
+                dto.QuickBooksSettingInfo.DatabaseNum = pl.DatabaseNum;
             }
             else
             {
@@ -101,8 +101,8 @@ namespace DigitBridge.QuickBooks.Integration
                 {
                     if (!string.IsNullOrEmpty(number))
                         isValid = QuickBooksSettingInfoHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
-                    else if(!dto.QuickBooksIntegrationSetting.RowNum.IsZero())
-                        isValid = QuickBooksSettingInfoHelper.ExistRowNum(dto.QuickBooksIntegrationSetting.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
+                    else if(!dto.QuickBooksSettingInfo.RowNum.IsZero())
+                        isValid = QuickBooksSettingInfoHelper.ExistRowNum(dto.QuickBooksSettingInfo.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -120,9 +120,9 @@ namespace DigitBridge.QuickBooks.Integration
             if (processingMode == ProcessingMode.Add)
             {
                 //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
-                dto.QuickBooksIntegrationSetting.MasterAccountNum = pl.MasterAccountNum;
-                dto.QuickBooksIntegrationSetting.ProfileNum = pl.ProfileNum;
-                dto.QuickBooksIntegrationSetting.DatabaseNum = pl.DatabaseNum;
+                dto.QuickBooksSettingInfo.MasterAccountNum = pl.MasterAccountNum;
+                dto.QuickBooksSettingInfo.ProfileNum = pl.ProfileNum;
+                dto.QuickBooksSettingInfo.DatabaseNum = pl.DatabaseNum;
             }
             else
             {
@@ -131,8 +131,8 @@ namespace DigitBridge.QuickBooks.Integration
                 {
                     if (!string.IsNullOrEmpty(number))
                         isValid = await QuickBooksSettingInfoHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
-                    else if(!dto.QuickBooksIntegrationSetting.RowNum.IsZero())
-                        isValid = await QuickBooksSettingInfoHelper.ExistRowNumAsync(dto.QuickBooksIntegrationSetting.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
+                    else if(!dto.QuickBooksSettingInfo.RowNum.IsZero())
+                        isValid = await QuickBooksSettingInfoHelper.ExistRowNumAsync(dto.QuickBooksSettingInfo.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -163,13 +163,13 @@ namespace DigitBridge.QuickBooks.Integration
         protected virtual bool ValidateAllMode(QuickBooksSettingInfoData data)
         {
             var dbFactory = data.dbFactory;
-            if (string.IsNullOrEmpty(data.QuickBooksIntegrationSetting.SettingUuid))
+            if (string.IsNullOrEmpty(data.QuickBooksSettingInfo.SettingUuid))
             {
                 IsValid = false;
                 AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
-            //if (string.IsNullOrEmpty(data.QuickBooksIntegrationSetting.CustomerUuid))
+            //if (string.IsNullOrEmpty(data.QuickBooksSettingInfo.CustomerUuid))
             //{
             //    IsValid = false;
             //    AddError($"Customer cannot be empty.");
@@ -182,10 +182,10 @@ namespace DigitBridge.QuickBooks.Integration
         protected virtual bool ValidateAdd(QuickBooksSettingInfoData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.QuickBooksIntegrationSetting.RowNum != 0 && dbFactory.Exists<QuickBooksIntegrationSetting>(data.QuickBooksIntegrationSetting.RowNum))
+            if (data.QuickBooksSettingInfo.RowNum != 0 && dbFactory.Exists<QuickBooksSettingInfo>(data.QuickBooksSettingInfo.RowNum))
             {
                 IsValid = false;
-                AddError($"RowNum: {data.QuickBooksIntegrationSetting.RowNum} is duplicate.");
+                AddError($"RowNum: {data.QuickBooksSettingInfo.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -195,17 +195,17 @@ namespace DigitBridge.QuickBooks.Integration
         protected virtual bool ValidateEdit(QuickBooksSettingInfoData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.QuickBooksIntegrationSetting.RowNum == 0)
+            if (data.QuickBooksSettingInfo.RowNum == 0)
             {
                 IsValid = false;
-                AddError($"RowNum: {data.QuickBooksIntegrationSetting.RowNum} not found.");
+                AddError($"RowNum: {data.QuickBooksSettingInfo.RowNum} not found.");
                 return IsValid;
             }
 
-            if (data.QuickBooksIntegrationSetting.RowNum != 0 && !dbFactory.Exists<QuickBooksIntegrationSetting>(data.QuickBooksIntegrationSetting.RowNum))
+            if (data.QuickBooksSettingInfo.RowNum != 0 && !dbFactory.Exists<QuickBooksSettingInfo>(data.QuickBooksSettingInfo.RowNum))
             {
                 IsValid = false;
-                AddError($"RowNum: {data.QuickBooksIntegrationSetting.RowNum} not found.");
+                AddError($"RowNum: {data.QuickBooksSettingInfo.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -214,17 +214,17 @@ namespace DigitBridge.QuickBooks.Integration
         protected virtual bool ValidateDelete(QuickBooksSettingInfoData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.QuickBooksIntegrationSetting.RowNum == 0)
+            if (data.QuickBooksSettingInfo.RowNum == 0)
             {
                 IsValid = false;
-                AddError($"RowNum: {data.QuickBooksIntegrationSetting.RowNum} not found.");
+                AddError($"RowNum: {data.QuickBooksSettingInfo.RowNum} not found.");
                 return IsValid;
             }
 
-            if (data.QuickBooksIntegrationSetting.RowNum != 0 && !dbFactory.Exists<QuickBooksIntegrationSetting>(data.QuickBooksIntegrationSetting.RowNum))
+            if (data.QuickBooksSettingInfo.RowNum != 0 && !dbFactory.Exists<QuickBooksSettingInfo>(data.QuickBooksSettingInfo.RowNum))
             {
                 IsValid = false;
-                AddError($"RowNum: {data.QuickBooksIntegrationSetting.RowNum} not found.");
+                AddError($"RowNum: {data.QuickBooksSettingInfo.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -255,13 +255,13 @@ namespace DigitBridge.QuickBooks.Integration
         protected virtual async Task<bool> ValidateAllModeAsync(QuickBooksSettingInfoData data)
         {
             var dbFactory = data.dbFactory;
-            if (string.IsNullOrEmpty(data.QuickBooksIntegrationSetting.SettingUuid))
+            if (string.IsNullOrEmpty(data.QuickBooksSettingInfo.SettingUuid))
             {
                 IsValid = false;
                 AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
-            //if (string.IsNullOrEmpty(data.QuickBooksIntegrationSetting.CustomerUuid))
+            //if (string.IsNullOrEmpty(data.QuickBooksSettingInfo.CustomerUuid))
             //{
             //    IsValid = false;
             //    AddError($"Customer cannot be empty.");
@@ -274,10 +274,10 @@ namespace DigitBridge.QuickBooks.Integration
         protected virtual async Task<bool> ValidateAddAsync(QuickBooksSettingInfoData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.QuickBooksIntegrationSetting.RowNum != 0 && (await dbFactory.ExistsAsync<QuickBooksIntegrationSetting>(data.QuickBooksIntegrationSetting.RowNum)))
+            if (data.QuickBooksSettingInfo.RowNum != 0 && (await dbFactory.ExistsAsync<QuickBooksSettingInfo>(data.QuickBooksSettingInfo.RowNum)))
             {
                 IsValid = false;
-                AddError($"RowNum: {data.QuickBooksIntegrationSetting.RowNum} is duplicate.");
+                AddError($"RowNum: {data.QuickBooksSettingInfo.RowNum} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -287,17 +287,17 @@ namespace DigitBridge.QuickBooks.Integration
         protected virtual async Task<bool> ValidateEditAsync(QuickBooksSettingInfoData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.QuickBooksIntegrationSetting.RowNum == 0)
+            if (data.QuickBooksSettingInfo.RowNum == 0)
             {
                 IsValid = false;
-                AddError($"RowNum: {data.QuickBooksIntegrationSetting.RowNum} not found.");
+                AddError($"RowNum: {data.QuickBooksSettingInfo.RowNum} not found.");
                 return IsValid;
             }
 
-            if (data.QuickBooksIntegrationSetting.RowNum != 0 && !(await dbFactory.ExistsAsync<QuickBooksIntegrationSetting>(data.QuickBooksIntegrationSetting.RowNum)))
+            if (data.QuickBooksSettingInfo.RowNum != 0 && !(await dbFactory.ExistsAsync<QuickBooksSettingInfo>(data.QuickBooksSettingInfo.RowNum)))
             {
                 IsValid = false;
-                AddError($"RowNum: {data.QuickBooksIntegrationSetting.RowNum} not found.");
+                AddError($"RowNum: {data.QuickBooksSettingInfo.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -306,17 +306,17 @@ namespace DigitBridge.QuickBooks.Integration
         protected virtual async Task<bool> ValidateDeleteAsync(QuickBooksSettingInfoData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.QuickBooksIntegrationSetting.RowNum == 0)
+            if (data.QuickBooksSettingInfo.RowNum == 0)
             {
                 IsValid = false;
-                AddError($"RowNum: {data.QuickBooksIntegrationSetting.RowNum} not found.");
+                AddError($"RowNum: {data.QuickBooksSettingInfo.RowNum} not found.");
                 return IsValid;
             }
 
-            if (data.QuickBooksIntegrationSetting.RowNum != 0 && !(await dbFactory.ExistsAsync<QuickBooksIntegrationSetting>(data.QuickBooksIntegrationSetting.RowNum)))
+            if (data.QuickBooksSettingInfo.RowNum != 0 && !(await dbFactory.ExistsAsync<QuickBooksSettingInfo>(data.QuickBooksSettingInfo.RowNum)))
             {
                 IsValid = false;
-                AddError($"RowNum: {data.QuickBooksIntegrationSetting.RowNum} not found.");
+                AddError($"RowNum: {data.QuickBooksSettingInfo.RowNum} not found.");
                 return IsValid;
             }
             return true;
@@ -343,33 +343,23 @@ namespace DigitBridge.QuickBooks.Integration
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.QuickBooksIntegrationSetting.SettingUuid = Guid.NewGuid().ToString();
-                if (dto.QuickBooksChnlAccSetting != null && dto.QuickBooksChnlAccSetting.Count > 0)
-                {
-                    foreach (var detailItem in dto.QuickBooksChnlAccSetting)
-                        detailItem.ChnlAccSettingUuid = Guid.NewGuid().ToString();
-                }
+                dto.QuickBooksSettingInfo.SettingUuid = Guid.NewGuid().ToString();
   
             }
             else if (processingMode == ProcessingMode.Edit)
             {
-                if (dto.QuickBooksIntegrationSetting.RowNum.IsZero())
+                if (dto.QuickBooksSettingInfo.RowNum.IsZero())
                 {
                     isValid = false;
-                    AddError("QuickBooksIntegrationSetting.RowNum is required.");
+                    AddError("QuickBooksSettingInfo.RowNum is required.");
                 }
                 // This property should not be changed.
-                dto.QuickBooksIntegrationSetting.MasterAccountNum = null;
-                dto.QuickBooksIntegrationSetting.ProfileNum = null;
-                dto.QuickBooksIntegrationSetting.DatabaseNum = null;
-                dto.QuickBooksIntegrationSetting.SettingUuid = null;
+                dto.QuickBooksSettingInfo.MasterAccountNum = null;
+                dto.QuickBooksSettingInfo.ProfileNum = null;
+                dto.QuickBooksSettingInfo.DatabaseNum = null;
+                dto.QuickBooksSettingInfo.SettingUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
-                if (dto.QuickBooksChnlAccSetting != null && dto.QuickBooksChnlAccSetting.Count > 0)
-                {
-                    foreach (var detailItem in dto.QuickBooksChnlAccSetting)
-                        detailItem.ChnlAccSettingUuid = null;
-                }
             }
             IsValid=isValid;
             return isValid;
@@ -395,33 +385,23 @@ namespace DigitBridge.QuickBooks.Integration
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
-                dto.QuickBooksIntegrationSetting.SettingUuid = Guid.NewGuid().ToString();
-                if (dto.QuickBooksChnlAccSetting != null && dto.QuickBooksChnlAccSetting.Count > 0)
-                {
-                    foreach (var detailItem in dto.QuickBooksChnlAccSetting)
-                        detailItem.ChnlAccSettingUuid = Guid.NewGuid().ToString();
-                }
+                dto.QuickBooksSettingInfo.SettingUuid = Guid.NewGuid().ToString();
   
             }
             else if (processingMode == ProcessingMode.Edit)
             {
-                if (dto.QuickBooksIntegrationSetting.RowNum.IsZero())
+                if (dto.QuickBooksSettingInfo.RowNum.IsZero())
                 {
                     isValid = false;
-                    AddError("QuickBooksIntegrationSetting.RowNum is required.");
+                    AddError("QuickBooksSettingInfo.RowNum is required.");
                 }
                 // This property should not be changed.
-                dto.QuickBooksIntegrationSetting.MasterAccountNum = null;
-                dto.QuickBooksIntegrationSetting.ProfileNum = null;
-                dto.QuickBooksIntegrationSetting.DatabaseNum = null;
-                dto.QuickBooksIntegrationSetting.SettingUuid = null;
+                dto.QuickBooksSettingInfo.MasterAccountNum = null;
+                dto.QuickBooksSettingInfo.ProfileNum = null;
+                dto.QuickBooksSettingInfo.DatabaseNum = null;
+                dto.QuickBooksSettingInfo.SettingUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
-                if (dto.QuickBooksChnlAccSetting != null && dto.QuickBooksChnlAccSetting.Count > 0)
-                {
-                    foreach (var detailItem in dto.QuickBooksChnlAccSetting)
-                        detailItem.ChnlAccSettingUuid = null;
-                }
   
             }
             IsValid=isValid;

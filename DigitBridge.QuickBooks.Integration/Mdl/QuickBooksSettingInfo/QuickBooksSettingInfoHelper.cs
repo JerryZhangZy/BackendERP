@@ -34,7 +34,7 @@ namespace DigitBridge.QuickBooks.Integration
         public static bool ExistSettingInfo(int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM QuickBooksIntegrationSetting tbl
+SELECT COUNT(1) FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 ";
@@ -48,7 +48,7 @@ AND ProfileNum = @profileNum
         public static async Task<bool> ExistSettingInfoAsync(int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM QuickBooksIntegrationSetting tbl
+SELECT COUNT(1) FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 ";
@@ -62,7 +62,7 @@ AND ProfileNum = @profileNum
         public static long GetSettingInfoRowNum(int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT Top 1 RowNum FROM QuickBooksIntegrationSetting 
+SELECT Top 1 RowNum FROM QuickBooksSettingInfo 
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum";
             return SqlQuery.Execute(sql, (long rowNum) => rowNum,
@@ -73,7 +73,7 @@ AND ProfileNum = @profileNum";
         public static async Task<long> GetSettingRowNumAsync(int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT Top 1 RowNum FROM QuickBooksIntegrationSetting 
+SELECT Top 1 RowNum FROM QuickBooksSettingInfo 
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum";
             return (await SqlQuery.ExecuteAsync(sql, (long rowNum) => rowNum,
@@ -85,7 +85,7 @@ AND ProfileNum = @profileNum";
         {
 /*
             var sql = $@"
-SELECT COUNT(1) FROM QuickBooksChnlAccSetting tbl
+SELECT COUNT(1) FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND OrderNumber = @number
@@ -104,7 +104,7 @@ AND OrderNumber = @number
         {
 /*
             var sql = $@"
-SELECT COUNT(1) FROM QuickBooksChnlAccSetting tbl
+SELECT COUNT(1) FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND OrderNumber = @number
@@ -122,7 +122,7 @@ AND OrderNumber = @number
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM QuickBooksChnlAccSetting tbl
+SELECT COUNT(1) FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND SettingUuid = @uuid
@@ -138,7 +138,7 @@ AND SettingUuid = @uuid
         public static async Task<bool> ExistIdAsync(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM QuickBooksChnlAccSetting tbl
+SELECT COUNT(1) FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND SettingUuid = @uuid
@@ -154,7 +154,7 @@ AND SettingUuid = @uuid
         public static bool ExistRowNum(long rowNum, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM QuickBooksChnlAccSetting tbl
+SELECT COUNT(1) FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND RowNum= @rowNum
@@ -170,7 +170,7 @@ AND RowNum= @rowNum
         public static async Task<bool> ExistRowNumAsync(long rowNum, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM QuickBooksChnlAccSetting tbl
+SELECT COUNT(1) FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND RowNum= @rowNum
@@ -186,7 +186,7 @@ AND RowNum= @rowNum
         public static List<long> GetRowNums(int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT RowNum FROM QuickBooksChnlAccSetting tbl
+SELECT RowNum FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum";
             return SqlQuery.Execute(sql, (long rowNum) => rowNum,
@@ -197,24 +197,10 @@ AND ProfileNum = @profileNum";
         public static async Task<List<long>> GetRowNumsAsync(int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT RowNum FROM QuickBooksChnlAccSetting tbl
+SELECT RowNum FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum";
             return await SqlQuery.ExecuteAsync(sql, (long rowNum) => rowNum,
-                masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum"));
-        }
-
-        public static List<long> GetRowNumsByAccount(int masterAccountNum, int profileNum)
-        {
-            var sql = $@"
-SELECT RowNum FROM QuickBooksIntegrationSetting tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum";
-
-            return SqlQuery.Execute(
-                sql,
-                (long rowNum) => rowNum,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"));
         }
@@ -222,7 +208,7 @@ AND ProfileNum = @profileNum";
         {
 /*
             var sql = $@"
-SELECT RowNum FROM QuickBooksChnlAccSetting tbl
+SELECT RowNum FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND OrderNumber = @number
@@ -240,7 +226,7 @@ AND OrderNumber = @number
         {
 /*
             var sql = $@"
-SELECT RowNum FROM QuickBooksChnlAccSetting tbl
+SELECT RowNum FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND OrderNumber = @number
@@ -258,7 +244,7 @@ AND OrderNumber = @number
         {
 /*
             var sql = $@"
-SELECT RowNum FROM QuickBooksChnlAccSetting tbl
+SELECT RowNum FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
@@ -277,7 +263,7 @@ AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
         {
 /*
             var sql = $@"
-SELECT RowNum FROM QuickBooksChnlAccSetting tbl
+SELECT RowNum FROM QuickBooksSettingInfo tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";

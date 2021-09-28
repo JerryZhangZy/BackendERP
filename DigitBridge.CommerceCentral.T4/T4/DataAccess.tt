@@ -75,11 +75,11 @@
 //SettingForInventoryUpdate
 //SettingForWarehouseTransfer
 #>
-<#@ include file="SettingForQuickBooksConnectionInfo.ttinclude" #>
+<#@ include file="SettingForQuickBooksSetting.ttinclude" #>
 <#
     var dtoSuf = "";
     
-    var overridesetting = true;
+    var overridesetting = false;
     //rewrite setting config
     if(overridesetting)
     {

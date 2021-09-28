@@ -22,11 +22,11 @@ using DigitBridge.CommerceCentral.YoPoco;
 namespace DigitBridge.QuickBooks.Integration
 {
     /// <summary>
-    /// Represents a QuickBooksChnlAccSetting Dto Class.
+    /// Represents a QuickBooksSettingInfo Dto Class.
     /// NOTE: This class is generated from a T4 template Once - if you want re-generate it, you need delete cs file and generate again
     /// </summary>
     [Serializable()]
-    public class QuickBooksChnlAccSettingDto
+    public class QuickBooksSettingInfoDto
     {
         public long? RowNum { get; set; }
         [JsonIgnore,XmlIgnore]
@@ -79,60 +79,33 @@ namespace DigitBridge.QuickBooks.Integration
         public bool HasSettingUuid => SettingUuid != null;
 
 		/// <summary>
-		/// ChnlAccSetting uuid. <br> Display: false, Editable: false.
+		/// IntegrationSetting JSON string,Single.
 		/// </summary>
-		[OpenApiPropertyDescription("ChnlAccSetting uuid. <br> Display: false, Editable: false.")]
-        [StringLength(50, ErrorMessage = "The ChnlAccSettingUuid value cannot exceed 50 characters. ")]
-        public string ChnlAccSettingUuid { get; set; }
+		[OpenApiPropertyDescription("IntegrationSetting JSON string,Single.")]
+        public string IntegrationSettingJsonFields { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasChnlAccSettingUuid => ChnlAccSettingUuid != null;
+        public bool HasIntegrationSettingJsonFields => IntegrationSettingJsonFields != null;
 
 		/// <summary>
-		/// Central Channel Account name, Max 10 chars ( because of qbo doc Number 21 chars restrictions )
+		/// ChannelAccountSetting JSON string,Array.
 		/// </summary>
-		[OpenApiPropertyDescription("Central Channel Account name, Max 10 chars ( because of qbo doc Number 21 chars restrictions )")]
-        [StringLength(150, ErrorMessage = "The ChannelAccountName value cannot exceed 150 characters. ")]
-        public string ChannelAccountName { get; set; }
+		[OpenApiPropertyDescription("ChannelAccountSetting JSON string,Array.")]
+        public string ChannelAccountSettingJsonFields { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasChannelAccountName => ChannelAccountName != null;
+        public bool HasChannelAccountSettingJsonFields => ChannelAccountSettingJsonFields != null;
 
 		/// <summary>
-		/// Central Channel Account Number
+		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Central Channel Account Number")]
-        public int? ChannelAccountNum { get; set; }
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasChannelAccountNum => ChannelAccountNum != null;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		[OpenApiPropertyDescription("")]
+		[OpenApiPropertyDescription("(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false")]
         [DataType(DataType.DateTime)]
-        public DateTime? LastUpdate { get; set; }
+        public DateTime? UpdateDateUtc { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasLastUpdate => LastUpdate != null;
+        public bool HasUpdateDateUtc => UpdateDateUtc != null;
 
-		/// <summary>
-		/// Last DateTime that the system exported the orders in this ChnlAcc
-		/// </summary>
-		[OpenApiPropertyDescription("Last DateTime that the system exported the orders in this ChnlAcc")]
-        [DataType(DataType.DateTime)]
-        public DateTime? DailySummaryLastExport { get; set; }
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasDailySummaryLastExport => DailySummaryLastExport != null;
-
-
-        [IgnoreCompare]
-        public JObject Fields { get; set; }
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasFields => Fields != null;
 
 
         #endregion Properties - Generated 

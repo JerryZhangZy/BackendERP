@@ -80,6 +80,7 @@ namespace DigitBridge.QuickBooks.Integration
 
             return await SaveDataAsync();
         }
+
         public virtual async Task<bool> GetByPayloadAsync(IPayload payload)
         {
             var rowNum = 0L;
@@ -144,7 +145,7 @@ namespace DigitBridge.QuickBooks.Integration
         /// </summary>
         public virtual bool Update(QuickBooksSettingInfoDataDto dto)
         {
-            if (dto is null || !dto.HasQuickBooksIntegrationSetting)
+            if (dto is null || !dto.HasQuickBooksSettingInfo)
                 return false;
             //set edit mode before validate
             Edit();
@@ -152,7 +153,7 @@ namespace DigitBridge.QuickBooks.Integration
                 return false;
 
             // load data 
-            GetData(dto.QuickBooksIntegrationSetting.RowNum.ToLong());
+            GetData(dto.QuickBooksSettingInfo.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
@@ -170,7 +171,7 @@ namespace DigitBridge.QuickBooks.Integration
         /// </summary>
         public virtual async Task<bool> UpdateAsync(QuickBooksSettingInfoDataDto dto)
         {
-            if (dto is null || !dto.HasQuickBooksIntegrationSetting)
+            if (dto is null || !dto.HasQuickBooksSettingInfo)
                 return false;
             //set edit mode before validate
             Edit();
@@ -178,7 +179,7 @@ namespace DigitBridge.QuickBooks.Integration
                 return false;
 
             // load data 
-            await GetDataAsync(dto.QuickBooksIntegrationSetting.RowNum.ToLong());
+            await GetDataAsync(dto.QuickBooksSettingInfo.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
@@ -196,7 +197,7 @@ namespace DigitBridge.QuickBooks.Integration
         /// </summary>
         public virtual bool Update(QuickBooksSettingInfoPayload payload)
         {
-            if (payload is null || !payload.HasQuickBooksSettingInfo || payload.QuickBooksSettingInfo.QuickBooksIntegrationSetting.RowNum.ToLong() <= 0)
+            if (payload is null || !payload.HasQuickBooksSettingInfo || payload.QuickBooksSettingInfo.QuickBooksSettingInfo.RowNum.ToLong() <= 0)
                 return false;
             //set edit mode before validate
             Edit();
@@ -208,7 +209,7 @@ namespace DigitBridge.QuickBooks.Integration
                 return false;
 
             // load data 
-            GetData(payload.QuickBooksSettingInfo.QuickBooksIntegrationSetting.RowNum.ToLong());
+            GetData(payload.QuickBooksSettingInfo.QuickBooksSettingInfo.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.QuickBooksSettingInfo);
@@ -237,7 +238,7 @@ namespace DigitBridge.QuickBooks.Integration
                 return false;
 
             // load data 
-            await GetDataAsync(payload.QuickBooksSettingInfo.QuickBooksIntegrationSetting.RowNum.ToLong());
+            await GetDataAsync(payload.QuickBooksSettingInfo.QuickBooksSettingInfo.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.QuickBooksSettingInfo);
@@ -304,6 +305,7 @@ namespace DigitBridge.QuickBooks.Integration
             success = success && DeleteData();
             return success;
         }
+
     }
 }
 

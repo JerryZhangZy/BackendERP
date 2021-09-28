@@ -34,8 +34,7 @@ namespace DigitBridge.QuickBooks.Integration
 
         public override void RegisterMapper(CsvContext context)
         {
-			context.RegisterClassMap(new CsvAutoMapper<QuickBooksIntegrationSettingDto>());
-			context.RegisterClassMap(new CsvAutoMapper<QuickBooksChnlAccSettingDto>());
+			context.RegisterClassMap(new CsvAutoMapper<QuickBooksSettingInfoDto>());
         }
         
         protected override void WriteCsv(QuickBooksSettingInfoDataDto data, CsvWriter csv)
@@ -68,12 +67,12 @@ namespace DigitBridge.QuickBooks.Integration
                     case "H":
                         if (!isFirst)
                         {
-                            if (dto != null && dto.HasQuickBooksIntegrationSetting)
+                            if (dto != null && dto.HasQuickBooksSettingInfo)
                                 data.Add(dto);
                             dto = new QuickBooksSettingInfoDataDto();
                             isFirst = false;
                         }
-                        dto. QuickBooksIntegrationSetting = csv.GetRecord<QuickBooksIntegrationSettingDto>();
+                        dto. QuickBooksSettingInfo = csv.GetRecord<QuickBooksSettingInfoDto>();
                         break;
                     //case "L":
                     //    if (dto.Inventory == null)
