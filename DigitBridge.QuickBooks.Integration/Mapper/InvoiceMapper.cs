@@ -142,7 +142,7 @@ namespace DigitBridge.QuickBooks.Integration
             var invoiceHeader = invoiceData.InvoiceHeader;
             var invoiceInfo = invoiceData.InvoiceHeaderInfo;
 
-            invoice.DocNumber = invoiceHeader.InvoiceNumber;
+            //invoice.DocNumber = invoiceHeader.InvoiceNumber;
             //invoice.TotalAmt = invoiceHeader.TotalAmount;
             //invoice.TotalAmtSpecified = true;
             if (invoiceHeader.DueDate.HasValue)
