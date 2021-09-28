@@ -13,7 +13,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
-using Helper = DigitBridge.QuickBooks.Integration.QuickBooksChnlAccSettingHelper;
+using Helper = DigitBridge.QuickBooks.Integration.QuickBooksSettingInfoHelper;
 
 namespace DigitBridge.QuickBooks.Integration
 {

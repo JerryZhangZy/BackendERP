@@ -15,7 +15,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Helper = DigitBridge.QuickBooks.Integration.QuickBooksChnlAccSettingHelper;
+using Helper = DigitBridge.QuickBooks.Integration.QuickBooksSettingInfoHelper;
 
 namespace DigitBridge.QuickBooks.Integration
 {

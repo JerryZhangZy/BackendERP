@@ -34,7 +34,7 @@ namespace DigitBridge.QuickBooks.Integration
         public static IEnumerable<dynamic> MergeHeaderRecord(this QuickBooksSettingInfoDataDto dto, bool withHeaderText = false)
         {
             var result = new List<dynamic>();
-            if(!dto.HasQuickBooksIntegrationSetting)
+            if(!dto.HasQuickBooksSettingInfo)
                 return result;
             //TODO change to merge Dto children object
             //if (withHeaderText)
@@ -93,56 +93,27 @@ namespace DigitBridge.QuickBooks.Integration
         public static QuickBooksSettingInfoDataDto GetFakerData(this QuickBooksSettingInfoDataDto dto)
         {
             var data = new QuickBooksSettingInfoDataDto();
-			data.QuickBooksIntegrationSetting = new QuickBooksIntegrationSettingDto().GetFaker().Generate();
-			data.QuickBooksChnlAccSetting = new QuickBooksChnlAccSettingDto().GetFaker().Generate(3);
+			data.QuickBooksSettingInfo = new QuickBooksSettingInfoDto().GetFaker().Generate();
             return data;
         }
 
 
 		/// <summary>
-		/// Get faker object for QuickBooksIntegrationSettingDto
+		/// Get faker object for QuickBooksSettingInfoDto
 		/// </summary>
-		/// <param name="dto">QuickBooksIntegrationSettingDto</param>
+		/// <param name="dto">QuickBooksSettingInfoDto</param>
 		/// <returns>Faker object use to generate data</returns>
-		public static Faker<QuickBooksIntegrationSettingDto> GetFaker(this QuickBooksIntegrationSettingDto dto)
+		public static Faker<QuickBooksSettingInfoDto> GetFaker(this QuickBooksSettingInfoDto dto)
 		{
 			#region faker data rules
-			return new Faker<QuickBooksIntegrationSettingDto>()
+			return new Faker<QuickBooksSettingInfoDto>()
 				.RuleFor(u => u.DatabaseNum, f => null)
 				.RuleFor(u => u.MasterAccountNum, f => null)
 				.RuleFor(u => u.ProfileNum, f => null)
 				.RuleFor(u => u.SettingUuid, f => String.Empty)
-				.RuleFor(u => u.ChannelAccountName, f => f.Company.CompanyName())
-				.RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.ExportByOrderStatus, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.ExportOrderAs, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.ExportOrderDateType, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.ExportOrderFromDate, f => f.Date.Past(0).Date)
-				.RuleFor(u => u.QboSettingStatus, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.QboImportOrderAfterUpdateDate, f => f.Date.Past(0).Date)
-				.RuleFor(u => u.EnterDate, f => f.Date.Past(0).Date)
-				.RuleFor(u => u.LastUpdate, f => f.Date.Past(0).Date)
-				;
-			#endregion faker data rules
-		}
-		/// <summary>
-		/// Get faker object for QuickBooksChnlAccSettingDto
-		/// </summary>
-		/// <param name="dto">QuickBooksChnlAccSettingDto</param>
-		/// <returns>Faker object use to generate data</returns>
-		public static Faker<QuickBooksChnlAccSettingDto> GetFaker(this QuickBooksChnlAccSettingDto dto)
-		{
-			#region faker data rules
-			return new Faker<QuickBooksChnlAccSettingDto>()
-				.RuleFor(u => u.DatabaseNum, f => null)
-				.RuleFor(u => u.MasterAccountNum, f => null)
-				.RuleFor(u => u.ProfileNum, f => null)
-				.RuleFor(u => u.SettingUuid, f => f.Random.Guid().ToString())
-				.RuleFor(u => u.ChnlAccSettingUuid, f => String.Empty)
-				.RuleFor(u => u.ChannelAccountName, f => f.Company.CompanyName())
-				.RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.LastUpdate, f => f.Date.Past(0).Date)
-				.RuleFor(u => u.DailySummaryLastExport, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.IntegrationSettingJsonFields, f => f.Lorem.Sentence())
+				.RuleFor(u => u.ChannelAccountSettingJsonFields, f => f.Lorem.Sentence())
+				.RuleFor(u => u.UpdateDateUtc, f => null)
 				;
 			#endregion faker data rules
 		}

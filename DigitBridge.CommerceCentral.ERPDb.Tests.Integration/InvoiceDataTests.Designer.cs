@@ -1,4 +1,3 @@
-
               
     
 
@@ -30,23 +29,18 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
     /// </summary>
     public partial class InvoiceDataTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        private static int _itemCount = 10;
-        public static int ItemCount
-        {
-            get { return _itemCount; }
-            set { _itemCount = value; }
-        }
         public static InvoiceData GetFakerData()
         {
 			var InvoiceData = new InvoiceData(); 
 			InvoiceData.InvoiceHeader = InvoiceHeaderTests.GetFakerData().Generate(); 
 			InvoiceData.InvoiceHeaderInfo = InvoiceHeaderInfoTests.GetFakerData().Generate(); 
 			InvoiceData.InvoiceHeaderAttributes = InvoiceHeaderAttributesTests.GetFakerData().Generate(); 
-			InvoiceData.InvoiceItems = InvoiceItemsTests.GetFakerData().Generate(ItemCount); 
+			InvoiceData.InvoiceItems = InvoiceItemsTests.GetFakerData().Generate(10); 
 			foreach (var ln in InvoiceData.InvoiceItems) 
 				ln.InvoiceItemsAttributes = InvoiceItemsAttributesTests.GetFakerData().Generate(); 
 			return InvoiceData; 
-        } 
+        }
+
         public static List<InvoiceData> GetFakerData(int count)
         {
 			var InvoiceDatas = new List<InvoiceData>(); 

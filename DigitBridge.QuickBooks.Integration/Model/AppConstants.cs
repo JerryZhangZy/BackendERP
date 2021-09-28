@@ -21,6 +21,9 @@ namespace DigitBridge.QuickBooks.Integration
 
         public static readonly string SummaryMiscLineDescription = "Misc Cost Line for Invoice DigitBridge invoice number: ";
         public static readonly string SummaryChargeAndAllowanceLineDescription = "ChargeAndAllowance Cost Line for Invoice DigitBridge invoice number: ";
+
+        public const string QboInvoiceNumberFieldDefaultName = "Invoice Number#"; //TODO read this from qbo
+        public const string QboEndCustomerPoNumCustomFieldName = "Po Number#";//TODO read this from qbo
     }
     public class QboUniversalConsts
     {
@@ -80,8 +83,8 @@ namespace DigitBridge.QuickBooks.Integration
         public const string PaymentTypeExpense = "Expense";//--Payment is reimbursement for expense paid by cash made on behalf of the customer
         //Check,//--Payment is reimbursement for expense paid by check made on behalf of the customer
         public const string PaymentTypeCreditCardCredit = "CreditCardCredit";//--Payment is reimbursement for a credit card credit made on behalf of the customer
-            //JournalEntry,//--Payment is linked to the representative journal entry
-            //CreditMemo,//--Payment is linked to the credit memo the customer has with the business
-            //Invoice,//--The invoice to which payment is applied 
+                                                                             //JournalEntry,//--Payment is linked to the representative journal entry
+                                                                             //CreditMemo,//--Payment is linked to the credit memo the customer has with the business
+                                                                             //Invoice,//--The invoice to which payment is applied 
     }
 }

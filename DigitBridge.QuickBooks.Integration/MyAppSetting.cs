@@ -1,11 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
+using System.Reflection;
+using UneedgoHelper.DotNet.Common;
 
 namespace DigitBridge.QuickBooks.Integration
 {
     public static class MyAppSetting
     {
         private static IConfigurationRoot _config= new ConfigurationBuilder().
+                    SetBasePath(System.Environment.CurrentDirectory).
                     AddJsonFile("local.settings.json", optional: true, reloadOnChange: true).
                     AddEnvironmentVariables().
                     Build();
@@ -14,35 +17,35 @@ namespace DigitBridge.QuickBooks.Integration
         {
             get
             {
-                return _config.GetSection("QuickBooks")["Environment"];
+                return GetValueByName("Environment");
             }
         }
         public static string RedirectUrl
         {
             get
             {
-                return _config.GetSection("QuickBooks")["RedirectUrl"];
+                return GetValueByName("RedirectUrl");
             }
         }
         public static string TokenReceiverReturnUrl
         {
             get
             {
-                return _config.GetSection("QuickBooks")["TokenReceiverReturnUrl"];
+                return GetValueByName("TokenReceiverReturnUrl");
             }
         }
         public static string BaseUrl
         {
             get
             {
-                return _config.GetSection("QuickBooks")["BaseUrl"];
+                return GetValueByName("BaseUrl");
             }
         }
         public static string MinorVersion
         {
             get
             {
-                return _config.GetSection("QuickBooks")["MinorVersion"];
+                return GetValueByName("MinorVersion");
             }
         }
 
@@ -50,7 +53,7 @@ namespace DigitBridge.QuickBooks.Integration
         {
             get
             {
-                return _config.GetSection("QuickBooks")["AppClientId"];
+                return GetValueByName("AppClientId");
             }
         }
 
@@ -58,14 +61,39 @@ namespace DigitBridge.QuickBooks.Integration
         {
             get
             {
-                return _config.GetSection("QuickBooks")["AppClientSecret"];
+                return GetValueByName("AppClientSecret");
             }
         }
         public static string CryptKey
         {
             get
             {
-                return _config.GetSection("QuickBooks")["CryptKey"];
+                return GetValueByName("CryptKey");
+            }
+        }
+        public static string GetValueByName(string name)
+        {
+            try
+            {
+                name = $"QuickBooks:{name}";
+                string value = _config[name];
+                if (value == null)
+                {
+                    //local file read from values
+                    value = _config[$"Values:{name}"];
+                }
+                if (value != null)
+                {
+                    return value;
+                }
+                else
+                {
+                    throw new Exception("Setting (" + name + ") is not configured");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, "setting name: " + name);
             }
         }
     }

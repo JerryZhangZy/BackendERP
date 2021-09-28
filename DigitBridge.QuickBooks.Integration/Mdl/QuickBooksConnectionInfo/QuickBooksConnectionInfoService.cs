@@ -80,13 +80,14 @@ namespace DigitBridge.QuickBooks.Integration
 
         public virtual async Task<bool> UpdateConnectionInfoStateAsync(IPayload payload,string state)
         {
-            if(await GetByPayloadAsync(payload))
+            Edit();
+            if (await GetByPayloadAsync(payload))
             {
                 Data.QuickBooksConnectionInfo.RequestState = state;
             }
             else
             {
-                NewData();
+                Add();
                 Data.QuickBooksConnectionInfo = new QuickBooksConnectionInfo
                 {
                     MasterAccountNum = payload.MasterAccountNum,
@@ -94,6 +95,7 @@ namespace DigitBridge.QuickBooks.Integration
                     ProfileNum = payload.ProfileNum,
                     ClientId = MyAppSetting.AppClientId,
                     ClientSecret = MyAppSetting.AppClientSecret,
+                    EnterDate=DateTime.Now,
                     RequestState = state,
                     ConnectionUuid = Guid.NewGuid().ToString()
                 };
@@ -122,11 +124,6 @@ namespace DigitBridge.QuickBooks.Integration
                 return false;
 
             return await SaveDataAsync();
-        }
-
-        public void Add()
-        {
-            throw new NotImplementedException();
         }
 
         public virtual bool Add(QuickBooksConnectionInfoPayload payload)

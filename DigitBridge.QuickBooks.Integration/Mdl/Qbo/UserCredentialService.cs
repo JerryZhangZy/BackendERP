@@ -12,7 +12,6 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
     {
         protected QuickBooksConnectionInfoService quickBooksConnectionInfoService;
         protected QuickBooksSettingInfoService quickBooksSettingInfoService;
-        protected IPayload payload;
         protected IDataBaseFactory dbFactory;
         //private QboConnectionConfig _qboConnectionConfig;
         //private QboConnectionInfo _qboConnectionInfo;
@@ -20,18 +19,17 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
         //private int _masterAccNum;
         //private int _profileNum;
 
-        private UserCredentialService(IPayload pl,IDataBaseFactory dataBaseFactory)
+        private UserCredentialService(IDataBaseFactory dataBaseFactory)
         {
-            payload = pl;
             dbFactory = dataBaseFactory;
             quickBooksConnectionInfoService = new QuickBooksConnectionInfoService(dbFactory);
             quickBooksSettingInfoService = new QuickBooksSettingInfoService(dbFactory);
         }
 
 
-        public static async Task<UserCredentialService> CreateAsync(IPayload pl, IDataBaseFactory dataBaseFactory)
+        public static async Task<UserCredentialService> CreateAsync(IDataBaseFactory dataBaseFactory)
         {
-            return new UserCredentialService(pl, dataBaseFactory);
+            return new UserCredentialService(dataBaseFactory);
         }
 
         /// <summary>
@@ -39,7 +37,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
         /// Else return ( false, errorMsg )
         /// </summary>
         /// <returns></returns>
-        public async Task<(bool, string)> GetTokenStatus()
+        public async Task<(bool, string)> GetTokenStatusAsync(QuickBooksConnectionInfoPayload payload)
         {
             if (!await quickBooksConnectionInfoService.GetByPayloadAsync(payload))
             {
@@ -49,7 +47,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             else
             {
                 var connectionInfo = quickBooksConnectionInfoService.Data;
-                return (true, connectionInfo.QuickBooksConnectionInfo.QboOAuthTokenStatus.ForceToTrimString());
+                return (true, ((QboOAuthTokenStatus)connectionInfo.QuickBooksConnectionInfo.QboOAuthTokenStatus).ToString());
             }
         }
 
@@ -57,7 +55,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
         /// Change QboSetting Status to Inactive and QboOAuthTokenStatus to Disconnected
         /// </summary>
         /// <returns></returns>
-        public async Task<(bool, string)> DisconnectUser()
+        public async Task<(bool, string)> DisconnectUserAsync(QuickBooksConnectionInfoPayload payload)
         {
             if (!await quickBooksConnectionInfoService.GetByPayloadAsync(payload))
             {
@@ -66,17 +64,17 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             }
             else
             {
-                await quickBooksConnectionInfoService.DeleteDataAsync();
+                await quickBooksConnectionInfoService.Data.DeleteAsync();
             }
 
             if (!await quickBooksSettingInfoService.GetByPayloadAsync(payload))
             {
-                await quickBooksSettingInfoService.DeleteDataAsync();
+                await quickBooksSettingInfoService.Data.DeleteAsync();
             }
             return (true, "");
         }
 
-        public async Task<(bool, string)> HandleTokens(string realmId, string authCode,string requestState)
+        public async Task<(bool, string)> HandleTokensAsync(string realmId, string authCode,string requestState)
         {
             string errMsg = "";
             if (await quickBooksConnectionInfoService.GetByRequestStateAsync(requestState))
@@ -86,7 +84,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                 // Get AccessToken and RefreshToken in QboOAuth
                 string accessToken;
                 string refreshToken;
-                (refreshToken, accessToken) = await QboOAuth.GetBearerTokenAsync(authCode);
+                var redirectUrl = string.Format(MyAppSetting.RedirectUrl, data.QuickBooksConnectionInfo.MasterAccountNum, data.QuickBooksConnectionInfo.ProfileNum);
+                (refreshToken, accessToken) = await QboOAuth.GetBearerTokenAsync(authCode,redirectUrl);
                 if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
                 {
                     errMsg = "Get QuickBooks Online Bearer Token Failed.";
@@ -99,13 +98,16 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                 data.QuickBooksConnectionInfo.LastAccessTokUpdate = DateTime.UtcNow;
                 data.QuickBooksConnectionInfo.LastRefreshTokUpdate = DateTime.UtcNow;
                 data.QuickBooksConnectionInfo.RefreshToken = refreshToken;
+                data.QuickBooksConnectionInfo.RequestState = string.Empty;
+                data.QuickBooksConnectionInfo.QboOAuthTokenStatus = (int)QboOAuthTokenStatus.Success;
+                data.QuickBooksConnectionInfo.LastUpdate = DateTime.UtcNow;
 
                 // Test Connectivity
                 //QboUniversal qboUniversal = await QboUniversal.CreateAsync(_qboConnectionInfo, _qboConnectionConfig);
 
                 // Update initialStatus in QboConnectionInfo table in DP
-                quickBooksConnectionInfoService.AttachData(data);
-                await quickBooksConnectionInfoService.SaveDataAsync();
+                await data.SetDataBaseFactory(dbFactory).SaveAsync();
+                quickBooksConnectionInfoService.DetachData(data);
                 return (true, errMsg);
             }
             errMsg = "QuickBooksConnectionInfo no founds.";
@@ -118,9 +120,10 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
         /// </summary>
         /// <param name="requestBody"></param>
         /// <returns></returns>
-        public async Task<(bool, string)> OAuthUrl()
+        public async Task<(bool, string)> OAuthUrlAsync(QuickBooksConnectionInfoPayload payload)
         {
-            string authorizationUrl = await QboOAuth.GetAuthorizationURLAsync();
+            var redirectUrl = string.Format(MyAppSetting.RedirectUrl, payload.MasterAccountNum, payload.ProfileNum);
+            string authorizationUrl = await QboOAuth.GetAuthorizationURLAsync(redirectUrl);
 
             //Get State
             Uri url = new Uri(authorizationUrl);

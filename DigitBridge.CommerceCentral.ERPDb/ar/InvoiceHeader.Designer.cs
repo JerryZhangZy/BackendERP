@@ -57,6 +57,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("InvoiceNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _invoiceNumber;
 
+        [Column("QboDocNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _qboDocNumber;
+
         [Column("SalesOrderUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _salesOrderUuid;
 
@@ -261,6 +264,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_invoiceNumber = value.TruncateTo(50); 
 				OnPropertyChanged("InvoiceNumber", value);
+            }
+        }
+
+		/// <summary>
+		/// Readable QboDocNumber, when push record to quickbook update number. <br> when push record to quickbook update number.
+		/// </summary>
+        public virtual string QboDocNumber
+        {
+            get
+            {
+				return _qboDocNumber?.TrimEnd(); 
+            }
+            set
+            {
+				_qboDocNumber = value.TruncateTo(50); 
+				OnPropertyChanged("QboDocNumber", value);
             }
         }
 
@@ -941,6 +960,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_profileNum = default(int); 
 			_invoiceUuid = String.Empty; 
 			_invoiceNumber = String.Empty; 
+			_qboDocNumber = String.Empty; 
 			_salesOrderUuid = String.Empty; 
 			_orderNumber = String.Empty; 
 			_invoiceType = default(int); 

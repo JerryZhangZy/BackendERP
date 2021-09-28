@@ -2,7 +2,7 @@
 	// Database table define file path
     var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\qbo";
     // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
-    var Files = "QuickBooksIntegrationSetting,QuickBooksChnlAccSetting";
+    var Files = "QuickBooksSettingInfo";
 
     // current solution path
 	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
@@ -13,8 +13,7 @@
     // Tables relatonship
     var structureName = $"{processName}Data";
     var StructureClass = new StructureInfo(structureName,
-            new StructureTable() { Name = "QuickBooksIntegrationSetting", AlliesName = "qbis", MainTable = true, OneToOne = true},
-            new StructureTable() { Name = "QuickBooksChnlAccSetting", AlliesName = "qbcas", ParentName = "QuickBooksIntegrationSetting", DetailTable = true, OneToOne = false, LoadByColumn = "SettingUuid" }
+            new StructureTable() { Name = "QuickBooksSettingInfo", AlliesName = "qbsi", MainTable = true, OneToOne = true}
         );
 
 
