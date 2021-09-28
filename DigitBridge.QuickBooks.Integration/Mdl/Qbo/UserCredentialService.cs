@@ -67,10 +67,10 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                 await quickBooksConnectionInfoService.Data.DeleteAsync();
             }
 
-            if (!await quickBooksSettingInfoService.GetByPayloadAsync(payload))
-            {
-                await quickBooksSettingInfoService.Data.DeleteAsync();
-            }
+            //if (!await quickBooksSettingInfoService.GetByPayloadAsync(payload))
+            //{
+            //    await quickBooksSettingInfoService.Data.DeleteAsync();
+            //}
             return (true, "");
         }
 

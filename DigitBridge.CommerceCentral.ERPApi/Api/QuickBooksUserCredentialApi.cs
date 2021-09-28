@@ -83,176 +83,58 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
 
                 return new JsonNetResponse<QuickBooksConnectionInfoPayload>(payload);
         }
-        ///// <summary>
-        ///// Return the QboOAuthTokenStatus for User in <int> 0 : Uninitialized, 1 : Success, 2: Error
-        ///// </summary>
-        ///// <param name="req"></param>
-        ///// <param name="log"></param>
-        ///// <param name="context"></param>
-        ///// <param name="claimsPrincipal"></param>
-        ///// <returns></returns>
-        //[FunctionName(nameof(GetTokenStatus))]
-        //public static async Task<IActionResult> GetTokenStatus(
-        //    [HttpTrigger(AuthorizationLevel.Function, "get", Route = "tokenStatus")] HttpRequest req,
-        //     ILogger log, ExecutionContext context, ClaimsPrincipal claimsPrincipal)
-        //{
-        //    log.LogInformation("C# HTTP trigger Get TokenStatus function processed a request.");
-        //    try
-        //    {
-        //        MyAppSetting appSetting = new MyAppSetting(context);
+        /// <summary>
+        /// Return the QboOAuthTokenStatus for User in <int> 0 : Uninitialized, 1 : Success, 2: Error
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="log"></param>
+        /// <param name="context"></param>
+        /// <param name="claimsPrincipal"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(GetTokenStatus))]
+        [OpenApiOperation(operationId: "GetTokenStatus", tags: new[] { "QuickBooksUserCredential" }, Summary = "Get Token Status")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(QuickBooksConnectionInfoPayload), Description = "The OK response")]
+        public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> GetTokenStatus(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "QboUserCredential/tokenStatus")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<QuickBooksConnectionInfoPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = await UserCredentialService.CreateAsync(dataBaseFactory);
+            (bool isSuccess, string respond) = await srv.GetTokenStatusAsync(payload);
+            if (isSuccess)
+            {
+                payload.TokenStatus = respond;
+            }
+            else
+            {
+                payload.Success = false;
+                payload.Messages.AddError(respond);
+            }
+            return new JsonNetResponse<QuickBooksConnectionInfoPayload>(payload);
+        }
 
-        //        string masterAccountNum = MyAppHelper.GetHeaderQueryValue(req, MyHttpHeaderName.MasterAccountNum);
-        //        string profileNum = MyAppHelper.GetHeaderQueryValue(req, MyHttpHeaderName.ProfileNum);
-
-        //        if (string.IsNullOrEmpty(masterAccountNum) || string.IsNullOrEmpty(profileNum))
-        //        {
-        //            DigitBridgeHttpResponse errorResponse = new DigitBridgeHttpResponse()
-        //            {
-        //                Id = HttpResponseCodeID.BAD_REQUEST,
-        //                Status = "400",
-        //                Title = "Missing Parameters in Header",
-        //                Error = new ErrorInfo() { Title = "MasterAccountNum and ProfileNum are required but not provided." }
-        //            };
-        //            return new ObjectResult(errorResponse)
-        //            {
-        //                StatusCode = (int)HttpStatusCode.BadRequest
-        //            };
-        //        }
-
-        //        QboDbConfig dbConfig = new QboDbConfig(
-        //            appSetting.DBConnectionValue,
-        //            appSetting.AzureUseManagedIdentity,
-        //            appSetting.AzureTokenProviderConnectionString,
-        //            appSetting.AzureTenantId,
-        //            appSetting.CentralOrderTableName,
-        //            appSetting.CentralItemLineTableName,
-        //            appSetting.QuickBooksConnectionInfoTableName,
-        //            appSetting.QuickBooksIntegrationSettingTableName,
-        //            appSetting.QuickBooksChannelAccSettingTableName,
-        //            appSetting.CryptKey);
-
-        //        QboConnectionConfig qboConnectionConfig = new QboConnectionConfig(
-        //            appSetting.RedirectUrl,
-        //            appSetting.Environment,
-        //            appSetting.BaseUrl,
-        //            appSetting.MinorVersion,
-        //            appSetting.AppClientId,
-        //            appSetting.AppClientSecret);
-
-        //        var userCredential = await UserCredentialService.CreateAsync(
-        //            dbConfig, qboConnectionConfig, masterAccountNum, profileNum);
-
-        //        (bool isSuccess, string respond) = await userCredential.GetTokenStatus();
-
-        //        if (!isSuccess)
-        //        {
-        //            DigitBridgeHttpResponse errorResponse = new DigitBridgeHttpResponse()
-        //            {
-        //                Id = HttpResponseCodeID.BAD_REQUEST,
-        //                Status = "400",
-        //                Title = "Uninitialized User",
-        //                Error = new ErrorInfo() { Title = respond }
-        //            };
-        //        }
-
-        //        return new OkObjectResult(
-        //            new TokenStatusApiResponseType
-        //            {
-        //                QboOAuthTokenStatus = respond.ForceToInt()
-        //            });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.LogError("Exception: " + ex.Message);
-        //        string errMsg = ExceptionUtility.FormatMessage(MethodBase.GetCurrentMethod(), ex);
-        //        ObjectResult or = new ObjectResult(new { exception = errMsg })
-        //        {
-        //            StatusCode = (int)HttpStatusCode.InternalServerError
-        //        };
-        //        return or;
-        //    }
-        //}
-
-        //[FunctionName(nameof(DisconnectUser))]
-        //public static async Task<IActionResult> DisconnectUser(
-        //    [HttpTrigger(AuthorizationLevel.Function, "post", Route = "disconnectUser")] HttpRequest req,
-        //     ILogger log, ExecutionContext context, ClaimsPrincipal claimsPrincipal)
-        //{
-        //    log.LogInformation("C# HTTP trigger Get DisconnectUser function processed a request.");
-        //    try
-        //    {
-        //        MyAppSetting appSetting = new MyAppSetting(context);
-
-        //        string masterAccountNum = MyAppHelper.GetHeaderQueryValue(req, MyHttpHeaderName.MasterAccountNum);
-        //        string profileNum = MyAppHelper.GetHeaderQueryValue(req, MyHttpHeaderName.ProfileNum);
-
-        //        if (string.IsNullOrEmpty(masterAccountNum) || string.IsNullOrEmpty(profileNum))
-        //        {
-        //            DigitBridgeHttpResponse errorResponse = new DigitBridgeHttpResponse()
-        //            {
-        //                Id = HttpResponseCodeID.BAD_REQUEST,
-        //                Status = "400",
-        //                Title = "Missing Parameters in Header",
-        //                Error = new ErrorInfo() { Title = "MasterAccountNum and ProfileNum are required but not provided." }
-        //            };
-        //            return new ObjectResult(errorResponse)
-        //            {
-        //                StatusCode = (int)HttpStatusCode.BadRequest
-        //            };
-        //        }
-
-        //        QboDbConfig dbConfig = new QboDbConfig(
-        //            appSetting.DBConnectionValue,
-        //            appSetting.AzureUseManagedIdentity,
-        //            appSetting.AzureTokenProviderConnectionString,
-        //            appSetting.AzureTenantId,
-        //            appSetting.CentralOrderTableName,
-        //            appSetting.CentralItemLineTableName,
-        //            appSetting.QuickBooksConnectionInfoTableName,
-        //            appSetting.QuickBooksIntegrationSettingTableName,
-        //            appSetting.QuickBooksChannelAccSettingTableName,
-        //            appSetting.CryptKey);
-
-        //        QboConnectionConfig qboConnectionConfig = new QboConnectionConfig(
-        //            appSetting.RedirectUrl,
-        //            appSetting.Environment,
-        //            appSetting.BaseUrl,
-        //            appSetting.MinorVersion,
-        //            appSetting.AppClientId,
-        //            appSetting.AppClientSecret);
-
-        //        var userCredential = await UserCredentialService.CreateAsync(
-        //            dbConfig, qboConnectionConfig, masterAccountNum, profileNum);
-
-        //        (bool isSuccess, string respond) = await userCredential.DisconnectUser();
-
-        //        if (!isSuccess)
-        //        {
-        //            DigitBridgeHttpResponse errorResponse = new DigitBridgeHttpResponse()
-        //            {
-        //                Id = HttpResponseCodeID.BAD_REQUEST,
-        //                Status = "400",
-        //                Title = "Uninitialized User",
-        //                Error = new ErrorInfo() { Title = respond }
-        //            };
-        //            return new ObjectResult(errorResponse)
-        //            {
-        //                StatusCode = (int)HttpStatusCode.BadRequest
-        //            };
-        //        }
-
-        //        return new OkObjectResult("Disconnected User from Quickbooks Online Successfully.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.LogError("Exception: " + ex.Message);
-        //        string errMsg = ExceptionUtility.FormatMessage(MethodBase.GetCurrentMethod(), ex);
-        //        ObjectResult or = new ObjectResult(new { exception = errMsg })
-        //        {
-        //            StatusCode = (int)HttpStatusCode.InternalServerError
-        //        };
-        //        return or;
-        //    }
-        //}
+        [FunctionName(nameof(DisconnectUser))]
+        [OpenApiOperation(operationId: "DisconnectUser", tags: new[] { "QuickBooksUserCredential" }, Summary = "DisconnectUser")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(QuickBooksConnectionInfoPayload), Description = "The OK response")]
+        public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> DisconnectUser(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "disconnectUser")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<QuickBooksConnectionInfoPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = await UserCredentialService.CreateAsync(dataBaseFactory);
+            (bool isSuccess, string respond) = await srv.DisconnectUserAsync(payload);
+            if (!isSuccess)
+            {
+                payload.Success = false;
+                payload.Messages.AddError(respond);
+            }
+            return new JsonNetResponse<QuickBooksConnectionInfoPayload>(payload);
+        }
     }
 }
