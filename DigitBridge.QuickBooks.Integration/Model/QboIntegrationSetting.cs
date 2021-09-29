@@ -55,7 +55,7 @@ namespace DigitBridge.QuickBooks.Integration
         /// <summary>
         /// Customized Field Id for Central Channel Order Id in Qbo Invoice/Sells Receipt
         /// </summary>
-        public int QboChnlOrderIdCustFieldId { get; set; }
+        public string QboChnlOrderIdCustFieldId { get; set; }
         /// <summary>
         ///  Customized Field Name for Central Secondary Channel Order Name in Qbo Invoice/Sells Receipt
         /// </summary>
@@ -63,7 +63,7 @@ namespace DigitBridge.QuickBooks.Integration
         /// <summary>
         /// Customized Field Name for Central Secondary Channel Order Id in Qbo Invoice/Sells Receipt 
         /// </summary>
-        public int Qbo2ndChnlOrderIdCustFieldId { get; set; }
+        public string Qbo2ndChnlOrderIdCustFieldId { get; set; }
         /// <summary>
         /// Used when unmatched Item found from Central orders
         /// </summary>

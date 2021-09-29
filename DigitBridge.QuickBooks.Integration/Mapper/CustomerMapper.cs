@@ -14,7 +14,7 @@ namespace DigitBridge.QuickBooks.Integration
             ////_setting.ExportOrderAs== (int)OrderExportRule.Invoice:  	ChannelQboCustomerId int NULL, -- Use if select Create Customer Records per Marketplace
 
             //TODO get ChannelQboCustomerId
-            return string.Empty;
+            return "1";
         }
     }
 }

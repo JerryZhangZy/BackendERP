@@ -54,10 +54,10 @@ namespace DigitBridge.QuickBooks.Integration
         {
             Line line = new Line();
 
-            line.Description = item.Description;
+            //line.Description = item.Description;
             line.Amount = item.IsAr ? item.ExtAmount : 0;//TODO check this one
             line.AmountSpecified = true;
-            line.LineNum = item.InvoiceItemsUuid;
+            //line.LineNum = item.InvoiceItemsUuid;
             line.AnyIntuitObject = new SalesItemLineDetail()
             {
                 ItemRef = new ReferenceType()
@@ -67,11 +67,15 @@ namespace DigitBridge.QuickBooks.Integration
                 },
                 Qty = item.ShipQty,
                 QtySpecified = true,
-                AnyIntuitObject = item.IsAr ? item.DiscountPrice : 0,//TODO check this one
-                ItemElementName = ItemChoiceType.UnitPrice,
+                //AnyIntuitObject = item.IsAr ? item.DiscountPrice : 0,//TODO check this one
+                //ItemElementName = ItemChoiceType.UnitPrice,
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
+            if (item.DiscountPrice * item.ShipQty != item.ExtAmount)
+            {
+                
+            }
             //TODO check in Qbo invoice page Amount=Qty*AnyIntuitObject
             return line;
         }
@@ -105,7 +109,11 @@ namespace DigitBridge.QuickBooks.Integration
                 {
                     Value = _setting.QboShippingItemId,
                     name = _setting.QboShippingItemName,
-                }
+                },
+                Qty = 1,
+                QtySpecified = true,
+                AnyIntuitObject = invoiceHeader.ShippingAmount,//TODO check this one
+                ItemElementName = ItemChoiceType.UnitPrice,
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
@@ -265,7 +273,8 @@ namespace DigitBridge.QuickBooks.Integration
             }
             else //if (_setting.QboCustomerCreateRule == (int)CustomerCreateRule.PerOrder)
             {
-                customerId = invoiceHeader.CustomerCode;//todo check this.
+                //customerId = invoiceHeader.CustomerCode;//todo check this.
+                customerId = "1";//TODO replace this 
             }
             invoice.CustomerRef = new ReferenceType() { Value = customerId };
         }

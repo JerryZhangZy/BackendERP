@@ -450,8 +450,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
-                item.DiscountPrice = item.Price;
                 item.ExtAmount = (item.Price * item.ShipQty - item.DiscountAmount).ToAmount();
+                item.DiscountPrice = item.ShipQty != 0 ? item.ExtAmount / item.ShipQty : 0;
             }
             item.CancelledAmount = (item.Price * item.CancelledQty).ToAmount();
             item.OpenAmount = item.Price * item.OpenQty;
