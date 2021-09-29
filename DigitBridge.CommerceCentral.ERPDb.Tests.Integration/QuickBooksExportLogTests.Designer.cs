@@ -48,6 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.LogDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.LogTime, f => f.Date.Timespan())
 					.RuleFor(u => u.LogBy, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.TxnId, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					;
             #endregion faker data rules

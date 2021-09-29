@@ -1,3 +1,4 @@
+using DigitBridge.QuickBooks.Integration.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,8 @@ namespace DigitBridge.QuickBooks.Integration
         public long IntegrationSettingNum { get; set; }
         public int MasterAccountNum { get; set; }
         public int ProfileNum { get; set; }
+
+        public IList<QboChnlAccSetting> QboChnlAccSettings { get; set; }
         /// <summary>
         /// 0: All, 1: Shipped
         /// </summary>

@@ -84,8 +84,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                 // Get AccessToken and RefreshToken in QboOAuth
                 string accessToken;
                 string refreshToken;
-                var redirectUrl = string.Format(MyAppSetting.RedirectUrl, data.QuickBooksConnectionInfo.MasterAccountNum, data.QuickBooksConnectionInfo.ProfileNum);
-                (refreshToken, accessToken) = await QboOAuth.GetBearerTokenAsync(authCode,redirectUrl);
+                //var redirectUrl = string.Format(MyAppSetting.RedirectUrl, data.QuickBooksConnectionInfo.MasterAccountNum, data.QuickBooksConnectionInfo.ProfileNum);
+                (refreshToken, accessToken) = await QboOAuth.GetBearerTokenAsync(authCode);
                 if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
                 {
                     errMsg = "Get QuickBooks Online Bearer Token Failed.";
@@ -108,7 +108,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                 // Update initialStatus in QboConnectionInfo table in DP
                 await data.SetDataBaseFactory(dbFactory).SaveAsync();
                 quickBooksConnectionInfoService.DetachData(data);
-                return (true, errMsg);
+                return (true, MyAppSetting.TokenReceiverReturnUrl);
             }
             errMsg = "QuickBooksConnectionInfo no founds.";
             return (false, errMsg);
@@ -122,8 +122,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
         /// <returns></returns>
         public async Task<(bool, string)> OAuthUrlAsync(QuickBooksConnectionInfoPayload payload)
         {
-            var redirectUrl = string.Format(MyAppSetting.RedirectUrl, payload.MasterAccountNum, payload.ProfileNum);
-            string authorizationUrl = await QboOAuth.GetAuthorizationURLAsync(redirectUrl);
+            //var redirectUrl = string.Format(MyAppSetting.RedirectUrl, payload.MasterAccountNum, payload.ProfileNum);
+            string authorizationUrl = await QboOAuth.GetAuthorizationURLAsync();
 
             //Get State
             Uri url = new Uri(authorizationUrl);

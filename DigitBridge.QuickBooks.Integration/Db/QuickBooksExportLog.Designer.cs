@@ -78,6 +78,9 @@ namespace DigitBridge.QuickBooks.Integration
         [Column("LogBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _logBy;
 
+        [Column("TxnId",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _txnId;
+
         [Column("EnterBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _enterBy;
 
@@ -209,7 +212,7 @@ namespace DigitBridge.QuickBooks.Integration
         }
 
 		/// <summary>
-		/// Transaction Number (for example: PO receive number, Shhipment number). <br> Title: Number, Display: true, Editable: false
+		/// QuickBooks DocNumber <br> Title: DocNumber, Display: true, Editable: false
 		/// </summary>
         public virtual string DocNumber
         {
@@ -294,6 +297,22 @@ namespace DigitBridge.QuickBooks.Integration
         }
 
 		/// <summary>
+		/// QuickBooks TxnId.<br> Title: TxnId, Display: true, Editable: false
+		/// </summary>
+        public virtual string TxnId
+        {
+            get
+            {
+				return _txnId?.TrimEnd(); 
+            }
+            set
+            {
+				_txnId = value.TruncateTo(100); 
+				OnPropertyChanged("TxnId", value);
+            }
+        }
+
+		/// <summary>
 		/// (Readonly) User who created this transaction. <br> Title: Created By, Display: true, Editable: false
 		/// </summary>
         public virtual string EnterBy
@@ -349,6 +368,7 @@ namespace DigitBridge.QuickBooks.Integration
 			_logDate = new DateTime().MinValueSql(); 
 			_logTime = new TimeSpan().MinValueSql(); 
 			_logBy = String.Empty; 
+			_txnId = String.Empty; 
 			_enterBy = String.Empty; 
             ClearChildren();
             return this;

@@ -7,8 +7,7 @@
 
 	[SettingUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Setting uuid. <br> Display: false, Editable: false.
 
-	[IntegrationSettingJsonFields] NVARCHAR(max) NOT NULL DEFAULT '',  --IntegrationSetting JSON string,Single. 
-	[ChannelAccountSettingJsonFields] NVARCHAR(max) NOT NULL DEFAULT '',  --ChannelAccountSetting JSON string,Array. 
+	[JsonFields] NVARCHAR(max) NOT NULL DEFAULT '',  --Quickbooks Setting JSON string. 
 	
     [UpdateDateUtc] DATETIME NULL, --(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Radonly) Created Date time. <br> Title: Created At, Display: true, Editable: false

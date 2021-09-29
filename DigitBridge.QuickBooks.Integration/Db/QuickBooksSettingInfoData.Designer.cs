@@ -38,9 +38,9 @@ namespace DigitBridge.QuickBooks.Integration
         [JsonIgnore, XmlIgnore]
         public new string UniqueId => QuickBooksSettingInfo.UniqueId;
         
-			 [JsonIgnore, XmlIgnore] 
-			public static string QuickBooksSettingInfoTable ="QuickBooksSettingInfo ";
-			
+		 [JsonIgnore, XmlIgnore] 
+		public static string QuickBooksSettingInfoTable ="QuickBooksSettingInfo ";
+		
         #region CRUD Methods
 
         public override bool Equals(QuickBooksSettingInfoData other)
