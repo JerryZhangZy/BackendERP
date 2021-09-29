@@ -31,7 +31,9 @@
       "AppClientId": "ABtqpSa5uaJq58nYOvD204uaURTMrs9WpzHOHkcWk8D2rKoTKv",
       "AppClientSecret": "8lyAGstZh1FvjbRzDiaSi4118r7CdgRMenuj5gEy",
       "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-      "OAuthTableName": "QuickBookOAuthTable"
+      "OAuthTableName": "QuickBookOAuthTable",
+      "DebugTableName": "QuickBookDebugTable",
+      "IsDebug": "true"
     }
 
     //test
