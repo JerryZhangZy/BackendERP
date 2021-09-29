@@ -55,7 +55,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// (Response Data) QuickBooksSettingInfo object which has been updated.
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) QuickBooksSettingInfo object to update.")]
-        public QuickBooksSettingInfoDataDto QuickBooksSettingInfo { get; set; }
+        public QboIntegrationSetting SettingInfo { get; set; }
     }
 
 
@@ -70,7 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// (Response Data) QuickBooksSettingInfo object.
         /// </summary>
         [OpenApiPropertyDescription("(Response) QuickBooksSettingInfo object to get.")]
-        public QuickBooksSettingInfoDataDto QuickBooksSettingInfo { get; set; }
+        public QboIntegrationSetting SettingInfo { get; set; }
     }
 
 

@@ -83,6 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             pl.Messages.AddError("Error Getting Token From Quickbooks");
             return new JsonNetResponse<QuickBooksConnectionInfoPayload>(pl);
         }
+
         /// <summary>
         /// Return the QboOAuthTokenStatus for User in <int> 0 : Uninitialized, 1 : Success, 2: Error
         /// </summary>

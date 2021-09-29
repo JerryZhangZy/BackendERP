@@ -119,23 +119,23 @@ namespace DigitBridge.QuickBooks.Integration
         {
             if (payload is null || !payload.HasQuickBooksSettingInfo)
                 return false;
-
-            // set Add mode and clear data
-            Add();
-
-            if (!(await ValidateAccountAsync(payload)))
-                return false;
-
-            if (!(await ValidateAsync(payload.QuickBooksSettingInfo)))
-                return false;
-
-            // load data from dto
-            FromDto(payload.QuickBooksSettingInfo);
-
-            // validate data for Add processing
-            if (!(await ValidateAsync()))
-                return false;
-
+            Edit();
+            if(await GetByPayloadAsync(payload))
+            {
+                Data.QuickBooksSettingInfo.SettingInfo = payload.SettingInfo;
+            }
+            else
+            {
+                Add();
+                Data.QuickBooksSettingInfo = new QuickBooksSettingInfo
+                {
+                    SettingInfo = payload.SettingInfo,
+                    SettingUuid = Guid.NewGuid().ToString(),
+                    MasterAccountNum = payload.MasterAccountNum,
+                    ProfileNum = payload.ProfileNum,
+                    DatabaseNum = payload.DatabaseNum
+                };
+            }
             return await SaveDataAsync();
         }
 
