@@ -34,7 +34,14 @@ namespace DigitBridge.QuickBooks.Integration
 		public override QuickBooksSettingInfo ConvertDataFieldsToDb()
 		{
 			base.ConvertDataFieldsToDb();
-			JsonFields = Fields.ToValueString();
+            if (SettingInfo != null)
+            {
+				JsonFields = JsonConvert.SerializeObject(SettingInfo);
+            }
+            else
+            {
+				JsonFields = Fields.ToValueString();
+            }
 			return this;
 		}
 	}
