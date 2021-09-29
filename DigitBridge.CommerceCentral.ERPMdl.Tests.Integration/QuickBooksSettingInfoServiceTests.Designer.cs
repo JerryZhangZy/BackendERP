@@ -21,24 +21,24 @@ using DigitBridge.Base.Utility;
 using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
-using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.QuickBooks.Integration;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
     /// <summary>
-    /// Represents a Tester for InvoiceService.
+    /// Represents a Tester for QuickBooksSettingInfoService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class InvoiceServiceTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class QuickBooksSettingInfoServiceTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        protected InvoiceData GetFakerData()
+        protected QuickBooksSettingInfoData GetFakerData()
         {
-            return InvoiceDataTests.GetFakerData();
+            return QuickBooksSettingInfoDataTests.GetFakerData();
         }
 
-        protected List<InvoiceData> GetFakerData(int count)
+        protected List<QuickBooksSettingInfoData> GetFakerData(int count)
         {
-            return InvoiceDataTests.GetFakerData(count);
+            return QuickBooksSettingInfoDataTests.GetFakerData(count);
         }
 
         protected const string SkipReason = "Debug Helper Function";
@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public IConfiguration Configuration { get; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public InvoiceServiceTests(TestFixture<StartupTest> fixture) 
+        public QuickBooksSettingInfoServiceTests(TestFixture<StartupTest> fixture) 
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -69,13 +69,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 		//[Fact(Skip = SkipReason)]
 		public void SaveData_Test()
 		{
-            var srv = new InvoiceService(DataBaseFactory);
+            var srv = new QuickBooksSettingInfoService(DataBaseFactory);
             srv.Add();
             srv.AttachData(GetFakerData());
             srv.Calculate();
 			srv.SaveData();
 
-            var srvGet = new InvoiceService(DataBaseFactory);
+            var srvGet = new QuickBooksSettingInfoService(DataBaseFactory);
             srvGet.Edit();
             srvGet.GetDataById(srv.Data.UniqueId);
             var result = srv.Data.Equals(srvGet.Data);
@@ -89,31 +89,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             SaveData_Test();
 
-            var id = DataBaseFactory.GetValue<InvoiceHeader, string>(@"
-SELECT TOP 1 ins.InvoiceUuid 
-FROM InvoiceHeader ins 
-INNER JOIN (
-    SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
-) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 0
+            var id = DataBaseFactory.GetValue<QuickBooksSettingInfo, string>(@"
+SELECT TOP 1 ins.SettingUuid 
+FROM QuickBooksSettingInfo ins 
 ");
 
 
-            var srv = new InvoiceService(DataBaseFactory);
+            var srv = new QuickBooksSettingInfoService(DataBaseFactory);
             srv.Edit();
             srv.GetDataById(id);
-            var rowNum = srv.Data.InvoiceHeader.RowNum;
+            var rowNum = srv.Data.QuickBooksSettingInfo.RowNum;
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
             srv.Calculate();
             srv.SaveData();
 
-            var srvGetById = new InvoiceService(DataBaseFactory);
+            var srvGetById = new QuickBooksSettingInfoService(DataBaseFactory);
             srvGetById.List();
             srvGetById.GetDataById(id);
 
-            var srvGet = new InvoiceService(DataBaseFactory);
+            var srvGet = new QuickBooksSettingInfoService(DataBaseFactory);
             srvGet.List();
             srvGet.GetData(rowNum);
 
@@ -128,22 +124,18 @@ WHERE itm.cnt > 0
         {
             SaveData_Test();
 
-            var id = DataBaseFactory.GetValue<InvoiceHeader, string>(@"
-SELECT TOP 1 ins.InvoiceUuid 
-FROM InvoiceHeader ins 
-INNER JOIN (
-    SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
-) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 0
+            var id = DataBaseFactory.GetValue<QuickBooksSettingInfo, string>(@"
+SELECT TOP 1 ins.SettingUuid 
+FROM QuickBooksSettingInfo ins 
 ");
 
 
-            var srv = new InvoiceService(DataBaseFactory);
+            var srv = new QuickBooksSettingInfoService(DataBaseFactory);
             srv.Delete();
             srv.GetDataById(id);
             srv.DeleteData();
 
-            var result = DataBaseFactory.ExistUniqueId<InvoiceHeader>(srv.Data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<QuickBooksSettingInfo>(srv.Data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -156,13 +148,13 @@ WHERE itm.cnt > 0
 		//[Fact(Skip = SkipReason)]
 		public async Task SaveDataAsync_Test()
 		{
-            var srv = new InvoiceService(DataBaseFactory);
+            var srv = new QuickBooksSettingInfoService(DataBaseFactory);
             srv.Add();
             srv.AttachData(GetFakerData());
             srv.Calculate();
 			await srv.SaveDataAsync();
 
-            var srvGet = new InvoiceService(DataBaseFactory);
+            var srvGet = new QuickBooksSettingInfoService(DataBaseFactory);
             srvGet.Edit();
             await srvGet.GetDataByIdAsync(srv.Data.UniqueId);
             var result = srv.Data.Equals(srvGet.Data);
@@ -176,31 +168,27 @@ WHERE itm.cnt > 0
         {
             await SaveDataAsync_Test();
 
-            var id = await DataBaseFactory.GetValueAsync<InvoiceHeader, string>(@"
-SELECT TOP 1 ins.InvoiceUuid 
-FROM InvoiceHeader ins 
-INNER JOIN (
-    SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
-) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 0
+            var id = await DataBaseFactory.GetValueAsync<QuickBooksSettingInfo, string>(@"
+SELECT TOP 1 ins.SettingUuid 
+FROM QuickBooksSettingInfo ins 
 ");
 
 
-            var srv = new InvoiceService(DataBaseFactory);
+            var srv = new QuickBooksSettingInfoService(DataBaseFactory);
             srv.Edit();
             await srv.GetDataByIdAsync(id);
-            var rowNum = srv.Data.InvoiceHeader.RowNum;
+            var rowNum = srv.Data.QuickBooksSettingInfo.RowNum;
 
             var dataUpdate = GetFakerData();
             srv.Data?.CopyFrom(dataUpdate);
             srv.Calculate();
             await srv.SaveDataAsync();
 
-            var srvGetById = new InvoiceService(DataBaseFactory);
+            var srvGetById = new QuickBooksSettingInfoService(DataBaseFactory);
             srvGetById.List();
             await srvGetById.GetDataByIdAsync(id);
 
-            var srvGet = new InvoiceService(DataBaseFactory);
+            var srvGet = new QuickBooksSettingInfoService(DataBaseFactory);
             srvGet.List();
             await srvGet.GetDataAsync(rowNum);
 
@@ -215,22 +203,18 @@ WHERE itm.cnt > 0
         {
             await SaveDataAsync_Test();
 
-            var id = await DataBaseFactory.GetValueAsync<InvoiceHeader, string>(@"
-SELECT TOP 1 ins.InvoiceUuid 
-FROM InvoiceHeader ins 
-INNER JOIN (
-    SELECT it.InvoiceUuid, COUNT(1) AS cnt FROM InvoiceItems it GROUP BY it.InvoiceUuid
-) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
-WHERE itm.cnt > 0
+            var id = await DataBaseFactory.GetValueAsync<QuickBooksSettingInfo, string>(@"
+SELECT TOP 1 ins.SettingUuid 
+FROM QuickBooksSettingInfo ins 
 ");
 
 
-            var srv = new InvoiceService(DataBaseFactory);
+            var srv = new QuickBooksSettingInfoService(DataBaseFactory);
             srv.Delete();
             await srv.GetDataByIdAsync(id);
             await srv.DeleteDataAsync();
 
-            var result = DataBaseFactory.ExistUniqueId<InvoiceHeader>(srv.Data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<QuickBooksSettingInfo>(srv.Data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }

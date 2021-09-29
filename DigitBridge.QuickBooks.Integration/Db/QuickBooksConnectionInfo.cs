@@ -1,5 +1,5 @@
-              
-    
+
+
 
 using System;
 using System.Collections.Generic;
@@ -18,25 +18,29 @@ namespace DigitBridge.QuickBooks.Integration
 {
     public partial class QuickBooksConnectionInfo
     {
-		public override QuickBooksConnectionInfo ConvertDbFieldsToData()
-		{
-			base.ConvertDbFieldsToData();
-			ClientId = CryptoUtility.DecrypTextTripleDES(ClientId, MyAppSetting.CryptKey);
-			ClientSecret = CryptoUtility.DecrypTextTripleDES(ClientSecret, MyAppSetting.CryptKey);
-			AuthCode = CryptoUtility.DecrypTextTripleDES(AuthCode, MyAppSetting.CryptKey);
-			RealmId = CryptoUtility.DecrypTextTripleDES(RealmId, MyAppSetting.CryptKey);
-			return this;
-		}
-		public override QuickBooksConnectionInfo ConvertDataFieldsToDb()
-		{
-			base.ConvertDataFieldsToDb();
-			ClientId = CryptoUtility.EncrypTextTripleDES(ClientId, MyAppSetting.CryptKey);
-			ClientSecret = CryptoUtility.EncrypTextTripleDES(ClientSecret, MyAppSetting.CryptKey);
-			AuthCode = CryptoUtility.EncrypTextTripleDES(AuthCode, MyAppSetting.CryptKey);
-			RealmId = CryptoUtility.EncrypTextTripleDES(RealmId, MyAppSetting.CryptKey);
-			return this;
-		}
-	}
+        public override QuickBooksConnectionInfo ConvertDbFieldsToData()
+        {
+            base.ConvertDbFieldsToData();
+            ClientId = CryptoUtility.DecrypTextTripleDES(ClientId, MyAppSetting.CryptKey);
+            ClientSecret = CryptoUtility.DecrypTextTripleDES(ClientSecret, MyAppSetting.CryptKey);
+            AuthCode = string.IsNullOrEmpty(AuthCode) ? string.Empty : CryptoUtility.DecrypTextTripleDES(AuthCode, MyAppSetting.CryptKey);
+            RealmId = string.IsNullOrEmpty(RealmId) ? string.Empty : CryptoUtility.DecrypTextTripleDES(RealmId, MyAppSetting.CryptKey);
+            RefreshToken = string.IsNullOrEmpty(RefreshToken) ? string.Empty : CryptoUtility.DecrypTextTripleDES(RefreshToken, MyAppSetting.CryptKey);
+            AccessToken = string.IsNullOrEmpty(AccessToken) ? string.Empty : CryptoUtility.DecrypTextTripleDES(AccessToken, MyAppSetting.CryptKey);
+            return this;
+        }
+        public override QuickBooksConnectionInfo ConvertDataFieldsToDb()
+        {
+            base.ConvertDataFieldsToDb();
+            ClientId = CryptoUtility.EncrypTextTripleDES(ClientId, MyAppSetting.CryptKey);
+            ClientSecret = CryptoUtility.EncrypTextTripleDES(ClientSecret, MyAppSetting.CryptKey);
+            AuthCode = string.IsNullOrEmpty(AuthCode) ? string.Empty : CryptoUtility.EncrypTextTripleDES(AuthCode, MyAppSetting.CryptKey);
+            RealmId = string.IsNullOrEmpty(RealmId) ? string.Empty : CryptoUtility.EncrypTextTripleDES(RealmId, MyAppSetting.CryptKey);
+            RefreshToken = string.IsNullOrEmpty(RefreshToken) ? string.Empty : CryptoUtility.EncrypTextTripleDES(RefreshToken, MyAppSetting.CryptKey);
+            AccessToken = string.IsNullOrEmpty(AccessToken) ? string.Empty : CryptoUtility.EncrypTextTripleDES(AccessToken, MyAppSetting.CryptKey);
+            return this;
+        }
+    }
 }
 
 

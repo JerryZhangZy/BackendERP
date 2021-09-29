@@ -10,11 +10,11 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
 {
     public class QboOAuth
     {
-        public static async Task<string> GetAuthorizationURLAsync()
+        public static async Task<string> GetAuthorizationURLAsync(string redirectUrl)
         {
             // Instantiate object
             OAuth2Client auth2Client = new OAuth2Client(MyAppSetting.AppClientId, MyAppSetting.AppClientSecret
-                , MyAppSetting.RedirectUrl, MyAppSetting.Environment);
+                , redirectUrl, MyAppSetting.Environment);
 
             //Prepare scopes
             List<OidcScopes> scopes = new List<OidcScopes>();
@@ -29,13 +29,13 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             return auth2Client.GetAuthorizationURL(scopes);
         }
 
-        public static async Task<(string, string)> GetBearerTokenAsync(string authCode)
+        public static async Task<(string, string)> GetBearerTokenAsync(string authCode,string redirectUrl)
         {
             string refreshToken = "";
             string accessToken = "";
             // Instantiate object
             OAuth2Client auth2Client = new OAuth2Client(MyAppSetting.AppClientId, MyAppSetting.AppClientSecret
-                , MyAppSetting.RedirectUrl, MyAppSetting.Environment);
+                , redirectUrl , MyAppSetting.Environment);
 
             // Get OAuth2 Bearer token
             var tokenResponse = await auth2Client.GetBearerTokenAsync(authCode);

@@ -143,5 +143,15 @@ namespace DigitBridge.QuickBooks.Integration
         public DateTime QboImportOrderAfterUpdateDate { get; set; }
         public DateTime EnterDate { get; set; }
         public DateTime LastUpdate { get; set; }
+
+        /// <summary>
+        /// The id of field InvoiceNumber displayed at qbo invoice page
+        /// </summary>
+        public string QboInvoiceNumberFieldID { get; set; }
+
+        /// <summary>
+        /// Field Name displayed at qbo invoice page
+        /// </summary>
+        public string QboInvoiceNumberFieldName { get; set; }
     }
 }
