@@ -3,8 +3,10 @@ using DigitBridge.CommerceCentral.ERPMdl;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.QuickBooks.Integration.Mdl.Qbo;
 using Intuit.Ipp.Data;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +15,8 @@ namespace DigitBridge.QuickBooks.Integration
     public class InvoiceExportService
     {
         protected IDataBaseFactory _dbFactory;
+
+
         public InvoiceExportService(IDataBaseFactory dbFactory)
         {
             _dbFactory = dbFactory;
@@ -24,14 +28,28 @@ namespace DigitBridge.QuickBooks.Integration
             if (payload.Success)
             {
                 var incoiceData = srv.Data;
-                var setting = GetSetting();
-                var exportLog = GetExportLog(incoiceData.InvoiceHeader.InvoiceUuid);
+                var setting =await GetSetting(payload);
+                var exportLog =await GetExportLog(incoiceData.InvoiceHeader.InvoiceUuid);
                 var mapper = new InvoiceMapper(setting, exportLog);
                 var qboInvoice = mapper.ToInvoice(srv.Data);
+                if (MyAppSetting.IsDebug)
+                {
+                    await QboCloudTableUniversal.CreateDebugInfo(incoiceData.UniqueId, JsonConvert.SerializeObject(qboInvoice), "Invoice", "To", payload.MasterAccountNum, payload.ProfileNum);
+                }
+
                 var qboConn = await GetQboConn(payload);
                 var qboInvoiceService = new QboInvoiceService(qboConn, _dbFactory);
+
                 qboInvoice = await qboInvoiceService.CreateOrUpdateInvoice(qboInvoice);
-                UpdateQboInvoiceToErp(qboInvoice);
+
+                if (MyAppSetting.IsDebug)
+                {
+                    await QboCloudTableUniversal.CreateDebugInfo(incoiceData.UniqueId, JsonConvert.SerializeObject(qboInvoice), "Invoice", "Return", payload.MasterAccountNum, payload.ProfileNum);
+                }
+
+                UpdateQboInvoiceToErp(payload,incoiceData.UniqueId,qboInvoice);
+
+                await srv.UpdateInvoiceDocNumberAsync(incoiceData.UniqueId, qboInvoice.DocNumber);
             }
             else
             {
@@ -47,8 +65,13 @@ namespace DigitBridge.QuickBooks.Integration
             var success = await service.GetByPayloadAsync(payload);
             return service.Data.QuickBooksConnectionInfo;
         }
-        protected QboIntegrationSetting GetSetting()
+        protected async Task<QboIntegrationSetting> GetSetting(InvoicePayload payload)
         {
+            var service = new QuickBooksSettingInfoService(_dbFactory);
+            if (await service.GetByPayloadAsync(payload))
+            {
+                return service.Data.QuickBooksSettingInfo.SettingInfo;
+            }
             return new QboIntegrationSetting()
             {
                 QboDiscountItemId = "1",
@@ -80,13 +103,15 @@ namespace DigitBridge.QuickBooks.Integration
 
             };
         }
-        protected QuickBooksExportLog GetExportLog(string invoiceUuid)
+        protected async Task<QuickBooksExportLog> GetExportLog(string invoiceUuid)
         {
-            return null;
+            var service = new QuickBooksExportLogService(_dbFactory);
+            return (await service.QueryExportLogByLogUuidAsync(invoiceUuid)).FirstOrDefault();
         }
-        protected bool UpdateQboInvoiceToErp(Invoice qboInvoice)
+        protected bool UpdateQboInvoiceToErp(InvoicePayload payload,string invoiceUuid,Invoice qboInvoice)
         {
-            return true;
+            var service = new QuickBooksExportLogService(_dbFactory);
+            return service.AddExportLog(payload, 0, "Invoice", invoiceUuid, qboInvoice.DocNumber, qboInvoice.Id, (int)qboInvoice.status);
         }
     }
 }

@@ -11,9 +11,20 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
     public class QboCloudTableUniversal
     {
-        public static async Task<OAuthMapInfo> CreateOAuthMapInfo(string requestState, int masterAccountNum,int profileNum)
+        private static async Task<MsAzureTableOperator> GetOAuthTableOperator()
         {
-            var table = await MsAzureTableOperator.CreateTableAsync(MyAppSetting.OAuthTableName, MyAppSetting.AzureWebJobsStorage, true);
+            return await MsAzureTableOperator.CreateTableAsync(MyAppSetting.OAuthTableName, MyAppSetting.AzureWebJobsStorage, true); ;
+        }
+
+        private static async Task<MsAzureTableOperator> GetDebugTableOperator()
+        {
+            return await MsAzureTableOperator.CreateTableAsync(MyAppSetting.DebugTableName, MyAppSetting.AzureWebJobsStorage, true); ;
+        }
+
+
+        public static async Task<OAuthMapInfo> CreateOAuthMapInfo(string requestState, int masterAccountNum, int profileNum)
+        {
+            var table = await GetOAuthTableOperator();
             var request = new OAuthMapInfo()
             {
                 MasterAccountNum = masterAccountNum,
@@ -28,16 +39,33 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         public static async Task<OAuthMapInfo> QueryOAuthMapInfo(string requestState)
         {
-            var table = await MsAzureTableOperator.CreateTableAsync(MyAppSetting.OAuthTableName, MyAppSetting.AzureWebJobsStorage, true);
+            var table = await GetOAuthTableOperator();
             var query = new TableQuery<OAuthMapInfo>().Where(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, requestState));
             return table._cloudTable.ExecuteQuery(query).FirstOrDefault();
         }
 
         public static async Task DeleteOAuthMapInfo(OAuthMapInfo info)
         {
-            var table = await MsAzureTableOperator.CreateTableAsync(MyAppSetting.OAuthTableName, MyAppSetting.AzureWebJobsStorage, true);
+            var table = await GetOAuthTableOperator();
             var delete = TableOperation.Delete(info);
             await table._cloudTable.ExecuteAsync(delete);
+        }
+
+        public static async Task<QuickBooksDebugInfo> CreateDebugInfo(string uuid, string debugInfo, string type, string direct, int masterAccountNum, int profileNum)
+        {
+            var table = await GetDebugTableOperator();
+            var request = new QuickBooksDebugInfo()
+            {
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
+                DebugInfo = debugInfo,
+                Type = type,
+                Direct = direct,
+                RowKey = uuid,
+                PartitionKey = masterAccountNum.ToString(),
+                Timestamp = DateTimeOffset.UtcNow
+            };
+            return (QuickBooksDebugInfo)await table.InsertOrMergeEntityAsync<QuickBooksDebugInfo>(request);
         }
     }
 }

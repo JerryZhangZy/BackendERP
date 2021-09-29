@@ -87,6 +87,20 @@ namespace DigitBridge.QuickBooks.Integration
                 return GetValueByName("OAuthTableName");
             }
         }
+        public static string DebugTableName
+        {
+            get
+            {
+                return GetValueByName("DebugTableName");
+            }
+        }
+        public static bool IsDebug
+        {
+            get
+            {
+                return Convert.ToBoolean(GetValueByName("IsDebug"));
+            }
+        }
         public static string GetValueByName(string name)
         {
             try
