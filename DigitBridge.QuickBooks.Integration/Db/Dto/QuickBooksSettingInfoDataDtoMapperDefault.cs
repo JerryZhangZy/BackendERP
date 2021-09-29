@@ -58,8 +58,7 @@ namespace DigitBridge.QuickBooks.Integration
 			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasSettingUuid) data.SettingUuid = dto.SettingUuid;
-			if (dto.HasIntegrationSettingJsonFields) data.IntegrationSettingJsonFields = dto.IntegrationSettingJsonFields;
-			if (dto.HasChannelAccountSettingJsonFields) data.ChannelAccountSettingJsonFields = dto.ChannelAccountSettingJsonFields;
+			if (dto.HasFields) data.Fields.LoadJson(dto.Fields);
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 
 			#endregion read properties
@@ -103,8 +102,7 @@ namespace DigitBridge.QuickBooks.Integration
 			dto.MasterAccountNum = data.MasterAccountNum;
 			dto.ProfileNum = data.ProfileNum;
 			dto.SettingUuid = data.SettingUuid;
-			dto.IntegrationSettingJsonFields = data.IntegrationSettingJsonFields;
-			dto.ChannelAccountSettingJsonFields = data.ChannelAccountSettingJsonFields;
+			dto.Fields = data.Fields.ToJson();
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;

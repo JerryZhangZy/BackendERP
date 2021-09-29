@@ -12,9 +12,9 @@
     <Compile Remove="Model\QboSalesOrderWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="IppDotNetSdkForQuickBooksApiV3" Version="14.3.0" />
+    <PackageReference Include="DigitBridge.Azure" Version="1.0.0.3" />
+    <PackageReference Include="IppDotNetSdkForQuickBooksApiV3" Version="14.6.1" />
     <PackageReference Include="UneedgoHelper.Dotnet.Common" Version="1.0.0.16" />
-    <PackageReference Include="UneedgoHelper.DotNet.Data.MsSql" Version="1.0.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />

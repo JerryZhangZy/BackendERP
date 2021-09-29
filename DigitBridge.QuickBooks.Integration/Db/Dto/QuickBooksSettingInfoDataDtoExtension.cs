@@ -111,8 +111,6 @@ namespace DigitBridge.QuickBooks.Integration
 				.RuleFor(u => u.MasterAccountNum, f => null)
 				.RuleFor(u => u.ProfileNum, f => null)
 				.RuleFor(u => u.SettingUuid, f => String.Empty)
-				.RuleFor(u => u.IntegrationSettingJsonFields, f => f.Lorem.Sentence())
-				.RuleFor(u => u.ChannelAccountSettingJsonFields, f => f.Lorem.Sentence())
 				.RuleFor(u => u.UpdateDateUtc, f => null)
 				;
 			#endregion faker data rules

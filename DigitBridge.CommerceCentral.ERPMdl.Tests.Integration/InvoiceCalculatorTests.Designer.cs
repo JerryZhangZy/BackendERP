@@ -55,6 +55,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         protected InvoiceData GetFakerData(int itemCount)
         {
+            InvoiceDataTests.ItemCount = itemCount;
             return InvoiceDataTests.GetFakerData();
         }
     }

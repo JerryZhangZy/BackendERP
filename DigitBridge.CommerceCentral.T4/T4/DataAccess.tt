@@ -74,8 +74,11 @@
 //SettingForPurchaseOrder
 //SettingForInventoryUpdate
 //SettingForWarehouseTransfer
+//SettingForQuickBooksExportLog
+//SettingForQuickBooksConnectionInfo
+//SettingForQuickBooksSetting
 #>
-<#@ include file="SettingForInvoice.ttinclude" #>
+<#@ include file="SettingForQuickBooksExportLog.ttinclude" #>
 <#
     var dtoSuf = "";
     

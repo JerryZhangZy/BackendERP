@@ -40,8 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.MasterAccountNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.SettingUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.IntegrationSettingJsonFields, f => f.Lorem.Sentence())
-					.RuleFor(u => u.ChannelAccountSettingJsonFields, f => f.Lorem.Sentence())
+					.RuleFor(u => u.Fields, (f, u) => u.Fields.SetValues(f.Random.JObject()))
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					;
             #endregion faker data rules
@@ -148,14 +147,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            data.Patch(new[] { "IntegrationSettingJsonFields", "ChannelAccountSettingJsonFields" });
+            data.Patch(new[] { "JsonFields", "JsonFields" });
             DataBaseFactory.Commit();
 
             var dataGet = DataBaseFactory.GetFromCache<QuickBooksSettingInfo>(data.RowNum);
-            var result = dataGet.IntegrationSettingJsonFields != dataOrig.IntegrationSettingJsonFields &&
-                            dataGet.ChannelAccountSettingJsonFields != dataOrig.ChannelAccountSettingJsonFields &&
-                            dataGet.IntegrationSettingJsonFields == newData.IntegrationSettingJsonFields &&
-                            dataGet.ChannelAccountSettingJsonFields == newData.ChannelAccountSettingJsonFields;
+            var result = dataGet.JsonFields != dataOrig.JsonFields &&
+                            dataGet.JsonFields != dataOrig.JsonFields &&
+                            dataGet.JsonFields == newData.JsonFields &&
+                            dataGet.JsonFields == newData.JsonFields;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -298,14 +297,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            await data.PatchAsync(new[] { "IntegrationSettingJsonFields", "ChannelAccountSettingJsonFields" });
+            await data.PatchAsync(new[] { "JsonFields", "JsonFields" });
             DataBaseFactory.Commit();
 
             var dataGet = await DataBaseFactory.GetFromCacheAsync<QuickBooksSettingInfo>(data.RowNum);
-            var result = dataGet.IntegrationSettingJsonFields != dataOrig.IntegrationSettingJsonFields &&
-                            dataGet.ChannelAccountSettingJsonFields != dataOrig.ChannelAccountSettingJsonFields &&
-                            dataGet.IntegrationSettingJsonFields == newData.IntegrationSettingJsonFields &&
-                            dataGet.ChannelAccountSettingJsonFields == newData.ChannelAccountSettingJsonFields;
+            var result = dataGet.JsonFields != dataOrig.JsonFields &&
+                            dataGet.JsonFields != dataOrig.JsonFields &&
+                            dataGet.JsonFields == newData.JsonFields &&
+                            dataGet.JsonFields == newData.JsonFields;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }

@@ -23,7 +23,7 @@ namespace DigitBridge.QuickBooks.Integration
         public static readonly string SummaryChargeAndAllowanceLineDescription = "ChargeAndAllowance Cost Line for Invoice DigitBridge invoice number: ";
 
         public const string QboInvoiceNumberFieldDefaultName = "Invoice Number#"; //TODO read this from qbo
-        public const string QboEndCustomerPoNumCustomFieldName = "Po Number#";//TODO read this from qbo
+        public const string QboEndCustomerPoNumCustomFieldName = "Po Number#";//TODO read this from qbo 
     }
     public class QboUniversalConsts
     {

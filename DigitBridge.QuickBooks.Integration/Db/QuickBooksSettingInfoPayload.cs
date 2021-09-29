@@ -26,41 +26,16 @@ namespace DigitBridge.QuickBooks.Integration
     [Serializable()]
     public class QuickBooksSettingInfoPayload : PayloadBase
     {
-        /// <summary>
-        /// Delegate function to load request parameter to payload property.
-        /// </summary>
-        public override IDictionary<string, Action<string>> GetOtherParameters()
-        {
-            return new Dictionary<string, Action<string>>
-            {
-                { "SettingUuids", val => SettingUuids = val.Split(",").ToList() }
-            };
-        }
-
-
-        #region multiple Dto list
-
-        /// <summary>
-        /// (Request Parameter) Array of uuid to load multiple QuickBooksSettingInfo dto data.
-        /// </summary>
-        [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple QuickBooksSettingInfo dto data.")]
-        public IList<string> SettingUuids { get; set; } = new List<string>();
-        [JsonIgnore] 
-        public virtual bool HasSettingUuids => SettingUuids != null && SettingUuids.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasSettingUuids;
-
-        /// <summary>
-        /// (Response Data) Array of QuickBooksSettingInfo entity object which load by uuid array.
-        /// </summary>
-        [OpenApiPropertyDescription("(Response Data) Array of entity object which load by uuid array.")]
-        public IList<QuickBooksSettingInfoDataDto> QuickBooksSettingInfos { get; set; }
-        [JsonIgnore] public virtual bool HasQuickBooksSettingInfos => QuickBooksSettingInfos != null && QuickBooksSettingInfos.Count > 0;
-        public bool ShouldSerializeQuickBooksSettingInfos() => HasQuickBooksSettingInfos;
-
-        #endregion multiple Dto list
-
 
         #region single Dto object
+
+        /// <summary>
+        /// (Request and Response Data) Single QuickBooksSettingInfo entity object which load by Number.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) Single entity object which load by Number.")]
+        public QboIntegrationSetting SettingInfo { get; set; }
+        [JsonIgnore] public virtual bool HasSettingInfo => SettingInfo != null;
+        public bool ShouldSerializeSettingInfo() => HasSettingInfo;
 
         /// <summary>
         /// (Request and Response Data) Single QuickBooksSettingInfo entity object which load by Number.
@@ -69,9 +44,7 @@ namespace DigitBridge.QuickBooks.Integration
         public QuickBooksSettingInfoDataDto QuickBooksSettingInfo { get; set; }
         [JsonIgnore] public virtual bool HasQuickBooksSettingInfo => QuickBooksSettingInfo != null;
         public bool ShouldSerializeQuickBooksSettingInfo() => HasQuickBooksSettingInfo;
-
         #endregion single Dto object
-
 
         #region list service
 

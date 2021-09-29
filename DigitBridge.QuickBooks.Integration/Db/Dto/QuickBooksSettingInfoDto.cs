@@ -79,24 +79,6 @@ namespace DigitBridge.QuickBooks.Integration
         public bool HasSettingUuid => SettingUuid != null;
 
 		/// <summary>
-		/// IntegrationSetting JSON string,Single.
-		/// </summary>
-		[OpenApiPropertyDescription("IntegrationSetting JSON string,Single.")]
-        public string IntegrationSettingJsonFields { get; set; }
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasIntegrationSettingJsonFields => IntegrationSettingJsonFields != null;
-
-		/// <summary>
-		/// ChannelAccountSetting JSON string,Array.
-		/// </summary>
-		[OpenApiPropertyDescription("ChannelAccountSetting JSON string,Array.")]
-        public string ChannelAccountSettingJsonFields { get; set; }
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasChannelAccountSettingJsonFields => ChannelAccountSettingJsonFields != null;
-
-		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false")]
@@ -106,6 +88,12 @@ namespace DigitBridge.QuickBooks.Integration
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasUpdateDateUtc => UpdateDateUtc != null;
 
+
+        [IgnoreCompare]
+        public JObject Fields { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasFields => Fields != null;
 
 
         #endregion Properties - Generated 

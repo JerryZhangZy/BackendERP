@@ -296,6 +296,78 @@ namespace DigitBridge.QuickBooks.Integration
             return success;
         }
 
+        public virtual bool AddExportLog(IPayload payload,int batchNum,string logType,string uuid,string docNumber,string txnId,int docStatus)
+        {
+            Add();
+            Data.QuickBooksExportLog = new QuickBooksExportLog
+            {
+                DatabaseNum = payload.DatabaseNum,
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                QuickBooksExportLogUuid = Guid.NewGuid().ToString(),
+                BatchNum = batchNum,
+                LogType = logType,
+                LogUuid = uuid,
+                DocNumber = docNumber,
+                TxnId = txnId,
+                DocStatus = docStatus
+            };
+            return SaveData();
+        }
+        public virtual async Task<bool> AddExportLogAsync(IPayload payload,int batchNum,string logType,string uuid,string docNumber,string txnId,int docStatus)
+        {
+            Add();
+            Data.QuickBooksExportLog = new QuickBooksExportLog
+            {
+                DatabaseNum = payload.DatabaseNum,
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                QuickBooksExportLogUuid = Guid.NewGuid().ToString(),
+                BatchNum = batchNum,
+                LogType = logType,
+                LogUuid = uuid,
+                DocNumber = docNumber,
+                TxnId = txnId,
+                DocStatus = docStatus
+            };
+            return await SaveDataAsync();
+        }
+
+        public virtual async Task<IList<QuickBooksExportLog>> QueryExportLogByLogUuidAsync(string logUuid)
+        {
+            return (await dbFactory.FindAsync<QuickBooksExportLog>("WHERE LogUuid=@0",
+                logUuid.ToSqlParameter("LogUuid"))).ToList() ;
+        }
+
+        public virtual IList<QuickBooksExportLog> QueryExportLogByLogUuid(string logUuid)
+        {
+            return dbFactory.Find<QuickBooksExportLog>("WHERE LogUuid=@0",
+                logUuid.ToSqlParameter("LogUuid")).ToList() ;
+        }
+
+        public virtual IList<QuickBooksExportLog> QueryExportLogByDocNumber(string docNumber)
+        {
+            return dbFactory.Find<QuickBooksExportLog>("WHERE DocNumber=@0",
+                docNumber.ToSqlParameter("docNumber")).ToList() ;
+        }
+        
+        public virtual async Task<IList<QuickBooksExportLog>> QueryExportLogByDocNumberAsync(string docNumber)
+        {
+            return dbFactory.Find<QuickBooksExportLog>("WHERE DocNumber=@0",
+                docNumber.ToSqlParameter("docNumber")).ToList() ;
+        }
+
+        public virtual IList<QuickBooksExportLog> QueryExportLogByTxnId(string txnId)
+        {
+            return dbFactory.Find<QuickBooksExportLog>("WHERE TxnId=@0",
+                txnId.ToSqlParameter("txnId")).ToList() ;
+        }
+
+        public virtual async Task<IList<QuickBooksExportLog>> QueryExportLogByTxnIdAsync(string txnId)
+        {
+            return dbFactory.Find<QuickBooksExportLog>("WHERE TxnId=@0",
+                txnId.ToSqlParameter("txnId")).ToList() ;
+        }
     }
 }
 

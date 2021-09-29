@@ -1,3 +1,4 @@
+using DigitBridge.QuickBooks.Integration.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,8 @@ namespace DigitBridge.QuickBooks.Integration
         public long IntegrationSettingNum { get; set; }
         public int MasterAccountNum { get; set; }
         public int ProfileNum { get; set; }
+
+        public IList<QboChnlAccSetting> QboChnlAccSettings { get; set; }
         /// <summary>
         /// 0: All, 1: Shipped
         /// </summary>
@@ -55,7 +58,7 @@ namespace DigitBridge.QuickBooks.Integration
         /// <summary>
         /// Customized Field Id for Central Channel Order Id in Qbo Invoice/Sells Receipt
         /// </summary>
-        public int QboChnlOrderIdCustFieldId { get; set; }
+        public string QboChnlOrderIdCustFieldId { get; set; }
         /// <summary>
         ///  Customized Field Name for Central Secondary Channel Order Name in Qbo Invoice/Sells Receipt
         /// </summary>
@@ -63,12 +66,12 @@ namespace DigitBridge.QuickBooks.Integration
         /// <summary>
         /// Customized Field Name for Central Secondary Channel Order Id in Qbo Invoice/Sells Receipt 
         /// </summary>
-        public int Qbo2ndChnlOrderIdCustFieldId { get; set; }
+        public string Qbo2ndChnlOrderIdCustFieldId { get; set; }
         /// <summary>
         /// Used when unmatched Item found from Central orders
         /// </summary>
         public string QboDefaultItemName { get; set; }
-        public int QboDefaultItemId { get; set; }
+        public string QboDefaultItemId { get; set; }
         /// <summary>
         /// Non-Inventory Item for Central calculated sales tax line
         /// </summary>
@@ -153,5 +156,10 @@ namespace DigitBridge.QuickBooks.Integration
         /// Field Name displayed at qbo invoice page
         /// </summary>
         public string QboInvoiceNumberFieldName { get; set; }
+
+        /// <summary>
+        /// Export invoice tax to qbo rule.
+        /// </summary>
+        public int QboTaxExportRule { get; set; }
     }
 }
