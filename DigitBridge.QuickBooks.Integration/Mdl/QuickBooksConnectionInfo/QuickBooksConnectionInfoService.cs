@@ -68,6 +68,16 @@ namespace DigitBridge.QuickBooks.Integration
             return await GetDataAsync(rowNum);
         }
 
+        public virtual bool GetByPayload(IPayload payload)
+        {
+            var rowNum = 0L;
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = QuickBooksConnectionInfoServiceHelper.GetConnectionInfoRowNum(payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return GetData(rowNum);
+        }
+
         public virtual async Task<bool> GetByRequestStateAsync(string state)
         {
             var rowNum = 0L;

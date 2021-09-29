@@ -18,20 +18,30 @@ namespace DigitBridge.QuickBooks.Integration
 {
     public partial class QuickBooksSettingInfo
 	{
-        public IList<QboChnlAccSetting> QboChnlAccSettings { get; set; }
-        public QboIntegrationSetting QboIntegrationSetting { get; set; }
+        public QboIntegrationSetting SettingInfo { get; set; }
 
 		public override QuickBooksSettingInfo ConvertDbFieldsToData()
 		{
 			base.ConvertDbFieldsToData();
-			if (string.IsNullOrEmpty(IntegrationSettingJsonFields))
+			if (string.IsNullOrEmpty(JsonFields))
 			{
-				QboIntegrationSetting = JsonConvert.DeserializeObject<QboIntegrationSetting>(IntegrationSettingJsonFields);
+				SettingInfo = JsonConvert.DeserializeObject<QboIntegrationSetting>(JsonFields);
 			}
-			if (string.IsNullOrEmpty(ChannelAccountSettingJsonFields))
-			{
-				QboChnlAccSettings = JsonConvert.DeserializeObject<List<QboChnlAccSetting>>(ChannelAccountSettingJsonFields);
-			}
+			Fields.LoadFromValueString(JsonFields);
+			return this;
+		}
+
+		public override QuickBooksSettingInfo ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+            if (SettingInfo != null)
+            {
+				JsonFields = JsonConvert.SerializeObject(SettingInfo);
+            }
+            else
+            {
+				JsonFields = Fields.ToValueString();
+            }
 			return this;
 		}
 	}

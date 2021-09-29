@@ -1,4 +1,5 @@
-﻿using Intuit.Ipp.Data;
+﻿using DigitBridge.CommerceCentral.YoPoco;
+using Intuit.Ipp.Data;
 using Intuit.Ipp.QueryFilter;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
     public class QboInvoiceService : QboServiceBase
     {
+        public QboInvoiceService(QuickBooksConnectionInfo qboConnectionInfo, IDataBaseFactory databaseFactory) : base(qboConnectionInfo, databaseFactory) { }
         public async Task<Invoice> CreateOrUpdateInvoice(Invoice invoice)
         {
             if (!await InvoiceExistAsync(invoice.DocNumber))

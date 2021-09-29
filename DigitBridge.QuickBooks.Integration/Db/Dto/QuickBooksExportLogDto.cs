@@ -108,9 +108,9 @@ namespace DigitBridge.QuickBooks.Integration
         public bool HasLogUuid => LogUuid != null;
 
 		/// <summary>
-		/// Transaction Number (for example: PO receive number, Shhipment number). <br> Title: Number, Display: true, Editable: false
+		/// QuickBooks DocNumber <br> Title: DocNumber, Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Transaction Number (for example: PO receive number, Shhipment number). <br> Title: Number, Display: true, Editable: false")]
+		[OpenApiPropertyDescription("QuickBooks DocNumber <br> Title: DocNumber, Display: true, Editable: false")]
         [StringLength(100, ErrorMessage = "The DocNumber value cannot exceed 100 characters. ")]
         public string DocNumber { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -155,6 +155,16 @@ namespace DigitBridge.QuickBooks.Integration
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasLogBy => LogBy != null;
+
+		/// <summary>
+		/// QuickBooks TxnId.<br> Title: TxnId, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("QuickBooks TxnId.<br> Title: TxnId, Display: true, Editable: false")]
+        [StringLength(100, ErrorMessage = "The TxnId value cannot exceed 100 characters. ")]
+        public string TxnId { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasTxnId => TxnId != null;
 
 		/// <summary>
 		/// (Readonly) User who created this transaction. <br> Title: Created By, Display: true, Editable: false

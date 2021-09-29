@@ -19,7 +19,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
-    public class QboServiceBase: IMessage
+    public class QboServiceBase : IMessage
     {
         protected OAuth2Client _auth2Client;
         protected DataService _dataService;
@@ -31,6 +31,12 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         public QboServiceBase() { }
 
+        public QboServiceBase(QuickBooksConnectionInfo qboConnectionInfo, IDataBaseFactory databaseFactory)
+        {
+            this._qboConnectionInfo = qboConnectionInfo;
+            this.dbFactory = databaseFactory;
+            ConnectToDataServiceAsync();
+        }
 
         #region Messages
         protected IList<MessageClass> _messages;
@@ -59,13 +65,13 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         #endregion Messages
 
         private async Task<QboServiceBase> InitializeAsync(
-            QuickBooksConnectionInfo qboConnectionInfo,IDataBaseFactory databaseFactory)
+            QuickBooksConnectionInfo qboConnectionInfo, IDataBaseFactory databaseFactory)
         {
             try
             {
                 _qboConnectionInfo = qboConnectionInfo;
                 dbFactory = databaseFactory;
-                await ConnectToDataServiceAsync();
+                ConnectToDataServiceAsync();
                 await HandleConnectivityAsync();
                 return this;
             }
@@ -77,7 +83,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         }
 
         public static Task<QboServiceBase> CreateAsync(
-            QuickBooksConnectionInfo qboConnectionInfo,IDataBaseFactory databaseFactory)
+            QuickBooksConnectionInfo qboConnectionInfo, IDataBaseFactory databaseFactory)
         {
             try
             {
@@ -92,14 +98,14 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         }
 
-        private async Task ConnectToDataServiceAsync()
+        private void ConnectToDataServiceAsync()
         {
             try
             {
                 _auth2Client = new OAuth2Client(_qboConnectionInfo.ClientId, _qboConnectionInfo.ClientSecret
                     , MyAppSetting.RedirectUrl, MyAppSetting.Environment);
                 _oauthValidator = new OAuth2RequestValidator(_qboConnectionInfo.AccessToken);
-                _serviceContext = new ServiceContext(_qboConnectionInfo.RealmId, IntuitServicesType.QBO, _oauthValidator);
+                _serviceContext = new ServiceContext(_qboConnectionInfo.RealmId, IntuitServicesType.QBO, _oauthValidator); 
                 _serviceContext.IppConfiguration.MinorVersion.Qbo = MyAppSetting.MinorVersion;
                 _serviceContext.IppConfiguration.BaseUrl.Qbo = MyAppSetting.BaseUrl;
                 _dataService = new DataService(_serviceContext);
@@ -171,7 +177,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 if (tokenResp.AccessToken != null)
                 {
                     _qboConnectionInfo.AccessToken = tokenResp.AccessToken;
-                    await ConnectToDataServiceAsync(); // reconnect to data service after token refreshing
+                    ConnectToDataServiceAsync(); // reconnect to data service after token refreshing
                     // Update time to be insert into DB table (UTC)
                     _qboConnectionInfo.LastAccessTokUpdate = DateTime.Now.ToUniversalTime();
                     // Flag tokens as updated

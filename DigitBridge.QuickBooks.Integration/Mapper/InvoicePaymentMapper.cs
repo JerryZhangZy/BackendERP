@@ -9,9 +9,15 @@ namespace DigitBridge.QuickBooks.Integration
     public class InvoicePaymentMapper
     {
         private QboIntegrationSetting _setting { get; set; }
-        public InvoicePaymentMapper(QboIntegrationSetting setting)
+        private QuickBooksExportLog _exportLog { get; set; }
+        public InvoicePaymentMapper(QboIntegrationSetting setting, QuickBooksExportLog exportLog)
         {
             this._setting = setting;
+            this._exportLog = exportLog;
+            if (this._exportLog == null)
+            {
+                _exportLog = new QuickBooksExportLog();
+            }
             PrepareSetting();
         }
         protected void PrepareSetting()

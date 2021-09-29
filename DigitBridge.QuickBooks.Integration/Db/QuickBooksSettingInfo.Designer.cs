@@ -22,6 +22,7 @@ using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
+using DigitBridge.CommerceCentral.ERPDb;
 
 namespace DigitBridge.QuickBooks.Integration
 {
@@ -54,11 +55,8 @@ namespace DigitBridge.QuickBooks.Integration
         [Column("SettingUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _settingUuid;
 
-        [Column("IntegrationSettingJsonFields",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
-        private string _integrationSettingJsonFields;
-
-        [Column("ChannelAccountSettingJsonFields",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
-        private string _channelAccountSettingJsonFields;
+        [Column("JsonFields",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
+        private string _jsonFields;
 
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
@@ -138,34 +136,19 @@ namespace DigitBridge.QuickBooks.Integration
         }
 
 		/// <summary>
-		/// IntegrationSetting JSON string,Single.
+		/// Quickbooks Setting JSON string.
 		/// </summary>
-        public virtual string IntegrationSettingJsonFields
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public virtual string JsonFields
         {
             get
             {
-				return _integrationSettingJsonFields?.TrimEnd(); 
+				return _jsonFields?.TrimEnd(); 
             }
             set
             {
-				_integrationSettingJsonFields = value.TrimEnd(); 
-				OnPropertyChanged("IntegrationSettingJsonFields", value);
-            }
-        }
-
-		/// <summary>
-		/// ChannelAccountSetting JSON string,Array.
-		/// </summary>
-        public virtual string ChannelAccountSettingJsonFields
-        {
-            get
-            {
-				return _channelAccountSettingJsonFields?.TrimEnd(); 
-            }
-            set
-            {
-				_channelAccountSettingJsonFields = value.TrimEnd(); 
-				OnPropertyChanged("ChannelAccountSettingJsonFields", value);
+				_jsonFields = value.TrimEnd(); 
+				OnPropertyChanged("JsonFields", value);
             }
         }
 
@@ -190,6 +173,23 @@ namespace DigitBridge.QuickBooks.Integration
             }
         }
 
+
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        protected CustomAttributes _Fields;
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public virtual CustomAttributes Fields
+        {
+            get
+            {
+				if (_Fields is null) 
+					_Fields = new CustomAttributes(dbFactory, "QuickBooksSettingInfo"); 
+				return _Fields; 
+            }
+            set
+            {
+				_Fields = (value is null) ? new CustomAttributes(dbFactory, "QuickBooksSettingInfo") : value; 
+            }
+        }
 
 
         #endregion Properties - Generated 
@@ -222,8 +222,8 @@ namespace DigitBridge.QuickBooks.Integration
 			_masterAccountNum = default(int); 
 			_profileNum = default(int); 
 			_settingUuid = String.Empty; 
-			_integrationSettingJsonFields = String.Empty; 
-			_channelAccountSettingJsonFields = String.Empty; 
+			_jsonFields = String.Empty; 
+			Fields.Clear(); 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
             ClearChildren();
             return this;

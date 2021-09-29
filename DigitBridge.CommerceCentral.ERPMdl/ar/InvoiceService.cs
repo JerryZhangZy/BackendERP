@@ -321,6 +321,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
+
+        public virtual async  Task<bool> UpdateInvoiceDocNumberAsync(string invoiceUuid,string docNumber)
+        {
+            Edit();
+            if(await GetDataByIdAsync(invoiceUuid)){
+                Data.InvoiceHeader.QboDocNumber = docNumber;
+                return await SaveDataAsync();
+            }
+            return false;
+        }
+
+        public virtual bool UpdateInvoiceDocNumber(string invoiceUuid,string docNumber)
+        {
+            Edit();
+            if(GetDataById(invoiceUuid)){
+                Data.InvoiceHeader.QboDocNumber = docNumber;
+                return SaveData();
+            }
+            return false;
+        }
     }
 }
 

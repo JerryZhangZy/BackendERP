@@ -40,6 +40,13 @@ namespace DigitBridge.QuickBooks.Integration
         public string TokenReceiverReturnUrl { get; set; }
         [JsonIgnore] public virtual bool HasTokenReceiverReturnUrl => !string.IsNullOrEmpty(TokenReceiverReturnUrl);
         public bool ShouldSerializeTokenReceiverReturnUrl() => HasTokenReceiverReturnUrl;
+        /// <summary>
+        /// (Request and Response Data) Single QuickBooksConnectionInfo entity object which load by Number.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) Single entity object which load by Number.")]
+        public string TokenStatus { get; set; }
+        [JsonIgnore] public virtual bool HasTokenStatus => !string.IsNullOrEmpty(TokenStatus);
+        public bool ShouldSerializeTokenStatus() => HasTokenStatus;
 
         #region single Dto object
 
