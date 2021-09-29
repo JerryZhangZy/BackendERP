@@ -71,6 +71,22 @@ namespace DigitBridge.QuickBooks.Integration
                 return GetValueByName("CryptKey");
             }
         }
+
+        public static string AzureWebJobsStorage
+        {
+            get
+            {
+                return GetValueByName("AzureWebJobsStorage");
+            }
+        }
+
+        public static string OAuthTableName
+        {
+            get
+            {
+                return GetValueByName("OAuthTableName");
+            }
+        }
         public static string GetValueByName(string name)
         {
             try

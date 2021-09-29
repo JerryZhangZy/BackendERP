@@ -5,6 +5,10 @@ using UneedgoHelper.DotNet.Common;
 using System.Web;
 using System.Linq;
 using DigitBridge.CommerceCentral.YoPoco;
+using DigitBridge.Blob;
+using DigitBridge.QuickBooks.Integration.Model;
+using Microsoft.Azure.Cosmos.Table;
+using DigitBridge.QuickBooks.Integration.Mdl.Qbo;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl
 {
@@ -13,11 +17,6 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
         protected QuickBooksConnectionInfoService quickBooksConnectionInfoService;
         protected QuickBooksSettingInfoService quickBooksSettingInfoService;
         protected IDataBaseFactory dbFactory;
-        //private QboConnectionConfig _qboConnectionConfig;
-        //private QboConnectionInfo _qboConnectionInfo;
-        //private MsSqlUniversal _msSql;
-        //private int _masterAccNum;
-        //private int _profileNum;
 
         private UserCredentialService(IDataBaseFactory dataBaseFactory)
         {
@@ -74,7 +73,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             return (true, "");
         }
 
-        public async Task<(bool, string)> HandleTokensAsync(string realmId, string authCode,string requestState)
+        public async Task<(bool, string)> HandleTokensAsync(string realmId, string authCode,string requestState,OAuthMapInfo authMapInfo)
         {
             string errMsg = "";
             if (await quickBooksConnectionInfoService.GetByRequestStateAsync(requestState))
@@ -108,6 +107,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                 // Update initialStatus in QboConnectionInfo table in DP
                 await data.SetDataBaseFactory(dbFactory).SaveAsync();
                 quickBooksConnectionInfoService.DetachData(data);
+                await QboCloudTableUniversal.DeleteOAuthMapInfo(authMapInfo);
                 return (true, MyAppSetting.TokenReceiverReturnUrl);
             }
             errMsg = "QuickBooksConnectionInfo no founds.";
@@ -120,7 +120,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
         /// </summary>
         /// <param name="requestBody"></param>
         /// <returns></returns>
-        public async Task<(bool, string)> OAuthUrlAsync(QuickBooksConnectionInfoPayload payload)
+        public async Task<(bool, string,string)> OAuthUrlAsync(QuickBooksConnectionInfoPayload payload)
         {
             //var redirectUrl = string.Format(MyAppSetting.RedirectUrl, payload.MasterAccountNum, payload.ProfileNum);
             string authorizationUrl = await QboOAuth.GetAuthorizationURLAsync();
@@ -130,12 +130,13 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             string state = HttpUtility.ParseQueryString(url.Query).Get("state");
             if (string.IsNullOrEmpty(authorizationUrl) || string.IsNullOrEmpty(state))
             {
-                return (false, "Get redirect url to Quickbook Online login failed.");
+                return (false, "Get redirect url to Quickbook Online login failed.",null);
             }
-            //Create info with state or update info state
-            await quickBooksConnectionInfoService.UpdateConnectionInfoStateAsync(payload, state);
+            await QboCloudTableUniversal.CreateOAuthMapInfo(state,payload.MasterAccountNum,payload.ProfileNum);
+           //Create info with state or update info state
+           await quickBooksConnectionInfoService.UpdateConnectionInfoStateAsync(payload, state);
 
-            return (true, authorizationUrl);
+            return (true, authorizationUrl,state);
         }
     }
 }

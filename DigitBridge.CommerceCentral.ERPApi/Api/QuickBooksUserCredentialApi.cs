@@ -2,22 +2,15 @@
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.QuickBooks.Integration;
 using DigitBridge.QuickBooks.Integration.Mdl;
-using DigitBridge.QuickBooks.Integration.Model;
+using DigitBridge.QuickBooks.Integration.Mdl.Qbo;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
-using System.Reflection;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using UneedgoHelper.DotNet.Common;
 
@@ -38,7 +31,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var payload = await req.GetParameters<QuickBooksConnectionInfoPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = await UserCredentialService.CreateAsync(dataBaseFactory);
-            (bool isSuccess, string respond) = await srv.OAuthUrlAsync(payload);
+            (bool isSuccess, string respond, string state) = await srv.OAuthUrlAsync(payload);
             if (isSuccess)
             {
                 payload.OAuthUrl = respond;
@@ -52,24 +45,25 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         }
 
         [FunctionName(nameof(TokenReceiver))]
-        [OpenApiParameter(name: "MasterAccountNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "ProfileNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> TokenReceiver(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "QboUserCredential/TokenReceiver/{MasterAccountNum}/{ProfileNum}")] HttpRequest req,int MasterAccountNum,int ProfileNum)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "QboUserCredential/TokenReceiver")] HttpRequest req)
         {
+
+            string requestState = req.Query["state"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "state").ForceToTrimString();
+            var authMapInfo =await QboCloudTableUniversal.QueryOAuthMapInfo(requestState);
+            if (authMapInfo != null)
+            {
+                string authCode = req.Query["code"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "code").ForceToTrimString();
+                string realmId = req.Query["realmId"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "realmId").ForceToTrimString();
+
                 var payload = new QuickBooksConnectionInfoPayload()
                 {
-                    ProfileNum = ProfileNum,
-                    MasterAccountNum = MasterAccountNum
+                    ProfileNum = authMapInfo.ProfileNum,
+                    MasterAccountNum = authMapInfo.MasterAccountNum
                 };
                 var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var srv = await UserCredentialService.CreateAsync(dataBaseFactory);
-
-                string authCode = req.Query["code"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "code").ForceToTrimString();
-                string requestState = req.Query["state"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "state").ForceToTrimString();
-                string realmId = req.Query["realmId"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "realmId").ForceToTrimString();
-
-                (bool isSuccess, string respond) = await srv.HandleTokensAsync(realmId, authCode,requestState);
+                (bool isSuccess, string respond) = await srv.HandleTokensAsync(realmId, authCode, requestState,authMapInfo);
 
                 if (!isSuccess)
                 {
@@ -80,8 +74,14 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
                 {
                     payload.TokenReceiverReturnUrl = respond;
                 }
-
                 return new JsonNetResponse<QuickBooksConnectionInfoPayload>(payload);
+            }
+            var pl = new QuickBooksConnectionInfoPayload()
+            {
+                Success = false
+            };
+            pl.Messages.AddError("Error Getting Token From Quickbooks");
+            return new JsonNetResponse<QuickBooksConnectionInfoPayload>(pl);
         }
         /// <summary>
         /// Return the QboOAuthTokenStatus for User in <int> 0 : Uninitialized, 1 : Success, 2: Error
