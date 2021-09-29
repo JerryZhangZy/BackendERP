@@ -68,7 +68,7 @@ namespace DigitBridge.QuickBooks.Integration
         /// Used when unmatched Item found from Central orders
         /// </summary>
         public string QboDefaultItemName { get; set; }
-        public int QboDefaultItemId { get; set; }
+        public string QboDefaultItemId { get; set; }
         /// <summary>
         /// Non-Inventory Item for Central calculated sales tax line
         /// </summary>

@@ -28,7 +28,7 @@ namespace DigitBridge.QuickBooks.Integration
         }
 
         #region Qbo lines 
-       
+
         protected IList<Line> ItemsToQboLine(IList<InvoiceItems> items)
         {
             var lines = new List<Line>();
@@ -62,7 +62,8 @@ namespace DigitBridge.QuickBooks.Integration
             {
                 ItemRef = new ReferenceType()
                 {
-                    Value = item.SKU,
+                    Value = _setting.QboDefaultItemId,// All sku mapping to DefaultItemId in qbo. TODO mapping to qbo inventory sku.
+                    name = _setting.QboDefaultItemName,
                 },
                 Qty = item.ShipQty,
                 QtySpecified = true,
