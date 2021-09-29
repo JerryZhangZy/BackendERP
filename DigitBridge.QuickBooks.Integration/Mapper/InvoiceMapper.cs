@@ -27,6 +27,29 @@ namespace DigitBridge.QuickBooks.Integration
             _setting.QboShippingItemId = string.IsNullOrEmpty(_setting.QboShippingItemId) ? QboMappingConsts.SippingCostRefValue : _setting.QboShippingItemId;
         }
 
+        #region Qbo lines 
+       
+        protected IList<Line> ItemsToQboLine(IList<InvoiceItems> items)
+        {
+            var lines = new List<Line>();
+            foreach (var item in items)
+            {
+                lines.Add(ItemToQboLine(item));
+            }
+            return lines;
+        }
+        protected List<Line> ToQboLines(InvoiceData invoiceData)
+        {
+            var lines = new List<Line>();
+            lines.AddRange(ItemsToQboLine(invoiceData.InvoiceItems));
+            lines.Add(DiscountToQboLine(invoiceData.InvoiceHeader));
+            lines.Add(ShippingCostToQboLine(invoiceData.InvoiceHeader));
+            lines.Add(MiscCostToQboLine(invoiceData.InvoiceHeader));
+            lines.Add(ChargeAndAllowanceCostToQboLine(invoiceData.InvoiceHeader));
+            if (_setting.SalesTaxExportRule == (int)TaxExportRule.ItemLine)
+                lines.Add(TaxCostToQboLine(invoiceData.InvoiceHeader));
+            return lines;
+        }
         protected Line ItemToQboLine(InvoiceItems item)
         {
             Line line = new Line();
@@ -147,30 +170,8 @@ namespace DigitBridge.QuickBooks.Integration
             line.Description = QboMappingConsts.SalesTaxItemDescription + invoiceHeader.InvoiceNumber;
             return line;
         }
-        /// <summary>
-        ///  Mapping tax To Qbo invoice tax detail.
-        /// </summary>
-        /// <param name="invoiceHeader"></param>
-        /// <returns></returns>
-        protected TxnTaxDetail TaxCostToQboTxnTaxDetail(InvoiceHeader invoiceHeader)
-        {
-            var taxDetail = new TxnTaxDetail();
-            taxDetail.TotalTax = invoiceHeader.TaxAmount;
 
-            Line line = new Line()
-            {
-                DetailType = LineDetailTypeEnum.TaxLineDetail,
-                Amount = invoiceHeader.TaxAmount,
-                AnyIntuitObject = new TaxLineDetail()
-                {
-                    PercentBased = false,
-                    NetAmountTaxable = invoiceHeader.TaxableAmount,
-                    TaxPercent = invoiceHeader.TaxRate * 100
-                }
-            };
-            taxDetail.TaxLine = new Line[] { line };
-            return taxDetail;
-        }
+        #endregion 
 
         #region Map Qbo invoice 
 
@@ -213,6 +214,12 @@ namespace DigitBridge.QuickBooks.Integration
             AppendCustomerToInvoice(invoice, invoiceHeader);
             return invoice;
         }
+        /// <summary>
+        /// Add CustomField to Qbo invoice. CustomField max num is 3.
+        /// </summary>
+        /// <param name="invoice"></param>
+        /// <param name="invoiceInfo"></param>
+        /// <param name="invoiceNumber"></param>
         private void AppendCustomFieldToInvoice(Invoice invoice, InvoiceHeaderInfo invoiceInfo, string invoiceNumber)
         {
             // Map Invoice customized fields
@@ -226,12 +233,12 @@ namespace DigitBridge.QuickBooks.Integration
             customFields.Add(invoiceNumberField);
 
 
-            CustomField endCustoerPoNumCustField = new CustomField();
-            endCustoerPoNumCustField.DefinitionId = _setting.QboEndCustomerPoNumCustFieldId.ToString();
-            //endCustoerPoNumCustField.Name = _setting.QboEndCustomerPoNumCustFieldName;
-            endCustoerPoNumCustField.AnyIntuitObject = invoiceInfo.CustomerPoNum;
-            endCustoerPoNumCustField.Type = CustomFieldTypeEnum.StringType;
-            customFields.Add(endCustoerPoNumCustField);
+            //CustomField endCustoerPoNumCustField = new CustomField();
+            //endCustoerPoNumCustField.DefinitionId = _setting.QboEndCustomerPoNumCustFieldId.ToString();
+            ////endCustoerPoNumCustField.Name = _setting.QboEndCustomerPoNumCustFieldName;
+            //endCustoerPoNumCustField.AnyIntuitObject = invoiceInfo.CustomerPoNum;
+            //endCustoerPoNumCustField.Type = CustomFieldTypeEnum.StringType;
+            //customFields.Add(endCustoerPoNumCustField);
 
             CustomField chnlOrderIdCustField = new CustomField();
             chnlOrderIdCustField.DefinitionId = _setting.QboChnlOrderIdCustFieldId.ToString();
@@ -291,30 +298,33 @@ namespace DigitBridge.QuickBooks.Integration
 
             invoice.BillAddr = billingAddress;
         }
+        /// <summary>
+        ///  Mapping tax To Qbo invoice tax detail.
+        /// </summary>
+        /// <param name="invoiceHeader"></param>
+        /// <returns></returns>
+        protected TxnTaxDetail TaxCostToQboTxnTaxDetail(InvoiceHeader invoiceHeader)
+        {
+            var taxDetail = new TxnTaxDetail();
+            taxDetail.TotalTax = invoiceHeader.TaxAmount;
 
+            Line line = new Line()
+            {
+                DetailType = LineDetailTypeEnum.TaxLineDetail,
+                Amount = invoiceHeader.TaxAmount,
+                AnyIntuitObject = new TaxLineDetail()
+                {
+                    PercentBased = false,
+                    NetAmountTaxable = invoiceHeader.TaxableAmount,
+                    TaxPercent = invoiceHeader.TaxRate * 100
+                }
+            };
+            taxDetail.TaxLine = new Line[] { line };
+            return taxDetail;
+        }
         #endregion
 
-        protected IList<Line> ItemsToQboLine(IList<InvoiceItems> items)
-        {
-            var lines = new List<Line>();
-            foreach (var item in items)
-            {
-                lines.Add(ItemToQboLine(item));
-            }
-            return lines;
-        }
-        protected List<Line> ToQboLines(InvoiceData invoiceData)
-        {
-            var lines = new List<Line>();
-            lines.AddRange(ItemsToQboLine(invoiceData.InvoiceItems));
-            lines.Add(DiscountToQboLine(invoiceData.InvoiceHeader));
-            lines.Add(ShippingCostToQboLine(invoiceData.InvoiceHeader));
-            lines.Add(MiscCostToQboLine(invoiceData.InvoiceHeader));
-            lines.Add(ChargeAndAllowanceCostToQboLine(invoiceData.InvoiceHeader));
-            if (_setting.SalesTaxExportRule == (int)TaxExportRule.ItemLine)
-                lines.Add(TaxCostToQboLine(invoiceData.InvoiceHeader));
-            return lines;
-        }
+
         public Invoice ToInvoice(InvoiceData invoiceData)
         {
             var invoice = ToQboInvoice(invoiceData);
