@@ -25,7 +25,12 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     public partial class InvoiceDataTests
     {
-
+        private static int _itemCount = 10;
+        public static int ItemCount
+        {
+            get { return _itemCount; }
+            set { _itemCount = value; }
+        }
     }
 }
 

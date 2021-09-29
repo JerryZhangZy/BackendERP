@@ -60,8 +60,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             }
             CalculateTestHelper.CopySum(testData.InvoiceHeader, dObj.Sum);
 
-            var calculator = new InvoiceServiceCalculatorDefault(DataBaseFactory);
-            calculator.Calculate(testData, ProcessingMode.Edit);
+            //var calculator = new InvoiceServiceCalculatorDefault(DataBaseFactory);
+            //calculator.Calculate(testData, ProcessingMode.Edit);
+
+
+            var serivce = new InvoiceService(DataBaseFactory);
+            testData.InvoiceHeader.MasterAccountNum = 10001;
+            testData.InvoiceHeader.ProfileNum = 10001;
+            var dto = serivce.DtoMapper.WriteDto(testData, null);
+            serivce.Add(dto);
 
             var success = testData.InvoiceHeader.TotalAmount == dObj.TotalAmount;
             if (!success)

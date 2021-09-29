@@ -36,7 +36,7 @@ namespace DigitBridge.QuickBooks.Integration
         PreprocessStarted = 248,
         UpdateStarted = 249,
         SyncStarted = 250,
-        PreprocessedWithError= 253,
+        PreprocessedWithError = 253,
         UpdatedWithError = 254,
         SyncedWithError = 255
     }
@@ -55,7 +55,7 @@ namespace DigitBridge.QuickBooks.Integration
         SalesItemLineDetail = 0,
         GroupLineDetail = 1
     }
-    
+
     public enum OrderExportRule
     {
         Null = -1,
@@ -75,7 +75,7 @@ namespace DigitBridge.QuickBooks.Integration
         DailySummaryInvoice = 3,
         DoNotExport = 4
     }
-    
+
     public enum CustomerCreateRule
     {
         PerMarketPlace = 0,
@@ -112,4 +112,17 @@ namespace DigitBridge.QuickBooks.Integration
     //    CreditMemo,//--Payment is linked to the credit memo the customer has with the business
     //    Invoice,//--The invoice to which payment is applied
     //}
+
+    public enum TaxExportRule
+    {
+        /// <summary>
+        /// Export tax as Qbo Invoice Tax Detail
+        /// </summary>
+        InvoiceTaxDetail = 0,
+        /// <summary>
+        /// Export tax as Qbo Invoice Line
+        /// </summary>
+        ItemLine = 1,
+
+    }
 }
