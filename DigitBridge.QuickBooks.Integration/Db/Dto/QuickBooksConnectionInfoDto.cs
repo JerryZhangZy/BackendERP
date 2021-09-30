@@ -1,3 +1,6 @@
+
+
+              
               
     
 
@@ -39,6 +42,15 @@ namespace DigitBridge.QuickBooks.Integration
         #region Properties - Generated 
 
 		/// <summary>
+		/// (Readonly) Record Number. Required, <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Record Number. Required, <br> Display: false, Editable: false.")]
+        public long? ConnectionProfileNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasConnectionProfileNum => ConnectionProfileNum != null;
+
+		/// <summary>
 		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
@@ -57,6 +69,66 @@ namespace DigitBridge.QuickBooks.Integration
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasProfileNum => ProfileNum != null;
+
+		/// <summary>
+		/// Encrypted,ClientId
+		/// </summary>
+		[OpenApiPropertyDescription("Encrypted,ClientId")]
+        [StringLength(500, ErrorMessage = "The ClientId value cannot exceed 500 characters. ")]
+        public string ClientId { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasClientId => ClientId != null;
+
+		/// <summary>
+		/// Encrypted,ClientSecret
+		/// </summary>
+		[OpenApiPropertyDescription("Encrypted,ClientSecret")]
+        [StringLength(500, ErrorMessage = "The ClientSecret value cannot exceed 500 characters. ")]
+        public string ClientSecret { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasClientSecret => ClientSecret != null;
+
+		/// <summary>
+		/// Encrypted,RealmId
+		/// </summary>
+		[OpenApiPropertyDescription("Encrypted,RealmId")]
+        [StringLength(200, ErrorMessage = "The RealmId value cannot exceed 200 characters. ")]
+        public string RealmId { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasRealmId => RealmId != null;
+
+		/// <summary>
+		/// Encrypted,AuthCode
+		/// </summary>
+		[OpenApiPropertyDescription("Encrypted,AuthCode")]
+        [StringLength(200, ErrorMessage = "The AuthCode value cannot exceed 200 characters. ")]
+        public string AuthCode { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasAuthCode => AuthCode != null;
+
+		/// <summary>
+		/// RefreshToken
+		/// </summary>
+		[OpenApiPropertyDescription("RefreshToken")]
+        [StringLength(200, ErrorMessage = "The RefreshToken value cannot exceed 200 characters. ")]
+        public string RefreshToken { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasRefreshToken => RefreshToken != null;
+
+		/// <summary>
+		/// AccessToken
+		/// </summary>
+		[OpenApiPropertyDescription("AccessToken")]
+        [StringLength(1500, ErrorMessage = "The AccessToken value cannot exceed 1500 characters. ")]
+        public string AccessToken { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasAccessToken => AccessToken != null;
 
 		/// <summary>
 		/// RequestState

@@ -10,10 +10,10 @@
 	[RefreshToken] NVARCHAR(200) NOT NULL Default '',--RefreshToken
 	[AccessToken] NVARCHAR(1500) NOT NULL Default '',--AccessToken
 	[RequestState] NVARCHAR(200) NULL,--RequestState
-	[QboOAuthTokenStatus] int Default 0, --0: Uninitiated, 1: Success 2: Error
-	[LastRefreshTokUpdate] datetime Default GETUTCDATE(), --LastRefreshTokUpdate
-	[LastAccessTokUpdate] datetime Default GETUTCDATE(), --LastAccessTokUpdate
-	[EnterDate] DATETIME Default GETUTCDATE(), --(Radonly) Created Date time. <br> Title: Created At, Display: true, Editable: false
+	[QboOAuthTokenStatus] int NOT NULL Default 0, --0: Uninitiated, 1: Success 2: Error
+	[LastRefreshTokUpdate] datetime NOT NULL Default GETUTCDATE(), --LastRefreshTokUpdate
+	[LastAccessTokUpdate] datetime NOT NULL Default GETUTCDATE(), --LastAccessTokUpdate
+	[EnterDate] DATETIME NOT NULL Default GETUTCDATE(), --(Radonly) Created Date time. <br> Title: Created At, Display: true, Editable: false
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Radonly) Created Date time. <br> Title: Created At, Display: true, Editable: false
     [LastUpdate] DATETIME NULL, --(Radonly) LastUpdate Date time. <br> Title: Created At, Display: true, Editable: false
 	

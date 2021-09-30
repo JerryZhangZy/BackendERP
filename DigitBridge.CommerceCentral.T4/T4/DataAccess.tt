@@ -86,19 +86,19 @@
     //rewrite setting config
     if(overridesetting)
     {
-        generateModel = true;
-        generateDto = true;
+        generateModel = false;
+        generateDto = false;
         generateModelHelper = false;
 
         // generate tester class for each table repository
         generateTester = false;
 
         // generate structure repository class contain multiple table
-        generateStructureRepository = true;
-        generateStructureTester = true;
+        generateStructureRepository = false;
+        generateStructureTester = false;
 
         // generate structure Dto class
-        generateStructureDto = true;
+        generateStructureDto = false;
         generateStructureDtoCsv = false;
         generateStructureDtoTester = false;
 
