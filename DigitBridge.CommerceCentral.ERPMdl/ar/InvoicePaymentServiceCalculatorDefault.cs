@@ -82,8 +82,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var invoiceData = data.InvoiceData;
             sum.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
             
-            sum.Currency = invoiceData.InvoiceHeader.Currency;
-            sum.TaxRate = invoiceData.InvoiceHeader.TaxRate;
+            sum.Currency = invoiceData.InvoiceHeader.Currency; 
             //sum.DiscountAmount = invoiceData.InvoiceHeader.DiscountAmount;
             //sum.DiscountRate = invoiceData.InvoiceHeader.DiscountRate;
             //sum.TaxableAmount = invoiceData.InvoiceHeader.TaxableAmount;
@@ -126,7 +125,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual bool Calculate(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            PrepareData(data);
+            //PrepareData(data);
             //CalculateDetail(data, processingMode);
             CalculateSummary(data, processingMode);
             return true;
@@ -142,34 +141,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var setting = new ERPSetting();
             var sum = data.InvoiceTransaction;
-            //sum.SubTotalAmount = 0;
-            //sum.SalesAmount = 0;
-            //sum.TotalAmount = 0;
-            //sum.TaxableAmount = 0;
-            //sum.NonTaxableAmount = 0;
-            //sum.TaxAmount = 0;
-            //sum.DiscountAmount = 0; 
-            //sum.ExchangeRate
-            sum.ShippingAmount = sum.ShippingAmount.ToAmount();
-            sum.MiscAmount = sum.MiscAmount.ToAmount();
-            sum.ChargeAndAllowanceAmount = sum.ChargeAndAllowanceAmount.ToAmount();
-             
-            if (setting.TaxForShippingAndHandling)
-            {
-                sum.ShippingTaxAmount = (sum.ShippingAmount * sum.TaxRate).ToAmount();
-                sum.MiscTaxAmount = (sum.MiscAmount * sum.TaxRate).ToAmount();
-            }
+            sum.SubTotalAmount = 0;
+            sum.SalesAmount = 0; 
+            sum.TaxableAmount = 0;
+            sum.NonTaxableAmount = 0;
+            sum.TaxAmount = 0;
+            sum.DiscountAmount = 0;
+            sum.ChargeAndAllowanceAmount = 0;
+            sum.DiscountRate = 0;
+            sum.ExchangeRate = 0;
+            sum.MiscAmount = 0;
+            sum.MiscTaxAmount = 0;
+            sum.NonTaxableAmount = 0;
+            sum.SalesAmount = 0;
+            sum.ShippingAmount = 0;
+            sum.TaxAmount = 0;
+            sum.TaxRate = 0; 
 
-
-            sum.TotalAmount = (
-                sum.SalesAmount +
-                sum.TaxAmount -
-                sum.ShippingAmount -
-                sum.ShippingTaxAmount -
-                sum.MiscAmount -
-                sum.MiscTaxAmount -
-                sum.ChargeAndAllowanceAmount
-                ).ToAmount();
+            sum.TotalAmount = sum.TotalAmount.ToAmount();// this is the payment amount.
 
             return true;
         }
