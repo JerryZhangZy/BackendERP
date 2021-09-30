@@ -1,4 +1,5 @@
-﻿using Intuit.Ipp.Data;
+﻿using DigitBridge.CommerceCentral.YoPoco;
+using Intuit.Ipp.Data;
 using Intuit.Ipp.QueryFilter;
 using System;
 using System.Collections.Generic;
@@ -8,17 +9,18 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
-    public class QboPaymentService:QboServiceBase
+    public class QboPaymentApi:QboServiceBase
     {
+        public QboPaymentApi(IPayload payload, IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
         public async Task<Payment> CreateOrUpdatePayment(Payment payment)
         {
             if (!await PaymentExistAsync(payment.Id))
             {
-                return _dataService.Add(payment);
+                return await AddDataAsync(payment);
             }
             else
             {
-                return _dataService.Update(payment);
+                return await UpdateDataAsync(payment);
             }
         }
 
@@ -26,21 +28,21 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             if (!await PaymentExistAsync(payment.Id))
             {
-                return _dataService.Add(payment);
+                return await AddDataAsync(payment);
             }
             return null;
         }
 
         public async Task<bool> PaymentExistAsync(string id)
         {
-            var queryService = new QueryService<Payment>(_serviceContext);
+            var queryService = await GetQueryServiceAsync<Payment>();
             return queryService.ExecuteIdsQuery($"select * from Payment Where Id = '{id}'").FirstOrDefault() != null;
         }
 
         public async Task<Payment> DeletePaymentAsync(Payment payment)
         {
             if (payment != null)
-                return _dataService.Delete(payment);
+                return await DeleteDataAsync(payment);
             return null;
         }
 
@@ -56,7 +58,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         public async Task<Payment> UpdatePaymentAsync(Payment payment)
         {
-            return _dataService.Update(payment);
+            return await UpdateDataAsync(payment);
         }
 
         /// <summary>
@@ -66,7 +68,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         /// <returns></returns>
         public async Task<Payment> GetPaymentAsync(string id)
         {
-            var queryService = new QueryService<Payment>(_serviceContext);
+            var queryService = await GetQueryServiceAsync<Payment>();
             return queryService.ExecuteIdsQuery($"SELECT * FROM Payment where Id = '{id}'").FirstOrDefault();
         }
     }

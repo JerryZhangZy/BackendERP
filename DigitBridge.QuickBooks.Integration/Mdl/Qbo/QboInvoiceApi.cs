@@ -11,18 +11,19 @@ using UneedgoHelper.DotNet.Common;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
-    public class QboInvoiceService : QboServiceBase
+    public class QboInvoiceApi : QboServiceBase
     {
-        public QboInvoiceService(QuickBooksConnectionInfo qboConnectionInfo, IDataBaseFactory databaseFactory) : base(qboConnectionInfo, databaseFactory) { }
+        public QboInvoiceApi(IPayload payload , IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
+
         public async Task<Invoice> CreateOrUpdateInvoice(Invoice invoice)
         {
             if (!await InvoiceExistAsync(invoice.DocNumber))
             {
-                return _dataService.Add(invoice);
+                return await AddDataAsync(invoice);
             }
             else
             {
-                return _dataService.Update(invoice);
+                return await UpdateDataAsync(invoice);
             }
         }
 
@@ -30,21 +31,21 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             if (!await InvoiceExistAsync(invoice.DocNumber))
             {
-                return _dataService.Add(invoice);
+                return await AddDataAsync(invoice);
             }
             return null;
         }
 
         public async Task<bool> InvoiceExistAsync(string docNumber)
         {
-            var queryService = new QueryService<Invoice>(_serviceContext);
+            var queryService = await GetQueryServiceAsync<Invoice>();
             return queryService.ExecuteIdsQuery($"select * from Invoice Where DocNumber = '{docNumber}'").FirstOrDefault() != null;
         }
 
         public async Task<Invoice> DeleteInvoiceAsync(Invoice invoice)
         {
             if (invoice != null)
-                return _dataService.Delete(invoice);
+                return await DeleteDataAsync(invoice);
             return null;
         }
 
@@ -60,7 +61,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         public async Task<Invoice> UpdateInvoiceAsync(Invoice invoice)
         {
-            return _dataService.Update(invoice);
+            return await UpdateDataAsync(invoice);
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         /// <returns></returns>
         public async Task<Invoice> GetInvoiceAsync(string docNumber)
         {
-            var queryService = new QueryService<Invoice>(_serviceContext);
+            var queryService = await GetQueryServiceAsync<Invoice>();
             return queryService.ExecuteIdsQuery($"SELECT * FROM Invoice where DocNumber = '{docNumber}'").FirstOrDefault();
         }
     }

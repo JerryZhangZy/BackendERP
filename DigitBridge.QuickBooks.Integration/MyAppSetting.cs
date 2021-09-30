@@ -105,7 +105,7 @@ namespace DigitBridge.QuickBooks.Integration
         {
             try
             {
-                name = $"QuickBooks:{name}";
+                name = $"QuickBooks_{name}";
                 string value = _config[name];
                 if (value == null)
                 {

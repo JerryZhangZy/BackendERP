@@ -20,6 +20,7 @@ namespace DigitBridge.QuickBooks.Integration.Connection.Model
         Initalized = 0,
         Unchanged = 1,
         Updated = 2,
-        UpdatedWithError = 3
+        UpdatedWithError = 3,
+        UnInitalized=255
     }
 }

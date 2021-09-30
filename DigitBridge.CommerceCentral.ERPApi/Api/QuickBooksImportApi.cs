@@ -38,7 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         {
             var payload = await req.GetParameters<InvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var invoiceExportService = new InvoiceExportService(dataBaseFactory);
+            var invoiceExportService = new InvoiceExportService(payload,dataBaseFactory);
             await invoiceExportService.Export(payload, invoiceNumber);
             return new JsonNetResponse<InvoicePayload>(payload);
         }
