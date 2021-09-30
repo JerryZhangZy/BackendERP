@@ -314,6 +314,14 @@ namespace DigitBridge.QuickBooks.Integration
             };
             return SaveData();
         }
+
+        public virtual async Task<bool> AddExportLogAsync(QuickBooksExportLog log)
+        {
+            Add();
+            Data.QuickBooksExportLog = log;
+            return await SaveDataAsync();
+        }
+
         public virtual async Task<bool> AddExportLogAsync(IPayload payload,int batchNum,string logType,string uuid,string docNumber,string txnId,int docStatus)
         {
             Add();
