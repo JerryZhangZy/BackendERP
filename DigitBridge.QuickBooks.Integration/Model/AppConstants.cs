@@ -24,6 +24,8 @@ namespace DigitBridge.QuickBooks.Integration
 
         public const string QboInvoiceNumberFieldDefaultName = "Invoice Number#"; //TODO read this from qbo
         public const string QboEndCustomerPoNumCustomFieldName = "Po Number#";//TODO read this from qbo 
+
+        public const int CustomFieldMaxLength = 31;
     }
     public class QboUniversalConsts
     {
