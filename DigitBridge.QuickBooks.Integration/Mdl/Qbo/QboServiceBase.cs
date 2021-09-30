@@ -256,8 +256,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                         _qboConnectionInfo.LastRefreshTokUpdate = DateTime.Now.ToUniversalTime();
                         // Flag tokens as updated
                         _qboConnectionTokenStatus.RefreshTokenStatus = ConnectionTokenStatus.Updated;
-                        await _qboConnectionInfo.SetDataBaseFactory(dbFactory).SaveAsync();
                     }
+                    await _qboConnectionInfo.SetDataBaseFactory(dbFactory).SaveAsync();
                 }
                 else if (runAfterRefreshUpdated == false)
                 {

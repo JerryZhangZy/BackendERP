@@ -56,11 +56,17 @@ namespace DigitBridge.QuickBooks.Integration
 
 			if (dto.HasMasterAccountNum) data.MasterAccountNum = dto.MasterAccountNum.ToInt();
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
+			if (dto.HasClientId) data.ClientId = dto.ClientId;
+			if (dto.HasClientSecret) data.ClientSecret = dto.ClientSecret;
+			if (dto.HasRealmId) data.RealmId = dto.RealmId;
+			if (dto.HasAuthCode) data.AuthCode = dto.AuthCode;
+			if (dto.HasRefreshToken) data.RefreshToken = dto.RefreshToken;
+			if (dto.HasAccessToken) data.AccessToken = dto.AccessToken;
 			if (dto.HasRequestState) data.RequestState = dto.RequestState;
-			if (dto.HasQboOAuthTokenStatus) data.QboOAuthTokenStatus = dto.QboOAuthTokenStatus;
-			if (dto.HasLastRefreshTokUpdate) data.LastRefreshTokUpdate = dto.LastRefreshTokUpdate;
-			if (dto.HasLastAccessTokUpdate) data.LastAccessTokUpdate = dto.LastAccessTokUpdate;
-			if (dto.HasEnterDate) data.EnterDate = dto.EnterDate;
+			if (dto.HasQboOAuthTokenStatus) data.QboOAuthTokenStatus = dto.QboOAuthTokenStatus.ToInt();
+			if (dto.HasLastRefreshTokUpdate) data.LastRefreshTokUpdate = dto.LastRefreshTokUpdate.ToDateTime();
+			if (dto.HasLastAccessTokUpdate) data.LastAccessTokUpdate = dto.LastAccessTokUpdate.ToDateTime();
+			if (dto.HasEnterDate) data.EnterDate = dto.EnterDate.ToDateTime();
 			if (dto.HasLastUpdate) data.LastUpdate = dto.LastUpdate;
 			if (dto.HasDatabaseNum) data.DatabaseNum = dto.DatabaseNum.ToInt();
 			if (dto.HasConnectionUuid) data.ConnectionUuid = dto.ConnectionUuid;
@@ -101,8 +107,15 @@ namespace DigitBridge.QuickBooks.Integration
 
 			#region write all properties with null
 
+			dto.ConnectionProfileNum = data.ConnectionProfileNum;
 			dto.MasterAccountNum = data.MasterAccountNum;
 			dto.ProfileNum = data.ProfileNum;
+			dto.ClientId = data.ClientId;
+			dto.ClientSecret = data.ClientSecret;
+			dto.RealmId = data.RealmId;
+			dto.AuthCode = data.AuthCode;
+			dto.RefreshToken = data.RefreshToken;
+			dto.AccessToken = data.AccessToken;
 			dto.RequestState = data.RequestState;
 			dto.QboOAuthTokenStatus = data.QboOAuthTokenStatus;
 			dto.LastRefreshTokUpdate = data.LastRefreshTokUpdate;
