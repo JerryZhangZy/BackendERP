@@ -21,20 +21,18 @@
     "SentryEnable": false, //Enable Sentrylog
     "SeriEnable": true, //Enable Serilog
     "SentryDsn": "https://3e24ce8fb50b453fb2b611def469bd2d@o852268.ingest.sentry.io/5854208",
-    "QuickBooks": {
-      "CryptKey": "ABCDEFGH",
-      "RedirectUrl": "https://digitbridge-erp-api-dev.azurewebsites.net/api/QboUserCredential/TokenReceiver",
-      "TokenReceiverReturnUrl": "https://digitbridge-erp-api-dev.azurewebsites.net/api/QboUserCredential/TokenReceiver",
-      "Environment": "sandbox",
-      "BaseUrl": "https://sandbox-quickbooks.api.intuit.com/",
-      "MinorVersion": "62",
-      "AppClientId": "ABtqpSa5uaJq58nYOvD204uaURTMrs9WpzHOHkcWk8D2rKoTKv",
-      "AppClientSecret": "8lyAGstZh1FvjbRzDiaSi4118r7CdgRMenuj5gEy",
-      "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-      "OAuthTableName": "QuickBookOAuthTable",
-      "DebugTableName": "QuickBookDebugTable",
-      "IsDebug": "true"
-    }
+    "QuickBooks_CryptKey": "ABCDEFGH",
+    "QuickBooks_RedirectUrl": "https://digitbridge-erp-api-dev.azurewebsites.net/api/QboUserCredential/TokenReceiver",
+    "QuickBooks_TokenReceiverReturnUrl": "https://digitbridge-erp-api-dev.azurewebsites.net/api/QboUserCredential/TokenReceiver",
+    "QuickBooks_Environment": "sandbox",
+    "QuickBooks_BaseUrl": "https://sandbox-quickbooks.api.intuit.com/",
+    "QuickBooks_MinorVersion": "62",
+    "QuickBooks_AppClientId": "ABtqpSa5uaJq58nYOvD204uaURTMrs9WpzHOHkcWk8D2rKoTKv",
+    "QuickBooks_AppClientSecret": "8lyAGstZh1FvjbRzDiaSi4118r7CdgRMenuj5gEy",
+    "QuickBooks_AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "QuickBooks_OAuthTableName": "QuickBookOAuthTable",
+    "QuickBooks_DebugTableName": "QuickBookDebugTable",
+    "QuickBooks_IsDebug": "true"
 
     //test
     //"UseOrchestration": "false",
