@@ -9,21 +9,31 @@ namespace DigitBridge.QuickBooks.Integration
         public static readonly string DiscountRefValue = "86";
         public static readonly string DiscountRefName = "Discounts given";
         public static readonly string SummaryDiscountLineDescription = "Discount Line for Invoice DigitBridge invoice number: ";
-        public static readonly string SippingCostRefValue = "SHIPPING_ITEM_ID";
+        
         public static readonly string SummaryShippingLineDescription = "Shipping Cost Line for Invoice DigitBridge invoice number: ";
         public static readonly string SalesTaxItemRefValue = "55";
-        public static readonly string SalesTaxItemDescription = "Calculated Tax From DigitBridge Central for Invoice DigitBridge invoice number: ";
-        public static readonly string EndCustomerPoNumCustomFieldId = "1";
-        public static readonly string ChnlOrderIdCustomFieldId = "2";
-        public static readonly string SecChnlOrderIdCustomFieldId = "3";
+        public static readonly string SalesTaxItemDescription = "Calculated Tax From DigitBridge Central for Invoice DigitBridge invoice number: "; 
         public static readonly string NoMatchingItemReturnString = "Skip";
         public static readonly string QboItemNullId = "0";
 
         public static readonly string SummaryMiscLineDescription = "Misc Cost Line for Invoice DigitBridge invoice number: ";
         public static readonly string SummaryChargeAndAllowanceLineDescription = "ChargeAndAllowance Cost Line for Invoice DigitBridge invoice number: ";
-
+      
         public const string QboInvoiceNumberFieldDefaultName = "Invoice Number#"; //TODO read this from qbo
         public const string QboEndCustomerPoNumCustomFieldName = "Po Number#";//TODO read this from qbo 
+
+        public const int CustomFieldMaxLength = 31;
+        public const int ShipMethodRefMaxLength = 31;
+
+        public const string QboDefaultItemId = "1";//TODO set this by requirement.
+        public const string QboSalesTaxItemId = "1";//TODO set this by requirement.
+        public const string QboChargeAndAllowanceItemId = "1";//TODO set this by requirement.
+        public const string QboMiscItemId = "1";//TODO set this by requirement. 
+
+        public const string QboInvoiceNumberFieldID = "1";
+        public const string QboChnlOrderIdCustFieldId = "2";
+        public const string Qbo2ndChnlOrderIdCustFieldId = "3"; 
+        public const string SippingCostRefValue  = "1";//TODO "1" replace to  "SHIPPING_ITEM_ID";
     }
     public class QboUniversalConsts
     {

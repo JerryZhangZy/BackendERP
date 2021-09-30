@@ -1,29 +1,26 @@
 {
   "IsEncrypted": false,
-  "Host": {
-    "CORS": "*"
-  },
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "dsn": "Data Source=DESKTOP-6C6398M;Initial Catalog=digit_data;Persist Security Info=True;User ID=sqldigit;Password=sqldigit;",
+    "dsn": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
 
     //local
     "DebugMode": "true",
     "UseOrchestration": "false",
-    "OrchestrationDbConnString": "Server=bobotestsql.database.windows.net,1433;Initial Catalog=TestOrchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;",
+    "OrchestrationDbConnString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
     "OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
-    "DBConnectionString": "Data Source=DESKTOP-6C6398M;Initial Catalog=digit_data;Persist Security Info=True;User ID=sqldigit;Password=sqldigit;",
+    "DBConnectionString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
     "DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
     "UseAzureManagedIdentity": "false",
     "AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
     "DefaultCacheExpireSlidingMins": "2",
-    "SentryEnable": false, //Enable Sentrylog
+    "SentryEnable": true, //Enable Sentrylog
     "SeriEnable": true, //Enable Serilog
-    "SentryDsn": "https://3e24ce8fb50b453fb2b611def469bd2d@o852268.ingest.sentry.io/5854208",
+    "SentryDsn": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",
     "QuickBooks_CryptKey": "ABCDEFGH",
-    "QuickBooks_RedirectUrl": "https://digitbridge-erp-api-dev.azurewebsites.net/api/QboUserCredential/TokenReceiver",
-    "QuickBooks_TokenReceiverReturnUrl": "https://digitbridge-erp-api-dev.azurewebsites.net/api/QboUserCredential/TokenReceiver",
+    "QuickBooks_RedirectUrl": "http://localhost:7071/api/QboUserCredential/TokenReceiver/10001/10001",
+    "QuickBooks_TokenReceiverReturnUrl": "http://localhost:7071/api/QboUserCredential/TokenReceiver/10001/10001",
     "QuickBooks_Environment": "sandbox",
     "QuickBooks_BaseUrl": "https://sandbox-quickbooks.api.intuit.com/",
     "QuickBooks_MinorVersion": "62",
@@ -33,7 +30,6 @@
     "QuickBooks_OAuthTableName": "QuickBookOAuthTable",
     "QuickBooks_DebugTableName": "QuickBookDebugTable",
     "QuickBooks_IsDebug": "true"
-
     //test
     //"UseOrchestration": "false",
     //"OrchestrationDbConnString": "Server=bobotestsql.database.windows.net,1433;Initial Catalog=TestOrchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;",
@@ -62,7 +58,6 @@
     //"DbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e"
     //"UseAzureManagedIdentity": "true",
     //"AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio"
-    //"DefaultCacheExpireSlidingMins": "2"
-
+    //"DefaultCacheExpireSlidingMins": "2" 
   }
 }
