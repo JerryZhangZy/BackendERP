@@ -18,7 +18,18 @@
     "SentryEnable": true, //Enable Sentrylog
     "SeriEnable": true, //Enable Serilog
     "SentryDsn": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",
-
+    "QuickBooks_CryptKey": "ABCDEFGH",
+    "QuickBooks_RedirectUrl": "http://localhost:7071/api/QboUserCredential/TokenReceiver/10001/10001",
+    "QuickBooks_TokenReceiverReturnUrl": "http://localhost:7071/api/QboUserCredential/TokenReceiver/10001/10001",
+    "QuickBooks_Environment": "sandbox",
+    "QuickBooks_BaseUrl": "https://sandbox-quickbooks.api.intuit.com/",
+    "QuickBooks_MinorVersion": "62",
+    "QuickBooks_AppClientId": "ABtqpSa5uaJq58nYOvD204uaURTMrs9WpzHOHkcWk8D2rKoTKv",
+    "QuickBooks_AppClientSecret": "8lyAGstZh1FvjbRzDiaSi4118r7CdgRMenuj5gEy",
+    "QuickBooks_AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "QuickBooks_OAuthTableName": "QuickBookOAuthTable",
+    "QuickBooks_DebugTableName": "QuickBookDebugTable",
+    "QuickBooks_IsDebug": "true"
     //test
     //"UseOrchestration": "false",
     //"OrchestrationDbConnString": "Server=bobotestsql.database.windows.net,1433;Initial Catalog=TestOrchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;",
@@ -47,16 +58,6 @@
     //"DbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e"
     //"UseAzureManagedIdentity": "true",
     //"AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio"
-    //"DefaultCacheExpireSlidingMins": "2"
-    "QuickBooks": {
-      "CryptKey": "ABCDEFGH",
-      "RedirectUrl": "http://localhost:7071/api/QboUserCredential/TokenReceiver/10001/10001",
-      "TokenReceiverReturnUrl": "http://localhost:7071/api/QboUserCredential/TokenReceiver/10001/10001",
-      "Environment": "sandbox",
-      "BaseUrl": "https://sandbox-quickbooks.api.intuit.com/",
-      "MinorVersion": "62",
-      "AppClientId": "ABtqpSa5uaJq58nYOvD204uaURTMrs9WpzHOHkcWk8D2rKoTKv",
-      "AppClientSecret": "8lyAGstZh1FvjbRzDiaSi4118r7CdgRMenuj5gEy"
-    }
+    //"DefaultCacheExpireSlidingMins": "2" 
   }
 }

@@ -34,8 +34,7 @@ namespace DigitBridge.QuickBooks.Integration
             var lines = new List<Line>();
             foreach (var item in items)
             {
-                var qboItem = item.DiscountRate.IsZero() ? ItemToQboLine_DiscountAmount(item) : ItemToQboLine_DiscountRate(item);
-                lines.Add(qboItem);
+                lines.Add(ItemToQboLine(item));
             }
             return lines;
         }
@@ -51,7 +50,7 @@ namespace DigitBridge.QuickBooks.Integration
                 lines.Add(TaxCostToQboLine(invoiceData.InvoiceHeader));
             return lines;
         }
-        protected Line ItemToQboLine_DiscountRate(InvoiceItems item)
+        protected Line ItemToQboLine(InvoiceItems item)
         {
             Line line = new Line();
 
@@ -63,37 +62,13 @@ namespace DigitBridge.QuickBooks.Integration
             {
                 ItemRef = new ReferenceType()
                 {
-                    Value = _setting.QboDefaultItemId,// All sku mapping to DefaultItemId in qbo. TODO mapping to qbo inventory sku.
-                    name = _setting.QboDefaultItemName,
+                    Value = "1"// _setting.QboDefaultItemId,// All sku mapping to DefaultItemId in qbo. TODO mapping to qbo inventory sku. 
                 },
                 Qty = item.ShipQty,
                 QtySpecified = true,
                 AnyIntuitObject = item.IsAr ? item.DiscountPrice : 0,//TODO check this one
                 ItemElementName = ItemChoiceType.UnitPrice,
-            };
-            line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
-            line.DetailTypeSpecified = true;
-            return line;
-        }
-        protected Line ItemToQboLine_DiscountAmount(InvoiceItems item)
-        {
-            Line line = new Line();
-
-            line.Description = item.Description;
-            line.Amount = item.IsAr ? item.ExtAmount : 0;//TODO check this one
-            line.AmountSpecified = true;
-            //line.LineNum = item.InvoiceItemsUuid;
-            line.AnyIntuitObject = new SalesItemLineDetail()
-            {
-                ItemRef = new ReferenceType()
-                {
-                    Value = _setting.QboDefaultItemId,// All sku mapping to DefaultItemId in qbo. TODO mapping to qbo inventory sku.
-                    name = _setting.QboDefaultItemName,
-                },
-                Qty = item.ShipQty,
-                QtySpecified = true,
-                //AnyIntuitObject = item.IsAr ? item.DiscountPrice : 0,//TODO check this one
-                //ItemElementName = ItemChoiceType.UnitPrice,
+                DiscountAmt = item.DiscountRate.IsZero() ? item.DiscountAmount : 0,
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
