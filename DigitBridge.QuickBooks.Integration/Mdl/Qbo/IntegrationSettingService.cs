@@ -156,8 +156,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             UserInitialDataApiResponseType response = new UserInitialDataApiResponseType();
             try
             {
-                var customerService = new QboCustomerService();
-                var inventoryService = new QboInventoryService();
+                var customerService = new QboCustomerApi(payload,dbFactory);
+                var inventoryService = new QboInventoryApi(payload, dbFactory);
 
                 List<Customer> customers = await customerService.GetCustomersAsync();
 
@@ -237,7 +237,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             string errMsg = "";
             try
             {
-                var inventoryService = new QboInventoryService();
+                var inventoryService = new QboInventoryApi(payload, dbFactory);
                 if (!string.IsNullOrEmpty(integrationSetting.QboDefaultItemName) &&
                     integrationSetting.QboDefaultItemId == 0)
                 {
