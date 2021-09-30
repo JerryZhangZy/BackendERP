@@ -14,5 +14,13 @@ namespace DigitBridge.QuickBooks.Integration
                 return fieldValue.Substring(0, QboMappingConsts.CustomFieldMaxLength);
             return fieldValue;
         }
+        public static string ToShipMethodRef(this string val)
+        {
+            if (string.IsNullOrEmpty(val))
+                return string.Empty;
+            if (val.Length > QboMappingConsts.ShipMethodRefMaxLength)
+                return val.Substring(0, QboMappingConsts.ShipMethodRefMaxLength);
+            return val;
+        }
     }
 }

@@ -47,44 +47,8 @@ namespace DigitBridge.QuickBooks.Integration
             _payload.Success = await srv.GetByPayloadAsync(_payload);
             _payload.Messages = srv.Messages;
             if (_payload.Success)
-                _setting = srv.Data.QuickBooksSettingInfo.Setting;
-            if (_setting == null)
-            {
-                _setting = new QboIntegrationSetting();
-            }
-            //TODO init default setting.
-
-            return _payload.Success;
-            //return new QboIntegrationSetting()
-            //{
-            //    QboDiscountItemId = "24",
-            //    //QboDiscountItemName = "QboDiscountItemName",
-
-            //    QboShippingItemId = "20",
-            //    //QboShippingItemName = "QboShippingItemName",
-
-            //    QboMiscItemId = "18",
-            //    //QboMiscItemName = "QboMiscItemName",
-
-            //    QboChargeAndAllowanceItemId = "22",
-            //    //QboChargeAndAllowanceItemName = "QboChargeAndAllowanceItemName",
-
-            //    QboDefaultItemId = "19",
-            //    //QboDefaultItemName = "QboDefaultItemName",
-
-            //    QboSalesTaxItemId = "23",
-            //    QboSalesTaxItemName = "QboSalesTaxItemName",
-
-            //    QboInvoiceNumberFieldID = "1",
-            //    QboInvoiceNumberFieldName = "QboInvoiceNumberFieldName",
-
-            //    QboChnlOrderIdCustFieldId = "2",
-            //    QboChnlOrderIdCustFieldName = "QboChnlOrderIdCustFieldName",
-
-            //    Qbo2ndChnlOrderIdCustFieldId = "3",
-            //    Qbo2ndChnlOrderIdCustFieldName = "Qbo2ndChnlOrderIdCustFieldName",
-
-            //};
+                _setting = srv.Data.QuickBooksSettingInfo.Setting;  
+            return _payload.Success; 
         }
         #endregion
 
@@ -136,7 +100,7 @@ namespace DigitBridge.QuickBooks.Integration
             success = success && await LoadExportLog();
             if (!success) return success;
 
-            var mapper = new InvoiceMapper(_setting, _exportLog);
+            var mapper = new QboInvoiceMapper(_setting, _exportLog);
             var qboInvoice = mapper.ToInvoice(_invoiceData);
             try
             {
