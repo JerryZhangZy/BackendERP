@@ -12,6 +12,16 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
     public class QboPaymentApi:QboServiceBase
     {
         public QboPaymentApi(IPayload payload, IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
+
+        private QueryService<Payment> _paymentQueryService;
+
+        protected async Task<QueryService<Payment>> GetPaymentQueryService()
+        {
+            if (_paymentQueryService == null)
+                _paymentQueryService = await GetQueryServiceAsync<Payment>();
+            return _paymentQueryService;
+        }
+
         public async Task<Payment> CreateOrUpdatePayment(Payment payment)
         {
             if (!await PaymentExistAsync(payment.Id))
@@ -35,7 +45,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         public async Task<bool> PaymentExistAsync(string id)
         {
-            var queryService = await GetQueryServiceAsync<Payment>();
+            var queryService = await GetPaymentQueryService();
             return queryService.ExecuteIdsQuery($"select * from Payment Where Id = '{id}'").FirstOrDefault() != null;
         }
 
@@ -68,7 +78,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         /// <returns></returns>
         public async Task<Payment> GetPaymentAsync(string id)
         {
-            var queryService = await GetQueryServiceAsync<Payment>();
+            var queryService = await GetPaymentQueryService();
             return queryService.ExecuteIdsQuery($"SELECT * FROM Payment where Id = '{id}'").FirstOrDefault();
         }
     }
