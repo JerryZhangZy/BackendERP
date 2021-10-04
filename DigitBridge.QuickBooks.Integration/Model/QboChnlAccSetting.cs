@@ -6,9 +6,9 @@ namespace DigitBridge.QuickBooks.Integration.Model
 {
 	public class QboChnlAccSetting
 	{
-		public long ChannelAccSettingNum { get; set; }
-		public int MasterAccountNum { get; set; }
-		public int ProfileNum { get; set; }
+		//public long ChannelAccSettingNum { get; set; }
+		//public int MasterAccountNum { get; set; }
+		//public int ProfileNum { get; set; }
 		/// <summary>
 		/// Central Channel Account name, Max 10 chars ( because of qbo doc Number 21 chars restrictions )
 		/// </summary>

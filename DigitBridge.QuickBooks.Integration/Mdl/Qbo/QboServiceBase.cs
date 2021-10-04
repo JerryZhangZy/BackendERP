@@ -80,6 +80,9 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         }
 
         #region Messages
+
+        public bool HasMessages => Messages.Count > 0;
+
         protected IList<MessageClass> _messages;
         [XmlIgnore, JsonIgnore]
         public virtual IList<MessageClass> Messages
@@ -178,6 +181,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             }
             catch (Exception ex)
             {
+                AddError("Qbo Connection GetServiceContext Error");
                 string additionalMsg = "Qbo Connection GetServiceContext Error" + CommonConst.NewLine;
                 throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
             }

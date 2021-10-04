@@ -24,7 +24,7 @@ namespace DigitBridge.QuickBooks.Integration
         public override QuickBooksSettingInfo ConvertDbFieldsToData()
         {
             base.ConvertDbFieldsToData();
-            if (string.IsNullOrEmpty(JsonFields))
+            if (!string.IsNullOrEmpty(JsonFields))
             {
                 SettingInfo = JsonConvert.DeserializeObject<QboIntegrationSetting>(JsonFields);
             }
