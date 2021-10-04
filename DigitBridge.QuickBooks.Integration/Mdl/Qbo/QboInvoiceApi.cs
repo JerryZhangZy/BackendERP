@@ -68,6 +68,11 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return null;
         }
 
+        public async Task<Invoice> AvoidInvoiceAsync(Invoice invoice)
+        {
+                return await VoidDataAsync(invoice);
+        }
+
         public async Task<Invoice> UpdateInvoiceAsync(Invoice invoice)
         {
             return await UpdateDataAsync(invoice);
