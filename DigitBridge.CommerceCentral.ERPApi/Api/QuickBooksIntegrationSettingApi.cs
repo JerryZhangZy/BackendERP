@@ -66,7 +66,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         public static async Task<JsonNetResponse<QuickBooksSettingInfoPayload>> UpdateIntegrationSetting(
             [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "QuickBooksIntegrationSetting")] HttpRequest req)
         {
-            var payload = await req.GetParameters<QuickBooksSettingInfoPayload>();
+            var payload = await req.GetParameters<QuickBooksSettingInfoPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new QuickBooksSettingInfoService(dataBaseFactory);
             if(await srv.AddAsync(payload))

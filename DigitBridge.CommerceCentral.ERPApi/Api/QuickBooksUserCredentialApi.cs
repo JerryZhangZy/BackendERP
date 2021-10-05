@@ -44,9 +44,9 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             return new JsonNetResponse<QuickBooksConnectionInfoPayload>(payload);
         }
 
-        [FunctionName(nameof(TokenReceiver))] 
-        public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> TokenReceiver(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "QboUserCredential/TokenReceiver/10001/10001")] HttpRequest req)
+        [FunctionName(nameof(QuickBooksTokenReceiver))] 
+        public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> QuickBooksTokenReceiver(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "QboUserCredential/TokenReceiver")] HttpRequest req)
         {
 
             string requestState = req.Query["state"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "state").ForceToTrimString();
