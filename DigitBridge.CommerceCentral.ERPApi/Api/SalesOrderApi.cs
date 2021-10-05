@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-
+using DigitBridge.Base.Utility;
 namespace DigitBridge.CommerceCentral.ERPApi
 {
 
@@ -230,6 +230,41 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Messages = svc.Messages;
             return payload;
         }
+
+        /// <summary>
+        /// Create SalesOrder by CentralOrderUuid
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(CreateSalesOrderByCentralOrderUuid))]
+        [OpenApiOperation(operationId: "CreateSalesOrderByCentralOrderUuid", tags: new[] { "SalesOrders" }, Summary = "Create SalesOrder by CentralOrderUuid")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadCreateByCentralOrderUuid), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadCreateByCentralOrderUuid))]
+        public static async Task<InvoicePayload> CreateSalesOrderByCentralOrderUuid(
+            [HttpTrigger(AuthorizationLevel.Function, "POST"
+            , Route = "salesOrders/createsalesorderbycentralorderuuid")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InvoicePayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new SalesOrderManager(dbFactory);
+
+            var crtPayLoad = req.Body.ToString().StringToObject<SalesOrderPayloadCreateByCentralOrderUuid>();
+            (bool ret, List<string> salesOrderNumbers) = await svc.CreateSalesOrderByChannelOrderIdAsync(crtPayLoad.CentralOrderUuid);
+            if (ret)
+            {
+                payload.Success = true;
+            }
+            else
+            {
+                payload.Success = false;
+            }
+            payload.Messages = svc.Messages;
+            return payload;
+        }
+
     }
 }
 

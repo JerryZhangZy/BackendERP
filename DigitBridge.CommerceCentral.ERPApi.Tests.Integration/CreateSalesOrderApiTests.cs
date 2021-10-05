@@ -33,9 +33,10 @@ namespace DigitBridge.CommerceCentral.ERPApi.Tests.Integration
             };
             SalesOrderManager soManager = new SalesOrderManager(dbFactory);
             bool result = true;
+            List<string> salesOrderNums = new List<string>();
             foreach (var uuid in uuids)
             {
-                result = await soManager.CreateSalesOrderByChannelOrderIdAsync(uuid);
+                (result, salesOrderNums) = await soManager.CreateSalesOrderByChannelOrderIdAsync(uuid);
 
                 Assert.True(result);
 

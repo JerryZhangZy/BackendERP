@@ -65,7 +65,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 try
                 {
-                    result = invoiceManager.CreateInvoiceByOrderShipmentIdAsync(uuid).Result;
+                    string invoiceNumber = "";
+                    (result, invoiceNumber) = invoiceManager.CreateInvoiceByOrderShipmentIdAsync(uuid).Result;
                     if (result)
                         Assert.True(result);
                     else
