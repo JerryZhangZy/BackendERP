@@ -1,4 +1,5 @@
-﻿using Intuit.Ipp.Data;
+﻿using DigitBridge.CommerceCentral.YoPoco;
+using Intuit.Ipp.Data;
 using Intuit.Ipp.QueryFilter;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,22 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
-    public class QboSalesReceiptService : QboServiceBase
+    public class QboSalesReceiptApi : QboServiceBase
     {
+        public QboSalesReceiptApi(IPayload payload, IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
+
+        private QueryService<SalesReceipt> _salesReceiptQueryService;
+
+        protected async Task<QueryService<SalesReceipt>> GetSalesReceiptQueryService()
+        {
+            if (_salesReceiptQueryService == null)
+                _salesReceiptQueryService = await GetQueryServiceAsync<SalesReceipt>();
+            return _salesReceiptQueryService;
+        }
+
         public async Task<bool> SalesReceiptExistAsync(string docNumber)
         {
-            var queryService = new QueryService<SalesReceipt>(_serviceContext);
+            var queryService = await GetSalesReceiptQueryService();
             return queryService.ExecuteIdsQuery($"select * from SalesReceipt Where DocNumber = '{docNumber}'").FirstOrDefault() != null;
         }
 
@@ -20,14 +32,14 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             if (!await SalesReceiptExistAsync(salesReceipt.DocNumber))
             {
-                return _dataService.Add(salesReceipt);
+                return await AddDataAsync(salesReceipt);
             }
             return null;
         }
 
         public async Task<SalesReceipt> UpdateSalesReceiptIfLatestAsync(SalesReceipt salesReceipt)
         {
-            return _dataService.Update(salesReceipt);
+            return await UpdateDataAsync(salesReceipt);
         }
         /// <summary>
         /// Get Sales Receipt by DocNumber( DigibridgeOrderId )
@@ -36,7 +48,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         /// <returns></returns>
         public async Task<SalesReceipt> GetSalesReceiptAsync(string docNumber)
         {
-            var queryService = new QueryService<SalesReceipt>(_serviceContext);
+            var queryService = await GetSalesReceiptQueryService();
             return queryService.ExecuteIdsQuery($"SELECT * FROM SalesReceipt where DocNumber = '{docNumber}'").FirstOrDefault();
         }
     }

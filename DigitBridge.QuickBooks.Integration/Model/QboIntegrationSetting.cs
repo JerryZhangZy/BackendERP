@@ -7,9 +7,9 @@ namespace DigitBridge.QuickBooks.Integration
 {
     public class QboIntegrationSetting
     {
-        public long IntegrationSettingNum { get; set; }
-        public int MasterAccountNum { get; set; }
-        public int ProfileNum { get; set; }
+        //public long IntegrationSettingNum { get; set; }
+        //public int MasterAccountNum { get; set; }
+        //public int ProfileNum { get; set; }
 
         public IList<QboChnlAccSetting> QboChnlAccSettings { get; set; }
         /// <summary>
@@ -150,13 +150,7 @@ namespace DigitBridge.QuickBooks.Integration
         /// <summary>
         /// The id of field InvoiceNumber displayed at qbo invoice page
         /// </summary>
-        public string QboInvoiceNumberFieldID { get; set; }
-
-        /// <summary>
-        /// Field Name displayed at qbo invoice page
-        /// </summary>
-        public string QboInvoiceNumberFieldName { get; set; }
-
+        public string QboInvoiceNumberFieldID { get; set; } 
         /// <summary>
         /// Export invoice tax to qbo rule.
         /// </summary>

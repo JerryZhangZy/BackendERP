@@ -1,4 +1,5 @@
-﻿using Intuit.Ipp.Data;
+﻿using DigitBridge.CommerceCentral.YoPoco;
+using Intuit.Ipp.Data;
 using Intuit.Ipp.QueryFilter;
 using System;
 using System.Collections.Generic;
@@ -8,17 +9,28 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
-    public class QboRefundReceiptService:QboServiceBase
+    public class QboRefundReceiptApi:QboServiceBase
     {
+        public QboRefundReceiptApi(IPayload payload, IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
+
+        private QueryService<RefundReceipt> _refundReceiptQueryService;
+
+        protected async Task<QueryService<RefundReceipt>> GetRefundReceiptQueryService()
+        {
+            if (_refundReceiptQueryService == null)
+                _refundReceiptQueryService = await GetQueryServiceAsync<RefundReceipt>();
+            return _refundReceiptQueryService;
+        }
+
         public async Task<RefundReceipt> CreateOrUpdateRefundReceipt(RefundReceipt refundReceipt)
         {
             if (!await RefundReceiptExistAsync(refundReceipt.DocNumber))
             {
-                return _dataService.Add(refundReceipt);
+                return await AddDataAsync(refundReceipt);
             }
             else
             {
-                return _dataService.Update(refundReceipt);
+                return await UpdateDataAsync(refundReceipt);
             }
         }
 
@@ -26,21 +38,21 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             if (!await RefundReceiptExistAsync(refundReceipt.DocNumber))
             {
-                return _dataService.Add(refundReceipt);
+                return await AddDataAsync(refundReceipt);
             }
             return null;
         }
 
         public async Task<bool> RefundReceiptExistAsync(string docNumber)
         {
-            var queryService = new QueryService<RefundReceipt>(_serviceContext);
+            var queryService = await GetRefundReceiptQueryService();
             return queryService.ExecuteIdsQuery($"select * from RefundReceipt Where DocNumber = '{docNumber}'").FirstOrDefault() != null;
         }
 
         public async Task<RefundReceipt> DeleteRefundReceiptAsync(RefundReceipt refundReceipt)
         {
             if (refundReceipt != null)
-                return _dataService.Delete(refundReceipt);
+                return await DeleteDataAsync(refundReceipt);
             return null;
         }
 
@@ -56,7 +68,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         public async Task<RefundReceipt> UpdateRefundReceiptAsync(RefundReceipt refundReceipt)
         {
-            return _dataService.Update(refundReceipt);
+            return await UpdateDataAsync(refundReceipt);
         }
 
         /// <summary>
@@ -66,7 +78,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         /// <returns></returns>
         public async Task<RefundReceipt> GetRefundReceiptAsync(string docNumber)
         {
-            var queryService = new QueryService<RefundReceipt>(_serviceContext);
+            var queryService = await GetRefundReceiptQueryService();
             return queryService.ExecuteIdsQuery($"SELECT * FROM RefundReceipt where DocNumber = '{docNumber}'").FirstOrDefault();
         }
     }

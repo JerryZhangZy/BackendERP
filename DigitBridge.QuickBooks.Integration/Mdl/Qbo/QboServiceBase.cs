@@ -22,23 +22,78 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
     public class QboServiceBase : IMessage
     {
         protected OAuth2Client _auth2Client;
-        protected DataService _dataService;
-        protected ServiceContext _serviceContext;
+        private DataService _dataService;
+        private ServiceContext _serviceContext;
         protected OAuth2RequestValidator _oauthValidator;
         protected QuickBooksConnectionInfo _qboConnectionInfo;
-        protected QboConnectionTokenStatus _qboConnectionTokenStatus;
+        private QuickBooksConnectionInfoService quickBooksConnectionInfoService;
+        private QboConnectionTokenStatus _qboConnectionTokenStatus;
+        private ConnectionTokenStatus _connectionStatus=ConnectionTokenStatus.UnInitalized;
         protected IDataBaseFactory dbFactory;
+        protected IPayload payload;
 
         public QboServiceBase() { }
 
-        public QboServiceBase(QuickBooksConnectionInfo qboConnectionInfo, IDataBaseFactory databaseFactory)
+        public QboServiceBase(IPayload pl , IDataBaseFactory databaseFactory)
         {
-            this._qboConnectionInfo = qboConnectionInfo;
+            this.payload = pl;
             this.dbFactory = databaseFactory;
+            quickBooksConnectionInfoService = new QuickBooksConnectionInfoService(dbFactory);
+            GetQuickBooksConnectionInfo();
+            if (_qboConnectionInfo == null)
+            {
+                throw new Exception($"Initialize Error,MasterAccountNum:{payload.MasterAccountNum} with ProfileNum:{payload.ProfileNum} is uninitialized");
+            }
             ConnectToDataServiceAsync();
         }
 
+        private async Task CheckInitialed()
+        {
+            if (_connectionStatus == ConnectionTokenStatus.UnInitalized)
+            {
+                await HandleConnectivityAsync();
+            }
+        }
+
+        public async Task<T> AddDataAsync<T>(T entity) where T:IEntity
+        {
+            await CheckInitialed();
+            return _dataService.Add(entity) ;
+        }
+
+        public async Task<T> UpdateDataAsync<T>(T entity) where T:IEntity
+        {
+            await CheckInitialed();
+            return _dataService.Update(entity) ;
+        }
+
+        public async Task<T> DeleteDataAsync<T>(T entity) where T:IEntity
+        {
+            await CheckInitialed();
+            return _dataService.Delete(entity) ;
+        }
+
+        public async Task<T> VoidDataAsync<T>(T entity) where T : IEntity
+        {
+            await CheckInitialed();
+            return _dataService.Void(entity);
+        }
+
+        public async Task<QueryService<T>> GetQueryServiceAsync<T>()
+        {
+            await CheckInitialed();
+            return new QueryService<T>(_serviceContext);
+        }
+
+        public async Task<T> FindByIdAsync<T>(T entity) where T : IEntity
+        {
+            await CheckInitialed();
+            return _dataService.FindById(entity);
+        }
         #region Messages
+
+        public bool HasMessages => Messages.Count > 0;
+
         protected IList<MessageClass> _messages;
         [XmlIgnore, JsonIgnore]
         public virtual IList<MessageClass> Messages
@@ -64,39 +119,63 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         #endregion Messages
 
-        private async Task<QboServiceBase> InitializeAsync(
-            QuickBooksConnectionInfo qboConnectionInfo, IDataBaseFactory databaseFactory)
+        protected async Task<QuickBooksConnectionInfo> GetQuickBooksConnectionInfoAsync()
         {
-            try
+            if (_qboConnectionInfo == null)
             {
-                _qboConnectionInfo = qboConnectionInfo;
-                dbFactory = databaseFactory;
-                ConnectToDataServiceAsync();
-                await HandleConnectivityAsync();
-                return this;
+                 if(await quickBooksConnectionInfoService.GetByPayloadAsync(payload))
+                {
+                    _qboConnectionInfo = quickBooksConnectionInfoService.Data.QuickBooksConnectionInfo;
+                }
             }
-            catch (Exception ex)
-            {
-                string additionalMsg = "Qbo Universal Initialize Error" + CommonConst.NewLine;
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
-            }
+            return _qboConnectionInfo;
         }
 
-        public static Task<QboServiceBase> CreateAsync(
-            QuickBooksConnectionInfo qboConnectionInfo, IDataBaseFactory databaseFactory)
+        protected QuickBooksConnectionInfo GetQuickBooksConnectionInfo()
         {
-            try
+            if (_qboConnectionInfo == null)
             {
-                var newInstance = new QboServiceBase();
-                return newInstance.InitializeAsync(qboConnectionInfo, databaseFactory);
+                 if(quickBooksConnectionInfoService.GetByPayload(payload))
+                {
+                    _qboConnectionInfo = quickBooksConnectionInfoService.Data.QuickBooksConnectionInfo;
+                }
             }
-            catch (Exception ex)
-            {
-                string additionalMsg = "Qbo Universal CreateAsync Error" + CommonConst.NewLine;
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
-            }
-
+            return _qboConnectionInfo;
         }
+
+        //private async Task<QboServiceBase> InitializeAsync(
+        //    QuickBooksConnectionInfo qboConnectionInfo, IDataBaseFactory databaseFactory)
+        //{
+        //    try
+        //    {
+        //        _qboConnectionInfo = qboConnectionInfo;
+        //        dbFactory = databaseFactory;
+        //        ConnectToDataServiceAsync();
+        //        await HandleConnectivityAsync();
+        //        return this;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        string additionalMsg = "Qbo Universal Initialize Error" + CommonConst.NewLine;
+        //        throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
+        //    }
+        //}
+
+        //public static Task<QboServiceBase> CreateAsync(
+        //    QuickBooksConnectionInfo qboConnectionInfo, IDataBaseFactory databaseFactory)
+        //{
+        //    try
+        //    {
+        //        var newInstance = new QboServiceBase();
+        //        return newInstance.InitializeAsync(qboConnectionInfo, databaseFactory);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        string additionalMsg = "Qbo Universal CreateAsync Error" + CommonConst.NewLine;
+        //        throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
+        //    }
+
+        //}
 
         private void ConnectToDataServiceAsync()
         {
@@ -113,6 +192,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             }
             catch (Exception ex)
             {
+                AddError("Qbo Connection GetServiceContext Error");
                 string additionalMsg = "Qbo Connection GetServiceContext Error" + CommonConst.NewLine;
                 throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
             }
@@ -134,6 +214,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 }
                 // Use a simple API call to see if the access token is valid ( officially recommended method )
                 CompanyInfo companyInfo = await GetCompanyInfoAsync();
+                _connectionStatus = ConnectionTokenStatus.Initalized;
             }
             catch (Exception ex)
             {
@@ -190,8 +271,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                         _qboConnectionInfo.LastRefreshTokUpdate = DateTime.Now.ToUniversalTime();
                         // Flag tokens as updated
                         _qboConnectionTokenStatus.RefreshTokenStatus = ConnectionTokenStatus.Updated;
-                        await _qboConnectionInfo.SetDataBaseFactory(dbFactory).SaveAsync();
                     }
+                    await _qboConnectionInfo.SetDataBaseFactory(dbFactory).SaveAsync();
                 }
                 else if (runAfterRefreshUpdated == false)
                 {
@@ -239,6 +320,32 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
             return (latestTransaction != null,
                 latestTransaction != null && latestTransaction.SyncToken.Equals(transaction.SyncToken));
+        }
+
+        private QuickBooksExportLogService _quickBooksExportLogService;
+        protected QuickBooksExportLogService QuickBooksExportLogService
+        {
+            get
+            {
+                if (_quickBooksExportLogService == null)
+                    _quickBooksExportLogService = new QuickBooksExportLogService(dbFactory);
+                return _quickBooksExportLogService;
+            }
+        }
+        private QuickBooksSettingInfoService _quickBooksSettingInfoService;
+        public QuickBooksSettingInfoService QuickBooksSettingInfoService
+        {
+            get
+            {
+                if (_quickBooksSettingInfoService == null)
+                    _quickBooksSettingInfoService = new QuickBooksSettingInfoService(dbFactory);
+                return _quickBooksSettingInfoService;
+            }
+        }
+
+        public virtual async Task<bool> AddExportLogAsync(QuickBooksExportLog log)
+        {
+            return await QuickBooksExportLogService.AddExportLogAsync(log);
         }
     }
 }

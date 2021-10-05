@@ -1,4 +1,5 @@
-﻿using Intuit.Ipp.Data;
+﻿using DigitBridge.CommerceCentral.YoPoco;
+using Intuit.Ipp.Data;
 using Intuit.Ipp.QueryFilter;
 using System;
 using System.Collections.Generic;
@@ -7,8 +8,27 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
-    public class QboInventoryService : QboServiceBase
+    public class QboInventoryApi : QboServiceBase
     {
+        public QboInventoryApi(IPayload payload, IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
+
+
+        private QueryService<Item> _itemQueryService;
+
+        protected async Task<QueryService<Item>> GetItemQueryService()
+        {
+            if (_itemQueryService == null)
+                _itemQueryService = await GetQueryServiceAsync<Item>();
+            return _itemQueryService;
+        }
+        private QueryService<Account> _accountQueryService;
+
+        protected async Task<QueryService<Account>> GetAccountQueryService()
+        {
+            if (_accountQueryService == null)
+                _accountQueryService = await GetQueryServiceAsync<Account>();
+            return _accountQueryService;
+        }
         /// <summary>
         /// Get Item By Qbo Item Name
         /// </summary>
@@ -16,7 +36,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         /// <returns></returns>
         public async Task<Item> GetItemByNameAsync(string name)
         {
-            var itemService = new QueryService<Item>(_serviceContext);
+            var itemService = await GetItemQueryService();
             return itemService.ExecuteIdsQuery("SELECT * FROM Item where Name = '" + name + "'").FirstOrDefault();
         }
 
@@ -104,7 +124,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 Value = assetAccount.Id
             };
 
-            Item itemCreated = _dataService.Add(item);
+            Item itemCreated = await AddDataAsync(item);
 
             return itemCreated;
         }
@@ -154,7 +174,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                     newAccount.AccountType = AccountTypeEnum.OtherCurrentLiability;
                     newAccount.AccountTypeSpecified = true;
 
-                    targetAccount = _dataService.Add(newAccount);
+                    targetAccount = await AddDataAsync(newAccount);
                 }
                 else
                 {
@@ -194,20 +214,20 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 Value = targetAccount.Id
             };
 
-            Item itemCreated = _dataService.Add(item);
+            Item itemCreated = await AddDataAsync(item);
 
             return itemCreated;
         }
 
         public async Task<List<Item>> GetItemsAsync()
         {
-                var itemService = new QueryService<Item>(_serviceContext);
+                var itemService = await GetItemQueryService();
                 return itemService.ExecuteIdsQuery("SELECT * FROM Item").ToList();
         }
 
         public async Task<List<Account>> GetAccountsAsync()
         {
-                var accountService = new QueryService<Account>(_serviceContext);
+            var accountService = await GetAccountQueryService();
                 return accountService.ExecuteIdsQuery("SELECT * FROM Account where Active = true").ToList();
         }
     }

@@ -1,4 +1,5 @@
-﻿using Intuit.Ipp.Data;
+﻿using DigitBridge.CommerceCentral.YoPoco;
+using Intuit.Ipp.Data;
 using Intuit.Ipp.QueryFilter;
 using System;
 using System.Collections.Generic;
@@ -8,12 +9,23 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
-    public class QboCustomerService : QboServiceBase
+    public class QboCustomerApi : QboServiceBase
     {
+
+        public QboCustomerApi(IPayload payload, IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
+
+        private QueryService<Customer> _customerQueryService;
+
+        protected async Task<QueryService<Customer>> GetCustomerQueryService()
+        {
+            if (_customerQueryService == null)
+                _customerQueryService = await GetQueryServiceAsync<Customer>();
+            return _customerQueryService;
+        }
 
         public async Task<List<Customer>> GetCustomersAsync()
         {
-            var customerService = new QueryService<Customer>(_serviceContext);
+            var customerService = await GetCustomerQueryService();
             return customerService.ExecuteIdsQuery("SELECT * FROM Customer").ToList();
         }
 
@@ -21,11 +33,12 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             if (!await CustomerExistAsync(customer.Id))
             {
-                return _dataService.Add(customer);
+                //return await AddDataAsync(customer);
+                return await AddDataAsync(customer);
             }
             else
             {
-                return _dataService.Update(customer);
+                return await UpdateDataAsync(customer);
             }
         }
 
@@ -33,21 +46,21 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             if (!await CustomerExistAsync(customer.Id))
             {
-                return _dataService.Add(customer);
+                return await AddDataAsync(customer);
             }
             return null;
         }
 
         public async Task<bool> CustomerExistAsync(string id)
         {
-            var queryService = new QueryService<Customer>(_serviceContext);
+            var queryService = await GetCustomerQueryService();
             return queryService.ExecuteIdsQuery($"select * from Customer Where id = '{id}'").FirstOrDefault() != null;
         }
 
         public async Task<Customer> DeleteCustomerAsync(Customer customer)
         {
             if (customer != null)
-                return _dataService.Delete(customer);
+                return await DeleteDataAsync(customer);
             return null;
         }
 
@@ -63,7 +76,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         public async Task<Customer> UpdateCustomerAsync(Customer customer)
         {
-            return _dataService.Update(customer);
+            return await UpdateDataAsync(customer);
         }
 
         /// <summary>
@@ -73,7 +86,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         /// <returns></returns>
         public async Task<Customer> GetCustomerByIdAsync(string id)
         {
-            var customerService = new QueryService<Customer>(_serviceContext);
+            var customerService = await GetCustomerQueryService();
             return customerService.ExecuteIdsQuery("SELECT * FROM Customer where id = '" + id + "'").FirstOrDefault();
         }
     }

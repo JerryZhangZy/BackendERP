@@ -85,17 +85,17 @@ namespace DigitBridge.QuickBooks.Integration
         [Column("RequestState",SqlDbType.NVarChar)]
         private string _requestState;
 
-        [Column("QboOAuthTokenStatus",SqlDbType.Int,IsDefault=true)]
-        private int? _qboOAuthTokenStatus;
+        [Column("QboOAuthTokenStatus",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _qboOAuthTokenStatus;
 
-        [Column("LastRefreshTokUpdate",SqlDbType.DateTime,IsDefault=true)]
-        private DateTime? _lastRefreshTokUpdate;
+        [Column("LastRefreshTokUpdate",SqlDbType.DateTime,NotNull=true,IsDefault=true)]
+        private DateTime _lastRefreshTokUpdate;
 
-        [Column("LastAccessTokUpdate",SqlDbType.DateTime,IsDefault=true)]
-        private DateTime? _lastAccessTokUpdate;
+        [Column("LastAccessTokUpdate",SqlDbType.DateTime,NotNull=true,IsDefault=true)]
+        private DateTime _lastAccessTokUpdate;
 
-        [Column("EnterDate",SqlDbType.DateTime,IsDefault=true)]
-        private DateTime? _enterDate;
+        [Column("EnterDate",SqlDbType.DateTime,NotNull=true,IsDefault=true)]
+        private DateTime _enterDate;
 
         [Column("LastUpdate",SqlDbType.DateTime)]
         private DateTime? _lastUpdate;
@@ -268,84 +268,64 @@ namespace DigitBridge.QuickBooks.Integration
 		/// <summary>
 		/// 0: Uninitiated, 1: Success 2: Error
 		/// </summary>
-        public virtual int? QboOAuthTokenStatus
+        public virtual int QboOAuthTokenStatus
         {
             get
             {
-				if (!AllowNull && _qboOAuthTokenStatus is null) 
-					_qboOAuthTokenStatus = default(int); 
 				return _qboOAuthTokenStatus; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_qboOAuthTokenStatus = value; 
-					OnPropertyChanged("QboOAuthTokenStatus", value);
-				}
+				_qboOAuthTokenStatus = value; 
+				OnPropertyChanged("QboOAuthTokenStatus", value);
             }
         }
 
 		/// <summary>
 		/// LastRefreshTokUpdate
 		/// </summary>
-        public virtual DateTime? LastRefreshTokUpdate
+        public virtual DateTime LastRefreshTokUpdate
         {
             get
             {
-				if (!AllowNull && _lastRefreshTokUpdate is null) 
-					_lastRefreshTokUpdate = new DateTime().MinValueSql(); 
 				return _lastRefreshTokUpdate; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_lastRefreshTokUpdate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
-					OnPropertyChanged("LastRefreshTokUpdate", value);
-				}
+				_lastRefreshTokUpdate = value.ToSqlSafeValue(); 
+				OnPropertyChanged("LastRefreshTokUpdate", value);
             }
         }
 
 		/// <summary>
 		/// LastAccessTokUpdate
 		/// </summary>
-        public virtual DateTime? LastAccessTokUpdate
+        public virtual DateTime LastAccessTokUpdate
         {
             get
             {
-				if (!AllowNull && _lastAccessTokUpdate is null) 
-					_lastAccessTokUpdate = new DateTime().MinValueSql(); 
 				return _lastAccessTokUpdate; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_lastAccessTokUpdate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
-					OnPropertyChanged("LastAccessTokUpdate", value);
-				}
+				_lastAccessTokUpdate = value.ToSqlSafeValue(); 
+				OnPropertyChanged("LastAccessTokUpdate", value);
             }
         }
 
 		/// <summary>
 		/// (Radonly) Created Date time. <br> Title: Created At, Display: true, Editable: false
 		/// </summary>
-        public virtual DateTime? EnterDate
+        public virtual DateTime EnterDate
         {
             get
             {
-				if (!AllowNull && _enterDate is null) 
-					_enterDate = new DateTime().MinValueSql(); 
 				return _enterDate; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_enterDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
-					OnPropertyChanged("EnterDate", value);
-				}
+				_enterDate = value.ToSqlSafeValue(); 
+				OnPropertyChanged("EnterDate", value);
             }
         }
 
@@ -364,7 +344,7 @@ namespace DigitBridge.QuickBooks.Integration
             {
 				if (value != null || AllowNull) 
 				{
-					_lastUpdate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_lastUpdate = (value is null) ? (DateTime?) null : value?.ToSqlSafeValue(); 
 					OnPropertyChanged("LastUpdate", value);
 				}
             }
@@ -441,10 +421,10 @@ namespace DigitBridge.QuickBooks.Integration
 			_refreshToken = String.Empty; 
 			_accessToken = String.Empty; 
 			_requestState = AllowNull ? (string)null : String.Empty; 
-			_qboOAuthTokenStatus = AllowNull ? (int?)null : default(int); 
-			_lastRefreshTokUpdate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
-			_lastAccessTokUpdate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
-			_enterDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_qboOAuthTokenStatus = default(int); 
+			_lastRefreshTokUpdate = new DateTime().MinValueSql(); 
+			_lastAccessTokUpdate = new DateTime().MinValueSql(); 
+			_enterDate = new DateTime().MinValueSql(); 
 			_lastUpdate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_databaseNum = default(int); 
 			_connectionUuid = String.Empty; 
