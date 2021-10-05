@@ -243,26 +243,29 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderPayloadCreateByCentralOrderUuid), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadCreateByCentralOrderUuid))]
-        public static async Task<InvoicePayload> CreateSalesOrderByCentralOrderUuid(
+        public static async Task<SalesOrderPayload> CreateSalesOrderByCentralOrderUuid(
             [HttpTrigger(AuthorizationLevel.Function, "POST"
             , Route = "salesOrders/createsalesorderbycentralorderuuid")] HttpRequest req)
         {
-            var payload = await req.GetParameters<InvoicePayload>();
+            var payload = await req.GetParameters<SalesOrderPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new SalesOrderManager(dbFactory);
 
-            var crtPayLoad = req.Body.ToString().StringToObject<SalesOrderPayloadCreateByCentralOrderUuid>();
-            (bool ret, List<string> salesOrderNumbers) = await svc.CreateSalesOrderByChannelOrderIdAsync(crtPayLoad.CentralOrderUuid);
+            string bodyString = await req.GetBodyStringAsync();
+            var crtPayLoad = bodyString.StringToObject<SalesOrderPayloadCreateByCentralOrderUuid>();
+            (bool ret, List<string> salesOrderUuids) = await svc.CreateSalesOrderByChannelOrderIdAsync(crtPayLoad.CentralOrderUuid);
             if (ret)
             {
-                payload.Success = true;
+                crtPayLoad.Success = true;
+                crtPayLoad.SalesOrderUuids = salesOrderUuids;
             }
             else
             {
-                payload.Success = false;
+                crtPayLoad.Success = false;
+                crtPayLoad.SalesOrderUuids = new List<string>();
             }
-            payload.Messages = svc.Messages;
-            return payload;
+            crtPayLoad.Messages = svc.Messages;
+            return crtPayLoad;
         }
 
     }

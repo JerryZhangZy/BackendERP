@@ -151,17 +151,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
     }
 
-    /// <summary>
-    /// Response payload object for Create SalesOrder By CentralOrderUuid API
-    /// </summary>
-    [Serializable()]
-    public class SalesOrderPayloadCreateByCentralOrderUuid
-    {
-        [OpenApiPropertyDescription("(Response) SalesOrder Number.")]
-        public string CentralOrderUuid { get; set; }
-        public string SalesOrderNumber { get; set; }
-    }
-
     public class SalesOrderFilter
     {
         public string CustomerCode { get; set; }
@@ -191,5 +180,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
     }
 
+    /// <summary>
+    /// Response payload object for Create SalesOrder By CentralOrderUuid API
+    /// </summary>
+    [Serializable()]
+    public class SalesOrderPayloadCreateByCentralOrderUuid : SalesOrderPayload
+    {
+        [OpenApiPropertyDescription("(Response) SalesOrder UUID.")]
+        public string CentralOrderUuid { get; set; }
+        public List<string> SalesOrderUuids { get; set; }
+    }
 }
 

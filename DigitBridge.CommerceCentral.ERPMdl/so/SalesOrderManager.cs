@@ -259,7 +259,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("ChannelOrder DC Assigment not found.");
                 return (false, null);
             }
-
+            var dcAssData = dcAssigmentDataList.Select(p => new
+            {
+                Uuid = p.OrderDCAssignmentHeader.OrderDCAssignmentUuid,
+                Count = p.OrderDCAssignmentLine.Count()
+            }).ToList();
+            var dcAssDataNoLines = dcAssData.Where(p => p.Count == 0).ToList();
+            if(dcAssDataNoLines.Count > 0)
+            {
+                AddError($"No DCAssigmentLine for DCAssingmentUuid {string.Join(",", dcAssDataNoLines.Select(p => p.Uuid))}.");
+                return (false, null);
+            }
             var soDataList = new List<SalesOrderData>();
             //Create SalesOrder
             foreach (var dcAssigmentData in dcAssigmentDataList)
@@ -269,8 +279,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     soDataList.Add(soData);
             }
             bool ret = soDataList.Count > 0;
-            List<string> salesOrderNums = soDataList.Select(p => p.SalesOrderHeader.OrderNumber).ToList();
-            return (ret, salesOrderNums);
+            List<string> salesOrderUuids = soDataList.Select(p => p.SalesOrderHeader.SalesOrderUuid).ToList();
+            return (ret, salesOrderUuids);
         }
 
         /// <summary>
@@ -302,7 +312,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Check DCAssignment is already exist in sales order
         /// </summary>
-        /// <param name="orderDCAssignmentUuid"></param>
+        /// <param name="orderDCAssignmentNum"></param>
         /// <returns>Exist or Not</returns>
         protected async Task<bool> ExistDCAssignmentInSalesOrderAsync(long orderDCAssignmentNum)
         {

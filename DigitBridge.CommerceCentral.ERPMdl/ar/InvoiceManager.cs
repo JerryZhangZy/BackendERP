@@ -228,10 +228,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Load OrderShipment and SalesOrder, create Invoice for each OrderShipment.
         /// </summary>
         /// <param name="centralOrderUuid"></param>
-        /// <returns>Success Create Invoice, Invoice Number</returns>
+        /// <returns>Success Create Invoice, Invoice UUID</returns>
         public async Task<(bool, string)> CreateInvoiceByOrderShipmentIdAsync(string orderShimentUuid)
         {
-            string invoiceNumber = "";
+            string invoiceUuid = "";
 
             //Get OrderShipment by uuid
             var osData = await GetOrderShipmentAsync(orderShimentUuid);
@@ -278,9 +278,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             bool ret = invoiceData != null;
             if(ret)
             {
-                invoiceNumber = invoiceData.InvoiceHeader.InvoiceNumber;
+                invoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
             }
-            return (ret, invoiceNumber);
+            return (ret, invoiceUuid);
         }
 
         /// <summary>

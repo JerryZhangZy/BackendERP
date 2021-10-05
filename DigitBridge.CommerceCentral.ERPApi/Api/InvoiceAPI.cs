@@ -258,18 +258,21 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InvoiceManager(dbFactory);
 
-            var crtPayLoad = req.Body.ToString().StringToObject<InvoicePayloadCreateByOrderShipmentUuid>();
-            (bool ret, string invoiceNumber) = await svc.CreateInvoiceByOrderShipmentIdAsync(crtPayLoad.OrderShipmentUuid);
+            string bodyString = await req.GetBodyStringAsync();
+            var crtPayLoad = bodyString.StringToObject<InvoicePayloadCreateByOrderShipmentUuid>();
+            (bool ret, string invoiceUuid) = await svc.CreateInvoiceByOrderShipmentIdAsync(crtPayLoad.OrderShipmentUuid);
             if (ret)
             {
-                payload.Success = true;
+                crtPayLoad.Success = true;
+                crtPayLoad.InvoiceUuid = invoiceUuid;
             }
             else
             {
-                payload.Success = false;
+                crtPayLoad.Success = false;
+                crtPayLoad.InvoiceUuid = "";
             }
-            payload.Messages = svc.Messages;
-            return payload;
+            crtPayLoad.Messages = svc.Messages;
+            return crtPayLoad;
         }
      
     }
