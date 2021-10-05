@@ -117,7 +117,7 @@ namespace DigitBridge.QuickBooks.Integration
 
         public virtual async Task<bool> AddAsync(QuickBooksSettingInfoPayload payload)
         {
-            if (payload is null || !payload.HasQuickBooksSettingInfo)
+            if (payload is null || !payload.HasSettingInfo)
                 return false;
             Edit();
             if(await GetByPayloadAsync(payload))

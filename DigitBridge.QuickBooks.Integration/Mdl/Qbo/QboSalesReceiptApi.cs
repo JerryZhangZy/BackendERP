@@ -12,9 +12,19 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
     public class QboSalesReceiptApi : QboServiceBase
     {
         public QboSalesReceiptApi(IPayload payload, IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
+
+        private QueryService<SalesReceipt> _salesReceiptQueryService;
+
+        protected async Task<QueryService<SalesReceipt>> GetSalesReceiptQueryService()
+        {
+            if (_salesReceiptQueryService == null)
+                _salesReceiptQueryService = await GetQueryServiceAsync<SalesReceipt>();
+            return _salesReceiptQueryService;
+        }
+
         public async Task<bool> SalesReceiptExistAsync(string docNumber)
         {
-            var queryService = await GetQueryServiceAsync<SalesReceipt>();
+            var queryService = await GetSalesReceiptQueryService();
             return queryService.ExecuteIdsQuery($"select * from SalesReceipt Where DocNumber = '{docNumber}'").FirstOrDefault() != null;
         }
 
@@ -38,7 +48,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         /// <returns></returns>
         public async Task<SalesReceipt> GetSalesReceiptAsync(string docNumber)
         {
-            var queryService = await GetQueryServiceAsync<SalesReceipt>();
+            var queryService = await GetSalesReceiptQueryService();
             return queryService.ExecuteIdsQuery($"SELECT * FROM SalesReceipt where DocNumber = '{docNumber}'").FirstOrDefault();
         }
     }

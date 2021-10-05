@@ -7,9 +7,9 @@ namespace DigitBridge.QuickBooks.Integration
 {
     public class QboIntegrationSetting
     {
-        public long IntegrationSettingNum { get; set; }
-        public int MasterAccountNum { get; set; }
-        public int ProfileNum { get; set; }
+        //public long IntegrationSettingNum { get; set; }
+        //public int MasterAccountNum { get; set; }
+        //public int ProfileNum { get; set; }
 
         public IList<QboChnlAccSetting> QboChnlAccSettings { get; set; }
         /// <summary>

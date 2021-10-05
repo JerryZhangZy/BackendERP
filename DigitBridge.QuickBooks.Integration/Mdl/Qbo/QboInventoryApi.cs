@@ -11,6 +11,24 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
     public class QboInventoryApi : QboServiceBase
     {
         public QboInventoryApi(IPayload payload, IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
+
+
+        private QueryService<Item> _itemQueryService;
+
+        protected async Task<QueryService<Item>> GetItemQueryService()
+        {
+            if (_itemQueryService == null)
+                _itemQueryService = await GetQueryServiceAsync<Item>();
+            return _itemQueryService;
+        }
+        private QueryService<Account> _accountQueryService;
+
+        protected async Task<QueryService<Account>> GetAccountQueryService()
+        {
+            if (_accountQueryService == null)
+                _accountQueryService = await GetQueryServiceAsync<Account>();
+            return _accountQueryService;
+        }
         /// <summary>
         /// Get Item By Qbo Item Name
         /// </summary>
@@ -18,7 +36,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         /// <returns></returns>
         public async Task<Item> GetItemByNameAsync(string name)
         {
-            var itemService = await GetQueryServiceAsync<Item>();
+            var itemService = await GetItemQueryService();
             return itemService.ExecuteIdsQuery("SELECT * FROM Item where Name = '" + name + "'").FirstOrDefault();
         }
 
@@ -203,13 +221,13 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         public async Task<List<Item>> GetItemsAsync()
         {
-                var itemService = await GetQueryServiceAsync<Item>();
+                var itemService = await GetItemQueryService();
                 return itemService.ExecuteIdsQuery("SELECT * FROM Item").ToList();
         }
 
         public async Task<List<Account>> GetAccountsAsync()
         {
-            var accountService = await GetQueryServiceAsync<Account>();
+            var accountService = await GetAccountQueryService();
                 return accountService.ExecuteIdsQuery("SELECT * FROM Account where Active = true").ToList();
         }
     }

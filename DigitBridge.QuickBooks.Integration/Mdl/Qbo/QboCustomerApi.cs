@@ -13,9 +13,19 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
     {
 
         public QboCustomerApi(IPayload payload, IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
+
+        private QueryService<Customer> _customerQueryService;
+
+        protected async Task<QueryService<Customer>> GetCustomerQueryService()
+        {
+            if (_customerQueryService == null)
+                _customerQueryService = await GetQueryServiceAsync<Customer>();
+            return _customerQueryService;
+        }
+
         public async Task<List<Customer>> GetCustomersAsync()
         {
-            var customerService = await GetQueryServiceAsync<Customer>();
+            var customerService = await GetCustomerQueryService();
             return customerService.ExecuteIdsQuery("SELECT * FROM Customer").ToList();
         }
 
@@ -43,7 +53,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         public async Task<bool> CustomerExistAsync(string id)
         {
-            var queryService = await GetQueryServiceAsync<Customer>();
+            var queryService = await GetCustomerQueryService();
             return queryService.ExecuteIdsQuery($"select * from Customer Where id = '{id}'").FirstOrDefault() != null;
         }
 
@@ -76,7 +86,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         /// <returns></returns>
         public async Task<Customer> GetCustomerByIdAsync(string id)
         {
-            var customerService = await GetQueryServiceAsync<Customer>();
+            var customerService = await GetCustomerQueryService();
             return customerService.ExecuteIdsQuery("SELECT * FROM Customer where id = '" + id + "'").FirstOrDefault();
         }
     }
