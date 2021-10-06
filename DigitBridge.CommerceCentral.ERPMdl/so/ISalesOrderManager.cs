@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         byte[] Export(SalesOrderPayload payload);
         void Import(SalesOrderPayload payload, IFormFileCollection files);
         Task ImportAsync(SalesOrderPayload payload, IFormFileCollection files);
-        Task<bool> CreateSalesOrderByChannelOrderIdAsync(string centralOrderUuid);
+        Task<(bool,List<string>)> CreateSalesOrderByChannelOrderIdAsync(string centralOrderUuid);
         Task<SalesOrderData> CreateSalesOrdersAsync(ChannelOrderData coData, DCAssignmentData dcAssigmentData);
     }
 }

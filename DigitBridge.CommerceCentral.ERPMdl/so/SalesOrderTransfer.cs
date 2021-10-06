@@ -101,6 +101,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             soHeader.OrderStatus = (int)SalesOrderStatus.New;
             soHeader.OrderDate = coHeader.OriginalOrderDateUtc;
             soHeader.OrderTime = coHeader.OriginalOrderDateUtc.TimeOfDay;
+            soHeader.ShipDate = _initNowUtc;
             soHeader.DueDate = _initNowUtc;
             soHeader.BillDate = _initNowUtc;
             //CustomerUuid

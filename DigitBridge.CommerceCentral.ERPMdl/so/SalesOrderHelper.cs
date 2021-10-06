@@ -168,17 +168,17 @@ AND ProfileNum = @profileNum";
             );
         }
 
-        //        public static async Task<bool> ExistOrderDCAssignmentUuidAsync(string orderDCAssignmentUuid)
-        //        {
+        //public static async Task<bool> ExistOrderDCAssignmentUuidAsync(string orderDCAssignmentUuid)
+        //{
 
-        //            var sql = $@"
+        //    var sql = $@"
         //SELECT COUNT(1) FROM SalesOrderHeader tbl
         //WHERE OrderSourceCode = 'OrderDCAssignmentUuid:' + @orderDCAssignmentUuid
         //";
-        //            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
-        //                  orderDCAssignmentUuid.ToSqlParameter("orderDCAssignmentUuid"));
-        //            return result > 0;
-        //        }
+        //    var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+        //          orderDCAssignmentUuid.ToSqlParameter("orderDCAssignmentUuid"));
+        //    return result > 0;
+        //}
         public static async Task<bool> ExistOrderDCAssignmentNumAsync(long orderDCAssignmentNum)
         {
 

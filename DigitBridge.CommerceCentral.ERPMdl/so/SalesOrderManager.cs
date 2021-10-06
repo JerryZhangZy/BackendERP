@@ -242,24 +242,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Load Central Order and order assignment, create Sales order for each order assignment.
         /// </summary>
         /// <param name="centralOrderUuid"></param>
-        /// <returns>Success Create Sales Order</returns>
-        public async Task<bool> CreateSalesOrderByChannelOrderIdAsync(string centralOrderUuid)
+        /// <returns>Success Create Sales Order, SalesOrder Numbers</returns>
+        public async Task<(bool, List<string>)> CreateSalesOrderByChannelOrderIdAsync(string centralOrderUuid)
         {
             //Get CentralOrder by uuid
             var coData = await GetChannelOrderAsync(centralOrderUuid);
             if (coData is null)
             {
                 AddError($"ChannelOrder uuid {centralOrderUuid} not found.");
-                return false;
+                return (false, null);
             }
 
             var dcAssigmentDataList = await GetDCAssignmentAsync(centralOrderUuid);
             if (dcAssigmentDataList == null || dcAssigmentDataList.Count == 0)
             {
                 AddError("ChannelOrder DC Assigment not found.");
-                return false;
+                return (false, null);
             }
-
+            var dcAssData = dcAssigmentDataList.Select(p => new
+            {
+                Uuid = p.OrderDCAssignmentHeader.OrderDCAssignmentUuid,
+                Count = p.OrderDCAssignmentLine.Count()
+            }).ToList();
+            var dcAssDataNoLines = dcAssData.Where(p => p.Count == 0).ToList();
+            if(dcAssDataNoLines.Count > 0)
+            {
+                AddError($"No DCAssigmentLine for DCAssingmentUuid {string.Join(",", dcAssDataNoLines.Select(p => p.Uuid))}.");
+                return (false, null);
+            }
             var soDataList = new List<SalesOrderData>();
             //Create SalesOrder
             foreach (var dcAssigmentData in dcAssigmentDataList)
@@ -268,7 +278,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (soData != null)
                     soDataList.Add(soData);
             }
-            return soDataList.Count > 0;
+            bool ret = soDataList.Count > 0;
+            List<string> salesOrderUuids = soDataList.Select(p => p.SalesOrderHeader.SalesOrderUuid).ToList();
+            return (ret, salesOrderUuids);
         }
 
         /// <summary>
@@ -300,7 +312,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Check DCAssignment is already exist in sales order
         /// </summary>
-        /// <param name="orderDCAssignmentUuid"></param>
+        /// <param name="orderDCAssignmentNum"></param>
         /// <returns>Exist or Not</returns>
         protected async Task<bool> ExistDCAssignmentInSalesOrderAsync(long orderDCAssignmentNum)
         {

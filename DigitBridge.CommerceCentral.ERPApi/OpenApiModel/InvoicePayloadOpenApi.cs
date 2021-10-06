@@ -172,5 +172,16 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
     }
 
+    /// <summary>
+    /// Response payload object for Create Invoice By OrderShipmentUuid API
+    /// </summary>
+    [Serializable()]
+    public class InvoicePayloadCreateByOrderShipmentUuid : InvoicePayload
+    {
+        [OpenApiPropertyDescription("(Response) Invoice Number.")]
+        
+        public string OrderShipmentUuid { get; set; }
+        public string InvoiceUuid { get; set; }
+    }
 }
 
