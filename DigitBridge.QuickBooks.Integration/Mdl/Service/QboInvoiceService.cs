@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.QuickBooks.Integration.Mdl.Qbo;
+using System.Collections.Generic;
 
 namespace DigitBridge.QuickBooks.Integration
 {
@@ -14,10 +15,15 @@ namespace DigitBridge.QuickBooks.Integration
     {
         private InvoiceData _invoiceData;
         private QboIntegrationSetting _setting;
-        private QuickBooksExportLog _exportLog;
-        private InvoicePayload _payload;
+        private QboInvoicePayload _payload;
 
-        public QboInvoiceService(InvoicePayload payload, IDataBaseFactory dbFactory) : base(payload, dbFactory)
+        #region Service Property 
+        private InvoiceService _invoiceService;
+        protected InvoiceService invoiceService => _invoiceService ??= new InvoiceService(dbFactory);
+
+        #endregion
+
+        public QboInvoiceService(QboInvoicePayload payload, IDataBaseFactory dbFactory) : base(payload, dbFactory)
         {
             this._payload = payload;
         }
@@ -25,30 +31,21 @@ namespace DigitBridge.QuickBooks.Integration
         #region prepare data 
         protected async Task<bool> LoadInvoiceData(string invoiceNumber)
         {
-            var srv = new InvoiceService(dbFactory);
-            _payload.Success = await srv.GetDataAsync(_payload, invoiceNumber);
-            _payload.Messages = srv.Messages;
+            _payload.Success = await invoiceService.GetDataAsync(_payload, invoiceNumber);
+            _payload.Messages = invoiceService.Messages;
             if (_payload.Success)
-                _invoiceData = srv.Data;
+                _invoiceData = invoiceService.Data;
             return _payload.Success;
         }
-        protected async Task<bool> LoadExportLog()
-        {
-            var list = await QuickBooksExportLogService.QueryExportLogByLogUuidAsync(_invoiceData.InvoiceHeader.InvoiceUuid);
-            if (list != null)
-                _exportLog = list.FirstOrDefault();
-            if (_exportLog == null)
-                _exportLog = new QuickBooksExportLog();
-            return true;
-        }
+
         protected async Task<bool> LoadSetting()
         {
             var srv = new QuickBooksSettingInfoService(dbFactory);
             _payload.Success = await srv.GetByPayloadAsync(_payload);
             _payload.Messages = srv.Messages;
             if (_payload.Success)
-                _setting = srv.Data.QuickBooksSettingInfo.Setting;  
-            return _payload.Success; 
+                _setting = srv.Data.QuickBooksSettingInfo.Setting;
+            return _payload.Success;
         }
         #endregion
 
@@ -72,7 +69,9 @@ namespace DigitBridge.QuickBooks.Integration
                 LogUuid = _invoiceData.UniqueId,
                 DocNumber = qboInvoice.DocNumber,
                 TxnId = qboInvoice.Id,
-                DocStatus = (int)qboInvoice.status
+                DocStatus = (int)qboInvoice.status,
+                LogDate=DateTime.UtcNow.Date,
+                LogTime=DateTime.UtcNow.TimeOfDay
             };
             _payload.Success = await AddExportLogAsync(log);
             return _payload.Success;
@@ -85,19 +84,23 @@ namespace DigitBridge.QuickBooks.Integration
         /// <returns></returns>
         protected async Task<bool> WriteDocNumberToErpInvoice(string docNumber)
         {
-            var service = new InvoiceService(dbFactory);
-            _payload.Success = await service.UpdateInvoiceDocNumberAsync(_invoiceData.UniqueId, docNumber);
-            _payload.Messages = service.Messages;
+            _payload.Success = await invoiceService.UpdateInvoiceDocNumberAsync(_invoiceData.UniqueId, docNumber);
+            _payload.Messages = invoiceService.Messages;
             return _payload.Success;
         }
         #endregion
 
-        #region Export erp invoice to qbo
+        #region Qbo invoice operation.
+        /// <summary>
+        /// Export erp invoice to qbo invoice by erp invoice number.
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
         public async Task<bool> Export(string invoiceNumber)
         {
             var success = await LoadInvoiceData(invoiceNumber);
             success = success && await LoadSetting();
-            success = success && await LoadExportLog();
+            success = success && await LoadExportLog(_invoiceData.InvoiceHeader.InvoiceUuid);
             if (!success) return success;
 
             var mapper = new QboInvoiceMapper(_setting, _exportLog);
@@ -105,6 +108,7 @@ namespace DigitBridge.QuickBooks.Integration
             try
             {
                 qboInvoice = await CreateOrUpdateInvoice(qboInvoice);
+                _payload.QboInvoice = qboInvoice;
             }
             catch (Exception e)
             {
@@ -116,9 +120,85 @@ namespace DigitBridge.QuickBooks.Integration
             return success;
         }
 
-        #endregion
+        /// <summary>
+        /// get qbo invoice list by erp invoice number.
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public async Task<bool> GetQboInvoiceList(string invoiceNumber)
+        {
+            var success = await LoadInvoiceData(invoiceNumber);
+            if (!success) return success;
+            try
+            {
+                _payload.QboInvoices = await GetInvoiceAsync(_invoiceData.InvoiceHeader.QboDocNumber);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"GetQboInvoiceList by erp invoiceNumber:{invoiceNumber} ", e);
+            }
+            return success;
+        }
 
-        #region Query invoice from qbo
+        /// <summary>
+        /// delete qbo invoice list by erp invoice number.
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteQboInvoiceList(string invoiceNumber)
+        {
+            var success = await LoadInvoiceData(invoiceNumber);
+            if (!success) return success;
+
+            if (string.IsNullOrEmpty(_invoiceData.InvoiceHeader.QboDocNumber))
+            {
+                AddInfo("Data not found.");
+                _payload.Success = false;
+                _payload.Messages = this.Messages;
+                return _payload.Success;
+            }
+
+            try
+            {
+                _payload.QboInvoices = await DeleteInvoiceAsync(_invoiceData.InvoiceHeader.QboDocNumber);
+                await WriteDocNumberToErpInvoice(string.Empty);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"DeleteQboInvoiceList by erp invoiceNumber:{invoiceNumber} ", e);
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// void qbo invoice list by erp invoice number.
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public async Task<bool> VoidQboInvoiceList(string invoiceNumber)
+        {
+            var success = await LoadInvoiceData(invoiceNumber);
+            if (!success) return success;
+
+            if (string.IsNullOrEmpty(_invoiceData.InvoiceHeader.QboDocNumber))
+            {
+                AddInfo("Data not found.");
+                _payload.Success = false;
+                _payload.Messages = Messages;
+                return _payload.Success;
+            }
+
+            try
+            {
+                _payload.QboInvoices = await VoidInvoiceAsync(_invoiceData.InvoiceHeader.QboDocNumber);
+                await WriteDocNumberToErpInvoice(string.Empty);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"DeleteQboInvoiceList by erp invoiceNumber:{invoiceNumber} ", e);
+            }
+            return success;
+        }
 
         #endregion
     }

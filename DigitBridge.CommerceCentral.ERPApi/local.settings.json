@@ -7,14 +7,14 @@
 
     //local
     "DebugMode": "true",
-    "UseOrchestration": "false",
-    "OrchestrationDbConnString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
-    "OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
-    "DBConnectionString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
-    "DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
-    "UseAzureManagedIdentity": "false",
-    "AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
-    "DefaultCacheExpireSlidingMins": "2",
+    //"UseOrchestration": "false",
+    //"OrchestrationDbConnString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
+    //"OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
+    //"DBConnectionString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
+    //"DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    //"UseAzureManagedIdentity": "false",
+    //"AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
+    //"DefaultCacheExpireSlidingMins": "2",
     "SentryEnable": true, //Enable Sentrylog
     "SeriEnable": true, //Enable Serilog
     "SentryDsn": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",
@@ -29,7 +29,7 @@
     "QuickBooks_AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "QuickBooks_OAuthTableName": "QuickBookOAuthTable",
     "QuickBooks_DebugTableName": "QuickBookDebugTable",
-    "QuickBooks_IsDebug": "true"
+    "QuickBooks_IsDebug": "true",
     //test
     //"UseOrchestration": "false",
     //"OrchestrationDbConnString": "Server=bobotestsql.database.windows.net,1433;Initial Catalog=TestOrchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;",
@@ -41,14 +41,14 @@
     //"DefaultCacheExpireSlidingMins": "2"
 
     //dev
-    //"UseOrchestration": "true",
-    //"OrchestrationDbConnString": "Server=bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-Orchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;",
-    //"OrchestrationDbTenantId": "",
-    //"DBConnectionString": "Server=tcp:bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168",
-    //"DbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e"
-    //"UseAzureManagedIdentity": "false",
-    //"AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio"
-    //"DefaultCacheExpireSlidingMins": "2",
+    "UseOrchestration": "true",
+    "OrchestrationDbConnString": "Server=bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-Orchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;",
+    "OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
+    "DBConnectionString": "Server=tcp:bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168",
+    "DbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
+    "UseAzureManagedIdentity": "false",
+    "AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
+    "DefaultCacheExpireSlidingMins": "2"
 
     //Staging
     //"UseOrchestration": "true",

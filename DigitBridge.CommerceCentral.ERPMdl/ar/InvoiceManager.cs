@@ -228,15 +228,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Load OrderShipment and SalesOrder, create Invoice for each OrderShipment.
         /// </summary>
         /// <param name="centralOrderUuid"></param>
-        /// <returns>Success Create Sales Order</returns>
-        public async Task<bool> CreateInvoiceByOrderShipmentIdAsync(string orderShimentUuid)
+        /// <returns>Success Create Invoice, Invoice UUID</returns>
+        public async Task<(bool, string)> CreateInvoiceByOrderShipmentIdAsync(string orderShimentUuid)
         {
+            string invoiceUuid = "";
+
             //Get OrderShipment by uuid
             var osData = await GetOrderShipmentAsync(orderShimentUuid);
             if (osData is null)
             {
                 AddError($"OrderShipment uuid {orderShimentUuid} not found.");
-                return false;
+                return (false, "");
             }
 
             //Get Sale by uuid
@@ -247,32 +249,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (orderDCAssignmentNum == 0)
                 {
                     AddError($"No OrderDCAssignmentNum of OrderShipment {orderShimentUuid}.");
-                    return false;
+                    return (false, "");
                 }
                 salesOrderUuid = await GetSalesOrderUuidAsync(orderDCAssignmentNum);
             }
             if (string.IsNullOrEmpty(salesOrderUuid))
             {
                 AddError($"SalesOrder uuid {orderShimentUuid} not found.");
-                return false;
+                return (false, "");
             }
 
             if ((await ExistSalesOrderInInvoiceAsync(salesOrderUuid)))
             {
                 AddError($"SalesOrderUuid {salesOrderUuid} has transferred to sales order.");
-                return false;
+                return (false, "");
             }
 
             var soData = await GetSalesOrderAsync(salesOrderUuid);
             if (soData is null)
             {
                 AddError($"SalesOrder {salesOrderUuid} not found.");
-                return false;
+                return (false, "");
             }
        
             //Create Invoice
             var invoiceData = await CreateInvoiceAsync(osData, soData);
-            return invoiceData != null;
+
+            bool ret = invoiceData != null;
+            if(ret)
+            {
+                invoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
+            }
+            return (ret, invoiceUuid);
         }
 
         /// <summary>

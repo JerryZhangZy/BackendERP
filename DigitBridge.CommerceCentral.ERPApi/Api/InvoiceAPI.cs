@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-
+using DigitBridge.Base.Utility;
 namespace DigitBridge.CommerceCentral.ERPApi
 {
 
@@ -237,6 +237,44 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Messages = svc.Messages;
             return payload;
         }
+
+        /// <summary>
+        /// Create Invoice by OrderShipmentUuid
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(CreateInvoiceByOrderShipmentUuid))]
+        [OpenApiOperation(operationId: "CreateInvoiceByOrdershipmentUuid", tags: new[] { "Invoices" }, Summary = "Create invoice by OrderShipmentUuid")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePayloadCreateByOrderShipmentUuid), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadCreateByOrderShipmentUuid))]
+        public static async Task<InvoicePayload> CreateInvoiceByOrderShipmentUuid(
+            [HttpTrigger(AuthorizationLevel.Function, "POST"
+            , Route = "invoices/createinvoicebyordershipmentuuid")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InvoicePayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new InvoiceManager(dbFactory);
+
+            string bodyString = await req.GetBodyStringAsync();
+            var crtPayLoad = bodyString.StringToObject<InvoicePayloadCreateByOrderShipmentUuid>();
+            (bool ret, string invoiceUuid) = await svc.CreateInvoiceByOrderShipmentIdAsync(crtPayLoad.OrderShipmentUuid);
+            if (ret)
+            {
+                crtPayLoad.Success = true;
+                crtPayLoad.InvoiceUuid = invoiceUuid;
+            }
+            else
+            {
+                crtPayLoad.Success = false;
+                crtPayLoad.InvoiceUuid = "";
+            }
+            crtPayLoad.Messages = svc.Messages;
+            return crtPayLoad;
+        }
+     
     }
 }
 
