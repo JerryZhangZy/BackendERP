@@ -39,7 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Load Invoice data.
         /// </summary>
         /// <param name="invoiceUuid"></param>
-        private void LoadInvoice(string invoiceNumber, int profileNum, int masterAccountNum)
+        protected void LoadInvoice(string invoiceNumber, int profileNum, int masterAccountNum)
         {
             // load invoice data
             var invoiceData = new InvoiceData(dbFactory);
@@ -307,10 +307,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             List();
             if (string.IsNullOrEmpty(invoiceNumber)) return null;
-            LoadInvoice(invoiceNumber, profileNum, masterAccountNum);
+            //LoadInvoice(invoiceNumber, profileNum, masterAccountNum);
             return await _data.GetDataListAsync(invoiceNumber, masterAccountNum, profileNum, transType, transNum);
         }
-        protected virtual async Task<List<InvoiceTransactionDataDto>> GetDtoListAsync(int masterAccountNum, int profileNum, string invoiceNumber, TransTypeEnum transType, int? transNum = null)
+        public virtual async Task<List<InvoiceTransactionDataDto>> GetDtoListAsync(int masterAccountNum, int profileNum, string invoiceNumber, TransTypeEnum transType, int? transNum = null)
         {
             if (string.IsNullOrEmpty(invoiceNumber)) return null;
             var dataList = await GetDataListAsync(masterAccountNum, profileNum, invoiceNumber, transType, transNum);

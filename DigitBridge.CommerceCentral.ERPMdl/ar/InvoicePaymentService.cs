@@ -34,13 +34,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task GetPaymentWithInvoiceHeaderAsync(InvoicePaymentPayload payload, string invoiceNumber, int? transNum = null)
         {
-            payload.InvoiceTransactions = await GetDtoListAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber,TransTypeEnum.Payment, transNum);
+            payload.InvoiceTransactions = await GetDtoListAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, TransTypeEnum.Payment, transNum);
             payload.InvoiceHeader = await GetInvoiceHeaderAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
             payload.Success = true;
             payload.Messages = this.Messages;
         }
 
-
+        /// <summary>
+        /// get payments and invoice data.
+        /// </summary>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        /// <param name="invoiceNumber"></param>
+        /// <param name="transNum"></param>
+        /// <returns></returns>
+        public virtual async Task<(List<InvoiceTransaction>, InvoiceData)> GetPaymentsWithInvoice(int masterAccountNum, int profileNum, string invoiceNumber, int? transNum = null)
+        {
+            var tranDatas = await GetDataListAsync(masterAccountNum, profileNum, invoiceNumber, TransTypeEnum.Payment, transNum);
+            var payments = new List<InvoiceTransaction>();
+            if (tranDatas != null && tranDatas.Count > 0)
+            {
+                payments = tranDatas.Select(i => i.InvoiceTransaction).ToList();
+            }
+            LoadInvoice(invoiceNumber, profileNum, masterAccountNum);
+            return (payments, Data.InvoiceData);
+        }
 
 
         //public virtual async Task<bool> AddAsync(InvoicePaymentPayload payload)
@@ -75,8 +93,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //}
 
         public async Task<bool> GetByNumberAsync(InvoicePaymentPayload payload, string invoiceNumber, int transNum)
-        { 
-            payload.Success= await base.GetByNumberAsync(payload, invoiceNumber, TransTypeEnum.Payment, transNum);
+        {
+            payload.Success = await base.GetByNumberAsync(payload, invoiceNumber, TransTypeEnum.Payment, transNum);
             payload.InvoiceTransaction = this.ToDto();
             payload.InvoiceHeader = await GetInvoiceHeaderAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
             return payload.Success;
@@ -101,7 +119,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             return base.DeleteByNumber(payload, invoiceNumber, TransTypeEnum.Payment, transNum);
         }
-         
+
     }
 }
 
