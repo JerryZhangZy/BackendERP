@@ -13,7 +13,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
     public class QboInvoiceApi : QboServiceBase
     {
-        public QboInvoiceApi(IPayload payload , IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
+        public QboInvoiceApi(IPayload payload, IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
 
         public async Task<Invoice> CreateOrUpdateInvoice(Invoice invoice)
         {
@@ -49,14 +49,16 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return null;
         }
 
-        public async Task<Invoice> DeleteInvoiceAsync(string docNumber)
+        public async Task<List<Invoice>> DeleteInvoiceAsync(string docNumber)
         {
-            var invoice = await GetInvoiceAsync(docNumber);
-            if (invoice != null)
+            var results = new List<Invoice>();
+            var invoices = await GetInvoiceAsync(docNumber);
+            if (invoices != null && invoices.Count > 0)
             {
-                return await DeleteInvoiceAsync(invoice);
+                foreach (var invoice in invoices)
+                    results.Add(await DeleteInvoiceAsync(invoice));
             }
-            return null;
+            return results;
         }
 
         public async Task<Invoice> UpdateInvoiceAsync(Invoice invoice)
@@ -65,14 +67,26 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         }
 
         /// <summary>
-        /// Get Invoice by DocNumber( DigibridgeOrderId )
+        /// Get qbo Invoice list by DocNumber 
         /// </summary>
         /// <param name="docNumber"></param>
         /// <returns></returns>
-        public async Task<Invoice> GetInvoiceAsync(string docNumber)
+        public async Task<List<Invoice>> GetInvoiceAsync(string docNumber)
         {
             var queryService = await GetQueryServiceAsync<Invoice>();
-            return queryService.ExecuteIdsQuery($"SELECT * FROM Invoice where DocNumber = '{docNumber}'").FirstOrDefault();
+            return queryService.ExecuteIdsQuery($"SELECT * FROM Invoice where DocNumber = '{docNumber}'").ToList();
+        }
+
+        public async Task<List<Invoice>> VoidInvoiceAsync(string docNumber)
+        {
+            var results = new List<Invoice>();
+            var invoices = await GetInvoiceAsync(docNumber);
+            if (invoices != null && invoices.Count > 0)
+            {
+                foreach (var invoice in invoices)
+                    results.Add(await VoidDataAsync(invoice));
+            }
+            return results;
         }
     }
 }

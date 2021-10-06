@@ -79,6 +79,13 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return new QueryService<T>(_serviceContext);
         }
 
+        public async Task<T> VoidDataAsync<T>(T entity) where T : IEntity
+        {
+            await CheckInitialed();
+            return _dataService.Void(entity);
+        }
+
+
         #region Messages
         protected IList<MessageClass> _messages;
         [XmlIgnore, JsonIgnore]
