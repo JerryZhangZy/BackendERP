@@ -84,15 +84,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             await CheckInitialed();
             return new QueryService<T>(_serviceContext);
-        }
-
-        public async Task<T> VoidDataAsync<T>(T entity) where T : IEntity
-        {
-            await CheckInitialed();
-            return _dataService.Void(entity);
-        }
-
-
+        }  
         public async Task<T> FindByIdAsync<T>(T entity) where T : IEntity
         {
             await CheckInitialed();

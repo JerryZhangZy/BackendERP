@@ -87,7 +87,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         /// <returns></returns>
         public async Task<List<Invoice>> GetInvoiceAsync(string docNumber)
         {
-            var queryService = await GetQueryServiceAsync<Invoice>();
+            var queryService = await GetInvoiceQueryService();
             return queryService.ExecuteIdsQuery($"SELECT * FROM Invoice where DocNumber = '{docNumber}'").ToList();
         }
 
