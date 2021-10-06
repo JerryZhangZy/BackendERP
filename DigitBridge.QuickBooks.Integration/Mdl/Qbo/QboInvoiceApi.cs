@@ -15,6 +15,15 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
     {
         public QboInvoiceApi(IPayload payload, IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
 
+        private QueryService<Invoice> _invoiceQueryService;
+
+        protected async Task<QueryService<Invoice>> GetInvoiceQueryService()
+        {
+            if (_invoiceQueryService == null)
+                _invoiceQueryService = await GetQueryServiceAsync<Invoice>();
+            return _invoiceQueryService;
+        }
+
         public async Task<Invoice> CreateOrUpdateInvoice(Invoice invoice)
         {
             if (!await InvoiceExistAsync(invoice.DocNumber))
@@ -38,7 +47,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         public async Task<bool> InvoiceExistAsync(string docNumber)
         {
-            var queryService = await GetQueryServiceAsync<Invoice>();
+            var queryService = await GetInvoiceQueryService();
             return queryService.ExecuteIdsQuery($"select * from Invoice Where DocNumber = '{docNumber}'").FirstOrDefault() != null;
         }
 
@@ -59,6 +68,11 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                     results.Add(await DeleteInvoiceAsync(invoice));
             }
             return results;
+        }
+
+        public async Task<Invoice> AvoidInvoiceAsync(Invoice invoice)
+        {
+                return await VoidDataAsync(invoice);
         }
 
         public async Task<Invoice> UpdateInvoiceAsync(Invoice invoice)

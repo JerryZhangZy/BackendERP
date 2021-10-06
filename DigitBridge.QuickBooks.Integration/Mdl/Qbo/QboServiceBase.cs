@@ -74,6 +74,12 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return _dataService.Delete(entity);
         }
 
+        public async Task<T> VoidDataAsync<T>(T entity) where T : IEntity
+        {
+            await CheckInitialed();
+            return _dataService.Void(entity);
+        }
+
         public async Task<QueryService<T>> GetQueryServiceAsync<T>()
         {
             await CheckInitialed();
@@ -87,7 +93,15 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         }
 
 
+        public async Task<T> FindByIdAsync<T>(T entity) where T : IEntity
+        {
+            await CheckInitialed();
+            return _dataService.FindById(entity);
+        }
         #region Messages
+
+        public bool HasMessages => Messages.Count > 0;
+
         protected IList<MessageClass> _messages;
         [XmlIgnore, JsonIgnore]
         public virtual IList<MessageClass> Messages
@@ -186,6 +200,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             }
             catch (Exception ex)
             {
+                AddError("Qbo Connection GetServiceContext Error");
                 string additionalMsg = "Qbo Connection GetServiceContext Error" + CommonConst.NewLine;
                 throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
             }
