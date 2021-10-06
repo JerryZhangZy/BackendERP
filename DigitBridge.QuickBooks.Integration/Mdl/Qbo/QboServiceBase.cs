@@ -28,13 +28,14 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         protected QuickBooksConnectionInfo _qboConnectionInfo;
         private QuickBooksConnectionInfoService quickBooksConnectionInfoService;
         private QboConnectionTokenStatus _qboConnectionTokenStatus;
-        private ConnectionTokenStatus _connectionStatus=ConnectionTokenStatus.UnInitalized;
+        private ConnectionTokenStatus _connectionStatus = ConnectionTokenStatus.UnInitalized;
         protected IDataBaseFactory dbFactory;
         protected IPayload payload;
+        protected QuickBooksExportLog _exportLog;
 
         public QboServiceBase() { }
 
-        public QboServiceBase(IPayload pl , IDataBaseFactory databaseFactory)
+        public QboServiceBase(IPayload pl, IDataBaseFactory databaseFactory)
         {
             this.payload = pl;
             this.dbFactory = databaseFactory;
@@ -55,22 +56,22 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             }
         }
 
-        public async Task<T> AddDataAsync<T>(T entity) where T:IEntity
+        public async Task<T> AddDataAsync<T>(T entity) where T : IEntity
         {
             await CheckInitialed();
-            return _dataService.Add(entity) ;
+            return _dataService.Add(entity);
         }
 
-        public async Task<T> UpdateDataAsync<T>(T entity) where T:IEntity
+        public async Task<T> UpdateDataAsync<T>(T entity) where T : IEntity
         {
             await CheckInitialed();
-            return _dataService.Update(entity) ;
+            return _dataService.Update(entity);
         }
 
-        public async Task<T> DeleteDataAsync<T>(T entity) where T:IEntity
+        public async Task<T> DeleteDataAsync<T>(T entity) where T : IEntity
         {
             await CheckInitialed();
-            return _dataService.Delete(entity) ;
+            return _dataService.Delete(entity);
         }
 
         public async Task<QueryService<T>> GetQueryServiceAsync<T>()
@@ -116,7 +117,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             if (_qboConnectionInfo == null)
             {
-                 if(await quickBooksConnectionInfoService.GetByPayloadAsync(payload))
+                if (await quickBooksConnectionInfoService.GetByPayloadAsync(payload))
                 {
                     _qboConnectionInfo = quickBooksConnectionInfoService.Data.QuickBooksConnectionInfo;
                 }
@@ -128,7 +129,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             if (_qboConnectionInfo == null)
             {
-                 if(quickBooksConnectionInfoService.GetByPayload(payload))
+                if (quickBooksConnectionInfoService.GetByPayload(payload))
                 {
                     _qboConnectionInfo = quickBooksConnectionInfoService.Data.QuickBooksConnectionInfo;
                 }
@@ -177,7 +178,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 _auth2Client = new OAuth2Client(_qboConnectionInfo.ClientId, _qboConnectionInfo.ClientSecret
                     , MyAppSetting.RedirectUrl, MyAppSetting.Environment);
                 _oauthValidator = new OAuth2RequestValidator(_qboConnectionInfo.AccessToken);
-                _serviceContext = new ServiceContext(_qboConnectionInfo.RealmId, IntuitServicesType.QBO, _oauthValidator); 
+                _serviceContext = new ServiceContext(_qboConnectionInfo.RealmId, IntuitServicesType.QBO, _oauthValidator);
                 _serviceContext.IppConfiguration.MinorVersion.Qbo = MyAppSetting.MinorVersion;
                 _serviceContext.IppConfiguration.BaseUrl.Qbo = MyAppSetting.BaseUrl;
                 _dataService = new DataService(_serviceContext);
@@ -338,6 +339,16 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         public virtual async Task<bool> AddExportLogAsync(QuickBooksExportLog log)
         {
             return await QuickBooksExportLogService.AddExportLogAsync(log);
+        }
+
+        protected async Task<bool> LoadExportLog(string uuid)
+        {
+            var list = await QuickBooksExportLogService.QueryExportLogByLogUuidAsync(uuid);
+            if (list != null)
+                _exportLog = list.FirstOrDefault();
+            if (_exportLog == null)
+                _exportLog = new QuickBooksExportLog();
+            return true;
         }
     }
 }

@@ -15,7 +15,6 @@ namespace DigitBridge.QuickBooks.Integration
     {
         private InvoiceData _invoiceData;
         private QboIntegrationSetting _setting;
-        private QuickBooksExportLog _exportLog;
         private QboInvoicePayload _payload;
 
         #region Service Property 
@@ -38,15 +37,7 @@ namespace DigitBridge.QuickBooks.Integration
                 _invoiceData = invoiceService.Data;
             return _payload.Success;
         }
-        protected async Task<bool> LoadExportLog()
-        {
-            var list = await QuickBooksExportLogService.QueryExportLogByLogUuidAsync(_invoiceData.InvoiceHeader.InvoiceUuid);
-            if (list != null)
-                _exportLog = list.FirstOrDefault();
-            if (_exportLog == null)
-                _exportLog = new QuickBooksExportLog();
-            return true;
-        }
+
         protected async Task<bool> LoadSetting()
         {
             var srv = new QuickBooksSettingInfoService(dbFactory);
@@ -107,7 +98,7 @@ namespace DigitBridge.QuickBooks.Integration
         {
             var success = await LoadInvoiceData(invoiceNumber);
             success = success && await LoadSetting();
-            success = success && await LoadExportLog();
+            success = success && await LoadExportLog(_invoiceData.InvoiceHeader.InvoiceUuid);
             if (!success) return success;
 
             var mapper = new QboInvoiceMapper(_setting, _exportLog);
