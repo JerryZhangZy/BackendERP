@@ -31,3 +31,11 @@ BEGIN
 		[ShipDate] ASC
 	) 
 END	 
+
+
+-- 09/24/2021 By wenjian
+IF COL_LENGTH('InvoiceHeader', 'QboDocNumber') IS NULL					
+BEGIN					
+    ALTER TABLE InvoiceHeader ADD [QboDocNumber] VARCHAR(50) NOT NULL DEFAULT ''
+	--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_ShipDate')
+END	 

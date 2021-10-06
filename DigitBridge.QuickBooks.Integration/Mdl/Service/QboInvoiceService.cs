@@ -69,7 +69,9 @@ namespace DigitBridge.QuickBooks.Integration
                 LogUuid = _invoiceData.UniqueId,
                 DocNumber = qboInvoice.DocNumber,
                 TxnId = qboInvoice.Id,
-                DocStatus = (int)qboInvoice.status
+                DocStatus = (int)qboInvoice.status,
+                LogDate=DateTime.UtcNow.Date,
+                LogTime=DateTime.UtcNow.TimeOfDay
             };
             _payload.Success = await AddExportLogAsync(log);
             return _payload.Success;
