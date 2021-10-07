@@ -150,8 +150,10 @@ namespace DigitBridge.QuickBooks.Integration
             payment.TxnDateSpecified = true;
             payment.TotalAmt = tran.TotalAmount;
             payment.TotalAmtSpecified = true;
-            payment.Id = exportLog.TxnId;
+            payment.Id = string.IsNullOrEmpty(exportLog.TxnId) ? null : exportLog.TxnId;
             payment.PaymentType = ConvertPaymentType(tran.PaidBy);
+            payment.PrivateNote = tran.Notes;
+            payment.SyncToken = (exportLog.SyncToken + 1).ToString();
             //payment.PaymentMethodRef = new ReferenceType()
             //{
             //    Value = ConvertPaymentMethod(tran.PaidBy).ToString()

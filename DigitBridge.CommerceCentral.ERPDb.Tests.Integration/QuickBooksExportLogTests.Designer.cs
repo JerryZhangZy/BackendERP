@@ -22,7 +22,6 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using Bogus;
-using DigitBridge.QuickBooks.Integration;
 
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
@@ -48,6 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.LogDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.LogTime, f => f.Date.Timespan())
 					.RuleFor(u => u.LogBy, f => f.Lorem.Sentence().TruncateTo(100))
+					.RuleFor(u => u.SyncToken, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.TxnId, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					;

@@ -84,7 +84,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             await CheckInitialed();
             return new QueryService<T>(_serviceContext);
-        }  
+        }
         public async Task<T> FindByIdAsync<T>(T entity) where T : IEntity
         {
             await CheckInitialed();
@@ -343,9 +343,23 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             }
         }
 
-        public virtual async Task<bool> AddExportLogAsync(QuickBooksExportLog log)
+        public virtual async Task<bool> SaveExportLogAsync()
         {
-            return await QuickBooksExportLogService.AddExportLogAsync(log);
+            _exportLog.DatabaseNum = payload.DatabaseNum;
+            _exportLog.MasterAccountNum = payload.MasterAccountNum;
+            _exportLog.ProfileNum = payload.ProfileNum;
+            _exportLog.LogDate = DateTime.UtcNow.Date;
+            _exportLog.LogTime = DateTime.UtcNow.TimeOfDay;
+            if (_exportLog.RowNum.IsZero())
+            {
+                _exportLog.QuickBooksExportLogUuid = Guid.NewGuid().ToString();
+                _exportLog.BatchNum = 0;
+                return await QuickBooksExportLogService.AddExportLogAsync(_exportLog);
+            }
+            else
+            {
+                return await QuickBooksExportLogService.UpdateExportLogAsync(_exportLog);
+            }
         }
 
         protected async Task<bool> LoadExportLog(string uuid)

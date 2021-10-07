@@ -63,7 +63,7 @@ namespace DigitBridge.QuickBooks.Integration
             if (string.IsNullOrEmpty(_setting.Qbo2ndChnlOrderIdCustFieldId))
             {
                 _setting.Qbo2ndChnlOrderIdCustFieldId = QboMappingConsts.Qbo2ndChnlOrderIdCustFieldId;
-            } 
+            }
         }
 
         #region Qbo lines 
@@ -247,7 +247,7 @@ namespace DigitBridge.QuickBooks.Integration
             line.AmountSpecified = true;
             //line.AnyIntuitObject = new DescriptionLineDetail
             //{
-                 
+
             //};
             line.DetailType = LineDetailTypeEnum.DescriptionOnly;
             line.DetailTypeSpecified = true;
@@ -265,7 +265,8 @@ namespace DigitBridge.QuickBooks.Integration
             var invoiceHeader = invoiceData.InvoiceHeader;
             var invoiceInfo = invoiceData.InvoiceHeaderInfo;
 
-            //invoice.Id = _exportLog.TxnId;
+            invoice.Id = string.IsNullOrEmpty(_exportLog.TxnId)? null: _exportLog.TxnId;
+            invoice.SyncToken = (_exportLog.SyncToken + 1).ToString(); 
             //invoice.DocNumber = _exportLog.DocNumber;
             invoice.Balance = invoiceHeader.Balance;
             invoice.TotalAmt = invoiceHeader.TotalAmount;
