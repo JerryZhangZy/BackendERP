@@ -116,13 +116,14 @@ namespace DigitBridge.QuickBooks.Integration
     public enum TaxExportRule
     {
         /// <summary>
-        /// Export tax as Qbo Invoice Tax Detail
-        /// </summary>
-        InvoiceTaxDetail = 0,
-        /// <summary>
         /// Export tax as Qbo Invoice Line
         /// </summary>
-        ItemLine = 1,
+        ItemLine = 0,
+        /// <summary>
+        /// Export tax as Qbo Invoice Tax Detail
+        /// </summary>
+        InvoiceTaxDetail = 1,
+
 
     }
 }

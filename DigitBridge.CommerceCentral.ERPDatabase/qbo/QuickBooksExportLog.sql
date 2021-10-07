@@ -16,6 +16,7 @@
 	[LogTime] TIME NOT NULL, --Log time. <br> Title: Time, Display: true, Editable: false
 	[LogBy] Varchar(100) NOT NULL DEFAULT '', --Log create by. <br> Title: By, Display: true, Editable: false
 
+    [SyncToken] int not null default 0, --Version number of the object in QuickBooks
     [TxnId] VARCHAR(100) NOT NULL DEFAULT '', --QuickBooks TxnId.<br> Title: TxnId, Display: true, Editable: false
 
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) User who created this transaction. <br> Title: Created By, Display: true, Editable: false

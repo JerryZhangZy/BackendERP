@@ -78,20 +78,17 @@ namespace DigitBridge.QuickBooks.Integration
         /// <returns></returns>
         protected async Task<bool> WriteQboPaymentToExportLog(Payment qboPayment, string paymentTransUuid)
         {
-            var log = new QuickBooksExportLog
+            if (_exportLog == null)
             {
-                DatabaseNum = _payload.DatabaseNum,
-                MasterAccountNum = _payload.MasterAccountNum,
-                ProfileNum = _payload.ProfileNum,
-                QuickBooksExportLogUuid = Guid.NewGuid().ToString(),
-                BatchNum = 0,
-                LogType = "Payment",
-                LogUuid = paymentTransUuid,
-                DocNumber = qboPayment.DocNumber,
-                TxnId = qboPayment.Id,
-                DocStatus = (int)qboPayment.status
-            };
-            _payload.Success = await AddExportLogAsync(log);
+                _exportLog = new QuickBooksExportLog();
+            }
+            _exportLog.LogType = "Payment";
+            _exportLog.LogUuid = paymentTransUuid;
+            _exportLog.DocNumber = qboPayment.DocNumber ?? string.Empty;
+            _exportLog.TxnId = qboPayment.Id;
+            _exportLog.DocStatus = (int)qboPayment.status;
+            _exportLog.SyncToken = int.Parse(qboPayment.SyncToken);
+            _payload.Success = await SaveExportLogAsync();
             return _payload.Success;
         }
 
@@ -115,8 +112,8 @@ namespace DigitBridge.QuickBooks.Integration
                 success = success && await LoadExportLog(payment.TransUuid);
                 if (!success) return success;
 
-                var mapper = new QboPaymentMapper(_setting, _exportLog);
-                var qboPayment = mapper.ToPayment(payment, invoiceTxtId, invoiceData);
+                var mapper = new QboPaymentMapper(_setting, _exportLog, invoiceTxtId);
+                var qboPayment = mapper.ToPayment(payment, invoiceData);
                 try
                 {
                     qboPayment = await CreateOrUpdatePayment(qboPayment);
