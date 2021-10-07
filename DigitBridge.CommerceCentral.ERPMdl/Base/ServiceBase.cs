@@ -48,12 +48,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public ServiceBase()
         {
             _ProcessMode = ProcessingMode.List;
-            Init();
         }
         public ServiceBase(
             IDataBaseFactory dbFactory) : this()
         {
             SetDataBaseFactory(dbFactory);
+            Init();
         }
 
         public ServiceBase(
