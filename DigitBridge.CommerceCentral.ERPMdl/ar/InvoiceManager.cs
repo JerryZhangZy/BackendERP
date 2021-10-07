@@ -354,7 +354,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             InvoiceTransfer invoiceTransfer = new InvoiceTransfer(this, "");
             var invoiceData = invoiceTransfer.FromOrderShipmentAndSalesOrder(osData, soData);
 
-            var inSrv = new InvoiceService(dbFactory);
+            var inSrv = invoiceService;
 
             inSrv.DetachData(null);
             inSrv.Add();

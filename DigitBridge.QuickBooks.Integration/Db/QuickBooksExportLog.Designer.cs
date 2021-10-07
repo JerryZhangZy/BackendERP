@@ -78,6 +78,9 @@ namespace DigitBridge.QuickBooks.Integration
         [Column("LogBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _logBy;
 
+        [Column("SyncToken",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _syncToken;
+
         [Column("TxnId",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _txnId;
 
@@ -297,6 +300,22 @@ namespace DigitBridge.QuickBooks.Integration
         }
 
 		/// <summary>
+		/// Version number of the object in QuickBooks
+		/// </summary>
+        public virtual int SyncToken
+        {
+            get
+            {
+				return _syncToken; 
+            }
+            set
+            {
+				_syncToken = value; 
+				OnPropertyChanged("SyncToken", value);
+            }
+        }
+
+		/// <summary>
 		/// QuickBooks TxnId.<br> Title: TxnId, Display: true, Editable: false
 		/// </summary>
         public virtual string TxnId
@@ -368,6 +387,7 @@ namespace DigitBridge.QuickBooks.Integration
 			_logDate = new DateTime().MinValueSql(); 
 			_logTime = new TimeSpan().MinValueSql(); 
 			_logBy = String.Empty; 
+			_syncToken = default(int); 
 			_txnId = String.Empty; 
 			_enterBy = String.Empty; 
             ClearChildren();

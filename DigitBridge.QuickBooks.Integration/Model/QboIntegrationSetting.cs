@@ -150,7 +150,7 @@ namespace DigitBridge.QuickBooks.Integration
         /// <summary>
         /// The id of field InvoiceNumber displayed at qbo invoice page
         /// </summary>
-        public string QboInvoiceNumberFieldID { get; set; } 
+        public string QboInvoiceNumberFieldID { get; set; }
         /// <summary>
         /// Export invoice tax to qbo rule.
         /// </summary>

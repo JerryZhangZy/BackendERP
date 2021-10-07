@@ -9,31 +9,31 @@ namespace DigitBridge.QuickBooks.Integration
         public static readonly string DiscountRefValue = "86";
         public static readonly string DiscountRefName = "Discounts given";
         public static readonly string SummaryDiscountLineDescription = "Discount Line for Invoice DigitBridge invoice number: ";
-        
+
         public static readonly string SummaryShippingLineDescription = "Shipping Cost Line for Invoice DigitBridge invoice number: ";
         public static readonly string SalesTaxItemRefValue = "55";
-        public static readonly string SalesTaxItemDescription = "Calculated Tax From DigitBridge Central for Invoice DigitBridge invoice number: "; 
+        public static readonly string SalesTaxItemDescription = "Calculated Tax From DigitBridge Central for Invoice DigitBridge invoice number: ";
         public static readonly string NoMatchingItemReturnString = "Skip";
         public static readonly string QboItemNullId = "0";
 
         public static readonly string SummaryMiscLineDescription = "Misc Cost Line for Invoice DigitBridge invoice number: ";
         public static readonly string SummaryChargeAndAllowanceLineDescription = "ChargeAndAllowance Cost Line for Invoice DigitBridge invoice number: ";
-      
+
         public const string QboInvoiceNumberFieldDefaultName = "Invoice Number#"; //TODO read this from qbo
         public const string QboEndCustomerPoNumCustomFieldName = "Po Number#";//TODO read this from qbo 
 
         public const int CustomFieldMaxLength = 31;
         public const int ShipMethodRefMaxLength = 31;
 
-        public const string QboDefaultItemId = "1";//TODO set this by requirement.
-        public const string QboSalesTaxItemId = "1";//TODO set this by requirement.
-        public const string QboChargeAndAllowanceItemId = "1";//TODO set this by requirement.
-        public const string QboMiscItemId = "1";//TODO set this by requirement. 
+        public const string QboDefaultItemId = "21";//TODO set this by requirement.
+        public const string QboSalesTaxItemId = "22";//TODO set this by requirement.
+        public const string QboChargeAndAllowanceItemId = "23";//TODO set this by requirement.
+        public const string QboMiscItemId = "20";//TODO set this by requirement. 
 
-        public const string QboInvoiceNumberFieldID = "1";
+        public const string QboInvoiceNumberFieldID = "1"; 
         public const string QboChnlOrderIdCustFieldId = "2";
-        public const string Qbo2ndChnlOrderIdCustFieldId = "3"; 
-        public const string SippingCostRefValue  = "1";//TODO "1" replace to  "SHIPPING_ITEM_ID";
+        public const string Qbo2ndChnlOrderIdCustFieldId = "3";
+        public const string SippingCostRefValue = "19";//TODO "1" replace to  "SHIPPING_ITEM_ID";
     }
     public class QboUniversalConsts
     {
@@ -88,13 +88,13 @@ namespace DigitBridge.QuickBooks.Integration
         public static readonly string SummaryChargeAndAllowanceLineDescription = "ChargeAndAllowance Cost Line for Invoice Return. Invoice number: {0}, Tran number:{1}";
     }
 
-    public class PaymentMappingConsts
+    public class PaymentTxtType
     {
         public const string PaymentTypeExpense = "Expense";//--Payment is reimbursement for expense paid by cash made on behalf of the customer
-        //Check,//--Payment is reimbursement for expense paid by check made on behalf of the customer
+        public const string PaymentTypeCheck = "Check";//--Payment is reimbursement for expense paid by check made on behalf of the customer
         public const string PaymentTypeCreditCardCredit = "CreditCardCredit";//--Payment is reimbursement for a credit card credit made on behalf of the customer
-                                                                             //JournalEntry,//--Payment is linked to the representative journal entry
-                                                                             //CreditMemo,//--Payment is linked to the credit memo the customer has with the business
-                                                                             //Invoice,//--The invoice to which payment is applied 
+        public const string PaymentTypeCreditJournalEntry = "JournalEntry";//JournalEntry,//--Payment is linked to the representative journal entry
+        public const string PaymentTypeCreditMemo = "CreditMemo";//CreditMemo,//--Payment is linked to the credit memo the customer has with the business
+        public const string PaymentTypeInvoice = "Invoice";//Invoice,//--The invoice to which payment is applied 
     }
 }

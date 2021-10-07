@@ -58,22 +58,17 @@ namespace DigitBridge.QuickBooks.Integration
         /// <returns></returns>
         protected async Task<bool> WriteQboInvoiceToExportLog(Invoice qboInvoice)
         {
-            var log = new QuickBooksExportLog
+            if (_exportLog == null)
             {
-                DatabaseNum = _payload.DatabaseNum,
-                MasterAccountNum = _payload.MasterAccountNum,
-                ProfileNum = _payload.ProfileNum,
-                QuickBooksExportLogUuid = Guid.NewGuid().ToString(),
-                BatchNum = 0,
-                LogType = "Invoice",
-                LogUuid = _invoiceData.UniqueId,
-                DocNumber = qboInvoice.DocNumber,
-                TxnId = qboInvoice.Id,
-                DocStatus = (int)qboInvoice.status,
-                LogDate=DateTime.UtcNow.Date,
-                LogTime=DateTime.UtcNow.TimeOfDay
-            };
-            _payload.Success = await AddExportLogAsync(log);
+                _exportLog = new QuickBooksExportLog();
+            }
+            _exportLog.LogType = "Invoice";
+            _exportLog.LogUuid = _invoiceData.UniqueId;
+            _exportLog.DocNumber = qboInvoice.DocNumber;
+            _exportLog.TxnId = qboInvoice.Id;
+            _exportLog.DocStatus = (int)qboInvoice.status;
+            _exportLog.SyncToken = int.Parse(qboInvoice.SyncToken);
+            _payload.Success = await SaveExportLogAsync();
             return _payload.Success;
         }
         /// <summary>
