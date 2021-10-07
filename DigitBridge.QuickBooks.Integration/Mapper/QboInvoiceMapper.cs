@@ -63,8 +63,7 @@ namespace DigitBridge.QuickBooks.Integration
             if (string.IsNullOrEmpty(_setting.Qbo2ndChnlOrderIdCustFieldId))
             {
                 _setting.Qbo2ndChnlOrderIdCustFieldId = QboMappingConsts.Qbo2ndChnlOrderIdCustFieldId;
-            }
-
+            } 
         }
 
         #region Qbo lines 
@@ -77,6 +76,7 @@ namespace DigitBridge.QuickBooks.Integration
                 var qboLine = item.DiscountRate.IsZero() ? ItemToQboLine_DiscountAmount(item) : ItemToQboLine_DiscountRate(item);
                 lines.Add(qboLine);
             }
+            //SubTotalToQboLine(invoiceData.InvoiceHeader);
             lines.Add(DiscountToQboLine(invoiceData.InvoiceHeader));
             lines.Add(ShippingCostToQboLine(invoiceData.InvoiceHeader));
             lines.Add(MiscCostToQboLine(invoiceData.InvoiceHeader));
@@ -126,9 +126,9 @@ namespace DigitBridge.QuickBooks.Integration
                 Qty = item.ShipQty,
                 QtySpecified = true,
                 //TODO add this logic.
-                //AnyIntuitObject = item.IsAr ? item.DiscountPrice : 0, 
-                //ItemElementName = ItemChoiceType.UnitPrice,
-                //DiscountAmt = item.DiscountRate.IsZero() ? item.DiscountAmount : 0,
+                //AnyIntuitObject = item.IsAr ? item.Price : 0,
+                //ItemElementName = ItemChoiceType.RatePercent,
+                //DiscountAmt = item.IsAr && item.DiscountRate.IsZero() ? item.DiscountAmount : 0,
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
@@ -165,10 +165,10 @@ namespace DigitBridge.QuickBooks.Integration
                     Value = _setting.QboShippingItemId,
                     //name = _setting.QboShippingItemName,
                 },
-                Qty = 1,
-                QtySpecified = true,
-                AnyIntuitObject = invoiceHeader.ShippingAmount,//TODO check this one
-                ItemElementName = ItemChoiceType.UnitPrice,
+                //Qty = 1,
+                //QtySpecified = true,
+                //AnyIntuitObject = invoiceHeader.ShippingAmount,//TODO check this one
+                //ItemElementName = ItemChoiceType.UnitPrice,
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
@@ -232,6 +232,26 @@ namespace DigitBridge.QuickBooks.Integration
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
             line.Description = QboMappingConsts.SalesTaxItemDescription + invoiceHeader.InvoiceNumber;
+            return line;
+        }
+
+        /// <summary>
+        ///  Add sub total line for all sku
+        /// </summary>
+        /// <param name="invoiceHeader"></param>
+        /// <returns></returns>
+        protected Line SubTotalToQboLine(InvoiceHeader invoiceHeader)
+        {
+            Line line = new Line();
+            line.Amount = invoiceHeader.SubTotalAmount;
+            line.AmountSpecified = true;
+            //line.AnyIntuitObject = new DescriptionLineDetail
+            //{
+                 
+            //};
+            line.DetailType = LineDetailTypeEnum.DescriptionOnly;
+            line.DetailTypeSpecified = true;
+            line.Description = $"Sub total amount:{invoiceHeader.SubTotalAmount}";
             return line;
         }
 

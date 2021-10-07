@@ -87,7 +87,7 @@ namespace DigitBridge.QuickBooks.Integration
                 BatchNum = 0,
                 LogType = "Payment",
                 LogUuid = paymentTransUuid,
-                DocNumber = qboPayment.DocNumber,
+                DocNumber = qboPayment.DocNumber ?? string.Empty,
                 TxnId = qboPayment.Id,
                 DocStatus = (int)qboPayment.status
             };
@@ -115,8 +115,8 @@ namespace DigitBridge.QuickBooks.Integration
                 success = success && await LoadExportLog(payment.TransUuid);
                 if (!success) return success;
 
-                var mapper = new QboPaymentMapper(_setting, _exportLog);
-                var qboPayment = mapper.ToPayment(payment, invoiceTxtId, invoiceData);
+                var mapper = new QboPaymentMapper(_setting, _exportLog, invoiceTxtId);
+                var qboPayment = mapper.ToPayment(payment, invoiceData);
                 try
                 {
                     qboPayment = await CreateOrUpdatePayment(qboPayment);

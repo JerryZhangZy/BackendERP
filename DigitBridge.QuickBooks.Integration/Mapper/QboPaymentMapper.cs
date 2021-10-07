@@ -1,4 +1,5 @@
-﻿using DigitBridge.CommerceCentral.ERPDb;
+﻿using DigitBridge.Base.Common;
+using DigitBridge.CommerceCentral.ERPDb;
 using Intuit.Ipp.Data;
 using System;
 using System.Collections.Generic;
@@ -8,26 +9,32 @@ namespace DigitBridge.QuickBooks.Integration
 {
     public class QboPaymentMapper
     {
-        private QboIntegrationSetting _setting { get; set; }
-        private QuickBooksExportLog _exportLog { get; set; }
-        public QboPaymentMapper(QboIntegrationSetting setting, QuickBooksExportLog exportLog)
+        private QboIntegrationSetting setting { get; set; }
+        private QuickBooksExportLog exportLog { get; set; }
+        private string invoiceTxnId { get; set; }
+        public QboPaymentMapper(QboIntegrationSetting setting, QuickBooksExportLog exportLog, string invoiceTxnId)
         {
-            this._setting = setting;
-            this._exportLog = exportLog;
-            if (this._exportLog == null)
+            this.invoiceTxnId = invoiceTxnId;
+            this.setting = setting;
+            this.exportLog = exportLog;
+            if (this.exportLog == null)
             {
-                _exportLog = new QuickBooksExportLog();
+                this.exportLog = new QuickBooksExportLog();
             }
             PrepareSetting();
         }
         protected void PrepareSetting()
         {
-            if (this._setting == null)
+            if (this.setting == null)
             {
-                _setting = new QboIntegrationSetting();
+                setting = new QboIntegrationSetting();
+            }
+            if (string.IsNullOrEmpty(setting.QboInvoiceNumberFieldID))
+            {
+                setting.QboInvoiceNumberFieldID = QboMappingConsts.QboInvoiceNumberFieldID;
             }
         }
-        protected Line CreditToQboLine(InvoiceTransaction tran, string invoiceTxnId)
+        protected Line CreditCardToQboLine(InvoiceTransaction tran)
         {
             Line line = new Line();
             line.Amount = tran.TotalAmount;
@@ -43,14 +50,56 @@ namespace DigitBridge.QuickBooks.Integration
             LinkedTxn linkedTxn = new LinkedTxn()
             {
                 TxnId = invoiceTxnId,
-                //TxnType = PaymentMappingConsts.PaymentTypeCreditCardCredit,
-                TxnLineId = tran.TransNum.ToString()
+                TxnType = PaymentTxtType.PaymentTypeCreditCardCredit,
+                //TxnLineId = tran.TransNum.ToString()
+            };
+            line.LinkedTxn = new LinkedTxn[] { linkedTxn };
+            return line;
+        }
+        protected Line CheckToQboLine(InvoiceTransaction tran)
+        {
+            Line line = new Line();
+            line.Amount = tran.TotalAmount;
+            line.AmountSpecified = true;
+            line.AnyIntuitObject = new SalesItemLineDetail()
+            {
+                ItemRef = new ReferenceType()
+                {
+                    Value = tran.CheckNum
+                }
+            };
+
+            LinkedTxn linkedTxn = new LinkedTxn()
+            {
+                TxnId = invoiceTxnId,
+                TxnType = PaymentTxtType.PaymentTypeCheck
+            };
+            line.LinkedTxn = new LinkedTxn[] { linkedTxn };
+            return line;
+        }
+        protected Line CashToQboLine(InvoiceTransaction tran)
+        {
+            Line line = new Line();
+            line.Amount = tran.TotalAmount;
+            line.AmountSpecified = true;
+            //line.AnyIntuitObject = new SalesItemLineDetail()
+            //{
+            //    ItemRef = new ReferenceType()
+            //    {
+            //        Value = tran.c
+            //    }
+            //};
+
+            LinkedTxn linkedTxn = new LinkedTxn()
+            {
+                TxnId = invoiceTxnId,
+                TxnType = PaymentTxtType.PaymentTypeInvoice
             };
             line.LinkedTxn = new LinkedTxn[] { linkedTxn };
             return line;
         }
 
-        protected Line DebitToQboLine(InvoiceTransaction tran, string invoiceTxnId)
+        protected Line DebitToQboLine(InvoiceTransaction tran)
         {
             Line line = new Line();
             line.Amount = tran.TotalAmount;
@@ -65,27 +114,33 @@ namespace DigitBridge.QuickBooks.Integration
             LinkedTxn linkedTxn = new LinkedTxn()
             {
                 TxnId = invoiceTxnId,
-                //TxnType = PaymentMappingConsts.PaymentTypeExpense,
-                TxnLineId = tran.TransNum.ToString()
+                TxnType = PaymentTxtType.PaymentTypeInvoice//TODO mapper Debit cart to right txttype.
             };
             line.LinkedTxn = new LinkedTxn[] { linkedTxn };
             return line;
         }
-
-        public Payment ToPayment(InvoiceTransaction tranData, string invoiceTxnId, InvoiceData invoiceData)
+        protected Line ToQboLine(InvoiceTransaction tran)
         {
-            var payment = ToQboPayment(tranData, invoiceData);
-            payment.Line = ToQboLines(tranData, invoiceTxnId).ToArray();
-            return payment;
-        }
-
-        protected List<Line> ToQboLines(InvoiceTransaction tran, string invoiceTxnId)
-        {
-            return new List<Line>()
+            Line line;
+            switch (tran.PaidBy)
             {
-                CreditToQboLine(tran,invoiceTxnId),
-                DebitToQboLine(tran,  invoiceTxnId)
-            };
+                //case (int)PaidByEnum.Cash: 
+                //line = CashToQboLine(tran);
+                //    break;
+                case (int)PaidByEnum.Check:
+                    line = CheckToQboLine(tran);
+                    break;
+                case (int)PaidByEnum.CreditCard:
+                    line = CreditCardToQboLine(tran);
+                    break;
+                //case (int)PaidByEnum.Expense:
+                //    line = CashToQboLine(tran);
+                //break;
+                default:
+                    line = CashToQboLine(tran);
+                    break;
+            }
+            return line;
         }
 
         protected Payment ToQboPayment(InvoiceTransaction tran, InvoiceData invoiceData)
@@ -95,20 +150,29 @@ namespace DigitBridge.QuickBooks.Integration
             payment.TxnDateSpecified = true;
             payment.TotalAmt = tran.TotalAmount;
             payment.TotalAmtSpecified = true;
-
+            payment.Id = exportLog.TxnId;
+            payment.PaymentType = ConvertPaymentType(tran.PaidBy);
+            //payment.PaymentMethodRef = new ReferenceType()
+            //{
+            //    Value = ConvertPaymentMethod(tran.PaidBy).ToString()
+            //};
+            LinkedTxn linkedTxn = new LinkedTxn()
+            {
+                TxnId = invoiceTxnId,
+                TxnType = PaymentTxtType.PaymentTypeInvoice
+            };
+            payment.LinkedTxn = new LinkedTxn[] { linkedTxn };
             AppendCustomerToInvoice(payment, invoiceData.InvoiceHeader);
             AppendCustomFieldToPayment(payment, invoiceData.InvoiceHeader.InvoiceNumber);
-
-
             return payment;
         }
         private void AppendCustomerToInvoice(Payment payment, InvoiceHeader invoiceHeader)
         {
             string customerId;
-            if (_setting.QboCustomerCreateRule == (int)CustomerCreateRule.PerMarketPlace)
+            if (setting.QboCustomerCreateRule == (int)CustomerCreateRule.PerMarketPlace)
             {
                 //get ChannelQboCustomerId
-                customerId = CustomerMapper.GetMarketPlaceCustomer(_setting);
+                customerId = CustomerMapper.GetMarketPlaceCustomer(setting);
             }
             else //if (_setting.QboCustomerCreateRule == (int)CustomerCreateRule.PerOrder)
             {
@@ -123,12 +187,49 @@ namespace DigitBridge.QuickBooks.Integration
             List<CustomField> customFields = new List<CustomField>();
 
             CustomField invoiceNumberField = new CustomField();
-            invoiceNumberField.DefinitionId = _setting.QboInvoiceNumberFieldID;
+            invoiceNumberField.DefinitionId = setting.QboInvoiceNumberFieldID;
             invoiceNumberField.Type = CustomFieldTypeEnum.StringType;
             invoiceNumberField.AnyIntuitObject = invoiceNumber.ToCustomField();// stirng value for this field.// max length is 31.
             customFields.Add(invoiceNumberField);
-
             payment.CustomField = customFields.ToArray();
+        }
+
+        private PaymentTypeEnum ConvertPaymentType(int paidBy)
+        {
+            switch (paidBy)
+            {
+                case (int)PaidByEnum.Cash:
+                    return PaymentTypeEnum.Cash;
+                case (int)PaidByEnum.Check:
+                    return PaymentTypeEnum.Check;
+                case (int)PaidByEnum.CreditCard:
+                    return PaymentTypeEnum.CreditCard;
+                case (int)PaidByEnum.Expense:
+                    return PaymentTypeEnum.Expense;
+                default:
+                    return PaymentTypeEnum.Other;
+            }
+        }
+        private int ConvertPaymentMethod(int paidBy)
+        {
+            switch (paidBy)
+            {
+                case (int)PaidByEnum.Cash:
+                    return (int)PaymentMethodEnum.Cash;
+                case (int)PaidByEnum.Check:
+                    return (int)PaymentMethodEnum.Check;
+                case (int)PaidByEnum.CreditCard:
+                    return (int)PaymentMethodEnum.OtherCreditCard;
+                default:
+                    return (int)PaymentMethodEnum.Other;
+            }
+        }
+
+        public Payment ToPayment(InvoiceTransaction tran, InvoiceData invoiceData)
+        {
+            var payment = ToQboPayment(tran, invoiceData);
+            payment.Line = new Line[] { ToQboLine(tran) };
+            return payment;
         }
     }
 }
