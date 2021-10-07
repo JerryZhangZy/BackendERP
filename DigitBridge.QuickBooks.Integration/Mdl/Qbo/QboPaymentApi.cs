@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
-    public class QboPaymentApi:QboServiceBase
+    public class QboPaymentApi : QboServiceBase
     {
         public QboPaymentApi(IPayload payload, IDataBaseFactory databaseFactory) : base(payload, databaseFactory) { }
 
@@ -24,7 +24,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         public async Task<Payment> CreateOrUpdatePayment(Payment payment)
         {
-            if (!await PaymentExistAsync(payment.Id))
+            if (string.IsNullOrEmpty(payment.Id) || !await PaymentExistAsync(payment.Id))
             {
                 return await AddDataAsync(payment);
             }
