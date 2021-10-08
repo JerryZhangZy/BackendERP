@@ -20,6 +20,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using Bogus;
+using DigitBridge.QuickBooks.Integration;
 
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {

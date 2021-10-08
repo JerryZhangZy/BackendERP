@@ -12,11 +12,11 @@
     <Compile Remove="Model\QboSalesOrderWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DigitBridge.Azure" Version="1.0.0.3" />
     <PackageReference Include="IppDotNetSdkForQuickBooksApiV3" Version="14.6.1" />
     <PackageReference Include="UneedgoHelper.Dotnet.Common" Version="1.0.0.16" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.AzureStorage\DigitBridge.CommerceCentral.AzureStorage.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPMdl\DigitBridge.CommerceCentral.ERPMdl.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.YoPoco\DigitBridge.CommerceCentral.YoPoco.csproj" />

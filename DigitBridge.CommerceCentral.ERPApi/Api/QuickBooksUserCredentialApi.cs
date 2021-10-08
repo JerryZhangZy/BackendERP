@@ -4,7 +4,6 @@ using DigitBridge.QuickBooks.Integration;
 using DigitBridge.QuickBooks.Integration.Mdl;
 using DigitBridge.QuickBooks.Integration.Mdl.Qbo;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
@@ -50,7 +49,8 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         {
 
             string requestState = req.Query["state"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "state").ForceToTrimString();
-            var authMapInfo =await QboCloudTableUniversal.QueryOAuthMapInfo(requestState);
+            var tableUniversal = await QboCloudTableUniversal.AuthTableUniversal();
+            var authMapInfo =tableUniversal.GetEntityByRowKey(requestState);
             if (authMapInfo != null)
             {
                 string authCode = req.Query["code"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "code").ForceToTrimString();

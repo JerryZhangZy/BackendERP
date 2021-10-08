@@ -9,6 +9,7 @@ using DigitBridge.Blob;
 using DigitBridge.QuickBooks.Integration.Model;
 using Microsoft.Azure.Cosmos.Table;
 using DigitBridge.QuickBooks.Integration.Mdl.Qbo;
+using DigitBridge.CommerceCentral.AzureStorage;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl
 {
@@ -18,9 +19,12 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
         protected QuickBooksSettingInfoService quickBooksSettingInfoService;
         protected IDataBaseFactory dbFactory;
 
-        private UserCredentialService(IDataBaseFactory dataBaseFactory)
+        protected TableUniversal<OAuthMapInfo> authTableUniversal;
+
+        private UserCredentialService(IDataBaseFactory dataBaseFactory, TableUniversal<OAuthMapInfo> tableUniversal)
         {
             dbFactory = dataBaseFactory;
+            authTableUniversal = tableUniversal;
             quickBooksConnectionInfoService = new QuickBooksConnectionInfoService(dbFactory);
             quickBooksSettingInfoService = new QuickBooksSettingInfoService(dbFactory);
         }
@@ -28,7 +32,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
 
         public static async Task<UserCredentialService> CreateAsync(IDataBaseFactory dataBaseFactory)
         {
-            return new UserCredentialService(dataBaseFactory);
+            var authUniversal = await QboCloudTableUniversal.AuthTableUniversal();
+            return new UserCredentialService(dataBaseFactory, authUniversal);
         }
 
         /// <summary>
@@ -73,7 +78,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             return (true, "");
         }
 
-        public async Task<(bool, string)> HandleTokensAsync(string realmId, string authCode,string requestState,OAuthMapInfo authMapInfo)
+        public async Task<(bool, string)> HandleTokensAsync(string realmId, string authCode, string requestState, OAuthMapInfo authMapInfo)
         {
             string errMsg = "";
             if (await quickBooksConnectionInfoService.GetByRequestStateAsync(requestState))
@@ -107,7 +112,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
                 // Update initialStatus in QboConnectionInfo table in DP
                 await data.SetDataBaseFactory(dbFactory).SaveAsync();
                 quickBooksConnectionInfoService.DetachData(data);
-                await QboCloudTableUniversal.DeleteOAuthMapInfo(authMapInfo);
+                await authTableUniversal.DeleteEntityAsync(authMapInfo.RowKey, authMapInfo.PartitionKey);
                 return (true, MyAppSetting.TokenReceiverReturnUrl);
             }
             errMsg = "QuickBooksConnectionInfo no founds.";
@@ -120,7 +125,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
         /// </summary>
         /// <param name="requestBody"></param>
         /// <returns></returns>
-        public async Task<(bool, string,string)> OAuthUrlAsync(QuickBooksConnectionInfoPayload payload)
+        public async Task<(bool, string, string)> OAuthUrlAsync(QuickBooksConnectionInfoPayload payload)
         {
             //var redirectUrl = string.Format(MyAppSetting.RedirectUrl, payload.MasterAccountNum, payload.ProfileNum);
             string authorizationUrl = await QboOAuth.GetAuthorizationURLAsync();
@@ -130,13 +135,19 @@ namespace DigitBridge.QuickBooks.Integration.Mdl
             string state = HttpUtility.ParseQueryString(url.Query).Get("state");
             if (string.IsNullOrEmpty(authorizationUrl) || string.IsNullOrEmpty(state))
             {
-                return (false, "Get redirect url to Quickbook Online login failed.",null);
+                return (false, "Get redirect url to Quickbook Online login failed.", null);
             }
-            await QboCloudTableUniversal.CreateOAuthMapInfo(state,payload.MasterAccountNum,payload.ProfileNum);
-           //Create info with state or update info state
-           await quickBooksConnectionInfoService.UpdateConnectionInfoStateAsync(payload, state);
+            var entity = new OAuthMapInfo
+            {
+                RequestState = state,
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum
+            };
+            await authTableUniversal.AddEntityAsync(entity, entity.PartitionKey, entity.RowKey);
+            //Create info with state or update info state
+            await quickBooksConnectionInfoService.UpdateConnectionInfoStateAsync(payload, state);
 
-            return (true, authorizationUrl,state);
+            return (true, authorizationUrl, state);
         }
     }
 }
