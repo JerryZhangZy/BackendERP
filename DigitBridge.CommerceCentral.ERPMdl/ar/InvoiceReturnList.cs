@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DigitBridge.Base.Common;
+﻿using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Helper = DigitBridge.CommerceCentral.ERPDb.InvoiceTransactionHelper;
-using ReturnHelper = DigitBridge.CommerceCentral.ERPDb.InvoiceReturnItemsHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -30,8 +28,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*,
-(select {ReturnHelper.TableAllies}.* from {ReturnHelper.TableName} {ReturnHelper.TableAllies} where {Helper.TableAllies}.TransUuid={ReturnHelper.TableAllies}.TransUuid for json auto,include_null_values ) as InvoiceReturnItems
+{Helper.RowNum()}, 
+{Helper.TransUuid()}, 
+{Helper.TransNum()}, 
+{Helper.InvoiceUuid()}, 
+{Helper.InvoiceNumber()}, 
+{Helper.TransStatus()},  
+COALESCE(rts.text, '') TransStatusText,  
+{Helper.TransDate()}, 
+{Helper.TransTime()}, 
+{Helper.SubTotalAmount()},
+{Helper.TotalAmount()}, 
+{InvoiceHeaderHelper.DueDate()}, 
+{InvoiceHeaderHelper.CustomerUuid()}, 
+{InvoiceHeaderHelper.CustomerCode()}, 
+{InvoiceHeaderHelper.CustomerName()},  
+{InvoiceHeaderInfoHelper.CentralOrderNum()},
+{InvoiceHeaderInfoHelper.ChannelNum()},
+{InvoiceHeaderInfoHelper.ChannelOrderID()},
+{InvoiceHeaderInfoHelper.BillToEmail()},
+{InvoiceHeaderInfoHelper.ShipToName()}
 ";
             return this.SQL_Select;
         }
@@ -40,17 +56,31 @@ SELECT
         {
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
-LEFT JOIN {ReturnHelper.TableName} {ReturnHelper.TableAllies} ON {Helper.TableAllies}.TransUuid={ReturnHelper.TableAllies}.TransUuid
+ LEFT JOIN {InvoiceHeaderHelper.TableName} {InvoiceHeaderHelper.TableAllies} ON ({InvoiceHeaderHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
+ LEFT JOIN {InvoiceHeaderInfoHelper.TableName} {InvoiceHeaderInfoHelper.TableAllies} ON ({InvoiceHeaderInfoHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
+ LEFT JOIN @RetrunTransStatus rts ON ({Helper.TableAllies}.TransStatus = rts.num) 
 ";
             return this.SQL_From;
         }
-
+        //protected override string GetSQL_where()
+        //{
+        //    var whereSql = base.GetSQL_where();
+        //    //if (string.IsNullOrWhiteSpace(whereSql))
+        //    //    whereSql = $" WHERE ";
+        //    var existSql =
+        //        $" exists (" +
+        //            $" select 1 from {InvoiceReturnItemsHelper.TableName} {InvoiceReturnItemsHelper.TableAllies}  " +
+        //            $" where  {InvoiceReturnItemsHelper.TableAllies}.TransUuid= {Helper.TableAllies}.TransUuid " +
+        //                $"AND  {InvoiceReturnItemsHelper.TableAllies}.SKU= @SKU "  
+        //        $") ";
+        //    return whereSql;
+        //}
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-
+            paramList.Add("@RetrunTransStatus".ToEnumParameter<TransStatus>());
+            paramList.Add("@PaidBy".ToEnumParameter<PaidByEnum>());
             return paramList.ToArray();
-
         }
 
         #endregion override methods
@@ -80,29 +110,25 @@ LEFT JOIN {ReturnHelper.TableName} {ReturnHelper.TableAllies} ON {Helper.TableAl
             return payload;
         }
 
-        public virtual async Task<InvoiceReturnPayload> GetInvoiceReturnListAsync(InvoiceReturnPayload payload)
+        public virtual async Task GetInvoiceReturnListAsync(InvoiceReturnPayload payload)
         {
             if (payload == null)
                 payload = new InvoiceReturnPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.InvoiceTransactionListCount = await CountAsync();
-                result = await ExcuteJsonAsync(sb);
-                if (result)
+                payload.Success = await ExcuteJsonAsync(sb);
+                if (payload.Success)
                     payload.InvoiceTransactionList = sb;
             }
             catch (Exception ex)
             {
-                payload.InvoiceTransactionListCount = 0;
-                payload.InvoiceTransactionList = null;
-                return payload;
-                throw;
+                payload.Success = false;
+                payload.Messages = new List<MessageClass>() { new MessageClass() { Message = ex.ObjectToString(), Level = MessageLevel.Error } };
             }
-            return payload;
         }
 
         public virtual async Task<IList<long>> GetRowNumListAsync(InvoiceReturnPayload payload)
