@@ -5,7 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AzureTableUniversal.cs" />
+    <Compile Remove="IAzureEntity.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Azure.Data.Tables" Version="12.2.0" />
+    <PackageReference Include="Azure.Storage.Queues" Version="12.8.0" />
     <PackageReference Include="DigitBridge.Azure" Version="1.0.0.3" />
   </ItemGroup>
 
