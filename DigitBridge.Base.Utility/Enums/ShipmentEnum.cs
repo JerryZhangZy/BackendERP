@@ -7,7 +7,16 @@ namespace DigitBridge.Base.Common
 {
     public enum ShipmentStatus : int
     {
-        Default = 0
+        [Description("Pending")]
+        Pending = 0,
+        [Description("Shipped")]
+        Shipped = 1,
+        [Description("Partial Shipped")]
+        PartialShipped = 2,
+        [Description("Cancelled")]
+        Cancelled = 3,
+        [Description("Shipping")]
+        Shipping = 9,
     }
     public enum ShipmentType : int
     {
