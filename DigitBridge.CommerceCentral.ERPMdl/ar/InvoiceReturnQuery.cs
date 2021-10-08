@@ -45,6 +45,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<int> _TransType = new QueryFilter<int>("TransType", "TransType", TranSactionPREFIX, FilterBy.eq, 0);
         public QueryFilter<int> TransType => _TransType;
 
+        protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty);
+        public QueryFilter<string> CustomerCode => _CustomerCode;
+
+        protected QueryFilter<string> _CustomerName = new QueryFilter<string>("CustomerName", "CustomerName", InvoiceHeaderHelper.TableAllies, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> CustomerName => _CustomerName;
         public InvoiceReturnQuery() : base(TranSactionPREFIX)
         {
             AddFilter(_TransNum);
@@ -57,6 +62,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ReturnDateFrom);
             AddFilter(_ReturnDateTo);
             AddFilter(_TransType);
+            AddFilter(_CustomerCode);
+            AddFilter(_CustomerName);
         }
         public override void InitQueryFilter()
         {
