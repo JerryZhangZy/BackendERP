@@ -166,7 +166,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceList(dataBaseFactory, new InvoiceQuery());
-            payload = await srv.GetInvoiceListAsync(payload);
+            await srv.GetInvoiceListAsync(payload);
             return new JsonNetResponse<InvoicePayload>(payload);
         }
 
@@ -274,7 +274,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             crtPayLoad.Messages = svc.Messages;
             return crtPayLoad;
         }
-     
+
     }
 }
 

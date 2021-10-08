@@ -68,7 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var payload = await req.GetParameters<PurchaseOrderPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new PurchaseOrderService(dataBaseFactory); 
+            var srv = new PurchaseOrderService(dataBaseFactory);
             await srv.GetListByOrderNumbersAsync(payload);
             payload.Messages = srv.Messages;
             return new JsonNetResponse<PurchaseOrderPayload>(payload);
@@ -156,7 +156,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<PurchaseOrderPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new PurchaseOrderList(dataBaseFactory, new PurchaseOrderQuery());
-            payload = await srv.GetPurchaseOrderListAsync(payload);
+            await srv.GetPurchaseOrderListAsync(payload);
             return new JsonNetResponse<PurchaseOrderPayload>(payload);
         }
 

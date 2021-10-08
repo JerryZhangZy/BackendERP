@@ -85,29 +85,26 @@ COALESCE(rts.text, '') TransStatusText,
 
         #endregion override methods
 
-        public virtual InvoiceReturnPayload GetInvoiceReturnList(InvoiceReturnPayload payload)
+        public virtual void GetInvoiceReturnList(InvoiceReturnPayload payload)
         {
             if (payload == null)
                 payload = new InvoiceReturnPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.InvoiceTransactionListCount = Count();
-                result = ExcuteJson(sb);
-                if (result)
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
                     payload.InvoiceTransactionList = sb;
             }
             catch (Exception ex)
             {
                 payload.InvoiceTransactionListCount = 0;
-                payload.InvoiceTransactionList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
         public virtual async Task GetInvoiceReturnListAsync(InvoiceReturnPayload payload)
@@ -126,8 +123,9 @@ COALESCE(rts.text, '') TransStatusText,
             }
             catch (Exception ex)
             {
-                payload.Success = false;
-                payload.Messages = new List<MessageClass>() { new MessageClass() { Message = ex.ObjectToString(), Level = MessageLevel.Error } };
+                payload.InvoiceTransactionListCount = 0;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
         }
 

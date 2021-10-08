@@ -7,7 +7,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
-using Microsoft.Data.SqlClient; 
+using Microsoft.Data.SqlClient;
 using InfoHelper = DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
@@ -80,7 +80,7 @@ COALESCE(pst.text, '') ProcessStatusText,
             var paramList = base.GetSqlParameters().ToList();
             paramList.Add("@ShipmentStatusText".ToEnumParameter<ShipmentStatus>());
             paramList.Add("@ShipmentTypeText".ToEnumParameter<ShipmentType>());
-            paramList.Add("@ProcessStatusText".ToEnumParameter<ShipmentProcessStatus>()); 
+            paramList.Add("@ProcessStatusText".ToEnumParameter<ShipmentProcessStatus>());
             return paramList.ToArray();
 
         }
@@ -88,54 +88,50 @@ COALESCE(pst.text, '') ProcessStatusText,
 
         #endregion override methods
 
-        public virtual OrderShipmentPayload GetOrderShipmentList(OrderShipmentPayload payload)
+        public virtual void GetOrderShipmentList(OrderShipmentPayload payload)
         {
             if (payload == null)
                 payload = new OrderShipmentPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.OrderShipmentListCount = Count();
-                result = ExcuteJson(sb);
-                if (result)
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
                     payload.OrderShipmentList = sb;
             }
             catch (Exception ex)
             {
                 payload.OrderShipmentListCount = 0;
                 payload.OrderShipmentList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
-        public virtual async Task<OrderShipmentPayload> GetOrderShipmentListAsync(OrderShipmentPayload payload)
+        public virtual async Task GetOrderShipmentListAsync(OrderShipmentPayload payload)
         {
             if (payload == null)
                 payload = new OrderShipmentPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.OrderShipmentListCount = await CountAsync();
-                result = await ExcuteJsonAsync(sb);
-                if (result)
+                payload.Success = await ExcuteJsonAsync(sb);
+                if (payload.Success)
                     payload.OrderShipmentList = sb;
             }
             catch (Exception ex)
             {
                 payload.OrderShipmentListCount = 0;
                 payload.OrderShipmentList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
         public virtual async Task<IList<long>> GetRowNumListAsync(OrderShipmentPayload payload)

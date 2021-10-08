@@ -68,7 +68,7 @@ COALESCE(ppb.text, '') PaidByText,
 
         public override SqlParameter[] GetSqlParameters()
         {
-            var paramList = base.GetSqlParameters().ToList(); 
+            var paramList = base.GetSqlParameters().ToList();
             paramList.Add("@PaymentTransStatus".ToEnumParameter<TransStatus>());
             paramList.Add("@PaidBy".ToEnumParameter<PaidByEnum>());
             return paramList.ToArray();
@@ -76,7 +76,7 @@ COALESCE(ppb.text, '') PaidByText,
 
         #endregion override methods
 
-        public virtual InvoicePaymentPayload GetInvoicePaymentList(InvoicePaymentPayload payload)
+        public virtual void GetInvoicePaymentList(InvoicePaymentPayload payload)
         {
             if (payload == null)
                 payload = new InvoicePaymentPayload();
@@ -94,11 +94,9 @@ COALESCE(ppb.text, '') PaidByText,
             catch (Exception ex)
             {
                 payload.InvoiceTransactionListCount = 0;
-                payload.InvoiceTransactionList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
         public virtual async Task GetInvoicePaymentListAsync(InvoicePaymentPayload payload)
@@ -116,9 +114,10 @@ COALESCE(ppb.text, '') PaidByText,
                     payload.InvoiceTransactionList = sb;
             }
             catch (Exception ex)
-            { 
-                payload.Success = false;
-                payload.Messages = new List<MessageClass>() { new MessageClass() { Message = ex.ObjectToString(), Level = MessageLevel.Error } };
+            {
+                payload.InvoiceTransactionListCount = 0;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
         }
 

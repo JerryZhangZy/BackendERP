@@ -63,7 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload.MasterAccountNum);
             var svc = new CustomerService(dbFactory);
-            payload =await svc.GetCustomersByCodeArrayAsync(payload);
+            payload = await svc.GetCustomersByCodeArrayAsync(payload);
             return new JsonNetResponse<CustomerPayload>(payload);
 
         }
@@ -74,7 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "CustomerCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "CustomerCode", Description = "CustomerCode", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadDelete),Description = "The OK response")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadDelete), Description = "The OK response")]
         public static async Task<JsonNetResponse<CustomerPayload>> DeleteCustomer(
             [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "customers/{CustomerCode}")] HttpRequest req,
             string CustomerCode)
@@ -84,12 +84,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var svc = new CustomerService(dbFactory);
             var spilterIndex = CustomerCode.IndexOf("-");
             var customerCode = CustomerCode;
-            if (spilterIndex > 0&&customerCode.StartsWith(payload.ProfileNum.ToString()))
+            if (spilterIndex > 0 && customerCode.StartsWith(payload.ProfileNum.ToString()))
             {
                 customerCode = CustomerCode.Substring(spilterIndex + 1);
             }
             payload.CustomerCodes.Add(customerCode);
-            if (await svc.DeleteByCodeAsync(payload,customerCode))
+            if (await svc.DeleteByCodeAsync(payload, customerCode))
                 payload.Customer = svc.ToDto();
             else
             {
@@ -161,7 +161,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<CustomerPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new CustomerList(dataBaseFactory, new CustomerQuery());
-            payload = await srv.GetCustomerListAsync(payload);
+            await srv.GetCustomerListAsync(payload);
             return new JsonNetResponse<CustomerPayload>(payload);
         }
 
@@ -224,7 +224,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayload))]
         public static async Task<CustomerPayload> ImportCustomer(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customers/import")] HttpRequest req)
-        { 
+        {
             var payload = await req.GetParameters<CustomerPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var files = req.Form.Files;

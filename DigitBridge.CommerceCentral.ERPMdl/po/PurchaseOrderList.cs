@@ -89,54 +89,50 @@ COALESCE(post.text, '') PoStatusText,
 
         #endregion override methods
 
-        public virtual PurchaseOrderPayload GetPurchaseOrderList(PurchaseOrderPayload payload)
+        public virtual void GetPurchaseOrderList(PurchaseOrderPayload payload)
         {
             if (payload == null)
                 payload = new PurchaseOrderPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.PurchaseOrderListCount = Count();
-                result = ExcuteJson(sb);
-                if (result)
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
                     payload.PurchaseOrderList = sb;
             }
             catch (Exception ex)
             {
                 payload.PurchaseOrderListCount = 0;
                 payload.PurchaseOrderList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
-        public virtual async Task<PurchaseOrderPayload> GetPurchaseOrderListAsync(PurchaseOrderPayload payload)
+        public virtual async Task GetPurchaseOrderListAsync(PurchaseOrderPayload payload)
         {
             if (payload == null)
                 payload = new PurchaseOrderPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.PurchaseOrderListCount = await CountAsync();
-                result = await ExcuteJsonAsync(sb);
-                if (result)
+                payload.Success = await ExcuteJsonAsync(sb);
+                if (payload.Success)
                     payload.PurchaseOrderList = sb;
             }
             catch (Exception ex)
             {
                 payload.PurchaseOrderListCount = 0;
                 payload.PurchaseOrderList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
         public virtual async Task<IList<long>> GetRowNumListAsync(PurchaseOrderPayload payload)
