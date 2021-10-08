@@ -82,60 +82,52 @@ COALESCE(ordst.text, '') orderStatusText,
 
         #endregion override methods
 
-        public virtual SalesOrderPayload GetSalesOrderList(SalesOrderPayload payload)
+        public virtual void GetSalesOrderList(SalesOrderPayload payload)
         {
             if (payload == null)
                 payload = new SalesOrderPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.SalesOrderListCount = Count();
-                result = ExcuteJson(sb);
-                if (result)
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
                     payload.SalesOrderList = sb;
             }
             catch (Exception ex)
             {
                 payload.SalesOrderListCount = 0;
                 payload.SalesOrderList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
-        public virtual async Task<SalesOrderPayload> GetSalesOrderListAsync(SalesOrderPayload payload)
+        public virtual async Task GetSalesOrderListAsync(SalesOrderPayload payload)
         {
             if (payload == null)
                 payload = new SalesOrderPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 //TODO 
                 //if(payload.IsQueryTotalCount)
                 payload.SalesOrderListCount = await CountAsync();
-                result = await ExcuteJsonAsync(sb);
-                if (result)
+                payload.Success = await ExcuteJsonAsync(sb);
+                if (payload.Success)
                     payload.SalesOrderList = sb;
             }
             catch (Exception ex)
             {
-                //TODO
-                //Throw or return only one work.
-                //Wirte ex to LogCenter then return, or throw.
-
-                //payload.SalesOrderListCount = 0;
-                //payload.SalesOrderList = null;
-                //return payload;
-                throw;
+                payload.SalesOrderListCount = 0;
+                payload.SalesOrderList = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
         public virtual async Task<IList<SalesOrderData>> GetSalesOrderDatasAsync(SalesOrderQuery queryObject)

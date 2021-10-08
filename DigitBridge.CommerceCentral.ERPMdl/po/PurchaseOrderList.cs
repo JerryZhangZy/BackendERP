@@ -15,8 +15,6 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Helper = DigitBridge.CommerceCentral.ERPDb.PoHeaderHelper;
-using ItemsHelper = DigitBridge.CommerceCentral.ERPDb.PoItemsHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -29,17 +27,40 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             : base(dbFactory, queryObject)
         {
         }
-        
+
         #region override methods
 
         protected override string GetSQL_select()
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*,
-COALESCE(ordtp.text, '') poTypeText, 
-COALESCE(ordst.text, '') poStatusText, 
-(select {ItemsHelper.TableAllies}.* from PoItems {ItemsHelper.TableAllies} where {Helper.TableAllies}.PoUuid={ItemsHelper.TableAllies}.PoUuid for json auto,include_null_values ) as PoItems
+{PoHeaderHelper.RowNum()}, 
+{PoHeaderHelper.DatabaseNum()}, 
+{PoHeaderHelper.MasterAccountNum()}, 
+{PoHeaderHelper.ProfileNum()}, 
+{PoHeaderHelper.PoUuid()}, 
+{PoHeaderHelper.PoNum()}, 
+{PoHeaderHelper.PoType()}, 
+COALESCE(pott.text, '') PoTypeText, 
+{PoHeaderHelper.PoStatus()}, 
+COALESCE(post.text, '') PoStatusText,  
+{PoHeaderHelper.PoDate()}, 
+{PoHeaderHelper.EtaShipDate()}, 
+{PoHeaderHelper.EtaArrivalDate()}, 
+{PoHeaderHelper.CancelDate()},  
+{PoHeaderHelper.PoTime()},  
+{PoHeaderHelper.VendorUuid()}, 
+{PoHeaderHelper.VendorNum()}, 
+{PoHeaderHelper.VendorName()},  
+{PoHeaderHelper.SubTotalAmount()},
+{PoHeaderHelper.TotalAmount()},
+{PoHeaderHelper.PoSourceCode()}, 
+{PoHeaderInfoHelper.CentralOrderNum()},
+{PoHeaderInfoHelper.ChannelNum()},
+{PoHeaderInfoHelper.ChannelOrderID()},
+{PoHeaderInfoHelper.BillToEmail()},
+{PoHeaderInfoHelper.ShipToName()}
+
 ";
             return this.SQL_Select;
         }
@@ -47,10 +68,10 @@ COALESCE(ordst.text, '') poStatusText,
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
- FROM {Helper.TableName} {Helper.TableAllies} 
- LEFT JOIN {ItemsHelper.TableName} {ItemsHelper.TableAllies} ON {Helper.TableAllies}.PoUuid={ItemsHelper.TableAllies}.PoUuid
- LEFT JOIN @SalesOrderStatus ordst ON ({Helper.TableAllies}.PoStatus = ordst.num)
- LEFT JOIN @SalesOrderType ordtp ON ({Helper.TableAllies}.PoType = ordtp.num)
+ FROM {PoHeaderHelper.TableName} {PoHeaderHelper.TableAllies} 
+ LEFT JOIN {PoHeaderInfoHelper.TableName} {PoHeaderInfoHelper.TableAllies} ON ({PoHeaderInfoHelper.TableAllies}.PoUuid = {PoHeaderHelper.TableAllies}.PoUuid)
+ LEFT JOIN @PoStatusText post ON ({PoHeaderHelper.TableAllies}.PoStatus = post.num)
+ LEFT JOIN @PoTypeText pott ON ({PoHeaderHelper.TableAllies}.PoType = pott.num)
 ";
             return this.SQL_From;
         }
@@ -58,62 +79,60 @@ COALESCE(ordst.text, '') poStatusText,
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-            paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
-            paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
+            paramList.Add("@PoStatusText".ToEnumParameter<PoStatus>());
+            paramList.Add("@PoTypeText".ToEnumParameter<PoType>());
 
             return paramList.ToArray();
+
         }
-        
+
+
         #endregion override methods
-        
-        public virtual PurchaseOrderPayload GetPurchaseOrderList(PurchaseOrderPayload payload)
+
+        public virtual void GetPurchaseOrderList(PurchaseOrderPayload payload)
         {
             if (payload == null)
                 payload = new PurchaseOrderPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.PurchaseOrderListCount = Count();
-                result = ExcuteJson(sb);
-                if (result)
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
                     payload.PurchaseOrderList = sb;
             }
             catch (Exception ex)
             {
                 payload.PurchaseOrderListCount = 0;
                 payload.PurchaseOrderList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
-        public virtual async Task<PurchaseOrderPayload> GetPurchaseOrderListAsync(PurchaseOrderPayload payload)
+        public virtual async Task GetPurchaseOrderListAsync(PurchaseOrderPayload payload)
         {
             if (payload == null)
                 payload = new PurchaseOrderPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.PurchaseOrderListCount = await CountAsync();
-                result = await ExcuteJsonAsync(sb);
-                if (result)
+                payload.Success = await ExcuteJsonAsync(sb);
+                if (payload.Success)
                     payload.PurchaseOrderList = sb;
             }
             catch (Exception ex)
             {
                 payload.PurchaseOrderListCount = 0;
                 payload.PurchaseOrderList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
         public virtual async Task<IList<long>> GetRowNumListAsync(PurchaseOrderPayload payload)
@@ -125,10 +144,10 @@ COALESCE(ordst.text, '') poStatusText,
             var rowNumList = new List<long>();
 
             var sql = $@"
-SELECT distinct {Helper.TableAllies}.RowNum 
+SELECT distinct {PoHeaderHelper.TableAllies}.RowNum 
 {GetSQL_from()} 
 {GetSQL_where()}
-ORDER BY  {Helper.TableAllies}.RowNum  
+ORDER BY  {PoHeaderHelper.TableAllies}.RowNum  
 OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
@@ -157,10 +176,10 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
             var sql = $@"
-SELECT distinct {Helper.TableAllies}.RowNum 
+SELECT distinct {PoHeaderHelper.TableAllies}.RowNum 
 {GetSQL_from()} 
 {GetSQL_where()}
-ORDER BY  {Helper.TableAllies}.RowNum  
+ORDER BY  {PoHeaderHelper.TableAllies}.RowNum  
 OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try

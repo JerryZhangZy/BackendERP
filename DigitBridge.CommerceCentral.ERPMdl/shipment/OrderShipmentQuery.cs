@@ -49,7 +49,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<int> _ProcessStatus = new QueryFilter<int>("ProcessStatus", "ProcessStatus", PREFIX, FilterBy.eq, 0);
         public QueryFilter<int> ProcessStatus => _ProcessStatus;
 
+        protected QueryFilter<int> _ShipmentStatus = new QueryFilter<int>("ShipmentStatus", "ShipmentStatus", PREFIX, FilterBy.eq, 0);
+        public QueryFilter<int> ShipmentStatus => _ShipmentStatus;
 
+        protected QueryFilter<string> _ShippingClass = new QueryFilter<string>("ShippingClass", "ShippingClass", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> ShippingClass => _ShippingClass;
+
+        protected QueryFilter<string> _ShippingCarrier = new QueryFilter<string>("ShippingCarrier", "ShippingCarrier", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> ShippingCarrier => _ShippingCarrier;
+
+        protected QueryFilter<DateTime> _ShipDateFrom = new QueryFilter<DateTime>("ShipDateFrom", "ShipmentDateUtc", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> ShipDateFrom => _ShipDateFrom;
+
+        protected QueryFilter<DateTime> _ShipDateTo = new QueryFilter<DateTime>("ShipDateTo", "ShipmentDateUtc", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
+        public QueryFilter<DateTime> ShipDateTo => _ShipDateTo;
         public OrderShipmentQuery() : base(PREFIX)
         {
             AddFilter(_ChannelNum);
@@ -63,9 +76,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_MainReturnTrackingNumber);
             AddFilter(_ShipmentType);
             AddFilter(_ProcessStatus);
+            AddFilter(_ShipmentStatus);
+            AddFilter(_ShippingClass);
+            AddFilter(_ShippingCarrier);
+            
         }
         public override void InitQueryFilter()
         {
+            _ShipDateFrom.FilterValue = DateTime.Today.AddDays(-30);
+            _ShipDateTo.FilterValue = DateTime.Today;
         }
 
     }

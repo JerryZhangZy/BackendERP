@@ -8,7 +8,6 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Helper = DigitBridge.CommerceCentral.ERPDb.OrderShipmentHeaderHelper;
 using InfoHelper = DigitBridge.CommerceCentral.ERPDb.OrderShipmentPackageHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
@@ -29,7 +28,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{OrderShipmentHeaderHelper.OrderShipmentNum()}, 
+{OrderShipmentHeaderHelper.OrderShipmentUuid()},  
+{OrderShipmentHeaderHelper.DatabaseNum()}, 
+{OrderShipmentHeaderHelper.MasterAccountNum()}, 
+{OrderShipmentHeaderHelper.ProfileNum()}, 
+{OrderShipmentHeaderHelper.ChannelNum()}, 
+{OrderShipmentHeaderHelper.ChannelAccountNum()}, 
+{OrderShipmentHeaderHelper.OrderDCAssignmentNum()}, 
+{OrderShipmentHeaderHelper.DistributionCenterNum()}, 
+{OrderShipmentHeaderHelper.CentralOrderNum()}, 
+{OrderShipmentHeaderHelper.ChannelOrderID()},
+{OrderShipmentHeaderHelper.ShipmentID()},
+{OrderShipmentHeaderHelper.ShipmentType()}, 
+COALESCE(stt.text, '') ShipmentTypeText, 
+{OrderShipmentHeaderHelper.ShipmentStatus()}, 
+COALESCE(sst.text, '') ShipmentStatusText,  
+{OrderShipmentHeaderHelper.ProcessStatus()}, 
+COALESCE(pst.text, '') ProcessStatusText,  
+{OrderShipmentHeaderHelper.ShipmentDateUtc()}, 
+{OrderShipmentHeaderHelper.ShippingCarrier()}, 
+{OrderShipmentHeaderHelper.ShippingClass()}, 
+{OrderShipmentHeaderHelper.MainTrackingNumber()},  
+{OrderShipmentHeaderHelper.MainReturnTrackingNumber()},  
+{OrderShipmentHeaderHelper.TotalPackages()}, 
+{OrderShipmentHeaderHelper.TotalShippedQty()}, 
+{OrderShipmentHeaderHelper.TotalCanceledQty()},  
+{OrderShipmentHeaderHelper.TotalWeight()},
+{OrderShipmentHeaderHelper.TotalVolume()},
+{OrderShipmentHeaderHelper.WeightUnit()}, 
+{OrderShipmentHeaderHelper.LengthUnit()},
+{OrderShipmentHeaderHelper.VolumeUnit()}
+
 ";
             return this.SQL_Select;
         }
@@ -37,8 +67,10 @@ SELECT
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
- FROM {Helper.TableName} {Helper.TableAllies} 
-LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.OrderShipmentUuid = {InfoHelper.TableAllies}.OrderShipmentUuid)
+ FROM {OrderShipmentHeaderHelper.TableName} {OrderShipmentHeaderHelper.TableAllies}  
+ LEFT JOIN @ShipmentStatusText sst ON ({OrderShipmentHeaderHelper.TableAllies}.ShipmentStatus = sst.num)
+ LEFT JOIN @ShipmentTypeText stt ON ({OrderShipmentHeaderHelper.TableAllies}.ShipmentType = stt.num)
+ LEFT JOIN @ProcessStatusText pst ON ({OrderShipmentHeaderHelper.TableAllies}.ProcessStatus = pst.num)
 ";
             return this.SQL_From;
         }
@@ -46,61 +78,60 @@ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllie
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-
+            paramList.Add("@ShipmentStatusText".ToEnumParameter<ShipmentStatus>());
+            paramList.Add("@ShipmentTypeText".ToEnumParameter<ShipmentType>());
+            paramList.Add("@ProcessStatusText".ToEnumParameter<ShipmentProcessStatus>());
             return paramList.ToArray();
-        
+
         }
+
 
         #endregion override methods
 
-        public virtual OrderShipmentPayload GetOrderShipmentList(OrderShipmentPayload payload)
+        public virtual void GetOrderShipmentList(OrderShipmentPayload payload)
         {
             if (payload == null)
                 payload = new OrderShipmentPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.OrderShipmentListCount = Count();
-                result = ExcuteJson(sb);
-                if (result)
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
                     payload.OrderShipmentList = sb;
             }
             catch (Exception ex)
             {
                 payload.OrderShipmentListCount = 0;
                 payload.OrderShipmentList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
-        public virtual async Task<OrderShipmentPayload> GetOrderShipmentListAsync(OrderShipmentPayload payload)
+        public virtual async Task GetOrderShipmentListAsync(OrderShipmentPayload payload)
         {
             if (payload == null)
                 payload = new OrderShipmentPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.OrderShipmentListCount = await CountAsync();
-                result = await ExcuteJsonAsync(sb);
-                if (result)
+                payload.Success = await ExcuteJsonAsync(sb);
+                if (payload.Success)
                     payload.OrderShipmentList = sb;
             }
             catch (Exception ex)
             {
                 payload.OrderShipmentListCount = 0;
                 payload.OrderShipmentList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
         public virtual async Task<IList<long>> GetRowNumListAsync(OrderShipmentPayload payload)
@@ -112,10 +143,10 @@ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllie
             var rowNumList = new List<long>();
 
             var sql = $@"
-SELECT distinct {Helper.TableAllies}.OrderShipmentNum 
+SELECT distinct {OrderShipmentHeaderHelper.TableAllies}.OrderShipmentNum 
 {GetSQL_from()} 
 {GetSQL_where()}
-ORDER BY  {Helper.TableAllies}.OrderShipmentNum
+ORDER BY  {OrderShipmentHeaderHelper.TableAllies}.OrderShipmentNum
 OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try
@@ -144,10 +175,10 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
             var sql = $@"
-SELECT distinct {Helper.TableAllies}.OrderShipmentNum 
+SELECT distinct {OrderShipmentHeaderHelper.TableAllies}.OrderShipmentNum 
 {GetSQL_from()} 
 {GetSQL_where()} 
-ORDER BY  {Helper.TableAllies}.OrderShipmentNum
+ORDER BY  {OrderShipmentHeaderHelper.TableAllies}.OrderShipmentNum
 OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 ";
             try

@@ -76,59 +76,53 @@ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllie
             paramList.Add("@InvoiceType".ToEnumParameter<InvoiceType>());
 
             return paramList.ToArray();
-        
+
         }
 
         #endregion override methods
 
-        public virtual InvoicePayload GetInvoiceList(InvoicePayload payload)
+        public virtual void GetInvoiceList(InvoicePayload payload)
         {
             if (payload == null)
                 payload = new InvoicePayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.InvoiceListCount = Count();
-                result = ExcuteJson(sb);
-                if (result)
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
                     payload.InvoiceList = sb;
             }
             catch (Exception ex)
             {
                 payload.InvoiceListCount = 0;
-                payload.InvoiceList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
-        public virtual async Task<InvoicePayload> GetInvoiceListAsync(InvoicePayload payload)
+        public virtual async Task GetInvoiceListAsync(InvoicePayload payload)
         {
             if (payload == null)
                 payload = new InvoicePayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.InvoiceListCount = await CountAsync();
-                result = await ExcuteJsonAsync(sb);
-                if (result)
+                payload.Success = await ExcuteJsonAsync(sb);
+                if (payload.Success)
                     payload.InvoiceList = sb;
             }
             catch (Exception ex)
             {
                 payload.InvoiceListCount = 0;
-                payload.InvoiceList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
         public virtual async Task<IList<long>> GetRowNumListAsync(InvoicePayload payload)
         {

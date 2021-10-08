@@ -45,7 +45,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.AzureStorage.Tests.Integration", "DigitBridge.CommerceCentral.AzureStorage.Tests.Integration\DigitBridge.CommerceCentral.AzureStorage.Tests.Integration.csproj", "{99774249-D08C-4F6D-8E68-79C3130A3B91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.QuickBooks.Integration.Tests", "DigitBridge.QuickBooks.Integration.Tests\DigitBridge.QuickBooks.Integration.Tests.csproj", "{89918B42-7BEA-497E-92AE-689E33C60BE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.QuickBooks.Integration.Tests", "DigitBridge.QuickBooks.Integration.Tests\DigitBridge.QuickBooks.Integration.Tests.csproj", "{89918B42-7BEA-497E-92AE-689E33C60BE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPFunc", "DigitBridge.CommerceCentral.ERPFunc\DigitBridge.CommerceCentral.ERPFunc.csproj", "{22831F89-8C68-43CE-B40E-2714F09773A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -130,6 +132,10 @@ Global
 		{89918B42-7BEA-497E-92AE-689E33C60BE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89918B42-7BEA-497E-92AE-689E33C60BE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89918B42-7BEA-497E-92AE-689E33C60BE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22831F89-8C68-43CE-B40E-2714F09773A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22831F89-8C68-43CE-B40E-2714F09773A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22831F89-8C68-43CE-B40E-2714F09773A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22831F89-8C68-43CE-B40E-2714F09773A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

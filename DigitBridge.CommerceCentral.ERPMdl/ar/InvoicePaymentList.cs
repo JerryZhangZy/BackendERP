@@ -29,7 +29,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.RowNum()}, 
+{Helper.TransUuid()}, 
+{Helper.TransNum()}, 
+{Helper.InvoiceUuid()}, 
+{Helper.InvoiceNumber()}, 
+{Helper.TransStatus()},
+{Helper.PaidBy()},  
+COALESCE(pts.text, '') TransStatusText, 
+COALESCE(ppb.text, '') PaidByText, 
+{Helper.TransDate()}, 
+{Helper.TransTime()}, 
+{Helper.TotalAmount()}, 
+{InvoiceHeaderHelper.DueDate()}, 
+{InvoiceHeaderHelper.CustomerUuid()}, 
+{InvoiceHeaderHelper.CustomerCode()}, 
+{InvoiceHeaderHelper.CustomerName()},  
+{InvoiceHeaderInfoHelper.CentralOrderNum()},
+{InvoiceHeaderInfoHelper.ChannelNum()},
+{InvoiceHeaderInfoHelper.ChannelOrderID()},
+{InvoiceHeaderInfoHelper.BillToEmail()},
+{InvoiceHeaderInfoHelper.ShipToName()}
 ";
             return this.SQL_Select;
         }
@@ -38,6 +58,10 @@ SELECT
         {
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
+ LEFT JOIN {InvoiceHeaderHelper.TableName} {InvoiceHeaderHelper.TableAllies} ON ({InvoiceHeaderHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
+ LEFT JOIN {InvoiceHeaderInfoHelper.TableName} {InvoiceHeaderInfoHelper.TableAllies} ON ({InvoiceHeaderInfoHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
+ LEFT JOIN @PaymentTransStatus pts ON ({Helper.TableAllies}.TransStatus = pts.num)
+ LEFT JOIN @PaidBy ppb ON ({Helper.TableAllies}.PaidBy = ppb.num) 
 ";
             return this.SQL_From;
         }
@@ -45,14 +69,14 @@ SELECT
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-
+            paramList.Add("@PaymentTransStatus".ToEnumParameter<TransStatus>());
+            paramList.Add("@PaidBy".ToEnumParameter<PaidByEnum>());
             return paramList.ToArray();
-
         }
 
         #endregion override methods
 
-        public virtual InvoicePaymentPayload GetInvoicePaymentList(InvoicePaymentPayload payload)
+        public virtual void GetInvoicePaymentList(InvoicePaymentPayload payload)
         {
             if (payload == null)
                 payload = new InvoicePaymentPayload();
@@ -70,36 +94,31 @@ SELECT
             catch (Exception ex)
             {
                 payload.InvoiceTransactionListCount = 0;
-                payload.InvoiceTransactionList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
-        public virtual async Task<InvoicePaymentPayload> GetInvoicePaymentListAsync(InvoicePaymentPayload payload)
+        public virtual async Task GetInvoicePaymentListAsync(InvoicePaymentPayload payload)
         {
             if (payload == null)
                 payload = new InvoicePaymentPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.InvoiceTransactionListCount = await CountAsync();
-                result = await ExcuteJsonAsync(sb);
-                if (result)
+                payload.Success = await ExcuteJsonAsync(sb);
+                if (payload.Success)
                     payload.InvoiceTransactionList = sb;
             }
             catch (Exception ex)
             {
                 payload.InvoiceTransactionListCount = 0;
-                payload.InvoiceTransactionList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
         public virtual async Task<IList<long>> GetRowNumListAsync(InvoicePaymentPayload payload)
@@ -170,7 +189,7 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
 
         //TODO where sql&more column displayed.
         private string GetExportSql()
-        { 
+        {
             var sql = $@"  
 select {Helper.TableAllies}.*
 from InvoiceTransaction {Helper.TableAllies}

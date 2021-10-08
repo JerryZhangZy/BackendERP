@@ -31,18 +31,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _PoDateTo = new QueryFilter<DateTime>("PoDateTo", "PoDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime,isDate:true);
         public QueryFilter<DateTime> PoDateTo => _PoDateTo;
 
-        protected EnumQueryFilter<SalesOrderStatus> _PoStatus = new EnumQueryFilter<SalesOrderStatus>("PoStatus", "PoStatus", PREFIX, FilterBy.eq, -1);
-        public EnumQueryFilter<SalesOrderStatus> PoStatus => _PoStatus;
+        protected EnumQueryFilter<PoStatus> _PoStatus = new EnumQueryFilter<PoStatus>("PoStatus", "PoStatus", PREFIX, FilterBy.eq, -1);
+        public EnumQueryFilter<PoStatus> PoStatus => _PoStatus;
 
-        protected EnumQueryFilter<SalesOrderType> _PoType = new EnumQueryFilter<SalesOrderType>("PoType", "PoType", PREFIX, FilterBy.eq, -1);
-        public EnumQueryFilter<SalesOrderType> PoType => _PoType;
+        protected EnumQueryFilter<PoType> _PoType = new EnumQueryFilter<PoType>("PoType", "PoType", PREFIX, FilterBy.eq, -1);
+        public EnumQueryFilter<PoType> PoType => _PoType;
 
+        protected QueryFilter<string> _VendorNum = new QueryFilter<string>("VendorNum", "VendorNum", PREFIX, FilterBy.eq, string.Empty);
+        public QueryFilter<string> VendorNum => _VendorNum;
+
+        protected QueryFilter<string> _VendorName = new QueryFilter<string>("VendorName", "VendorName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorName => _VendorName;
+
+        protected QueryFilter<string> _PoNum = new QueryFilter<string>("PoNum", "PoNum", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> PoNum => _PoNum;
+         
+        
         public PurchaseOrderQuery() : base(PREFIX)
         {
             AddFilter(_PoDateFrom);
             AddFilter(_PoDateTo);
             AddFilter(_PoStatus);
-            AddFilter(_PoType);
+            AddFilter(_PoType); 
+            AddFilter(_VendorNum);
+            AddFilter(_VendorName);
+            AddFilter(_PoNum);
         }
 
         public override void InitQueryFilter()

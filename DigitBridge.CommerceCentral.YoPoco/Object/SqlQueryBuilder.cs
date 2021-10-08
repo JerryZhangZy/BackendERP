@@ -12,12 +12,13 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.YoPoco
 {
     /// <summary>
     /// </summary>
-    public partial class SqlQueryBuilder<TQueryObject> : ISqlQueryBuilder<TQueryObject>
+    public partial class SqlQueryBuilder<TQueryObject> : ISqlQueryBuilder<TQueryObject>,IMessage
         where TQueryObject : IQueryObject, new()
     {
         public string SQL_Select { get; set; }
@@ -350,5 +351,33 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return result;
         }
 
+        #region Messages
+
+        public bool HasMessages => Messages.Count > 0;
+
+        protected IList<MessageClass> _messages;
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get
+            {
+                if (_messages is null)
+                    _messages = new List<MessageClass>();
+                return _messages;
+            }
+            set { _messages = value; }
+        }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             Messages.Add(message, MessageLevel.Info, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Warning, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Error, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Fatal, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Debug, code);
+
+        #endregion Messages
     }
 }
