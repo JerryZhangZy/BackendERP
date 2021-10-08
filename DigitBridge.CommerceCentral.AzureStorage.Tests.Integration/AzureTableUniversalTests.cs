@@ -65,26 +65,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
         }
 
-        [Fact()]
-        public async Task Add_Test()
-        {
-            var log = new OAuthMapInfo()
-            {
-                ProfileNum = 10001,
-                MasterAccountNum = 10001,
-                RequestState = Guid.NewGuid().ToString(),
-                RowKey=Guid.NewGuid().ToString(),
-                PartitionKey="10001"
-            };
-            var tableUniversal =await AzureTableUniversal<OAuthMapInfo>.CreateAsync(typeof(OAuthMapInfo).Name, connString);
-            await tableUniversal.AddOrUpdateAsync(log);
+        //[Fact()]
+        //public async Task Add_Test()
+        //{
+        //    var log = new OAuthMapInfo()
+        //    {
+        //        ProfileNum = 10001,
+        //        MasterAccountNum = 10001,
+        //        RequestState = Guid.NewGuid().ToString()
+        //    };
+        //    var tableUniversal =await AzureTableUniversal<OAuthMapInfo>.CreateAsync(typeof(OAuthMapInfo).Name, connString);
+        //    await tableUniversal.AddOrUpdateAsync(log);
 
-            var getentity =await tableUniversal.GetByRowKey(log.RowKey);
-            Assert.True(getentity != null, "succ");
-            await tableUniversal.DeleteAsync(getentity); 
-            getentity = await tableUniversal.GetByRowKey(log.RowKey);
-            Assert.True(getentity == null, "succ");
-        }
+        //    var getentity =await tableUniversal.GetByRowKey(log.RowKey);
+        //    Assert.True(getentity != null, "succ");
+        //    await tableUniversal.DeleteAsync(getentity); 
+        //    getentity = await tableUniversal.GetByRowKey(log.RowKey);
+        //    Assert.True(getentity == null, "succ");
+        //}
 
     }
 }

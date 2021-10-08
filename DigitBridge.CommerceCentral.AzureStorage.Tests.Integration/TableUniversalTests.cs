@@ -76,23 +76,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task AddInventoryLog_Test()
         {
             var log= InventoryLogTests.GetFakerData().Generate();
-            var tableUniversal =await TableUniversal.CreateAsync(typeof(InventoryLog).Name, connString);
+            var tableUniversal =await TableUniversal<InventoryLog>.CreateAsync(typeof(InventoryLog).Name, connString);
 
-            var data = log.GetType().GetProperties()//这一步获取匿名类的公共属性，返回一个数组
-                .Where(q => q.PropertyType != typeof(DateTime) && q.PropertyType != typeof(DateTime?) && q.PropertyType != typeof(TimeSpan))
-                .ToDictionary(q => q.Name, q => q.GetValue(log));//这一步将数组转换为字典
-            data.Remove("ChangedProperties");
-            data.Remove("db");
-
-            var entity = new TableEntity(data);
-            entity.RowKey = log.UniqueId;
-            entity.PartitionKey = log.MasterAccountNum.ToString();
-            var result=await tableUniversal.AddEntityAsync(entity);
-            var getentity =await tableUniversal.GetEntityAsync(log.UniqueId, entity.PartitionKey);
-            Assert.True(getentity != null, "succ");
-            await tableUniversal.DeleteEntityAsync(getentity.RowKey, getentity.PartitionKey); 
-            getentity = await tableUniversal.GetEntityAsync(log.UniqueId, entity.PartitionKey);
-            Assert.True(getentity == null, "succ");
+            await tableUniversal.UpSertEntityAsync(log,log.MasterAccountNum.ToString(),log.UniqueId);
+            var getentity =await tableUniversal.GetEntityAsync(log.UniqueId, log.MasterAccountNum.ToString());
+            var log2= InventoryLogTests.GetFakerData().Generate();
+            await tableUniversal.UpSertEntityAsync(log2, log.MasterAccountNum.ToString(), log.UniqueId);
+            getentity = await tableUniversal.GetEntityAsync(log.UniqueId, log.MasterAccountNum.ToString());
+            Assert.True(getentity.UniqueId == log2.UniqueId, "succ");
+            await tableUniversal.DeleteEntityAsync(log.UniqueId, log.MasterAccountNum.ToString()); 
+            //getentity = await tableUniversal.GetEntityAsync(log.UniqueId, entity.PartitionKey);
+            //Assert.True(getentity == null, "succ");
         }
 
     }
