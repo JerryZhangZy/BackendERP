@@ -34,6 +34,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _TransDateTo = new QueryFilter<DateTime>("TransDateTo", "TransDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> TransDateTo => _TransDateTo;
 
+        protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty);
+        public QueryFilter<string> CustomerCode => _CustomerCode;
+
+        protected QueryFilter<string> _CustomerName = new QueryFilter<string>("CustomerName", "CustomerName", InvoiceHeaderHelper.TableAllies, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> CustomerName => _CustomerName;
+
         public InvoicePaymentQuery() : base(PREFIX)
         {
             AddFilter(_TransNum);
@@ -42,6 +48,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_TransStatus);
             AddFilter(_TransDateFrom);
             AddFilter(_TransDateTo);
+            AddFilter(_CustomerCode);
+            AddFilter(_CustomerName);
         }
         public override void InitQueryFilter()
         {

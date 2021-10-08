@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             : base(dbFactory, queryObject)
         {
         }
-        
+
         #region override methods
 
         protected override string GetSQL_select()
@@ -112,57 +112,53 @@ LEFT JOIN @CustomerStatus st ON ({Helper.TableAllies}.CustomerStatus = st.num)
 
             return paramList.ToArray();
         }
-        
+
         #endregion override methods
-        
-        public virtual CustomerPayload GetCustomerList(CustomerPayload payload)
+
+        public virtual void GetCustomerList(CustomerPayload payload)
         {
             if (payload == null)
                 payload = new CustomerPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.CustomerListCount = Count();
-                result = ExcuteJson(sb);
-                if (result)
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
                     payload.CustomerList = sb;
             }
             catch (Exception ex)
             {
                 payload.CustomerListCount = 0;
                 payload.CustomerList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
-        public virtual async Task<CustomerPayload> GetCustomerListAsync(CustomerPayload payload)
+        public virtual async Task GetCustomerListAsync(CustomerPayload payload)
         {
             if (payload == null)
                 payload = new CustomerPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.CustomerListCount = await CountAsync();
-                result = await ExcuteJsonAsync(sb);
-                if (result)
+                payload.Success = await ExcuteJsonAsync(sb);
+                if (payload.Success)
                     payload.CustomerList = sb;
             }
             catch (Exception ex)
             {
                 payload.CustomerListCount = 0;
                 payload.CustomerList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
         public virtual async Task<IList<long>> GetRowNumListAsync(CustomerPayload payload)

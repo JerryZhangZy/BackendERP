@@ -159,7 +159,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<SalesOrderPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new SalesOrderList(dataBaseFactory, new SalesOrderQuery());
-            payload = await srv.GetSalesOrderListAsync(payload);
+            await srv.GetSalesOrderListAsync(payload);
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 

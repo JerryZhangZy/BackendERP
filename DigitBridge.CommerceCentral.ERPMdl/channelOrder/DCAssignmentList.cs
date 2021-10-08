@@ -28,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             : base(dbFactory, queryObject)
         {
         }
-        
+
         #region override methods
 
         protected override string GetSQL_select()
@@ -51,63 +51,59 @@ SELECT
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-                        
+
             //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
             //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
 
             return paramList.ToArray();
         }
-        
+
         #endregion override methods
-        
-        public virtual DCAssignmentPayload GetDCAssignmentList(DCAssignmentPayload payload)
+
+        public virtual void GetDCAssignmentList(DCAssignmentPayload payload)
         {
             if (payload == null)
                 payload = new DCAssignmentPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.DCAssignmentListCount = Count();
-                result = ExcuteJson(sb);
-                if (result)
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
                     payload.DCAssignmentList = sb;
             }
             catch (Exception ex)
             {
                 payload.DCAssignmentListCount = 0;
                 payload.DCAssignmentList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
-        public virtual async Task<DCAssignmentPayload> GetDCAssignmentListAsync(DCAssignmentPayload payload)
+        public virtual async Task GetDCAssignmentListAsync(DCAssignmentPayload payload)
         {
             if (payload == null)
                 payload = new DCAssignmentPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.DCAssignmentListCount = await CountAsync();
-                result = await ExcuteJsonAsync(sb);
-                if (result)
+                payload.Success = await ExcuteJsonAsync(sb);
+                if (payload.Success)
                     payload.DCAssignmentList = sb;
             }
             catch (Exception ex)
             {
                 payload.DCAssignmentListCount = 0;
                 payload.DCAssignmentList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
         public virtual async Task<IList<long>> GetRowNumListAsync(DCAssignmentPayload payload)

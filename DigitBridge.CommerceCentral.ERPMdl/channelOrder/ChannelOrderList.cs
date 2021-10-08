@@ -28,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             : base(dbFactory, queryObject)
         {
         }
-        
+
         #region override methods
 
         protected override string GetSQL_select()
@@ -51,63 +51,59 @@ SELECT
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-                        
+
             //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
             //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
 
             return paramList.ToArray();
         }
-        
+
         #endregion override methods
-        
-        public virtual ChannelOrderPayload GetChannelOrderList(ChannelOrderPayload payload)
+
+        public virtual void GetChannelOrderList(ChannelOrderPayload payload)
         {
             if (payload == null)
                 payload = new ChannelOrderPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.ChannelOrderListCount = Count();
-                result = ExcuteJson(sb);
-                if (result)
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
                     payload.ChannelOrderList = sb;
             }
             catch (Exception ex)
             {
                 payload.ChannelOrderListCount = 0;
                 payload.ChannelOrderList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
-        public virtual async Task<ChannelOrderPayload> GetChannelOrderListAsync(ChannelOrderPayload payload)
+        public virtual async Task GetChannelOrderListAsync(ChannelOrderPayload payload)
         {
             if (payload == null)
                 payload = new ChannelOrderPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.ChannelOrderListCount = await CountAsync();
-                result = await ExcuteJsonAsync(sb);
-                if (result)
+                payload.Success = await ExcuteJsonAsync(sb);
+                if (payload.Success)
                     payload.ChannelOrderList = sb;
             }
             catch (Exception ex)
             {
                 payload.ChannelOrderListCount = 0;
                 payload.ChannelOrderList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
         public virtual async Task<IList<long>> GetRowNumListAsync(ChannelOrderPayload payload)

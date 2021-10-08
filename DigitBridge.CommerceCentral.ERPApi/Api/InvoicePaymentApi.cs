@@ -139,7 +139,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<InvoicePaymentPayload>> AddInvoicePayments(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoicePayments")] HttpRequest req)
         {
-            var payload = await req.GetParameters<InvoicePaymentPayload>(true); 
+            var payload = await req.GetParameters<InvoicePaymentPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
             payload.Success = await srv.AddAsync(payload);
@@ -164,7 +164,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePaymentPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentList(dataBaseFactory, new InvoicePaymentQuery());
-            payload = await srv.GetInvoicePaymentListAsync(payload);
+            await srv.GetInvoicePaymentListAsync(payload);
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
 
