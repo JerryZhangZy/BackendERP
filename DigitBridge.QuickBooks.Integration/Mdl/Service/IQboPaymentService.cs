@@ -3,13 +3,9 @@ namespace DigitBridge.QuickBooks.Integration
 {
     interface IQboPaymentService
     {
-        #region write erp invoice to qbo
-        Task<bool> Export(string invoiceNumber);
-
-        #endregion
-
-        #region Query invoice from qbo
-
-        #endregion
+        Task<bool> ExportAsync(string invoiceNumber, int transNum);
+        Task<bool> VoidQboPaymentAsync(string invoiceNumber, int transNum);
+        Task<bool> DeleteQboPaymentAsync(string invoiceNumber, int transNum);
+        Task<bool> GetQboPaymentAsync(string invoiceNumber, int transNum);
     }
 }

@@ -22,64 +22,52 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return _paymentQueryService;
         }
 
+        public async Task<Payment> GetPaymentAsync(string txnId)
+        {
+            Payment payment = null;
+            var queryService = await GetPaymentQueryService();
+            var list = queryService.ExecuteIdsQuery($"SELECT * FROM Payment where id = '{txnId}'").ToList();
+            if (list != null)
+                payment = list.FirstOrDefault();
+            if (payment == null)
+            {
+                AddError($"Data not found in qbo for qbo payment id : {txnId}");
+            }
+            return payment;
+        }
         public async Task<Payment> CreateOrUpdatePayment(Payment payment)
         {
-            if (string.IsNullOrEmpty(payment.Id) || !await PaymentExistAsync(payment.Id))
+            if (string.IsNullOrEmpty(payment.Id))
             {
-                return await AddDataAsync(payment);
+                payment = await AddDataAsync(payment);
             }
             else
             {
-                return await UpdateDataAsync(payment);
+                payment = await UpdateDataAsync(payment);
             }
+            return payment;
         }
 
-        public async Task<Payment> CreatePaymentIfAbsent(Payment payment)
+        public async Task<Payment> DeletePaymentAsync(string txnId)
         {
-            if (!await PaymentExistAsync(payment.Id))
+            var Payment = await GetPaymentAsync(txnId);
+            if (Payment == null)
             {
-                return await AddDataAsync(payment);
+                AddError($"Data not found in qbo for qbo payment id : {txnId}");
+                return null;
             }
-            return null;
+            return await DeleteDataAsync(Payment);
         }
 
-        public async Task<bool> PaymentExistAsync(string id)
+        public async Task<Payment> VoidPaymentAsync(string txnId)
         {
-            var queryService = await GetPaymentQueryService();
-            return queryService.ExecuteIdsQuery($"select * from Payment Where Id = '{id}'").FirstOrDefault() != null;
-        }
-
-        public async Task<Payment> DeletePaymentAsync(Payment payment)
-        {
-            if (payment != null)
-                return await DeleteDataAsync(payment);
-            return null;
-        }
-
-        public async Task<Payment> DeletePaymentAsync(string id)
-        {
-            var payment = await GetPaymentAsync(id);
-            if (payment != null)
+            var Payment = await GetPaymentAsync(txnId);
+            if (Payment == null)
             {
-                return await DeletePaymentAsync(payment);
+                AddError($"Data not found in qbo for qbo payment id : {txnId}");
+                return null;
             }
-            return null;
-        }
-
-        public async Task<Payment> UpdatePaymentAsync(Payment payment)
-        {
-            return await UpdateDataAsync(payment);
-        }
-
-        /// <summary>
-        /// Get Payment by Id( DigibridgeOrderId )
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public async Task<Payment> GetPaymentAsync(string id)
-        {
-            var queryService = await GetPaymentQueryService();
-            return queryService.ExecuteIdsQuery($"SELECT * FROM Payment where Id = '{id}'").FirstOrDefault();
+            return await VoidDataAsync(Payment);
         }
     }
 }

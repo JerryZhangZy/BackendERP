@@ -11,13 +11,15 @@
     [LogType] VARCHAR(50) NOT NULL DEFAULT '', --Log type. Which transaction to update QuickBooksExport. For Example: Shippment, P/O Receive, Adjust. <br> Title: Type, Display: true, Editable: false
     [LogUuid] VARCHAR(50) NOT NULL DEFAULT '', --Transaction ID (for example: PO receive, Shhipment). <br> Display: false, Editable: false
     [DocNumber] VARCHAR(100) NOT NULL DEFAULT '', --QuickBooks DocNumber <br> Title: DocNumber, Display: true, Editable: false	
-    [DocStatus] INT NULL DEFAULT 0, --Log status. <br> Title: Status, Display: true, Editable: false
+    [DocStatus] INT NULL DEFAULT 0, --Quickbook Return status. <br> Title: Status, Display: true, Editable: false
 	[LogDate] DATE NOT NULL, --Log date. <br> Title: Date, Display: true, Editable: false
 	[LogTime] TIME NOT NULL, --Log time. <br> Title: Time, Display: true, Editable: false
 	[LogBy] Varchar(100) NOT NULL DEFAULT '', --Log create by. <br> Title: By, Display: true, Editable: false
 
-    [SyncToken] int not null default 0, --Version number of the object in QuickBooks
     [TxnId] VARCHAR(100) NOT NULL DEFAULT '', --QuickBooks TxnId.<br> Title: TxnId, Display: true, Editable: false
+    [LogStatus] int not null default 0, ----log status. <br> Title: Status, Display: true, Editable: false
+    [ErrorMessage] NText NOT NULL DEFAULT '', --log error messages.<br> Title:ErrorMessage,Display:true,Editable:false
+    [RequestInfo] NVARCHAR(2000) NOT NULL DEFAULT '',--log request info , qbo entity.<br> Title:RequestInfo,Display:true,Editable:false
 
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) User who created this transaction. <br> Title: Created By, Display: true, Editable: false
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Radonly) Created Date time. <br> Title: Created At, Display: true, Editable: false

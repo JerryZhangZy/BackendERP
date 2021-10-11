@@ -118,9 +118,9 @@ namespace DigitBridge.QuickBooks.Integration
         public bool HasDocNumber => DocNumber != null;
 
 		/// <summary>
-		/// Log status. <br> Title: Status, Display: true, Editable: false
+		/// Quickbook Return status. <br> Title: Status, Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Log status. <br> Title: Status, Display: true, Editable: false")]
+		[OpenApiPropertyDescription("Quickbook Return status. <br> Title: Status, Display: true, Editable: false")]
         public int? DocStatus { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -165,6 +165,34 @@ namespace DigitBridge.QuickBooks.Integration
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTxnId => TxnId != null;
+
+		/// <summary>
+		/// --log status. <br> Title: Status, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("--log status. <br> Title: Status, Display: true, Editable: false")]
+        public int? LogStatus { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasLogStatus => LogStatus != null;
+
+		/// <summary>
+		/// log error messages.<br> Title:ErrorMessage,Display:true,Editable:false
+		/// </summary>
+		[OpenApiPropertyDescription("log error messages.<br> Title:ErrorMessage,Display:true,Editable:false")]
+        public string ErrorMessage { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasErrorMessage => ErrorMessage != null;
+
+		/// <summary>
+		/// log request info , qbo entity.<br> Title:RequestInfo,Display:true,Editable:false
+		/// </summary>
+		[OpenApiPropertyDescription("log request info , qbo entity.<br> Title:RequestInfo,Display:true,Editable:false")]
+        [StringLength(2000, ErrorMessage = "The RequestInfo value cannot exceed 2000 characters. ")]
+        public string RequestInfo { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasRequestInfo => RequestInfo != null;
 
 		/// <summary>
 		/// (Readonly) User who created this transaction. <br> Title: Created By, Display: true, Editable: false

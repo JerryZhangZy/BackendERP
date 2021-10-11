@@ -119,6 +119,10 @@ namespace DigitBridge.QuickBooks.Integration
 				.RuleFor(u => u.LogDate, f => f.Date.Past(0).Date)
 				.RuleFor(u => u.LogTime, f => f.Date.Timespan().ToDateTime())
 				.RuleFor(u => u.LogBy, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.TxnId, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.LogStatus, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.ErrorMessage, f => f.Lorem.Sentence().TruncateTo(20000))
+				.RuleFor(u => u.RequestInfo, f => f.Lorem.Sentence().TruncateTo(2000))
 				.RuleFor(u => u.EnterBy, f => null)
 				;
 			#endregion faker data rules

@@ -36,8 +36,9 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         {
             var payload = await req.GetParameters<QboInvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var invoiceExportService = new QboInvoiceService(payload, dataBaseFactory);
-            await invoiceExportService.Export(invoiceNumber);
+            var service = new QboInvoiceService(payload, dataBaseFactory);
+            payload.Success = await service.ExportAsync(invoiceNumber);
+            payload.Messages = service.Messages;
             return new JsonNetResponse<QboInvoicePayload>(payload);
         }
 
@@ -47,21 +48,22 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         /// <param name="req"></param> 
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        [FunctionName(nameof(GetQboInvoiceList))]
-        [OpenApiOperation(operationId: "GetQboInvoiceList", tags: new[] { "Quick Books Invoices" }, Summary = "Get Quick Books invoices by erp invoice number")]
+        [FunctionName(nameof(GetQboInvoice))]
+        [OpenApiOperation(operationId: "GetQboInvoice", tags: new[] { "Quick Books Invoices" }, Summary = "Get Quick Books invoice by erp invoice number")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Visibility = OpenApiVisibilityType.Advanced)]
         //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(QboInvoicePayloadGetMultiple))]
-        public static async Task<JsonNetResponse<QboInvoicePayload>> GetQboInvoiceList(
+        public static async Task<JsonNetResponse<QboInvoicePayload>> GetQboInvoice(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "quickBooksInvoices/{invoiceNumber}")] HttpRequest req,
             string invoiceNumber)
         {
             var payload = await req.GetParameters<QboInvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var invoiceExportService = new QboInvoiceService(payload, dataBaseFactory);
-            await invoiceExportService.GetQboInvoiceList(invoiceNumber);
+            var service = new QboInvoiceService(payload, dataBaseFactory);
+            payload.Success = await service.GetQboInvoiceAsync(invoiceNumber);
+            payload.Messages = service.Messages;
             return new JsonNetResponse<QboInvoicePayload>(payload);
         }
 
@@ -71,21 +73,22 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         /// <param name="req"></param> 
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        [FunctionName(nameof(DeleteQboInvoiceList))]
-        [OpenApiOperation(operationId: "DeleteQboInvoiceList", tags: new[] { "Quick Books Invoices" }, Summary = "Delete Quick Books invoices by erp invoice number")]
+        [FunctionName(nameof(DeleteQboInvoice))]
+        [OpenApiOperation(operationId: "DeleteQboInvoice", tags: new[] { "Quick Books Invoices" }, Summary = "Delete Quick Books invoice by erp invoice number")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Visibility = OpenApiVisibilityType.Advanced)]
         //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(QboInvoicePayloadGetMultiple))]
-        public static async Task<JsonNetResponse<QboInvoicePayload>> DeleteQboInvoiceList(
+        public static async Task<JsonNetResponse<QboInvoicePayload>> DeleteQboInvoice(
             [HttpTrigger(AuthorizationLevel.Function, "Delete", Route = "quickBooksInvoices/{invoiceNumber}")] HttpRequest req,
             string invoiceNumber)
         {
             var payload = await req.GetParameters<QboInvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var invoiceExportService = new QboInvoiceService(payload, dataBaseFactory);
-            await invoiceExportService.DeleteQboInvoiceList(invoiceNumber);
+            var service = new QboInvoiceService(payload, dataBaseFactory);
+            payload.Success = await service.DeleteQboInvoiceAsync(invoiceNumber);
+            payload.Messages = service.Messages;
             return new JsonNetResponse<QboInvoicePayload>(payload);
         }
 
@@ -95,21 +98,22 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         /// <param name="req"></param> 
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        [FunctionName(nameof(VoidQboInvoiceList))]
-        [OpenApiOperation(operationId: "VoidQboInvoiceList", tags: new[] { "Quick Books Invoices" }, Summary = "Void Quick Books invoices by erp invoice number")]
+        [FunctionName(nameof(VoidQboInvoice))]
+        [OpenApiOperation(operationId: "VoidQboInvoice", tags: new[] { "Quick Books Invoices" }, Summary = "Void Quick Books invoice by erp invoice number")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Visibility = OpenApiVisibilityType.Advanced)]
         //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(QboInvoicePayloadGetMultiple))]
-        public static async Task<JsonNetResponse<QboInvoicePayload>> VoidQboInvoiceList(
+        public static async Task<JsonNetResponse<QboInvoicePayload>> VoidQboInvoice(
             [HttpTrigger(AuthorizationLevel.Function, "Patch", Route = "quickBooksInvoices/{invoiceNumber}")] HttpRequest req,
             string invoiceNumber)
         {
             var payload = await req.GetParameters<QboInvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var invoiceExportService = new QboInvoiceService(payload, dataBaseFactory);
-            await invoiceExportService.VoidQboInvoiceList(invoiceNumber);
+            var service = new QboInvoiceService(payload, dataBaseFactory);
+            payload.Success = await service.VoidQboInvoiceAsync(invoiceNumber);
+            payload.Messages = service.Messages;
             return new JsonNetResponse<QboInvoicePayload>(payload);
         }
     }

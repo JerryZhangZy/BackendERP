@@ -67,6 +67,9 @@ namespace DigitBridge.QuickBooks.Integration
 			if (dto.HasLogTime) data.LogTime = dto.LogTime.ToTimeSpan();
 			if (dto.HasLogBy) data.LogBy = dto.LogBy;
 			if (dto.HasTxnId) data.TxnId = dto.TxnId;
+			if (dto.HasLogStatus) data.LogStatus = dto.LogStatus.ToInt();
+			if (dto.HasErrorMessage) data.ErrorMessage = dto.ErrorMessage;
+			if (dto.HasRequestInfo) data.RequestInfo = dto.RequestInfo;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 
 			#endregion read properties
@@ -119,6 +122,9 @@ namespace DigitBridge.QuickBooks.Integration
 			dto.LogTime = data.LogTime.ToDateTime();
 			dto.LogBy = data.LogBy;
 			dto.TxnId = data.TxnId;
+			dto.LogStatus = data.LogStatus;
+			dto.ErrorMessage = data.ErrorMessage;
+			dto.RequestInfo = data.RequestInfo;
 			dto.EnterBy = data.EnterBy;
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
