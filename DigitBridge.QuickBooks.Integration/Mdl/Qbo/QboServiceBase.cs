@@ -31,8 +31,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         private ConnectionTokenStatus _connectionStatus = ConnectionTokenStatus.UnInitalized;
         protected IDataBaseFactory dbFactory;
         protected IPayload payload;
-        protected QuickBooksExportLog _exportLog;
-
+        //protected QuickBooksExportLog _exportLog;
+        //protected string txnId;
         public QboServiceBase() { }
 
         public QboServiceBase(IPayload pl, IDataBaseFactory databaseFactory)
@@ -343,28 +343,26 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             }
         }
 
-        public virtual async Task<bool> AddExportLogAsync()
+        public virtual async Task<bool> AddExportLogAsync(QuickBooksExportLog exportLog)
         {
-            _exportLog.DatabaseNum = payload.DatabaseNum;
-            _exportLog.MasterAccountNum = payload.MasterAccountNum;
-            _exportLog.ProfileNum = payload.ProfileNum;
-            _exportLog.LogDate = DateTime.UtcNow.Date;
-            _exportLog.LogTime = DateTime.UtcNow.TimeOfDay;
-            _exportLog.QuickBooksExportLogUuid = Guid.NewGuid().ToString();
-            _exportLog.BatchNum = 0;
-            return await QuickBooksExportLogService.AddExportLogAsync(_exportLog);
+            exportLog.DatabaseNum = payload.DatabaseNum;
+            exportLog.MasterAccountNum = payload.MasterAccountNum;
+            exportLog.ProfileNum = payload.ProfileNum;
+            exportLog.LogDate = DateTime.UtcNow.Date;
+            exportLog.LogTime = DateTime.UtcNow.TimeOfDay;
+            exportLog.QuickBooksExportLogUuid = Guid.NewGuid().ToString();
+            exportLog.BatchNum = 0;
+            return await QuickBooksExportLogService.AddExportLogAsync(exportLog);
         }
-
-        protected async Task<bool> LoadExportLog(string uuid)
+        protected async Task<string> GetTxnId(string uuid)
         {
+            QuickBooksExportLog log = null;
             var list = await QuickBooksExportLogService.QueryExportLogByLogUuidAsync(uuid);
             if (list != null && list.Count() > 0)
             {
-                _exportLog = list.Where(i => i.TxnId != null).OrderByDescending(i => i.RowNum).FirstOrDefault();
+                log = list.Where(i => i.TxnId != null).OrderByDescending(i => i.RowNum).FirstOrDefault();
             }
-            if (_exportLog == null)
-                _exportLog = new QuickBooksExportLog();
-            return true;
+            return log?.TxnId;
         }
     }
 }

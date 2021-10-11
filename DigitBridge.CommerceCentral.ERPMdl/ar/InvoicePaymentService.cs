@@ -100,6 +100,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return payload.Success;
         }
 
+        public async Task<bool> GetDataByNumberAsync(int masterAccountNum, int profileNum, string invoiceNumber, int transNum)
+        {
+            return await base.GetDataByNumberAsync(masterAccountNum, profileNum, invoiceNumber, TransTypeEnum.Payment, transNum);
+        }
+
         /// <summary>
         /// Delete invoice by invoice number
         /// </summary>
