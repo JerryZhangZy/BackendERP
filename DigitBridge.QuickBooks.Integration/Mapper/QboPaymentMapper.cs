@@ -10,17 +10,12 @@ namespace DigitBridge.QuickBooks.Integration
     public class QboPaymentMapper
     {
         private QboIntegrationSetting setting { get; set; }
-        private QuickBooksExportLog exportLog { get; set; }
+
         private string invoiceTxnId { get; set; }
-        public QboPaymentMapper(QboIntegrationSetting setting, QuickBooksExportLog exportLog, string invoiceTxnId)
+        public QboPaymentMapper(QboIntegrationSetting setting, string invoiceTxnId)
         {
             this.invoiceTxnId = invoiceTxnId;
             this.setting = setting;
-            this.exportLog = exportLog;
-            if (this.exportLog == null)
-            {
-                this.exportLog = new QuickBooksExportLog();
-            }
             PrepareSetting();
         }
         protected void PrepareSetting()
@@ -143,17 +138,17 @@ namespace DigitBridge.QuickBooks.Integration
             return line;
         }
 
-        protected Payment ToQboPayment(InvoiceTransaction tran, InvoiceData invoiceData)
+        protected Payment ToQboPayment(InvoiceTransactionData transactionData, Payment payment)
         {
-            var payment = new Payment();
+            var tran = transactionData.InvoiceTransaction;
+            var invoiceData = transactionData.InvoiceData;
+
             payment.TxnDate = tran.TransDate;
             payment.TxnDateSpecified = true;
             payment.TotalAmt = tran.TotalAmount;
             payment.TotalAmtSpecified = true;
-            payment.Id = string.IsNullOrEmpty(exportLog.TxnId) ? null : exportLog.TxnId;
             payment.PaymentType = ConvertPaymentType(tran.PaidBy);
             payment.PrivateNote = tran.Notes;
-            payment.SyncToken = (exportLog.SyncToken + 1).ToString();
             //payment.PaymentMethodRef = new ReferenceType()
             //{
             //    Value = ConvertPaymentMethod(tran.PaidBy).ToString()
@@ -227,10 +222,10 @@ namespace DigitBridge.QuickBooks.Integration
             }
         }
 
-        public Payment ToPayment(InvoiceTransaction tran, InvoiceData invoiceData)
+        public Payment ToPayment(InvoiceTransactionData transactionData, Payment payment)
         {
-            var payment = ToQboPayment(tran, invoiceData);
-            payment.Line = new Line[] { ToQboLine(tran) };
+            payment = ToQboPayment(transactionData, payment);
+            payment.Line = new Line[] { ToQboLine(transactionData.InvoiceTransaction) };
             return payment;
         }
     }

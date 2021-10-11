@@ -339,9 +339,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         protected async Task<bool> GetByNumberAsync(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
         {
+            return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transType, transNum);
+        }
+        protected async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string invoiceNumber, TransTypeEnum transType, int transNum)
+        {
             List();
-            LoadInvoice(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum);
-            return await base.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber + "_" + (int)transType + "_" + transNum);
+            var success = await base.GetByNumberAsync(masterAccountNum, profileNum, invoiceNumber + "_" + (int)transType + "_" + transNum);
+            LoadInvoice(invoiceNumber, profileNum, masterAccountNum);
+            return success;
         }
         #endregion
 
