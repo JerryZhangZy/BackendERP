@@ -382,11 +382,12 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         protected async Task<string> GetTxnId(string uuid)
         {
             QuickBooksExportLog log = null;
-            var list = await QuickBooksExportLogService.QueryExportLogByLogUuidAsync(uuid);
+            var list = await QuickBooksExportLogService.QueryExportLogByLogUuidAsync(uuid); 
             if (list != null && list.Count() > 0)
             {
-                return await QuickBooksExportLogService.UpdateExportLogAsync(_exportLog);
+                log = list.Where(i => i.TxnId != null).OrderByDescending(i => i.RowNum).FirstOrDefault();
             }
+            return log?.TxnId;
         }
         public virtual async Task<bool> SaveExportErrorLogAsync()
         {
@@ -407,18 +408,6 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return await QuickBooksExportLogService.AddExportLogAsync(log);
         }
 
-        protected async Task<bool> LoadExportLog(string uuid)
-        {
-            var list = await QuickBooksExportLogService.QueryExportLogByLogUuidAsync(uuid);
-            if (list != null)
-                _exportLog = list.FirstOrDefault();
-            if (_exportLog == null)
-                _exportLog = new QuickBooksExportLog();
-            return true;
-                log = list.Where(i => i.TxnId != null).OrderByDescending(i => i.RowNum).FirstOrDefault();
-            }
-            return log?.TxnId;
-        }
         protected async Task<IList<QuickBooksExportLog>> LoadExportLogListAsync(string uuid)
         {
             return await QuickBooksExportLogService.QueryExportLogByLogUuidAsync(uuid);
