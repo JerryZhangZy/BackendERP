@@ -153,7 +153,7 @@ namespace DigitBridge.QuickBooks.Integration
             payment.Id = string.IsNullOrEmpty(exportLog.TxnId) ? null : exportLog.TxnId;
             payment.PaymentType = ConvertPaymentType(tran.PaidBy);
             payment.PrivateNote = tran.Notes;
-            payment.SyncToken = (exportLog.SyncToken + 1).ToString();
+            payment.SyncToken = (exportLog.SyncToken).ToString();
             //payment.PaymentMethodRef = new ReferenceType()
             //{
             //    Value = ConvertPaymentMethod(tran.PaidBy).ToString()

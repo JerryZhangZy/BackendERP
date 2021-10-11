@@ -4,7 +4,7 @@ namespace DigitBridge.QuickBooks.Integration
     interface IQboInvoiceService
     {
         #region write erp invoice to qbo
-        Task<bool> Export(string invoiceNumber);
+        Task<bool> ExportAsync(string invoiceNumber);
 
         #endregion
 

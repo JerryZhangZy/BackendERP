@@ -343,30 +343,25 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             }
         }
 
-        public virtual async Task<bool> SaveExportLogAsync()
+        public virtual async Task<bool> AddExportLogAsync()
         {
             _exportLog.DatabaseNum = payload.DatabaseNum;
             _exportLog.MasterAccountNum = payload.MasterAccountNum;
             _exportLog.ProfileNum = payload.ProfileNum;
             _exportLog.LogDate = DateTime.UtcNow.Date;
             _exportLog.LogTime = DateTime.UtcNow.TimeOfDay;
-            if (_exportLog.RowNum.IsZero())
-            {
-                _exportLog.QuickBooksExportLogUuid = Guid.NewGuid().ToString();
-                _exportLog.BatchNum = 0;
-                return await QuickBooksExportLogService.AddExportLogAsync(_exportLog);
-            }
-            else
-            {
-                return await QuickBooksExportLogService.UpdateExportLogAsync(_exportLog);
-            }
+            _exportLog.QuickBooksExportLogUuid = Guid.NewGuid().ToString();
+            _exportLog.BatchNum = 0;
+            return await QuickBooksExportLogService.AddExportLogAsync(_exportLog);
         }
 
         protected async Task<bool> LoadExportLog(string uuid)
         {
             var list = await QuickBooksExportLogService.QueryExportLogByLogUuidAsync(uuid);
-            if (list != null)
-                _exportLog = list.FirstOrDefault();
+            if (list != null && list.Count() > 0)
+            {
+                _exportLog = list.Where(i => i.TxnId != null).OrderByDescending(i => i.RowNum).FirstOrDefault();
+            }
             if (_exportLog == null)
                 _exportLog = new QuickBooksExportLog();
             return true;

@@ -88,7 +88,7 @@ namespace DigitBridge.QuickBooks.Integration
             _exportLog.TxnId = qboPayment.Id;
             _exportLog.DocStatus = (int)qboPayment.status;
             _exportLog.SyncToken = int.Parse(qboPayment.SyncToken);
-            _payload.Success = await SaveExportLogAsync();
+            _payload.Success = await AddExportLogAsync();
             return _payload.Success;
         }
 

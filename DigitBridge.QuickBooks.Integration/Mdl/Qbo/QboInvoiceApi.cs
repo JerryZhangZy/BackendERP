@@ -23,84 +23,49 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 _invoiceQueryService = await GetQueryServiceAsync<Invoice>();
             return _invoiceQueryService;
         }
-
+        public async Task<Invoice> GetInvoiceAsync(string txnId)
+        {
+            Invoice invoice = null;
+            var queryService = await GetInvoiceQueryService();
+            var list = queryService.ExecuteIdsQuery($"SELECT * FROM Invoice where id = '{txnId}'").ToList();
+            if (list != null)
+                invoice = list.FirstOrDefault();
+            return invoice;
+        }
         public async Task<Invoice> CreateOrUpdateInvoice(Invoice invoice)
         {
-            if (!await InvoiceExistAsync(invoice.DocNumber))
+            if (string.IsNullOrEmpty(invoice.Id))
             {
-                return await AddDataAsync(invoice);
+                invoice = await AddDataAsync(invoice);
             }
             else
             {
-                return await UpdateDataAsync(invoice);
+                invoice = await UpdateDataAsync(invoice);
             }
+            return invoice;
         }
 
-        public async Task<Invoice> CreateInvoiceIfAbsent(Invoice invoice)
+        public async Task<Invoice> DeleteInvoiceAsync(string txnId)
         {
-            if (!await InvoiceExistAsync(invoice.DocNumber))
+            var invoice = await GetInvoiceAsync(txnId);
+            if (invoice == null)
             {
-                return await AddDataAsync(invoice);
+                AddError($"Data not found in qbo for id : {txnId}");
+                return null;
             }
-            return null;
+            return await DeleteDataAsync(invoice);
         }
 
-        public async Task<bool> InvoiceExistAsync(string docNumber)
+        public async Task<Invoice> VoidInvoiceAsync(string txnId)
         {
-            var queryService = await GetInvoiceQueryService();
-            return queryService.ExecuteIdsQuery($"select * from Invoice Where DocNumber = '{docNumber}'").FirstOrDefault() != null;
-        }
-
-        public async Task<Invoice> DeleteInvoiceAsync(Invoice invoice)
-        {
-            if (invoice != null)
-                return await DeleteDataAsync(invoice);
-            return null;
-        }
-
-        public async Task<List<Invoice>> DeleteInvoiceAsync(string docNumber)
-        {
-            var results = new List<Invoice>();
-            var invoices = await GetInvoiceAsync(docNumber);
-            if (invoices != null && invoices.Count > 0)
+            var invoice = await GetInvoiceAsync(txnId);
+            if (invoice == null)
             {
-                foreach (var invoice in invoices)
-                    results.Add(await DeleteInvoiceAsync(invoice));
+                AddError($"Data not found in qbo for id : {txnId}");
+                return null;
             }
-            return results;
+            return await VoidDataAsync(invoice);
         }
 
-        public async Task<Invoice> AvoidInvoiceAsync(Invoice invoice)
-        {
-                return await VoidDataAsync(invoice);
-        }
-
-        public async Task<Invoice> UpdateInvoiceAsync(Invoice invoice)
-        {
-            return await UpdateDataAsync(invoice);
-        }
-
-        /// <summary>
-        /// Get qbo Invoice list by DocNumber 
-        /// </summary>
-        /// <param name="docNumber"></param>
-        /// <returns></returns>
-        public async Task<List<Invoice>> GetInvoiceAsync(string docNumber)
-        {
-            var queryService = await GetInvoiceQueryService();
-            return queryService.ExecuteIdsQuery($"SELECT * FROM Invoice where DocNumber = '{docNumber}'").ToList();
-        }
-
-        public async Task<List<Invoice>> VoidInvoiceAsync(string docNumber)
-        {
-            var results = new List<Invoice>();
-            var invoices = await GetInvoiceAsync(docNumber);
-            if (invoices != null && invoices.Count > 0)
-            {
-                foreach (var invoice in invoices)
-                    results.Add(await VoidDataAsync(invoice));
-            }
-            return results;
-        }
     }
 }

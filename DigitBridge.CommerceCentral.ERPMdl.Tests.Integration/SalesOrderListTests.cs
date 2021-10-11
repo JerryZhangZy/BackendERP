@@ -75,7 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             //qry.OrderNumberTo.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
             //qry.OrderStatus.MultipleFilterValueString = "11,18,86";
 
-            IList<SalesOrderData> result;  
+            IList<SalesOrderData> result;
             using (var b = new Benchmark("GetSalesOrderDatas_Test"))
             {
                 result = srv.GetSalesOrderDatas(qry);
@@ -154,7 +154,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 var qry = new SalesOrderQuery();
                 var srv = new SalesOrderList(dataBaseFactory, qry);
-                payload = await srv.GetSalesOrderListAsync(payload);
+                await srv.GetSalesOrderListAsync(payload);
                 var json = payload.ObjectToString();
             }
 
