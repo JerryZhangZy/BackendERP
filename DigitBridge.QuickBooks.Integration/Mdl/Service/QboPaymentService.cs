@@ -31,7 +31,7 @@ namespace DigitBridge.QuickBooks.Integration
         #region prepare data 
         protected async Task<bool> LoadPaymentData(string invoiceNumber, int transNum)
         {
-            var success = await paymentService.GetDataByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transNum);
+            var success = await paymentService.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transNum);
             if (success)
             {
                 paymentData = paymentService.Data;

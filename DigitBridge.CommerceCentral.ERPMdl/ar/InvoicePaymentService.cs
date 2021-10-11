@@ -94,15 +94,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> GetByNumberAsync(InvoicePaymentPayload payload, string invoiceNumber, int transNum)
         {
-            payload.Success = await base.GetByNumberAsync(payload, invoiceNumber, TransTypeEnum.Payment, transNum);
-            payload.InvoiceTransaction = this.ToDto();
-            payload.InvoiceHeader = await GetInvoiceHeaderAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
-            return payload.Success;
+            return await base.GetByNumberAsync(payload, invoiceNumber, TransTypeEnum.Payment, transNum);
         }
 
-        public async Task<bool> GetDataByNumberAsync(int masterAccountNum, int profileNum, string invoiceNumber, int transNum)
+        public async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string invoiceNumber, int transNum)
         {
-            return await base.GetDataByNumberAsync(masterAccountNum, profileNum, invoiceNumber, TransTypeEnum.Payment, transNum);
+            return await base.GetByNumberAsync(masterAccountNum, profileNum, invoiceNumber, TransTypeEnum.Payment, transNum);
         }
 
         /// <summary>

@@ -67,7 +67,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePaymentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
-            await srv.GetByNumberAsync(payload, invoiceNumber, transNum);
+            payload.Success = await srv.GetByNumberAsync(payload, invoiceNumber, transNum);
+            if (payload.Success)
+                payload.InvoiceTransaction = srv.ToDto();
+            payload.Messages = srv.Messages; 
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
 
