@@ -7,6 +7,7 @@ using Intuit.Ipp.DataService;
 using Intuit.Ipp.OAuth2PlatformClient;
 using Intuit.Ipp.QueryFilter;
 using Intuit.Ipp.Security;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using UneedgoHelper.DotNet.Common;
 using Task = System.Threading.Tasks.Task;
+using JsonIgnore = Newtonsoft.Json.JsonIgnoreAttribute;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
@@ -209,8 +211,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             catch (Exception ex)
             {
                 AddError("Qbo Connection GetServiceContext Error");
-                string additionalMsg = "Qbo Connection GetServiceContext Error" + CommonConst.NewLine;
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
+                //string additionalMsg = "Qbo Connection GetServiceContext Error" + CommonConst.NewLine;
+                //throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
             }
         }
 
@@ -240,8 +242,9 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 }
                 else
                 {
-                    string additionalMsg = "Qbo Handle Connectivity Error" + CommonConst.NewLine;
-                    throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
+                    AddError("Qbo Handle Connectivity Error");
+                    //string additionalMsg = "Qbo Handle Connectivity Error" + CommonConst.NewLine;
+                    //throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
                 }
             }
         }
@@ -261,8 +264,9 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             catch (Exception ex)
             {
                 _qboConnectionTokenStatus.RefreshTokenStatus = ConnectionTokenStatus.UpdatedWithError;
-                string additionalMsg = "Qbo Connection Update Refresh Token Error" + CommonConst.NewLine;
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
+                AddError($"Qbo Connection Update Refresh Token Error,Exception Message:{ex.Message}.");
+                //string additionalMsg = "Qbo Connection Update Refresh Token Error" + CommonConst.NewLine;
+                //throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
             }
         }
 
@@ -296,7 +300,10 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 }
                 else
                 {
-                    throw new Exception("Refresh Access Token use the Updated Refresh Token Failed, " +
+                    //throw new Exception("Refresh Access Token use the Updated Refresh Token Failed, " +
+                    //    $"Check Auth Code For User: {_qboConnectionInfo.MasterAccountNum} {_qboConnectionInfo.ProfileNum}, " +
+                    //    $"Error Msg: {tokenResp.Error}");
+                    AddError("Refresh Access Token use the Updated Refresh Token Failed, " +
                         $"Check Auth Code For User: {_qboConnectionInfo.MasterAccountNum} {_qboConnectionInfo.ProfileNum}, " +
                         $"Error Msg: {tokenResp.Error}");
                 }
@@ -304,8 +311,9 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             catch (Exception ex)
             {
                 _qboConnectionTokenStatus.AccessTokenStatus = ConnectionTokenStatus.UpdatedWithError;
-                string additionalMsg = "Qbo Connection Refresh Access Token Error" + CommonConst.NewLine;
-                throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
+                AddError($"Qbo Connection Refresh Access Token Error,Exception Message:{ex.Message}.");
+                //string additionalMsg = "Qbo Connection Refresh Access Token Error" + CommonConst.NewLine;
+                //throw ExceptionUtility.WrapException(MethodBase.GetCurrentMethod(), ex, additionalMsg);
             }
         }
 
@@ -378,6 +386,24 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 return await QuickBooksExportLogService.UpdateExportLogAsync(_exportLog);
             }
         }
+        public virtual async Task<bool> SaveExportErrorLogAsync()
+        {
+            var log = new QuickBooksExportLog();
+            log.DatabaseNum = payload.DatabaseNum;
+            log.MasterAccountNum = payload.MasterAccountNum;
+            log.ProfileNum = payload.ProfileNum;
+            log.LogDate = DateTime.UtcNow.Date;
+            log.LogTime = DateTime.UtcNow.TimeOfDay;
+            log.QuickBooksExportLogUuid = Guid.NewGuid().ToString();
+            log.BatchNum = 0;
+            if (Messages.Count > 0)
+            {
+                log.LogStatus = (int)MessageLevel.Error;
+                log.ErrorMessage = JsonConvert.SerializeObject(Messages.Where(r => r.Level > MessageLevel.Info));
+                log.RequestInfo = JsonConvert.SerializeObject(Messages.Where(r => r.Level == MessageLevel.Info));
+            }
+            return await QuickBooksExportLogService.AddExportLogAsync(log);
+        }
 
         protected async Task<bool> LoadExportLog(string uuid)
         {
@@ -387,6 +413,10 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             if (_exportLog == null)
                 _exportLog = new QuickBooksExportLog();
             return true;
+        }
+        protected async Task<IList<QuickBooksExportLog>> LoadExportLogListAsync(string uuid)
+        {
+            return await QuickBooksExportLogService.QueryExportLogByLogUuidAsync(uuid);
         }
     }
 }
