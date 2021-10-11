@@ -78,11 +78,17 @@ namespace DigitBridge.QuickBooks.Integration
         [Column("LogBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _logBy;
 
-        [Column("SyncToken",SqlDbType.Int,NotNull=true,IsDefault=true)]
-        private int _syncToken;
-
         [Column("TxnId",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _txnId;
+
+        [Column("LogStatus",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _logStatus;
+
+        [Column("ErrorMessage",SqlDbType.NText,NotNull=true,IsDefault=true)]
+        private string _errorMessage;
+
+        [Column("RequestInfo",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
+        private string _requestInfo;
 
         [Column("EnterBy",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _enterBy;
@@ -231,7 +237,7 @@ namespace DigitBridge.QuickBooks.Integration
         }
 
 		/// <summary>
-		/// Log status. <br> Title: Status, Display: true, Editable: false
+		/// Quickbook Return status. <br> Title: Status, Display: true, Editable: false
 		/// </summary>
         public virtual int? DocStatus
         {
@@ -300,22 +306,6 @@ namespace DigitBridge.QuickBooks.Integration
         }
 
 		/// <summary>
-		/// Version number of the object in QuickBooks
-		/// </summary>
-        public virtual int SyncToken
-        {
-            get
-            {
-				return _syncToken; 
-            }
-            set
-            {
-				_syncToken = value; 
-				OnPropertyChanged("SyncToken", value);
-            }
-        }
-
-		/// <summary>
 		/// QuickBooks TxnId.<br> Title: TxnId, Display: true, Editable: false
 		/// </summary>
         public virtual string TxnId
@@ -328,6 +318,54 @@ namespace DigitBridge.QuickBooks.Integration
             {
 				_txnId = value.TruncateTo(100); 
 				OnPropertyChanged("TxnId", value);
+            }
+        }
+
+		/// <summary>
+		/// --log status. <br> Title: Status, Display: true, Editable: false
+		/// </summary>
+        public virtual int LogStatus
+        {
+            get
+            {
+				return _logStatus; 
+            }
+            set
+            {
+				_logStatus = value; 
+				OnPropertyChanged("LogStatus", value);
+            }
+        }
+
+		/// <summary>
+		/// log error messages.<br> Title:ErrorMessage,Display:true,Editable:false
+		/// </summary>
+        public virtual string ErrorMessage
+        {
+            get
+            {
+				return _errorMessage?.TrimEnd(); 
+            }
+            set
+            {
+				_errorMessage = value.TruncateTo(20000); 
+				OnPropertyChanged("ErrorMessage", value);
+            }
+        }
+
+		/// <summary>
+		/// log request info , qbo entity.<br> Title:RequestInfo,Display:true,Editable:false
+		/// </summary>
+        public virtual string RequestInfo
+        {
+            get
+            {
+				return _requestInfo?.TrimEnd(); 
+            }
+            set
+            {
+				_requestInfo = value.TruncateTo(2000); 
+				OnPropertyChanged("RequestInfo", value);
             }
         }
 
@@ -387,8 +425,10 @@ namespace DigitBridge.QuickBooks.Integration
 			_logDate = new DateTime().MinValueSql(); 
 			_logTime = new TimeSpan().MinValueSql(); 
 			_logBy = String.Empty; 
-			_syncToken = default(int); 
 			_txnId = String.Empty; 
+			_logStatus = default(int); 
+			_errorMessage = String.Empty; 
+			_requestInfo = String.Empty; 
 			_enterBy = String.Empty; 
             ClearChildren();
             return this;

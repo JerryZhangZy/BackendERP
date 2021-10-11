@@ -231,5 +231,6 @@
     <Build Include="qbo\QuickBooksConnectionInfo.sql" />
     <Build Include="qbo\QuickBooksSettingInfo.sql" />
     <None Include="qbo\QuickBooksExportLog.sql" />
+    <None Include="qbo\QuickBooksExportLog_Update.sql" />
   </ItemGroup>
 </Project>

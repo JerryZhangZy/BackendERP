@@ -33,6 +33,21 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         protected IPayload payload;
         protected QuickBooksExportLog _exportLog;
 
+        private QboIntegrationSetting _qboIntegrationSetting;
+
+        protected async Task<QboIntegrationSetting> IntegrationSetting()
+        {
+            if (_qboIntegrationSetting == null)
+            {
+                if (await QuickBooksSettingInfoService.GetByPayloadAsync(payload))
+                {
+                    _qboIntegrationSetting = QuickBooksSettingInfoService.Data.QuickBooksSettingInfo.SettingInfo;
+                }
+            }
+            return _qboIntegrationSetting;
+
+        }
+
         public QboServiceBase() { }
 
         public QboServiceBase(IPayload pl, IDataBaseFactory databaseFactory)
@@ -43,7 +58,8 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             GetQuickBooksConnectionInfo();
             if (_qboConnectionInfo == null)
             {
-                throw new Exception($"Initialize Error,MasterAccountNum:{payload.MasterAccountNum} with ProfileNum:{payload.ProfileNum} is uninitialized");
+                AddError($"Initialize Error,MasterAccountNum:{payload.MasterAccountNum} with ProfileNum:{payload.ProfileNum} is uninitialized");
+                //throw new Exception($"Initialize Error,MasterAccountNum:{payload.MasterAccountNum} with ProfileNum:{payload.ProfileNum} is uninitialized");
             }
             ConnectToDataServiceAsync();
         }
@@ -332,6 +348,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 return _quickBooksExportLogService;
             }
         }
+
         private QuickBooksSettingInfoService _quickBooksSettingInfoService;
         public QuickBooksSettingInfoService QuickBooksSettingInfoService
         {
