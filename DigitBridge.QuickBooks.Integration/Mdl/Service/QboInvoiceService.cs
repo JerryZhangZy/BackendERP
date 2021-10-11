@@ -93,26 +93,36 @@ namespace DigitBridge.QuickBooks.Integration
         /// <returns></returns>
         public async Task<bool> Export(string invoiceNumber)
         {
-            var success = await LoadInvoiceData(invoiceNumber);
-            success = success && await LoadSetting();
-            success = success && await LoadExportLog(_invoiceData.InvoiceHeader.InvoiceUuid);
-            if (!success) return success;
-
-            var mapper = new QboInvoiceMapper(_setting, _exportLog);
-            var qboInvoice = mapper.ToInvoice(_invoiceData);
             try
             {
+                var success = await LoadInvoiceData(invoiceNumber);
+                success = success && await LoadSetting();
+                success = success && await LoadExportLog(_invoiceData.InvoiceHeader.InvoiceUuid);
+                if (!success) 
+                {
+                    SaveExportErrorLogAsync();
+                    return success;
+                }
+
+                var mapper = new QboInvoiceMapper(_setting, _exportLog);
+                var qboInvoice = mapper.ToInvoice(_invoiceData);
+                AddInfo(qboInvoice.ObjectToString());
+
                 qboInvoice = await CreateOrUpdateInvoice(qboInvoice);
                 _payload.QboInvoice = qboInvoice;
+
+                success = success && await WriteQboInvoiceToExportLog(qboInvoice);
+                success = success && await WriteDocNumberToErpInvoice(qboInvoice.DocNumber);
+                return success;
             }
             catch (Exception e)
             {
-                throw new Exception(qboInvoice.ObjectToString(), e);
+                AddError(e.Message);
+                SaveExportLogAsync();
+                return false;
+                //throw new Exception(qboInvoice.ObjectToString(), e);
             }
 
-            success = success && await WriteQboInvoiceToExportLog(qboInvoice);
-            success = success && await WriteDocNumberToErpInvoice(qboInvoice.DocNumber);
-            return success;
         }
 
         /// <summary>
