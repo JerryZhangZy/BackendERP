@@ -92,7 +92,6 @@ namespace DigitBridge.QuickBooks.Integration
 
                 success = success && await LoadSetting();
 
-
                 success = success && (qboPayment = await GetQboPayment()) != null;
                 success = success && (qboPayment = await CreateOrUpdatePayment(qboPayment)) != null;
 
@@ -109,8 +108,10 @@ namespace DigitBridge.QuickBooks.Integration
             }
             else
             {
-                //todo write qboPayment and message to error log. 
+                AddInfo(qboPayment.ObjectToString());
+                await SaveExportErrorLogAsync();
             }
+
             return success;
         }
 
@@ -158,8 +159,9 @@ namespace DigitBridge.QuickBooks.Integration
             }
             else
             {
-                //todo write qboPayment and message to error log. 
-            }
+                AddInfo(qboPayment.ObjectToString());
+                await SaveExportErrorLogAsync();
+            } 
 
             return success;
         }
@@ -190,7 +192,8 @@ namespace DigitBridge.QuickBooks.Integration
             }
             else
             {
-                //todo write qboPayment and message to error log. 
+                AddInfo(qboPayment.ObjectToString());
+                await SaveExportErrorLogAsync();
             }
 
             return success;

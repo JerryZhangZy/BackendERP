@@ -109,13 +109,15 @@ namespace DigitBridge.QuickBooks.Integration
                 AddError(e.ObjectToString());
             }
 
+
             if (success)
             {
                 _payload.QboInvoice = qboInvoice;
             }
             else
             {
-                //todo write qboInvoice and message to error log.
+                AddInfo(qboInvoice.ObjectToString());
+                await SaveExportErrorLogAsync();
             }
 
             return success;
@@ -185,14 +187,18 @@ namespace DigitBridge.QuickBooks.Integration
             {
                 AddError(e.ObjectToString());
             }
+
+
             if (success)
             {
                 _payload.QboInvoice = qboInvoice;
             }
             else
             {
-                //todo write _payload.QboInvoice and message to error log.
+                AddInfo(qboInvoice.ObjectToString());
+                await SaveExportErrorLogAsync();
             }
+
             return success;
         }
 
@@ -220,14 +226,17 @@ namespace DigitBridge.QuickBooks.Integration
             {
                 AddError(e.ObjectToString());
             }
+
             if (success)
             {
                 _payload.QboInvoice = qboInvoice;
             }
             else
             {
-                //todo write _payload.QboInvoice and message to error log.
+                AddInfo(qboInvoice.ObjectToString());
+                await SaveExportErrorLogAsync();
             }
+
             return success;
         }
 

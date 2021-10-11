@@ -33,7 +33,6 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         private ConnectionTokenStatus _connectionStatus = ConnectionTokenStatus.UnInitalized;
         protected IDataBaseFactory dbFactory;
         protected IPayload payload;
-        protected QuickBooksExportLog _exportLog;
 
         private QboIntegrationSetting _qboIntegrationSetting;
 
