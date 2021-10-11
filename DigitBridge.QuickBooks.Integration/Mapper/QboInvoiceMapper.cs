@@ -9,15 +9,9 @@ namespace DigitBridge.QuickBooks.Integration
     public class QboInvoiceMapper
     {
         private QboIntegrationSetting _setting { get; set; }
-        private QuickBooksExportLog _exportLog { get; set; }
-        public QboInvoiceMapper(QboIntegrationSetting setting, QuickBooksExportLog exportLog)
+        public QboInvoiceMapper(QboIntegrationSetting setting)
         {
             this._setting = setting;
-            this._exportLog = exportLog;
-            if (this._exportLog == null)
-            {
-                _exportLog = new QuickBooksExportLog();
-            }
             PrepareSetting();
         }
 
@@ -259,14 +253,10 @@ namespace DigitBridge.QuickBooks.Integration
 
         #region Map Qbo invoice 
 
-        protected Invoice ToQboInvoice(InvoiceData invoiceData)
+        protected Invoice ToQboInvoice(InvoiceData invoiceData, Invoice invoice)
         {
-            var invoice = new Invoice();
             var invoiceHeader = invoiceData.InvoiceHeader;
             var invoiceInfo = invoiceData.InvoiceHeaderInfo;
-
-            invoice.Id = string.IsNullOrEmpty(_exportLog.TxnId)? null: _exportLog.TxnId;
-            invoice.SyncToken = (_exportLog.SyncToken + 1).ToString(); 
             //invoice.DocNumber = _exportLog.DocNumber;
             invoice.Balance = invoiceHeader.Balance;
             invoice.TotalAmt = invoiceHeader.TotalAmount;
@@ -301,6 +291,7 @@ namespace DigitBridge.QuickBooks.Integration
             AppendAddressToInvoice(invoice, invoiceInfo);
             AppendCustomFieldToInvoice(invoice, invoiceInfo, invoiceHeader.InvoiceNumber);
             AppendCustomerToInvoice(invoice, invoiceHeader);
+
             return invoice;
         }
         /// <summary>
@@ -415,9 +406,9 @@ namespace DigitBridge.QuickBooks.Integration
         #endregion
 
 
-        public Invoice ToInvoice(InvoiceData invoiceData)
+        public Invoice ToInvoice(InvoiceData invoiceData, Invoice invoice)
         {
-            var invoice = ToQboInvoice(invoiceData);
+            invoice = ToQboInvoice(invoiceData, invoice);
             invoice.Line = ToQboLines(invoiceData).ToArray();
             return invoice;
         }

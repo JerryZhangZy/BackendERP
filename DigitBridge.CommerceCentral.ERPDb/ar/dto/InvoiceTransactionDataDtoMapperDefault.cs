@@ -229,6 +229,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 dto.InvoiceReturnItems = new List<InvoiceReturnItemsDto>();
                 WriteInvoiceReturnItems(data.InvoiceReturnItems, dto.InvoiceReturnItems);
             }
+            if (data.InvoiceData != null)
+            {
+                dto.InvoiceDataDto = new InvoiceDataDtoMapperDefault().WriteDto(data.InvoiceData, null);
+            }
             return dto;
         }
 
