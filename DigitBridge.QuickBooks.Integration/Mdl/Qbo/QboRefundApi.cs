@@ -24,16 +24,16 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 
         public async Task<RefundReceipt> GetRefundAsync(string txnId)
         {
-            RefundReceipt Refund = null;
+            RefundReceipt refund = null;
             var queryService = await GetRefundQueryService();
             var list = queryService.ExecuteIdsQuery($"SELECT * FROM RefundReceipt where id = '{txnId}'").ToList();
             if (list != null)
-                Refund = list.FirstOrDefault();
-            if (Refund == null)
+                refund = list.FirstOrDefault();
+            if (refund == null)
             {
-                AddError($"Data not found in qbo for qbo Refund id : {txnId}");
+                AddError($"Quick books refund not found for qbo refund id : {txnId}");
             }
-            return Refund;
+            return refund;
         }
         public async Task<RefundReceipt> CreateOrUpdateRefund(RefundReceipt refund)
         {
@@ -53,7 +53,6 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             var Refund = await GetRefundAsync(txnId);
             if (Refund == null)
             {
-                AddError($"Data not found in qbo for qbo Refund id : {txnId}");
                 return null;
             }
             return await DeleteDataAsync(Refund);
@@ -64,7 +63,6 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             var Refund = await GetRefundAsync(txnId);
             if (Refund == null)
             {
-                AddError($"Data not found in qbo for qbo Refund id : {txnId}");
                 return null;
             }
             return await VoidDataAsync(Refund);
