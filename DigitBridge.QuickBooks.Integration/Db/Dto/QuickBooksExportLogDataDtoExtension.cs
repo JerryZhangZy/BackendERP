@@ -37,9 +37,9 @@ namespace DigitBridge.QuickBooks.Integration
             if(!dto.HasQuickBooksExportLog)
                 return result;
             //TODO change to merge Dto children object
-            //if (withHeaderText)
-            //    result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
-            //result.Add(dto.SalesOrderHeader.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
+            if (withHeaderText)
+                result.Add(dto.QuickBooksExportLog.MergeName(dto.QuickBooksExportLog));
+            result.Add(dto.QuickBooksExportLog.Merge(dto.QuickBooksExportLog));
             return result;
         }
 
