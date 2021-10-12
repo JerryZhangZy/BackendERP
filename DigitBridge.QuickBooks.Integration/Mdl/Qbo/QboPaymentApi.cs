@@ -31,7 +31,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 payment = list.FirstOrDefault();
             if (payment == null)
             {
-                AddError($"Data not found in qbo for qbo payment id : {txnId}");
+                AddError($"Quick books payment not found for qbo payment id : {txnId}");
             }
             return payment;
         }
@@ -52,8 +52,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             var Payment = await GetPaymentAsync(txnId);
             if (Payment == null)
-            {
-                AddError($"Data not found in qbo for qbo payment id : {txnId}");
+            { 
                 return null;
             }
             return await DeleteDataAsync(Payment);
@@ -63,8 +62,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             var Payment = await GetPaymentAsync(txnId);
             if (Payment == null)
-            {
-                AddError($"Data not found in qbo for qbo payment id : {txnId}");
+            { 
                 return null;
             }
             return await VoidDataAsync(Payment);

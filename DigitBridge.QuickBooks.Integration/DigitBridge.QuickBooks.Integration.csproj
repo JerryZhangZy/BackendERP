@@ -23,7 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Connection\Model\" />
-    <Folder Include="Db\Dto\" />
     <Folder Include="Doc\" />
   </ItemGroup>
 

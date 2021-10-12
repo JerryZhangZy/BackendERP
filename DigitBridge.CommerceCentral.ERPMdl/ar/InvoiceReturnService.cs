@@ -54,6 +54,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await base.GetByNumberAsync(payload, invoiceNumber, TransTypeEnum.Return, transNum);
         }
 
+        public async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string invoiceNumber, int transNum)
+        {
+            return await base.GetByNumberAsync(masterAccountNum, profileNum, invoiceNumber, TransTypeEnum.Return, transNum);
+        }
+
         /// <summary>
         /// Delete invoice by invoice number
         /// </summary>

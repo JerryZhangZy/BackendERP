@@ -86,6 +86,7 @@ namespace DigitBridge.QuickBooks.Integration
         public static readonly string SalesTaxItemDescription = "Tax should return for Invoice Return. Invoice number: {0}, Tran number:{1} ";
         public static readonly string SummaryMiscLineDescription = "Misc Cost Line for Invoice Return. Invoice number: {0}, Tran number:{1}";
         public static readonly string SummaryChargeAndAllowanceLineDescription = "ChargeAndAllowance Cost Line for Invoice Return. Invoice number: {0}, Tran number:{1}";
+        public const string DefaultDepositToAccountRef = "35";
     }
 
     public class PaymentTxtType
