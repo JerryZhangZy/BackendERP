@@ -34,19 +34,20 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         protected IDataBaseFactory dbFactory;
         protected IPayload payload;
 
-        private QboIntegrationSetting _qboIntegrationSetting;
+        protected QboIntegrationSetting _setting;
 
-        protected async Task<QboIntegrationSetting> IntegrationSetting()
+        protected async Task<bool> GetSetting()
         {
-            if (_qboIntegrationSetting == null)
-            {
-                if (await QuickBooksSettingInfoService.GetByPayloadAsync(payload))
-                {
-                    _qboIntegrationSetting = QuickBooksSettingInfoService.Data.QuickBooksSettingInfo.SettingInfo;
-                }
-            }
-            return _qboIntegrationSetting;
+            if (_setting != null)
+                return true;
 
+            var success = await QuickBooksSettingInfoService.GetByPayloadAsync(payload);
+            if (success)
+                _setting = QuickBooksSettingInfoService.Data.QuickBooksSettingInfo.SettingInfo;
+            else
+                this.Messages = this.Messages.Concat(QuickBooksSettingInfoService.Messages).ToList();
+
+            return success;
         }
 
         public QboServiceBase() { }
@@ -133,7 +134,6 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             Messages.Add(message, MessageLevel.Fatal, code);
         public IList<MessageClass> AddDebug(string message, string code = null) =>
             Messages.Add(message, MessageLevel.Debug, code);
-
         #endregion Messages
 
         protected async Task<QuickBooksConnectionInfo> GetQuickBooksConnectionInfoAsync()
@@ -376,12 +376,13 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             exportLog.LogTime = DateTime.UtcNow.TimeOfDay;
             exportLog.QuickBooksExportLogUuid = Guid.NewGuid().ToString();
             exportLog.BatchNum = 0;
+            //exportLog.LogStatus = (int)MessageLevel.Error; //todo set to success.
             return await QuickBooksExportLogService.AddExportLogAsync(exportLog);
         }
         protected async Task<string> GetTxnId(string uuid)
         {
             QuickBooksExportLog log = null;
-            var list = await QuickBooksExportLogService.QueryExportLogByLogUuidAsync(uuid); 
+            var list = await QuickBooksExportLogService.QueryExportLogByLogUuidAsync(uuid);
             if (list != null && list.Count() > 0)
             {
                 log = list.Where(i => i.TxnId != null).OrderByDescending(i => i.RowNum).FirstOrDefault();

@@ -14,7 +14,6 @@ namespace DigitBridge.QuickBooks.Integration
     public class QboPaymentService : QboPaymentApi, IQboPaymentService
     {
         private InvoiceTransactionData paymentData;
-        private QboIntegrationSetting _setting;
         private QboPaymentPayload _payload;
 
         #region Service Property 
@@ -32,27 +31,13 @@ namespace DigitBridge.QuickBooks.Integration
         protected async Task<bool> LoadPaymentData(string invoiceNumber, int transNum)
         {
             var success = await paymentService.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transNum);
-            if (success)
+            paymentData = paymentService.Data;
+            if (!success)
             {
-                paymentData = paymentService.Data;
-            }
-            else
-            {
-                this.Messages.Concat(paymentService.Messages);
+                this.Messages = this.Messages.Concat(paymentService.Messages).ToList();
             }
             return success;
-        }
-
-        protected async Task<bool> LoadSetting()
-        {
-            var srv = new QuickBooksSettingInfoService(dbFactory);
-            var success = await srv.GetByPayloadAsync(_payload);
-            if (success)
-                _setting = srv.Data.QuickBooksSettingInfo.Setting;
-            else
-                this.Messages.Concat(srv.Messages);
-            return success;
-        }
+        } 
         #endregion
 
         #region qbo Payment back to erp 
@@ -90,7 +75,7 @@ namespace DigitBridge.QuickBooks.Integration
             {
                 success = await LoadPaymentData(invoiceNumber, transNum);
 
-                success = success && await LoadSetting();
+                success = success && await GetSetting();
 
                 success = success && (qboPayment = await GetQboPayment()) != null;
                 success = success && (qboPayment = await CreateOrUpdatePayment(qboPayment)) != null;
@@ -117,8 +102,10 @@ namespace DigitBridge.QuickBooks.Integration
 
         private async Task<Payment> GetQboPayment()
         {
-            var txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid);
             Payment qboPayment = null;
+
+            var txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid);
+
             if (!string.IsNullOrEmpty(txnId))
             {
                 qboPayment = await GetPaymentAsync(txnId);// when qbo deleted this will return null.
@@ -127,7 +114,7 @@ namespace DigitBridge.QuickBooks.Integration
                 qboPayment = new Payment();
 
             //get invoice txnid;
-            var invoiceTxnId = await GetTxnId(paymentData.InvoiceData.InvoiceHeader.InvoiceUuid);
+            var invoiceTxnId = await GetTxnId(paymentData.InvoiceTransaction.InvoiceUuid);
             var mapper = new QboPaymentMapper(_setting, invoiceTxnId);
             qboPayment = mapper.ToPayment(paymentData, qboPayment);
             return qboPayment;
@@ -141,8 +128,8 @@ namespace DigitBridge.QuickBooks.Integration
             {
                 success = await LoadPaymentData(invoiceNumber, transNum);
 
-                var txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid);
-                success = !string.IsNullOrEmpty(txnId);
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid));
 
                 success = success && (qboPayment = await VoidPaymentAsync(txnId)) != null;
 
@@ -161,7 +148,7 @@ namespace DigitBridge.QuickBooks.Integration
             {
                 AddInfo(qboPayment.ObjectToString());
                 await SaveExportErrorLogAsync();
-            } 
+            }
 
             return success;
         }
@@ -174,8 +161,8 @@ namespace DigitBridge.QuickBooks.Integration
             {
                 success = await LoadPaymentData(invoiceNumber, transNum);
 
-                var txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid);
-                success = !string.IsNullOrEmpty(txnId);
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid));
 
                 success = success && (qboPayment = await DeletePaymentAsync(txnId)) != null;
 
@@ -206,8 +193,8 @@ namespace DigitBridge.QuickBooks.Integration
             {
                 success = await LoadPaymentData(invoiceNumber, transNum);
 
-                var txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid);
-                success = !string.IsNullOrEmpty(txnId);
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid));
 
                 success = success && (_payload.QboPayment = await GetPaymentAsync(txnId)) != null;
             }

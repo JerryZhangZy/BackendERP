@@ -13,8 +13,7 @@ namespace DigitBridge.QuickBooks.Integration
 {
     public class QboInvoiceService : QboInvoiceApi, IQboInvoiceService
     {
-        private InvoiceData _invoiceData;
-        private QboIntegrationSetting _setting;
+        private InvoiceData _invoiceData; 
         private QboInvoicePayload _payload;
 
         #region Service Property 
@@ -35,20 +34,9 @@ namespace DigitBridge.QuickBooks.Integration
             if (success)
                 _invoiceData = invoiceService.Data;
             else
-                this.Messages.Concat(invoiceService.Messages);
+                this.Messages = this.Messages.Concat(invoiceService.Messages).ToList();
             return success;
-        }
-
-        protected async Task<bool> LoadSetting()
-        {
-            var srv = new QuickBooksSettingInfoService(dbFactory);
-            var success = await srv.GetByPayloadAsync(_payload);
-            if (success)
-                _setting = srv.Data.QuickBooksSettingInfo.Setting;
-            else
-                this.Messages.Concat(srv.Messages);
-            return success;
-        }
+        } 
         #endregion
 
         #region qbo invoice back to erp 
@@ -96,7 +84,7 @@ namespace DigitBridge.QuickBooks.Integration
             try
             {
                 success = await LoadInvoiceData(invoiceNumber);
-                success = success && await LoadSetting();
+                success = success && await GetSetting();
 
                 success = success && (qboInvoice = await GetQboInvoice()) != null;
                 success = success && (qboInvoice = await CreateOrUpdateInvoice(qboInvoice)) != null;
