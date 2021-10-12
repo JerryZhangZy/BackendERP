@@ -23,34 +23,29 @@ namespace DigitBridge.QuickBooks.Integration
         protected static string PREFIX = Helper.TableAllies;
 
         // Filter fields
-        //protected QueryFilter<DateTime> _OrderDateFrom = new QueryFilter<DateTime>("OrderDateFrom", "OrderDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
-        //public QueryFilter<DateTime> OrderDateFrom => _OrderDateFrom;
+        protected QueryFilter<string> _LogType = new QueryFilter<string>("LogType", "LogType", PREFIX, FilterBy.eq, string.Empty);
+        public QueryFilter<string> LogType => _LogType;
 
-        //protected QueryFilter<DateTime> _OrderDateTo = new QueryFilter<DateTime>("OrderDateTo", "OrderDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
-        //public QueryFilter<DateTime> OrderDateTo => _OrderDateTo;
+        protected QueryFilter<DateTime> _LogDateFrom = new QueryFilter<DateTime>("LogDateFrom", "LogDate", PREFIX, FilterBy.ge, SqlQuery._AppMaxDateTime,isDate:true);
+        public QueryFilter<DateTime> LogDateFrom => _LogDateFrom;
 
-        //protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty);
-        //public QueryFilter<string> CustomerCode => _CustomerCode;
+        protected QueryFilter<DateTime> _LogDateTo = new QueryFilter<DateTime>("LogDateTo", "LogDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime,isDate:true);
+        public QueryFilter<DateTime> LogDateTo => _LogDateTo;
 
-        //protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
-
-        //protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
-
+        protected QueryFilter<int> _LogStatus = new QueryFilter<int>("LogStatus", "LogStatus", PREFIX, FilterBy.eq, 0);
+        public QueryFilter<int> LogStatus => _LogStatus;
         public QuickBooksExportLogQuery() : base(PREFIX)
         {
-            //AddFilter(_OrderDateFrom);
-            //AddFilter(_OrderDateTo);
-            //AddFilter(_CustomerCode);
-            //AddFilter(_OrderStatus);
-            //AddFilter(_OrderType);
+            AddFilter(_LogDateFrom);
+            AddFilter(_LogDateTo);
+            AddFilter(_LogType);
+            AddFilter(_LogStatus);
         }
 
         public override void InitQueryFilter()
         {
-            //_OrderDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            //_OrderDateTo.FilterValue = DateTime.Today.AddDays(7);
+            _LogDateFrom.FilterValue = DateTime.Today.AddDays(-30);
+            _LogDateTo.FilterValue = DateTime.Today.AddDays(7);
         }
     }
 }

@@ -136,13 +136,19 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class QuickBooksExportLogFilter
     {
-        //public string City { get; set; }
+        public string LogDateFrom { get; set; }
+        public string LogDateTo { get; set; }
+        public string LogType { get; set; }
+        public string LogStatus { get; set; }
 
         public static Faker<QuickBooksExportLogFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<QuickBooksExportLogFilter>()
-                //.RuleFor(u => u.City, f => "")
+                .RuleFor(u => u.LogDateFrom, f => DateTime.Today.AddMonths(-1).ToString("yyyy-MM-dd"))
+                .RuleFor(u => u.LogDateTo, f => DateTime.Today.ToString("yyyy-MM-dd"))
+                .RuleFor(u => u.LogType, f => "")
+                .RuleFor(u => u.LogStatus, f => "")
                 ;
             #endregion faker data rules
         }

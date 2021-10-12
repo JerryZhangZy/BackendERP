@@ -50,6 +50,10 @@ namespace DigitBridge.QuickBooks.Integration
         public static string LogDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.LogDate AS {name ?? "LogDate".ToCamelCase(camelCase)} ";
         public static string LogTime(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.LogTime AS {name ?? "LogTime".ToCamelCase(camelCase)} ";
         public static string LogBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.LogBy) AS {name ?? "LogBy".ToCamelCase(camelCase)} ";
+        public static string TxnId(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.TxnId) AS {name ?? "TxnId".ToCamelCase(camelCase)} ";
+        public static string ErrorMessage(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ErrorMessage) AS {name ?? "ErrorMessage".ToCamelCase(camelCase)} ";
+        public static string RequestInfo(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.RequestInfo) AS {name ?? "RequestInfo".ToCamelCase(camelCase)} ";
+        public static string LogStatus(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.LogStatus AS {name ?? "LogStatus".ToCamelCase(camelCase)} ";
         public static string EnterBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy".ToCamelCase(camelCase)} ";
         public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";

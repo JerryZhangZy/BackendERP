@@ -35,7 +35,18 @@ namespace DigitBridge.QuickBooks.Integration
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.QuickBooksExportLogUuid()},
+{Helper.BatchNum()},
+{Helper.LogType()},
+{Helper.LogUuid()},
+{Helper.DocNumber()},
+{Helper.DocStatus()},
+{Helper.LogDate()},
+{Helper.LogTime()},
+{Helper.TxnId()},
+{Helper.LogStatus()},
+{Helper.ErrorMessage()},
+{Helper.RequestInfo()}
 ";
             return this.SQL_Select;
         }
