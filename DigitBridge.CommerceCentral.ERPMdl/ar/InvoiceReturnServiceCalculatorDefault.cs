@@ -288,7 +288,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         //TODO calculate all return of this invoice number..
         private (bool, decimal, decimal) IsAllReturned()
-        { 
+        {
             var isAllReturned = false;//  (all return item in db)- (current return item in db) + (current returnitem in memory)== invoice items.
             var totalReturnedSalesAmount = 0;//invoiceheader.SalesAmount- ((all return transaction SalesAmount in db) -(current return transaction SalesAmount in db))
             var totalReturnedTaxAmount = 0;//invoiceheader.TaxAmount- ((all return transaction TaxAmount in db) -(current return transaction TaxAmount in db))
@@ -313,6 +313,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.NonTaxableAmount = 0;
             sum.TaxAmount = 0;
             sum.DiscountAmount = 0;
+            sum.ShippingTaxAmount = 0;
+            sum.MiscTaxAmount = 0;
             sum.TaxRate = sum.TaxRate.ToRate();
 
             foreach (var item in data.InvoiceReturnItems)
@@ -357,9 +359,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.ReturnQty = item.ReturnQty < 0 ? 0 : item.ReturnQty.ToQty();
             item.ReceiveQty = item.ReceiveQty < 0 ? 0 : item.ReceiveQty.ToQty();
 
-            //item.PackType = string.Empty;
-            //if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
-            //    item.PackQty = 1;
+            item.PackType = string.Empty;
+            if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
+                item.PackQty = 1;
 
             if (item.PackQty > 1)
             {

@@ -365,6 +365,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.UnitCost = 0;
             sum.AvgCost = 0;
             sum.LotCost = 0;
+            sum.ShippingTaxAmount = 0;
+            sum.MiscTaxAmount = 0; 
 
             foreach (var item in data.InvoiceItems)
             {

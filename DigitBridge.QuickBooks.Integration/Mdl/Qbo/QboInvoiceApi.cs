@@ -30,6 +30,10 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             var list = queryService.ExecuteIdsQuery($"SELECT * FROM Invoice where id = '{txnId}'").ToList();
             if (list != null)
                 invoice = list.FirstOrDefault();
+            if (invoice == null)
+            {
+                AddError($"Quick books invoice not found for qbo invoice id : {txnId}");
+            }
             return invoice;
         }
         public async Task<Invoice> CreateOrUpdateInvoice(Invoice invoice)
@@ -49,8 +53,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             var invoice = await GetInvoiceAsync(txnId);
             if (invoice == null)
-            {
-                AddError($"Data not found in qbo for id : {txnId}");
+            { 
                 return null;
             }
             return await DeleteDataAsync(invoice);
@@ -60,8 +63,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
         {
             var invoice = await GetInvoiceAsync(txnId);
             if (invoice == null)
-            {
-                AddError($"Data not found in qbo for id : {txnId}");
+            { 
                 return null;
             }
             return await VoidDataAsync(invoice);
