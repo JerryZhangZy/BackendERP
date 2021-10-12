@@ -84,6 +84,7 @@ namespace DigitBridge.QuickBooks.Integration
             }
             catch (Exception e)
             {
+                success = false;
                 AddError(e.ObjectToString());
             }
 
@@ -137,6 +138,7 @@ namespace DigitBridge.QuickBooks.Integration
             }
             catch (Exception e)
             {
+                success = false;
                 AddError(e.ObjectToString());
             }
 
@@ -170,6 +172,7 @@ namespace DigitBridge.QuickBooks.Integration
             }
             catch (Exception e)
             {
+                success = false;
                 AddError(e.ObjectToString());
             }
 
@@ -200,6 +203,7 @@ namespace DigitBridge.QuickBooks.Integration
             }
             catch (Exception e)
             {
+                success = false;
                 AddError(e.ObjectToString());
             }
             return success;

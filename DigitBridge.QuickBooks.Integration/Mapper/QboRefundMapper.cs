@@ -2,22 +2,63 @@
 using Intuit.Ipp.Data;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using DigitBridge.Base.Utility;
 
 namespace DigitBridge.QuickBooks.Integration
 {
-    public class InvoiceReturnMapper
+    public class QboRefundMapper
     {
         private QboIntegrationSetting _setting { get; set; }
-        public InvoiceReturnMapper(QboIntegrationSetting setting)
+        public QboRefundMapper(QboIntegrationSetting setting)
         {
             this._setting = setting;
             PrepareSetting();
         }
         protected void PrepareSetting()
         {
-            _setting.QboShippingItemId = string.IsNullOrEmpty(_setting.QboShippingItemId) ? QboMappingConsts.SippingCostRefValue : _setting.QboShippingItemId;
+            if (this._setting == null)
+            {
+                _setting = new QboIntegrationSetting();
+            }
+            if (string.IsNullOrEmpty(_setting.QboDefaultItemId))
+            {
+                _setting.QboDefaultItemId = QboMappingConsts.QboDefaultItemId;
+            }
+            if (string.IsNullOrEmpty(_setting.QboShippingItemId))
+            {
+                _setting.QboShippingItemId = QboMappingConsts.SippingCostRefValue;
+            }
+            if (string.IsNullOrEmpty(_setting.QboMiscItemId))
+            {
+                _setting.QboMiscItemId = QboMappingConsts.QboMiscItemId;
+            }
+            if (string.IsNullOrEmpty(_setting.QboChargeAndAllowanceItemId))
+            {
+                _setting.QboChargeAndAllowanceItemId = QboMappingConsts.QboChargeAndAllowanceItemId;
+            }
+            if (string.IsNullOrEmpty(_setting.QboSalesTaxItemId))
+            {
+                _setting.QboSalesTaxItemId = QboMappingConsts.QboSalesTaxItemId;
+            }
+            if (string.IsNullOrEmpty(_setting.QboDiscountItemId))
+            {
+                _setting.QboDiscountItemId = QboMappingConsts.DiscountRefValue;
+            }
+
+            if (string.IsNullOrEmpty(_setting.QboInvoiceNumberFieldID))
+            {
+                _setting.QboInvoiceNumberFieldID = QboMappingConsts.QboInvoiceNumberFieldID;
+            }
+            if (string.IsNullOrEmpty(_setting.QboChnlOrderIdCustFieldId))
+            {
+                _setting.QboChnlOrderIdCustFieldId = QboMappingConsts.QboChnlOrderIdCustFieldId;
+            }
+            if (string.IsNullOrEmpty(_setting.Qbo2ndChnlOrderIdCustFieldId))
+            {
+                _setting.Qbo2ndChnlOrderIdCustFieldId = QboMappingConsts.Qbo2ndChnlOrderIdCustFieldId;
+            }
         }
+
         protected Line ItemToQboLine(InvoiceReturnItems item)
         {
             Line line = new Line();
@@ -25,21 +66,24 @@ namespace DigitBridge.QuickBooks.Integration
             line.Description = item.Description;
             line.Amount = item.IsAr ? item.ExtAmount : 0;//TODO check this one
             line.AmountSpecified = true;
-            line.LineNum = item.InvoiceItemsUuid;
-
+            //line.LineNum = item.InvoiceItemsUuid;
             line.AnyIntuitObject = new SalesItemLineDetail()
             {
-                ItemRef = new ReferenceType() { Value = item.InvoiceItemsUuid },
-                Qty = item.ReceiveQty,
+                ItemRef = new ReferenceType()
+                {
+                    Value = _setting.QboDefaultItemId,// All sku mapping to DefaultItemId in qbo. TODO mapping to qbo inventory sku. 
+                },
+                Qty = item.ReturnQty,
                 QtySpecified = true,
-                AnyIntuitObject = item.InvoiceDiscountPrice,
+                AnyIntuitObject = item.IsAr ? item.InvoiceDiscountPrice : 0,//TODO check this one
                 ItemElementName = ItemChoiceType.UnitPrice,
+                //DiscountAmt = item.DiscountRate.IsZero() ? item.DiscountAmount : 0,
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
-            //TODO check in Qbo invoice page Amount=Qty*AnyIntuitObject
             return line;
         }
+
         protected Line ShippingCostToQboLine(InvoiceTransaction tran)
         {
             Line line = new Line();
@@ -50,7 +94,6 @@ namespace DigitBridge.QuickBooks.Integration
                 ItemRef = new ReferenceType()
                 {
                     Value = _setting.QboShippingItemId.ToString(),
-                    name = _setting.QboShippingItemName,
                 }
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
@@ -68,7 +111,6 @@ namespace DigitBridge.QuickBooks.Integration
                 ItemRef = new ReferenceType()
                 {
                     Value = _setting.QboMiscItemId.ToString(),
-                    name = _setting.QboMiscItemName,
                 }
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
@@ -86,7 +128,6 @@ namespace DigitBridge.QuickBooks.Integration
                 ItemRef = new ReferenceType()
                 {
                     Value = _setting.QboChargeAndAllowanceItemId.ToString(),
-                    name = _setting.QboChargeAndAllowanceItemName,
                 }
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
@@ -104,7 +145,6 @@ namespace DigitBridge.QuickBooks.Integration
                 ItemRef = new ReferenceType()
                 {
                     Value = _setting.QboSalesTaxItemId.ToString(),
-                    name = _setting.QboSalesTaxItemName,
                 }
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
@@ -129,19 +169,18 @@ namespace DigitBridge.QuickBooks.Integration
             lines.Add(ShippingCostToQboLine(tranData.InvoiceTransaction));
             lines.Add(MiscCostToQboLine(tranData.InvoiceTransaction));
             lines.Add(ChargeAndAllowanceCostToQboLine(tranData.InvoiceTransaction));
-            if (_setting.SalesTaxExportRule == (int)SalesTaxExportRule.ExportToDefaultSaleTaxItemAccount)
-                lines.Add(TaxCostToQboLine(tranData.InvoiceTransaction));
+            //if (_setting.SalesTaxExportRule == (int)SalesTaxExportRule.ExportToDefaultSaleTaxItemAccount)
+            lines.Add(TaxCostToQboLine(tranData.InvoiceTransaction));
             return lines;
         }
 
 
         #region Map Qbo RefundReceipt 
 
-        protected RefundReceipt ToQboRefundReceipt(InvoiceTransactionData tranData)
+        protected RefundReceipt ToQboRefundReceipt(InvoiceTransactionData tranData, RefundReceipt refund)
         {
-            var refund = new RefundReceipt();
             var tran = tranData.InvoiceTransaction;
-            refund.DocNumber = tran.InvoiceNumber + "_" + tran.TransNum;//tran.TransUuid//TODO check use which one. 
+            //refund.DocNumber = tran.InvoiceNumber + "_" + tran.TransNum;//tran.TransUuid//TODO check use which one. 
             refund.TotalAmt = tran.TotalAmount;
             refund.TxnDate = tran.TransDate;
             refund.TxnDateSpecified = true;
@@ -149,41 +188,41 @@ namespace DigitBridge.QuickBooks.Integration
             //{ };
             refund.DepositToAccountRef = new ReferenceType() //required.
             {
-                Value = tran.BankAccountUuid,//TODO check which account.(BankAccountCode,CreditAccount,DebitAccount,BankAccountUuid) 
-                type = ""//Bank?Credit?Debit or All? this is an option.
+                Value = ReturnMappingConsts.DefaultDepositToAccountRef//"35" // 
+                //type = ""//Bank?Credit?Debit or All? this is an option.
             };
-
+            refund.PrivateNote = tran.Notes;
             //TODO
-            //refund.PrivateNote = invoiceInfo.s//qboSalesOrder.PrivateNote = fulfilledOrder.OrderHeader.SellerPrivateNote;
             //refund.CustomerMemo = new MemoRef() { Value = qboSalesOrder.CustomerMemo };//qboSalesOrder.CustomerMemo = fulfilledOrder.OrderHeader.SellerPublicNote;
 
             var invoiceInfo = tranData.InvoiceData.InvoiceHeaderInfo;
             var invoiceHeader = tranData.InvoiceData.InvoiceHeader;
             //AppendAddressToRefund(refund, invoiceInfo);
-            AppendCustomFieldToRefund(refund, invoiceInfo);
+            AppendCustomFieldToRefund(refund, invoiceInfo, tran.InvoiceNumber);
             AppendCustomerToRefund(refund, invoiceHeader);
             return refund;
         }
-        private void AppendCustomFieldToRefund(RefundReceipt refund, InvoiceHeaderInfo invoiceInfo)
+        private void AppendCustomFieldToRefund(RefundReceipt refund, InvoiceHeaderInfo invoiceInfo, string invoiceNumber)
         {
             // Map Invoice customized fields
             List<CustomField> customFields = new List<CustomField>();
 
-            CustomField endCustoerPoNumCustField = new CustomField();
-            endCustoerPoNumCustField.AnyIntuitObject = _setting.QboEndCustomerPoNumCustFieldId.ToString(); //endCustoerPoNumCustField.DefinitionId = _setting.QboEndCustomerPoNumCustFieldId.ToString();
-            endCustoerPoNumCustField.AnyIntuitObject = invoiceInfo.CustomerPoNum; //endCustoerPoNumCustField.AnyIntuitObject = qboSalesOrder.EndCustomerPoNum; 
-            endCustoerPoNumCustField.Type = CustomFieldTypeEnum.StringType;
-            customFields.Add(endCustoerPoNumCustField);
+            CustomField invoiceNumberField = new CustomField();
+            invoiceNumberField.DefinitionId = _setting.QboInvoiceNumberFieldID;
+            //invoiceNumberField.Name = _setting.QboInvoiceNumberFieldName;
+            invoiceNumberField.Type = CustomFieldTypeEnum.StringType;
+            invoiceNumberField.AnyIntuitObject = invoiceNumber.ToCustomField();// stirng value for this field.// max length is 31.
+            customFields.Add(invoiceNumberField);
 
             CustomField chnlOrderIdCustField = new CustomField();
             chnlOrderIdCustField.DefinitionId = _setting.QboChnlOrderIdCustFieldId.ToString();
-            chnlOrderIdCustField.AnyIntuitObject = invoiceInfo.ChannelOrderID;
+            chnlOrderIdCustField.AnyIntuitObject = invoiceInfo.ChannelOrderID.ToCustomField();
             chnlOrderIdCustField.Type = CustomFieldTypeEnum.StringType;
             customFields.Add(chnlOrderIdCustField);
 
             CustomField secChnlOrderIdCustomField = new CustomField();
-            secChnlOrderIdCustomField.DefinitionId = _setting.Qbo2ndChnlOrderIdCustFieldId.ToString();//SecChnlOrderIdCustomField.DefinitionId = _setting.Qbo2ndChnlOrderIdCustFieldId.ToString();
-            secChnlOrderIdCustomField.AnyIntuitObject = invoiceInfo.SecondaryChannelOrderID; //SecChnlOrderIdCustomField.AnyIntuitObject = qboSalesOrder.SecondaryChannelOrderId;//TODO
+            secChnlOrderIdCustomField.DefinitionId = _setting.Qbo2ndChnlOrderIdCustFieldId.ToString();
+            secChnlOrderIdCustomField.AnyIntuitObject = invoiceInfo.SecondaryChannelOrderID.ToCustomField();
             secChnlOrderIdCustomField.Type = CustomFieldTypeEnum.StringType;
             customFields.Add(secChnlOrderIdCustomField);
 
@@ -235,9 +274,9 @@ namespace DigitBridge.QuickBooks.Integration
         }
 
         #endregion
-        public RefundReceipt ToRefundReceipt(InvoiceTransactionData tranData)
+        public RefundReceipt ToRefund(InvoiceTransactionData tranData, RefundReceipt refund)
         {
-            var refund = ToQboRefundReceipt(tranData);
+            refund = ToQboRefundReceipt(tranData, refund);
             refund.Line = ToQboLines(tranData).ToArray();
             return refund;
         }

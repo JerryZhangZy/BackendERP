@@ -46,7 +46,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 _setting = QuickBooksSettingInfoService.Data.QuickBooksSettingInfo.SettingInfo;
             else
                 this.Messages = this.Messages.Concat(QuickBooksSettingInfoService.Messages).ToList();
-
+             
             return success;
         }
 
