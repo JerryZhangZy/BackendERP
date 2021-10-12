@@ -191,13 +191,14 @@ namespace DigitBridge.QuickBooks.Integration
                 Value = ReturnMappingConsts.DefaultDepositToAccountRef//"35" // 
                 //type = ""//Bank?Credit?Debit or All? this is an option.
             };
+            refund.PaymentRefNum = "";
             refund.PrivateNote = tran.Notes;
             //TODO
             //refund.CustomerMemo = new MemoRef() { Value = qboSalesOrder.CustomerMemo };//qboSalesOrder.CustomerMemo = fulfilledOrder.OrderHeader.SellerPublicNote;
 
             var invoiceInfo = tranData.InvoiceData.InvoiceHeaderInfo;
             var invoiceHeader = tranData.InvoiceData.InvoiceHeader;
-            //AppendAddressToRefund(refund, invoiceInfo);
+            AppendAddressToRefund(refund, invoiceInfo);
             AppendCustomFieldToRefund(refund, invoiceInfo, tran.InvoiceNumber);
             AppendCustomerToRefund(refund, invoiceHeader);
             return refund;
@@ -248,17 +249,17 @@ namespace DigitBridge.QuickBooks.Integration
             {
                 return;
             }
-            PhysicalAddress shippingAddress = new PhysicalAddress();
-            shippingAddress.Line1 = invoiceInfo.ShipToName;
-            shippingAddress.Line2 = invoiceInfo.ShipToAddressLine1;
-            shippingAddress.Line3 = invoiceInfo.ShipToAddressLine2;
-            shippingAddress.Line4 = invoiceInfo.ShipToAddressLine3;
-            shippingAddress.PostalCode = invoiceInfo.ShipToPostalCode;
-            shippingAddress.City = invoiceInfo.ShipToCity;
-            shippingAddress.Country = invoiceInfo.ShipToCountry;
-            shippingAddress.CountrySubDivisionCode = invoiceInfo.ShipToState;
+            //PhysicalAddress shippingAddress = new PhysicalAddress();
+            //shippingAddress.Line1 = invoiceInfo.ShipToName;
+            //shippingAddress.Line2 = invoiceInfo.ShipToAddressLine1;
+            //shippingAddress.Line3 = invoiceInfo.ShipToAddressLine2;
+            //shippingAddress.Line4 = invoiceInfo.ShipToAddressLine3;
+            //shippingAddress.PostalCode = invoiceInfo.ShipToPostalCode;
+            //shippingAddress.City = invoiceInfo.ShipToCity;
+            //shippingAddress.Country = invoiceInfo.ShipToCountry;
+            //shippingAddress.CountrySubDivisionCode = invoiceInfo.ShipToState;
 
-            refund.ShipAddr = shippingAddress;
+            //refund.ShipAddr = shippingAddress;
 
             PhysicalAddress billingAddress = new PhysicalAddress();
             billingAddress.Line1 = invoiceInfo.BillToName;
