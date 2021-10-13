@@ -154,6 +154,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (dto.HasDamageWarehouseUuid) data.DamageWarehouseUuid = dto.DamageWarehouseUuid;
             if (dto.HasDamageWarehouseCode) data.DamageWarehouseCode = dto.DamageWarehouseCode;
             if (dto.HasInvoiceDiscountPrice) data.InvoiceDiscountPrice = dto.InvoiceDiscountPrice.ToDecimal();
+            if (dto.HasReturnDiscountAmount) data.ReturnDiscountAmount = dto.ReturnDiscountAmount.ToDecimal();
             if (dto.HasPrice) data.Price = dto.Price.ToDecimal();
             if (dto.HasExtAmount) data.ExtAmount = dto.ExtAmount.ToDecimal();
             if (dto.HasTaxableAmount) data.TaxableAmount = dto.TaxableAmount.ToDecimal();
@@ -341,6 +342,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.DamageWarehouseUuid = data.DamageWarehouseUuid;
             dto.DamageWarehouseCode = data.DamageWarehouseCode;
             dto.InvoiceDiscountPrice = data.InvoiceDiscountPrice;
+            dto.ReturnDiscountAmount = data.ReturnDiscountAmount;
             dto.Price = data.Price;
             dto.ExtAmount = data.ExtAmount;
             dto.TaxableAmount = data.TaxableAmount;
@@ -360,6 +362,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.UpdateBy = data.UpdateBy;
             dto.EnterDateUtc = data.EnterDateUtc;
             dto.DigitBridgeGuid = data.DigitBridgeGuid;
+
+            dto.ShipQty = data.ShipQty;
+            dto.ReturnQty = data.ReturnQty;
+            dto.OpenQty = data.OpenQty;
 
             #endregion read properties
 

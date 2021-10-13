@@ -386,6 +386,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.CancelledQty = item.CancelledQty.ToQty();
             item.OpenQty = item.OpenQty.ToQty();
             item.DiscountRate = item.DiscountRate.ToRate();
+            item.DiscountAmount = item.DiscountAmount.ToAmount();
             //TODO 
             item.PackType = string.Empty;
             if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
@@ -407,20 +408,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             //PriceRule
+            item.DiscountPrice = item.Price;
             // if exist DiscountRate, calculate after discount unit price
             if (!item.DiscountRate.IsZero())
             {
-                item.DiscountPrice = (item.Price * item.DiscountRate).ToPrice();
+                item.DiscountPrice = (item.Price * item.DiscountRate.ToRate()).ToPrice();
                 item.ExtAmount = (item.DiscountPrice * item.ShipQty).ToAmount();
-                //DiscountAmount=Totalprice-ExtAmount
-                item.DiscountAmount = (item.Price * item.ShipQty).ToAmount() - item.ExtAmount;
             }
-            else
-            {
-                item.DiscountAmount = item.DiscountAmount.ToAmount();
-                item.DiscountPrice = item.Price;
-                item.ExtAmount = (item.Price * item.ShipQty - item.DiscountAmount).ToAmount();
-            }
+            item.ExtAmount = item.ExtAmount - item.DiscountAmount;
+
             item.ShipAmount = (item.Price * item.ShipQty).ToAmount();
             item.CancelledAmount = (item.Price * item.CancelledQty).ToAmount();
             item.OpenAmount = (item.Price * item.OpenQty).ToAmount();

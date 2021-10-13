@@ -76,7 +76,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private DateTime? _stockDate;
 
         [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _sKU;
+        private string _sku;
 
         [Column("ProductUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _productUuid;
@@ -112,7 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private string _currency;
 
         [Column("UOM",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _uOM;
+        private string _uom;
 
         [Column("PackType",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _packType;
@@ -158,6 +158,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("InvoiceDiscountPrice",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _invoiceDiscountPrice;
+
+        [Column("ReturnDiscountAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _ReturnDiscountAmount;
 
         [Column("Price",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _price;
@@ -413,11 +416,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _sKU?.TrimEnd(); 
+				return _sku?.TrimEnd(); 
             }
             set
             {
-				_sKU = value.TruncateTo(100); 
+				_sku = value.TruncateTo(100); 
 				OnPropertyChanged("SKU", value);
             }
         }
@@ -605,11 +608,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _uOM?.TrimEnd(); 
+				return _uom?.TrimEnd(); 
             }
             set
             {
-				_uOM = value.TruncateTo(50); 
+				_uom = value.TruncateTo(50); 
 				OnPropertyChanged("UOM", value);
             }
         }
@@ -839,7 +842,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item invoice after discount price. <br> Title: Unit Price, Title: Invoice Price, Display: true, Editable: false
+		/// Item invoice after discount price. <br> Title: Unit Price, Title: Invoice Discount Price, Display: true, Editable: false
 		/// </summary>
         public virtual decimal InvoiceDiscountPrice
         {
@@ -851,6 +854,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_invoiceDiscountPrice = value; 
 				OnPropertyChanged("InvoiceDiscountPrice", value);
+            }
+        }
+
+		/// <summary>
+		/// Item return discount amount. <br> Title: retrun discount amount, Title: return item discount amount, Display: true, Editable: false
+		/// </summary>
+        public virtual decimal ReturnDiscountAmount
+        {
+            get
+            {
+				return _ReturnDiscountAmount; 
+            }
+            set
+            {
+				_ReturnDiscountAmount = value; 
+				OnPropertyChanged("ReturnDiscountAmount", value);
             }
         }
 
@@ -1170,7 +1189,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_returnTime = new TimeSpan().MinValueSql(); 
 			_receiveDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_stockDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
-			_sKU = String.Empty; 
+			_sku = String.Empty; 
 			_productUuid = String.Empty; 
 			_inventoryUuid = String.Empty; 
 			_invoiceWarehouseUuid = String.Empty; 
@@ -1182,7 +1201,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_description = String.Empty; 
 			_notes = String.Empty; 
 			_currency = String.Empty; 
-			_uOM = String.Empty; 
+			_uom = String.Empty; 
 			_packType = String.Empty; 
 			_packQty = default(decimal); 
 			_returnPack = default(decimal); 
@@ -1198,6 +1217,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_damageWarehouseUuid = String.Empty; 
 			_damageWarehouseCode = String.Empty; 
 			_invoiceDiscountPrice = default(decimal); 
+			_ReturnDiscountAmount = default(decimal); 
 			_price = default(decimal); 
 			_extAmount = default(decimal); 
 			_taxableAmount = default(decimal); 
