@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         /// <returns></returns>
         public virtual decimal GetReturnedQty()
-        {
+        { 
             var sql = $"SELECT  ReturnQty FROM InvoiceReturnItems  where InvoiceUuid = '{this.InvoiceUuid}' and SKU = '{this.SKU}' and RowNum<> {this.RowNum}";
             return dbFactory.GetValue<InvoiceReturnItems, decimal?>(sql).ToQty();
         }

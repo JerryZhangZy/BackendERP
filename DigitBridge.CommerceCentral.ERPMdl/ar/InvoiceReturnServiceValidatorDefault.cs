@@ -135,7 +135,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (item.ReturnQty > item.OpenQty)
                 {
                     isValid = false;
-                    AddError($"Return item ReturnQty cannot greater than OpenQty. [Sku:{item.SKU},ReturnQty{item.ReturnQty},OpenQty{item.OpenQty}]");
+                    AddError($"Return item ReturnQty cannot greater than OpenQty. [Sku:{item.SKU},ReturnQty:{item.ReturnQty},OpenQty:{item.OpenQty}]");
                 }
             }
             return isValid;
