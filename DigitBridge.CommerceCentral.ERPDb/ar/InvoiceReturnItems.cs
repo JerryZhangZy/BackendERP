@@ -26,14 +26,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         /// <summary>
+        /// Get total ReturnedQty for this sku except current item.
+        /// </summary>
+        /// <returns></returns>
+        public virtual decimal GetReturnedQty()
+        {
+            var sql = $"SELECT  ReturnQty FROM InvoiceReturnItems  where InvoiceUuid = '{this.InvoiceUuid}' and SKU = '{this.SKU}' and RowNum<> {this.RowNum}";
+            return dbFactory.GetValue<InvoiceReturnItems, decimal?>(sql).ToQty();
+        }
+
+        /// <summary>
         /// Invoice item ship Qty
         /// </summary>
-        public virtual decimal ShipQty { get; set; }
+        public virtual decimal ShipQty => (this.Parent.InvoiceData?.InvoiceItems?.Where(i => i.SKU == this.SKU).Sum(j => j.ShipQty)).ToQty();
 
         /// <summary>
         /// Same invoice same SKU total returned qty
         /// </summary>
-        public virtual decimal ReturnedQty { get; set; }
+        public virtual decimal ReturnedQty => GetReturnedQty();
 
         /// <summary>
         /// OpenQty => Invoice item ship Qty - Invoice item  total returned qty;
