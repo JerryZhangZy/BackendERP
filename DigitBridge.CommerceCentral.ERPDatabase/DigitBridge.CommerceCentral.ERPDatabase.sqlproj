@@ -69,6 +69,7 @@
     <Folder Include="warehouseTransfer" />
     <Folder Include="inventory\utility" />
     <Folder Include="qbo" />
+    <Folder Include="event" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -233,5 +234,7 @@
     <Build Include="qbo\QuickBooksExportLog_Update.sql" />
     <Build Include="qbo\QuickBooksSettingInfo.sql" />
     <None Include="ar\InvoiceReturnItems_Update.sql" />
+    <None Include="event\Event_ERP.sql" />
+    <None Include="event\Event_ERP_Update.sql" />
   </ItemGroup>
 </Project>

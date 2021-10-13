@@ -47,7 +47,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.QuickBooks.Integration.Tests", "DigitBridge.QuickBooks.Integration.Tests\DigitBridge.QuickBooks.Integration.Tests.csproj", "{89918B42-7BEA-497E-92AE-689E33C60BE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPFunc", "DigitBridge.CommerceCentral.ERPFunc\DigitBridge.CommerceCentral.ERPFunc.csproj", "{22831F89-8C68-43CE-B40E-2714F09773A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPFunc", "DigitBridge.CommerceCentral.ERPFunc\DigitBridge.CommerceCentral.ERPFunc.csproj", "{22831F89-8C68-43CE-B40E-2714F09773A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPBroker", "DigitBridge.CommerceCentral.ERPBroker\DigitBridge.CommerceCentral.ERPBroker.csproj", "{3ACEEDD3-56D0-4534-896E-D4164E3B5767}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPQuickbooksBroker", "DigitBridge.CommerceCentral.ERPQuickbooksBroker\DigitBridge.CommerceCentral.ERPQuickbooksBroker.csproj", "{91A4076C-C32C-49CA-B9DA-88AF4D367523}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPEventApi", "DigitBridge.CommerceCentral.ERPEventApi\DigitBridge.CommerceCentral.ERPEventApi.csproj", "{F1498E07-88FC-4655-A16D-5014991445CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -136,6 +142,18 @@ Global
 		{22831F89-8C68-43CE-B40E-2714F09773A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22831F89-8C68-43CE-B40E-2714F09773A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22831F89-8C68-43CE-B40E-2714F09773A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ACEEDD3-56D0-4534-896E-D4164E3B5767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ACEEDD3-56D0-4534-896E-D4164E3B5767}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ACEEDD3-56D0-4534-896E-D4164E3B5767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ACEEDD3-56D0-4534-896E-D4164E3B5767}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91A4076C-C32C-49CA-B9DA-88AF4D367523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91A4076C-C32C-49CA-B9DA-88AF4D367523}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91A4076C-C32C-49CA-B9DA-88AF4D367523}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91A4076C-C32C-49CA-B9DA-88AF4D367523}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1498E07-88FC-4655-A16D-5014991445CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1498E07-88FC-4655-A16D-5014991445CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1498E07-88FC-4655-A16D-5014991445CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1498E07-88FC-4655-A16D-5014991445CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
