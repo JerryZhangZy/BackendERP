@@ -78,7 +78,7 @@
 //SettingForQuickBooksConnectionInfo
 //SettingForQuickBooksSetting
 #>
-<#@ include file="SettingForQuickBooksExportLog.ttinclude" #>
+<#@ include file="SettingForInvoiceTransaction.ttinclude" #>
 <#
     var dtoSuf = "";
     
