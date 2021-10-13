@@ -1,4 +1,3 @@
-
               
     
 
@@ -30,18 +29,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class InvoiceReturnItemsDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
 
-        /// <summary>
-        /// (Readonly) Invoice Return Item Line uuid. <br> Display: false, Editable: false
-        /// </summary>
-        [OpenApiPropertyDescription("(Readonly) Invoice Return Item Line uuid. <br> Display: false, Editable: false")]
+		/// <summary>
+		/// (Readonly) Invoice Return Item Line uuid. <br> Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Invoice Return Item Line uuid. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The ReturnItemUuid value cannot exceed 50 characters. ")]
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public string ReturnItemUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -52,7 +53,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// </summary>
 		[OpenApiPropertyDescription("Invoice Transaction uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The TransUuid value cannot exceed 50 characters. ")]
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public string TransUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -407,13 +407,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasDamageWarehouseCode => DamageWarehouseCode != null;
 
 		/// <summary>
-		/// Item invoice after discount price. <br> Title: Unit Price, Title: Invoice Price, Display: true, Editable: false
+		/// Item invoice after discount price. <br> Title: Unit Price, Title: Invoice Discount Price, Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Item invoice after discount price. <br> Title: Unit Price, Title: Invoice Price, Display: true, Editable: false")]
+		[OpenApiPropertyDescription("Item invoice after discount price. <br> Title: Unit Price, Title: Invoice Discount Price, Display: true, Editable: false")]
         public decimal? InvoiceDiscountPrice { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasInvoiceDiscountPrice => InvoiceDiscountPrice != null;
+
+		/// <summary>
+		/// Item invoice discount amount. <br> Title: Item total discount amount, Title: Invoice item discount amount, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Item invoice discount amount. <br> Title: Item total discount amount, Title: Invoice item discount amount, Display: true, Editable: false")]
+        public decimal? InvoiceDiscountAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasInvoiceDiscountAmount => InvoiceDiscountAmount != null;
 
 		/// <summary>
 		/// Item return price. <br> Title: Return Price, Display: true, Editable: true

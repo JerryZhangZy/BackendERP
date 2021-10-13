@@ -43,7 +43,8 @@
 	[DamageWarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Damage Warehouse uuid, load from inventory data. <br> Display: false, Editable: false
 	[DamageWarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable Damage warehouse code, load from inventory data. <br> Title: Damage Warehouse Code, Display: true, Editable: true
 
-	[InvoiceDiscountPrice] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item invoice after discount price. <br> Title: Unit Price, Title: Invoice Price, Display: true, Editable: false
+	[InvoiceDiscountPrice] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item invoice after discount price. <br> Title: Unit Price, Title: Invoice Discount Price, Display: true, Editable: false
+	[InvoiceDiscountAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item invoice discount amount. <br> Title: Item total discount amount, Title: Invoice item discount amount, Display: true, Editable: false
 	[Price] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item return price. <br> Title: Return Price, Display: true, Editable: true
 	[ExtAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount. <br> Title: Ext.Amount, Display: true, Editable: false
 	[TaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Amount should apply tax. <br> Display: false, Editable: false
