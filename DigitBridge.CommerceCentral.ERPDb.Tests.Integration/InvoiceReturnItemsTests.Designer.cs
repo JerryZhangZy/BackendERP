@@ -74,7 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.DamageWarehouseUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.DamageWarehouseCode, f => f.Lorem.Word())
 					.RuleFor(u => u.InvoiceDiscountPrice, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.InvoiceDiscountAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.ReturnDiscountAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.Price, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.ExtAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.TaxableAmount, f => f.Random.Decimal(1, 1000, 6))

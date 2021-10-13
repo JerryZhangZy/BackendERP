@@ -159,8 +159,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("InvoiceDiscountPrice",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _invoiceDiscountPrice;
 
-        [Column("InvoiceDiscountAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
-        private decimal _invoiceDiscountAmount;
+        [Column("ReturnDiscountAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _ReturnDiscountAmount;
 
         [Column("Price",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _price;
@@ -858,18 +858,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Item invoice discount amount. <br> Title: Item total discount amount, Title: Invoice item discount amount, Display: true, Editable: false
+		/// Item return discount amount. <br> Title: retrun discount amount, Title: return item discount amount, Display: true, Editable: false
 		/// </summary>
-        public virtual decimal InvoiceDiscountAmount
+        public virtual decimal ReturnDiscountAmount
         {
             get
             {
-				return _invoiceDiscountAmount; 
+				return _ReturnDiscountAmount; 
             }
             set
             {
-				_invoiceDiscountAmount = value; 
-				OnPropertyChanged("InvoiceDiscountAmount", value);
+				_ReturnDiscountAmount = value; 
+				OnPropertyChanged("ReturnDiscountAmount", value);
             }
         }
 
@@ -1217,7 +1217,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_damageWarehouseUuid = String.Empty; 
 			_damageWarehouseCode = String.Empty; 
 			_invoiceDiscountPrice = default(decimal); 
-			_invoiceDiscountAmount = default(decimal); 
+			_ReturnDiscountAmount = default(decimal); 
 			_price = default(decimal); 
 			_extAmount = default(decimal); 
 			_taxableAmount = default(decimal); 

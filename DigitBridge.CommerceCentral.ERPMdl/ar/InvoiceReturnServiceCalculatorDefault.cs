@@ -201,14 +201,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var invoiceData = data.InvoiceData;
             if (invoiceData != null)
             {
-                item.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
-                //item.InvoiceDiscountPrice=invoiceData.InvoiceHeader.DiscountAmount
                 var invoiceItem = invoiceData.InvoiceItems.Where(i => i.InvoiceItemsUuid == item.InvoiceItemsUuid).FirstOrDefault();
                 if (invoiceItem != null)
                 {
+                    item.InvoiceUuid = invoiceItem.InvoiceUuid;
                     item.InvoiceWarehouseCode = invoiceItem.WarehouseCode;
                     item.InvoiceWarehouseUuid = invoiceItem.WarehouseUuid;
-                    item.InvoiceDiscountPrice = invoiceItem.DiscountPrice.ToPrice();
                     item.Description = invoiceItem.Description;
                     item.InventoryUuid = item.InventoryUuid;
                     item.IsAr = item.IsAr;
@@ -216,7 +214,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     item.Notes = item.Notes;
                     item.PackType = invoiceItem.PackType;
                     item.PackQty = invoiceItem.PackQty;
-                    item.Price = invoiceItem.Price;
+                    item.InvoiceDiscountPrice = invoiceItem.DiscountPrice;
+                    item.ReturnDiscountAmount = invoiceItem.DiscountAmount;
                     item.ProductUuid = invoiceItem.ProductUuid;
                     item.TaxRate = invoiceItem.TaxRate;
                     item.UOM = invoiceItem.UOM;
@@ -378,6 +377,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             item.ExtAmount = (item.InvoiceDiscountPrice * item.ReturnQty).ToAmount();
 
+            if (IsAllItemsReturned())
+            {
+                item.ExtAmount = item.ExtAmount + item.ReturnDiscountAmount;
+            }
+
             if (item.Taxable)
             {
                 item.TaxableAmount = item.ExtAmount;
@@ -398,7 +402,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //}
             return true;
         }
-
+        private bool IsAllItemsReturned()
+        {
+            var isAllReturned = false;
+            //TODO  isAllReturned= (inovie item ship quantity) equal invoice return item return quantity.
+            return isAllReturned;
+        }
         #region message
         [XmlIgnore, JsonIgnore]
         public virtual IList<MessageClass> Messages
