@@ -1,6 +1,6 @@
 
-              
-    
+
+
 
 using System;
 using System.Collections.Generic;
@@ -24,7 +24,23 @@ namespace DigitBridge.CommerceCentral.ERPDb
             var sql = $"SELECT * FROM InvoiceReturnItems where TransUuid in ('{string.Join("','", transUuids)}') ";
             return (await dbFactory.FindAsync<InvoiceReturnItems>(sql)).ToList();
         }
+
+        /// <summary>
+        /// Invoice item ship Qty
+        /// </summary>
+        public virtual decimal ShipQty { get; set; }
+
+        /// <summary>
+        /// Same invoice same SKU total returned qty
+        /// </summary>
+        public virtual decimal ReturnedQty { get; set; }
+
+        /// <summary>
+        /// OpenQty => Invoice item ship Qty - Invoice item  total returned qty;
+        /// </summary>
+        public virtual decimal OpenQty => ShipQty - ReturnedQty;
     }
+
 }
 
 
