@@ -210,17 +210,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     item.Description = invoiceItem.Description;
                     item.InventoryUuid = item.InventoryUuid;
                     item.IsAr = item.IsAr;
+                    item.Taxable = invoiceItem.Taxable;
                     item.LotNum = item.LotNum;
                     item.Notes = item.Notes;
                     item.PackType = invoiceItem.PackType;
                     item.PackQty = invoiceItem.PackQty;
-                    item.InvoiceDiscountPrice = invoiceItem.DiscountPrice;
-                    item.ReturnDiscountAmount = invoiceItem.DiscountAmount;
+
                     item.ProductUuid = invoiceItem.ProductUuid;
                     item.TaxRate = invoiceItem.TaxRate;
                     item.UOM = invoiceItem.UOM;
                     item.SKU = invoiceItem.SKU;
                     item.Currency = invoiceItem.Currency;
+
+                    item.InvoiceDiscountPrice = invoiceItem.DiscountPrice;
+                    item.ReturnDiscountAmount = invoiceItem.DiscountAmount;
+                    item.Price = invoiceItem.Price;
+
+                    item.ShippingAmount = invoiceItem.ShippingAmount;
+                    item.ShippingTaxAmount = invoiceItem.ShippingTaxAmount;
+                    item.MiscAmount = invoiceItem.MiscAmount;
+                    item.MiscTaxAmount = invoiceItem.MiscTaxAmount;
+                    item.ChargeAndAllowanceAmount = invoiceItem.ChargeAndAllowanceAmount;
                 }
             }
             return true;
@@ -252,20 +262,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var invoiceData = data.InvoiceData;
 
-            (bool isAllReturned, decimal totalReturnedSalesAmount, decimal totalReturnedTaxAmount) = IsAllReturned();
+            (bool isAllReturned, decimal totalReturnedSalesAmount, decimal totalReturnedTaxAmount, decimal totalReturnedDiscountAmount) = IsAllReturned();
             if (isAllReturned)
             {
                 sum.TaxAmount = invoiceData.InvoiceHeader.TaxAmount - totalReturnedTaxAmount;
                 sum.SalesAmount = invoiceData.InvoiceHeader.SalesAmount - totalReturnedSalesAmount;
+                sum.DiscountAmount = invoiceData.InvoiceHeader.DiscountAmount - totalReturnedDiscountAmount;
             }
             else
             {
                 var discountRate = invoiceData.InvoiceHeader.TotalAmount == 0 ? 0 : (invoiceData.InvoiceHeader.DiscountAmount / invoiceData.InvoiceHeader.TotalAmount).ToRate();
-                sum.DiscountAmount = (sum.SubTotalAmount * (1 - discountRate)).ToAmount();
-
-                sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate) * invoiceData.InvoiceHeader.TaxRate).ToAmount();
+                sum.DiscountAmount = (sum.SubTotalAmount * discountRate).ToAmount();
                 sum.SalesAmount = (sum.SubTotalAmount - sum.DiscountAmount).ToAmount();
+
+                //only return goods tax amount. won't return MiscTaxAmount,ShippingTaxAmount   
+                sum.TaxAmount = (sum.TaxableAmount * sum.TaxRate).ToAmount();
             }
+
             if (setting.TaxForShippingAndHandling)
             {
                 sum.ShippingTaxAmount = (sum.ShippingAmount * sum.TaxRate).ToAmount();
@@ -286,12 +299,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
         //TODO calculate all return of this invoice number..
-        private (bool, decimal, decimal) IsAllReturned()
+        private (bool, decimal, decimal, decimal) IsAllReturned()
         {
             var isAllReturned = false;//  (all return item in db)- (current return item in db) + (current returnitem in memory)== invoice items.
             var totalReturnedSalesAmount = 0;//invoiceheader.SalesAmount- ((all return transaction SalesAmount in db) -(current return transaction SalesAmount in db))
             var totalReturnedTaxAmount = 0;//invoiceheader.TaxAmount- ((all return transaction TaxAmount in db) -(current return transaction TaxAmount in db))
-            return (isAllReturned, totalReturnedSalesAmount, totalReturnedTaxAmount);
+            var totalReturnedDiscountAmount = 0;//invoiceheader.DiscountAmount- ((all return transaction TaxAmount in db) -(current return transaction TaxAmount in db))
+            return (isAllReturned, totalReturnedSalesAmount, totalReturnedTaxAmount, totalReturnedDiscountAmount);
         }
 
         public virtual bool CalculateDetail(InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -377,9 +391,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             item.ExtAmount = (item.InvoiceDiscountPrice * item.ReturnQty).ToAmount();
 
+            // when all item return then return the invoice item discount amount. 
             if (IsAllItemsReturned())
             {
                 item.ExtAmount = item.ExtAmount + item.ReturnDiscountAmount;
+            }
+            else
+            {
+                // item.ReturnDiscountAmount defalut value is invoice item discount amount.
+                item.ReturnDiscountAmount = 0;
             }
 
             if (item.Taxable)
@@ -405,7 +425,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         private bool IsAllItemsReturned()
         {
             var isAllReturned = false;
-            //TODO  isAllReturned= (inovie item ship quantity) equal invoice return item return quantity.
+            //TODO isAllReturned= (all return trans include this item return quantity in db)- (current trans return item quantity in db) + (current trans return item quantity in memory)== invoice item ship quantity 
             return isAllReturned;
         }
         #region message
