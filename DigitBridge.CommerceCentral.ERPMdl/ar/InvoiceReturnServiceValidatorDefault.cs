@@ -96,6 +96,50 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return isValid && (await base.ValidateAsync(dto, processingMode));
         }
+
+        protected override bool ValidateAdd(InvoiceTransactionData data)
+        {
+            var isValid = base.ValidateAdd(data);
+            isValid = isValid && ValidReturnQty(data.InvoiceReturnItems);
+            return isValid;
+        }
+        protected override async Task<bool> ValidateAddAsync(InvoiceTransactionData data)
+        {
+            var isValid = await base.ValidateAddAsync(data);
+            isValid = isValid && ValidReturnQty(data.InvoiceReturnItems);
+            return isValid;
+        }
+        protected override bool ValidateEdit(InvoiceTransactionData data)
+        {
+            var isValid = base.ValidateEdit(data);
+            isValid = isValid && ValidReturnQty(data.InvoiceReturnItems);
+            return isValid;
+        }
+        protected override async Task<bool> ValidateEditAsync(InvoiceTransactionData data)
+        {
+            var isValid = await base.ValidateEditAsync(data);
+            isValid = isValid && ValidReturnQty(data.InvoiceReturnItems);
+            return isValid;
+        }
+
+        private bool ValidReturnQty(IList<InvoiceReturnItems> invoiceReturnItems)
+        {
+            var isValid = true;
+
+            if (invoiceReturnItems == null || invoiceReturnItems.Count == 0)
+                return isValid;
+
+            foreach (var item in invoiceReturnItems)
+            {
+                //return qty cannot > open qty
+                if (item.ReturnQty > item.OpenQty)
+                {
+                    isValid = false;
+                    AddError($"Return item ReturnQty cannot greater than OpenQty. [Sku:{item.SKU},ReturnQty{item.ReturnQty},OpenQty{item.OpenQty}]");
+                }
+            }
+            return isValid;
+        }
     }
 }
 
