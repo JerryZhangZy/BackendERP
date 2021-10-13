@@ -18,14 +18,14 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
     [ApiFilter(typeof(QuickBooksUserCredentialApi))]
     public static class QuickBooksUserCredentialApi
     {
-        [FunctionName(nameof(GetOAuthUrl))]
-        [OpenApiOperation(operationId: "GetOAuthUrl", tags: new[] { "QuickBooksUserCredential" }, Summary = "Get OAuth Url")]
+        [FunctionName(nameof(GetQuickBooksOAuthUrl))]
+        [OpenApiOperation(operationId: "GetQuickBooksOAuthUrl", tags: new[] { "QuickBooksUserCredential" }, Summary = "Get OAuth Url")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(QuickBooksConnectionInfoPayload), Description = "The OK response")]
-        public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> GetOAuthUrl(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "QboUserCredential/oauthUrl")] HttpRequest req)
+        public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> GetQuickBooksOAuthUrl(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "qboUserCredential/oauthUrl")] HttpRequest req)
         {
             var payload = await req.GetParameters<QuickBooksConnectionInfoPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -45,7 +45,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
 
         [FunctionName(nameof(QuickBooksTokenReceiver))] 
         public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> QuickBooksTokenReceiver(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "QboUserCredential/TokenReceiver")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "qboUserCredential/TokenReceiver")] HttpRequest req)
         {
 
             string requestState = req.Query["state"].ForceToTrimString();//MyAppHelper.GetHeaderQueryValue(req, "state").ForceToTrimString();
@@ -92,14 +92,14 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         /// <param name="context"></param>
         /// <param name="claimsPrincipal"></param>
         /// <returns></returns>
-        [FunctionName(nameof(GetTokenStatus))]
-        [OpenApiOperation(operationId: "GetTokenStatus", tags: new[] { "QuickBooksUserCredential" }, Summary = "Get Token Status")]
+        [FunctionName(nameof(GetQuickBooksTokenStatus))]
+        [OpenApiOperation(operationId: "GetQuickBooksTokenStatus", tags: new[] { "QuickBooksUserCredential" }, Summary = "Get Token Status")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(QuickBooksConnectionInfoPayload), Description = "The OK response")]
-        public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> GetTokenStatus(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "QboUserCredential/tokenStatus")] HttpRequest req)
+        public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> GetQuickBooksTokenStatus(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "qboUserCredential/tokenStatus")] HttpRequest req)
         {
             var payload = await req.GetParameters<QuickBooksConnectionInfoPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -117,14 +117,14 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             return new JsonNetResponse<QuickBooksConnectionInfoPayload>(payload);
         }
 
-        [FunctionName(nameof(DisconnectUser))]
-        [OpenApiOperation(operationId: "DisconnectUser", tags: new[] { "QuickBooksUserCredential" }, Summary = "DisconnectUser")]
+        [FunctionName(nameof(DisconnectQuickBooksUser))]
+        [OpenApiOperation(operationId: "DisconnectQuickBooksUser", tags: new[] { "QuickBooksUserCredential" }, Summary = "DisconnectUser")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(QuickBooksConnectionInfoPayload), Description = "The OK response")]
-        public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> DisconnectUser(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "disconnectUser")] HttpRequest req)
+        public static async Task<JsonNetResponse<QuickBooksConnectionInfoPayload>> DisconnectQuickBooksUser(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "qboUserCredential/disconnectUser")] HttpRequest req)
         {
             var payload = await req.GetParameters<QuickBooksConnectionInfoPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);

@@ -28,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(QuickBooksExportLogPayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(QuickBooksExportLogPayloadFind))]
         public static async Task<JsonNetResponse<QuickBooksExportLogPayload>> QboExportLogList(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "productExts/find")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "quickBooksExportLogs/find")] HttpRequest req)
         {
             var payload = await req.GetParameters<QuickBooksExportLogPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);

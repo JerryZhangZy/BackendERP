@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(QuickBooksSettingInfoPayloadUpdate), Description = "The OK response")]
         public static async Task<JsonNetResponse<QuickBooksSettingInfoPayload>> GetIntegrationSetting(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "QuickBooksIntegrationSetting")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "quickBooksIntegrationSetting")] HttpRequest req)
         {
             var payload = await req.GetParameters<QuickBooksSettingInfoPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -64,7 +64,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(QuickBooksSettingInfoPayloadGetSingle), Description = "QuickBooksSettingInfo ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(QuickBooksSettingInfoPayload), Description = "The OK response")]
         public static async Task<JsonNetResponse<QuickBooksSettingInfoPayload>> UpdateIntegrationSetting(
-            [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "QuickBooksIntegrationSetting")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "quickBooksIntegrationSetting")] HttpRequest req)
         {
             var payload = await req.GetParameters<QuickBooksSettingInfoPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
