@@ -48,11 +48,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             Data.InvoiceData = invoiceData;
             Data.InvoiceTransaction.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
-            if (Data.InvoiceReturnItems != null)
+            if (Data.InvoiceReturnItems == null) return success;
+
+            foreach (var item in Data.InvoiceReturnItems)
             {
-                foreach (var item in Data.InvoiceReturnItems)
-                    item.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
+                item.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
+                if (!item.RowNum.IsZero()) continue;
+                item.InvoiceItemsUuid = invoiceData.InvoiceItems.Where(i => i.SKU == item.SKU && i.WarehouseCode == item.WarehouseCode).FirstOrDefault()?.InvoiceItemsUuid;
             }
+
             return success;
         }
 
