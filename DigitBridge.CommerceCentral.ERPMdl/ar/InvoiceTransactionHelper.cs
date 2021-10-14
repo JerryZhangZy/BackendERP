@@ -160,6 +160,20 @@ AND invoiceNumber= @invoiceNumber
             );
             return result;
         }
+
+        public static List<(long rowNum, string sku, decimal returnQty)> GetReturnItemsByInvoiceUuid(IDataBaseFactory dbFactory, string inoviceUuid)
+        {
+
+            var sql = $@"
+SELECT RowNum,Sku,ReturnQty 
+FROM InvoiceReturnItems  
+where InvoiceUuid = @inoviceUuid
+";
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                return SqlQuery.Execute(sql, (long rowNum, string sku, decimal returnQty) => (rowNum, sku, returnQty), inoviceUuid.ToSqlParameter("inoviceUuid"));
+            }
+        }
     }
 }
 

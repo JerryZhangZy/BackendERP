@@ -223,7 +223,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     item.Currency = invoiceItem.Currency;
 
                     item.InvoiceDiscountPrice = invoiceItem.DiscountPrice;
-                    item.ReturnDiscountAmount = invoiceItem.DiscountAmount;
+                    item.InvoiceDiscountAmount = invoiceItem.DiscountAmount;
+                    //item.ReturnDiscountAmount = invoiceItem.DiscountAmount;// user can input this item.
                     item.Price = invoiceItem.Price;
 
                     item.ShippingAmount = invoiceItem.ShippingAmount;
@@ -371,6 +372,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //item.ReceiveQty= item.StockQty + item.NonStockQty // Are they equal.?
             item.ReturnQty = item.ReturnQty < 0 ? 0 : item.ReturnQty.ToQty();
             item.ReceiveQty = item.ReceiveQty < 0 ? 0 : item.ReceiveQty.ToQty();
+            item.ReturnDiscountAmount = item.ReturnDiscountAmount.ToAmount();
 
             item.PackType = string.Empty;
             if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
@@ -389,18 +391,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //item.CancelledPack = item.CancelledQty;
             }
 
-            item.ExtAmount = (item.InvoiceDiscountPrice * item.ReturnQty).ToAmount();
+            item.ExtAmount = (item.InvoiceDiscountPrice * item.ReturnQty).ToAmount() - item.InvoiceDiscountAmount;
 
-            // when all item return then return the invoice item discount amount. 
-            if (IsAllItemsReturned())
-            {
-                item.ExtAmount = item.ExtAmount + item.ReturnDiscountAmount;
-            }
-            else
-            {
-                // item.ReturnDiscountAmount defalut value is invoice item discount amount.
-                item.ReturnDiscountAmount = 0;
-            }
+            //item.ExtAmount = item.ExtAmount + item.ReturnDiscountAmount;//TODO
+
+            //// when all item return then return the invoice item discount amount. 
+            //if (IsAllItemsReturned())
+            //{
+            //    item.ExtAmount = item.ExtAmount + item.ReturnDiscountAmount;
+            //}
+            //else
+            //{
+            //    // item.ReturnDiscountAmount defalut value is invoice item discount amount.
+            //    item.ReturnDiscountAmount = 0;
+            //}
 
             if (item.Taxable)
             {

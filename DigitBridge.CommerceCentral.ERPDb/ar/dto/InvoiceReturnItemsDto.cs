@@ -416,6 +416,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasInvoiceDiscountPrice => InvoiceDiscountPrice != null;
 
         /// <summary>
+        /// Item invoice discount amount. <br> Title: Item invoice discount amount, Title:invoice return item discount amount, Display: true, Editable: false
+        /// </summary>
+        [OpenApiPropertyDescription("Item invoice discount amount. <br> Title: Item invoice discount amount, Title:invoice return item discount amount, Display: true, Editable: false")]
+        public decimal? InvoiceDiscountAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasInvoiceDiscountAmount => InvoiceDiscountAmount != null;
+
+        /// <summary>
         /// Item invoice discount amount. <br> Title: Item total discount amount, Title: Invoice item discount amount, Display: true, Editable: false
         /// </summary>
         [OpenApiPropertyDescription("Item invoice discount amount. <br> Title: Item total discount amount, Title: Invoice item discount amount, Display: true, Editable: false")]
