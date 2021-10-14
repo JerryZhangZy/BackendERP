@@ -1,0 +1,55 @@
+{
+  "IsEncrypted": false,
+  "Host": {
+    "CORS": "*"
+  },
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "dsn": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
+
+    //local
+    "DebugMode": "true",
+    //"UseOrchestration": "false",
+    //"OrchestrationDbConnString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
+    //"OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
+    //"DBConnectionString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
+    //"DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    //"UseAzureManagedIdentity": "false",
+    //"AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
+    //"DefaultCacheExpireSlidingMins": "2",
+
+    "SentryEnable": true, //Enable Sentrylog
+    "SeriEnable": true, //Enable Serilog
+    "SentryDsn": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",
+    //test
+    "UseOrchestration": "false",
+    "OrchestrationDbConnString": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
+    "OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
+    "DBConnectionString": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
+    "DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    "UseAzureManagedIdentity": "false",
+    "AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
+    "DefaultCacheExpireSlidingMins": "2"
+
+    //dev
+    //"UseOrchestration": "true",
+    //"OrchestrationDbConnString": "Server=tcp:bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-Orchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    //"OrchestrationDbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    //"DBConnectionString": "Server=tcp:bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-CommerceCentral;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    //"DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    //"UseAzureManagedIdentity": "false",
+    //"AzureTokenProviderConnectionString": "runas=developer;developertool=visualstudio",
+    //"DefaultCacheExpireSlidingMins": "2"
+
+    //Staging
+    //"UseOrchestration": "true",
+    //"OrchestrationDbConnString": "Server=tcp:digitbridgestaging01.database.windows.net,1433;Initial Catalog=Staging-Orchestration-601;",
+    //"OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
+    //"DBConnectionString": "Server=tcp:digitbridgestaging01.database.windows.net,1433;Initial Catalog=Staging-CommerceCentral-602;",
+    //"DbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e"
+    //"UseAzureManagedIdentity": "true",
+    //"AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio"
+    //"DefaultCacheExpireSlidingMins": "2" 
+  }
+}
