@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Queues;
+using DigitBridge.Base.Utility;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,21 @@ namespace DigitBridge.CommerceCentral.AzureStorage
             var client = new QueueClient(connectionString, queueName.ToLowerInvariant());
             await client.CreateIfNotExistsAsync();
             return new QueueUniversal<T>(client);
+        }
+
+        public static async Task SendMessageAsync(string queueName, string connectionString,T entity)
+        {
+            var client = new QueueClient(connectionString, queueName.ToLowerInvariant());
+            await client.CreateIfNotExistsAsync();
+            var message = JsonConvert.SerializeObject(entity);
+            await client.SendMessageAsync(message);
+        }
+        public static void  SendMessage(string queueName, string connectionString,T entity)
+        {
+            var client = new QueueClient(connectionString, queueName.ToLowerInvariant());
+            client.CreateIfNotExists();
+            var message = JsonConvert.SerializeObject(entity);
+            client.SendMessage(message);
         }
 
         public async Task SendMessageAsync(string message)

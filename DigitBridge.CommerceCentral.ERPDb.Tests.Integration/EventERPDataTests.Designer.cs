@@ -24,25 +24,24 @@ using Bogus;
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     /// <summary>
-    /// Represents a Tester for InvoiceTransactionData.
+    /// Represents a Tester for EventERPData.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class InvoiceTransactionDataTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class EventERPDataTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        public static InvoiceTransactionData GetFakerData()
+        public static EventERPData GetFakerData()
         {
-			var InvoiceTransactionData = new InvoiceTransactionData(); 
-			InvoiceTransactionData.InvoiceTransaction = InvoiceTransactionTests.GetFakerData().Generate(); 
-			InvoiceTransactionData.InvoiceReturnItems = InvoiceReturnItemsTests.GetFakerData().Generate(10); 
-			return InvoiceTransactionData; 
+			var EventERPData = new EventERPData(); 
+			EventERPData.Event_ERP = Event_ERPTests.GetFakerData().Generate(); 
+			return EventERPData; 
         }
 
-        public static List<InvoiceTransactionData> GetFakerData(int count)
+        public static List<EventERPData> GetFakerData(int count)
         {
-			var InvoiceTransactionDatas = new List<InvoiceTransactionData>(); 
+			var EventERPDatas = new List<EventERPData>(); 
 			for (int i = 0; i < count; i++) 
-				InvoiceTransactionDatas.Add(GetFakerData()); 
-			return InvoiceTransactionDatas; 
+				EventERPDatas.Add(GetFakerData()); 
+			return EventERPDatas; 
         }
 
         protected const string SkipReason = "Debug Helper Function";
@@ -51,7 +50,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public IConfiguration Configuration { get; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public InvoiceTransactionDataTests(TestFixture<StartupTest> fixture) 
+        public EventERPDataTests(TestFixture<StartupTest> fixture) 
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -71,17 +70,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 		//[Fact(Skip = SkipReason)]
 		public void Clone_Test()
 		{
-            var id = DataBaseFactory.GetValue<InvoiceTransaction, string>(@"
-SELECT TOP 1 ins.TransUuid 
-FROM InvoiceTransaction ins 
-INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
-WHERE itm.cnt > 0
+            var id = DataBaseFactory.GetValue<Event_ERP, string>(@"
+SELECT TOP 1 ins.EventUuid 
+FROM Event_ERP ins 
 ");
 
 
-            var data = new InvoiceTransactionData(DataBaseFactory);
+            var data = new EventERPData(DataBaseFactory);
             data.GetById(id);
 
             var dataClone = data.Clone();
@@ -100,7 +95,7 @@ WHERE itm.cnt > 0
             data.SetDataBaseFactory(DataBaseFactory);
 			data.Save();
 
-            var dataGet = new InvoiceTransactionData(DataBaseFactory);
+            var dataGet = new EventERPData(DataBaseFactory);
             dataGet.GetById(data.UniqueId);
             var result = data.Equals(dataGet);
 
@@ -113,29 +108,25 @@ WHERE itm.cnt > 0
         {
             Save_Test();
 
-            var id = DataBaseFactory.GetValue<InvoiceTransaction, string>(@"
-SELECT TOP 1 ins.TransUuid 
-FROM InvoiceTransaction ins 
-INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
-WHERE itm.cnt > 0
+            var id = DataBaseFactory.GetValue<Event_ERP, string>(@"
+SELECT TOP 1 ins.EventUuid 
+FROM Event_ERP ins 
 ");
 
 
-            var data = new InvoiceTransactionData(DataBaseFactory);
+            var data = new EventERPData(DataBaseFactory);
             data.GetById(id);
-            var rowNum = data.InvoiceTransaction.RowNum;
+            var rowNum = data.Event_ERP.RowNum;
 
             var dataUpdate = GetFakerData();
             dataUpdate.SetDataBaseFactory(DataBaseFactory);
             data?.CopyFrom(dataUpdate);
             data.Save();
 
-            var dataGetById = new InvoiceTransactionData(DataBaseFactory);
+            var dataGetById = new EventERPData(DataBaseFactory);
             dataGetById.GetById(id);
 
-            var dataGet = new InvoiceTransactionData(DataBaseFactory);
+            var dataGet = new EventERPData(DataBaseFactory);
             dataGet.Get(rowNum);
 
             var result = data.Equals(dataGet) && dataGet.Equals(dataGetById);
@@ -149,17 +140,13 @@ WHERE itm.cnt > 0
         {
             Save_Test();
 
-            var id = DataBaseFactory.GetValue<InvoiceTransaction, string>(@"
-SELECT TOP 1 ins.TransUuid 
-FROM InvoiceTransaction ins 
-INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
-WHERE itm.cnt > 0
+            var id = DataBaseFactory.GetValue<Event_ERP, string>(@"
+SELECT TOP 1 ins.EventUuid 
+FROM Event_ERP ins 
 ");
 
 
-            var data = new InvoiceTransactionData(DataBaseFactory);
+            var data = new EventERPData(DataBaseFactory);
             data.GetById(id);
 
             DataBaseFactory.Begin();
@@ -167,7 +154,7 @@ WHERE itm.cnt > 0
             data.Delete();
             DataBaseFactory.Commit();
 
-            var result = DataBaseFactory.ExistUniqueId<InvoiceTransaction>(data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<Event_ERP>(data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -185,7 +172,7 @@ WHERE itm.cnt > 0
             data.SetDataBaseFactory(DataBaseFactory);
 			await data.SaveAsync();
 
-            var dataGet = new InvoiceTransactionData(DataBaseFactory);
+            var dataGet = new EventERPData(DataBaseFactory);
             await dataGet.GetByIdAsync(data.UniqueId);
             var result = data.Equals(dataGet);
 
@@ -198,29 +185,25 @@ WHERE itm.cnt > 0
         {
             await SaveAsync_Test();
 
-            var id = await DataBaseFactory.GetValueAsync<InvoiceTransaction, string>(@"
-SELECT TOP 1 ins.TransUuid 
-FROM InvoiceTransaction ins 
-INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
-WHERE itm.cnt > 0
+            var id = await DataBaseFactory.GetValueAsync<Event_ERP, string>(@"
+SELECT TOP 1 ins.EventUuid 
+FROM Event_ERP ins 
 ");
 
 
-            var data = new InvoiceTransactionData(DataBaseFactory);
+            var data = new EventERPData(DataBaseFactory);
             await data.GetByIdAsync(id);
-            var rowNum = data.InvoiceTransaction.RowNum;
+            var rowNum = data.Event_ERP.RowNum;
 
             var dataUpdate = GetFakerData();
             dataUpdate.SetDataBaseFactory(DataBaseFactory);
             data?.CopyFrom(dataUpdate);
             await data.SaveAsync();
 
-            var dataGetById = new InvoiceTransactionData(DataBaseFactory);
+            var dataGetById = new EventERPData(DataBaseFactory);
             await dataGetById.GetByIdAsync(id);
 
-            var dataGet = new InvoiceTransactionData(DataBaseFactory);
+            var dataGet = new EventERPData(DataBaseFactory);
             await dataGet.GetAsync(rowNum);
 
             var result = data.Equals(dataGet) && dataGet.Equals(dataGetById);
@@ -234,17 +217,13 @@ WHERE itm.cnt > 0
         {
             await SaveAsync_Test();
 
-            var id = await DataBaseFactory.GetValueAsync<InvoiceTransaction, string>(@"
-SELECT TOP 1 ins.TransUuid 
-FROM InvoiceTransaction ins 
-INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
-WHERE itm.cnt > 0
+            var id = await DataBaseFactory.GetValueAsync<Event_ERP, string>(@"
+SELECT TOP 1 ins.EventUuid 
+FROM Event_ERP ins 
 ");
 
 
-            var data = new InvoiceTransactionData(DataBaseFactory);
+            var data = new EventERPData(DataBaseFactory);
             await data.GetByIdAsync(id);
 
             DataBaseFactory.Begin();
@@ -252,7 +231,7 @@ WHERE itm.cnt > 0
             await data.DeleteAsync();
             DataBaseFactory.Commit();
 
-            var result = DataBaseFactory.ExistUniqueId<InvoiceTransaction>(data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<Event_ERP>(data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
