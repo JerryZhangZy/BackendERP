@@ -13,6 +13,7 @@
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="ap\" />
     <Folder Include="inventoryUpdate\" />
+    <Folder Include="event\" />
     <Folder Include="warehouseTransfer\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />

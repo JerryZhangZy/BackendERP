@@ -26,52 +26,28 @@ using Bogus;
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     /// <summary>
-    /// Represents a Tester for InvoiceTransaction.
+    /// Represents a Tester for Event_ERP.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class InvoiceTransactionTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class Event_ERPTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        public static Faker<InvoiceTransaction> GetFakerData()
+        public static Faker<Event_ERP> GetFakerData()
         {
             #region faker data rules
-            return new Faker<InvoiceTransaction>()
+            return new Faker<Event_ERP>()
 					.RuleFor(u => u.DatabaseNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.MasterAccountNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.TransUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.TransNum, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.InvoiceUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.InvoiceNumber, f => f.Random.AlphaNumeric(50))
-					.RuleFor(u => u.TransType, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.TransStatus, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.TransDate, f => f.Date.Past(0).Date)
-					.RuleFor(u => u.TransTime, f => f.Date.Timespan())
-					.RuleFor(u => u.Description, f => f.Commerce.ProductName())
-					.RuleFor(u => u.Notes, f => f.Lorem.Sentence().TruncateTo(500))
-					.RuleFor(u => u.PaidBy, f => f.Random.Int(1, 100))
-					.RuleFor(u => u.BankAccountUuid, f => f.Random.Guid().ToString())
-					.RuleFor(u => u.BankAccountCode, f => f.Lorem.Word())
-					.RuleFor(u => u.CheckNum, f => f.Lorem.Sentence().TruncateTo(100))
-					.RuleFor(u => u.AuthCode, f => f.Lorem.Word())
-					.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))
-					.RuleFor(u => u.ExchangeRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
-					.RuleFor(u => u.SubTotalAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.SalesAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.TotalAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.TaxableAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.NonTaxableAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.TaxRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
-					.RuleFor(u => u.TaxAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.DiscountRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
-					.RuleFor(u => u.DiscountAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.ShippingAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.ShippingTaxAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.MiscAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.MiscTaxAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.ChargeAndAllowanceAmount, f => f.Random.Decimal(1, 1000, 6))
-					.RuleFor(u => u.CreditAccount, f => default(long))
-					.RuleFor(u => u.DebitAccount, f => default(long))
-					.RuleFor(u => u.TransSourceCode, f => f.Lorem.Word())
+					.RuleFor(u => u.ChannelNum, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.ERPEventType, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.ProcessSource, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.ProcessUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.ProcessData, f => f.Lorem.Sentence())
+					.RuleFor(u => u.ActionStatus, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.ActionDateUtc, f => f.Date.Past(0).Date)
+					.RuleFor(u => u.EventMessage, f => f.Lorem.Sentence().TruncateTo(300))
+					.RuleFor(u => u.EventUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))
@@ -83,10 +59,10 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
-        public Faker<InvoiceTransaction> FakerData { get; set; }
+        public Faker<Event_ERP> FakerData { get; set; }
         public IDataBaseFactory DataBaseFactory { get; set; }
 
-        public InvoiceTransactionTests(TestFixture<StartupTest> fixture) 
+        public Event_ERPTests(TestFixture<StartupTest> fixture) 
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -140,7 +116,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 			data.Add();
             DataBaseFactory.Commit();
 
-            var dataGet = DataBaseFactory.GetFromCacheById<InvoiceTransaction>(data.UniqueId);
+            var dataGet = DataBaseFactory.GetFromCacheById<Event_ERP>(data.UniqueId);
             var result = data.Equals(dataGet);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -150,7 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Put_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceTransaction>("SELECT TOP 1 * FROM InvoiceTransaction").ToList();
+            var list = DataBaseFactory.Find<Event_ERP>("SELECT TOP 1 * FROM Event_ERP").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -160,7 +136,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.Put();
             DataBaseFactory.Commit();
 
-            var dataGet = DataBaseFactory.GetFromCacheById<InvoiceTransaction>(data.UniqueId);
+            var dataGet = DataBaseFactory.GetFromCacheById<Event_ERP>(data.UniqueId);
             var result = data.Equals(dataGet);
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -170,24 +146,24 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Patch_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceTransaction>("SELECT TOP 1 * FROM InvoiceTransaction").ToList();
+            var list = DataBaseFactory.Find<Event_ERP>("SELECT TOP 1 * FROM Event_ERP").ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
-            var dataOrig = new InvoiceTransaction();
+            var dataOrig = new Event_ERP();
             dataOrig?.CopyFrom(data);
 
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            data.Patch(new[] { "InvoiceNumber", "Description" });
+            data.Patch(new[] { "ProcessSource", "ProcessData" });
             DataBaseFactory.Commit();
 
-            var dataGet = DataBaseFactory.GetFromCache<InvoiceTransaction>(data.RowNum);
-            var result = dataGet.InvoiceNumber != dataOrig.InvoiceNumber &&
-                            dataGet.Description != dataOrig.Description &&
-                            dataGet.InvoiceNumber == newData.InvoiceNumber &&
-                            dataGet.Description == newData.Description;
+            var dataGet = DataBaseFactory.GetFromCache<Event_ERP>(data.RowNum);
+            var result = dataGet.ProcessSource != dataOrig.ProcessSource &&
+                            dataGet.ProcessData != dataOrig.ProcessData &&
+                            dataGet.ProcessSource == newData.ProcessSource &&
+                            dataGet.ProcessData == newData.ProcessData;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -202,15 +178,15 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             dataNew.Save();
             DataBaseFactory.Commit();
 
-            var dataUpdate = DataBaseFactory.GetById<InvoiceTransaction>(dataNew.UniqueId);
+            var dataUpdate = DataBaseFactory.GetById<Event_ERP>(dataNew.UniqueId);
 			var dataChanged = FakerData.Generate();
-            dataUpdate?.CopyFrom(dataChanged, new[] {"TransUuid"});
+            dataUpdate?.CopyFrom(dataChanged, new[] {"EventUuid"});
 
             DataBaseFactory.Begin();
             dataUpdate.Save();
             DataBaseFactory.Commit();
 
-            var dataGet = DataBaseFactory.GetFromCacheById<InvoiceTransaction>(dataUpdate.UniqueId);
+            var dataGet = DataBaseFactory.GetFromCacheById<Event_ERP>(dataUpdate.UniqueId);
             var result = dataUpdate.Equals(dataGet);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -220,7 +196,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Delete_Test()
         { 
-            var list = DataBaseFactory.Find<InvoiceTransaction>("SELECT TOP 1 * FROM InvoiceTransaction").ToList();
+            var list = DataBaseFactory.Find<Event_ERP>("SELECT TOP 1 * FROM Event_ERP").ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -228,7 +204,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.Delete();
             DataBaseFactory.Commit();
 
-            var result = DataBaseFactory.ExistUniqueId<InvoiceTransaction>(data.UniqueId);
+            var result = DataBaseFactory.ExistUniqueId<Event_ERP>(data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -237,12 +213,12 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void Get_Test()
         {
-            //var list = DataBaseFactory.Find<InvoiceTransaction>().ToList();
+            //var list = DataBaseFactory.Find<Event_ERP>().ToList();
             //var listData = list.FirstOrDefault();
-            //var data = DataBaseFactory.Get<InvoiceTransaction>(listData.RowNum);
+            //var data = DataBaseFactory.Get<Event_ERP>(listData.RowNum);
             //var result = data.Equals(listData);
 
-            var list = DataBaseFactory.Find<InvoiceTransaction>("SELECT TOP 1 * FROM InvoiceTransaction").ToList();
+            var list = DataBaseFactory.Find<Event_ERP>("SELECT TOP 1 * FROM Event_ERP").ToList();
             var listData = list.FirstOrDefault(); 
             var result = listData!=null;
 
@@ -253,9 +229,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetById_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceTransaction>("SELECT TOP 1 * FROM InvoiceTransaction").ToList();
+            var list = DataBaseFactory.Find<Event_ERP>("SELECT TOP 1 * FROM Event_ERP").ToList();
             var listData = list.FirstOrDefault();
-            var data = DataBaseFactory.GetById<InvoiceTransaction>(listData.UniqueId);
+            var data = DataBaseFactory.GetById<Event_ERP>(listData.UniqueId);
             var result = data.Equals(listData);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -266,13 +242,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void AddList_Test()
         {
             var list = FakerData.Generate(10);
-            var InvoiceUuid = Guid.NewGuid().ToString();
+            var ProcessUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.InvoiceUuid = InvoiceUuid);
-            list.SetDataBaseFactory<InvoiceTransaction>(DataBaseFactory)
-                .Save<InvoiceTransaction>();
+            list.ForEach(x => x.ProcessUuid = ProcessUuid);
+            list.SetDataBaseFactory<Event_ERP>(DataBaseFactory)
+                .Save<Event_ERP>();
 
-            var cnt = DataBaseFactory.Count<InvoiceTransaction>("WHERE InvoiceUuid = @0", InvoiceUuid);
+            var cnt = DataBaseFactory.Count<Event_ERP>("WHERE ProcessUuid = @0", ProcessUuid);
             var result = cnt.Equals(list.Count());
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -283,19 +259,19 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void SaveList_Test()
         {
             var list = FakerData.Generate(10);
-            var InvoiceUuid = Guid.NewGuid().ToString();
+            var ProcessUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.InvoiceUuid = InvoiceUuid);
-            list.SetDataBaseFactory<InvoiceTransaction>(DataBaseFactory)
-                .Save<InvoiceTransaction>();
+            list.ForEach(x => x.ProcessUuid = ProcessUuid);
+            list.SetDataBaseFactory<Event_ERP>(DataBaseFactory)
+                .Save<Event_ERP>();
 
-            var NewDescription = Guid.NewGuid().ToString();
-            var listFind = DataBaseFactory.Find<InvoiceTransaction>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid).ToList();
-            listFind.ToList().ForEach(x => x.Description = NewDescription);
-            listFind.Save<InvoiceTransaction>();
+            var NewProcessData = Guid.NewGuid().ToString();
+            var listFind = DataBaseFactory.Find<Event_ERP>("WHERE ProcessUuid = @0 ORDER BY RowNum", ProcessUuid).ToList();
+            listFind.ToList().ForEach(x => x.ProcessData = NewProcessData);
+            listFind.Save<Event_ERP>();
 
-            list = DataBaseFactory.Find<InvoiceTransaction>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid).ToList();
-            var result = list.Where(x => x.Description == NewDescription).Count() == listFind.Count();
+            list = DataBaseFactory.Find<Event_ERP>("WHERE ProcessUuid = @0 ORDER BY RowNum", ProcessUuid).ToList();
+            var result = list.Where(x => x.ProcessData == NewProcessData).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -305,16 +281,16 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public void DeleteList_Test()
         {
             var list = FakerData.Generate(10);
-            var InvoiceUuid = Guid.NewGuid().ToString();
+            var ProcessUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.InvoiceUuid = InvoiceUuid);
-            list.SetDataBaseFactory<InvoiceTransaction>(DataBaseFactory)
+            list.ForEach(x => x.ProcessUuid = ProcessUuid);
+            list.SetDataBaseFactory<Event_ERP>(DataBaseFactory)
                 .Save();
 
-            var listFind = DataBaseFactory.Find<InvoiceTransaction>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid).ToList();
+            var listFind = DataBaseFactory.Find<Event_ERP>("WHERE ProcessUuid = @0 ORDER BY RowNum", ProcessUuid).ToList();
             listFind.Delete();
 
-            var cnt = DataBaseFactory.Count<InvoiceTransaction>("WHERE InvoiceUuid = @0", InvoiceUuid);
+            var cnt = DataBaseFactory.Count<Event_ERP>("WHERE ProcessUuid = @0", ProcessUuid);
             var result = cnt == 0;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -324,10 +300,10 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public void GetFromCacheById_Test()
         {
-            var list = DataBaseFactory.Find<InvoiceTransaction>("SELECT TOP 1 * FROM InvoiceTransaction").ToList();
+            var list = DataBaseFactory.Find<Event_ERP>("SELECT TOP 1 * FROM Event_ERP").ToList();
             var data = list.FirstOrDefault();
-            var data1 = DataBaseFactory.GetFromCacheById<InvoiceTransaction>(data.UniqueId);
-            var data2 = DataBaseFactory.GetFromCacheById<InvoiceTransaction>(data.UniqueId);
+            var data1 = DataBaseFactory.GetFromCacheById<Event_ERP>(data.UniqueId);
+            var data2 = DataBaseFactory.GetFromCacheById<Event_ERP>(data.UniqueId);
 
             var result = data1 == data2;
 
@@ -348,7 +324,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await data.AddAsync();
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceTransaction>(data.UniqueId);
+            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<Event_ERP>(data.UniqueId);
             var result = data.Equals(dataGet);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -358,7 +334,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task PutAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<InvoiceTransaction>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<Event_ERP>()).ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
@@ -368,7 +344,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await data.PutAsync();
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceTransaction>(data.UniqueId);
+            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<Event_ERP>(data.UniqueId);
             var result = data.Equals(dataGet);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -378,24 +354,24 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task PatchAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<InvoiceTransaction>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<Event_ERP>()).ToList();
 
             DataBaseFactory.Begin();
             var data = list.FirstOrDefault();
-            var dataOrig = new InvoiceTransaction();
+            var dataOrig = new Event_ERP();
             dataOrig?.CopyFrom(data);
 
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            await data.PatchAsync(new[] { "InvoiceNumber", "Description" });
+            await data.PatchAsync(new[] { "ProcessSource", "ProcessData" });
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheAsync<InvoiceTransaction>(data.RowNum);
-            var result = dataGet.InvoiceNumber != dataOrig.InvoiceNumber &&
-                            dataGet.Description != dataOrig.Description &&
-                            dataGet.InvoiceNumber == newData.InvoiceNumber &&
-                            dataGet.Description == newData.Description;
+            var dataGet = await DataBaseFactory.GetFromCacheAsync<Event_ERP>(data.RowNum);
+            var result = dataGet.ProcessSource != dataOrig.ProcessSource &&
+                            dataGet.ProcessData != dataOrig.ProcessData &&
+                            dataGet.ProcessSource == newData.ProcessSource &&
+                            dataGet.ProcessData == newData.ProcessData;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -410,15 +386,15 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await dataNew.SaveAsync();
             DataBaseFactory.Commit();
 
-            var dataUpdate = await DataBaseFactory.GetByIdAsync<InvoiceTransaction>(dataNew.UniqueId);
+            var dataUpdate = await DataBaseFactory.GetByIdAsync<Event_ERP>(dataNew.UniqueId);
             var dataChanged = FakerData.Generate();
-            dataUpdate?.CopyFrom(dataChanged, new[] { "TransUuid" });
+            dataUpdate?.CopyFrom(dataChanged, new[] { "EventUuid" });
 
             DataBaseFactory.Begin();
             await dataUpdate.SaveAsync();
             DataBaseFactory.Commit();
 
-            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceTransaction>(dataUpdate.UniqueId);
+            var dataGet = await DataBaseFactory.GetFromCacheByIdAsync<Event_ERP>(dataUpdate.UniqueId);
             var result = dataUpdate.Equals(dataGet);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -428,7 +404,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task DeleteAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<InvoiceTransaction>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<Event_ERP>()).ToList();
             var data = list.FirstOrDefault();
 
             DataBaseFactory.Begin();
@@ -436,7 +412,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             await data.DeleteAsync();
             DataBaseFactory.Commit();
 
-            var result = await DataBaseFactory.ExistUniqueIdAsync<InvoiceTransaction>(data.UniqueId);
+            var result = await DataBaseFactory.ExistUniqueIdAsync<Event_ERP>(data.UniqueId);
 
             Assert.True(!result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -445,9 +421,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<InvoiceTransaction>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<Event_ERP>()).ToList();
             var listData = list.FirstOrDefault();
-            var data = await DataBaseFactory.GetAsync<InvoiceTransaction>(listData.RowNum);
+            var data = await DataBaseFactory.GetAsync<Event_ERP>(listData.RowNum);
             var result = data.Equals(listData);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -457,9 +433,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetByIdAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<InvoiceTransaction>()).ToList();
+            var list = (await DataBaseFactory.FindAsync<Event_ERP>()).ToList();
             var listData = list.FirstOrDefault();
-            var data = await DataBaseFactory.GetByIdAsync<InvoiceTransaction>(listData.UniqueId);
+            var data = await DataBaseFactory.GetByIdAsync<Event_ERP>(listData.UniqueId);
             var result = data.Equals(listData);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -470,14 +446,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public async Task AddListAsync_Test()
         {
             var list = FakerData.Generate(10);
-            var InvoiceUuid = Guid.NewGuid().ToString();
+            var ProcessUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.InvoiceUuid = InvoiceUuid);
+            list.ForEach(x => x.ProcessUuid = ProcessUuid);
             await list
-                .SetDataBaseFactory<InvoiceTransaction>(DataBaseFactory)
-                .SaveAsync<InvoiceTransaction>();
+                .SetDataBaseFactory<Event_ERP>(DataBaseFactory)
+                .SaveAsync<Event_ERP>();
 
-            var cnt = await DataBaseFactory.CountAsync<InvoiceTransaction>("WHERE InvoiceUuid = @0", InvoiceUuid);
+            var cnt = await DataBaseFactory.CountAsync<Event_ERP>("WHERE ProcessUuid = @0", ProcessUuid);
             var result = cnt.Equals(list.Count());
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -488,20 +464,20 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public async Task SaveListAsync_Test()
         {
             var list = FakerData.Generate(10);
-            var InvoiceUuid = Guid.NewGuid().ToString();
+            var ProcessUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.InvoiceUuid = InvoiceUuid);
+            list.ForEach(x => x.ProcessUuid = ProcessUuid);
             await list
-                .SetDataBaseFactory<InvoiceTransaction>(DataBaseFactory)
-                .SaveAsync<InvoiceTransaction>();
+                .SetDataBaseFactory<Event_ERP>(DataBaseFactory)
+                .SaveAsync<Event_ERP>();
 
-            var NewDescription = Guid.NewGuid().ToString();
-            var listFind = (await DataBaseFactory.FindAsync<InvoiceTransaction>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid)).ToList();
-            listFind.ToList().ForEach(x => x.Description = NewDescription);
-            await listFind.SaveAsync<InvoiceTransaction>();
+            var NewProcessData = Guid.NewGuid().ToString();
+            var listFind = (await DataBaseFactory.FindAsync<Event_ERP>("WHERE ProcessUuid = @0 ORDER BY RowNum", ProcessUuid)).ToList();
+            listFind.ToList().ForEach(x => x.ProcessData = NewProcessData);
+            await listFind.SaveAsync<Event_ERP>();
 
-            list = DataBaseFactory.Find<InvoiceTransaction>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid).ToList();
-            var result = list.Where(x => x.Description == NewDescription).Count() == listFind.Count();
+            list = DataBaseFactory.Find<Event_ERP>("WHERE ProcessUuid = @0 ORDER BY RowNum", ProcessUuid).ToList();
+            var result = list.Where(x => x.ProcessData == NewProcessData).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -511,17 +487,17 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public async Task DeleteListAsync_Test()
         {
             var list = FakerData.Generate(10);
-            var InvoiceUuid = Guid.NewGuid().ToString();
+            var ProcessUuid = Guid.NewGuid().ToString();
 
-            list.ForEach(x => x.InvoiceUuid = InvoiceUuid);
+            list.ForEach(x => x.ProcessUuid = ProcessUuid);
             await list
-                .SetDataBaseFactory<InvoiceTransaction>(DataBaseFactory)
+                .SetDataBaseFactory<Event_ERP>(DataBaseFactory)
                 .SaveAsync();
 
-            var listFind = (await DataBaseFactory.FindAsync<InvoiceTransaction>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid)).ToList();
+            var listFind = (await DataBaseFactory.FindAsync<Event_ERP>("WHERE ProcessUuid = @0 ORDER BY RowNum", ProcessUuid)).ToList();
             await listFind.DeleteAsync();
 
-            var cnt = await DataBaseFactory.CountAsync<InvoiceTransaction>("WHERE InvoiceUuid = @0", InvoiceUuid);
+            var cnt = await DataBaseFactory.CountAsync<Event_ERP>("WHERE ProcessUuid = @0", ProcessUuid);
             var result = cnt == 0;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
@@ -531,10 +507,10 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetFromCacheByIdAsync_Test()
         {
-            var list = (await DataBaseFactory.FindAsync<InvoiceTransaction>("SELECT TOP 1 * FROM InvoiceTransaction")).ToList();
+            var list = (await DataBaseFactory.FindAsync<Event_ERP>("SELECT TOP 1 * FROM Event_ERP")).ToList();
             var data = list.FirstOrDefault();
-            var data1 = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceTransaction>(data.UniqueId);
-            var data2 = await DataBaseFactory.GetFromCacheByIdAsync<InvoiceTransaction>(data.UniqueId);
+            var data1 = await DataBaseFactory.GetFromCacheByIdAsync<Event_ERP>(data.UniqueId);
+            var data2 = await DataBaseFactory.GetFromCacheByIdAsync<Event_ERP>(data.UniqueId);
 
             var result = data1 == data2;
 

@@ -131,6 +131,10 @@
       <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForEventERP.ttinclude">
+      <LastGenOutput>SettingForEventERP.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForQuickBooksSetting.ttinclude">
       <LastGenOutput>SettingForQuickBooksSetting.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -423,6 +427,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForCustomer.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForEventERP.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForEventERP.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\SettingForInventory.cs">
       <DesignTime>True</DesignTime>
