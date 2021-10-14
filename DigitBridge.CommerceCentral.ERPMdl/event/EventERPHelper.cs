@@ -33,40 +33,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
-SELECT COUNT(1) FROM Event_ERP tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum
-AND OrderNumber = @number
-";
+            SELECT COUNT(1) FROM Event_ERP tbl
+            WHERE MasterAccountNum = @masterAccountNum
+            AND ProfileNum = @profileNum
+            AND EventUuid = @number
+            ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"),
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
-/*
             var sql = $@"
-SELECT COUNT(1) FROM Event_ERP tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum
-AND OrderNumber = @number
-";
+            SELECT COUNT(1) FROM Event_ERP tbl
+            WHERE MasterAccountNum = @masterAccountNum
+            AND ProfileNum = @profileNum
+            AND EventUuid = @number
+            ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"),
                 number.ToSqlParameter("number")
             );
             return result > 0;
-*/
-            return true;
         }
 
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)

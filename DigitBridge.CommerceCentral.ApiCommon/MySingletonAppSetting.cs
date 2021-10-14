@@ -41,6 +41,8 @@ namespace DigitBridge.CommerceCentral.ApiCommon
 
         public static string CryptKey => GetValueByName("CryptKey");
 
+        public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
+
         public static bool UseAzureManagedIdentity
         {
             get

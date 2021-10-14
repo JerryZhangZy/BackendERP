@@ -16,11 +16,14 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
+using DigitBridge.CommerceCentral.AzureStorage;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class EventERPService
     {
+        protected string StorageAccount;
 
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
@@ -55,7 +58,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            if (SaveData())
+            {
+                var erpdata = Data.Event_ERP;
+                var message = new ERPQueueMessage
+                {
+                    ERPEventType = (ErpEventType)erpdata.ERPEventType,
+                    DatabaseNum = erpdata.DatabaseNum,
+                    MasterAccountNum = erpdata.MasterAccountNum,
+                    ProfileNum = erpdata.ProfileNum,
+                    ProcessUuid = erpdata.ProcessUuid,
+                    ProcessData = erpdata.ProcessData,
+                    ProcessSource = erpdata.ProcessSource,
+                    EventUuid = erpdata.EventUuid,
+                };
+                var queueName = message.ERPEventType.GetErpEventQueueName();
+                QueueUniversal<ERPQueueMessage>.SendMessage(queueName, StorageAccount, message);
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -78,7 +99,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            if( await SaveDataAsync())
+            {
+                var erpdata = Data.Event_ERP;
+                var message = new ERPQueueMessage
+                {
+                    ERPEventType = (ErpEventType)erpdata.ERPEventType,
+                    DatabaseNum = erpdata.DatabaseNum,
+                    MasterAccountNum = erpdata.MasterAccountNum,
+                    ProfileNum = erpdata.ProfileNum,
+                    ProcessUuid = erpdata.ProcessUuid,
+                    ProcessData = erpdata.ProcessData,
+                    ProcessSource = erpdata.ProcessSource,
+                    EventUuid = erpdata.EventUuid,
+                };
+                var queueName = message.ERPEventType.GetErpEventQueueName();
+                await QueueUniversal<ERPQueueMessage>.SendMessageAsync(queueName, StorageAccount, message);
+                return true;
+            }
+            return false;
         }
 
         public virtual bool Add(EventERPPayload payload)
@@ -102,7 +141,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            if (SaveData())
+            {
+                var erpdata = Data.Event_ERP;
+                var message = new ERPQueueMessage
+                {
+                    ERPEventType = (ErpEventType)erpdata.ERPEventType,
+                    DatabaseNum = erpdata.DatabaseNum,
+                    MasterAccountNum = erpdata.MasterAccountNum,
+                    ProfileNum = erpdata.ProfileNum,
+                    ProcessUuid = erpdata.ProcessUuid,
+                    ProcessData = erpdata.ProcessData,
+                    ProcessSource = erpdata.ProcessSource,
+                    EventUuid = erpdata.EventUuid,
+                };
+                var queueName = message.ERPEventType.GetErpEventQueueName();
+                QueueUniversal<ERPQueueMessage>.SendMessage(queueName, StorageAccount, message);
+                return true;
+            }
+            return false;
         }
 
         public virtual async Task<bool> AddAsync(EventERPPayload payload)
@@ -126,7 +183,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            if (await SaveDataAsync())
+            {
+                var erpdata = Data.Event_ERP;
+                var message = new ERPQueueMessage
+                {
+                    ERPEventType = (ErpEventType)erpdata.ERPEventType,
+                    DatabaseNum = erpdata.DatabaseNum,
+                    MasterAccountNum = erpdata.MasterAccountNum,
+                    ProfileNum = erpdata.ProfileNum,
+                    ProcessUuid = erpdata.ProcessUuid,
+                    ProcessData = erpdata.ProcessData,
+                    ProcessSource = erpdata.ProcessSource,
+                    EventUuid = erpdata.EventUuid,
+                };
+                var queueName = message.ERPEventType.GetErpEventQueueName();
+                await QueueUniversal<ERPQueueMessage>.SendMessageAsync(queueName, StorageAccount, message);
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -208,6 +283,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
+            if (Data.Event_ERP.ActionStatus == 0)
+                return _data.Delete();
             return SaveData();
         }
 
@@ -236,7 +313,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // validate data for Add processing
             if (!(await ValidateAsync()))
                 return false;
-
+            if (Data.Event_ERP.ActionStatus == 0)
+                return await _data.DeleteAsync();
             return await SaveDataAsync();
         }
 

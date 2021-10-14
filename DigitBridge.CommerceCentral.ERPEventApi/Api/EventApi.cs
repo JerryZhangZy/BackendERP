@@ -31,7 +31,7 @@ namespace DigitBridge.CommerceCentral.EventERPApi
         {
             var payload = await req.GetParameters<EventERPPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new EventERPService(dbFactory);
+            var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
             if (await svc.AddAsync(payload))
                 payload.EventERP = svc.ToDto();
             else
@@ -54,7 +54,7 @@ namespace DigitBridge.CommerceCentral.EventERPApi
         {
             var payload = await req.GetParameters<EventERPPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new EventERPService(dbFactory);
+            var svc = new EventERPService(dbFactory,MySingletonAppSetting.AzureWebJobsStorage);
             if (await svc.UpdateAsync(payload))
                 payload.EventERP = svc.ToDto();
             else

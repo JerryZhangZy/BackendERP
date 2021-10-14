@@ -101,7 +101,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (!string.IsNullOrEmpty(number))
                         isValid = EventERPHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
                     else if(!dto.Event_ERP.RowNum.IsZero())
-                        isValid = EventERPHelper.ExistRowNum(dto.Event_ERP.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
+                        isValid = EventERPHelper.ExistRowNum(dto.Event_ERP.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                    else if (dto.Event_ERP.HasEventUuid)
+                        isValid = EventERPHelper.ExistId(dto.Event_ERP.EventUuid, pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -131,7 +133,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (!string.IsNullOrEmpty(number))
                         isValid = await EventERPHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
                     else if(!dto.Event_ERP.RowNum.IsZero())
-                        isValid = await EventERPHelper.ExistRowNumAsync(dto.Event_ERP.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum); 
+                        isValid = await EventERPHelper.ExistRowNumAsync(dto.Event_ERP.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+                    else if (dto.Event_ERP.HasEventUuid)
+                        isValid = await EventERPHelper.ExistIdAsync(dto.Event_ERP.EventUuid, pl.MasterAccountNum, pl.ProfileNum);
                 }
                 if (!isValid)
                     AddError($"Data not found.");
@@ -181,10 +185,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual bool ValidateAdd(EventERPData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.Event_ERP.RowNum != 0 && dbFactory.Exists<Event_ERP>(data.Event_ERP.RowNum))
+            data.Event_ERP.RowNum = 0;
+            if (data.Event_ERP.ProcessUuid.IsZero() || dbFactory.Exists<Event_ERP>("ProcessUuid=@0", data.Event_ERP.ProcessUuid))
             {
                 IsValid = false;
-                AddError($"RowNum: {data.Event_ERP.RowNum} is duplicate.");
+                AddError($"ProcessUuid: {data.Event_ERP.ProcessUuid} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -194,17 +199,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual bool ValidateEdit(EventERPData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.Event_ERP.RowNum == 0)
+            if (data.Event_ERP.EventUuid.IsZero() || !dbFactory.ExistUniqueId<Event_ERP>(data.Event_ERP.EventUuid))
             {
                 IsValid = false;
-                AddError($"RowNum: {data.Event_ERP.RowNum} not found.");
-                return IsValid;
-            }
-
-            if (data.Event_ERP.RowNum != 0 && !dbFactory.Exists<Event_ERP>(data.Event_ERP.RowNum))
-            {
-                IsValid = false;
-                AddError($"RowNum: {data.Event_ERP.RowNum} not found.");
+                AddError($"EventUuid: {data.Event_ERP.EventUuid} not found.");
                 return IsValid;
             }
             return true;
@@ -213,13 +211,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual bool ValidateDelete(EventERPData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.Event_ERP.RowNum == 0)
-            {
-                IsValid = false;
-                AddError($"RowNum: {data.Event_ERP.RowNum} not found.");
-                return IsValid;
-            }
-
             if (data.Event_ERP.RowNum != 0 && !dbFactory.Exists<Event_ERP>(data.Event_ERP.RowNum))
             {
                 IsValid = false;
@@ -273,10 +264,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual async Task<bool> ValidateAddAsync(EventERPData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.Event_ERP.RowNum != 0 && (await dbFactory.ExistsAsync<Event_ERP>(data.Event_ERP.RowNum)))
+            data.Event_ERP.RowNum = 0;
+            if (data.Event_ERP.ProcessUuid.IsZero() ||(await dbFactory.ExistsAsync<Event_ERP>("ProcessUuid=@0", data.Event_ERP.ProcessUuid)))
             {
                 IsValid = false;
-                AddError($"RowNum: {data.Event_ERP.RowNum} is duplicate.");
+                AddError($"ProcessUuid: {data.Event_ERP.ProcessUuid} is duplicate.");
                 return IsValid;
             }
             return true;
@@ -286,17 +278,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual async Task<bool> ValidateEditAsync(EventERPData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.Event_ERP.RowNum == 0)
+            if (data.Event_ERP.EventUuid.IsZero() ||!(await dbFactory.ExistUniqueIdAsync<Event_ERP>(data.Event_ERP.EventUuid)))
             {
                 IsValid = false;
-                AddError($"RowNum: {data.Event_ERP.RowNum} not found.");
-                return IsValid;
-            }
-
-            if (data.Event_ERP.RowNum != 0 && !(await dbFactory.ExistsAsync<Event_ERP>(data.Event_ERP.RowNum)))
-            {
-                IsValid = false;
-                AddError($"RowNum: {data.Event_ERP.RowNum} not found.");
+                AddError($"EventUuid: {data.Event_ERP.EventUuid} not found.");
                 return IsValid;
             }
             return true;
@@ -343,20 +328,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 //for Add mode, always reset uuid
                 dto.Event_ERP.EventUuid = Guid.NewGuid().ToString();
-  
+                if (dto.Event_ERP.ProcessSource.IsZero())
+                {
+                    isValid = false;
+                    AddError("Event_ERP.ProcessSource is required.");
+                }
+                if (dto.Event_ERP.ProcessUuid.IsZero())
+                {
+                    isValid = false;
+                    AddError("Event_ERP.ProcessUuid is required.");
+                }
             }
             else if (processingMode == ProcessingMode.Edit)
             {
-                if (dto.Event_ERP.RowNum.IsZero())
+                if (dto.Event_ERP.EventUuid.IsZero())
                 {
                     isValid = false;
-                    AddError("Event_ERP.RowNum is required.");
+                    AddError("Event_ERP.EventUuid is required.");
                 }
-                // This property should not be changed.
-                dto.Event_ERP.MasterAccountNum = null;
-                dto.Event_ERP.ProfileNum = null;
-                dto.Event_ERP.DatabaseNum = null;
-                dto.Event_ERP.EventUuid = null;
+
+                if (dto.Event_ERP.ActionStatus != 0)
+                {
+                    // This property should not be changed.
+                    dto.Event_ERP.MasterAccountNum = null;
+                    dto.Event_ERP.ProfileNum = null;
+                    dto.Event_ERP.DatabaseNum = null;
+                    dto.Event_ERP.EventUuid = null;
+                    dto.Event_ERP.ERPEventType = null ;
+                    dto.Event_ERP.ProcessUuid = null;
+                    dto.Event_ERP.ProcessSource = null;
+                    dto.Event_ERP.ProcessData = null;
+                }
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
@@ -385,23 +387,41 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 //for Add mode, always reset uuid
                 dto.Event_ERP.EventUuid = Guid.NewGuid().ToString();
-  
+                if (dto.Event_ERP.ProcessSource.IsZero())
+                {
+                    isValid = false;
+                    AddError("Event_ERP.ProcessSource is required.");
+                }
+                if (dto.Event_ERP.ProcessUuid.IsZero())
+                {
+                    isValid = false;
+                    AddError("Event_ERP.ProcessUuid is required.");
+                }
+
             }
             else if (processingMode == ProcessingMode.Edit)
             {
-                if (dto.Event_ERP.RowNum.IsZero())
+                if (dto.Event_ERP.EventUuid.IsZero())
                 {
                     isValid = false;
-                    AddError("Event_ERP.RowNum is required.");
+                    AddError("Event_ERP.EventUuid is required.");
                 }
-                // This property should not be changed.
-                dto.Event_ERP.MasterAccountNum = null;
-                dto.Event_ERP.ProfileNum = null;
-                dto.Event_ERP.DatabaseNum = null;
-                dto.Event_ERP.EventUuid = null;
+
+                if (dto.Event_ERP.ActionStatus != 0)
+                {
+                    // This property should not be changed.
+                    dto.Event_ERP.MasterAccountNum = null;
+                    dto.Event_ERP.ProfileNum = null;
+                    dto.Event_ERP.DatabaseNum = null;
+                    dto.Event_ERP.EventUuid = null;
+                    dto.Event_ERP.ERPEventType = null;
+                    dto.Event_ERP.ProcessUuid = null;
+                    dto.Event_ERP.ProcessSource = null;
+                    dto.Event_ERP.ProcessData = null;
+                }
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
-  
+
             }
             IsValid=isValid;
             return isValid;

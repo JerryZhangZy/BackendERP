@@ -35,7 +35,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.ChannelNum()},
+{Helper.ChannelAccountNum()},
+{Helper.ERPEventType()},
+COALESCE(ordtp.text, '') erpEventTypeText, 
+{Helper.ProcessSource()},
+{Helper.ProcessUuid()},
+{Helper.ProcessData()},
+{Helper.ActionStatus()},
+{Helper.ActionDateUtc()},
+{Helper.EventMessage()}
 ";
             return this.SQL_Select;
         }
@@ -44,6 +53,7 @@ SELECT
         {
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
+ LEFT JOIN @ERPEvent ordtp ON ({Helper.TableAllies}.ERPEventType = ordtp.num)
 ";
             return this.SQL_From;
         }
@@ -51,8 +61,8 @@ SELECT
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-                        
-            //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
+
+            paramList.Add("@ERPEvent".ToEnumParameter<ErpEventType>());
             //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
 
             return paramList.ToArray();

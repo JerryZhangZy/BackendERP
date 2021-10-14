@@ -1,10 +1,11 @@
-﻿using System;
+﻿using DigitBridge.Base.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DigitBridge.Base.Utility.Model
+namespace DigitBridge.Base.Utility
 {
-    public class QueueMessage
+    public class ERPQueueMessage: IQueueEntity
     {
         public int  DatabaseNum{get;set;}
 
@@ -14,12 +15,16 @@ namespace DigitBridge.Base.Utility.Model
 
         public string EventUuid { get; set; }
 
-        public int ERPEventType { get; set; }
+        public ErpEventType ERPEventType { get; set; }
 
         public string ProcessSource { get; set; }
 
         public string ProcessUuid { get; set; }
 
         public string ProcessData { get; set; }
+
+        public string MessageId { get; set; }
+
+        public string PopReceipt { get; set; }
     }
 }

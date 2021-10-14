@@ -112,7 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.ProfileNum, f => null)
 				.RuleFor(u => u.ChannelNum, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.ERPEventType, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.ERPEventType, f => f.Random.Int(1, 10))
 				.RuleFor(u => u.ProcessSource, f => f.Random.AlphaNumeric(50))
 				.RuleFor(u => u.ProcessUuid, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.ProcessData, f => f.Lorem.Sentence())

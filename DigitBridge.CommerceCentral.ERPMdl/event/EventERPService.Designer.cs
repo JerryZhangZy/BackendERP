@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class EventERPService : ServiceBase<EventERPService, EventERPData, EventERPDataDto>, IEventERPService
     {
         public EventERPService() : base() {}
-        public EventERPService(IDataBaseFactory dbFactory): base(dbFactory) {}
+        public EventERPService(IDataBaseFactory dbFactory,string storageAccount=null): base(dbFactory) { StorageAccount = storageAccount; }
     }
 }
 

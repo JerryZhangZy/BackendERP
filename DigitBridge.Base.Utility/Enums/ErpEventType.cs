@@ -30,10 +30,38 @@ namespace DigitBridge.Base.Common
         DeleteQboInvoiceReturn,
 
     }
-    public static class ErpEventQueueName 
+    public static class ErpEventQueueName
     {
-        //CentralOrderToSalesOrder = 1,
-        //ShipmentToInvoice ,
+        public static string CentralOrderToSalesOrder = DefaultQueue;
+        public static string ShipmentToInvoice = DefaultQueue;
+        public static string DefaultQueue = "erp-default-queue";
+
+        public static string GetErpEventQueueName(this ErpEventType eventType)
+        {
+            switch (eventType)
+            {
+                case ErpEventType.CentralOrderToSalesOrder:
+                    return CentralOrderToSalesOrder;
+                case ErpEventType.ShipmentToInvoice:
+                    return ShipmentToInvoice;
+                case ErpEventType.AddQboInvoice:
+                    return AddQboInvoice;
+                case ErpEventType.UpdateQboInvoice:
+                    return UpdateQboInvoice;
+                case ErpEventType.VoidQboInvoice:
+                    return VoidQboInvoice;
+                case ErpEventType.AddQboInvoicePayment:
+                    return AddQboInvoicePayment;
+                case ErpEventType.DeleteQboInvoicePayment:
+                    return DeleteQboInvoicePayment;
+                case ErpEventType.AddQboInvoiceReturn:
+                    return AddQboInvoiceReturn;
+                case ErpEventType.DeleteQboInvoiceReturn:
+                    return DeleteQboInvoiceReturn;
+                default:
+                    return DefaultQueue;
+            }
+        }
 
         public static string AddQboInvoice = "erp-qboinvoice-add-queue";
         public static string UpdateQboInvoice = "erp-qboinvoice-update-queue";
