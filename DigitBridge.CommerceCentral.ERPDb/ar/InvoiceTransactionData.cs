@@ -17,6 +17,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public partial class InvoiceTransactionData
     {
         /// <summary>
+        /// Load All return items of this invoice.
+        /// </summary>
+        public List<InvoiceReturnItems> ReturnItemsOfInvoice;
+
+        /// <summary>
         /// Load original invoicedata.
         /// </summary>
         public InvoiceData InvoiceData;
