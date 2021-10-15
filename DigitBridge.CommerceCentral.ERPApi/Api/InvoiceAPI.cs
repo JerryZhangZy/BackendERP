@@ -128,7 +128,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             //Directly return without waiting this result. 
             if (payload.Success)
-                srv.ToQboQueueAsync(payload, ErpEventType.SaveQboInvoice);
+                srv.ToQboQueueAsync(payload, ErpEventType.ErpInvoiceToQboInvoice);
 
             return new JsonNetResponse<InvoicePayload>(payload);
         }
@@ -157,7 +157,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             //Directly return without waiting this result. 
             if (payload.Success)
-                srv.ToQboQueueAsync(payload, ErpEventType.SaveQboInvoice);
+                srv.ToQboQueueAsync(payload, ErpEventType.ErpInvoiceToQboInvoice);
 
             return new JsonNetResponse<InvoicePayload>(payload);
         }

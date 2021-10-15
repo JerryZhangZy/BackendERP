@@ -16,35 +16,20 @@ namespace DigitBridge.Base.Common
         [Description("CentralOrder To SalesOrder")]
         CentralOrderToSalesOrder = 1,
         [Description("Shipment To Invoice")]
-        ShipmentToInvoice,
+        ShipmentToInvoice, 
 
-        [Description("Add QuickBooks Invoice")]
-        AddQboInvoice,
-        [Description("Update QuickBooks Invoice")]
-        UpdateQboInvoice,
-
-        [Description("Add QuickBooks InvoicePayment")]
-        AddQboInvoicePayment,
-        [Description("Delete QuickBooks InvoicePayment")]
-        DeleteQboInvoicePayment,
-
-        [Description("Add QuickBooks InvoiceReturn")]
-        AddQboInvoiceReturn,
-        [Description("Delete QuickBooks InvoiceReturn")]
-        DeleteQboInvoiceReturn,
-
-        [Description("Save QuickBooks Invoice")]
-        SaveQboInvoice,
+        [Description("Erp invoice QuickBooks Invoice")]
+        ErpInvoiceToQboInvoice,
         [Description("Void QuickBooks Invoice")]
         VoidQboInvoice,
 
-        [Description("Save QuickBooks Payment")]
-        SaveQboPayment,
+        [Description("Erp payment to QuickBooks Payment")]
+        InvoicePaymentToQboPayment,
         [Description("Void QuickBooks Payment")]
         DeleteQboPayment,
 
-        [Description("Save QuickBooks Refund")]
-        SaveQboRefund,
+        [Description("Erp return to QuickBooks Refund")]
+        InvoiceRetrunToQboRefund,
         [Description("Void QuickBooks Refund")]
         DeleteQboRefund,
 
