@@ -31,8 +31,15 @@ namespace DigitBridge.Base.Common
         [Description("Erp return to QuickBooks Refund")]
         InvoiceRetrunToQboRefund,
         [Description("Void QuickBooks Refund")]
-        DeleteQboRefund,
 
+        //TODO delete follow item.
+        DeleteQboRefund,
+        AddQboInvoice,
+        UpdateQboInvoice,
+        AddQboInvoicePayment,
+        DeleteQboInvoicePayment,
+        AddQboInvoiceReturn,
+        DeleteQboInvoiceReturn,
     }
     public static class ErpEventQueueName
     {
