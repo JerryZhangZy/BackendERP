@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -449,6 +450,53 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
+
+        #region To qbo queue 
+
+        /// <summary>
+        /// convert erp trans to a queue message then put it to qbo queue
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="authcode"></param>
+        /// <param name="payload"></param>
+        /// <param name="eventType"></param>
+        /// <returns></returns>
+        public virtual async Task ToQboQueueAsync(IPayload payload, ErpEventType eventType)
+        {
+            var message = new Event_ERP()
+            {
+                DatabaseNum = payload.DatabaseNum,
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                ERPEventType = (int)eventType,
+                ProcessSource = Data.InvoiceTransaction.InvoiceNumber + "_" + Data.InvoiceTransaction.TransNum,
+                ProcessUuid = Data.InvoiceTransaction.TransUuid,
+            };
+            await EventServieHelper.ToQueueAsync(message);
+        }
+
+        /// <summary>
+        /// convert erp trans to a queue message then put it to qbo queue
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="authcode"></param>
+        /// <param name="payload"></param>
+        /// <param name="eventType"></param>
+        /// <returns></returns>
+        public virtual void ToQboQueue(IPayload payload, ErpEventType eventType)
+        {
+            var message = new Event_ERP()
+            {
+                DatabaseNum = payload.DatabaseNum,
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                ERPEventType = (int)eventType,
+                ProcessSource = Data.InvoiceTransaction.InvoiceNumber + "_" + Data.InvoiceTransaction.TransNum,
+                ProcessUuid = Data.InvoiceTransaction.TransUuid,
+            };
+            EventServieHelper.ToQueue(message);
+        }
+        #endregion
     }
 }
 

@@ -5,19 +5,23 @@ using System.Text;
 
 namespace DigitBridge.Base.Common
 {
+    public enum ErpEventActionStatus : int
+    {
+        Success = 0,
+        Other = 1,
+    }
+
     public enum ErpEventType : int
     {
         [Description("CentralOrder To SalesOrder")]
         CentralOrderToSalesOrder = 1,
         [Description("Shipment To Invoice")]
-        ShipmentToInvoice ,
+        ShipmentToInvoice,
 
         [Description("Add QuickBooks Invoice")]
-        AddQboInvoice ,
+        AddQboInvoice,
         [Description("Update QuickBooks Invoice")]
-        UpdateQboInvoice ,
-        [Description("Void QuickBooks Invoice")]
-        VoidQboInvoice ,
+        UpdateQboInvoice,
 
         [Description("Add QuickBooks InvoicePayment")]
         AddQboInvoicePayment,
@@ -28,6 +32,21 @@ namespace DigitBridge.Base.Common
         AddQboInvoiceReturn,
         [Description("Delete QuickBooks InvoiceReturn")]
         DeleteQboInvoiceReturn,
+
+        [Description("Save QuickBooks Invoice")]
+        SaveQboInvoice,
+        [Description("Void QuickBooks Invoice")]
+        VoidQboInvoice,
+
+        [Description("Save QuickBooks Payment")]
+        SaveQboPayment,
+        [Description("Void QuickBooks Payment")]
+        DeleteQboPayment,
+
+        [Description("Save QuickBooks Refund")]
+        SaveQboRefund,
+        [Description("Void QuickBooks Refund")]
+        DeleteQboRefund,
 
     }
     public static class ErpEventQueueName

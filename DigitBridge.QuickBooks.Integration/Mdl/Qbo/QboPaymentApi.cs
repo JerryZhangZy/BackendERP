@@ -22,7 +22,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return _paymentQueryService;
         }
 
-        public async Task<Payment> GetPaymentAsync(string txnId)
+        protected async Task<Payment> GetPaymentAsync(string txnId)
         {
             Payment payment = null;
             var queryService = await GetPaymentQueryService();
@@ -35,7 +35,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             }
             return payment;
         }
-        public async Task<Payment> CreateOrUpdatePayment(Payment payment)
+        protected async Task<Payment> CreateOrUpdatePayment(Payment payment)
         {
             if (string.IsNullOrEmpty(payment.Id))
             {
@@ -48,7 +48,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return payment;
         }
 
-        public async Task<Payment> DeletePaymentAsync(string txnId)
+        protected async Task<Payment> DeletePaymentAsync(string txnId)
         {
             var Payment = await GetPaymentAsync(txnId);
             if (Payment == null)
@@ -58,7 +58,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return await DeleteDataAsync(Payment);
         }
 
-        public async Task<Payment> VoidPaymentAsync(string txnId)
+        protected async Task<Payment> VoidPaymentAsync(string txnId)
         {
             var Payment = await GetPaymentAsync(txnId);
             if (Payment == null)

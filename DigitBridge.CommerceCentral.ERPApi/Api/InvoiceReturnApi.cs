@@ -1,3 +1,4 @@
+using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
@@ -101,6 +102,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var srv = new InvoiceReturnService(dataBaseFactory);
             payload.Success = await srv.DeleteByNumberAsync(payload, invoiceNumber, transNum);
             payload.Messages = srv.Messages;
+
+            //Directly return without waiting this result. 
+            if (payload.Success)
+                srv.ToQboQueueAsync(payload, ErpEventType.DeleteQboRefund);
+
+
             return new JsonNetResponse<InvoiceReturnPayload>(payload);
         }
 
@@ -124,6 +131,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var srv = new InvoiceReturnService(dataBaseFactory);
             payload.Success = await srv.UpdateAsync(payload);
             payload.Messages = srv.Messages;
+
+            //Directly return without waiting this result. 
+            if (payload.Success)
+                srv.ToQboQueueAsync(payload, ErpEventType.SaveQboRefund);
+
             return new JsonNetResponse<InvoiceReturnPayload>(payload);
         }
 
@@ -148,6 +160,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Success = await srv.AddAsync(payload);
             payload.Messages = srv.Messages;
             payload.InvoiceTransaction = srv.ToDto();
+
+            //Directly return without waiting this result. 
+            if (payload.Success)
+                srv.ToQboQueueAsync(payload, ErpEventType.SaveQboRefund);
+
             return new JsonNetResponse<InvoiceReturnPayload>(payload);
         }
 
