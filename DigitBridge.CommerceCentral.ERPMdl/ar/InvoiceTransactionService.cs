@@ -463,7 +463,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task ToQboQueueAsync(IPayload payload, ErpEventType eventType)
         {
-            var message = new Event_ERP()
+            var message = new Event_ERPDto()
             {
                 DatabaseNum = payload.DatabaseNum,
                 MasterAccountNum = payload.MasterAccountNum,
@@ -485,7 +485,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual void ToQboQueue(IPayload payload, ErpEventType eventType)
         {
-            var message = new Event_ERP()
+            var message = new Event_ERPDto()
             {
                 DatabaseNum = payload.DatabaseNum,
                 MasterAccountNum = payload.MasterAccountNum,

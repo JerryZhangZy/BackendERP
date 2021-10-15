@@ -11,19 +11,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public class EventServieHelper
     {
-        public static async Task ToQueueAsync(Event_ERP data)
+        public static async Task ToQueueAsync(Event_ERPDto eventDto)
         {
-            await ToQueueAsync(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode, data);
+            await ToQueueAsync(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode, eventDto);
         }
-        public static async Task ToQueueAsync(string url, string authcode, Event_ERP data)
+        public static async Task ToQueueAsync(string url, string authcode, Event_ERPDto eventDto)
         {
             try
             {
                 var dicHeaders = new Dictionary<string, string>();
-                dicHeaders.Add("masterAccountNum", data.MasterAccountNum.ToString());
-                dicHeaders.Add("profileNum", data.ProfileNum.ToString());
+                dicHeaders.Add("masterAccountNum", eventDto.MasterAccountNum.ToString());
+                dicHeaders.Add("profileNum", eventDto.ProfileNum.ToString());
 
-                var responseStr = await HttpRequestUtil.CallAsync(url, authcode, data, dicHeaders);
+                var eventERPPayload = new EventERPPayload()
+                {
+                    EventERP = new EventERPDataDto()
+                    {
+                        Event_ERP = eventDto
+                    }
+                };
+
+                var responseStr = await HttpRequestUtil.CallAsync(url, authcode, eventERPPayload, dicHeaders);
                 var responseObj = JsonConvert.DeserializeObject<EventERPPayload>(responseStr);
 
                 if (responseObj == null)
@@ -46,19 +54,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        public static void ToQueue(Event_ERP message)
+        public static void ToQueue(Event_ERPDto eventDto)
         {
-            ToQueue(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode, message);
+            ToQueue(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode, eventDto);
         }
-        public static void ToQueue(string url, string authcode, Event_ERP message)
+        public static void ToQueue(string url, string authcode, Event_ERPDto eventDto)
         {
             try
             {
                 var dicHeaders = new Dictionary<string, string>();
-                dicHeaders.Add("masterAccountNum", message.MasterAccountNum.ToString());
-                dicHeaders.Add("profileNum", message.ProfileNum.ToString());
+                dicHeaders.Add("masterAccountNum", eventDto.MasterAccountNum.ToString());
+                dicHeaders.Add("profileNum", eventDto.ProfileNum.ToString());
 
-                var responseStr = HttpRequestUtil.Call(url, authcode, message, dicHeaders);
+                var eventERPPayload = new EventERPPayload()
+                {
+                    EventERP = new EventERPDataDto()
+                    {
+                        Event_ERP = eventDto
+                    }
+                };
+
+                var responseStr = HttpRequestUtil.Call(url, authcode, eventERPPayload, dicHeaders);
                 var responseObj = JsonConvert.DeserializeObject<EventERPPayload>(responseStr);
 
                 if (responseObj == null)

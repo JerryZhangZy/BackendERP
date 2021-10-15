@@ -23,11 +23,10 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         [FunctionName("ExportErpInvoiceToQbo")]
         public static async Task ExportErpInvoiceToQbo([QueueTrigger(QueueName.Erp_Qbo_Invoice_Queue)] string myQueueItem, ILogger log)
         {
-            var event_erp = new Event_ERP();
+            ERPQueueMessage message = null;
             try
             {
-                var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-
+                message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
                 var payload = new QboInvoicePayload()
                 {
                     MasterAccountNum = message.MasterAccountNum,
@@ -38,17 +37,12 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 var service = new QboInvoiceService(payload, dataBaseFactory);
                 var success = await service.ExportAsync(message.ProcessSource);
 
-                event_erp.ActionStatus = success ? (int)ErpEventActionStatus.Success : (int)ErpEventActionStatus.Other;
-                event_erp.EventUuid = message.EventUuid;
-                event_erp.EventMessage = service.Messages.ObjectToString();
+                EventServieHelper.UpdateEventAsync(success, message, service.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                event_erp.ActionStatus = (int)ErpEventActionStatus.Other;
-                event_erp.EventMessage = e.ObjectToString();
+                EventServieHelper.UpdateEventAsync(false, message, e.ObjectToString());
             }
-
-            EventServieHelper.UpdateEventAsync(event_erp);
         }
 
         /// <summary>
@@ -60,10 +54,10 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         [FunctionName("VoidQboInvoice")]
         public static async Task VoidQboInvoice([QueueTrigger(QueueName.Erp_Qbo_Invoice_Void_Queue)] string myQueueItem, ILogger log)
         {
-            var event_erp = new Event_ERP();
+            ERPQueueMessage message = null;
             try
             {
-                var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+                message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
 
                 var payload = new QboInvoicePayload()
                 {
@@ -75,17 +69,12 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 var service = new QboInvoiceService(payload, dataBaseFactory);
                 var success = await service.VoidQboInvoiceAsync(message.ProcessSource);
 
-                event_erp.ActionStatus = success ? (int)ErpEventActionStatus.Success : (int)ErpEventActionStatus.Other;
-                event_erp.EventUuid = message.EventUuid;
-                event_erp.EventMessage = service.Messages.ObjectToString();
+                EventServieHelper.UpdateEventAsync(success, message, service.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                event_erp.ActionStatus = (int)ErpEventActionStatus.Other;
-                event_erp.EventMessage = e.ObjectToString();
+                EventServieHelper.UpdateEventAsync(false, message, e.ObjectToString());
             }
-
-            EventServieHelper.UpdateEventAsync(event_erp);
         }
 
         #endregion
@@ -101,10 +90,10 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         [FunctionName("ExportErpPaymentToQbo")]
         public static async Task ExportErpPaymentToQbo([QueueTrigger(QueueName.Erp_Qbo_Payment_Queue)] string myQueueItem, ILogger log)
         {
-            var event_erp = new Event_ERP();
+            ERPQueueMessage message = null;
             try
             {
-                var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+                message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
 
                 var payload = new QboPaymentPayload()
                 {
@@ -119,19 +108,15 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 var invoiceNumber = arrs[0];
                 var tranNumber = arrs[1];
 
-                var success = await service.DeleteQboPaymentAsync(invoiceNumber, int.Parse(tranNumber));
+                var success = await service.ExportAsync(invoiceNumber, int.Parse(tranNumber));
 
-                event_erp.ActionStatus = success ? (int)ErpEventActionStatus.Success : (int)ErpEventActionStatus.Other;
-                event_erp.EventUuid = message.EventUuid;
-                event_erp.EventMessage = service.Messages.ObjectToString();
+
+                EventServieHelper.UpdateEventAsync(success, message, service.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                event_erp.ActionStatus = (int)ErpEventActionStatus.Other;
-                event_erp.EventMessage = e.ObjectToString();
+                EventServieHelper.UpdateEventAsync(false, message, e.ObjectToString());
             }
-
-            EventServieHelper.UpdateEventAsync(event_erp);
         }
 
         /// <summary>
@@ -143,10 +128,10 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         [FunctionName("DeleteQboPayment")]
         public static async Task DeleteQboPayment([QueueTrigger(QueueName.Erp_Qbo_Payment_Delete_Queue)] string myQueueItem, ILogger log)
         {
-            var event_erp = new Event_ERP();
+            ERPQueueMessage message = null;
             try
             {
-                var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+                message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
 
                 var payload = new QboPaymentPayload()
                 {
@@ -163,17 +148,12 @@ namespace DigitBridge.CommerceCentral.ERPBroker
 
                 var success = await service.DeleteQboPaymentAsync(invoiceNumber, int.Parse(tranNumber));
 
-                event_erp.ActionStatus = success ? (int)ErpEventActionStatus.Success : (int)ErpEventActionStatus.Other;
-                event_erp.EventUuid = message.EventUuid;
-                event_erp.EventMessage = service.Messages.ObjectToString();
+                EventServieHelper.UpdateEventAsync(success, message, service.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                event_erp.ActionStatus = (int)ErpEventActionStatus.Other;
-                event_erp.EventMessage = e.ObjectToString();
+                EventServieHelper.UpdateEventAsync(false, message, e.ObjectToString());
             }
-
-            EventServieHelper.UpdateEventAsync(event_erp);
         }
 
         #endregion
@@ -189,10 +169,10 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         [FunctionName("ExportErpReturnToQbo")]
         public static async Task ExportErpReturnToQbo([QueueTrigger(QueueName.Erp_Qbo_Return_Queue)] string myQueueItem, ILogger log)
         {
-            var event_erp = new Event_ERP();
+            ERPQueueMessage message = null;
             try
             {
-                var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+                message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
 
                 var payload = new QboRefundPayload()
                 {
@@ -209,17 +189,12 @@ namespace DigitBridge.CommerceCentral.ERPBroker
 
                 var success = await service.ExportAsync(invoiceNumber, int.Parse(tranNumber));
 
-                event_erp.ActionStatus = success ? (int)ErpEventActionStatus.Success : (int)ErpEventActionStatus.Other;
-                event_erp.EventUuid = message.EventUuid;
-                event_erp.EventMessage = service.Messages.ObjectToString();
+                EventServieHelper.UpdateEventAsync(success, message, service.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                event_erp.ActionStatus = (int)ErpEventActionStatus.Other;
-                event_erp.EventMessage = e.ObjectToString();
+                EventServieHelper.UpdateEventAsync(false, message, e.ObjectToString());
             }
-
-            EventServieHelper.UpdateEventAsync(event_erp);
         }
 
         /// <summary>
@@ -231,10 +206,10 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         [FunctionName("DeleteQboRefund")]
         public static async Task DeleteQboRefund([QueueTrigger(QueueName.Erp_Qbo_Return_Delete_Queue)] string myQueueItem, ILogger log)
         {
-            var event_erp = new Event_ERP();
+            ERPQueueMessage message = null;
             try
             {
-                var message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+                message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
 
                 var payload = new QboRefundPayload()
                 {
@@ -251,17 +226,12 @@ namespace DigitBridge.CommerceCentral.ERPBroker
 
                 var success = await service.ExportAsync(invoiceNumber, int.Parse(tranNumber));
 
-                event_erp.ActionStatus = success ? (int)ErpEventActionStatus.Success : (int)ErpEventActionStatus.Other;
-                event_erp.EventUuid = message.EventUuid;
-                event_erp.EventMessage = service.Messages.ObjectToString();
+                EventServieHelper.UpdateEventAsync(success, message, service.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                event_erp.ActionStatus = (int)ErpEventActionStatus.Other;
-                event_erp.EventMessage = e.ObjectToString();
+                EventServieHelper.UpdateEventAsync(false, message, e.ObjectToString());
             }
-
-            EventServieHelper.UpdateEventAsync(event_erp);
         }
 
         #endregion
