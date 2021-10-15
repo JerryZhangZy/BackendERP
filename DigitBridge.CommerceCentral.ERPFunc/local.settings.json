@@ -1,10 +1,7 @@
 {
   "IsEncrypted": false,
-  "Host": {
-    "CORS": "*"
-  },
   "Values": {
-    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net",
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=7cL7694TZ2OgF5Bv5LqT4XZX1c46Dj2ZcDIITh5p+vhbgq3+KgvzStbboOrEf0gk8+T2uEuzKfWQHxDRrquj6w==;EndpointSuffix=core.windows.net",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
     "dsn": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
 
@@ -22,6 +19,18 @@
     "SentryEnable": true, //Enable Sentrylog
     "SeriEnable": true, //Enable Serilog
     "SentryDsn": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",
+    "QuickBooks_CryptKey": "ABCDEFGH",
+    "QuickBooks_RedirectUrl": "http://localhost:7071/api/QboUserCredential/TokenReceiver",
+    "QuickBooks_TokenReceiverReturnUrl": "http://localhost:7071/api/QboUserCredential/TokenReceiver",
+    "QuickBooks_Environment": "sandbox",
+    "QuickBooks_BaseUrl": "https://sandbox-quickbooks.api.intuit.com/",
+    "QuickBooks_MinorVersion": "62",
+    "QuickBooks_AppClientId": "ABtqpSa5uaJq58nYOvD204uaURTMrs9WpzHOHkcWk8D2rKoTKv",
+    "QuickBooks_AppClientSecret": "8lyAGstZh1FvjbRzDiaSi4118r7CdgRMenuj5gEy",
+    "QuickBooks_AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=7cL7694TZ2OgF5Bv5LqT4XZX1c46Dj2ZcDIITh5p+vhbgq3+KgvzStbboOrEf0gk8+T2uEuzKfWQHxDRrquj6w==;EndpointSuffix=core.windows.net",
+    "QuickBooks_OAuthTableName": "QboIntegration",
+    "QuickBooks_DebugTableName": "QuickBookDebugTable",
+    "QuickBooks_IsDebug": "true",
 
     "ERP-QuickBooks-Invoice-Queue": "erp-quickbooks-invoice-queue",
     "ERP-QuickBooks-Invoice-Void-Queue": "erp-quickbooks-invoice-void-queue",
@@ -31,6 +40,7 @@
     "ERP-QuickBooks-Payment-Delete-Queue": "erp-quickbooks-payment-delete-queue",
     "ERP-SalesOrder-Queue": "erp-salesorder-queue",
     "ERP-Invoice-Queue": "erp-invoice-queue",
+
     //test
     "UseOrchestration": "false",
     "OrchestrationDbConnString": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",

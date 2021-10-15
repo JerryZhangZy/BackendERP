@@ -186,10 +186,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var dbFactory = data.dbFactory;
             data.Event_ERP.RowNum = 0;
-            if (data.Event_ERP.ProcessUuid.IsZero() || dbFactory.Exists<Event_ERP>("ProcessUuid=@0", data.Event_ERP.ProcessUuid))
+            if (data.Event_ERP.ProcessUuid.IsZero())// || dbFactory.Exists<Event_ERP>("ProcessUuid=@0", data.Event_ERP.ProcessUuid))
             {
                 IsValid = false;
-                AddError($"ProcessUuid: {data.Event_ERP.ProcessUuid} is duplicate.");
+                AddError($"ProcessUuid: {data.Event_ERP.ProcessUuid} is required.");
                 return IsValid;
             }
             return true;
@@ -265,10 +265,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var dbFactory = data.dbFactory;
             data.Event_ERP.RowNum = 0;
-            if (data.Event_ERP.ProcessUuid.IsZero() ||(await dbFactory.ExistsAsync<Event_ERP>("ProcessUuid=@0", data.Event_ERP.ProcessUuid)))
+            if (data.Event_ERP.ProcessUuid.IsZero())//||(await dbFactory.ExistsAsync<Event_ERP>("ProcessUuid=@0", data.Event_ERP.ProcessUuid)))
             {
                 IsValid = false;
-                AddError($"ProcessUuid: {data.Event_ERP.ProcessUuid} is duplicate.");
+                //AddError($"ProcessUuid: {data.Event_ERP.ProcessUuid} is duplicate.");
+                AddError($"ProcessUuid: {data.Event_ERP.ProcessUuid} is required.");
                 return IsValid;
             }
             return true;
