@@ -228,7 +228,7 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         /// <param name="myQueueItem"></param>
         /// <param name="log"></param>
         /// <returns></returns>
-        [FunctionName("VoidQboInvoice")]
+        [FunctionName("DeleteQboRefund")]
         public static async Task DeleteQboRefund([QueueTrigger(QueueName.Erp_Qbo_Return_Delete_Queue)] string myQueueItem, ILogger log)
         {
             var event_erp = new Event_ERP();
