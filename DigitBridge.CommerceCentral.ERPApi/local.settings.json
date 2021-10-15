@@ -4,7 +4,7 @@
     "CORS": "*"
   },
   "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
     "dsn": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
 
@@ -30,10 +30,19 @@
     "QuickBooks_MinorVersion": "62",
     "QuickBooks_AppClientId": "ABtqpSa5uaJq58nYOvD204uaURTMrs9WpzHOHkcWk8D2rKoTKv",
     "QuickBooks_AppClientSecret": "8lyAGstZh1FvjbRzDiaSi4118r7CdgRMenuj5gEy",
-    "QuickBooks_AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "QuickBooks_AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net",
     "QuickBooks_OAuthTableName": "QuickBookOAuthTable",
     "QuickBooks_DebugTableName": "QuickBookDebugTable",
     "QuickBooks_IsDebug": "true",
+
+    "ERP-QuickBooks-Invoice-Queue": "erp-quickbooks-invoice-queue",
+    "ERP-QuickBooks-Invoice-Void-Queue": "erp-quickbooks-invoice-void-queue",
+    "ERP-QuickBooks-Return-Queue": "erp-quickbooks-return-queue",
+    "ERP-QuickBooks-Return-Delete-Queue": "erp-quickbooks-return-delete-queue",
+    "ERP-QuickBooks-Payment-Queue": "erp-quickbooks-payment-queue",
+    "ERP-QuickBooks-Payment-Delete-Queue": "erp-quickbooks-payment-delete-queue",
+    "ERP-SalesOrder-Queue": "erp-salesorder-queue",
+    "ERP-Invoice-Queue": "erp-invoice-queue",
 
     //test
     //"UseOrchestration": "false",
