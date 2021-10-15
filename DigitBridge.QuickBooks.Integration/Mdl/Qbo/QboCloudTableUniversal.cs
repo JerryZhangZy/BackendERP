@@ -1,11 +1,5 @@
-﻿using DigitBridge.Blob;
-using DigitBridge.CommerceCentral.AzureStorage;
+﻿using DigitBridge.CommerceCentral.AzureStorage;
 using DigitBridge.QuickBooks.Integration.Model;
-using Microsoft.Azure.Cosmos.Table;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
