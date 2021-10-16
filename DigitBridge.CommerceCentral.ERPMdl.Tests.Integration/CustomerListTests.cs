@@ -126,7 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 var qry = new CustomerQuery();
                 var srv = new CustomerList(dataBaseFactory, qry);
-                payload = await srv.GetCustomerListAsync(payload);
+                await srv.GetCustomerListAsync(payload);
                 var json = payload.ObjectToString();
             }
 

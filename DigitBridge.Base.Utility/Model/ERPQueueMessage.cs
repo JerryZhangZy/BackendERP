@@ -1,4 +1,5 @@
 ﻿using DigitBridge.Base.Common;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,8 +24,10 @@ namespace DigitBridge.Base.Utility
 
         public string ProcessData { get; set; }
 
+        [JsonIgnore]
         public string MessageId { get; set; }
 
+        [JsonIgnore]
         public string PopReceipt { get; set; }
     }
 }

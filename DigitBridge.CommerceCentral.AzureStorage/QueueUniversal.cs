@@ -26,8 +26,8 @@ namespace DigitBridge.CommerceCentral.AzureStorage
 
         public static async Task SendMessageAsync(string queueName, string connectionString,T entity)
         {
-            var client = new QueueClient(connectionString, queueName.ToLowerInvariant());
-            await client.CreateIfNotExistsAsync();
+            var client = new QueueClient(connectionString, queueName,new QueueClientOptions() {MessageEncoding=QueueMessageEncoding.Base64 });
+            await client.CreateAsync();
             var message = JsonConvert.SerializeObject(entity);
             await client.SendMessageAsync(message);
         }
