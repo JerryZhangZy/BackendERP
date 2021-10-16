@@ -74,36 +74,36 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             }
         }
 
-        public async Task<T> AddDataAsync<T>(T entity) where T : IEntity
+        protected async Task<T> AddDataAsync<T>(T entity) where T : IEntity
         {
             await CheckInitialed();
             return _dataService.Add(entity);
         }
 
-        public async Task<T> UpdateDataAsync<T>(T entity) where T : IEntity
+        protected async Task<T> UpdateDataAsync<T>(T entity) where T : IEntity
         {
             await CheckInitialed();
             return _dataService.Update(entity);
         }
 
-        public async Task<T> DeleteDataAsync<T>(T entity) where T : IEntity
+        protected async Task<T> DeleteDataAsync<T>(T entity) where T : IEntity
         {
             await CheckInitialed();
             return _dataService.Delete(entity);
         }
 
-        public async Task<T> VoidDataAsync<T>(T entity) where T : IEntity
+        protected async Task<T> VoidDataAsync<T>(T entity) where T : IEntity
         {
             await CheckInitialed();
             return _dataService.Void(entity);
         }
 
-        public async Task<QueryService<T>> GetQueryServiceAsync<T>()
+        protected async Task<QueryService<T>> GetQueryServiceAsync<T>()
         {
             await CheckInitialed();
             return new QueryService<T>(_serviceContext);
         }
-        public async Task<T> FindByIdAsync<T>(T entity) where T : IEntity
+        protected async Task<T> FindByIdAsync<T>(T entity) where T : IEntity
         {
             await CheckInitialed();
             return _dataService.FindById(entity);

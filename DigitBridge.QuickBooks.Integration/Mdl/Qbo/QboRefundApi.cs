@@ -22,7 +22,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return _RefundQueryService;
         }
 
-        public async Task<RefundReceipt> GetRefundAsync(string txnId)
+        protected async Task<RefundReceipt> GetRefundAsync(string txnId)
         {
             RefundReceipt refund = null;
             var queryService = await GetRefundQueryService();
@@ -35,7 +35,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             }
             return refund;
         }
-        public async Task<RefundReceipt> CreateOrUpdateRefund(RefundReceipt refund)
+        protected async Task<RefundReceipt> CreateOrUpdateRefund(RefundReceipt refund)
         {
             if (string.IsNullOrEmpty(refund.Id))
             {
@@ -48,7 +48,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return refund;
         }
 
-        public async Task<RefundReceipt> DeleteRefundAsync(string txnId)
+        protected async Task<RefundReceipt> DeleteRefundAsync(string txnId)
         {
             var Refund = await GetRefundAsync(txnId);
             if (Refund == null)
@@ -58,7 +58,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return await DeleteDataAsync(Refund);
         }
 
-        public async Task<RefundReceipt> VoidRefundAsync(string txnId)
+        protected async Task<RefundReceipt> VoidRefundAsync(string txnId)
         {
             var Refund = await GetRefundAsync(txnId);
             if (Refund == null)

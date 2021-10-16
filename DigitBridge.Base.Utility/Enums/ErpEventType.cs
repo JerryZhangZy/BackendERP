@@ -5,36 +5,36 @@ using System.Text;
 
 namespace DigitBridge.Base.Common
 {
+    public enum ErpEventActionStatus : int
+    {
+        Success = 0,
+        Other = 1,
+    }
+
     public enum ErpEventType : int
     {
         [Description("CentralOrder To SalesOrder")]
         CentralOrderToSalesOrder = 1,
         [Description("Shipment To Invoice")]
-        ShipmentToInvoice ,
+        ShipmentToInvoice, 
 
-        [Description("Add QuickBooks Invoice")]
-        AddQboInvoice ,
-        [Description("Update QuickBooks Invoice")]
-        UpdateQboInvoice ,
+        [Description("Erp invoice QuickBooks Invoice")]
+        InvoiceToQboInvoice,
         [Description("Void QuickBooks Invoice")]
-        VoidQboInvoice ,
+        VoidQboInvoice,
 
-        [Description("Add QuickBooks InvoicePayment")]
-        AddQboInvoicePayment,
-        [Description("Delete QuickBooks InvoicePayment")]
-        DeleteQboInvoicePayment,
+        [Description("Erp payment to QuickBooks Payment")]
+        InvoicePaymentToQboPayment,
+        [Description("Void QuickBooks Payment")]
+        DeleteQboPayment,
 
-        [Description("Add QuickBooks InvoiceReturn")]
-        AddQboInvoiceReturn,
-        [Description("Delete QuickBooks InvoiceReturn")]
-        DeleteQboInvoiceReturn,
-
-    }
+        [Description("Erp return to QuickBooks Refund")]
+        InvoiceRetrunToQboRefund,
+        [Description("Void QuickBooks Refund")] 
+        DeleteQboRefund
+    } 
     public static class ErpEventQueueName
     {
-        public static string CentralOrderToSalesOrder = DefaultQueue;
-        public static string ShipmentToInvoice = DefaultQueue;
-        public static string DefaultQueue = "erp-default-queue";
 
         public static string GetErpEventQueueName(this ErpEventType eventType)
         {
@@ -44,34 +44,36 @@ namespace DigitBridge.Base.Common
                     return CentralOrderToSalesOrder;
                 case ErpEventType.ShipmentToInvoice:
                     return ShipmentToInvoice;
-                case ErpEventType.AddQboInvoice:
+                case ErpEventType.InvoiceToQboInvoice:
                     return AddQboInvoice;
-                case ErpEventType.UpdateQboInvoice:
-                    return UpdateQboInvoice;
                 case ErpEventType.VoidQboInvoice:
                     return VoidQboInvoice;
-                case ErpEventType.AddQboInvoicePayment:
+                case ErpEventType.InvoicePaymentToQboPayment:
                     return AddQboInvoicePayment;
-                case ErpEventType.DeleteQboInvoicePayment:
+                case ErpEventType.DeleteQboPayment:
                     return DeleteQboInvoicePayment;
-                case ErpEventType.AddQboInvoiceReturn:
+                case ErpEventType.InvoiceRetrunToQboRefund:
                     return AddQboInvoiceReturn;
-                case ErpEventType.DeleteQboInvoiceReturn:
+                case ErpEventType.DeleteQboRefund:
                     return DeleteQboInvoiceReturn;
                 default:
                     return DefaultQueue;
             }
         }
 
-        public static string AddQboInvoice = "erp-qboinvoice-add-queue";
-        public static string UpdateQboInvoice = "erp-qboinvoice-update-queue";
-        public static string VoidQboInvoice = "erp-qboinvoice-void-queue";
+        public static string DefaultQueue = "erp-default-queue";
 
-        public static string AddQboInvoicePayment = "erp-qboinvoicepayment-add-queue";
-        public static string DeleteQboInvoicePayment = "erp-qboinvoicepayment-delete-queue";
+        public static string CentralOrderToSalesOrder = ERPQueueSetting.ERPSalesOrderQueue;
+        public static string ShipmentToInvoice = ERPQueueSetting.ERPInvoiceQueue;
+        public static string AddQboInvoice = ERPQueueSetting.ERPQuickBooksInvoiceQueue;
+        //public static string UpdateQboInvoice = "erp-qboinvoice-update-queue";
+        public static string VoidQboInvoice = ERPQueueSetting.ERPQuickBooksInvoiceVoidQueue;
 
-        public static string AddQboInvoiceReturn = "erp-qboinvoicereturn-add-queue";
-        public static string DeleteQboInvoiceReturn = "erp-qboinvoicereturn-delete-queue";
+        public static string AddQboInvoicePayment = ERPQueueSetting.ERPQuickBooksPaymentQueue;
+        public static string DeleteQboInvoicePayment = ERPQueueSetting.ERPQuickBooksPaymentDeleteQueue;
+
+        public static string AddQboInvoiceReturn = ERPQueueSetting.ERPQuickBooksReturnQueue;
+        public static string DeleteQboInvoiceReturn = ERPQueueSetting.ERPQuickBooksReturnDeleteQueue;
 
     }
 }

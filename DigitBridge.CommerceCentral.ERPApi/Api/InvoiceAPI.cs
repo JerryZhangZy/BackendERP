@@ -14,6 +14,8 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
+using DigitBridge.Base.Common;
+
 namespace DigitBridge.CommerceCentral.ERPApi
 {
 
@@ -38,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadGetSingle))]
         public static async Task<JsonNetResponse<InvoicePayload>> GetInvoice(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices/{invoiceNumber}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices/{invoiceNumber}")] Microsoft.AspNetCore.Http.HttpRequest req,
             ILogger log,
             string invoiceNumber)
         {
@@ -69,7 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "invoiceNumbers", In = ParameterLocation.Query, Required = true, Type = typeof(IList<string>), Summary = "invoiceNumbers", Description = "Array of invoiceNumber.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadGetMultiple), Description = "mulit invoice.")]
         public static async Task<JsonNetResponse<InvoicePayload>> GetListByInvoiceNumbers(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -92,7 +94,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadDelete))]
         public static async Task<JsonNetResponse<InvoicePayload>> DeleteByInvoiceNumber(
-           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoices/{invoiceNumber}")] HttpRequest req,
+           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "invoices/{invoiceNumber}")] Microsoft.AspNetCore.Http.HttpRequest req,
            string invoiceNumber)
         {
             var payload = await req.GetParameters<InvoicePayload>();
@@ -116,13 +118,18 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePayloadUpdate), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadUpdate))]
         public static async Task<JsonNetResponse<InvoicePayload>> UpdateInvoice(
-[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "invoices")] HttpRequest req)
+[HttpTrigger(AuthorizationLevel.Function, "patch", Route = "invoices")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
             payload.Success = await srv.UpdateAsync(payload);
             payload.Messages = srv.Messages;
+
+            //Directly return without waiting this result. 
+            if (payload.Success)
+                srv.ToQboQueueAsync(payload, ErpEventType.InvoiceToQboInvoice);
+
             return new JsonNetResponse<InvoicePayload>(payload);
         }
         /// <summary>
@@ -139,7 +146,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePayloadAdd), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadAdd))]
         public static async Task<JsonNetResponse<InvoicePayload>> AddInvoice(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -147,6 +154,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Success = await srv.AddAsync(payload);
             payload.Messages = srv.Messages;
             payload.Invoice = srv.ToDto();
+
+            //Directly return without waiting this result. 
+            if (payload.Success)
+                srv.ToQboQueueAsync(payload, ErpEventType.InvoiceToQboInvoice);
+
             return new JsonNetResponse<InvoicePayload>(payload);
         }
 
@@ -161,7 +173,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadFind))]
         public static async Task<JsonNetResponse<InvoicePayload>> InvoicesList(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices/find")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices/find")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -180,7 +192,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "InvociesSample", tags: new[] { "Sample" }, Summary = "Get new sample of invoice")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadAdd))]
         public static async Task<JsonNetResponse<InvoicePayloadAdd>> Sample_Invocies_Post(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/invoices")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/invoices")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
             return new JsonNetResponse<InvoicePayloadAdd>(InvoicePayloadAdd.GetSampleData());
         }
@@ -192,7 +204,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "InvoiceFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of invoice find")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadFind))]
         public static async Task<JsonNetResponse<InvoicePayloadFind>> Sample_Invoice_Find(
-           [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/invoices/find")] HttpRequest req)
+           [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/invoices/find")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
             return new JsonNetResponse<InvoicePayloadFind>(InvoicePayloadFind.GetSampleData());
         }
@@ -205,7 +217,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
         public static async Task<FileContentResult> ExportInvoices(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoices/export")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoices/export")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -225,7 +237,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayload))]
         public static async Task<InvoicePayload> ImportInvoices(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoices/import")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoices/import")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -252,7 +264,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadCreateByOrderShipmentUuid))]
         public static async Task<InvoicePayload> CreateInvoiceByOrderShipmentUuid(
             [HttpTrigger(AuthorizationLevel.Function, "POST"
-            , Route = "invoices/createinvoicebyordershipmentuuid")] HttpRequest req)
+            , Route = "invoices/createinvoicebyordershipmentuuid")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);

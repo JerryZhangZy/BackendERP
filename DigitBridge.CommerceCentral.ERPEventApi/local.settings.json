@@ -1,36 +1,46 @@
 {
   "IsEncrypted": false,
   "Host": {
-    "CORS": "*"
+    "CORS": "*",
+    "LocalHttpPort": 7073
   },
   "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
     "dsn": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
 
     //local
     "DebugMode": "true",
-    //"UseOrchestration": "false",
-    //"OrchestrationDbConnString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
-    //"OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
-    //"DBConnectionString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
-    //"DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
-    //"UseAzureManagedIdentity": "false",
-    //"AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
-    //"DefaultCacheExpireSlidingMins": "2",
+    "UseOrchestration": "false",
+    "OrchestrationDbConnString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
+    "OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
+    "DBConnectionString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
+    "DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    "UseAzureManagedIdentity": "false",
+    "AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
+    "DefaultCacheExpireSlidingMins": "2",
 
     "SentryEnable": true, //Enable Sentrylog
     "SeriEnable": true, //Enable Serilog
     "SentryDsn": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",
+
+    "ERP-QuickBooks-Invoice-Queue": "erp-quickbooks-invoice-queue",
+    "ERP-QuickBooks-Invoice-Void-Queue": "erp-quickbooks-invoice-void-queue",
+    "ERP-QuickBooks-Return-Queue": "erp-quickbooks-return-queue",
+    "ERP-QuickBooks-Return-Delete-Queue": "erp-quickbooks-return-delete-queue",
+    "ERP-QuickBooks-Payment-Queue": "erp-quickbooks-payment-queue",
+    "ERP-QuickBooks-Payment-Delete-Queue": "erp-quickbooks-payment-delete-queue",
+    "ERP-SalesOrder-Queue": "erp-salesorder-queue",
+    "ERP-Invoice-Queue": "erp-invoice-queue",
     //test
-    "UseOrchestration": "false",
-    "OrchestrationDbConnString": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
-    "OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
-    "DBConnectionString": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
-    "DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
-    "UseAzureManagedIdentity": "false",
-    "AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
-    "DefaultCacheExpireSlidingMins": "2"
+    //"UseOrchestration": "false",
+    //"OrchestrationDbConnString": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
+    //"OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
+    //"DBConnectionString": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
+    //"DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    //"UseAzureManagedIdentity": "false",
+    //"AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
+    //"DefaultCacheExpireSlidingMins": "2"
 
     //dev
     //"UseOrchestration": "true",

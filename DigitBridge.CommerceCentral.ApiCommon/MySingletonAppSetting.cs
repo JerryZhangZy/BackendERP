@@ -43,6 +43,9 @@ namespace DigitBridge.CommerceCentral.ApiCommon
 
         public static string AzureWebJobsStorage => GetValueByName("AzureWebJobsStorage");
 
+        public static string EventApi_BaseUrl => GetValueByName("EventApi_BaseUrl");
+        public static string EventApi_AuthCode => GetValueByName("EventApi_AuthCode");
+
         public static bool UseAzureManagedIdentity
         {
             get

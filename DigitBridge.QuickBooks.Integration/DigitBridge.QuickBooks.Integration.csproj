@@ -10,6 +10,7 @@
     <Compile Remove="Model\QboOrderItemLine.cs" />
     <Compile Remove="Model\QboSalesOrder.cs" />
     <Compile Remove="Model\QboSalesOrderWrapper.cs" />
+    <Compile Remove="Model\QuickBooksDebugInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="IppDotNetSdkForQuickBooksApiV3" Version="14.6.1" />
