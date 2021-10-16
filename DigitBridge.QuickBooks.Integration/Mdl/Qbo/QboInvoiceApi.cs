@@ -23,7 +23,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 _invoiceQueryService = await GetQueryServiceAsync<Invoice>();
             return _invoiceQueryService;
         }
-        public async Task<Invoice> GetInvoiceAsync(string txnId)
+        protected async Task<Invoice> GetInvoiceAsync(string txnId)
         {
             Invoice invoice = null;
             var queryService = await GetInvoiceQueryService();
@@ -36,7 +36,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             }
             return invoice;
         }
-        public async Task<Invoice> CreateOrUpdateInvoice(Invoice invoice)
+        protected async Task<Invoice> CreateOrUpdateInvoice(Invoice invoice)
         {
             if (string.IsNullOrEmpty(invoice.Id))
             {
@@ -49,7 +49,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return invoice;
         }
 
-        public async Task<Invoice> DeleteInvoiceAsync(string txnId)
+        protected async Task<Invoice> DeleteInvoiceAsync(string txnId)
         {
             var invoice = await GetInvoiceAsync(txnId);
             if (invoice == null)
@@ -59,7 +59,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             return await DeleteDataAsync(invoice);
         }
 
-        public async Task<Invoice> VoidInvoiceAsync(string txnId)
+        protected async Task<Invoice> VoidInvoiceAsync(string txnId)
         {
             var invoice = await GetInvoiceAsync(txnId);
             if (invoice == null)

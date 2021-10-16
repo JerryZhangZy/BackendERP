@@ -5,31 +5,34 @@ using System.Text;
 
 namespace DigitBridge.Base.Common
 {
+    public enum ErpEventActionStatus : int
+    {
+        Success = 0,
+        Other = 1,
+    }
+
     public enum ErpEventType : int
     {
         [Description("CentralOrder To SalesOrder")]
         CentralOrderToSalesOrder = 1,
         [Description("Shipment To Invoice")]
-        ShipmentToInvoice ,
+        ShipmentToInvoice, 
 
-        [Description("Add QuickBooks Invoice")]
-        AddQboInvoice ,
-        //[Description("Update QuickBooks Invoice")]
-        //UpdateQboInvoice ,
+        [Description("Erp invoice QuickBooks Invoice")]
+        InvoiceToQboInvoice,
         [Description("Void QuickBooks Invoice")]
-        VoidQboInvoice ,
+        VoidQboInvoice,
 
-        [Description("Add QuickBooks InvoicePayment")]
-        AddQboInvoicePayment,
-        [Description("Delete QuickBooks InvoicePayment")]
-        DeleteQboInvoicePayment,
+        [Description("Erp payment to QuickBooks Payment")]
+        InvoicePaymentToQboPayment,
+        [Description("Void QuickBooks Payment")]
+        DeleteQboPayment,
 
-        [Description("Add QuickBooks InvoiceReturn")]
-        AddQboInvoiceReturn,
-        [Description("Delete QuickBooks InvoiceReturn")]
-        DeleteQboInvoiceReturn,
-
-    }
+        [Description("Erp return to QuickBooks Refund")]
+        InvoiceRetrunToQboRefund,
+        [Description("Void QuickBooks Refund")] 
+        DeleteQboRefund
+    } 
     public static class ErpEventQueueName
     {
 
@@ -41,17 +44,17 @@ namespace DigitBridge.Base.Common
                     return CentralOrderToSalesOrder;
                 case ErpEventType.ShipmentToInvoice:
                     return ShipmentToInvoice;
-                case ErpEventType.AddQboInvoice:
+                case ErpEventType.InvoiceToQboInvoice:
                     return AddQboInvoice;
                 case ErpEventType.VoidQboInvoice:
                     return VoidQboInvoice;
-                case ErpEventType.AddQboInvoicePayment:
+                case ErpEventType.InvoicePaymentToQboPayment:
                     return AddQboInvoicePayment;
-                case ErpEventType.DeleteQboInvoicePayment:
+                case ErpEventType.DeleteQboPayment:
                     return DeleteQboInvoicePayment;
-                case ErpEventType.AddQboInvoiceReturn:
+                case ErpEventType.InvoiceRetrunToQboRefund:
                     return AddQboInvoiceReturn;
-                case ErpEventType.DeleteQboInvoiceReturn:
+                case ErpEventType.DeleteQboRefund:
                     return DeleteQboInvoiceReturn;
                 default:
                     return DefaultQueue;
