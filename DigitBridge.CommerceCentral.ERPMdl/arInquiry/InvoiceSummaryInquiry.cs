@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class SalesOrderSummaryInquiry : SqlQueryBuilder<SalesOrderSummaryQuery>
+    public class InvoiceSummaryInquiry : SqlQueryBuilder<InvoiceSummaryQuery>
     {
-        public SalesOrderSummaryInquiry(IDataBaseFactory dbFactory) : base(dbFactory)
+        public InvoiceSummaryInquiry(IDataBaseFactory dbFactory) : base(dbFactory)
         {
         }
-        public SalesOrderSummaryInquiry(IDataBaseFactory dbFactory, SalesOrderSummaryQuery queryObject)
+        public InvoiceSummaryInquiry(IDataBaseFactory dbFactory, InvoiceSummaryQuery queryObject)
             : base(dbFactory, queryObject)
         {
         }
@@ -28,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.SQL_Select = $@"
 SELECT  
 COUNT(1) as [Count],
-SUM(COALESCE({SalesOrderHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
+SUM(COALESCE({InvoiceHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
 ";
             return this.SQL_Select;
         }
@@ -36,16 +36,17 @@ SUM(COALESCE({SalesOrderHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
- FROM {SalesOrderHeaderHelper.TableName} {SalesOrderHeaderHelper.TableAllies} 
+ FROM {InvoiceHeaderHelper.TableName} {InvoiceHeaderHelper.TableAllies}  
 ";
             return this.SQL_From;
         } 
+
         #endregion override methods
 
-        public async virtual Task SalesOrderSummaryAsync(SalesOrderPayload payload)
+        public async virtual Task InvoiceSummaryAsync(InvoicePayload payload)
         {
             if (payload == null)
-                payload = new SalesOrderPayload();
+                payload = new InvoicePayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
@@ -53,12 +54,12 @@ SUM(COALESCE({SalesOrderHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
             {
                 payload.Success = ExcuteJson(sb);
                 if (payload.Success)
-                    payload.SalesOrderSummary = sb;
+                    payload.InvoiceSummary = sb;
             }
             catch (Exception ex)
             {
-                payload.SalesOrderListCount = 0;
-                payload.SalesOrderList = null;
+                payload.InvoiceListCount = 0;
+                payload.InvoiceList = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;
             }
