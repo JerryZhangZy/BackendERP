@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public IList<string> InvoiceNumbers { get; set; } = new List<string>();
         [JsonIgnore] 
         public virtual bool HasInvoiceNumbers => InvoiceNumbers != null && InvoiceNumbers.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasInvoiceNumbers;
+        public bool ShouldSerializeInvoiceUuids() => HasInvoiceNumbers;
 
         /// <summary>
         /// (Response Data) Array of Invoice entity object which load by uuid array.
@@ -92,6 +92,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeInvoiceListCount() => HasInvoiceListCount;
 
         #endregion list service
+
+
+        #region summary service 
+
+        [OpenApiPropertyDescription("(Response Data) summary result which load filter")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder InvoiceSummary { get; set; }
+        [JsonIgnore] public virtual bool HasInvoiceSummary => InvoiceSummary != null;
+        public bool ShouldSerializeInvoiceSummary() => HasInvoiceSummary;
+        #endregion
     }
 }
 

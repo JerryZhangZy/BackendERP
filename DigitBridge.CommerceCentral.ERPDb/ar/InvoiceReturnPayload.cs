@@ -48,6 +48,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 { "UserConfigID", val => ExportUserConfigID = val.ToInt() }
             };
         }
+
+        #region summary service 
+
+        [OpenApiPropertyDescription("(Response Data) summary result which load filter")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder InvoiceReturnSummary { get; set; }
+        [JsonIgnore] public virtual bool HasInvoiceReturnSummary => InvoiceReturnSummary != null;
+        public bool ShouldSerializeInvoiceReturnSummary() => HasInvoiceReturnSummary;
+        #endregion
     }
 }
 
