@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ApiClient\ApiReturnData.cs" />
     <Compile Remove="arInquiry\SalesOrderSummaryInquiry.cs" />
   </ItemGroup>
 
