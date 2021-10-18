@@ -95,12 +95,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = true;
             try
             {
-                if (masterAccountNum.HasValue)
-                    AddHeader("masterAccountNum", masterAccountNum.ToString());
-                if (profileNum.HasValue)
-                    AddHeader("profileNum", profileNum.ToString());
-
                 using var httpClient = await CreateHttpClientAsync();
+
+                if (masterAccountNum.HasValue && !httpClient.DefaultRequestHeaders.Contains("masterAccountNum"))
+                    httpClient.DefaultRequestHeaders.Add("masterAccountNum", masterAccountNum.ToString());
+
+                if (profileNum.HasValue && !httpClient.DefaultRequestHeaders.Contains("profileNum"))
+                    httpClient.DefaultRequestHeaders.Add("profileNum", profileNum.ToString());
+
                 var content = GetHttpContent(data);
 
                 var response = await httpClient.PostAsync(BuildRequestUri(function), content);
@@ -133,12 +135,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = true;
             try
             {
-                if (masterAccountNum.HasValue)
-                    AddHeader("masterAccountNum", masterAccountNum.ToString());
-                if (profileNum.HasValue)
-                    AddHeader("profileNum", profileNum.ToString());
-
                 using var httpClient = await CreateHttpClientAsync();
+                if (masterAccountNum.HasValue && !httpClient.DefaultRequestHeaders.Contains("masterAccountNum"))
+                    httpClient.DefaultRequestHeaders.Add("masterAccountNum", masterAccountNum.ToString());
+
+                if (profileNum.HasValue && !httpClient.DefaultRequestHeaders.Contains("profileNum"))
+                    httpClient.DefaultRequestHeaders.Add("profileNum", profileNum.ToString());
 
                 var content = GetHttpContent(data);
 
@@ -164,12 +166,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = true;
             try
             {
-                if (masterAccountNum.HasValue)
-                    AddHeader("masterAccountNum", masterAccountNum.ToString());
-                if (profileNum.HasValue)
-                    AddHeader("profileNum", profileNum.ToString());
-
                 using var httpClient = await CreateHttpClientAsync();
+
+                if (masterAccountNum.HasValue && !httpClient.DefaultRequestHeaders.Contains("masterAccountNum"))
+                    httpClient.DefaultRequestHeaders.Add("masterAccountNum", masterAccountNum.ToString());
+
+                if (profileNum.HasValue && !httpClient.DefaultRequestHeaders.Contains("profileNum"))
+                    httpClient.DefaultRequestHeaders.Add("profileNum", profileNum.ToString());
 
                 var request = new HttpRequestMessage(HttpMethod.Delete, BuildRequestUri(function));
                 request.Content = GetHttpContent(data);
@@ -246,21 +249,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             return httpClient;
-        }
-
-
-        protected void AddHeader(string key, string value)
-        {
-            if (headers.ContainsKey(key))
-            {
-                headers[key] = value;
-            }
-            else
-            {
-                headers.Add(key, value);
-            }
-        }
-
+        } 
         #endregion Virtual Methods - Protected
 
         #region Messages
