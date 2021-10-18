@@ -367,30 +367,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ProcessSource = Data.InvoiceHeader.InvoiceNumber,
                 ProcessUuid = Data.InvoiceHeader.InvoiceUuid,
             };
-            await ErpEventClientHelper.ToQueueAsync(message);
+            await ErpEventClientHelper.AddEventERPAsync(message);
         }
-
-        /// <summary>
-        /// convert erp invoice to a queue message then put it to qbo queue
-        /// </summary>
-        /// <param name="url"></param>
-        /// <param name="authcode"></param>
-        /// <param name="payload"></param>
-        /// <param name="eventType"></param>
-        /// <returns></returns>
-        public virtual void ToQboQueue(IPayload payload, ErpEventType eventType)
-        {
-            var message = new Event_ERPDto()
-            {
-                DatabaseNum = payload.DatabaseNum,
-                MasterAccountNum = payload.MasterAccountNum,
-                ProfileNum = payload.ProfileNum,
-                ERPEventType = (int)eventType,
-                ProcessSource = Data.InvoiceHeader.InvoiceNumber,
-                ProcessUuid = Data.InvoiceHeader.InvoiceUuid,
-            };
-            ErpEventClientHelper.ToQueue(message);
-        }
+         
         #endregion
     }
 }
