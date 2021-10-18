@@ -10,5 +10,6 @@ namespace DigitBridge.Base.Common
         Inactive,
         Hold,
         Potential,
+        New
     }
 }

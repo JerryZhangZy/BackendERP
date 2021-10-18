@@ -45,6 +45,8 @@ namespace DigitBridge.CommerceCentral.ApiCommon
 
         public static string EventApi_BaseUrl => GetValueByName("EventApi_BaseUrl");
         public static string EventApi_AuthCode => GetValueByName("EventApi_AuthCode");
+        public static string ERPSummaryTable => GetValueByName("ERP-Summary-Table");
+        public static string ERPSummaryTableStorage => GetValueByName("ERPSummaryTableStorage");
 
         public static bool UseAzureManagedIdentity
         {

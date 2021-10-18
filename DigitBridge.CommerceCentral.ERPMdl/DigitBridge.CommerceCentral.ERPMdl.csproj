@@ -1,11 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ApiClient\ApiReturnData.cs" />
+    <Compile Remove="ApiClient\**" />
+    <EmbeddedResource Remove="ApiClient\**" />
+    <None Remove="ApiClient\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +21,9 @@
     <Folder Include="ap\" />
     <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
+    <Folder Include="arInquiry\" />
+    <Folder Include="shipmentInquiry\" />
+    <Folder Include="soInquiry\" />
     <Folder Include="customerInquiry\" />
     <Folder Include="inventoryInquiry\" />
     <Folder Include="companySummary\" />
