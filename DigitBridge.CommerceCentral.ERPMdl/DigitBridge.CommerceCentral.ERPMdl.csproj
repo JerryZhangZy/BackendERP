@@ -15,6 +15,12 @@
     <Folder Include="ap\" />
     <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
+    <Folder Include="arInquiry\" />
+    <Folder Include="customerInquiry\" />
+    <Folder Include="inventoryInquiry\" />
+    <Folder Include="companySummary\" />
+    <Folder Include="shipmentInquiry\" />
+    <Folder Include="soInquiry\" />
     <Folder Include="warehouseTransfer\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />

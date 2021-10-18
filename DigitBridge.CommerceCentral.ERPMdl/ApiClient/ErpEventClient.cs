@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class EventServieHelper
+    public class ErpEventClient
     {
         public static async Task ToQueueAsync(Event_ERPDto eventDto)
         {
