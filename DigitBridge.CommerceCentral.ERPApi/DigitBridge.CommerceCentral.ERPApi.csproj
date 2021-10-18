@@ -49,5 +49,7 @@
     <Folder Include="JsType\NewFolder\" />
     <Folder Include="JsType\po\store\" />
     <Folder Include="JsType\po\service\" />
+    <Folder Include="JsType\so\service\" />
+    <Folder Include="JsType\so\store\" />
   </ItemGroup>
 </Project>

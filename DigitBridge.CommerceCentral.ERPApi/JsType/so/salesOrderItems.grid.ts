@@ -22,7 +22,8 @@ const allColumns = [
 		align: DbComponentEnums.alignEnum.center,
 		defaultFlex: 1,
 		textStyle: {},
-		systemHide: true,
+		sortable: false,
+		hide: true,
 	},
 	{
 		id: 'seq',
@@ -36,6 +37,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'number',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'orderItemType',
@@ -49,6 +51,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'number',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'salesOrderItemstatus',
@@ -62,6 +65,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'number',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'itemDate',
@@ -75,6 +79,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.date,
 		format: 'date',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'itemTime',
@@ -88,6 +93,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.string,
 		format: 'time',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'shipDate',
@@ -101,6 +107,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.date,
 		format: 'date',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'etaArrivalDate',
@@ -114,6 +121,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.date,
 		format: 'date',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'sku',
@@ -126,6 +134,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'warehouseCode',
@@ -138,6 +147,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'lotNum',
@@ -150,6 +160,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'description',
@@ -162,6 +173,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'notes',
@@ -174,6 +186,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'currency',
@@ -186,6 +199,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'uom',
@@ -198,6 +212,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'packType',
@@ -210,6 +225,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'packQty',
@@ -224,6 +240,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'qty',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'orderPack',
@@ -237,6 +254,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'decimalNumber',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'shipPack',
@@ -250,6 +268,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'decimalNumber',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'cancelledPack',
@@ -263,6 +282,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'decimalNumber',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'openPack',
@@ -276,6 +296,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'decimalNumber',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'orderQty',
@@ -290,6 +311,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'qty',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'shipQty',
@@ -304,6 +326,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'qty',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'cancelledQty',
@@ -318,6 +341,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'qty',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'openQty',
@@ -332,6 +356,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'qty',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'priceRule',
@@ -344,6 +369,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'price',
@@ -358,6 +384,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'price',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'discountRate',
@@ -372,6 +399,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'rate',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'discountAmount',
@@ -386,6 +414,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'discountPrice',
@@ -400,6 +429,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'price',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'extAmount',
@@ -414,6 +444,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'taxableAmount',
@@ -428,6 +459,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'nonTaxableAmount',
@@ -442,6 +474,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'taxRate',
@@ -456,6 +489,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'taxRate',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'taxAmount',
@@ -470,6 +504,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'shippingAmount',
@@ -484,6 +519,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'shippingTaxAmount',
@@ -498,6 +534,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'miscAmount',
@@ -512,6 +549,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'miscTaxAmount',
@@ -526,6 +564,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'chargeAndAllowanceAmount',
@@ -540,6 +579,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'itemTotalAmount',
@@ -554,6 +594,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'shipAmount',
@@ -568,6 +609,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'cancelledAmount',
@@ -582,6 +624,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'openAmount',
@@ -596,6 +639,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'amount',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'stockable',
@@ -608,6 +652,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'isAr',
@@ -620,6 +665,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'taxable',
@@ -632,6 +678,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'costable',
@@ -644,6 +691,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'isProfit',
@@ -656,6 +704,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'unitCost',
@@ -670,6 +719,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'cost',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'avgCost',
@@ -684,6 +734,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'cost',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'lotCost',
@@ -698,6 +749,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'cost',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'lotInDate',
@@ -711,6 +763,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.date,
 		format: 'date',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'lotExpDate',
@@ -724,6 +777,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.date,
 		format: 'date',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'dBChannelOrderLineRowID',
@@ -736,6 +790,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'updateDateUtc',
@@ -749,6 +804,7 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.date,
 		format: 'date',
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'enterBy',
@@ -761,6 +817,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'updateBy',
@@ -773,6 +830,7 @@ const allColumns = [
 		sortable: true,
 		sortType: DbComponentEnums.gridSortEnum.string,
 		enableEdit: false,
+		hide: true,
 	},
 	{
 		id: 'orderDCAssignmentLineNum',
@@ -786,12 +844,13 @@ const allColumns = [
 		sortType: DbComponentEnums.gridSortEnum.number,
 		format: 'number',
 		enableEdit: false,
+		hide: true,
 	},
 ];
 */
 //#endregion all grid columns for SalesOrderItems
 // display columns in screen grid
-const gridColumns = [
+const gridColumns: any[] = [
 ];
 
 export const salesOrderItemsGrid = { 

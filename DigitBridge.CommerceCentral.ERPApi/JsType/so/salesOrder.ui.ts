@@ -1,7 +1,7 @@
 import { ScreenType, ProcessMode } from '../../types/enums';
 import { DbComponentEnums } from '../../types';
 import { IconNames } from '../../components/icon';
-import { btnSave } from '../default';
+import { btnSave, btnEdit, btnList, btnDelete } from '../default';
 import * as util from '../../util';
 
 import { salesOrderItemsGrid } from './salesOrderItems.grid';
@@ -14,12 +14,17 @@ export const salesOrderUi = {
         subTitle: '',
         readonly: false,
     },
-    header: {},
+    header: {
+        title: 'SalesOrder',
+    },
     navbar: {},
     section: {},
     buttonGroup: {},
     buttons: {
         btnSave,
+        btnEdit, 
+        btnList, 
+        btnDelete,
     },
 	ui: {
 		//#region UI control for SalesOrderHeader

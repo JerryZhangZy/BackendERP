@@ -1,5 +1,5 @@
-import { setCurrentStore } from '../../../store/dataStore';
-import { SalesOrderDataModel, salesOrderDataInit } from './salesOrderDataModel';
+import { setCurrentStore } from '../../../store/dataStorePool';
+import { SalesOrderDataModel, salesOrderDataInit } from './salesOrderData.model';
 import { isObject, isEqual } from '../../../util';
 import { createStoreMobx, StoreMobx } from '../../../store/StoreMobx';
 
