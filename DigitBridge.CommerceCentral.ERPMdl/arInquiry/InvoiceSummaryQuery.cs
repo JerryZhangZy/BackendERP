@@ -34,9 +34,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_InvoiceStatus);
         }
         public override void InitQueryFilter()
-        {
-            var today = DateTime.Today;
-            _InvoiceDateFrom.FilterValue = new DateTime(today.Year, 1, 1);
+        { 
+            _InvoiceDateFrom.FilterValue = new DateTime(DateTime.Today.Year, 1, 1);
             _InvoiceDateTo.FilterValue = DateTime.Today;
             LoadAll = true;
         }

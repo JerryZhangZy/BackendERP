@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class InvoiceSummaryInquiry : SqlQueryBuilder<InvoiceSummaryQuery>
+    public class InvoicePaymentSummaryInquiry : SqlQueryBuilder<InvoicePaymentSummaryQuery>
     {
-        public InvoiceSummaryInquiry(IDataBaseFactory dbFactory) : base(dbFactory)
+        public InvoicePaymentSummaryInquiry(IDataBaseFactory dbFactory) : base(dbFactory)
         {
         }
-        public InvoiceSummaryInquiry(IDataBaseFactory dbFactory, InvoiceSummaryQuery queryObject)
+        public InvoicePaymentSummaryInquiry(IDataBaseFactory dbFactory, InvoicePaymentSummaryQuery queryObject)
             : base(dbFactory, queryObject)
         {
         }
@@ -28,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.SQL_Select = $@"
 SELECT  
 COUNT(1) as [Count],
-SUM(COALESCE({InvoiceHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
+SUM(COALESCE({ERPDb.InvoiceTransactionHelper.TableAllies}.TotalAmount,0)) as Amount
 ";
             return this.SQL_Select;
         }
@@ -36,17 +36,17 @@ SUM(COALESCE({InvoiceHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
- FROM {InvoiceHeaderHelper.TableName} {InvoiceHeaderHelper.TableAllies}  
+ FROM {ERPDb.InvoiceTransactionHelper.TableName} {ERPDb.InvoiceTransactionHelper.TableAllies}
+ JOIN {InvoiceHeaderHelper.TableName} {InvoiceHeaderHelper.TableAllies} ON ({InvoiceHeaderHelper.TableAllies}.InvoiceUuid = {ERPDb.InvoiceTransactionHelper.TableAllies}.InvoiceUuid)
 ";
             return this.SQL_From;
-        }
-
+        } 
         #endregion override methods
 
-        public async virtual Task InvoiceSummaryAsync(InvoicePayload payload)
+        public async virtual Task InvoicePaymentSummaryAsync(InvoicePaymentPayload payload)
         {
             if (payload == null)
-                payload = new InvoicePayload();
+                payload = new InvoicePaymentPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
@@ -54,11 +54,11 @@ SUM(COALESCE({InvoiceHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
             {
                 payload.Success = ExcuteJson(sb);
                 if (payload.Success)
-                    payload.InvoiceSummary = sb;
+                    payload.InvoicePaymentSummary = sb;
             }
             catch (Exception ex)
-            {
-                payload.InvoiceSummary = null;
+            { 
+                payload.InvoicePaymentSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;
             }

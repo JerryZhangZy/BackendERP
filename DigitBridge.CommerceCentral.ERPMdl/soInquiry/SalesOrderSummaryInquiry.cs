@@ -56,9 +56,8 @@ SUM(COALESCE({SalesOrderHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
                     payload.SalesOrderSummary = sb;
             }
             catch (Exception ex)
-            {
-                payload.SalesOrderListCount = 0;
-                payload.SalesOrderList = null;
+            { 
+                payload.SalesOrderSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;
             }
