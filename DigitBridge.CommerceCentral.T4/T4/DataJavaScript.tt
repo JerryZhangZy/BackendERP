@@ -5,7 +5,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ include file="ParseSqlFile.ttinclude" #>
-<#@ include file="SettingForSalesOrder.ttinclude" #>
+<#@ include file="SettingForPurchaseOrder.ttinclude" #>
 import { types, getRoot, destroy, SnapshotIn, cast } from "mobx-state-tree";
 import { createModelActions } from '../../../store';
 <#      
@@ -72,7 +72,7 @@ import { createModelActions } from '../../../store';
 <#@ include file="JsRepositoryGrid.ttinclude" #>
 <# 
         dir = Path.Combine(path,$"{JsModelFolder}");
-        SaveOutputNotExists(dir, $"{table.JsPropertyName}.gird.ts");
+        SaveOutputNotExists(dir, $"{table.JsPropertyName}.grid.ts");
     } 
 #>
 

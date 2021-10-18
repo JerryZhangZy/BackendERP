@@ -42,8 +42,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="JsType\ar\" />
-    <Folder Include="JsType\so\service\" />
-    <Folder Include="JsType\so\store\" />
+    <Folder Include="JsType\ar\store\" />
+    <Folder Include="JsType\ar\service\" />
+    <Folder Include="JsType\customer\store\" />
+    <Folder Include="JsType\customer\service\" />
+    <Folder Include="JsType\NewFolder\" />
+    <Folder Include="JsType\po\store\" />
+    <Folder Include="JsType\po\service\" />
   </ItemGroup>
 </Project>

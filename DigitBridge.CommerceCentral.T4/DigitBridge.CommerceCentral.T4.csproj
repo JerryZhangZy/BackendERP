@@ -19,6 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="T4\DataJavaScript.ts">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataJavaScript.tt</DependentUpon>
+    </None>
     <None Update="T4\DataJavaScript.tt">
       <LastGenOutput>DataJavaScript.ts</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -60,7 +65,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\JsStoreIndex.ttinclude">
-      <LastGenOutput>JsDataStore.cs</LastGenOutput>
+      <LastGenOutput>JsStoreIndex.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\JsRepositoryModelInitData.ttinclude">
@@ -68,7 +73,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\JsDataStore.ttinclude">
-      <LastGenOutput>JsDataStore.cs</LastGenOutput>
+      <LastGenOutput>JsStoreIndex.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\JsStructureModelInitData.ttinclude">
@@ -387,6 +392,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\JsStoreIndex.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsStoreIndex.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\JsRepositoryGrid.cs">
       <DesignTime>True</DesignTime>

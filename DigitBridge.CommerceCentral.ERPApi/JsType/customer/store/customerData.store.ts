@@ -1,10 +1,10 @@
-﻿import { setCurrentStore } from '../../../store/dataStorePool';
-import { <#= structureName #>Model, <#= structurePropertyName #>Init } from './<#= structurePropertyName #>.model';
+import { setCurrentStore } from '../../../store/dataStorePool';
+import { CustomerDataModel, customerDataInit } from './customerData.model';
 import { isObject, isEqual } from '../../../util';
 import { createStoreMobx, StoreMobx } from '../../../store/StoreMobx';
 
-const storeName = 'global<#= structureName #>Store';
-const store: StoreMobx = createStoreMobx(storeName, <#= structureName #>Model, <#= structurePropertyName #>Init);
+const storeName = 'globalCustomerDataStore';
+const store: StoreMobx = createStoreMobx(storeName, CustomerDataModel, customerDataInit);
 
 /**
 * Get global store
@@ -26,4 +26,5 @@ export const useCurrentStore = (): StoreMobx | null => {
     setCurrentStore(storeName, store);
     return store;
 };
+
 
