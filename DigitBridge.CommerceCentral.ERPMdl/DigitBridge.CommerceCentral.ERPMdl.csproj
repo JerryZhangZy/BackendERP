@@ -22,7 +22,6 @@
     <Folder Include="customerInquiry\" />
     <Folder Include="inventoryInquiry\" />
     <Folder Include="companySummary\" />
-    <Folder Include="shipmentInquiry\" />
     <Folder Include="warehouseTransfer\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />
