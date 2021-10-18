@@ -1,10 +1,10 @@
 import { setCurrentStore } from '../../../store/dataStorePool';
-import { SalesOrderDataModel, salesOrderDataInit } from './salesOrderData.model';
+import { InvoiceTransactionDataModel, invoiceTransactionDataInit } from './invoiceTransactionData.model';
 import { isObject, isEqual } from '../../../util';
 import { createStoreMobx, StoreMobx } from '../../../store/StoreMobx';
 
-const storeName = 'globalSalesOrderDataStore';
-const store: StoreMobx = createStoreMobx(storeName, SalesOrderDataModel, salesOrderDataInit);
+const storeName = 'globalInvoiceTransactionDataStore';
+const store: StoreMobx = createStoreMobx(storeName, InvoiceTransactionDataModel, invoiceTransactionDataInit);
 
 /**
 * Get global store

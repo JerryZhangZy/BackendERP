@@ -72,7 +72,7 @@ import { createModelActions } from '../../../store';
 <#@ include file="JsRepositoryGrid.ttinclude" #>
 <# 
         dir = Path.Combine(path,$"{JsModelFolder}");
-        SaveOutputNotExists(dir, $"{table.JsPropertyName}.gird.ts");
+        SaveOutputNotExists(dir, $"{table.JsPropertyName}.grid.ts");
     } 
 #>
 

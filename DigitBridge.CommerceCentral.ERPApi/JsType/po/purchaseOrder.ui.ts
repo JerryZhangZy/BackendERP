@@ -4,18 +4,18 @@ import { IconNames } from '../../components/icon';
 import { btnSave, btnEdit, btnList, btnDelete } from '../default';
 import * as util from '../../util';
 
-import { salesOrderItemsGrid } from './salesOrderItems.grid';
-export const salesOrderUi = { 
+import { poItemsGrid } from './poItems.grid';
+export const purchaseOrderUi = { 
     page: {
         screenType: ScreenType.PROCESSING,
         screenid: 1001,
         processMode: ProcessMode.LIST,
-        title: 'SalesOrder',
+        title: 'PurchaseOrder',
         subTitle: '',
         readonly: false,
     },
     header: {
-        title: 'SalesOrder',
+        title: 'PurchaseOrder',
     },
     navbar: {},
     section: {},
@@ -27,118 +27,100 @@ export const salesOrderUi = {
         btnDelete,
     },
 	ui: {
-		//#region UI control for SalesOrderHeader
-		orderNumber: {
+		//#region UI control for PoHeader
+		poNum: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeader',
-			name: 'orderNumber',
-			label: 'orderNumber',
-			placeholder: 'orderNumber',
+			parentName: 'poHeader',
+			name: 'poNum',
+			label: 'poNum',
+			placeholder: 'poNum',
 			maxLength: 50,
 			textStyle: {},
 		},
-		orderType: {
+		poType: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
-			name: 'orderType',
-			label: 'orderType',
-			placeholder: 'orderType',
+			parentName: 'poHeader',
+			name: 'poType',
+			label: 'poType',
+			placeholder: 'poType',
 			format: 'number',
 			textStyle: {},
 		},
-		orderStatus: {
+		poStatus: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
-			name: 'orderStatus',
-			label: 'orderStatus',
-			placeholder: 'orderStatus',
+			parentName: 'poHeader',
+			name: 'poStatus',
+			label: 'poStatus',
+			placeholder: 'poStatus',
 			format: 'number',
 			textStyle: {},
 		},
-		orderDate: {
+		poDate: {
 			type: DbComponentEnums.inputTypeEnum.date,
-			parentName: 'salesOrderHeader',
-			name: 'orderDate',
-			label: 'orderDate',
-			placeholder: 'orderDate',
+			parentName: 'poHeader',
+			name: 'poDate',
+			label: 'poDate',
+			placeholder: 'poDate',
 			format: 'date',
 			textStyle: {},
 		},
-		orderTime: {
+		poTime: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeader',
-			name: 'orderTime',
-			label: 'orderTime',
-			placeholder: 'orderTime',
+			parentName: 'poHeader',
+			name: 'poTime',
+			label: 'poTime',
+			placeholder: 'poTime',
 			format: 'time',
 			textStyle: {},
 		},
-		shipDate: {
+		etaShipDate: {
 			type: DbComponentEnums.inputTypeEnum.date,
-			parentName: 'salesOrderHeader',
-			name: 'shipDate',
-			label: 'shipDate',
-			placeholder: 'shipDate',
+			parentName: 'poHeader',
+			name: 'etaShipDate',
+			label: 'etaShipDate',
+			placeholder: 'etaShipDate',
 			format: 'date',
 			textStyle: {},
 		},
-		dueDate: {
+		etaArrivalDate: {
 			type: DbComponentEnums.inputTypeEnum.date,
-			parentName: 'salesOrderHeader',
-			name: 'dueDate',
-			label: 'dueDate',
-			placeholder: 'dueDate',
+			parentName: 'poHeader',
+			name: 'etaArrivalDate',
+			label: 'etaArrivalDate',
+			placeholder: 'etaArrivalDate',
 			format: 'date',
 			textStyle: {},
 		},
-		billDate: {
+		cancelDate: {
 			type: DbComponentEnums.inputTypeEnum.date,
-			parentName: 'salesOrderHeader',
-			name: 'billDate',
-			label: 'billDate',
-			placeholder: 'billDate',
+			parentName: 'poHeader',
+			name: 'cancelDate',
+			label: 'cancelDate',
+			placeholder: 'cancelDate',
 			format: 'date',
 			textStyle: {},
 		},
-		customerCode: {
+		vendorNum: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeader',
-			name: 'customerCode',
-			label: 'customerCode',
-			placeholder: 'customerCode',
+			parentName: 'poHeader',
+			name: 'vendorNum',
+			label: 'vendorNum',
+			placeholder: 'vendorNum',
 			maxLength: 50,
 			textStyle: {},
 		},
-		customerName: {
+		vendorName: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeader',
-			name: 'customerName',
-			label: 'customerName',
-			placeholder: 'customerName',
-			maxLength: 200,
-			textStyle: {},
-		},
-		terms: {
-			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeader',
-			name: 'terms',
-			label: 'terms',
-			placeholder: 'terms',
-			maxLength: 50,
-			textStyle: {},
-		},
-		termsDays: {
-			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
-			name: 'termsDays',
-			label: 'termsDays',
-			placeholder: 'termsDays',
-			format: 'number',
+			parentName: 'poHeader',
+			name: 'vendorName',
+			label: 'vendorName',
+			placeholder: 'vendorName',
+			maxLength: 100,
 			textStyle: {},
 		},
 		currency: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'currency',
 			label: 'currency',
 			placeholder: 'currency',
@@ -147,7 +129,7 @@ export const salesOrderUi = {
 		},
 		subTotalAmount: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'subTotalAmount',
 			label: 'subTotalAmount',
 			placeholder: 'subTotalAmount',
@@ -155,19 +137,9 @@ export const salesOrderUi = {
 			align: DbComponentEnums.alignEnum.right,
 			textStyle: {},
 		},
-		salesAmount: {
-			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
-			name: 'salesAmount',
-			label: 'salesAmount',
-			placeholder: 'salesAmount',
-			format: 'amount',
-			align: DbComponentEnums.alignEnum.right,
-			textStyle: {},
-		},
 		totalAmount: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'totalAmount',
 			label: 'totalAmount',
 			placeholder: 'totalAmount',
@@ -175,29 +147,9 @@ export const salesOrderUi = {
 			align: DbComponentEnums.alignEnum.right,
 			textStyle: {},
 		},
-		taxableAmount: {
-			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
-			name: 'taxableAmount',
-			label: 'taxableAmount',
-			placeholder: 'taxableAmount',
-			format: 'amount',
-			align: DbComponentEnums.alignEnum.right,
-			textStyle: {},
-		},
-		nonTaxableAmount: {
-			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
-			name: 'nonTaxableAmount',
-			label: 'nonTaxableAmount',
-			placeholder: 'nonTaxableAmount',
-			format: 'amount',
-			align: DbComponentEnums.alignEnum.right,
-			textStyle: {},
-		},
 		taxRate: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'taxRate',
 			label: 'taxRate',
 			placeholder: 'taxRate',
@@ -207,7 +159,7 @@ export const salesOrderUi = {
 		},
 		taxAmount: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'taxAmount',
 			label: 'taxAmount',
 			placeholder: 'taxAmount',
@@ -215,9 +167,29 @@ export const salesOrderUi = {
 			align: DbComponentEnums.alignEnum.right,
 			textStyle: {},
 		},
+		taxableAmount: {
+			type: DbComponentEnums.inputTypeEnum.number,
+			parentName: 'poHeader',
+			name: 'taxableAmount',
+			label: 'taxableAmount',
+			placeholder: 'taxableAmount',
+			format: 'amount',
+			align: DbComponentEnums.alignEnum.right,
+			textStyle: {},
+		},
+		nonTaxableAmount: {
+			type: DbComponentEnums.inputTypeEnum.number,
+			parentName: 'poHeader',
+			name: 'nonTaxableAmount',
+			label: 'nonTaxableAmount',
+			placeholder: 'nonTaxableAmount',
+			format: 'amount',
+			align: DbComponentEnums.alignEnum.right,
+			textStyle: {},
+		},
 		discountRate: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'discountRate',
 			label: 'discountRate',
 			placeholder: 'discountRate',
@@ -227,7 +199,7 @@ export const salesOrderUi = {
 		},
 		discountAmount: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'discountAmount',
 			label: 'discountAmount',
 			placeholder: 'discountAmount',
@@ -237,7 +209,7 @@ export const salesOrderUi = {
 		},
 		shippingAmount: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'shippingAmount',
 			label: 'shippingAmount',
 			placeholder: 'shippingAmount',
@@ -247,7 +219,7 @@ export const salesOrderUi = {
 		},
 		shippingTaxAmount: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'shippingTaxAmount',
 			label: 'shippingTaxAmount',
 			placeholder: 'shippingTaxAmount',
@@ -257,7 +229,7 @@ export const salesOrderUi = {
 		},
 		miscAmount: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'miscAmount',
 			label: 'miscAmount',
 			placeholder: 'miscAmount',
@@ -267,7 +239,7 @@ export const salesOrderUi = {
 		},
 		miscTaxAmount: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'miscTaxAmount',
 			label: 'miscTaxAmount',
 			placeholder: 'miscTaxAmount',
@@ -277,7 +249,7 @@ export const salesOrderUi = {
 		},
 		chargeAndAllowanceAmount: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'chargeAndAllowanceAmount',
 			label: 'chargeAndAllowanceAmount',
 			placeholder: 'chargeAndAllowanceAmount',
@@ -285,77 +257,18 @@ export const salesOrderUi = {
 			align: DbComponentEnums.alignEnum.right,
 			textStyle: {},
 		},
-		paidAmount: {
-			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
-			name: 'paidAmount',
-			label: 'paidAmount',
-			placeholder: 'paidAmount',
-			format: 'amount',
-			align: DbComponentEnums.alignEnum.right,
-			textStyle: {},
-		},
-		creditAmount: {
-			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
-			name: 'creditAmount',
-			label: 'creditAmount',
-			placeholder: 'creditAmount',
-			format: 'amount',
-			align: DbComponentEnums.alignEnum.right,
-			textStyle: {},
-		},
-		balance: {
-			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
-			name: 'balance',
-			label: 'balance',
-			placeholder: 'balance',
-			format: 'decimalNumber',
-			textStyle: {},
-		},
-		unitCost: {
-			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
-			name: 'unitCost',
-			label: 'unitCost',
-			placeholder: 'unitCost',
-			format: 'cost',
-			align: DbComponentEnums.alignEnum.right,
-			textStyle: {},
-		},
-		avgCost: {
-			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
-			name: 'avgCost',
-			label: 'avgCost',
-			placeholder: 'avgCost',
-			format: 'cost',
-			align: DbComponentEnums.alignEnum.right,
-			textStyle: {},
-		},
-		lotCost: {
-			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeader',
-			name: 'lotCost',
-			label: 'lotCost',
-			placeholder: 'lotCost',
-			format: 'cost',
-			align: DbComponentEnums.alignEnum.right,
-			textStyle: {},
-		},
-		orderSourceCode: {
+		poSourceCode: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeader',
-			name: 'orderSourceCode',
-			label: 'orderSourceCode',
-			placeholder: 'orderSourceCode',
+			parentName: 'poHeader',
+			name: 'poSourceCode',
+			label: 'poSourceCode',
+			placeholder: 'poSourceCode',
 			maxLength: 100,
 			textStyle: {},
 		},
 		updateDateUtc: {
 			type: DbComponentEnums.inputTypeEnum.date,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'updateDateUtc',
 			label: 'updateDateUtc',
 			placeholder: 'updateDateUtc',
@@ -364,7 +277,7 @@ export const salesOrderUi = {
 		},
 		enterBy: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'enterBy',
 			label: 'enterBy',
 			placeholder: 'enterBy',
@@ -373,21 +286,21 @@ export const salesOrderUi = {
 		},
 		updateBy: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeader',
+			parentName: 'poHeader',
 			name: 'updateBy',
 			label: 'updateBy',
 			placeholder: 'updateBy',
 			maxLength: 100,
 			textStyle: {},
 		},
-		//#endregion UI control for SalesOrderHeader
+		//#endregion UI control for PoHeader
 
 
 
-		//#region UI control for SalesOrderHeaderInfo
+		//#region UI control for PoHeaderInfo
 		centralFulfillmentNum: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'centralFulfillmentNum',
 			label: 'centralFulfillmentNum',
 			placeholder: 'centralFulfillmentNum',
@@ -396,7 +309,7 @@ export const salesOrderUi = {
 		},
 		shippingCarrier: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shippingCarrier',
 			label: 'shippingCarrier',
 			placeholder: 'shippingCarrier',
@@ -405,7 +318,7 @@ export const salesOrderUi = {
 		},
 		shippingClass: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shippingClass',
 			label: 'shippingClass',
 			placeholder: 'shippingClass',
@@ -414,7 +327,7 @@ export const salesOrderUi = {
 		},
 		centralOrderNum: {
 			type: DbComponentEnums.inputTypeEnum.number,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'centralOrderNum',
 			label: 'centralOrderNum',
 			placeholder: 'centralOrderNum',
@@ -423,7 +336,7 @@ export const salesOrderUi = {
 		},
 		channelOrderID: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'channelOrderID',
 			label: 'channelOrderID',
 			placeholder: 'channelOrderID',
@@ -432,7 +345,7 @@ export const salesOrderUi = {
 		},
 		secondaryChannelOrderID: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'secondaryChannelOrderID',
 			label: 'secondaryChannelOrderID',
 			placeholder: 'secondaryChannelOrderID',
@@ -441,25 +354,16 @@ export const salesOrderUi = {
 		},
 		shippingAccount: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shippingAccount',
 			label: 'shippingAccount',
 			placeholder: 'shippingAccount',
 			maxLength: 100,
 			textStyle: {},
 		},
-		warehouseCode: {
-			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
-			name: 'warehouseCode',
-			label: 'warehouseCode',
-			placeholder: 'warehouseCode',
-			maxLength: 50,
-			textStyle: {},
-		},
 		refNum: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'refNum',
 			label: 'refNum',
 			placeholder: 'refNum',
@@ -468,7 +372,7 @@ export const salesOrderUi = {
 		},
 		customerPoNum: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'customerPoNum',
 			label: 'customerPoNum',
 			placeholder: 'customerPoNum',
@@ -477,7 +381,7 @@ export const salesOrderUi = {
 		},
 		endBuyerUserID: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'endBuyerUserID',
 			label: 'endBuyerUserID',
 			placeholder: 'endBuyerUserID',
@@ -486,7 +390,7 @@ export const salesOrderUi = {
 		},
 		endBuyerName: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'endBuyerName',
 			label: 'endBuyerName',
 			placeholder: 'endBuyerName',
@@ -495,7 +399,7 @@ export const salesOrderUi = {
 		},
 		endBuyerEmail: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'endBuyerEmail',
 			label: 'endBuyerEmail',
 			placeholder: 'endBuyerEmail',
@@ -504,7 +408,7 @@ export const salesOrderUi = {
 		},
 		shipToName: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToName',
 			label: 'shipToName',
 			placeholder: 'shipToName',
@@ -513,7 +417,7 @@ export const salesOrderUi = {
 		},
 		shipToCompany: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToCompany',
 			label: 'shipToCompany',
 			placeholder: 'shipToCompany',
@@ -522,7 +426,7 @@ export const salesOrderUi = {
 		},
 		shipToAttention: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToAttention',
 			label: 'shipToAttention',
 			placeholder: 'shipToAttention',
@@ -531,7 +435,7 @@ export const salesOrderUi = {
 		},
 		shipToAddressLine1: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToAddressLine1',
 			label: 'shipToAddressLine1',
 			placeholder: 'shipToAddressLine1',
@@ -540,7 +444,7 @@ export const salesOrderUi = {
 		},
 		shipToAddressLine2: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToAddressLine2',
 			label: 'shipToAddressLine2',
 			placeholder: 'shipToAddressLine2',
@@ -549,7 +453,7 @@ export const salesOrderUi = {
 		},
 		shipToCity: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToCity',
 			label: 'shipToCity',
 			placeholder: 'shipToCity',
@@ -558,7 +462,7 @@ export const salesOrderUi = {
 		},
 		shipToState: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToState',
 			label: 'shipToState',
 			placeholder: 'shipToState',
@@ -567,7 +471,7 @@ export const salesOrderUi = {
 		},
 		shipToStateFullName: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToStateFullName',
 			label: 'shipToStateFullName',
 			placeholder: 'shipToStateFullName',
@@ -576,7 +480,7 @@ export const salesOrderUi = {
 		},
 		shipToPostalCode: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToPostalCode',
 			label: 'shipToPostalCode',
 			placeholder: 'shipToPostalCode',
@@ -585,7 +489,7 @@ export const salesOrderUi = {
 		},
 		shipToPostalCodeExt: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToPostalCodeExt',
 			label: 'shipToPostalCodeExt',
 			placeholder: 'shipToPostalCodeExt',
@@ -594,7 +498,7 @@ export const salesOrderUi = {
 		},
 		shipToCounty: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToCounty',
 			label: 'shipToCounty',
 			placeholder: 'shipToCounty',
@@ -603,7 +507,7 @@ export const salesOrderUi = {
 		},
 		shipToCountry: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToCountry',
 			label: 'shipToCountry',
 			placeholder: 'shipToCountry',
@@ -612,7 +516,7 @@ export const salesOrderUi = {
 		},
 		shipToEmail: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToEmail',
 			label: 'shipToEmail',
 			placeholder: 'shipToEmail',
@@ -621,7 +525,7 @@ export const salesOrderUi = {
 		},
 		shipToDaytimePhone: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToDaytimePhone',
 			label: 'shipToDaytimePhone',
 			placeholder: 'shipToDaytimePhone',
@@ -630,7 +534,7 @@ export const salesOrderUi = {
 		},
 		shipToNightPhone: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'shipToNightPhone',
 			label: 'shipToNightPhone',
 			placeholder: 'shipToNightPhone',
@@ -639,7 +543,7 @@ export const salesOrderUi = {
 		},
 		billToName: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToName',
 			label: 'billToName',
 			placeholder: 'billToName',
@@ -648,7 +552,7 @@ export const salesOrderUi = {
 		},
 		billToCompany: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToCompany',
 			label: 'billToCompany',
 			placeholder: 'billToCompany',
@@ -657,7 +561,7 @@ export const salesOrderUi = {
 		},
 		billToAttention: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToAttention',
 			label: 'billToAttention',
 			placeholder: 'billToAttention',
@@ -666,7 +570,7 @@ export const salesOrderUi = {
 		},
 		billToAddressLine1: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToAddressLine1',
 			label: 'billToAddressLine1',
 			placeholder: 'billToAddressLine1',
@@ -675,7 +579,7 @@ export const salesOrderUi = {
 		},
 		billToAddressLine2: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToAddressLine2',
 			label: 'billToAddressLine2',
 			placeholder: 'billToAddressLine2',
@@ -684,7 +588,7 @@ export const salesOrderUi = {
 		},
 		billToCity: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToCity',
 			label: 'billToCity',
 			placeholder: 'billToCity',
@@ -693,7 +597,7 @@ export const salesOrderUi = {
 		},
 		billToState: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToState',
 			label: 'billToState',
 			placeholder: 'billToState',
@@ -702,7 +606,7 @@ export const salesOrderUi = {
 		},
 		billToStateFullName: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToStateFullName',
 			label: 'billToStateFullName',
 			placeholder: 'billToStateFullName',
@@ -711,7 +615,7 @@ export const salesOrderUi = {
 		},
 		billToPostalCode: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToPostalCode',
 			label: 'billToPostalCode',
 			placeholder: 'billToPostalCode',
@@ -720,7 +624,7 @@ export const salesOrderUi = {
 		},
 		billToPostalCodeExt: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToPostalCodeExt',
 			label: 'billToPostalCodeExt',
 			placeholder: 'billToPostalCodeExt',
@@ -729,7 +633,7 @@ export const salesOrderUi = {
 		},
 		billToCounty: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToCounty',
 			label: 'billToCounty',
 			placeholder: 'billToCounty',
@@ -738,7 +642,7 @@ export const salesOrderUi = {
 		},
 		billToCountry: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToCountry',
 			label: 'billToCountry',
 			placeholder: 'billToCountry',
@@ -747,7 +651,7 @@ export const salesOrderUi = {
 		},
 		billToEmail: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToEmail',
 			label: 'billToEmail',
 			placeholder: 'billToEmail',
@@ -756,7 +660,7 @@ export const salesOrderUi = {
 		},
 		billToDaytimePhone: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToDaytimePhone',
 			label: 'billToDaytimePhone',
 			placeholder: 'billToDaytimePhone',
@@ -765,35 +669,26 @@ export const salesOrderUi = {
 		},
 		billToNightPhone: {
 			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
+			parentName: 'poHeaderInfo',
 			name: 'billToNightPhone',
 			label: 'billToNightPhone',
 			placeholder: 'billToNightPhone',
 			maxLength: 50,
 			textStyle: {},
 		},
-		notes: {
-			type: DbComponentEnums.inputTypeEnum.input,
-			parentName: 'salesOrderHeaderInfo',
-			name: 'notes',
-			label: 'notes',
-			placeholder: 'notes',
-			maxLength: 1000,
-			textStyle: {},
-		},
-		//#endregion UI control for SalesOrderHeaderInfo
+		//#endregion UI control for PoHeaderInfo
 
 
 
-		//#region UI control for SalesOrderHeaderAttributes
-		//#endregion UI control for SalesOrderHeaderAttributes
+		//#region UI control for PoHeaderAttributes
+		//#endregion UI control for PoHeaderAttributes
 
 
 
 	},
 
     grid: {
-		salesOrderItems: salesOrderItemsGrid,
+		poItems: poItemsGrid,
     },
     modal: {},
     menu: {},

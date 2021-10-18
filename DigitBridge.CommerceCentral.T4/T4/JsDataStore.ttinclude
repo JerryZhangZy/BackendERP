@@ -1,5 +1,5 @@
-﻿import { setCurrentStore } from '../../../store/dataStore';
-import { <#= structureName #>Model, <#= structurePropertyName #>Init } from './<#= structurePropertyName #>Model';
+﻿import { setCurrentStore } from '../../../store/dataStorePool';
+import { <#= structureName #>Model, <#= structurePropertyName #>Init } from './<#= structurePropertyName #>.model';
 import { isObject, isEqual } from '../../../util';
 import { createStoreMobx, StoreMobx } from '../../../store/StoreMobx';
 

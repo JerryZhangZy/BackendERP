@@ -5,9 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ApiClient\**" />
-    <EmbeddedResource Remove="ApiClient\**" />
-    <None Remove="ApiClient\**" />
+    <Compile Remove="apiClient\ApiReturnData.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,7 +16,7 @@
 
   <ItemGroup>
     <Folder Include="CustomDefineCodes\dto\" />
-    <Folder Include="ap\" />
+	<Folder Include="ap\" />
     <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
     <Folder Include="arInquiry\" />
