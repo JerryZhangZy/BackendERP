@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
-
+using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ApiCommon
@@ -15,6 +15,22 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             var config = await MyCache.GetCommerceCentralDbConnSetting(payload.MasterAccountNum);
             payload.DatabaseNum = config.DatabaseNum;
             return DataBaseFactory.CreateDefault(config);
+        }
+
+        /// <summary>
+        /// Read All MasterAccountNum And ProfileNum in payloadbase
+        /// </summary>
+        /// <returns></returns>
+        public async static Task<IList<IPayload>> GetAllPayloadAsync()
+        {
+            var payloadList = new List<IPayload>();
+            var payload = new PayloadBase()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001
+            };
+            payloadList.Add(payload);
+            return payloadList;
         }
 
         public async static Task<IDataBaseFactory> CreateDefaultDatabaseAsync(int masterAccountNum)

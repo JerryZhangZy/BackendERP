@@ -367,7 +367,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ProcessSource = Data.InvoiceHeader.InvoiceNumber,
                 ProcessUuid = Data.InvoiceHeader.InvoiceUuid,
             };
-            await ErpEventClientHelper.ToQueueAsync(message);
+            //await ErpEventClientHelper.ToQueueAsync(message);
         }
 
         /// <summary>
@@ -389,7 +389,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ProcessSource = Data.InvoiceHeader.InvoiceNumber,
                 ProcessUuid = Data.InvoiceHeader.InvoiceUuid,
             };
-            ErpEventClientHelper.ToQueue(message);
+            //ErpEventClientHelper.ToQueue(message);
         }
         #endregion
     }

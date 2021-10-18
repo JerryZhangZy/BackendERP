@@ -1,26 +1,43 @@
-﻿using System;
+﻿using DigitBridge.CommerceCentral.YoPoco;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace DigitBridge.CommerceCentral.ERPMdl.Model
+namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class SummaryInquiryTableEntity:SummaryInquiryInfo
+    public class SummaryInquiryTableEntity
     {
         [JsonIgnore]
-    public string PartitionKey => "ErpSummaryCache";
+        public string PartitionKey => "ErpSummaryCache";
 
-    public string RowKey =>string.Empty;
-}
+        [JsonIgnore]
+        public string RowKey { get; set; }
+
+        public int MasterAccountNum { get; set; }
+
+        public int ProfileNum { get; set; }
+
+        public string SummaryInquiryInfo { get; set; }
+
+        public DateTime CreateInquiryTimeUtc { get; set; }
+    }
     public class SummaryInquiryInfo
     {
-        public SummaryInquiryFIlter Filter { get; set; }
+        public SummaryInquiryFilter Filter { get; set; }
 
-        public SummaryInquiryInfoDetail summary { get; set; }
+        public SummaryInquiryInfoDetail Summary { get; set; }
+
+        [JsonIgnore]
+        public string GenerateRowKey => Filter.GenerateFilterKey;
     }
 
-    public class SummaryInquiryFIlter
+    public class SummaryInquiryFilter
     {
+        public int MasterAccountNum { get; set; }
+
+        public int ProfileNum { get; set; }
+
         public string Name { get; set; }
 
         public DateTime DateFrom { get; set; }
@@ -31,10 +48,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Model
 
         public string SalesCode { get; set; }
 
-        public static SummaryInquiryFIlter DefaultFilter()
+
+        [JsonIgnore]
+        public string GenerateFilterKey => $"{MasterAccountNum}-{ProfileNum}-{Name}-{CustomerCode}-{SalesCode}";
+
+        public static SummaryInquiryFilter DefaultFilter(IPayload payload)
         {
-            return new SummaryInquiryFIlter()
+            return new SummaryInquiryFilter()
             {
+                MasterAccountNum=payload.MasterAccountNum,
+                ProfileNum=payload.ProfileNum,
                 DateFrom = new DateTime(DateTime.Today.Year, 1, 1),
                 DateTo = DateTime.Today
             };
@@ -66,6 +89,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Model
         public SummaryInquiryInfoItem Customer { get; set; }
 
         public SummaryInquiryInfoItem NewCumstomer { get; set; }
+
+        public SummaryInquiryInfoItem ActiveCumstomer { get; set; }
 
         public SummaryInquiryInfoItem NonSalesCustomer { get; set; }
 

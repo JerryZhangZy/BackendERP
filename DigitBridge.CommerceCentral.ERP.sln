@@ -49,11 +49,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.QuickBooks.Inte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPFunc", "DigitBridge.CommerceCentral.ERPFunc\DigitBridge.CommerceCentral.ERPFunc.csproj", "{22831F89-8C68-43CE-B40E-2714F09773A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPBroker", "DigitBridge.CommerceCentral.ERPBroker\DigitBridge.CommerceCentral.ERPBroker.csproj", "{3ACEEDD3-56D0-4534-896E-D4164E3B5767}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPBroker", "DigitBridge.CommerceCentral.ERPBroker\DigitBridge.CommerceCentral.ERPBroker.csproj", "{3ACEEDD3-56D0-4534-896E-D4164E3B5767}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPQuickbooksBroker", "DigitBridge.CommerceCentral.ERPQuickbooksBroker\DigitBridge.CommerceCentral.ERPQuickbooksBroker.csproj", "{91A4076C-C32C-49CA-B9DA-88AF4D367523}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPQuickbooksBroker", "DigitBridge.CommerceCentral.ERPQuickbooksBroker\DigitBridge.CommerceCentral.ERPQuickbooksBroker.csproj", "{91A4076C-C32C-49CA-B9DA-88AF4D367523}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPEventApi", "DigitBridge.CommerceCentral.ERPEventApi\DigitBridge.CommerceCentral.ERPEventApi.csproj", "{F1498E07-88FC-4655-A16D-5014991445CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPEventApi", "DigitBridge.CommerceCentral.ERPEventApi\DigitBridge.CommerceCentral.ERPEventApi.csproj", "{F1498E07-88FC-4655-A16D-5014991445CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
