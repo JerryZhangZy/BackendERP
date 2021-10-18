@@ -214,6 +214,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Messages = svc.Messages;
             return payload;
         }
+
+        /// <summary>
+        /// Get shippment summary by search criteria
+        /// </summary>
+        /// <param name="req"></param> 
+        [FunctionName(nameof(ShipmentSummary))]
+        [OpenApiOperation(operationId: "ShipmentSummary", tags: new[] { "Shipments" }, Summary = "Get shippment summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadFind), Description = "Result is List<ShipmentDataDto>")]
+        public static async Task<JsonNetResponse<OrderShipmentPayload>> ShipmentSummary(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "shipments/Summary")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<OrderShipmentPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new ShipmentSummaryInquiry(dataBaseFactory, new ShipmentSummaryQuery());
+            await srv.ShipmentSummaryAsync(payload);
+            return new JsonNetResponse<OrderShipmentPayload>(payload);
+        }
     }
 }
 

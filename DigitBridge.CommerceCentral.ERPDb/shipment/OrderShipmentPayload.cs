@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public IList<string> OrderShipmentUuids { get; set; } = new List<string>();
         [JsonIgnore] 
         public virtual bool HasOrderShipmentUuids => OrderShipmentUuids != null && OrderShipmentUuids.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasOrderShipmentUuids;
+        public bool ShouldSerializeShipmentUuids() => HasOrderShipmentUuids;
 
         /// <summary>
         /// (Response Data) Array of OrderShipment entity object which load by uuid array.
@@ -92,6 +92,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeOrderShipmentListCount() => HasOrderShipmentListCount;
 
         #endregion list service
+
+        #region summary service 
+
+        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder ShipmentSummary { get; set; }
+        [JsonIgnore] public virtual bool HasShipmentSummary => ShipmentSummary != null;
+        public bool ShouldSerializeShipmentSummary() => HasShipmentSummary;
+        #endregion
     }
 }
 

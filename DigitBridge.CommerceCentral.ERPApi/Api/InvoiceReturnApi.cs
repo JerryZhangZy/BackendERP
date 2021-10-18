@@ -256,6 +256,27 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Messages = svc.Messages;
             return payload;
         }
+
+
+        /// <summary>
+        /// Get invoice Return summary by search criteria
+        /// </summary>
+        /// <param name="req"></param> 
+        [FunctionName(nameof(InvoiceReturnSummary))]
+        [OpenApiOperation(operationId: "InvoiceReturnSummary", tags: new[] { "Invoice returns" }, Summary = "Get invoice return summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadFind), Description = "Result is List<InvoiceReturnDataDto>")]
+        public static async Task<JsonNetResponse<InvoiceReturnPayload>> InvoiceReturnSummary(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoiceReturns/Summary")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InvoiceReturnPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InvoiceReturnSummaryInquiry(dataBaseFactory, new InvoiceReturnSummaryQuery());
+            await srv.InvoiceReturnSummaryAsync(payload);
+            return new JsonNetResponse<InvoiceReturnPayload>(payload);
+        }
     }
 }
 

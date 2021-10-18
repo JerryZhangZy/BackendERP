@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ApiClient\ApiReturnData.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.AzureStorage\DigitBridge.CommerceCentral.AzureStorage.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
@@ -15,12 +19,9 @@
     <Folder Include="ap\" />
     <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
-    <Folder Include="arInquiry\" />
     <Folder Include="customerInquiry\" />
     <Folder Include="inventoryInquiry\" />
     <Folder Include="companySummary\" />
-    <Folder Include="shipmentInquiry\" />
-    <Folder Include="soInquiry\" />
     <Folder Include="warehouseTransfer\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />

@@ -268,6 +268,28 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return crtPayLoad;
         }
 
+
+        /// <summary>
+        /// Get sales order summary by search criteria
+        /// </summary>
+        /// <param name="req"></param> 
+        [FunctionName(nameof(SalesOrderSummary))]
+        [OpenApiOperation(operationId: "SalesOrderSummary", tags: new[] { "SalesOrders" }, Summary = "Get sales order summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadGetMultiple), Description = "Result is List<SalesOrderDataDto>")]
+        public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrderSummary(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "salesOrders/Summary")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderSummaryInquiry(dataBaseFactory, new SalesOrderSummaryQuery());
+            await srv.SalesOrderSummaryAsync(payload);
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
+
+
     }
 }
 

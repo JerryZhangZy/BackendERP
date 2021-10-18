@@ -92,6 +92,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeSalesOrderListCount() => HasSalesOrderListCount;
 
         #endregion list service
+
+        #region summary service 
+      
+        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder SalesOrderSummary { get; set; }
+        [JsonIgnore] public virtual bool HasSalesOrderSummary => SalesOrderSummary != null ;
+        public bool ShouldSerializeSalesOrderSummary() => HasSalesOrderSummary;
+        #endregion
     }
 }
 

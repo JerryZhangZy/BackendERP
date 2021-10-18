@@ -11,90 +11,36 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public class ErpEventClientHelper
     {
-        public static async Task ToQueueAsync(Event_ERPDto eventDto)
+        #region Instance
+
+        private static ErpEventClient _erpEventClient;
+
+        private static ErpEventClient erpEventClient
         {
-            await ToQueueAsync(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode, eventDto);
+            get
+            {
+                if (_erpEventClient is null)
+                    _erpEventClient = new ErpEventClient();
+                return _erpEventClient;
+            }
         }
-        public static async Task ToQueueAsync(string url, string authcode, Event_ERPDto eventDto)
+        #endregion
+
+        public static async Task<bool> AddEventERPAsync(Event_ERPDto eventDto)
         {
-            try
-            {
-                var dicHeaders = new Dictionary<string, string>();
-                dicHeaders.Add("masterAccountNum", eventDto.MasterAccountNum.ToString());
-                dicHeaders.Add("profileNum", eventDto.ProfileNum.ToString());
-
-                var eventERPPayload = new EventERPPayload()
-                {
-                    EventERP = new EventERPDataDto()
-                    {
-                        Event_ERP = eventDto
-                    }
-                };
-
-                var responseStr = await HttpRequestUtil.CallAsync(url, authcode, eventERPPayload, dicHeaders);
-                var responseObj = JsonConvert.DeserializeObject<EventERPPayload>(responseStr);
-
-                if (responseObj == null)
-                {
-                    //TODO do something or write log.
-                    //AddError("Call event api has no resopne.");
-                    return;
-                }
-
-                if (!responseObj.Success)
-                {
-                    //TODO do something or write log.
-                    //this.Messages = this.Messages.Concat(responseObj.Messages).ToList();
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO write log.
-            }
-
+            return await erpEventClient.AddEventERPAsync(eventDto);
         }
-
-        public static void ToQueue(Event_ERPDto eventDto)
+        public static async Task<bool> UpdateEventERPAsync(bool success, ERPQueueMessage message, string error)
         {
-            ToQueue(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode, eventDto);
-        }
-        public static void ToQueue(string url, string authcode, Event_ERPDto eventDto)
-        {
-            try
+            var eventDto = new Event_ERPDto()
             {
-                var dicHeaders = new Dictionary<string, string>();
-                dicHeaders.Add("masterAccountNum", eventDto.MasterAccountNum.ToString());
-                dicHeaders.Add("profileNum", eventDto.ProfileNum.ToString());
-
-                var eventERPPayload = new EventERPPayload()
-                {
-                    EventERP = new EventERPDataDto()
-                    {
-                        Event_ERP = eventDto
-                    }
-                };
-
-                var responseStr = HttpRequestUtil.Call(url, authcode, eventERPPayload, dicHeaders);
-                var responseObj = JsonConvert.DeserializeObject<EventERPPayload>(responseStr);
-
-                if (responseObj == null)
-                {
-                    //TODO do something or write log.
-                    //AddError("Call event api has no resopne.");
-                    return;
-                }
-
-                if (!responseObj.Success)
-                {
-                    //TODO do something or write log.
-                    //this.Messages = this.Messages.Concat(responseObj.Messages).ToList();
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO write log.
-            }
-
+                ActionStatus = success ? (int)ErpEventActionStatus.Success : (int)ErpEventActionStatus.Other,
+                EventUuid = message.EventUuid,
+                EventMessage = error,
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum
+            };
+            return await erpEventClient.UpdateEventERPAsync(eventDto);
         }
     }
 }
