@@ -2,6 +2,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.CommerceCentral.ERPMdl;
 using DigitBridge.QuickBooks.Integration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
@@ -37,11 +38,11 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 var service = new QboInvoiceService(payload, dataBaseFactory);
                 var success = await service.ExportAsync(message.ProcessSource);
 
-                EventServieHelper.UpdateEventAsync(success, message, service.Messages.ObjectToString());
+                ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                EventServieHelper.UpdateEventAsync(false, message, e.ObjectToString());
+                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
             }
         }
 
@@ -69,11 +70,11 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 var service = new QboInvoiceService(payload, dataBaseFactory);
                 var success = await service.VoidQboInvoiceAsync(message.ProcessSource);
 
-                EventServieHelper.UpdateEventAsync(success, message, service.Messages.ObjectToString());
+                ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                EventServieHelper.UpdateEventAsync(false, message, e.ObjectToString());
+                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
             }
         }
 
@@ -111,11 +112,11 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 var success = await service.ExportAsync(invoiceNumber, int.Parse(tranNumber));
 
 
-                EventServieHelper.UpdateEventAsync(success, message, service.Messages.ObjectToString());
+                ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                EventServieHelper.UpdateEventAsync(false, message, e.ObjectToString());
+                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
             }
         }
 
@@ -148,11 +149,11 @@ namespace DigitBridge.CommerceCentral.ERPBroker
 
                 var success = await service.DeleteQboPaymentAsync(invoiceNumber, int.Parse(tranNumber));
 
-                EventServieHelper.UpdateEventAsync(success, message, service.Messages.ObjectToString());
+                ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                EventServieHelper.UpdateEventAsync(false, message, e.ObjectToString());
+                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
             }
         }
 
@@ -189,11 +190,11 @@ namespace DigitBridge.CommerceCentral.ERPBroker
 
                 var success = await service.ExportAsync(invoiceNumber, int.Parse(tranNumber));
 
-                EventServieHelper.UpdateEventAsync(success, message, service.Messages.ObjectToString());
+                ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                EventServieHelper.UpdateEventAsync(false, message, e.ObjectToString());
+                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
             }
         }
 
@@ -226,11 +227,11 @@ namespace DigitBridge.CommerceCentral.ERPBroker
 
                 var success = await service.ExportAsync(invoiceNumber, int.Parse(tranNumber));
 
-                EventServieHelper.UpdateEventAsync(success, message, service.Messages.ObjectToString());
+                ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                EventServieHelper.UpdateEventAsync(false, message, e.ObjectToString());
+                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
             }
         }
 
