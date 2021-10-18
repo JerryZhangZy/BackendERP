@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Compile Remove="ApiClient\ApiReturnData.cs" />
-    <Compile Remove="arInquiry\SalesOrderSummaryInquiry.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +24,6 @@
     <Folder Include="inventoryInquiry\" />
     <Folder Include="companySummary\" />
     <Folder Include="shipmentInquiry\" />
-    <Folder Include="soInquiry\" />
     <Folder Include="warehouseTransfer\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />
