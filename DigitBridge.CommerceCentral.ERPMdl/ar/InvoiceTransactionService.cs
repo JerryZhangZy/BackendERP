@@ -47,6 +47,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = invoiceData.GetByNumber(masterAccountNum, profileNum, invoiceNumber);
             if (!success) return success;
 
+            if (Data == null)
+                NewData();
             Data.InvoiceData = invoiceData;
             Data.InvoiceTransaction.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
             if (Data.InvoiceReturnItems == null) return success;

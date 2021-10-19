@@ -398,7 +398,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion write to dto from data
 
         #region write invoice data to invoice data dto  
-        protected virtual InvoiceDataDto WriteInvoiceDto(InvoiceData data)
+        public virtual InvoiceDataDto WriteInvoiceDto(InvoiceData data)
         {
             if (data is null)
                 return null;
