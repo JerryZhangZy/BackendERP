@@ -22,9 +22,6 @@
     <Folder Include="arInquiry\" />
     <Folder Include="shipmentInquiry\" />
     <Folder Include="soInquiry\" />
-    <Folder Include="customerInquiry\" />
-    <Folder Include="inventoryInquiry\" />
-    <Folder Include="companySummary\" />
     <Folder Include="warehouseTransfer\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />
