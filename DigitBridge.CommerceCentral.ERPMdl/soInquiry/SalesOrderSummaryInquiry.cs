@@ -29,6 +29,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 SELECT  
 COUNT(1) as [Count],
 SUM(COALESCE({SalesOrderHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
+SUM( 
+	CASE WHEN COALESCE({SalesOrderHeaderHelper.TableAllies}.OrderStatus, 0) = 0 OR COALESCE({SalesOrderHeaderHelper.TableAllies}.OrderStatus, 1) = 1 THEN 1
+	ELSE 0 END
+) as open_count,
+SUM( 
+	CASE WHEN COALESCE({SalesOrderHeaderHelper.TableAllies}.OrderStatus, 0) = 0 OR COALESCE({SalesOrderHeaderHelper.TableAllies}.OrderStatus, 1) = 1 THEN COALESCE({SalesOrderHeaderHelper.TableAllies}.TotalAmount, 0)
+	ELSE 0 END
+) as open_amount,
+SUM( 
+	CASE WHEN COALESCE({SalesOrderHeaderHelper.TableAllies}.OrderStatus, 0) = 255 THEN 1
+	ELSE 0 END
+) as cancel_count,
+SUM( 
+	CASE WHEN COALESCE({SalesOrderHeaderHelper.TableAllies}.OrderStatus, 0) = 255 THEN COALESCE({SalesOrderHeaderHelper.TableAllies}.TotalAmount, 0)
+	ELSE 0 END
+) as cancel_amount
 ";
             return this.SQL_Select;
         }
@@ -60,6 +76,32 @@ SUM(COALESCE({SalesOrderHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
                 payload.SalesOrderSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;
+            }
+        }
+
+        public async Task GetCompanySummaryAsync(CompanySummaryPayload payload)
+        {
+            if (payload.Summary == null)
+                payload.Summary = new SummaryInquiryInfoDetail();
+
+            this.LoadRequestParameter(payload);
+            try
+            {
+                this.QueryObject.LoadJson = false;
+                var result = await ExcuteAsync();
+                if (result != null && result.HasData)
+                {
+                    payload.Summary.SalesOrderCount = result.GetData("Count").ToInt();
+                    payload.Summary.SalesOrderAmount = result.GetData("Amount").ToString().ToAmount();
+                    payload.Summary.OpenSalesOrderCount = result.GetData("open_count").ToInt();
+                    payload.Summary.OpenSalesOrderAmount = result.GetData("open_amount").ToString().ToAmount();
+                    payload.Summary.CancelSalesOrderCount = result.GetData("cancel_count").ToInt();
+                    payload.Summary.CancelSalesOrderAmount = result.GetData("cancel_amount").ToString().ToAmount();
+                }
+            }
+            catch (Exception ex)
+            {
+                AddError(ex.ObjectToString());
             }
         }
 

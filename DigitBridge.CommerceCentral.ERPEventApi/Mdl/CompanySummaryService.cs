@@ -18,7 +18,7 @@ namespace DigitBridge.CommerceCentral.ERPEventApi.Mdl
         {
             if (summaryTableUniversal == null)
             {
-                summaryTableUniversal = await TableUniversal<SummaryInquiryTableEntity>.CreateAsync(MySingletonAppSetting.ERPSummaryTable, MySingletonAppSetting.ERPSummaryTableStorage);
+                summaryTableUniversal = await TableUniversal<SummaryInquiryTableEntity>.CreateAsync(MySingletonAppSetting.ERPSummaryTableName, MySingletonAppSetting.ERPSummaryTableConnectionString);
             }
             return summaryTableUniversal;
         }

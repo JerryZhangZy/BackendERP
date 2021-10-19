@@ -65,5 +65,26 @@ SUM(COALESCE({ERPDb.InvoiceTransactionHelper.TableAllies}.TotalAmount,0)) as Amo
         }
 
 
+        public async Task GetCompanySummaryAsync(CompanySummaryPayload payload)
+        {
+            if (payload.Summary == null)
+                payload.Summary = new SummaryInquiryInfoDetail();
+
+            this.LoadRequestParameter(payload);
+            try
+            {
+                this.QueryObject.LoadJson = false;
+                var result = await ExcuteAsync();
+                if (result != null && result.HasData)
+                {
+                    payload.Summary.InvoicePaymentCount = result.GetData("Count").ToInt();
+                    payload.Summary.InvoicePaymentAmount = result.GetData("Amount").ToString().ToAmount();
+                }
+            }
+            catch (Exception ex)
+            {
+                AddError(ex.ObjectToString());
+            }
+        }
     }
 }

@@ -80,19 +80,25 @@ OUTER APPLY(
         {
             if (payload.Summary == null)
                 payload.Summary = new SummaryInquiryInfoDetail();
-
-            LoadSummaryParameter(payload);
-            using (var trx = new ScopedTransaction(dbFactory))
+            try
             {
-                using (var dataReader = await SqlQuery.ExecuteCommandAsync(GetSQL_select()))
+                LoadSummaryParameter(payload);
+                using (var trx = new ScopedTransaction(dbFactory))
                 {
-                    if (await dataReader.ReadAsync())
+                    using (var dataReader = await SqlQuery.ExecuteCommandAsync(GetSQL_select()))
                     {
-                        payload.Summary.CustomerCount = dataReader.GetInt32(0);
-                        payload.Summary.NewCustomerCount = dataReader.GetInt32(1);
-                        payload.Summary.NonSalesCustomerCount = dataReader.GetInt32(3);
+                        if (await dataReader.ReadAsync())
+                        {
+                            payload.Summary.CustomerCount = dataReader.GetInt32(0);
+                            payload.Summary.NewCustomerCount = dataReader.GetInt32(1);
+                            payload.Summary.NonSalesCustomerCount = dataReader.GetInt32(3);
+                        }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                throw;
             }
         }
 
