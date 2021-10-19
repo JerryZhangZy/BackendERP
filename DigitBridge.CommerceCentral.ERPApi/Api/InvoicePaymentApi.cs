@@ -296,6 +296,32 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
 
+        
+        /// <summary>
+        /// Get invoice new Payment by invoiceNumber
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(NewPayment))]
+        [OpenApiOperation(operationId: "NewPayment", tags: new[] { "Invoice payments" }, Summary = "Get invoice new Payment by invoiceNumber")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadGetSingle))]
+        public static async Task<JsonNetResponse<InvoicePaymentPayload>> NewPayment(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoicePayments/newPayment/{invoiceNumber}")] HttpRequest req,
+            string invoiceNumber)
+        {
+            var payload = await req.GetParameters<InvoicePaymentPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InvoicePaymentService(dataBaseFactory);
+            payload.Success = await srv.NewPaymentAsync(payload, invoiceNumber);
+            payload.Messages = srv.Messages;
+            payload.InvoiceTransaction = srv.ToDto();
+            return new JsonNetResponse<InvoicePaymentPayload>(payload);
+        }
     }
 }
 

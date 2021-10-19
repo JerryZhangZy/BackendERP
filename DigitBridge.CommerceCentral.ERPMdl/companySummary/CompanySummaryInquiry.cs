@@ -16,8 +16,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public CompanySummaryInquiry(IDataBaseFactory dataBaseFactory)
         {
             dbFactory = dataBaseFactory;
-            CustomerSummaryService = new CustomerSummaryInquiry(dataBaseFactory);
-            ProductSummaryService = new ProductSummaryInquiry(dataBaseFactory);
+            CustomerSummaryService = new CustomerSummaryInquiry(dataBaseFactory,new CustomerSummaryQuery());
+            ProductSummaryService = new ProductSummaryInquiry(dataBaseFactory,new ProductSummaryQuery());
         }
 
         public async Task GetCompaySummaryAsync(CompanySummaryPayload payload)

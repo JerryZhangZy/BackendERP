@@ -23,22 +23,22 @@ namespace DigitBridge.CommerceCentral.ERPEventApi.Mdl
             return summaryTableUniversal;
         }
 
-        public async Task GetCompanySummaryAsync(CompanySummaryPayload payload)
-        {
-            var universal = await GetSummaryTableUniversalAsync();
-            var summary =await universal.GetEntityAsync("ErpSummaryCache", payload.Filters.GenerateFilterKey);
-            if (summary == null)
-            {
-                payload.Success = false;
-                payload.Messages.Add(new MessageClass("Summary is not initializatied"));
+        //public async Task GetCompanySummaryAsync(CompanySummaryPayload payload)
+        //{
+        //    var universal = await GetSummaryTableUniversalAsync();
+        //    var summary =await universal.GetEntityAsync("ErpSummaryCache", payload.Filters.GenerateFilterKey);
+        //    if (summary == null)
+        //    {
+        //        payload.Success = false;
+        //        payload.Messages.Add(new MessageClass("Summary is not initializatied"));
 
-                //TODO:
-            }
-            else
-            {
-                payload.Summary = JsonConvert.DeserializeObject<SummaryInquiryInfo>(summary.SummaryInquiryInfo);
-            }
-        }
+        //        //TODO:
+        //    }
+        //    else
+        //    {
+        //        payload.Summary = JsonConvert.DeserializeObject<SummaryInquiryInfo>(summary.SummaryInquiryInfo).Summary;
+        //    }
+        //}
 
         public async Task UpdateCompanySummaryAsync(CompanySummaryPayload payload)
         {
@@ -47,23 +47,34 @@ namespace DigitBridge.CommerceCentral.ERPEventApi.Mdl
             await service.GetCompaySummaryAsync(payload);
 
             var universal = await GetSummaryTableUniversalAsync();
-            var summary = universal.GetEntityByRowKey(payload.Filters.GenerateFilterKey);
-            if (summary == null)
+            //var summary =await universal.GetEntityAsync(payload.Filters.GenerateFilterKey, "ErpSummaryCache");
+            //if (summary == null)
+            //{
+            //    summary = new SummaryInquiryTableEntity
+            //    {
+            //        RowKey = payload.Filters.GenerateFilterKey,
+            //        ProfileNum = payload.ProfileNum,
+            //        MasterAccountNum = payload.MasterAccountNum,
+            //        CreateInquiryTimeUtc = DateTime.UtcNow,
+            //        Summary = payload.Summary,
+            //        Filter=payload.Filters
+            //    };
+            //}
+            //else
+            //{
+            //    summary.CreateInquiryTimeUtc = DateTime.UtcNow;
+            //    summary.Summary =payload.Summary;
+            //    summary.Filter = payload.Filters;
+            //}
+            var summary= new SummaryInquiryTableEntity
             {
-                summary = new SummaryInquiryTableEntity
-                {
-                    RowKey = payload.Filters.GenerateFilterKey,
-                    ProfileNum = payload.ProfileNum,
-                    MasterAccountNum = payload.MasterAccountNum,
-                    CreateInquiryTimeUtc = DateTime.UtcNow,
-                    SummaryInquiryInfo = JsonConvert.SerializeObject(payload.Summary)
-                };
-            }
-            else
-            {
-                summary.CreateInquiryTimeUtc = DateTime.UtcNow;
-                summary.SummaryInquiryInfo = JsonConvert.SerializeObject(payload.Summary);
-            }
+                RowKey = payload.Filters.GenerateFilterKey,
+                ProfileNum = payload.ProfileNum,
+                MasterAccountNum = payload.MasterAccountNum,
+                CreateInquiryTimeUtc = DateTime.UtcNow,
+                Summary = payload.Summary,
+                Filter = payload.Filters
+            };
             await universal.UpSertEntityAsync(summary, summary.PartitionKey, summary.RowKey);
         }
     }

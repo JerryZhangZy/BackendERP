@@ -2,44 +2,60 @@
 using DigitBridge.CommerceCentral.YoPoco;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class CustomerSummaryInquiry : SqlQueryBuilder<SalesOrderSummaryQuery>
+    public class CustomerSummaryInquiry : SqlQueryBuilder<CustomerSummaryQuery>
     {
-        protected IDataBaseFactory dbFactory;
-
-        public CustomerSummaryInquiry(IDataBaseFactory dataBaseFactory)
+        public CustomerSummaryInquiry(IDataBaseFactory dbFactory) : base(dbFactory)
         {
-            dbFactory = dataBaseFactory;
         }
 
+        public CustomerSummaryInquiry(IDataBaseFactory dbFactory, CustomerSummaryQuery queryObject)
+            : base(dbFactory, queryObject)
+        {
+        }
 
+        private void LoadSummaryParameter(CompanySummaryPayload payload)
+        {
+            if (payload == null)
+                return;
+            QueryObject.QueryFilterList.First(x => x.Name == "MasterAccountNum").SetValue(payload.MasterAccountNum);
+            QueryObject.QueryFilterList.First(x => x.Name == "ProfileNum").SetValue(payload.ProfileNum);
+            QueryObject.QueryFilterList.First(x => x.Name == "CustomerCode").SetValue(payload.Filters.CustomerCode);
+            QueryObject.QueryFilterList.First(x => x.Name == "CustomerName").SetValue(payload.Filters.Name);
+            QueryObject.QueryFilterList.First(x => x.Name == "DateFrom").SetValue(payload.Filters.DateFrom);
+            QueryObject.QueryFilterList.First(x => x.Name == "DateTo").SetValue(payload.Filters.DateTo);
+        }
         protected override string GetSQL_select()
         {
             var whereCustomer = this.QueryObject.GetSQLWithoutPrefix("ins");
             var whereInvoice = this.QueryObject.GetSQLWithPrefix("ins");
+            var whereCustomerAnd = string.Empty;
 
-            if (string.IsNullOrWhiteSpace(whereCustomer))
+            if (!string.IsNullOrWhiteSpace(whereCustomer))
+            {
+                whereCustomerAnd = $" AND {whereCustomer}";
                 whereCustomer = $" WHERE {whereCustomer}";
-            var whereCustomerAnd = (string.IsNullOrWhiteSpace(whereCustomer)) ? "" : $" AND {whereCustomer}";
+            }
 
-            if (string.IsNullOrWhiteSpace(whereInvoice))
+            if (!string.IsNullOrWhiteSpace(whereInvoice))
                 whereInvoice = $" AND {whereInvoice}";
 
             this.SQL_Select = $@"
-SELECT c.[count], c.active_count, non.[Count] AS nonsales_count
+SELECT c.[count], c.new_count, c.active_count, non.[Count] AS nonsales_count
     FROM (
         SELECT
         COUNT(1) as [count], 
         SUM(
-            CASE WHEN COALESCE(cus.CustomerStatus, 0) = 1 THEN 1
+            CASE WHEN COALESCE(cus.CustomerStatus, 0) = {(int)CustomerStatus.New} THEN 1
 			ELSE 0 END
 		) as new_count,
 		SUM(
-            CASE WHEN COALESCE(cus.CustomerStatus, 0) = 9 THEN 1
+            CASE WHEN COALESCE(cus.CustomerStatus, 0) = {(int)CustomerStatus.Active} THEN 1
 			ELSE 0 END
 		) as active_count
     FROM Customer cus
@@ -53,7 +69,6 @@ OUTER APPLY(
     NOT EXISTS(
         select* FROM InvoiceHeader ins
         WHERE ins.CustomerUuid = cus.CustomerUuid {whereInvoice}
-        --ins.InvoiceDate >= '1/1/2021' AND ins.InvoiceDate <= '10/17/2021' AND ins.CustomerUuid = cus.CustomerUuid
     )
     {whereCustomerAnd}
 ) non
@@ -61,57 +76,21 @@ OUTER APPLY(
             return this.SQL_Select;
         }
 
-
-
         public async Task GetCustomerSummaryAsync(CompanySummaryPayload payload)
         {
             if (payload.Summary == null)
-                payload.Summary = new SummaryInquiryInfo
-                {
-                    Filter = payload.Filters,
-                    Summary = new SummaryInquiryInfoDetail()
-                };
+                payload.Summary = new SummaryInquiryInfoDetail();
+
+            LoadSummaryParameter(payload);
             using (var trx = new ScopedTransaction(dbFactory))
             {
-                var sql = @$"SELECT
-    COUNT(1) as [count],
-	SUM(
-        CASE WHEN COALESCE(cus.CustomerStatus, 0) = {(int)CustomerStatus.New} THEN 1
-        ELSE 0 END
-    ) as new_count,
-	SUM(
-        CASE WHEN COALESCE(cus.CustomerStatus, 0) = {(int)CustomerStatus.Active} THEN 1
-        ELSE 0 END
-    ) as active_count
-FROM Customer cus
-WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum}";
-
-                using (var dataReader = await SqlQuery.ExecuteCommandAsync(sql))
+                using (var dataReader = await SqlQuery.ExecuteCommandAsync(GetSQL_select()))
                 {
                     if (await dataReader.ReadAsync())
                     {
-                        payload.Summary.Summary.Customer = new SummaryInquiryInfoItem { Count = dataReader.GetInt32(0) };
-                        payload.Summary.Summary.NewCumstomer = new SummaryInquiryInfoItem { Count = dataReader.GetInt32(1) };
-                        payload.Summary.Summary.ActiveCumstomer = new SummaryInquiryInfoItem { Count = dataReader.GetInt32(2) };
-                    }
-                }
-            }
-            using (var trx = new ScopedTransaction(dbFactory))
-            {
-                var sql = @$"SELECT COUNT(1)
-FROM customer cus
-WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum} AND 
-NOT EXISTS (
-	select * FROM InvoiceHeader ins WHERE ins.InvoiceDate >= '{payload.Filters.DateFrom.ToString("yyyy-MM-dd")}' AND ins.InvoiceDate <= '{payload.Filters.DateTo.ToString("yyyy-MM-dd")}'
-	AND ins.CustomerUuid = cus.CustomerUuid
-)";
-                
-
-                using (var dataReader = await SqlQuery.ExecuteCommandAsync(sql))
-                {
-                    if (await dataReader.ReadAsync())
-                    {
-                        payload.Summary.Summary.NonSalesCustomer = new SummaryInquiryInfoItem { Count = dataReader.GetInt32(0) };
+                        payload.Summary.CustomerCount = dataReader.GetInt32(0);
+                        payload.Summary.NewCustomerCount = dataReader.GetInt32(1);
+                        payload.Summary.NonSalesCustomerCount = dataReader.GetInt32(3);
                     }
                 }
             }

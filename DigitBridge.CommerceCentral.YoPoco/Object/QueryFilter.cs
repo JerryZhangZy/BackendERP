@@ -276,6 +276,30 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 if (!string.IsNullOrEmpty(postString)) sb.Append(postString);
                 sb.Append("'");
                 return sb.ToString();
+            }else if (typeof(T) == typeof(DateTime))
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("'");
+                if (!string.IsNullOrEmpty(prefix)) sb.Append(prefix);
+                if (_isDate)
+                {
+                    if (FilterMode == FilterBy.lt || FilterMode == FilterBy.le)
+                    {
+                        sb.Append(Convert.ToDateTime(FilterValue).ToString("yyyy-MM-dd 23:59:59"));
+                    }
+                    else
+                    {
+                        sb.Append(Convert.ToDateTime(FilterValue).ToString("yyyy-MM-dd 00:00:00"));
+                    }
+                }
+                else
+                {
+                    sb.Append(FilterValue.ToString().TrimEnd().Replace("'", "''"));
+                }
+
+                if (!string.IsNullOrEmpty(postString)) sb.Append(postString);
+                sb.Append("'");
+                return sb.ToString();
             }
             else
             {
