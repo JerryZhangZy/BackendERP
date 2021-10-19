@@ -45,7 +45,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #endregion
 
         #region invoice data
-
+        /// <summary>
+        /// Load invoice data while get return trans by invoicenumber.
+        /// </summary>
         public InvoiceDataDto InvoiceDataDto { get; set; }
         [JsonIgnore] public virtual bool HasInvoiceDataDto => InvoiceDataDto != null;
         public bool ShouldSerializeInvoiceDataDto() => HasInvoiceDataDto;
