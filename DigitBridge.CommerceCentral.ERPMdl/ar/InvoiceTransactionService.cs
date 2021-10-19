@@ -47,6 +47,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = invoiceData.GetByNumber(masterAccountNum, profileNum, invoiceNumber);
             if (!success) return success;
 
+            if (Data == null)
+                NewData();
             Data.InvoiceData = invoiceData;
             Data.InvoiceTransaction.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
             if (Data.InvoiceReturnItems == null) return success;
@@ -475,8 +477,59 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await ErpEventClientHelper.AddEventERPAsync(message);
         }
         #endregion
+
+
+        #region copy invoice info to invoicereturn/invoicepayment for NewReturn/ NewPayment
+
+        protected void CopyInvoiceHeaderToTrans()
+        {
+            var invoiceHeader = Data.InvoiceData.InvoiceHeader;
+            Data.InvoiceTransaction = new InvoiceTransaction()
+            {
+                Currency = invoiceHeader.Currency,
+                InvoiceNumber = invoiceHeader.InvoiceNumber,
+                InvoiceUuid = invoiceHeader.InvoiceUuid,
+                TaxRate = invoiceHeader.TaxRate
+            };
+        }
+        protected void CopyInvoiceItemsToReturnItems()
+        {
+            var returnItems = new List<InvoiceReturnItems>();
+            foreach (var item in Data.InvoiceData.InvoiceItems)
+            {
+                // Data.InvoiceReturnItems.
+                var returnItem = new InvoiceReturnItems()
+                {
+                    Currency = item.Currency,
+                    ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount,
+                    DamageWarehouseCode = item.WarehouseCode,
+                    DamageWarehouseUuid = item.WarehouseUuid,
+                    Description = item.Description,
+                    InventoryUuid = item.InventoryUuid,
+                    InvoiceDiscountAmount = item.DiscountAmount,
+                    InvoiceDiscountPrice = item.DiscountPrice,
+                    InvoiceItemsUuid = item.InvoiceItemsUuid,
+                    InvoiceUuid = item.InvoiceUuid,
+                    InvoiceWarehouseCode = item.WarehouseCode,
+                    InvoiceWarehouseUuid = item.WarehouseUuid,
+                    SKU = item.SKU,
+                    LotNum = item.LotNum,
+                    Notes = item.Notes,
+                    PackType = item.PackType,
+                    PackQty = item.PackQty,
+                    Price = item.Price,
+                    ProductUuid = item.ProductUuid,
+                    PutBackWarehouseCode = item.WarehouseCode,
+                    PutBackWarehouseUuid = item.WarehouseUuid,
+                    ReturnItemType = item.InvoiceItemType,
+                    TaxRate = item.TaxRate,
+                    IsAr = item.IsAr,
+                };
+                returnItems.Add(returnItem);
+            }
+            Data.InvoiceReturnItems = returnItems;
+        }
+
+        #endregion
     }
 }
-
-
-

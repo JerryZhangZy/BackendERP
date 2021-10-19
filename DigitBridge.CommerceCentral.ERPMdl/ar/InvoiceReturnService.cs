@@ -45,6 +45,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task GetReturnsAsync(InvoiceReturnPayload payload, string invoiceNumber, int? transNum = null)
         {
             payload.InvoiceTransactions = await base.GetDtoListAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, TransTypeEnum.Return, transNum);
+            LoadInvoice(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum);
+            payload.InvoiceDataDto = this.ToDto().InvoiceDataDto;
             payload.Success = true;
         }
 
@@ -93,7 +95,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public override bool SaveData()
         {
-            if(base.SaveData())
+            if (base.SaveData())
             {
                 InventoryLogService.UpdateByInvoiceReturn(_data);
                 return true;
@@ -103,7 +105,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public override async Task<bool> SaveDataAsync()
         {
-            if(await base.SaveDataAsync())
+            if (await base.SaveDataAsync())
             {
                 await InventoryLogService.UpdateByInvoiceReturnAsync(_data);
                 return true;
@@ -124,7 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public override async Task<bool> DeleteDataAsync()
         {
-            if(await base.DeleteDataAsync())
+            if (await base.DeleteDataAsync())
             {
                 _data.InvoiceReturnItems.Clear();
                 await InventoryLogService.UpdateByInvoiceReturnAsync(_data);
@@ -132,6 +134,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return false;
         }
+
+        #region New return
+
+        public async Task<bool> NewReturnAsync(InvoiceReturnPayload payload, string invoiceNumber)
+        {
+            NewData();
+
+            if (!LoadInvoice(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum))
+                return false;
+
+
+            CopyInvoiceHeaderToTrans();
+            CopyInvoiceItemsToReturnItems();
+
+            LoadReturnedQty();
+
+            return true;
+        }
+
+        #endregion
     }
 }
 

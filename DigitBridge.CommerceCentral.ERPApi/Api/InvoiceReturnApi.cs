@@ -277,6 +277,32 @@ namespace DigitBridge.CommerceCentral.ERPApi
             await srv.InvoiceReturnSummaryAsync(payload);
             return new JsonNetResponse<InvoiceReturnPayload>(payload);
         }
+
+        /// <summary>
+        /// Get invoice new return by invoiceNumber
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(NewReturn))]
+        [OpenApiOperation(operationId: "NewReturn", tags: new[] { "Invoice returns" }, Summary = "Get invoice new return by invoiceNumber")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadGetSingle))]
+        public static async Task<JsonNetResponse<InvoiceReturnPayload>> NewReturn(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoiceReturns/newReturn/{invoiceNumber}")] HttpRequest req,
+            string invoiceNumber)
+        {
+            var payload = await req.GetParameters<InvoiceReturnPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InvoiceReturnService(dataBaseFactory);
+            payload.Success = await srv.NewReturnAsync(payload, invoiceNumber);
+            payload.Messages = srv.Messages;
+            payload.InvoiceTransaction = srv.ToDto();
+            return new JsonNetResponse<InvoiceReturnPayload>(payload);
+        }
     }
 }
 

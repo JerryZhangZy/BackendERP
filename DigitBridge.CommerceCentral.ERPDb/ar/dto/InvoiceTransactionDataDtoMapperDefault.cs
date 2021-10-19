@@ -231,10 +231,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 dto.InvoiceReturnItems = new List<InvoiceReturnItemsDto>();
                 WriteInvoiceReturnItems(data.InvoiceReturnItems, dto.InvoiceReturnItems);
             }
-            if (data.InvoiceData != null)
-            {
-                dto.InvoiceDataDto = new InvoiceDataDtoMapperDefault().WriteDto(data.InvoiceData, null);
-            }
+
+            dto.InvoiceDataDto = WriteInvoiceDto(data.InvoiceData);
+
             return dto;
         }
 
@@ -366,7 +365,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.DigitBridgeGuid = data.DigitBridgeGuid;
 
             dto.ShipQty = data.ShipQty;
-            dto.ReturnQty = data.ReturnQty;
+            dto.ReturnedQty = data.ReturnedQty;
             dto.OpenQty = data.OpenQty;
 
             #endregion read properties
@@ -398,6 +397,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #endregion write to dto from data
 
+        #region write invoice data to invoice data dto  
+        public virtual InvoiceDataDto WriteInvoiceDto(InvoiceData data)
+        {
+            if (data is null)
+                return null;
+            return new InvoiceDataDtoMapperDefault().WriteDto(data, null);
+        }
+        #endregion
     }
 }
 
