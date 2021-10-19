@@ -174,6 +174,20 @@ where InvoiceUuid = @inoviceUuid
                 return SqlQuery.Execute(sql, (long rowNum, string sku, decimal returnQty) => (rowNum, sku, returnQty), inoviceUuid.ToSqlParameter("inoviceUuid"));
             }
         }
+
+        public async static Task<decimal> GetPaidAmountByInvoiceUuidAsync(IDataBaseFactory dbFactory, string inoviceUuid)
+        {
+
+            var sql = $@"
+select sum(TotalAmount) from InvoiceTransaction
+where InvoiceUuid=@inoviceUuid and TransType=@transType
+
+";
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                return (await SqlQuery.ExecuteScalarAsync<decimal?>(sql, inoviceUuid.ToSqlParameter("inoviceUuid"), ((int)TransTypeEnum.Payment).ToSqlParameter("transType"))).ToAmount();
+            }
+        }
     }
 }
 

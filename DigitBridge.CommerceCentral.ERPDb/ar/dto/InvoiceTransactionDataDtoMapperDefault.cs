@@ -365,7 +365,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.DigitBridgeGuid = data.DigitBridgeGuid;
 
             dto.ShipQty = data.ShipQty;
-            dto.ReturnQty = data.ReturnQty;
+            dto.ReturnedQty = data.ReturnedQty;
             dto.OpenQty = data.OpenQty;
 
             #endregion read properties

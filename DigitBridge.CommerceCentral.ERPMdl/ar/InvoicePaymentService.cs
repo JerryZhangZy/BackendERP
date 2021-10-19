@@ -122,6 +122,46 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return base.DeleteByNumber(payload, invoiceNumber, TransTypeEnum.Payment, transNum);
         }
 
+
+        #region New payment
+
+        public async Task<bool> NewPaymentAsync(InvoicePaymentPayload payload, string invoiceNumber)
+        {
+            NewData();
+
+            if (!LoadInvoice(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum))
+                return false;
+
+            CopyInvoiceHeaderToTrans();
+
+            var paidAmount = await InvoiceTransactionHelper.GetPaidAmountByInvoiceUuidAsync(dbFactory, Data.InvoiceData.InvoiceHeader.InvoiceUuid);
+
+            //unpaid amount.
+            Data.InvoiceTransaction.TotalAmount = Data.InvoiceData.InvoiceHeader.TotalAmount - paidAmount;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Load returned qty for each trans return item 
+        /// </summary>
+        /// <returns></returns>
+        protected virtual void Get()
+        {
+            if (this.Data.InvoiceReturnItems == null || this.Data.InvoiceReturnItems.Count == 0)
+                return;
+
+            var returnItems = InvoiceTransactionHelper.GetReturnItemsByInvoiceUuid(dbFactory, this.Data.InvoiceData.UniqueId);
+            if (returnItems == null || returnItems.Count == 0)
+                return;
+
+            foreach (var item in this.Data.InvoiceReturnItems)
+            {
+                item.ReturnedQty = returnItems.Where(i => i.sku == item.SKU && i.rowNum != item.RowNum).Sum(j => j.returnQty).ToQty();//+ item.ReturnQty;
+            }
+        }
+        #endregion
+
     }
 }
 

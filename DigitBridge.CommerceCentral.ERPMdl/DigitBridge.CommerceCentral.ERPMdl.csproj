@@ -5,6 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="companySummary\**" />
+    <Compile Remove="customerInquiry\**" />
+    <Compile Remove="inventoryInquiry\**" />
+    <EmbeddedResource Remove="companySummary\**" />
+    <EmbeddedResource Remove="customerInquiry\**" />
+    <EmbeddedResource Remove="inventoryInquiry\**" />
+    <None Remove="companySummary\**" />
+    <None Remove="customerInquiry\**" />
+    <None Remove="inventoryInquiry\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="apiClient\ApiReturnData.cs" />
   </ItemGroup>
 
@@ -22,9 +34,6 @@
     <Folder Include="arInquiry\" />
     <Folder Include="shipmentInquiry\" />
     <Folder Include="soInquiry\" />
-    <Folder Include="customerInquiry\" />
-    <Folder Include="inventoryInquiry\" />
-    <Folder Include="companySummary\" />
     <Folder Include="warehouseTransfer\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />
