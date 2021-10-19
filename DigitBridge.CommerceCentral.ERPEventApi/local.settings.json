@@ -32,8 +32,8 @@
     "ERP-QuickBooks-Payment-Delete-Queue": "erp-quickbooks-payment-delete-queue",
     "ERP-SalesOrder-Queue": "erp-salesorder-queue",
     "ERP-Invoice-Queue": "erp-invoice-queue",
-    "ERP-Summary-Table": "ErpSummaryCache",
-    "ERPSummaryTableStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net"
+    "ERPSummaryTableName": "ErpSummaryCache",
+    "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net"
     //test
     //"UseOrchestration": "false",
     //"OrchestrationDbConnString": "Data Source=localhost;Initial Catalog=DigitBridgeERP;User ID=sa;Password=@Fs81263201;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",

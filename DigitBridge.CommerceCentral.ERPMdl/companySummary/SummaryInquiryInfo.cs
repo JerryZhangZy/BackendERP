@@ -82,43 +82,43 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public int SalesOrderCount { get; set; }
 
-        public double SalesOrderAmount { get; set; }
+        public decimal SalesOrderAmount { get; set; }
 
         public int OpenSalesOrderCount { get; set; }
 
-        public double OpenSalesOrderAmount { get; set; }
+        public decimal OpenSalesOrderAmount { get; set; }
 
         public int CancelSalesOrderCount { get; set; }
 
-        public double CancelSalesOrderAmount { get; set; }
+        public decimal CancelSalesOrderAmount { get; set; }
 
         public int ShipmentCount { get; set; }
 
-        public double ShipmentAmount { get; set; }
+        public decimal ShipmentAmount { get; set; }
 
         public int InvoiceCount { get; set; }
 
-        public double InvoiceAmount { get; set; }
+        public decimal InvoiceAmount { get; set; }
 
         public int InvoicePaymentCount { get; set; }
 
-        public double InvoicePaymentAmount { get; set; }
+        public decimal InvoicePaymentAmount { get; set; }
 
         public int InvoiceReturnCount { get; set; }
 
-        public double InvoiceReturnAmount { get; set; }
+        public decimal InvoiceReturnAmount { get; set; }
 
         public int PoCount { get; set; }
 
-        public double PoAmount { get; set; }
+        public decimal PoAmount { get; set; }
         
         public int OpenPoCount { get; set; }
 
-        public double OpenPoAmount { get; set; }
+        public decimal OpenPoAmount { get; set; }
         
         public int PoReceiveCount { get; set; }
 
-        public double PoReceiveAmount { get; set; }
+        public decimal PoReceiveAmount { get; set; }
 
         public int CustomerCount { get; set; }
 
@@ -128,11 +128,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public int ProductCount { get; set; }
 
-        public double OrderProductAmount { get; set; }
+        public decimal OrderProductAmount { get; set; }
 
         public int OrderProductCount { get; set; }
 
-        public double SoldProductAmount { get; set; }
+        public decimal SoldProductAmount { get; set; }
 
         public int SoldProductCount { get; set; }
 

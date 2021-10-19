@@ -64,6 +64,27 @@ SUM(COALESCE({InvoiceHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
             }
         }
 
+        public async Task GetCompanySummaryAsync(CompanySummaryPayload payload)
+        {
+            if (payload.Summary == null)
+                payload.Summary = new SummaryInquiryInfoDetail();
+
+            this.LoadRequestParameter(payload);
+            try
+            {
+                this.QueryObject.LoadJson = false;
+                var result = await ExcuteAsync();
+                if (result != null && result.HasData)
+                {
+                    payload.Summary.InvoiceCount = result.GetData("Count").ToString().ToInt();
+                    payload.Summary.InvoiceAmount = result.GetData("Amount").ToString().ToAmount();
+                }
+            }
+            catch (Exception ex)
+            {
+                AddError(ex.ObjectToString());
+            }
+        }
 
     }
 }
