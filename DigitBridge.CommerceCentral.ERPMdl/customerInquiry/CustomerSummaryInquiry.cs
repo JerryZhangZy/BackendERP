@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class CustomerSummaryInquiry
+    public class CustomerSummaryInquiry : SqlQueryBuilder<SalesOrderSummaryQuery>
     {
         protected IDataBaseFactory dbFactory;
 
@@ -15,6 +15,52 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             dbFactory = dataBaseFactory;
         }
+
+
+        protected override string GetSQL_select()
+        {
+            var whereCustomer = this.QueryObject.GetSQLWithoutPrefix("ins");
+            var whereInvoice = this.QueryObject.GetSQLWithPrefix("ins");
+
+            if (string.IsNullOrWhiteSpace(whereCustomer))
+                whereCustomer = $" WHERE {whereCustomer}";
+            var whereCustomerAnd = (string.IsNullOrWhiteSpace(whereCustomer)) ? "" : $" AND {whereCustomer}";
+
+            if (string.IsNullOrWhiteSpace(whereInvoice))
+                whereInvoice = $" AND {whereInvoice}";
+
+            this.SQL_Select = $@"
+SELECT c.[count], c.active_count, non.[Count] AS nonsales_count
+    FROM (
+        SELECT
+        COUNT(1) as [count], 
+        SUM(
+            CASE WHEN COALESCE(cus.CustomerStatus, 0) = 1 THEN 1
+			ELSE 0 END
+		) as new_count,
+		SUM(
+            CASE WHEN COALESCE(cus.CustomerStatus, 0) = 9 THEN 1
+			ELSE 0 END
+		) as active_count
+    FROM Customer cus
+    {whereCustomer}
+) c
+OUTER APPLY(
+    SELECT COUNT(1) AS[Count]
+    FROM customer cus
+
+    WHERE
+    NOT EXISTS(
+        select* FROM InvoiceHeader ins
+        WHERE ins.CustomerUuid = cus.CustomerUuid {whereInvoice}
+        --ins.InvoiceDate >= '1/1/2021' AND ins.InvoiceDate <= '10/17/2021' AND ins.CustomerUuid = cus.CustomerUuid
+    )
+    {whereCustomerAnd}
+) non
+";
+            return this.SQL_Select;
+        }
+
 
 
         public async Task GetCustomerSummaryAsync(CompanySummaryPayload payload)
@@ -59,6 +105,7 @@ NOT EXISTS (
 	select * FROM InvoiceHeader ins WHERE ins.InvoiceDate >= '{payload.Filters.DateFrom.ToString("yyyy-MM-dd")}' AND ins.InvoiceDate <= '{payload.Filters.DateTo.ToString("yyyy-MM-dd")}'
 	AND ins.CustomerUuid = cus.CustomerUuid
 )";
+                
 
                 using (var dataReader = await SqlQuery.ExecuteCommandAsync(sql))
                 {
