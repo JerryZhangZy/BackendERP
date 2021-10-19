@@ -1,43 +1,12 @@
 ﻿using DigitBridge.CommerceCentral.YoPoco;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
 
-summary: {
-		salesOrderCount: 1000,
-		salesOrderAmount: 15000,
-		openSalesOrderCount: 800,
-		openSalesOrderAmount: 7500,
-		cancelSalesOrderCount: 10,
-		cancelSalesOrderAmount: 500,
-		shipmentCount: 190,
-		shipmentAmount: 7000,
-		invoiceCount: 190,
-		invoiceAmount: 7000,
-		invoicePaymentCount: 190,
-		invoicePaymentAmount: 7000,
-		invoiceReturnCount: 0,
-		invoiceReturnAmount: 0,
-		poCount: 100,
-		poAmount: 10000,
-		openPoCount: 80,
-		openPoAmount: 8000,
-		poReceiveCount: 20,
-		poReceiveAmount: 2000,
-		customerCount: 1000,
-		newCustomerCount: 200,
-		nonSalesCustomerCount: 100,
-		productCount: 1000,
-		orderProductCount: 600,
-		orderProductAmount: 15000,
-		soldProductCount: 600,
-		soldProductAmount: 7500,
-		nonSalesProductCount: 400,
-	},
 
     public class SummaryInquiryTableEntity
     {
@@ -51,7 +20,15 @@ summary: {
 
         public int ProfileNum { get; set; }
 
-        public string SummaryInquiryInfo { get; set; }
+        public string SummaryInfo { get; set; }
+
+        [JsonIgnore]
+        public SummaryInquiryInfoDetail Summary => string.IsNullOrEmpty(SummaryInfo) ? null : JsonConvert.DeserializeObject<SummaryInquiryInfoDetail>(SummaryInfo);
+
+        public string SummaryFilter { get; set; }
+
+        [JsonIgnore]
+        public SummaryInquiryFilter Filter => string.IsNullOrEmpty(SummaryFilter) ? null : JsonConvert.DeserializeObject<SummaryInquiryFilter>(SummaryFilter);
 
         public DateTime CreateInquiryTimeUtc { get; set; }
     }
@@ -67,6 +44,14 @@ summary: {
 
     public class SummaryInquiryFilter
     {
+        public SummaryInquiryFilter() { }
+
+        public SummaryInquiryFilter(IPayload payload)
+        {
+            MasterAccountNum = payload.MasterAccountNum;
+            ProfileNum = payload.ProfileNum;
+        }
+
         public int MasterAccountNum { get; set; }
 
         public int ProfileNum { get; set; }
@@ -99,47 +84,62 @@ summary: {
 
     public class SummaryInquiryInfoDetail
     {
-        public SummaryInquiryInfoItem SalesOrder { get; set; }
+        public int SalesOrderCount { get; set; }
 
-        public SummaryInquiryInfoItem OpenSalesOrder { get; set; }
+        public double SalesOrderAmount { get; set; }
 
-        public SummaryInquiryInfoItem CancelSalesOrder { get; set; }
+        public int OpenSalesOrderCount { get; set; }
 
-        public SummaryInquiryInfoItem Shipment { get; set; }
+        public double OpenSalesOrderAmount { get; set; }
 
-        public SummaryInquiryInfoItem Invoice { get; set; }
+        public int CancelSalesOrderCount { get; set; }
 
-        public SummaryInquiryInfoItem InvoicePayment { get; set; }
+        public double CancelSalesOrderAmount { get; set; }
 
-        public SummaryInquiryInfoItem InvoiceReturn { get; set; }
+        public int ShipmentCount { get; set; }
 
-        public SummaryInquiryInfoItem Po { get; set; }
+        public double ShipmentAmount { get; set; }
 
-        public SummaryInquiryInfoItem OpenPo { get; set; }
+        public int InvoiceCount { get; set; }
 
-        public SummaryInquiryInfoItem PoReceive { get; set; }
+        public double InvoiceAmount { get; set; }
 
-        public SummaryInquiryInfoItem Customer { get; set; }
+        public int InvoicePaymentCount { get; set; }
 
-        public SummaryInquiryInfoItem NewCumstomer { get; set; }
+        public double InvoicePaymentAmount { get; set; }
 
-        public SummaryInquiryInfoItem ActiveCumstomer { get; set; }
+        public int InvoiceReturnCount { get; set; }
 
-        public SummaryInquiryInfoItem NonSalesCustomer { get; set; }
+        public double InvoiceReturnAmount { get; set; }
 
-        public SummaryInquiryInfoItem Product { get; set; }
+        public int PoCount { get; set; }
 
-        public SummaryInquiryInfoItem OrderProduct { get; set; }
+        public double PoAmount { get; set; }
+        
+        public int OpenPoCount { get; set; }
 
-        public SummaryInquiryInfoItem SoldProduct { get; set; }
+        public double OpenPoAmount { get; set; }
+        
+        public int PoReceiveCount { get; set; }
 
-        public SummaryInquiryInfoItem NonSalesProduct { get; set; }
-    }
+        public double PoReceiveAmount { get; set; }
 
-    public class SummaryInquiryInfoItem
-    {
-        public int Count { get; set; }
+        public int CustomerCount { get; set; }
 
-        public double Amount { get; set; }
+        public int NewCustomerCount { get; set; }
+
+        public int NonSalesCustomerCount { get; set; }
+
+        public int ProductCount { get; set; }
+
+        public double OrderProductAmount { get; set; }
+
+        public int OrderProductCount { get; set; }
+
+        public double SoldProductAmount { get; set; }
+
+        public int SoldProductCount { get; set; }
+
+        public int NonSalesProductCount { get; set; }
     }
 }

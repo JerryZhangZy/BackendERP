@@ -18,18 +18,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task GetProductSummaryAsync(CompanySummaryPayload payload)
         {
             if (payload.Summary == null)
-                payload.Summary = new SummaryInquiryInfo
-                {
-                    Filter = payload.Filters,
-                    Summary = new SummaryInquiryInfoDetail()
-                };
+                payload.Summary = new SummaryInquiryInfoDetail();
             using (var trx = new ScopedTransaction(dbFactory))
             {
                 var sql = @$"SELECT COUNT(1)
 FROM ProductBasic
 WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum}";
                 var count = await SqlQuery.ExecuteScalarAsync<int>(sql);
-                payload.Summary.Summary.Product = new SummaryInquiryInfoItem { Count = count };
+                payload.Summary.ProductCount = count;
             }
             using (var trx = new ScopedTransaction(dbFactory))
             {
@@ -41,7 +37,7 @@ NOT EXISTS (
 	AND pb.SKU = soi.SKU
 )";
                 var count = await SqlQuery.ExecuteScalarAsync<int>(sql);
-                payload.Summary.Summary.NonSalesProduct = new SummaryInquiryInfoItem { Count = count };
+                payload.Summary.NonSalesProductCount =  count;
             }
         }
     }

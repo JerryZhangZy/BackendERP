@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// (Request and Response Data) Single Customer entity object which load by Number.
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) Single entity object which load by Number.")]
-        public SummaryInquiryInfo Summary { get; set; }
+        public SummaryInquiryInfoDetail Summary { get; set; }
         [JsonIgnore] public virtual bool HasSummary => Summary != null;
         public bool ShouldSerializeSummary() => HasSummary;
 
