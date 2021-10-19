@@ -9,7 +9,6 @@
   <ItemGroup>
     <Compile Remove="Api\ApiDemo.cs" />
     <Compile Remove="Api\ApiStandardDemo.cs" />
-    <Compile Remove="Api\CompanySummaryApi.cs" />
     <Compile Remove="Api\InventoryLogApi.cs" />
   </ItemGroup>
   <ItemGroup>
