@@ -6,6 +6,39 @@ using System.Text.Json.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
+
+summary: {
+		salesOrderCount: 1000,
+		salesOrderAmount: 15000,
+		openSalesOrderCount: 800,
+		openSalesOrderAmount: 7500,
+		cancelSalesOrderCount: 10,
+		cancelSalesOrderAmount: 500,
+		shipmentCount: 190,
+		shipmentAmount: 7000,
+		invoiceCount: 190,
+		invoiceAmount: 7000,
+		invoicePaymentCount: 190,
+		invoicePaymentAmount: 7000,
+		invoiceReturnCount: 0,
+		invoiceReturnAmount: 0,
+		poCount: 100,
+		poAmount: 10000,
+		openPoCount: 80,
+		openPoAmount: 8000,
+		poReceiveCount: 20,
+		poReceiveAmount: 2000,
+		customerCount: 1000,
+		newCustomerCount: 200,
+		nonSalesCustomerCount: 100,
+		productCount: 1000,
+		orderProductCount: 600,
+		orderProductAmount: 15000,
+		soldProductCount: 600,
+		soldProductAmount: 7500,
+		nonSalesProductCount: 400,
+	},
+
     public class SummaryInquiryTableEntity
     {
         [JsonIgnore]
