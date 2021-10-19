@@ -22,13 +22,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public string SummaryInfo { get; set; }
 
-        [JsonIgnore]
-        public SummaryInquiryInfoDetail Summary => string.IsNullOrEmpty(SummaryInfo) ? null : JsonConvert.DeserializeObject<SummaryInquiryInfoDetail>(SummaryInfo);
+        public SummaryInquiryInfoDetail Summary { get; set; }
 
-        public string SummaryFilter { get; set; }
-
-        [JsonIgnore]
-        public SummaryInquiryFilter Filter => string.IsNullOrEmpty(SummaryFilter) ? null : JsonConvert.DeserializeObject<SummaryInquiryFilter>(SummaryFilter);
+        public SummaryInquiryFilter Filter { get; set; }
 
         public DateTime CreateInquiryTimeUtc { get; set; }
     }

@@ -47,25 +47,34 @@ namespace DigitBridge.CommerceCentral.ERPEventApi.Mdl
             await service.GetCompaySummaryAsync(payload);
 
             var universal = await GetSummaryTableUniversalAsync();
-            var summary =await universal.GetEntityAsync(payload.Filters.GenerateFilterKey, "ErpSummaryCache");
-            if (summary == null)
+            //var summary =await universal.GetEntityAsync(payload.Filters.GenerateFilterKey, "ErpSummaryCache");
+            //if (summary == null)
+            //{
+            //    summary = new SummaryInquiryTableEntity
+            //    {
+            //        RowKey = payload.Filters.GenerateFilterKey,
+            //        ProfileNum = payload.ProfileNum,
+            //        MasterAccountNum = payload.MasterAccountNum,
+            //        CreateInquiryTimeUtc = DateTime.UtcNow,
+            //        Summary = payload.Summary,
+            //        Filter=payload.Filters
+            //    };
+            //}
+            //else
+            //{
+            //    summary.CreateInquiryTimeUtc = DateTime.UtcNow;
+            //    summary.Summary =payload.Summary;
+            //    summary.Filter = payload.Filters;
+            //}
+            var summary= new SummaryInquiryTableEntity
             {
-                summary = new SummaryInquiryTableEntity
-                {
-                    RowKey = payload.Filters.GenerateFilterKey,
-                    ProfileNum = payload.ProfileNum,
-                    MasterAccountNum = payload.MasterAccountNum,
-                    CreateInquiryTimeUtc = DateTime.UtcNow,
-                    SummaryInfo = JsonConvert.SerializeObject(payload.Summary),
-                    SummaryFilter=JsonConvert.SerializeObject(payload.Filters)
-                };
-            }
-            else
-            {
-                summary.CreateInquiryTimeUtc = DateTime.UtcNow;
-                summary.SummaryInfo = JsonConvert.SerializeObject(payload.Summary);
-                summary.SummaryFilter = JsonConvert.SerializeObject(payload.Filters);
-            }
+                RowKey = payload.Filters.GenerateFilterKey,
+                ProfileNum = payload.ProfileNum,
+                MasterAccountNum = payload.MasterAccountNum,
+                CreateInquiryTimeUtc = DateTime.UtcNow,
+                Summary = payload.Summary,
+                Filter = payload.Filters
+            };
             await universal.UpSertEntityAsync(summary, summary.PartitionKey, summary.RowKey);
         }
     }

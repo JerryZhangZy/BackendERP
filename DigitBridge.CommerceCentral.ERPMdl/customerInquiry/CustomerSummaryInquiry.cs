@@ -69,7 +69,6 @@ OUTER APPLY(
     NOT EXISTS(
         select* FROM InvoiceHeader ins
         WHERE ins.CustomerUuid = cus.CustomerUuid {whereInvoice}
-        --ins.InvoiceDate >= '1/1/2021' AND ins.InvoiceDate <= '10/17/2021' AND ins.CustomerUuid = cus.CustomerUuid
     )
     {whereCustomerAnd}
 ) non

@@ -12,7 +12,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         // Table prefix which use in this sql query
         protected static string PREFIX = ProductBasicHelper.TableAllies;
-        protected static string PREFIX_INVOICE = InvoiceHeaderHelper.TableAllies;
+        protected static string PREFIX_SO = SalesOrderHeaderHelper.TableAllies;
 
         // Filter fields
 
@@ -22,10 +22,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _CustomerName = new QueryFilter<string>("CustomerName", "CustomerName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> CustomerName => _CustomerName;
 
-        protected QueryFilter<DateTime> _DateFrom = new QueryFilter<DateTime>("DateFrom", "InvoiceDate", PREFIX_INVOICE, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        protected QueryFilter<DateTime> _DateFrom = new QueryFilter<DateTime>("DateFrom", "OrderDate", PREFIX_SO, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
         public QueryFilter<DateTime> DateFrom => _DateFrom;
 
-        protected QueryFilter<DateTime> _DateTo = new QueryFilter<DateTime>("DateTo", "InvoiceDate", PREFIX_INVOICE, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
+        protected QueryFilter<DateTime> _DateTo = new QueryFilter<DateTime>("DateTo", "OrderDate", PREFIX_SO, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
         public QueryFilter<DateTime> DateTo => _DateTo;
         //protected EnumQueryFilter<CustomerType> _CustomerType = new EnumQueryFilter<CustomerType>("CustomerType", "CustomerType", PREFIX, FilterBy.eq, -1);
         //public EnumQueryFilter<CustomerType> CustomerType => _CustomerType;

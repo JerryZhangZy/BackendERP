@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public async Task GetCompanySummaryAsync(CompanySummaryPayload payload)
         {
             var universal = await GetSummaryTableUniversalAsync();
-            var summary =await universal.GetEntityAsync("ErpSummaryCache", payload.Filters.GenerateFilterKey);
+            var summary =await universal.GetEntityAsync(payload.Filters.GenerateFilterKey,"ErpSummaryCache");
             if (summary == null)
             {
                 payload.Success = false;
