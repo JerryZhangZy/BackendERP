@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -23,7 +23,6 @@
     <Folder Include="shipmentInquiry\" />
     <Folder Include="soInquiry\" />
     <Folder Include="customerInquiry\" />
-    <Folder Include="inventoryInquiry\" />
     <Folder Include="companySummary\" />
     <Folder Include="warehouseTransfer\" />
     <Folder Include="po\" />

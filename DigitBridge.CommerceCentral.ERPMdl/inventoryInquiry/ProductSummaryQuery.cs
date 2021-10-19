@@ -8,10 +8,10 @@ using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class CustomerSummaryQuery : QueryObject<CustomerSummaryQuery>
+    public class ProductSummaryQuery : QueryObject<ProductSummaryQuery>
     {
         // Table prefix which use in this sql query
-        protected static string PREFIX = CustomerHelper.TableAllies;
+        protected static string PREFIX = ProductBasicHelper.TableAllies;
         protected static string PREFIX_INVOICE = InvoiceHeaderHelper.TableAllies;
 
         // Filter fields
@@ -33,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //protected EnumQueryFilter<BusinessType> _BusinessType = new EnumQueryFilter<BusinessType>("BusinessType", "BusinessType", PREFIX, FilterBy.eq, -1);
         //public EnumQueryFilter<BusinessType> BusinessType => _BusinessType;
 
-        public CustomerSummaryQuery() : base(PREFIX)
+        public ProductSummaryQuery() : base(PREFIX)
         {
             AddFilter(_CustomerCode);
             AddFilter(_CustomerName);

@@ -84,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 DateTo = req.GetData("dateTo", ParameterLocation.Query).ToDateTime()
             };
             payload.Filters = filter;
-            var srv = new CustomerSummaryInquiry(dbFactory);
+            var srv = new CustomerSummaryInquiry(dbFactory,new CustomerSummaryQuery());
             await srv.GetCustomerSummaryAsync(payload);
             return new JsonNetResponse<CompanySummaryPayload>(payload);
         }
