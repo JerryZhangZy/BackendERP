@@ -6,7 +6,7 @@ namespace DigitBridge.QuickBooks.Integration
         Task<bool> ExportByNumberAsync(string invoiceNumber, int transNum);
         Task<bool> VoidQboRefundByNumberAsync(string invoiceNumber, int transNum);
         Task<bool> DeleteQboRefundByNumberAsync(string invoiceNumber, int transNum);
-        Task<bool> GetQboRefundAsync(string invoiceNumber, int transNum);
+        Task<bool> GetQboRefundByNumberAsync(string invoiceNumber, int transNum);
 
         
         Task<bool> ExportByUuidAsync(string transUuid);

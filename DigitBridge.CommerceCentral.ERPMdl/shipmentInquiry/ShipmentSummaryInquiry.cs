@@ -57,7 +57,8 @@ SUM(COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShippingCost,0)) as Amount
                     payload.ShipmentSummary = sb;
             }
             catch (Exception ex)
-            { 
+            {
+                payload.Success = false;
                 payload.ShipmentSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;
