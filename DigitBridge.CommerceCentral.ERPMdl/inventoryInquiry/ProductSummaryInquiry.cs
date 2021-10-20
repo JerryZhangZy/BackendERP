@@ -70,6 +70,7 @@ SELECT c.count,non.non_count,c.count-non.non_count as sold_count FROM
             try
             {
                 this.OnlySQLSelect = true;
+                this.QueryObject.LoadJson = false;
                 var result = await ExcuteAsync();
                 if (result != null && result.HasData)
                 {
