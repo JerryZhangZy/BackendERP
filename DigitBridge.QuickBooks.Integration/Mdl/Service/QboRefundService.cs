@@ -27,19 +27,6 @@ namespace DigitBridge.QuickBooks.Integration
             this._payload = payload;
         }
 
-        #region prepare data 
-        protected async Task<bool> LoadRefundData(string invoiceNumber, int transNum)
-        {
-            var success = await ReturnService.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transNum);
-            RefundData = ReturnService.Data;
-            if (!success)
-            {
-                this.Messages = this.Messages.Concat(ReturnService.Messages).ToList();
-            }
-            return success;
-        }
-        #endregion
-
         #region qbo Refund back to erp 
         /// <summary>
         /// Write qboRefund to ExportLog
@@ -61,19 +48,31 @@ namespace DigitBridge.QuickBooks.Integration
 
         #endregion
 
-        #region Qbo Refund operation.
+        #region Handle by number. This for api
+
+        protected async Task<bool> LoadRefundDataByNumber(string invoiceNumber, int transNum)
+        {
+            var success = await ReturnService.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transNum);
+            RefundData = ReturnService.Data;
+            if (!success)
+            {
+                this.Messages = this.Messages.Concat(ReturnService.Messages).ToList();
+            }
+            return success;
+        }
+
         /// <summary>
         /// Export erp Refund to qbo Refund by erp Refund number.
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public async Task<bool> ExportAsync(string invoiceNumber, int transNum)
+        public async Task<bool> ExportByNumberAsync(string invoiceNumber, int transNum)
         {
             var success = false;
             RefundReceipt qboRefund = null;
             try
             {
-                success = await LoadRefundData(invoiceNumber, transNum);
+                success = await LoadRefundDataByNumber(invoiceNumber, transNum);
 
                 success = success && await GetSetting();
 
@@ -88,6 +87,189 @@ namespace DigitBridge.QuickBooks.Integration
                 AddError(e.ObjectToString());
             }
 
+            await WriteResult(success, qboRefund);
+
+            return success;
+        }
+
+
+
+        public async Task<bool> VoidQboRefundByNumberAsync(string invoiceNumber, int transNum)
+        {
+            var success = false;
+            RefundReceipt qboRefund = null;
+            try
+            {
+                success = await LoadRefundDataByNumber(invoiceNumber, transNum);
+
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(RefundData.InvoiceTransaction.TransUuid));
+
+                success = success && (qboRefund = await VoidRefundAsync(txnId)) != null;
+
+                success = success && await WriteQboRefundToExportLog(qboRefund);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                AddError(e.ObjectToString());
+            }
+
+            await WriteResult(success, qboRefund);
+
+            return success;
+        }
+
+        public async Task<bool> DeleteQboRefundByNumberAsync(string invoiceNumber, int transNum)
+        {
+            var success = false;
+            RefundReceipt qboRefund = null;
+            try
+            {
+                success = await LoadRefundDataByNumber(invoiceNumber, transNum);
+
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(RefundData.InvoiceTransaction.TransUuid));
+
+                success = success && (qboRefund = await DeleteRefundAsync(txnId)) != null;
+
+                success = success && await WriteQboRefundToExportLog(qboRefund);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                AddError(e.ObjectToString());
+            }
+
+            await WriteResult(success, qboRefund);
+
+            return success;
+        }
+
+        public async Task<bool> GetQboRefundByNumberAsync(string invoiceNumber, int transNum)
+        {
+            var success = false;
+            try
+            {
+                success = await LoadRefundDataByNumber(invoiceNumber, transNum);
+
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(RefundData.InvoiceTransaction.TransUuid));
+
+                success = success && (_payload.QboRefund = await GetRefundAsync(txnId)) != null;
+            }
+            catch (Exception e)
+            {
+                success = false;
+                AddError(e.ObjectToString());
+            }
+            return success;
+        }
+        #endregion
+
+        #region Handle by uuid. This for internal
+
+        protected async Task<bool> LoadRefundDataByUuid(string transUuid)
+        {
+            var success = await ReturnService.GetDataByIdAsync(transUuid);
+            RefundData = ReturnService.Data;
+            if (!success)
+            {
+                this.Messages = this.Messages.Concat(ReturnService.Messages).ToList();
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// Export erp Refund to qbo Refund by erp Refund number.
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public async Task<bool> ExportByUuidAsync(string transUuid)
+        {
+            var success = false;
+            RefundReceipt qboRefund = null;
+            try
+            {
+                success = await LoadRefundDataByUuid(transUuid);
+
+                success = success && await GetSetting();
+
+                success = success && (qboRefund = await GetQboRefund()) != null;
+                success = success && (qboRefund = await CreateOrUpdateRefund(qboRefund)) != null;
+
+                success = success && await WriteQboRefundToExportLog(qboRefund);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                AddError(e.ObjectToString());
+            }
+
+            await WriteResult(success, qboRefund);
+
+            return success;
+        }
+
+
+
+        public async Task<bool> VoidQboRefundByUuidAsync(string transUuid)
+        {
+            var success = false;
+            RefundReceipt qboRefund = null;
+            try
+            {
+                success = await LoadRefundDataByUuid(transUuid);
+
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(RefundData.InvoiceTransaction.TransUuid));
+
+                success = success && (qboRefund = await VoidRefundAsync(txnId)) != null;
+
+                success = success && await WriteQboRefundToExportLog(qboRefund);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                AddError(e.ObjectToString());
+            }
+
+            await WriteResult(success, qboRefund);
+
+            return success;
+        }
+
+        public async Task<bool> DeleteQboRefundByUuidAsync(string transUuid)
+        {
+            var success = false;
+            RefundReceipt qboRefund = null;
+            try
+            {
+                success = await LoadRefundDataByUuid(transUuid);
+
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(RefundData.InvoiceTransaction.TransUuid));
+
+                success = success && (qboRefund = await DeleteRefundAsync(txnId)) != null;
+
+                success = success && await WriteQboRefundToExportLog(qboRefund);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                AddError(e.ObjectToString());
+            }
+
+            await WriteResult(success, qboRefund);
+
+            return success;
+        }
+        #endregion
+
+        #region private method 
+
+        private async System.Threading.Tasks.Task WriteResult(bool success, RefundReceipt qboRefund)
+        {
             if (success)
             {
                 _payload.QboRefund = qboRefund;
@@ -97,8 +279,6 @@ namespace DigitBridge.QuickBooks.Integration
                 AddInfo(qboRefund.ObjectToString());
                 await SaveExportErrorLogAsync();
             }
-
-            return success;
         }
 
         private async Task<RefundReceipt> GetQboRefund()
@@ -121,93 +301,6 @@ namespace DigitBridge.QuickBooks.Integration
             return qboRefund;
         }
 
-        public async Task<bool> VoidQboRefundAsync(string invoiceNumber, int transNum)
-        {
-            var success = false;
-            RefundReceipt qboRefund = null;
-            try
-            {
-                success = await LoadRefundData(invoiceNumber, transNum);
-
-                string txnId = null;
-                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(RefundData.InvoiceTransaction.TransUuid));
-
-                success = success && (qboRefund = await VoidRefundAsync(txnId)) != null;
-
-                success = success && await WriteQboRefundToExportLog(qboRefund);
-            }
-            catch (Exception e)
-            {
-                success = false;
-                AddError(e.ObjectToString());
-            }
-
-            if (success)
-            {
-                _payload.QboRefund = qboRefund;
-            }
-            else
-            {
-                AddInfo(qboRefund.ObjectToString());
-                await SaveExportErrorLogAsync();
-            }
-
-            return success;
-        }
-
-        public async Task<bool> DeleteQboRefundAsync(string invoiceNumber, int transNum)
-        {
-            var success = false;
-            RefundReceipt qboRefund = null;
-            try
-            {
-                success = await LoadRefundData(invoiceNumber, transNum);
-
-                string txnId = null;
-                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(RefundData.InvoiceTransaction.TransUuid));
-
-                success = success && (qboRefund = await DeleteRefundAsync(txnId)) != null;
-
-                success = success && await WriteQboRefundToExportLog(qboRefund);
-            }
-            catch (Exception e)
-            {
-                success = false;
-                AddError(e.ObjectToString());
-            }
-
-            if (success)
-            {
-                _payload.QboRefund = qboRefund;
-            }
-            else
-            {
-                AddInfo(qboRefund.ObjectToString());
-                await SaveExportErrorLogAsync();
-            }
-
-            return success;
-        }
-
-        public async Task<bool> GetQboRefundAsync(string invoiceNumber, int transNum)
-        {
-            var success = false;
-            try
-            {
-                success = await LoadRefundData(invoiceNumber, transNum);
-
-                string txnId = null;
-                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(RefundData.InvoiceTransaction.TransUuid));
-
-                success = success && (_payload.QboRefund = await GetRefundAsync(txnId)) != null;
-            }
-            catch (Exception e)
-            {
-                success = false;
-                AddError(e.ObjectToString());
-            }
-            return success;
-        }
         #endregion
     }
 }

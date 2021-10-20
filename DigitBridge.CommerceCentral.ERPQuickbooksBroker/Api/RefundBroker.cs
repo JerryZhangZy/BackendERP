@@ -36,11 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
                 var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var service = new QboRefundService(payload, dataBaseFactory);
 
-                var arrs = message.ProcessSource.Split("_");
-                var invoiceNumber = arrs[0];
-                var tranNumber = arrs[1];
-
-                var success = await service.ExportAsync(invoiceNumber, int.Parse(tranNumber));
+                var success = await service.ExportByUuidAsync(message.ProcessUuid);
 
                 ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
             }
@@ -73,11 +69,7 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
                 var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var service = new QboRefundService(payload, dataBaseFactory);
 
-                var arrs = message.ProcessSource.Split("_");
-                var invoiceNumber = arrs[0];
-                var tranNumber = arrs[1];
-
-                var success = await service.ExportAsync(invoiceNumber, int.Parse(tranNumber));
+                var success = await service.DeleteQboRefundByUuidAsync(message.ProcessUuid);
 
                 ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
             }

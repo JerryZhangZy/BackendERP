@@ -166,7 +166,7 @@ namespace DigitBridge.QuickBooks.Integration
         }
         #endregion
 
-        #region Handle by uuid. This for api
+        #region Handle by uuid. This for internal
 
         protected async Task<bool> LoadPaymentDataByUuid(string transUuid)
         {
