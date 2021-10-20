@@ -23,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public ShipmentSummaryQuery() : base(PREFIX)
         {
-            //AddFilter(_CustomerCode);
+            AddFilter(_CustomerCode);
             AddFilter(_ShipDateFrom);
             AddFilter(_ShipDateTo);
         }
