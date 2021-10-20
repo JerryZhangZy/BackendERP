@@ -27,18 +27,6 @@ namespace DigitBridge.QuickBooks.Integration
             this._payload = payload;
         }
 
-        #region prepare data 
-        protected async Task<bool> LoadPaymentData(string invoiceNumber, int transNum)
-        {
-            var success = await paymentService.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transNum);
-            paymentData = paymentService.Data;
-            if (!success)
-            {
-                this.Messages = this.Messages.Concat(paymentService.Messages).ToList();
-            }
-            return success;
-        } 
-        #endregion
 
         #region qbo Payment back to erp 
         /// <summary>
@@ -61,19 +49,31 @@ namespace DigitBridge.QuickBooks.Integration
 
         #endregion
 
-        #region Qbo Payment operation.
+        #region Handle by number. This for api
+
+        protected async Task<bool> LoadPaymentDataByNumber(string invoiceNumber, int transNum)
+        {
+            var success = await paymentService.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transNum);
+            paymentData = paymentService.Data;
+            if (!success)
+            {
+                this.Messages = this.Messages.Concat(paymentService.Messages).ToList();
+            }
+            return success;
+        }
+
         /// <summary>
         /// Export erp Payment to qbo Payment by erp Payment number.
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public async Task<bool> ExportAsync(string invoiceNumber, int transNum)
+        public async Task<bool> ExportByNumberAsync(string invoiceNumber, int transNum)
         {
             var success = false;
             Payment qboPayment = null;
             try
             {
-                success = await LoadPaymentData(invoiceNumber, transNum);
+                success = await LoadPaymentDataByNumber(invoiceNumber, transNum);
 
                 success = success && await GetSetting();
 
@@ -88,6 +88,187 @@ namespace DigitBridge.QuickBooks.Integration
                 AddError(e.ObjectToString());
             }
 
+            await WriteResult(success, qboPayment);
+
+            return success;
+        }
+
+        public async Task<bool> VoidQboPaymentByNumberAsync(string invoiceNumber, int transNum)
+        {
+            var success = false;
+            Payment qboPayment = null;
+            try
+            {
+                success = await LoadPaymentDataByNumber(invoiceNumber, transNum);
+
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid));
+
+                success = success && (qboPayment = await VoidPaymentAsync(txnId)) != null;
+
+                success = success && await WriteQboPaymentToExportLog(qboPayment);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                AddError(e.ObjectToString());
+            }
+
+            await WriteResult(success, qboPayment);
+
+            return success;
+        }
+
+        public async Task<bool> DeleteQboPaymentByNumberAsync(string invoiceNumber, int transNum)
+        {
+            var success = false;
+            Payment qboPayment = null;
+            try
+            {
+                success = await LoadPaymentDataByNumber(invoiceNumber, transNum);
+
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid));
+
+                success = success && (qboPayment = await DeletePaymentAsync(txnId)) != null;
+
+                success = success && await WriteQboPaymentToExportLog(qboPayment);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                AddError(e.ObjectToString());
+            }
+
+            await WriteResult(success, qboPayment);
+
+            return success;
+        }
+
+        public async Task<bool> GetQboPaymentByNumberAsync(string invoiceNumber, int transNum)
+        {
+            var success = false;
+            try
+            {
+                success = await LoadPaymentDataByNumber(invoiceNumber, transNum);
+
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid));
+
+                success = success && (_payload.QboPayment = await GetPaymentAsync(txnId)) != null;
+            }
+            catch (Exception e)
+            {
+                success = false;
+                AddError(e.ObjectToString());
+            }
+            return success;
+        }
+        #endregion
+
+        #region Handle by uuid. This for api
+
+        protected async Task<bool> LoadPaymentDataByUuid(string transUuid)
+        {
+            var success = await paymentService.GetDataByIdAsync(transUuid);
+            paymentData = paymentService.Data;
+            if (!success)
+            {
+                this.Messages = this.Messages.Concat(paymentService.Messages).ToList();
+            }
+            return success;
+        }
+
+
+        /// <summary>
+        /// Export erp Payment to qbo Payment by erp Payment number.
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public async Task<bool> ExportByUuidAsync(string tranUuid)
+        {
+            var success = false;
+            Payment qboPayment = null;
+            try
+            {
+                success = await LoadPaymentDataByUuid(tranUuid);
+
+                success = success && await GetSetting();
+
+                success = success && (qboPayment = await GetQboPayment()) != null;
+                success = success && (qboPayment = await CreateOrUpdatePayment(qboPayment)) != null;
+
+                success = success && await WriteQboPaymentToExportLog(qboPayment);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                AddError(e.ObjectToString());
+            }
+
+            await WriteResult(success, qboPayment);
+
+            return success;
+        }
+
+        public async Task<bool> VoidQboPaymentByUuidAsync(string tranUuid)
+        {
+            var success = false;
+            Payment qboPayment = null;
+            try
+            {
+                success = await LoadPaymentDataByUuid(tranUuid);
+
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid));
+
+                success = success && (qboPayment = await VoidPaymentAsync(txnId)) != null;
+
+                success = success && await WriteQboPaymentToExportLog(qboPayment);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                AddError(e.ObjectToString());
+            }
+
+            await WriteResult(success, qboPayment);
+
+            return success;
+        }
+
+        public async Task<bool> DeleteQboPaymentByUuidAsync(string tranUuid)
+        {
+            var success = false;
+            Payment qboPayment = null;
+            try
+            {
+                success = await LoadPaymentDataByUuid(tranUuid);
+
+                string txnId = null;
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid));
+
+                success = success && (qboPayment = await DeletePaymentAsync(txnId)) != null;
+
+                success = success && await WriteQboPaymentToExportLog(qboPayment);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                AddError(e.ObjectToString());
+            }
+
+            await WriteResult(success, qboPayment);
+
+            return success;
+        } 
+
+        #endregion
+
+        #region private method 
+
+        private async System.Threading.Tasks.Task WriteResult(bool success, Payment qboPayment)
+        {
             if (success)
             {
                 _payload.QboPayment = qboPayment;
@@ -97,8 +278,6 @@ namespace DigitBridge.QuickBooks.Integration
                 AddInfo(qboPayment.ObjectToString());
                 await SaveExportErrorLogAsync();
             }
-
-            return success;
         }
 
         private async Task<Payment> GetQboPayment()
@@ -121,93 +300,6 @@ namespace DigitBridge.QuickBooks.Integration
             return qboPayment;
         }
 
-        public async Task<bool> VoidQboPaymentAsync(string invoiceNumber, int transNum)
-        {
-            var success = false;
-            Payment qboPayment = null;
-            try
-            {
-                success = await LoadPaymentData(invoiceNumber, transNum);
-
-                string txnId = null;
-                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid));
-
-                success = success && (qboPayment = await VoidPaymentAsync(txnId)) != null;
-
-                success = success && await WriteQboPaymentToExportLog(qboPayment);
-            }
-            catch (Exception e)
-            {
-                success = false;
-                AddError(e.ObjectToString());
-            }
-
-            if (success)
-            {
-                _payload.QboPayment = qboPayment;
-            }
-            else
-            {
-                AddInfo(qboPayment.ObjectToString());
-                await SaveExportErrorLogAsync();
-            }
-
-            return success;
-        }
-
-        public async Task<bool> DeleteQboPaymentAsync(string invoiceNumber, int transNum)
-        {
-            var success = false;
-            Payment qboPayment = null;
-            try
-            {
-                success = await LoadPaymentData(invoiceNumber, transNum);
-
-                string txnId = null;
-                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid));
-
-                success = success && (qboPayment = await DeletePaymentAsync(txnId)) != null;
-
-                success = success && await WriteQboPaymentToExportLog(qboPayment);
-            }
-            catch (Exception e)
-            {
-                success = false;
-                AddError(e.ObjectToString());
-            }
-
-            if (success)
-            {
-                _payload.QboPayment = qboPayment;
-            }
-            else
-            {
-                AddInfo(qboPayment.ObjectToString());
-                await SaveExportErrorLogAsync();
-            }
-
-            return success;
-        }
-
-        public async Task<bool> GetQboPaymentAsync(string invoiceNumber, int transNum)
-        {
-            var success = false;
-            try
-            {
-                success = await LoadPaymentData(invoiceNumber, transNum);
-
-                string txnId = null;
-                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(paymentData.InvoiceTransaction.TransUuid));
-
-                success = success && (_payload.QboPayment = await GetPaymentAsync(txnId)) != null;
-            }
-            catch (Exception e)
-            {
-                success = false;
-                AddError(e.ObjectToString());
-            }
-            return success;
-        }
         #endregion
     }
 }

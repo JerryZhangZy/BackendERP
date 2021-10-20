@@ -34,13 +34,9 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
                 };
 
                 var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-                var service = new QboPaymentService(payload, dataBaseFactory);
+                var service = new QboPaymentService(payload, dataBaseFactory); 
 
-                var arrs = message.ProcessSource.Split("_");
-                var invoiceNumber = arrs[0];
-                var tranNumber = arrs[1];
-
-                var success = await service.ExportAsync(invoiceNumber, int.Parse(tranNumber));
+                var success = await service.ExportByUuidAsync(message.ProcessUuid);
 
 
                 ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
@@ -73,12 +69,8 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
 
                 var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var service = new QboPaymentService(payload, dataBaseFactory);
-
-                var arrs = message.ProcessSource.Split("_");
-                var invoiceNumber = arrs[0];
-                var tranNumber = arrs[1];
-
-                var success = await service.DeleteQboPaymentAsync(invoiceNumber, int.Parse(tranNumber));
+                 
+                var success = await service.DeleteQboPaymentByUuidAsync(message.ProcessUuid);
 
                 ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
             }
