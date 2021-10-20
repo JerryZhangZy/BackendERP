@@ -1,4 +1,6 @@
-﻿using DigitBridge.CommerceCentral.YoPoco;
+﻿using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.CommerceCentral.YoPoco;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,50 +61,50 @@ SELECT c.count,non.non_count,c.count-non.non_count as sold_count FROM
             return this.SQL_Select;
         }
 
-        public async Task GetProductSummaryAsync(CompanySummaryPayload payload)
+        public async Task GetCompanySummaryAsync(CompanySummaryPayload payload)
         {
             if (payload.Summary == null)
                 payload.Summary = new SummaryInquiryInfoDetail();
 
             LoadSummaryParameter(payload);
-            using (var trx = new ScopedTransaction(dbFactory))
+            try
             {
-                using (var dataReader = await SqlQuery.ExecuteCommandAsync(GetSQL_select()))
+                this.OnlySQLSelect = true;
+                var result = await ExcuteAsync();
+                if (result != null && result.HasData)
                 {
-                    if (await dataReader.ReadAsync())
-                    {
-                        payload.Summary.ProductCount = dataReader.GetInt32(0);
-                        payload.Summary.NonSalesProductCount = dataReader.GetInt32(1);
-                        payload.Summary.SoldProductCount = dataReader.GetInt32(2);
-                    }
+                    payload.Summary.ProductCount = result.GetData("count").ToInt();
+                    payload.Summary.NonSalesProductCount = result.GetData("non_count").ToInt();
+                    payload.Summary.SoldProductCount = result.GetData("sold_count").ToInt();
                 }
+            }
+            catch (Exception ex)
+            {
+                AddError(ex.ObjectToString());
             }
         }
 
-        //        public async Task GetProductSummaryAsync(CompanySummaryPayload payload)
-        //        {
-        //            if (payload.Summary == null)
-        //                payload.Summary = new SummaryInquiryInfoDetail();
-        //            using (var trx = new ScopedTransaction(dbFactory))
-        //            {
-        //                var sql = @$"SELECT COUNT(1)
-        //FROM ProductBasic
-        //WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum}";
-        //                var count = await SqlQuery.ExecuteScalarAsync<int>(sql);
-        //                payload.Summary.ProductCount = count;
-        //            }
-        //            using (var trx = new ScopedTransaction(dbFactory))
-        //            {
-        //                var sql = @$"SELECT COUNT(1)
-        //FROM ProductBasic pb
-        //WHERE MasterAccountNum={payload.MasterAccountNum} AND ProfileNum={payload.ProfileNum} AND
-        //NOT EXISTS (
-        //	select soh.OrderDate,soi.SKU from SalesOrderHeader soh outer apply (select SKU from SalesOrderItems soi where soh.SalesOrderUuid=soi.SalesOrderUuid) as soi WHERE soh.OrderDate >= '{payload.Filters.DateFrom.ToString("yyyy-MM-dd")}' AND soh.OrderDate <= '{payload.Filters.DateTo.ToString("yyyy-MM-dd")}'
-        //	AND pb.SKU = soi.SKU
-        //)";
-        //                var count = await SqlQuery.ExecuteScalarAsync<int>(sql);
-        //                payload.Summary.NonSalesProductCount =  count;
-        //            }
-        //        }
+        public async virtual Task GetProductSummaryAsync(InventoryPayload payload)
+        {
+            if (payload == null)
+                payload = new InventoryPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            this.OnlySQLSelect = true;
+            try
+            {
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
+                    payload.ProductSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.ProductSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+                payload.Success = false;
+            }
+        }
     }
 }

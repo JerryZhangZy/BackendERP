@@ -40,7 +40,7 @@ SUM(COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShippingCost,0)) as Amount
  LEFT JOIN {InvoiceHeaderInfoHelper.TableName} {InvoiceHeaderInfoHelper.TableAllies} ON ({OrderShipmentHeaderHelper.TableAllies}.ChannelOrderID = {InvoiceHeaderInfoHelper.TableAllies}.ChannelOrderID)
 ";
             return this.SQL_From;
-        } 
+        }
         #endregion override methods
 
         public async virtual Task ShipmentSummaryAsync(OrderShipmentPayload payload)
@@ -57,11 +57,21 @@ SUM(COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShippingCost,0)) as Amount
                     payload.ShipmentSummary = sb;
             }
             catch (Exception ex)
-            { 
+            {
                 payload.ShipmentSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;
             }
+        }
+        private void LoadSummaryParameter(CompanySummaryPayload payload)
+        {
+            if (payload == null)
+                return;
+            QueryObject.QueryFilterList.First(x => x.Name == "MasterAccountNum").SetValue(payload.MasterAccountNum);
+            QueryObject.QueryFilterList.First(x => x.Name == "ProfileNum").SetValue(payload.ProfileNum);
+            //QueryObject.QueryFilterList.First(x => x.Name == "CustomerCode").SetValue(payload.Filters.CustomerCode);
+            QueryObject.QueryFilterList.First(x => x.Name == "ShipDateFrom").SetValue(payload.Filters.DateFrom);
+            QueryObject.QueryFilterList.First(x => x.Name == "ShipDateTo").SetValue(payload.Filters.DateTo);
         }
 
         public async Task GetCompanySummaryAsync(CompanySummaryPayload payload)
@@ -69,7 +79,7 @@ SUM(COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShippingCost,0)) as Amount
             if (payload.Summary == null)
                 payload.Summary = new SummaryInquiryInfoDetail();
 
-            this.LoadRequestParameter(payload);
+            LoadSummaryParameter(payload);
             try
             {
                 this.QueryObject.LoadJson = false;
