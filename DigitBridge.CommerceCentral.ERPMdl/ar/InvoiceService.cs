@@ -274,7 +274,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> GetDataAsync(PayloadBase payload, string invoiceNumber)
+        public virtual async Task<bool> GetByNumberAsync(PayloadBase payload, string invoiceNumber)
         {
             return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
         }
@@ -285,7 +285,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual bool GetData(InvoicePayload payload, string invoiceNumber)
+        public virtual bool GetByNumber(InvoicePayload payload, string invoiceNumber)
         {
             return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
         }
