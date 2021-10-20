@@ -32,6 +32,8 @@
     "ERP-QuickBooks-Payment-Delete-Queue": "erp-quickbooks-payment-delete-queue",
     "ERP-SalesOrder-Queue": "erp-salesorder-queue",
     "ERP-Invoice-Queue": "erp-invoice-queue",
+    "ERP-Create-Invoice-By-Ordershipment-Queue": "erp-create-invoice-by-ordershipment",
+    "ERP-Create-SalesOrder-By-Centralorder-Queue": "erp-create-salesorder-by-centralorder",
     "ERPSummaryTableName": "ErpSummaryCache",
     "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net"
     //test

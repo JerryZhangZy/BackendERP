@@ -329,11 +329,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 //for Add mode, always reset uuid
                 dto.Event_ERP.EventUuid = Guid.NewGuid().ToString();
-                if (dto.Event_ERP.ProcessSource.IsZero())
-                {
-                    isValid = false;
-                    AddError("Event_ERP.ProcessSource is required.");
-                }
+                //if (dto.Event_ERP.ProcessSource.IsZero())
+                //{
+                //    isValid = false;
+                //    AddError("Event_ERP.ProcessSource is required.");
+                //}
                 if (dto.Event_ERP.ProcessUuid.IsZero())
                 {
                     isValid = false;
@@ -388,11 +388,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 //for Add mode, always reset uuid
                 dto.Event_ERP.EventUuid = Guid.NewGuid().ToString();
-                if (dto.Event_ERP.ProcessSource.IsZero())
-                {
-                    isValid = false;
-                    AddError("Event_ERP.ProcessSource is required.");
-                }
+                //if (dto.Event_ERP.ProcessSource.IsZero())
+                //{
+                //    isValid = false;
+                //    AddError("Event_ERP.ProcessSource is required.");
+                //}
                 if (dto.Event_ERP.ProcessUuid.IsZero())
                 {
                     isValid = false;
