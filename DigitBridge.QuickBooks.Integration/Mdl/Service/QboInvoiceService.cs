@@ -26,7 +26,7 @@ namespace DigitBridge.QuickBooks.Integration
         {
             this._payload = payload;
         }
-         
+
 
         #region qbo invoice back to erp 
         /// <summary>
@@ -175,7 +175,7 @@ namespace DigitBridge.QuickBooks.Integration
 
                 string txnId = null;
 
-                success = success && string.IsNullOrEmpty(txnId = await GetTxnId(_invoiceData.InvoiceHeader.InvoiceUuid));
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(_invoiceData.InvoiceHeader.InvoiceUuid));
 
                 success = success && (qboInvoice = await VoidInvoiceAsync(txnId)) != null;
 
@@ -286,7 +286,7 @@ namespace DigitBridge.QuickBooks.Integration
 
                 string txnId = null;
 
-                success = success && string.IsNullOrEmpty(txnId = await GetTxnId(_invoiceData.InvoiceHeader.InvoiceUuid));
+                success = success && !string.IsNullOrEmpty(txnId = await GetTxnId(_invoiceData.InvoiceHeader.InvoiceUuid));
 
                 success = success && (qboInvoice = await VoidInvoiceAsync(txnId)) != null;
 
@@ -307,7 +307,7 @@ namespace DigitBridge.QuickBooks.Integration
         #endregion
 
         #region private method 
-       
+
         private async System.Threading.Tasks.Task WriteResult(bool success, Invoice qboInvoice)
         {
             if (success)
