@@ -1,4 +1,4 @@
-﻿using DigitBridge.Base.Common;
+using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -79,13 +79,23 @@ SUM(
                 payload.Messages = this.Messages;
             }
         }
+        private void LoadSummaryParameter(CompanySummaryPayload payload)
+        {
+            if (payload == null)
+                return;
+            QueryObject.QueryFilterList.First(x => x.Name == "MasterAccountNum").SetValue(payload.MasterAccountNum);
+            QueryObject.QueryFilterList.First(x => x.Name == "ProfileNum").SetValue(payload.ProfileNum);
+            QueryObject.QueryFilterList.First(x => x.Name == "CustomerCode").SetValue(payload.Filters.CustomerCode);
+            QueryObject.QueryFilterList.First(x => x.Name == "OrderDateFrom").SetValue(payload.Filters.DateFrom);
+            QueryObject.QueryFilterList.First(x => x.Name == "OrderDateTo").SetValue(payload.Filters.DateTo);
+        }
 
         public async Task GetCompanySummaryAsync(CompanySummaryPayload payload)
         {
             if (payload.Summary == null)
                 payload.Summary = new SummaryInquiryInfoDetail();
 
-            this.LoadRequestParameter(payload);
+            LoadSummaryParameter(payload);
             try
             {
                 this.QueryObject.LoadJson = false;

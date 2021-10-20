@@ -289,7 +289,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<InvoicePaymentPayload>> InvoicePaymentSummary(
             [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoicePayments/Summary")] HttpRequest req)
         {
-            var payload = await req.GetParameters<InvoicePaymentPayload>(true);
+            var payload = await req.GetParameters<InvoicePaymentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentSummaryInquiry(dataBaseFactory, new InvoicePaymentSummaryQuery());
             await srv.InvoicePaymentSummaryAsync(payload);

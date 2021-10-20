@@ -1,4 +1,6 @@
 ﻿using DigitBridge.Base.Common;
+using DigitBridge.Base.Utility;
+using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using System;
 using System.Collections.Generic;
@@ -76,31 +78,55 @@ OUTER APPLY(
             return this.SQL_Select;
         }
 
-        public async Task GetCustomerSummaryAsync(CompanySummaryPayload payload)
+        protected override string GetSQL_from()
+        {
+            return "--";
+        }
+
+        public async Task GetCompanySummaryAsync(CompanySummaryPayload payload)
         {
             if (payload.Summary == null)
                 payload.Summary = new SummaryInquiryInfoDetail();
+
+            LoadSummaryParameter(payload);
             try
             {
-                LoadSummaryParameter(payload);
-                using (var trx = new ScopedTransaction(dbFactory))
+                this.OnlySQLSelect = true;
+                var result = await ExcuteAsync();
+                if (result != null && result.HasData)
                 {
-                    using (var dataReader = await SqlQuery.ExecuteCommandAsync(GetSQL_select()))
-                    {
-                        if (await dataReader.ReadAsync())
-                        {
-                            payload.Summary.CustomerCount = dataReader.GetInt32(0);
-                            payload.Summary.NewCustomerCount = dataReader.GetInt32(1);
-                            payload.Summary.NonSalesCustomerCount = dataReader.GetInt32(3);
-                        }
-                    }
+                    payload.Summary.CustomerCount = result.GetData("count").ToInt();
+                    payload.Summary.NewCustomerCount = result.GetData("new_count").ToInt();
+                    payload.Summary.NonSalesCustomerCount = result.GetData("nonsales_count").ToInt();
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw;
+                AddError(ex.ObjectToString());
             }
         }
 
+        public async virtual Task GetCustomerSummaryAsync(CustomerPayload payload)
+        {
+            if (payload == null)
+                payload = new CustomerPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            this.OnlySQLSelect = true;
+            try
+            {
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
+                    payload.CustomerSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.CustomerSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+                payload.Success = false;
+            }
+        }
     }
 }

@@ -63,8 +63,9 @@ namespace DigitBridge.Base.Common
 
         public static string DefaultQueue = "erp-default-queue";
 
-        public static string CentralOrderToSalesOrder = ERPQueueSetting.ERPSalesOrderQueue;
-        public static string ShipmentToInvoice = ERPQueueSetting.ERPInvoiceQueue;
+        public static string CentralOrderToSalesOrder = ERPQueueSetting.ERPCreateSalesOrderByCentralorderQueue;
+        public static string ShipmentToInvoice = ERPQueueSetting.ERPCreateInvoiceByOrdershipmentQueue;
+
         public static string AddQboInvoice = ERPQueueSetting.ERPQuickBooksInvoiceQueue;
         //public static string UpdateQboInvoice = "erp-qboinvoice-update-queue";
         public static string VoidQboInvoice = ERPQueueSetting.ERPQuickBooksInvoiceVoidQueue;

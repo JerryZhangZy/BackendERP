@@ -125,7 +125,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             {
                 LoadAll = false,
                 Skip = 0,
-                Top = 20,
+                Top = 100,
                 SortBy = "",
                 Filter = EventERPFilter.GetFaker().Generate()
             };
@@ -135,13 +135,19 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class EventERPFilter
     {
-        //public string City { get; set; }
+        public string ActionDateFrom { get; set; }
+        public string ActionDateTo { get; set; }
+        public string ActionStatus { get; set; }
+        public string ERPEventType { get; set; }
 
         public static Faker<EventERPFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<EventERPFilter>()
-                //.RuleFor(u => u.City, f => "")
+                .RuleFor(u => u.ActionDateFrom, f => "")
+                .RuleFor(u => u.ActionDateTo, f => "")
+                .RuleFor(u => u.ActionStatus, f => "")
+                .RuleFor(u => u.ERPEventType, f => "")
                 ;
             #endregion faker data rules
         }

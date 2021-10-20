@@ -18,7 +18,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 {
     /// <summary>
     /// </summary>
-    public partial class SqlQueryBuilder<TQueryObject> : ISqlQueryBuilder<TQueryObject>,IMessage
+    public partial class SqlQueryBuilder<TQueryObject> : ISqlQueryBuilder<TQueryObject>, IMessage
         where TQueryObject : IQueryObject, new()
     {
         public string SQL_Select { get; set; }
@@ -34,9 +34,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
             !string.IsNullOrWhiteSpace(this.SQL_WithoutOrder);
 
         public bool LoadTotalCount { get; set; } = true;
-        
+
         public bool BySqlParameter { get; set; } = true;
         public string DefaultPrefix { get; set; }
+        public bool OnlySQLSelect { get; set; } = false;
+
         public bool LoadJson => QueryObject is null ? true : QueryObject.LoadJson;
         public bool LoadAll => QueryObject is null ? true : QueryObject.LoadAll;
         public int SkipRecords => QueryObject is null ? 0 : QueryObject.SkipRecords;
@@ -144,6 +146,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual string GetCommandText()
         {
             GetSQL_all();
+            if (OnlySQLSelect)
+            {
+                if (this.LoadJson)
+                    return $"{SQL_Select} FOR JSON PATH ";
+                return SQL_Select;
+            }
             if (!HasSQL)
                 return string.Empty;
 
@@ -205,7 +213,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             StringBuilder sb = new StringBuilder();
             sb.Clear();
             sb.AppendFormat("{0} " +
-                "FROM ( {1} ) r " 
+                "FROM ( {1} ) r "
                 , this.SQL_SelectSummary
                 , this.SQL_WithoutOrder
             );
@@ -215,7 +223,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public virtual SqlParameter[] GetSqlParameters()
         {
-            return QueryObject == null ? null : QueryObject.GetSqlParameters();
+            return OnlySQLSelect ? null : QueryObject == null ? null : QueryObject.GetSqlParameters();
         }
 
 
