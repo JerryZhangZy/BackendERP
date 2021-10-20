@@ -37,7 +37,7 @@ SUM(COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShippingCost,0)) as Amount
         {
             this.SQL_From = $@"
  FROM {OrderShipmentHeaderHelper.TableName} {OrderShipmentHeaderHelper.TableAllies} 
- LEFT JOIN {InvoiceHeaderInfoHelper.TableName} {InvoiceHeaderInfoHelper.TableAllies} ON ({OrderShipmentHeaderHelper.TableAllies}.ChannelOrderID = {InvoiceHeaderInfoHelper.TableAllies}.ChannelOrderID)
+ LEFT JOIN {SalesOrderHeaderHelper.TableName} {SalesOrderHeaderHelper.TableAllies} ON ( {SalesOrderHeaderHelper.TableAllies}.OrderSourceCode = 'OrderDCAssignmentNum:' + Cast({OrderShipmentHeaderHelper.TableAllies}.OrderDCAssignmentNum  as varchar))
 ";
             return this.SQL_From;
         } 
@@ -57,7 +57,8 @@ SUM(COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShippingCost,0)) as Amount
                     payload.ShipmentSummary = sb;
             }
             catch (Exception ex)
-            { 
+            {
+                payload.Success = false;
                 payload.ShipmentSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;

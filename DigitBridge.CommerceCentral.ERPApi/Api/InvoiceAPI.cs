@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceService(dataBaseFactory);
-            payload.Success = await srv.GetDataAsync(payload, invoiceNumber);
+            payload.Success = await srv.GetByNumberAsync(payload, invoiceNumber);
             if (payload.Success)
             {
                 payload.Invoice = srv.ToDto(srv.Data);

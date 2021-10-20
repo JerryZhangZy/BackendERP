@@ -28,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.SQL_Select = $@"
 SELECT  
 COUNT(1) as [Count],
-SUM(COALESCE({SalesOrderHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
+SUM(COALESCE({SalesOrderHeaderHelper.TableAllies}.TotalAmount,0)) as Amount,
 SUM( 
 	CASE WHEN COALESCE({SalesOrderHeaderHelper.TableAllies}.OrderStatus, 0) = 0 OR COALESCE({SalesOrderHeaderHelper.TableAllies}.OrderStatus, 1) = 1 THEN 1
 	ELSE 0 END
@@ -55,7 +55,7 @@ SUM(
  FROM {SalesOrderHeaderHelper.TableName} {SalesOrderHeaderHelper.TableAllies} 
 ";
             return this.SQL_From;
-        } 
+        }
         #endregion override methods
 
         public async virtual Task SalesOrderSummaryAsync(SalesOrderPayload payload)
@@ -72,7 +72,8 @@ SUM(
                     payload.SalesOrderSummary = sb;
             }
             catch (Exception ex)
-            { 
+            {
+                payload.Success = false;
                 payload.SalesOrderSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;

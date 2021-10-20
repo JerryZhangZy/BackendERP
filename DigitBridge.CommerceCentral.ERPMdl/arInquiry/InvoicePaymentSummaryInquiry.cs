@@ -57,7 +57,8 @@ SUM(COALESCE({ERPDb.InvoiceTransactionHelper.TableAllies}.TotalAmount,0)) as Amo
                     payload.InvoicePaymentSummary = sb;
             }
             catch (Exception ex)
-            { 
+            {
+                payload.Success = false;
                 payload.InvoicePaymentSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;

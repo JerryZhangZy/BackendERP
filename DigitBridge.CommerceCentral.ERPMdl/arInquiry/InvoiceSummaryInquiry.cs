@@ -58,6 +58,7 @@ SUM(COALESCE({InvoiceHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
             }
             catch (Exception ex)
             {
+                payload.Success = false;
                 payload.InvoiceSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;

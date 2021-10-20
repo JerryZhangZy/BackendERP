@@ -12,7 +12,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         // Filter fields 
 
-        protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", InvoiceHeaderInfoHelper.TableAllies, FilterBy.eq, string.Empty);
+        protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", SalesOrderHeaderHelper.TableAllies, FilterBy.eq, string.Empty);
         public QueryFilter<string> CustomerCode => _CustomerCode;
 
         protected QueryFilter<DateTime> _ShipDateFrom = new QueryFilter<DateTime>("ShipDateFrom", "ShipmentDateUtc", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
@@ -23,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public ShipmentSummaryQuery() : base(PREFIX)
         {
-            //AddFilter(_CustomerCode);
+            AddFilter(_CustomerCode);
             AddFilter(_ShipDateFrom);
             AddFilter(_ShipDateTo);
         }
