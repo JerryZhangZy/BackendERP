@@ -3,9 +3,13 @@ namespace DigitBridge.QuickBooks.Integration
 {
     interface IQboPaymentService
     {
-        Task<bool> ExportAsync(string invoiceNumber, int transNum);
-        Task<bool> VoidQboPaymentAsync(string invoiceNumber, int transNum);
-        Task<bool> DeleteQboPaymentAsync(string invoiceNumber, int transNum);
-        Task<bool> GetQboPaymentAsync(string invoiceNumber, int transNum);
+        Task<bool> ExportByNumberAsync(string invoiceNumber, int transNum);
+        Task<bool> VoidQboPaymentByNumberAsync(string invoiceNumber, int transNum);
+        Task<bool> DeleteQboPaymentByNumberAsync(string invoiceNumber, int transNum);
+        Task<bool> GetQboPaymentByNumberAsync(string invoiceNumber, int transNum);
+
+        Task<bool> ExportByUuidAsync(string transUuid);
+        Task<bool> VoidQboPaymentByUuidAsync(string transUuid);
+        Task<bool> DeleteQboPaymentByUuidAsync(string transUuid);
     }
 }

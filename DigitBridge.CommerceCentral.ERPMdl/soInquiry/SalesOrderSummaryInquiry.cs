@@ -1,4 +1,4 @@
-﻿using DigitBridge.Base.Common;
+using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -73,6 +73,7 @@ SUM(
             }
             catch (Exception ex)
             {
+                payload.Success = false;
                 payload.SalesOrderSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;
