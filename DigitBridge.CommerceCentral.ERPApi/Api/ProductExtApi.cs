@@ -63,7 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InventoryPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InventoryService(dbFactory);
-            payload =await svc.GetInventoryBySkuArrayAsync(payload);
+            payload = await svc.GetInventoryBySkuArrayAsync(payload);
 
             return new JsonNetResponse<InventoryPayload>(payload);
         }
@@ -232,6 +232,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Success = true;
             payload.Messages = svc.Messages;
             return payload;
+        }
+        /// <summary>
+        /// Get sales order summary by search criteria
+        /// </summary>
+        /// <param name="req"></param> 
+        [FunctionName(nameof(ProductSummary))]
+        [OpenApiOperation(operationId: "ProductSummary", tags: new[] { "ProductExts" }, Summary = "Get products summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayload))]
+        public static async Task<JsonNetResponse<InventoryPayload>> ProductSummary(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExts/Summary")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new ProductSummaryInquiry(dataBaseFactory, new ProductSummaryQuery());
+            await srv.GetProductSummaryAsync(payload);
+            return new JsonNetResponse<InventoryPayload>(payload);
         }
     }
 }

@@ -61,8 +61,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             return instance;
         }
 
-
-        private static async Task<T> GetBodyObjectAsync<T>(this HttpRequest req) where T : class
+        public static async Task<T> GetBodyObjectAsync<T>(this HttpRequest req) where T : class
         {
             var json = await req.GetBodyStringAsync();
             return JsonConvert.DeserializeObject<T>(json);

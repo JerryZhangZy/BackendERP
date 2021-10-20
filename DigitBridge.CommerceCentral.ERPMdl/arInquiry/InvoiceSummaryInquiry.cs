@@ -58,18 +58,29 @@ SUM(COALESCE({InvoiceHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
             }
             catch (Exception ex)
             {
+                payload.Success = false;
                 payload.InvoiceSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;
             }
         }
 
+        private void LoadSummaryParameter(CompanySummaryPayload payload)
+        {
+            if (payload == null)
+                return;
+            QueryObject.QueryFilterList.First(x => x.Name == "MasterAccountNum").SetValue(payload.MasterAccountNum);
+            QueryObject.QueryFilterList.First(x => x.Name == "ProfileNum").SetValue(payload.ProfileNum);
+            QueryObject.QueryFilterList.First(x => x.Name == "CustomerCode").SetValue(payload.Filters.CustomerCode);
+            QueryObject.QueryFilterList.First(x => x.Name == "InvoiceDateFrom").SetValue(payload.Filters.DateFrom);
+            QueryObject.QueryFilterList.First(x => x.Name == "InvoiceDateTo").SetValue(payload.Filters.DateTo);
+        }
         public async Task GetCompanySummaryAsync(CompanySummaryPayload payload)
         {
             if (payload.Summary == null)
                 payload.Summary = new SummaryInquiryInfoDetail();
 
-            this.LoadRequestParameter(payload);
+            LoadSummaryParameter(payload);
             try
             {
                 this.QueryObject.LoadJson = false;

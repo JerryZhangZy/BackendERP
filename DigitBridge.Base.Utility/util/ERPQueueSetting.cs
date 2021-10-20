@@ -24,6 +24,8 @@ namespace DigitBridge.Base.Common
         public static string ERPQuickBooksPaymentDeleteQueue => GetValueByName("ERP-QuickBooks-payment-delete-Queue");
         public static string ERPSalesOrderQueue => GetValueByName("ERP-SalesOrder-Queue");
         public static string ERPInvoiceQueue => GetValueByName("ERP-Invoice-Queue");
+        public static string ERPCreateInvoiceByOrdershipmentQueue => GetValueByName("ERP-Create-Invoice-By-Ordershipment-Queue");
+        public static string ERPCreateSalesOrderByCentralorderQueue => GetValueByName("ERP-Create-SalesOrder-By-Centralorder-Queue");
 
         public static string GetValueByName(string name)
         {

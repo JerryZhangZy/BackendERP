@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var payload = await req.GetParameters<QboInvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var service = new QboInvoiceService(payload, dataBaseFactory);
-            payload.Success = await service.ExportAsync(invoiceNumber);
+            payload.Success = await service.ExportByNumberAsync(invoiceNumber);
             payload.Messages = service.Messages;
             return new JsonNetResponse<QboInvoicePayload>(payload);
         }
@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var payload = await req.GetParameters<QboInvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var service = new QboInvoiceService(payload, dataBaseFactory);
-            payload.Success = await service.GetQboInvoiceAsync(invoiceNumber);
+            payload.Success = await service.GetQboInvoiceByNumberAsync(invoiceNumber);
             payload.Messages = service.Messages;
             return new JsonNetResponse<QboInvoicePayload>(payload);
         }
@@ -87,7 +87,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             var payload = await req.GetParameters<QboInvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var service = new QboInvoiceService(payload, dataBaseFactory);
-            payload.Success = await service.DeleteQboInvoiceAsync(invoiceNumber);
+            payload.Success = await service.DeleteQboInvoiceByNumberAsync(invoiceNumber);
             payload.Messages = service.Messages;
             return new JsonNetResponse<QboInvoicePayload>(payload);
         }

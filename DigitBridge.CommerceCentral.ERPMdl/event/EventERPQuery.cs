@@ -29,10 +29,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _ActionDateTo = new QueryFilter<DateTime>("ActionDateTo", "ActionDateUtc", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime,isDate:true);
         public QueryFilter<DateTime> ActionDateTo => _ActionDateTo;
 
-        protected QueryFilter<int> _ActionStatus = new QueryFilter<int>("ActionStatus", "ActionStatus", PREFIX, FilterBy.eq, -1);
+        protected QueryFilter<int> _ActionStatus = new QueryFilter<int>("ActionStatus", "ActionStatus", PREFIX, FilterBy.eq, 0);
         public QueryFilter<int> ActionStatus => _ActionStatus;
 
-        protected EnumQueryFilter<ErpEventType> _ErpEventType = new EnumQueryFilter<ErpEventType>("ERPEventType", "ERPEventType", PREFIX, FilterBy.eq, -1);
+        protected EnumQueryFilter<ErpEventType> _ErpEventType = new EnumQueryFilter<ErpEventType>("ERPEventType", "ERPEventType", PREFIX, FilterBy.eq, -0);
         public EnumQueryFilter<ErpEventType> ErpEventType => _ErpEventType;
 
         //protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
@@ -50,7 +50,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override void InitQueryFilter()
         {
             _ActionDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            _ActionDateTo.FilterValue = DateTime.Today.AddDays(7);
+            _ActionDateTo.FilterValue = DateTime.Today;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using DigitBridge.Base.Common;
+using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -28,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.SQL_Select = $@"
 SELECT  
 COUNT(1) as [Count],
-SUM(COALESCE({SalesOrderHeaderHelper.TableAllies}.TotalAmount,0)) as Amount
+SUM(COALESCE({SalesOrderHeaderHelper.TableAllies}.TotalAmount,0)) as Amount,
 SUM( 
 	CASE WHEN COALESCE({SalesOrderHeaderHelper.TableAllies}.OrderStatus, 0) = 0 OR COALESCE({SalesOrderHeaderHelper.TableAllies}.OrderStatus, 1) = 1 THEN 1
 	ELSE 0 END
@@ -55,7 +55,7 @@ SUM(
  FROM {SalesOrderHeaderHelper.TableName} {SalesOrderHeaderHelper.TableAllies} 
 ";
             return this.SQL_From;
-        } 
+        }
         #endregion override methods
 
         public async virtual Task SalesOrderSummaryAsync(SalesOrderPayload payload)
@@ -72,11 +72,22 @@ SUM(
                     payload.SalesOrderSummary = sb;
             }
             catch (Exception ex)
-            { 
+            {
+                payload.Success = false;
                 payload.SalesOrderSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;
             }
+        }
+        private void LoadSummaryParameter(CompanySummaryPayload payload)
+        {
+            if (payload == null)
+                return;
+            QueryObject.QueryFilterList.First(x => x.Name == "MasterAccountNum").SetValue(payload.MasterAccountNum);
+            QueryObject.QueryFilterList.First(x => x.Name == "ProfileNum").SetValue(payload.ProfileNum);
+            QueryObject.QueryFilterList.First(x => x.Name == "CustomerCode").SetValue(payload.Filters.CustomerCode);
+            QueryObject.QueryFilterList.First(x => x.Name == "OrderDateFrom").SetValue(payload.Filters.DateFrom);
+            QueryObject.QueryFilterList.First(x => x.Name == "OrderDateTo").SetValue(payload.Filters.DateTo);
         }
 
         public async Task GetCompanySummaryAsync(CompanySummaryPayload payload)
@@ -84,7 +95,7 @@ SUM(
             if (payload.Summary == null)
                 payload.Summary = new SummaryInquiryInfoDetail();
 
-            this.LoadRequestParameter(payload);
+            LoadSummaryParameter(payload);
             try
             {
                 this.QueryObject.LoadJson = false;
