@@ -165,6 +165,34 @@ WHERE itm.cnt > 0
                 Assert.True(dataList.Count>1000, "");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetInventoryBySkuArrayAsync_Test()
+        {
+            var payload = new InventoryPayload() 
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                DatabaseNum = 1,
+                Skus = new List<string>()
+                {
+                    "101409S-BK-2XL-STD",
+                    "11054493-INDIGO-M-STD",
+                    "FA16423KT-FLORAL-M-STD"
+                }
+            };
+
+            var srv = new InventoryService(DataBaseFactory);
+            using (var b = new Benchmark("GetInventoryBySkuArrayAsync_Test"))
+            {
+                await srv.GetInventoryBySkuArrayAsync(payload);
+            }
+            var data = srv.ToDto();
+
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        
         //[Fact()]
         //public void RandomRepeatReadInventoryWithCache_Test()
         //{
