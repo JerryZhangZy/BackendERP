@@ -322,5 +322,75 @@ AND @orderNumbers.exist('/parameters/value[text()=sql:column(''tbl.OrderNumber''
             }
         }
 
+        //TODO where sql
+        private string GetExportSql()
+        {
+            var sql = $@"
+SELECT {SalesOrderHeaderHelper.TableAllies}.*,
+(SELECT * FROM SalesOrderHeaderInfo i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderHeaderInfo,
+(SELECT * FROM SalesOrderHeaderAttributes i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderHeaderAttributes,
+(SELECT * FROM SalesOrderItems i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderItems,
+(SELECT * FROM SalesOrderItemsAttributes i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderItemsAttributes
+FROM SalesOrderHeader {SalesOrderHeaderHelper.TableAllies}
+";
+            return sql;
+        }
+
+        private string GetExportCommandText(SalesOrderPayload payload)
+        {
+            this.LoadRequestParameter(payload);
+            return $@"
+{GetExportSql()}
+{GetSQL_where()}
+ORDER BY  {SalesOrderHeaderHelper.TableAllies}.RowNum  
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
+FOR JSON PATH
+";
+        }
+
+        public virtual void GetExportJsonList(SalesOrderPayload payload)
+        {
+            if (payload == null)
+                payload = new SalesOrderPayload();
+
+            var sql = GetExportCommandText(payload);
+
+            try
+            {
+                payload.SalesOrderListCount = Count();
+                StringBuilder sb = new StringBuilder();
+                var result = ExcuteJson(sb, sql, GetSqlParameters().ToArray());
+                if (result)
+                    payload.SalesOrderDataList = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.SalesOrderDataList = null;
+                throw;
+            }
+        }
+
+        public virtual async Task GetExportJsonListAsync(SalesOrderPayload payload)
+        {
+            if (payload == null)
+                payload = new SalesOrderPayload();
+
+            var sql = GetExportCommandText(payload);
+
+            try
+            {
+                payload.SalesOrderListCount = await CountAsync();
+                StringBuilder sb = new StringBuilder();
+                var result = await ExcuteJsonAsync(sb, sql, GetSqlParameters().ToArray());
+                if (result)
+                    payload.SalesOrderDataList = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.SalesOrderDataList = null;
+                throw;
+            }
+        }
+
     }
 }

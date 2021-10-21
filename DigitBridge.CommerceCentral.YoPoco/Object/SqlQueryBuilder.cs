@@ -345,6 +345,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
         public virtual int Count()
         {
+            if (!LoadTotalCount)
+                return 0;
             var sql = GetCommandTextForCount();
             var param = GetSqlParameters();
             var result = 0;
@@ -361,6 +363,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public virtual async Task<int> CountAsync()
         {
+            if (!LoadTotalCount)
+                return 0;
             var sql = GetCommandTextForCount();
             var param = GetSqlParameters();
             var result = 0;

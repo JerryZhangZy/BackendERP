@@ -129,6 +129,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiPropertyDescription("(Response) List result which load by filter and paging.")]
         public IList<Object> InventoryList { get; set; }
 
+        public IList<Object> InventoryDataList { get; set; }
+
         /// <summary>
         /// (Response) List result count which load by filter and paging.
         /// </summary>
@@ -153,6 +155,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [Serializable()]
     public class InventoryFilter
     {
+        public string ProductUuid { get; set; }
+
+        public string SKU { get; set; }
+
         public string Brand { get; set; }
 
         public string Manufacturer { get; set; }
@@ -167,7 +173,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             #region faker data rules
             return new Faker<InventoryFilter>()
-                //.RuleFor(u => u.SKU, f => f.Commerce.Product())
+                .RuleFor(u => u.ProductUuid, f => string.Empty)
+                .RuleFor(u => u.SKU, f => string.Empty)
                 .RuleFor(u => u.FNSku, f => string.Empty)
                 .RuleFor(u => u.Brand, f => string.Empty)
                 .RuleFor(u => u.Manufacturer, f => string.Empty)
