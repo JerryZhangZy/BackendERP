@@ -37,7 +37,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public bool BySqlParameter { get; set; } = true;
         public string DefaultPrefix { get; set; }
-        public bool OnlySQLSelect { get; set; } = false;
 
         public bool LoadJson => QueryObject is null ? true : QueryObject.LoadJson;
         public bool LoadAll => QueryObject is null ? true : QueryObject.LoadAll;
@@ -146,12 +145,6 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual string GetCommandText()
         {
             GetSQL_all();
-            if (OnlySQLSelect)
-            {
-                if (this.LoadJson)
-                    return $"{SQL_Select} FOR JSON PATH ";
-                return SQL_Select;
-            }
             if (!HasSQL)
                 return string.Empty;
 
@@ -223,9 +216,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public virtual SqlParameter[] GetSqlParameters()
         {
-            return OnlySQLSelect ? null : QueryObject == null ? null : QueryObject.GetSqlParameters();
+            return QueryObject == null ? null : QueryObject.GetSqlParameters();
         }
-
 
         public virtual void LoadRequestParameter(IPayload payload)
         {
@@ -253,6 +245,18 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             return result;
         }
+        public virtual SqlQueryResultData Excute(string sql, params IDataParameter[] param)
+        {
+            SqlQueryResultData result;
+            using (var trs = new ScopedTransaction(dbFactory))
+            {
+                if (!param.Any())
+                    result = SqlQuery.QuerySqlQueryResultData(sql, System.Data.CommandType.Text);
+                else
+                    result = SqlQuery.QuerySqlQueryResultData(sql, System.Data.CommandType.Text, param);
+            }
+            return result;
+        }
 
         public virtual async Task<SqlQueryResultData> ExcuteAsync()
         {
@@ -263,6 +267,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
             using (var trs = new ScopedTransaction(dbFactory))
             {
                 if (param == null)
+                    result = await SqlQuery.QuerySqlQueryResultDataAsync(sql, System.Data.CommandType.Text);
+                else
+                    result = await SqlQuery.QuerySqlQueryResultDataAsync(sql, System.Data.CommandType.Text, param);
+            }
+            return result;
+        }
+
+        public virtual async Task<SqlQueryResultData> ExcuteAsync(string sql, params IDataParameter[] param)
+        {
+            SqlQueryResultData result;
+            using (var trs = new ScopedTransaction(dbFactory))
+            {
+                if (!param.Any())
                     result = await SqlQuery.QuerySqlQueryResultDataAsync(sql, System.Data.CommandType.Text);
                 else
                     result = await SqlQuery.QuerySqlQueryResultDataAsync(sql, System.Data.CommandType.Text, param);
