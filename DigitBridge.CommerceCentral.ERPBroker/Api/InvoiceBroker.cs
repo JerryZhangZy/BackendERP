@@ -31,11 +31,11 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 var svc = new InvoiceManager(dbFactory);
                 (bool ret, string invoiceUuid) = await svc.CreateInvoiceByOrderShipmentIdAsync(message.ProcessUuid);
 
-                ErpEventClientHelper.UpdateEventERPAsync(ret, message, svc.Messages.ObjectToString());
+                ErpInvoiceEventClientHelper.UpdateEventERPAsync(ret, message, svc.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
+                ErpInvoiceEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
             }
         }
 
