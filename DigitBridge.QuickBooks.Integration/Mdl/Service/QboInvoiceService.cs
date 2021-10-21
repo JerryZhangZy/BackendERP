@@ -38,7 +38,7 @@ namespace DigitBridge.QuickBooks.Integration
         protected async Task<bool> WriteQboInvoiceToExportLog(Invoice qboInvoice)
         {
             var exportLog = new QuickBooksExportLog();
-            exportLog.LogType = "Invoice";
+            exportLog.LogType = QboLogType.Invoice;
             exportLog.LogUuid = _invoiceData.UniqueId;
             exportLog.DocNumber = qboInvoice.DocNumber;
             exportLog.TxnId = qboInvoice.Id;
@@ -317,7 +317,7 @@ namespace DigitBridge.QuickBooks.Integration
             else
             {
                 AddInfo(qboInvoice.ObjectToString());
-                await SaveExportErrorLogAsync();
+                await SaveExportErrorLogAsync(QboLogType.Invoice);
             }
         }
 
