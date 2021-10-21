@@ -126,4 +126,11 @@ namespace DigitBridge.QuickBooks.Integration
 
 
     }
+
+    public class QboLogType
+    {
+        public const string Payment = "Payment";
+        public const string Refund = "Refund";
+        public const string Invoice = "Invoice";
+    }
 }

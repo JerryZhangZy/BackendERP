@@ -389,7 +389,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             }
             return log?.TxnId;
         }
-        public virtual async Task<bool> SaveExportErrorLogAsync()
+        public virtual async Task<bool> SaveExportErrorLogAsync(string logType)
         {
             var log = new QuickBooksExportLog();
             log.DatabaseNum = payload.DatabaseNum;
@@ -405,6 +405,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                 log.ErrorMessage = JsonConvert.SerializeObject(Messages.Where(r => r.Level > MessageLevel.Info));
                 log.RequestInfo = JsonConvert.SerializeObject(Messages.Where(r => r.Level == MessageLevel.Info));
             }
+            log.LogType = logType;
             return await QuickBooksExportLogService.AddExportLogAsync(log);
         }
 

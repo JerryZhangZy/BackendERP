@@ -451,7 +451,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber + "_" + (int)transType + "_" + transNum);
             success = success && DeleteData();
             return success;
-        } 
+        }
 
         #region copy invoice info to invoicereturn/invoicepayment for NewReturn/ NewPayment
 
@@ -505,5 +505,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion
+
+        public async override Task<bool> GetDataByIdAsync(string id)
+        {
+            if (!await base.GetDataByIdAsync(id))
+                return false;
+
+            var trans = Data.InvoiceTransaction;
+            return LoadInvoice(trans.InvoiceNumber, trans.ProfileNum, trans.MasterAccountNum);
+        }
     }
 }
