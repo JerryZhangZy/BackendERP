@@ -347,29 +347,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region To qbo queue 
-
         /// <summary>
         /// convert erp invoice to a queue message then put it to qbo queue
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="authcode"></param>
-        /// <param name="payload"></param>
-        /// <param name="eventType"></param>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
         /// <returns></returns>
-        public virtual async Task ToQboQueueAsync(IPayload payload, ErpEventType eventType)
+        public async Task<bool> AddQboInvoiceEventAsync(int masterAccountNum, int profileNum)
         {
-            var message = new Event_ERPDto()
+            var eventDto = new AddEventDto()
             {
-                DatabaseNum = payload.DatabaseNum,
-                MasterAccountNum = payload.MasterAccountNum,
-                ProfileNum = payload.ProfileNum,
-                ERPEventType = (int)eventType,
-                ProcessSource = Data.InvoiceHeader.InvoiceNumber,
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
                 ProcessUuid = Data.InvoiceHeader.InvoiceUuid,
             };
-            await ErpEventClientHelper.AddEventERPAsync(message);
+            return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksInvoice");
         }
-         
+
+        public async Task<bool> VoidQboInvoiceEventAsync(int masterAccountNum, int profileNum)
+        {
+            var eventDto = new AddEventDto()
+            {
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
+                ProcessUuid = Data.InvoiceHeader.InvoiceUuid,
+            };
+            return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksInvoiceVoid");
+        }
+
         #endregion
     }
 }
