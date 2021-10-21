@@ -26,13 +26,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         #endregion
 
-        public static async Task<bool> AddEventERPAsync(Event_ERPDto eventDto)
+        public static async Task<bool> AddEventERPAsync(AddEventDto eventDto, string functionUrl)
         {
-            return await erpEventClient.AddEventERPAsync(eventDto);
+            return await erpEventClient.AddEventERPAsync(eventDto, functionUrl);
         }
+
         public static async Task<bool> UpdateEventERPAsync(bool success, ERPQueueMessage message, string error)
         {
-            var eventDto = new Event_ERPDto()
+            var eventDto = new UpdateEventDto()
             {
                 ActionStatus = success ? (int)ErpEventActionStatus.Success : (int)ErpEventActionStatus.Other,
                 EventUuid = message.EventUuid,

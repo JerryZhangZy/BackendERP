@@ -67,8 +67,16 @@ namespace DigitBridge.QuickBooks.Integration
             var lines = new List<Line>();
             foreach (var item in invoiceData.InvoiceItems)
             {
-                var qboLine = item.DiscountRate.IsZero() ? ItemToQboLine_DiscountAmount(item) : ItemToQboLine_DiscountRate(item);
-                lines.Add(qboLine);
+                ////DiscountRate and  DiscountAmount only one applied.
+                //var qboLine = item.DiscountRate.IsZero() ? ItemToQboLine_DiscountAmount(item) : ItemToQboLine_DiscountRate(item);
+                //lines.Add(qboLine);
+
+                // Apply both discountRate and discountAmount(Apply discountrate first then apply discountAmount.) 
+                lines.Add(ItemToQboLine_DiscountRate(item));
+                if (item.DiscountAmount != 0)
+                {
+                    lines.Add(ItemToQboLine_DiscountAmount(item));
+                }
             }
             //SubTotalToQboLine(invoiceData.InvoiceHeader);
             lines.Add(DiscountToQboLine(invoiceData.InvoiceHeader));
@@ -79,12 +87,66 @@ namespace DigitBridge.QuickBooks.Integration
                 lines.Add(TaxCostToQboLine(invoiceData.InvoiceHeader));
             return lines;
         }
+
+        #region Last version: DiscountRate and  DiscountAmount only one applied.
+        //protected Line ItemToQboLine_DiscountRate(InvoiceItems item)
+        //{
+        //    Line line = new Line();
+
+        //    line.Description = item.Description;
+        //    line.Amount = item.IsAr ? item.ExtAmount : 0;//TODO check this one
+        //    line.AmountSpecified = true;
+        //    //line.LineNum = item.InvoiceItemsUuid;
+        //    line.AnyIntuitObject = new SalesItemLineDetail()
+        //    {
+        //        ItemRef = new ReferenceType()
+        //        {
+        //            Value = _setting.QboDefaultItemId,// All sku mapping to DefaultItemId in qbo. TODO mapping to qbo inventory sku. 
+        //        },
+        //        Qty = item.ShipQty,
+        //        QtySpecified = true,
+        //        AnyIntuitObject = item.IsAr ? item.DiscountPrice : 0,//TODO check this one
+        //        ItemElementName = ItemChoiceType.UnitPrice,
+        //        //DiscountAmt = item.DiscountRate.IsZero() ? item.DiscountAmount : 0,
+        //    };
+        //    line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
+        //    line.DetailTypeSpecified = true;
+        //    return line;
+        //}
+        //protected Line ItemToQboLine_DiscountAmount(InvoiceItems item)
+        //{
+        //    Line line = new Line();
+
+        //    line.Description = item.Description;
+        //    line.Amount = item.IsAr ? item.ExtAmount : 0;//TODO check this one
+        //    line.AmountSpecified = true;
+        //    //line.LineNum = item.InvoiceItemsUuid;
+        //    line.AnyIntuitObject = new SalesItemLineDetail()
+        //    {
+        //        ItemRef = new ReferenceType()
+        //        {
+        //            Value = _setting.QboDefaultItemId,// All sku mapping to DefaultItemId in qbo. TODO mapping to qbo inventory sku. 
+        //        },
+        //        Qty = item.ShipQty,
+        //        QtySpecified = true,
+        //        //TODO add this logic.
+        //        //AnyIntuitObject = item.IsAr ? item.Price : 0,
+        //        //ItemElementName = ItemChoiceType.RatePercent,
+        //        //DiscountAmt = item.IsAr && item.DiscountRate.IsZero() ? item.DiscountAmount : 0,
+        //    };
+        //    line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
+        //    line.DetailTypeSpecified = true;
+        //    return line;
+        //}
+        #endregion
+
+        #region Apply both discountRate and discountAmount(Apply discountrate first, then apply discountAmount.)
         protected Line ItemToQboLine_DiscountRate(InvoiceItems item)
         {
             Line line = new Line();
 
             line.Description = item.Description;
-            line.Amount = item.IsAr ? item.ExtAmount : 0;//TODO check this one
+            line.Amount = item.IsAr ? item.ExtAmount + item.DiscountAmount : 0;//TODO check this one
             line.AmountSpecified = true;
             //line.LineNum = item.InvoiceItemsUuid;
             line.AnyIntuitObject = new SalesItemLineDetail()
@@ -107,8 +169,8 @@ namespace DigitBridge.QuickBooks.Integration
         {
             Line line = new Line();
 
-            line.Description = item.Description;
-            line.Amount = item.IsAr ? item.ExtAmount : 0;//TODO check this one
+            line.Description = $"Apply item total discount amount for sku: {item.SKU} ";
+            line.Amount = item.IsAr ? item.DiscountAmount * (-1) : 0;//TODO check this one
             line.AmountSpecified = true;
             //line.LineNum = item.InvoiceItemsUuid;
             line.AnyIntuitObject = new SalesItemLineDetail()
@@ -122,12 +184,14 @@ namespace DigitBridge.QuickBooks.Integration
                 //TODO add this logic.
                 //AnyIntuitObject = item.IsAr ? item.Price : 0,
                 //ItemElementName = ItemChoiceType.RatePercent,
-                //DiscountAmt = item.IsAr && item.DiscountRate.IsZero() ? item.DiscountAmount : 0,
+                //DiscountAmt = item.IsAr && item.DiscountRate.IsZero() ? item.DiscountAmount : 0, 
             };
             line.DetailType = LineDetailTypeEnum.SalesItemLineDetail;
             line.DetailTypeSpecified = true;
             return line;
         }
+        #endregion
+
         protected Line DiscountToQboLine(InvoiceHeader invoiceHeader)
         {
             Line line = new Line();

@@ -154,6 +154,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion
+
+
+        #region To qbo queue 
+        /// <summary>
+        /// convert erp invoice return to a queue message then put it to qbo queue
+        /// </summary>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        /// <returns></returns>
+        public async Task<bool> AddQboRefundEventAsync(int masterAccountNum, int profileNum)
+        {
+            var eventDto = new AddEventDto()
+            {
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
+                ProcessUuid = Data.InvoiceTransaction.TransUuid,
+            };
+            return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksReturn");
+        }
+
+        public async Task<bool> DeleteQboRefundEventAsync(int masterAccountNum, int profileNum)
+        {
+            var eventDto = new AddEventDto()
+            {
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
+                ProcessUuid = Data.InvoiceTransaction.TransUuid,
+            };
+            return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksReturnDelete");
+        }
+
+        #endregion
     }
 }
 
