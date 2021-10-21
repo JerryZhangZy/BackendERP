@@ -92,6 +92,7 @@ OUTER APPLY(
             try
             {
                 this.OnlySQLSelect = true;
+                this.QueryObject.LoadJson = false;
                 var result = await ExcuteAsync();
                 if (result != null && result.HasData)
                 {

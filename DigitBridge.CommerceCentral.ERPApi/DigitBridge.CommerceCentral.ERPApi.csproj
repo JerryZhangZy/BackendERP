@@ -43,7 +43,7 @@
     <Folder Include="JsType\ar\service\" />
     <Folder Include="JsType\customer\store\" />
     <Folder Include="JsType\customer\service\" />
-    <Folder Include="JsType\NewFolder\" />
+    <Folder Include="JsType\inventory\store\" />
     <Folder Include="JsType\po\store\" />
     <Folder Include="JsType\po\service\" />
     <Folder Include="JsType\so\service\" />
