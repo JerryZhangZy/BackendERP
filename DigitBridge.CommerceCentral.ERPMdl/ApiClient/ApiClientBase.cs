@@ -199,8 +199,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns>Returns full URI</returns>
         protected virtual string BuildRequestUri(string function)
         {
-            var requestUrl = string.Format(endPoint, function);
-            return authCode.IsZero() ? requestUrl : string.Format(requestUrl, $"?code={authCode}");
+            var requestUrl = function.IsZero() ? endPoint : endPoint + function;
+            return authCode.IsZero() ? requestUrl : requestUrl + $"?code={authCode}";
         }
 
         /// <summary>
