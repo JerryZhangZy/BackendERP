@@ -90,18 +90,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="data">data request</param>
         /// <param name="requiresToken">Requires token ?</param> 
         /// <returns>Returns HTTP response</returns>
-        public virtual async Task<bool> PostAsync(object data, int? masterAccountNum = null, int? profileNum = null, string function = null)
+        public virtual async Task<bool> PostAsync(object data, string function = null)
         {
             var success = true;
             try
             {
                 using var httpClient = await CreateHttpClientAsync();
-
-                if (masterAccountNum.HasValue && !httpClient.DefaultRequestHeaders.Contains("masterAccountNum"))
-                    httpClient.DefaultRequestHeaders.Add("masterAccountNum", masterAccountNum.ToString());
-
-                if (profileNum.HasValue && !httpClient.DefaultRequestHeaders.Contains("profileNum"))
-                    httpClient.DefaultRequestHeaders.Add("profileNum", profileNum.ToString());
 
                 var content = GetHttpContent(data);
 
@@ -130,17 +124,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="requiresToken">Requires token ?</param>
         /// <param name="bLogin">Is login request?</param>
         /// <returns>Returns HTTP response</returns>
-        public virtual async Task<bool> PatchAsync(object data, int? masterAccountNum = null, int? profileNum = null, string function = null)
+        public virtual async Task<bool> PatchAsync(object data, string function = null)
         {
             var success = true;
             try
             {
                 using var httpClient = await CreateHttpClientAsync();
-                if (masterAccountNum.HasValue && !httpClient.DefaultRequestHeaders.Contains("masterAccountNum"))
-                    httpClient.DefaultRequestHeaders.Add("masterAccountNum", masterAccountNum.ToString());
-
-                if (profileNum.HasValue && !httpClient.DefaultRequestHeaders.Contains("profileNum"))
-                    httpClient.DefaultRequestHeaders.Add("profileNum", profileNum.ToString());
 
                 var content = GetHttpContent(data);
 
@@ -161,18 +150,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
-        public virtual async Task<bool> DeleteAsync(object data, int? masterAccountNum = null, int? profileNum = null, string function = null)
+        public virtual async Task<bool> DeleteAsync(object data, string function = null)
         {
             var success = true;
             try
             {
                 using var httpClient = await CreateHttpClientAsync();
-
-                if (masterAccountNum.HasValue && !httpClient.DefaultRequestHeaders.Contains("masterAccountNum"))
-                    httpClient.DefaultRequestHeaders.Add("masterAccountNum", masterAccountNum.ToString());
-
-                if (profileNum.HasValue && !httpClient.DefaultRequestHeaders.Contains("profileNum"))
-                    httpClient.DefaultRequestHeaders.Add("profileNum", profileNum.ToString());
 
                 var request = new HttpRequestMessage(HttpMethod.Delete, BuildRequestUri(function));
                 request.Content = GetHttpContent(data);
@@ -249,7 +232,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             return httpClient;
-        } 
+        }
         #endregion Virtual Methods - Protected
 
         #region Messages

@@ -31,11 +31,11 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 var svc = new SalesOrderManager(dbFactory);
                 (bool ret, List<string> salesOrderUuids) = await svc.CreateSalesOrderByChannelOrderIdAsync(message.ProcessUuid);
 
-                ErpEventClientHelper.UpdateEventERPAsync(ret, message, svc.Messages.ObjectToString());
+                ErpInvoiceEventClientHelper.UpdateEventERPAsync(ret, message, svc.Messages.ObjectToString());
             }
             catch (Exception e)
             {
-                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
+                ErpInvoiceEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
             }
         }
     }

@@ -16,17 +16,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public ErpEventClient() : base(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode)
         { }
 
-        public async Task<bool> AddEventERPAsync(Event_ERPDto eventDto)
+        public async Task<bool> AddEventERPAsync(AddEventDto eventDto, string functionUrl)
         {
 
-            var eventERPPayload = new EventERPPayload()
-            {
-                EventERP = new EventERPDataDto()
-                {
-                    Event_ERP = eventDto
-                }
-            };
-            var success = await PostAsync(eventERPPayload, eventDto.MasterAccountNum.ToInt(), eventDto.ProfileNum.ToInt());
+            var success = await PostAsync(eventDto, functionUrl);
             if (!success)
             {
                 //todo write this.Messages to log or do something. 
@@ -34,22 +27,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
-        public async Task<bool> UpdateEventERPAsync(Event_ERPDto eventDto)
+        public async Task<bool> UpdateEventERPAsync(UpdateEventDto eventDto)
         {
-            var eventERPPayload = new EventERPPayload()
-            {
-                EventERP = new EventERPDataDto()
-                {
-                    Event_ERP = eventDto
-                }
-            };
-            var success = await PatchAsync(eventERPPayload, eventDto.MasterAccountNum.ToInt(), eventDto.ProfileNum.ToInt());
+            var success = await PatchAsync(eventDto);
             if (!success)
             {
                 //todo write this.Messages to log or do something. 
             }
             return success;
         }
+
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
         {

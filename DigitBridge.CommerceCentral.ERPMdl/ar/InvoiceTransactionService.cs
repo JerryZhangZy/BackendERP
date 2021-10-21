@@ -451,33 +451,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber + "_" + (int)transType + "_" + transNum);
             success = success && DeleteData();
             return success;
-        }
-
-        #region To qbo queue 
-
-        /// <summary>
-        /// convert erp trans to a queue message then put it to qbo queue
-        /// </summary>
-        /// <param name="url"></param>
-        /// <param name="authcode"></param>
-        /// <param name="payload"></param>
-        /// <param name="eventType"></param>
-        /// <returns></returns>
-        public virtual async Task ToQboQueueAsync(IPayload payload, ErpEventType eventType)
-        {
-            var message = new Event_ERPDto()
-            {
-                DatabaseNum = payload.DatabaseNum,
-                MasterAccountNum = payload.MasterAccountNum,
-                ProfileNum = payload.ProfileNum,
-                ERPEventType = (int)eventType,
-                ProcessSource = Data.InvoiceTransaction.InvoiceNumber + "_" + Data.InvoiceTransaction.TransNum,
-                ProcessUuid = Data.InvoiceTransaction.TransUuid,
-            };
-            await ErpEventClientHelper.AddEventERPAsync(message);
-        }
-        #endregion
-
+        } 
 
         #region copy invoice info to invoicereturn/invoicepayment for NewReturn/ NewPayment
 
