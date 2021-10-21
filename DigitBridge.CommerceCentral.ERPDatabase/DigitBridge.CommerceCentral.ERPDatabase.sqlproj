@@ -229,12 +229,12 @@
     <None Include="inventory\utility\link_to_productBasic.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="qbo\QuickBooksConnectionInfo.sql" />
-    <Build Include="qbo\QuickBooksExportLog.sql" />
-    <Build Include="qbo\QuickBooksExportLog_Update.sql" />
-    <Build Include="qbo\QuickBooksSettingInfo.sql" />
+    <None Include="qbo\QuickBooksConnectionInfo.sql" />
+    <None Include="qbo\QuickBooksExportLog.sql" />
+    <None Include="qbo\QuickBooksExportLog_Update.sql" />
+    <None Include="qbo\QuickBooksSettingInfo.sql" />
     <None Include="ar\InvoiceReturnItems_Update.sql" />
-    <Build Include="event\Event_ERP.sql" />
-    <Build Include="event\Event_ERP_Update.sql" />
+    <None Include="event\Event_ERP.sql" />
+    <None Include="event\Event_ERP_Update.sql" />
   </ItemGroup>
 </Project>
