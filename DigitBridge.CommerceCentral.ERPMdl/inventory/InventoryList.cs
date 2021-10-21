@@ -206,5 +206,74 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
             return rowNumList;
         }
 
+        private string GetExportSql()
+        {
+            var sql = $@"
+SELECT prd.*,
+(SELECT * FROM ProductExt prdx WHERE prd.ProductUuid=prdx.ProductUuid FOR JSON PATH) AS ProductExt,
+(SELECT * FROM ProductExtAttributes prda WHERE prd.ProductUuid=prda.ProductUuid FOR JSON PATH) AS ProductExtAttributes,
+(SELECT * FROM Inventory inv WHERE prd.ProductUuid=inv.ProductUuid FOR JSON PATH) AS Inventory,
+(SELECT * FROM InventoryAttributes inva WHERE prd.ProductUuid=inva.ProductUuid FOR JSON PATH) AS InventoryAttributes
+FROM ProductBasic prd
+";
+            return sql;
+        }
+
+        private string GetExportCommandText(InventoryPayload payload)
+        {
+            this.LoadRequestParameter(payload);
+            return $@"
+{GetExportSql()}
+{GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.CentralProductNum  
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
+FOR JSON PATH
+";
+        }
+
+        public virtual void GetExportJsonList(InventoryPayload payload)
+        {
+            if (payload == null)
+                payload = new InventoryPayload();
+
+            var sql = GetExportCommandText(payload);
+
+            try
+            {
+                payload.InventoryListCount = Count();
+                StringBuilder sb = new StringBuilder();
+                var result = ExcuteJson(sb, sql, GetSqlParameters().ToArray());
+                if (result)
+                    payload.InventoryDataList = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.InventoryDataList = null;
+                throw;
+            }
+        }
+
+        public virtual async Task GetExportJsonListAsync(InventoryPayload payload)
+        {
+            if (payload == null)
+                payload = new InventoryPayload();
+
+            var sql = GetExportCommandText(payload);
+
+            try
+            {
+                payload.InventoryListCount = await CountAsync();
+                StringBuilder sb = new StringBuilder();
+                var result = await ExcuteJsonAsync(sb,sql, GetSqlParameters().ToArray());
+                if (result)
+                    payload.InventoryDataList = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.InventoryDataList = null;
+                throw;
+            }
+        }
+
     }
 }

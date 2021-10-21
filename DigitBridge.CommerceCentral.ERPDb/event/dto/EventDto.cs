@@ -40,6 +40,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
                 Event_ERP = new Event_ERPDto
                 {
+                    ActionDateUtc=DateTime.UtcNow,
+                    ActionStatus=int.MaxValue,
                     ProcessUuid = eventdto.ProcessUuid,
                     ERPEventType=(int)eventType
                 }

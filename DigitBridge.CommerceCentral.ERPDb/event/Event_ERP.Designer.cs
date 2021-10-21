@@ -271,7 +271,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_actionDateUtc = value.Date.ToSqlSafeValue(); 
+				_actionDateUtc = value.ToSqlSafeValue(); 
 				OnPropertyChanged("ActionDateUtc", value);
             }
         }

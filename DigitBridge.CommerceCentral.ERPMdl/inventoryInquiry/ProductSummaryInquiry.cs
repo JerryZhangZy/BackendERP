@@ -69,9 +69,8 @@ SELECT c.count,non.non_count,c.count-non.non_count as sold_count FROM
             LoadSummaryParameter(payload);
             try
             {
-                this.OnlySQLSelect = true;
                 this.QueryObject.LoadJson = false;
-                var result = await ExcuteAsync();
+                var result = await ExcuteAsync(GetSQL_select());
                 if (result != null && result.HasData)
                 {
                     payload.Summary.ProductCount = result.GetData("count").ToInt();
@@ -92,10 +91,9 @@ SELECT c.count,non.non_count,c.count-non.non_count as sold_count FROM
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            this.OnlySQLSelect = true;
             try
             {
-                payload.Success = ExcuteJson(sb);
+                payload.Success = await ExcuteJsonAsync(sb, $"{GetSQL_select()} FOR JSON PATH");
                 if (payload.Success)
                     payload.ProductSummary = sb;
             }
