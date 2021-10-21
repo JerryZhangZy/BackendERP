@@ -39,7 +39,7 @@ namespace DigitBridge.QuickBooks.Integration
         {
             var exportLog = new QuickBooksExportLog();
 
-            exportLog.LogType = "Payment";
+            exportLog.LogType = QboLogType.Payment;
             exportLog.LogUuid = paymentData.InvoiceTransaction.TransUuid;
             exportLog.DocNumber = qboPayment.DocNumber ?? string.Empty;
             exportLog.TxnId = qboPayment.Id;
@@ -276,7 +276,7 @@ namespace DigitBridge.QuickBooks.Integration
             else
             {
                 AddInfo(qboPayment.ObjectToString());
-                await SaveExportErrorLogAsync();
+                await SaveExportErrorLogAsync(QboLogType.Payment);
             }
         }
 

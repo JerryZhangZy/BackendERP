@@ -91,7 +91,7 @@ namespace DigitBridge.QuickBooks.Integration.Tests
             return (srv.Data.InvoiceTransaction.InvoiceNumber, srv.Data.InvoiceTransaction.TransNum);
         }
 
-        protected string GetErpTransUuid()
+        protected (string, string) GetErpInvoiceUuidAndTransUuid()
         {
             var invoiceNumber = GetErpInvoiceNumber();
 
@@ -102,7 +102,10 @@ namespace DigitBridge.QuickBooks.Integration.Tests
             var data = GetFakerPaymentData(invoiceNumber);
             var dto = mapper.WriteDto(data, null);
             srv.Add(dto);
-            return srv.Data.InvoiceTransaction.TransUuid;
+
+            var trans = srv.Data.InvoiceTransaction;
+
+            return (trans.InvoiceUuid, trans.TransUuid);
         }
     }
 }

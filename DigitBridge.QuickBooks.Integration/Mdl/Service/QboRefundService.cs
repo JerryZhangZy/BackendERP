@@ -38,7 +38,7 @@ namespace DigitBridge.QuickBooks.Integration
         {
             var exportLog = new QuickBooksExportLog();
 
-            exportLog.LogType = "Refund";
+            exportLog.LogType = QboLogType.Refund;
             exportLog.LogUuid = RefundData.InvoiceTransaction.TransUuid;
             exportLog.DocNumber = qboRefund.DocNumber ?? string.Empty;
             exportLog.TxnId = qboRefund.Id;
@@ -277,7 +277,7 @@ namespace DigitBridge.QuickBooks.Integration
             else
             {
                 AddInfo(qboRefund.ObjectToString());
-                await SaveExportErrorLogAsync();
+                await SaveExportErrorLogAsync(QboLogType.Refund);
             }
         }
 

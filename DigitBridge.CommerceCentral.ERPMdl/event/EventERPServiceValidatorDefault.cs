@@ -348,18 +348,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError("Event_ERP.EventUuid is required.");
                 }
 
-                if (dto.Event_ERP.ActionStatus != 0)
-                {
-                    // This property should not be changed.
-                    dto.Event_ERP.MasterAccountNum = null;
-                    dto.Event_ERP.ProfileNum = null;
-                    dto.Event_ERP.DatabaseNum = null;
-                    dto.Event_ERP.EventUuid = null;
-                    dto.Event_ERP.ERPEventType = null ;
-                    dto.Event_ERP.ProcessUuid = null;
-                    dto.Event_ERP.ProcessSource = null;
-                    dto.Event_ERP.ProcessData = null;
-                }
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
             }
@@ -408,18 +396,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError("Event_ERP.EventUuid is required.");
                 }
 
-                if (dto.Event_ERP.ActionStatus != 0)
-                {
-                    // This property should not be changed.
-                    dto.Event_ERP.MasterAccountNum = null;
-                    dto.Event_ERP.ProfileNum = null;
-                    dto.Event_ERP.DatabaseNum = null;
-                    dto.Event_ERP.EventUuid = null;
-                    dto.Event_ERP.ERPEventType = null;
-                    dto.Event_ERP.ProcessUuid = null;
-                    dto.Event_ERP.ProcessSource = null;
-                    dto.Event_ERP.ProcessData = null;
-                }
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
 

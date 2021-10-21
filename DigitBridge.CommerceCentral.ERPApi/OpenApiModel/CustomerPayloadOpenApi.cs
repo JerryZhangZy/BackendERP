@@ -119,6 +119,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         [OpenApiPropertyDescription("(Response) List result which load by filter and paging.")]
         public IList<Object> CustomerList { get; set; }
+        public IList<Object> CustomerDataList { get; set; }
 
         /// <summary>
         /// (Response) List result count which load by filter and paging.

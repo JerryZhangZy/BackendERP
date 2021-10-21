@@ -20,8 +20,14 @@ namespace DigitBridge.QuickBooks.Integration.Tests
     public partial class QboPaymentServiceTests
     {
 
-
         #region Handle by number. This for api
+        private async Task<bool> ExportInvoiceByNumberAsync(string invoiceNumber)
+        {
+            var payload = new QboInvoicePayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
+            var srv = new QboInvoiceService(payload, DataBaseFactory);
+            return await srv.ExportByNumberAsync(invoiceNumber);
+        }
+
 
         [Fact()]
         public async Task GetQboPaymentByNumberAsync_Test()
@@ -29,7 +35,10 @@ namespace DigitBridge.QuickBooks.Integration.Tests
             var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
             var srv = new QboPaymentService(payload, DataBaseFactory);
             (var invoiceNumber, var tranNum) = GetErpInvoiceNumberAndTranNum();
-            var success = await srv.ExportByNumberAsync(invoiceNumber, tranNum);
+
+            var success = await ExportInvoiceByNumberAsync(invoiceNumber);
+
+            success = success && await srv.ExportByNumberAsync(invoiceNumber, tranNum);
 
             success = success && await srv.GetQboPaymentByNumberAsync(invoiceNumber, tranNum);
 
@@ -42,7 +51,11 @@ namespace DigitBridge.QuickBooks.Integration.Tests
             var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
             var srv = new QboPaymentService(payload, DataBaseFactory);
             (var invoiceNumber, var tranNum) = GetErpInvoiceNumberAndTranNum();
-            var success = await srv.ExportByNumberAsync(invoiceNumber, tranNum);
+
+            var success = await ExportInvoiceByNumberAsync(invoiceNumber);
+
+            success = success && await srv.ExportByNumberAsync(invoiceNumber, tranNum);
+
             Assert.True(success, srv.Messages.ObjectToString());
         }
 
@@ -52,7 +65,10 @@ namespace DigitBridge.QuickBooks.Integration.Tests
             var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
             var srv = new QboPaymentService(payload, DataBaseFactory);
             (var invoiceNumber, var tranNum) = GetErpInvoiceNumberAndTranNum();
-            var success = await srv.ExportByNumberAsync(invoiceNumber, tranNum);
+
+            var success = await ExportInvoiceByNumberAsync(invoiceNumber);
+
+            success = success && await srv.ExportByNumberAsync(invoiceNumber, tranNum);
 
             success = success && await srv.DeleteQboPaymentByNumberAsync(invoiceNumber, tranNum);
 
@@ -64,16 +80,25 @@ namespace DigitBridge.QuickBooks.Integration.Tests
         #endregion
 
         #region Handle by uuid. This for internal
+        private async Task<bool> ExportInvoiceByUuidAsync(string invoiceUuid)
+        {
+            var payload = new QboInvoicePayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
+            var srv = new QboInvoiceService(payload, DataBaseFactory);
 
+            return await srv.ExportByUuidAsync(invoiceUuid);
+        }
 
         [Fact()]
         public async Task ExportByUuidAsync_Test()
         {
             var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
             var srv = new QboPaymentService(payload, DataBaseFactory);
-            var invoiceUuid = GetErpTransUuid();
-            var result = await srv.ExportByUuidAsync(invoiceUuid);
-            Assert.True(result, srv.Messages.ObjectToString());
+
+            (var invoiceUuid, var transUuid) = GetErpInvoiceUuidAndTransUuid();
+            var success = await ExportInvoiceByUuidAsync(invoiceUuid);
+            success = success && await srv.ExportByUuidAsync(transUuid);
+
+            Assert.True(success, srv.Messages.ObjectToString());
         }
 
         [Fact()]
@@ -81,8 +106,10 @@ namespace DigitBridge.QuickBooks.Integration.Tests
         {
             var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
             var srv = new QboPaymentService(payload, DataBaseFactory);
-            var invoiceUuid = GetErpTransUuid();
-            var success = await srv.ExportByUuidAsync(invoiceUuid);
+
+            (var invoiceUuid, var transUuid) = GetErpInvoiceUuidAndTransUuid();
+            var success = await ExportInvoiceByUuidAsync(invoiceUuid);
+            success = success && await srv.ExportByUuidAsync(transUuid);
 
             success = success && await srv.DeleteQboPaymentByUuidAsync(invoiceUuid);
 
