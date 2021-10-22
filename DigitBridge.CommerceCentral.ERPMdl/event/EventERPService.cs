@@ -274,7 +274,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // load data 
-            GetData(payload.EventERP.Event_ERP.RowNum.ToLong());
+            GetDataById(payload.EventERP.Event_ERP.EventUuid);
 
             // load data from dto
             FromDto(payload.EventERP);
@@ -305,7 +305,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // load data 
-            await GetDataAsync(payload.EventERP.Event_ERP.RowNum.ToLong());
+            await GetDataByIdAsync(payload.EventERP.Event_ERP.EventUuid);
 
             // load data from dto
             FromDto(payload.EventERP);

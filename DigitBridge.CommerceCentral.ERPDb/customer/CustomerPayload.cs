@@ -91,6 +91,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
         [JsonConverter(typeof(StringBuilderConverter))]
         public StringBuilder CustomerList { get; set; }
+
+        public StringBuilder CustomerDataList { get; set; }
+
         [JsonIgnore] public virtual bool HasCustomerList => CustomerList != null && CustomerList.Length > 0;
         public bool ShouldSerializeCustomerList() => HasCustomerList;
 

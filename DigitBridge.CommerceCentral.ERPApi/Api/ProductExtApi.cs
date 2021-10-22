@@ -159,7 +159,27 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InventoryPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InventoryList(dataBaseFactory, new InventoryQuery());
-            payload = await srv.GetIProductListAsync(payload);
+            await srv.GetIProductListAsync(payload);
+            return new JsonNetResponse<InventoryPayload>(payload);
+        }
+
+        /// <summary>
+        /// Load customer list
+        /// </summary>
+        [FunctionName(nameof(ProductDataList))]
+        [OpenApiOperation(operationId: "ProductDataList", tags: new[] { "ProductExts" }, Summary = "Load product data list")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadFind))]
+        public static async Task<JsonNetResponse<InventoryPayload>> ProductDataList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "productExts/finddata")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InventoryList(dataBaseFactory, new InventoryQuery());
+            await srv.GetExportJsonListAsync(payload);
             return new JsonNetResponse<InventoryPayload>(payload);
         }
 

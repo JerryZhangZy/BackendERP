@@ -81,6 +81,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
         [JsonConverter(typeof(StringBuilderConverter))]
         public StringBuilder SalesOrderList { get; set; }
+
+        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder SalesOrderDataList { get; set; }
         [JsonIgnore] public virtual bool HasSalesOrderList => SalesOrderList != null && SalesOrderList.Length > 0;
         public bool ShouldSerializeSalesOrderList() => HasSalesOrderList;
 

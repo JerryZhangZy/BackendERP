@@ -166,6 +166,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         /// <summary>
+        /// Load customer list
+        /// </summary>
+        [FunctionName(nameof(CustomerDataList))]
+        [OpenApiOperation(operationId: "CustomerDataList", tags: new[] { "Customers" }, Summary = "Load customer list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerPayloadFind))]
+        public static async Task<JsonNetResponse<CustomerPayload>> CustomerDataList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "customers/finddata")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<CustomerPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new CustomerList(dataBaseFactory, new CustomerQuery());
+            await srv.GetExportJsonListAsync(payload);
+            return new JsonNetResponse<CustomerPayload>(payload);
+        }
+
+        /// <summary>
         /// Add customer
         /// </summary>
         [FunctionName(nameof(Sample_Customer_Post))]

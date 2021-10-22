@@ -231,65 +231,65 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
         {
             var sql = $@"
 select {Helper.TableAllies}.*,
-(select {AdrHelper.TableAllies}.* from CustomerAddress {AdrHelper.TableAllies} where {Helper.TableAllies}.CustomerUuid={AdrHelper.TableAllies}.CustomerUuid for json auto,include_null_values ) as CustomerAddress,
-(select * from CustomerAttributes {AtrHelper.TableAllies} where {Helper.TableAllies}.CustomerUuid={AtrHelper.TableAllies}.CustomerUuid for json path ,without_array_wrapper,include_null_values) as CustomerAttributes 
+(select {AdrHelper.TableAllies}.* from CustomerAddress {AdrHelper.TableAllies} where {Helper.TableAllies}.CustomerUuid={AdrHelper.TableAllies}.CustomerUuid FOR JSON PATH ) as CustomerAddress,
+(select * from CustomerAttributes {AtrHelper.TableAllies} where {Helper.TableAllies}.CustomerUuid={AtrHelper.TableAllies}.CustomerUuid FOR JSON PATH) as CustomerAttributes 
 from Customer {Helper.TableAllies}
 ";
             return sql;
         }
 
-        public virtual StringBuilder GetExportJsonList(CustomerPayload payload)
+        private string GetExportCommandText(CustomerPayload payload)
         {
-            if (payload == null)
-                payload = new CustomerPayload();
-
             this.LoadRequestParameter(payload);
-            var sql = $@"
+            return $@"
 {GetExportSql()}
 {GetSQL_where()}
 ORDER BY  {Helper.TableAllies}.RowNum  
 OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
- for json  auto,include_null_values
+FOR JSON PATH
 ";
-            StringBuilder sb = new StringBuilder();
+        }
+
+        public virtual void GetExportJsonList(CustomerPayload payload)
+        {
+            if (payload == null)
+                payload = new CustomerPayload();
+
+            var sql = GetExportCommandText(payload);
+
             try
             {
-                using (var trs = new ScopedTransaction(dbFactory))
-                {
-                    SqlQuery.QueryJson(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
-                }
-                return sb;
+                payload.CustomerListCount = Count();
+                StringBuilder sb = new StringBuilder();
+                var result = ExcuteJson(sb, sql, GetSqlParameters().ToArray());
+                if (result)
+                    payload.CustomerDataList = sb;
             }
             catch (Exception ex)
             {
+                payload.CustomerDataList = null;
                 throw;
             }
         }
 
-        public virtual async Task<StringBuilder> GetExportJsonListAsync(CustomerPayload payload)
+        public virtual async Task GetExportJsonListAsync(CustomerPayload payload)
         {
             if (payload == null)
                 payload = new CustomerPayload();
 
-            this.LoadRequestParameter(payload);
-            var sql = $@"
-{GetExportSql()}
-{GetSQL_where()}
-ORDER BY  {Helper.TableAllies}.RowNum  
-OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
- for json  auto,include_null_values
-";
-            StringBuilder sb = new StringBuilder();
+            var sql = GetExportCommandText(payload);
+
             try
             {
-                using (var trs = new ScopedTransaction(dbFactory))
-                {
-                    await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text, GetSqlParameters().ToArray());
-                }
-                return sb;
+                payload.CustomerListCount = await CountAsync();
+                StringBuilder sb = new StringBuilder();
+                var result = await ExcuteJsonAsync(sb, sql, GetSqlParameters().ToArray());
+                if (result)
+                    payload.CustomerDataList = sb;
             }
             catch (Exception ex)
             {
+                payload.CustomerDataList = null;
                 throw;
             }
         }
