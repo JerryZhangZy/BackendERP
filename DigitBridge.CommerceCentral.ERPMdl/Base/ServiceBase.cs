@@ -389,8 +389,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (ProcessMode == ProcessingMode.Add || string.IsNullOrWhiteSpace(id))
                 return false;
-            ClearData();
-            return _data.GetById(id);
+            ClearData(); 
+
+            var success =   _data.GetById(id);
+
+            if (!success)
+                AddError($"Data not found for unique key : {id}"); 
+
+            return success;
         }
 
         public virtual bool SaveData()
@@ -441,7 +447,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 NewData();
-            return await _data.GetByIdAsync(id);
+            var success = await _data.GetByIdAsync(id);
+            if (!success)
+                AddError($"Data not found for unique key : {id}");
+            return success;
         }
 
         public virtual async Task<bool> SaveDataAsync()
