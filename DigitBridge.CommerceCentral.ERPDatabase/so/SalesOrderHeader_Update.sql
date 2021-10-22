@@ -19,3 +19,18 @@ CREATE NONCLUSTERED INDEX [IX_SalesOrderHeader_MasterAccountNum_ProfileNum] ON [
 	[ProfileNum] ASC
 )  
 GO
+
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'IX_SalesOrderHeader_OrderSourceCode')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeader_OrderType_OrderStatus] ON [dbo].[SalesOrderHeader]
+(
+	[OrderType] ASC,
+	[OrderStatus] ASC
+)  
+GO
+
+CREATE NONCLUSTERED INDEX [FK_SalesOrderHeader_CustomerUuid_CustomerCode] ON [dbo].[SalesOrderHeader]
+(
+	[CustomerUuid] ASC,
+	[CustomerCode] ASC
+) 
+GO

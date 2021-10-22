@@ -17,7 +17,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         // Filter fields
         #region ProductBasic
-        protected QueryFilter<string> _ProductUuid = new QueryFilter<string>("ProductUuid", "ProductUuid", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _ProductUuid = new QueryFilter<string>("ProductUuid", "ProductUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> ProductUuid => _ProductUuid;
 
         protected QueryFilter<string> _SKU = new QueryFilter<string>("SKU", "SKU", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
@@ -75,7 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Inventory
 
-        protected QueryFilter<string> _InventoryUuid = new QueryFilter<string>("InventoryUuid", "InventoryUuid", PREFIX_DETAIL, FilterBy.bw, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _InventoryUuid = new QueryFilter<string>("InventoryUuid", "InventoryUuid", PREFIX_DETAIL, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> InventoryUuid => _InventoryUuid;
 
         protected QueryFilter<string> _StyleCode = new QueryFilter<string>("StyleCode", "StyleCode", PREFIX_DETAIL, FilterBy.bw, string.Empty, isNVarChar: true);

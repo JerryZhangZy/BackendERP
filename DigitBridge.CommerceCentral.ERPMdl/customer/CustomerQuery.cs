@@ -16,7 +16,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         // Filter fields
 
-        protected QueryFilter<string> _CustomerUuid = new QueryFilter<string>("CustomerUuid", "CustomerUuid", PREFIX, FilterBy.bw, string.Empty);
+        protected QueryFilter<string> _CustomerUuid = new QueryFilter<string>("CustomerUuid", "CustomerUuid", PREFIX, FilterBy.eq, string.Empty);
         public QueryFilter<string> CustomerUuid => _CustomerUuid;
 
         protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.bw, string.Empty);

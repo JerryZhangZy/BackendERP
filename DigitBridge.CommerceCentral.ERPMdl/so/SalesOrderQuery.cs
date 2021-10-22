@@ -18,7 +18,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         // Filter fields
         #region SalesOrderHeader Filters
-        protected QueryFilter<string> _SalesOrderUuid = new QueryFilter<string>("SalesOrderUuid", "SalesOrderUuid", PREFIX, FilterBy.bw, string.Empty);
+        protected QueryFilter<string> _SalesOrderUuid = new QueryFilter<string>("SalesOrderUuid", "SalesOrderUuid", PREFIX, FilterBy.eq, string.Empty);
         public QueryFilter<string> SalesOrderUuid => _SalesOrderUuid;
 
         protected QueryFilter<string> _OrderNumberFrom = new QueryFilter<string>("OrderNumberFrom", "OrderNumber", PREFIX, FilterBy.ge, string.Empty);

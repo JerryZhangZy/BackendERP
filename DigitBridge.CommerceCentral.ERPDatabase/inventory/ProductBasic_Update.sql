@@ -43,3 +43,15 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_ProductBasic_ProductUuid] ON [dbo].[Product
 	[ProductUuid] ASC
 ) 
 GO 
+
+ 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductBasic]') AND name = N'IX_ProductBasic_S_B_M_P_U')
+CREATE NONCLUSTERED INDEX [IX_ProductBasic_S_B_M_P_U] ON [dbo].[ProductBasic]
+(
+	[SKU] ASC, 
+	[Brand] ASC,
+	[Manufacturer] ASC,
+	[ProductTitle] ASC,
+	[UPC] ASC
+) 
+GO
