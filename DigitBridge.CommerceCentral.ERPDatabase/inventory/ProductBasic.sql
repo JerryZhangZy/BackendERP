@@ -80,4 +80,16 @@ GO
 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'Item=0 ; Child =1 ; Parent =2', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProductBasic', @level2type = N'COLUMN', @level2name = N'ProductType';
 GO 
  
+ 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ProductBasic]') AND name = N'IX_ProductBasic_S_B_M_P_U')
+CREATE NONCLUSTERED INDEX [IX_ProductBasic_S_B_M_P_U] ON [dbo].[ProductBasic]
+(
+	[SKU] ASC, 
+	[Brand] ASC,
+	[Manufacturer] ASC,
+	[ProductTitle] ASC,
+	[UPC] ASC
+) 
+GO
+
 

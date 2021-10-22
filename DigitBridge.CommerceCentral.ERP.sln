@@ -55,6 +55,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPEventApi", "DigitBridge.CommerceCentral.ERPEventApi\DigitBridge.CommerceCentral.ERPEventApi.csproj", "{F1498E07-88FC-4655-A16D-5014991445CA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPEventSDK", "DigitBridge.CommerceCentral.ERPEventSDK\DigitBridge.CommerceCentral.ERPEventSDK.csproj", "{3D9199B3-3F6B-447F-ACB3-718950D40B6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration", "DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration\DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration.csproj", "{436F2903-C78E-40C9-AC4F-65FAC6E79811}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +157,14 @@ Global
 		{F1498E07-88FC-4655-A16D-5014991445CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1498E07-88FC-4655-A16D-5014991445CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1498E07-88FC-4655-A16D-5014991445CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D9199B3-3F6B-447F-ACB3-718950D40B6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D9199B3-3F6B-447F-ACB3-718950D40B6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D9199B3-3F6B-447F-ACB3-718950D40B6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D9199B3-3F6B-447F-ACB3-718950D40B6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{436F2903-C78E-40C9-AC4F-65FAC6E79811}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{436F2903-C78E-40C9-AC4F-65FAC6E79811}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{436F2903-C78E-40C9-AC4F-65FAC6E79811}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{436F2903-C78E-40C9-AC4F-65FAC6E79811}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

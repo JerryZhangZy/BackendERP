@@ -237,4 +237,13 @@
     <None Include="event\Event_ERP.sql" />
     <None Include="event\Event_ERP_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\Inventory_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="inventory\ProductExt_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="customer\Customer_Update.sql" />
+  </ItemGroup>
 </Project>

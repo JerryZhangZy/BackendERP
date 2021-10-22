@@ -92,6 +92,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonConverter(typeof(StringBuilderConverter))]
         public StringBuilder CustomerList { get; set; }
 
+        [JsonConverter(typeof(StringBuilderConverter))]
         public StringBuilder CustomerDataList { get; set; }
 
         [JsonIgnore] public virtual bool HasCustomerList => CustomerList != null && CustomerList.Length > 0;
