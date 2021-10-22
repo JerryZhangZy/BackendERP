@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using System.Text;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -125,41 +126,49 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region New payment
 
-        public async Task<bool> NewPaymentAsync(InvoicePaymentPayload payload, string invoiceNumber)
+        public async Task<bool> NewPaymentByInvoiceNumberAsync(InvoiceNewPaymentPayload payload, string invoiceNumber)
         {
             NewData();
 
             if (!LoadInvoice(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum))
                 return false;
 
-            CopyInvoiceHeaderToTrans();
+            payload.InvoiceTransaction = this.ToDto().InvoiceTransaction;
 
-            var paidAmount = await InvoiceTransactionHelper.GetPaidAmountByInvoiceUuidAsync(dbFactory, Data.InvoiceData.InvoiceHeader.InvoiceUuid);
-
-            //unpaid amount.
-            Data.InvoiceTransaction.TotalAmount = Data.InvoiceData.InvoiceHeader.TotalAmount - paidAmount;
-
-            return true;
+            return await LoadInvoiceList(payload, Data.InvoiceData.InvoiceHeader.CustomerCode);
         }
 
-        /// <summary>
-        /// Load returned qty for each trans return item 
-        /// </summary>
-        /// <returns></returns>
-        protected virtual void Get()
+        public async Task<bool> NewPaymentByCustomerCode(InvoiceNewPaymentPayload payload, string customerCode)
         {
-            if (this.Data.InvoiceReturnItems == null || this.Data.InvoiceReturnItems.Count == 0)
-                return;
-
-            var returnItems = InvoiceTransactionHelper.GetReturnItemsByInvoiceUuid(dbFactory, this.Data.InvoiceData.UniqueId);
-            if (returnItems == null || returnItems.Count == 0)
-                return;
-
-            foreach (var item in this.Data.InvoiceReturnItems)
-            {
-                item.ReturnedQty = returnItems.Where(i => i.sku == item.SKU && i.rowNum != item.RowNum).Sum(j => j.returnQty).ToQty();//+ item.ReturnQty;
-            }
+            NewData();
+            payload.InvoiceTransaction = this.ToDto().InvoiceTransaction;
+            return await LoadInvoiceList(payload, customerCode);
         }
+
+        private async Task<bool> LoadInvoiceList(InvoiceNewPaymentPayload payload, string customerCode)
+        {
+            var invoicePayload = new InvoicePayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum
+            };
+
+            var invoiceQuery = new InvoiceQuery();
+            invoiceQuery.InitForNewPaymet(customerCode);
+
+            var srv = new InvoiceList(this.dbFactory, invoiceQuery);
+            await srv.GetInvoiceListAsync(invoicePayload);
+
+            if (!invoicePayload.Success)
+                this.Messages = this.Messages.Concat(srv.Messages).ToList();
+
+            payload.InvoiceList = invoicePayload.InvoiceList;
+
+            payload.InvoiceListCount = invoicePayload.InvoiceListCount;
+
+            return invoicePayload.Success;
+        }
+
         #endregion
 
 
@@ -191,7 +200,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
             return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPaymentDelete");
         }
-
         #endregion
     }
 }

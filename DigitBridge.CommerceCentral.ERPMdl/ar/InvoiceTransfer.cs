@@ -85,7 +85,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             invoiceHeader.InvoiceNumber = string.IsNullOrEmpty(osHeader.InvoiceNumber) ? 
                 soHeader.OrderNumber + "-" + osHeader.OrderShipmentNum : osHeader.InvoiceNumber;
             invoiceHeader.InvoiceType = (int)InvoiceType.Sales;
-            invoiceHeader.InvoiceStatus = (int)InvoiceStatus.New;
+            invoiceHeader.InvoiceStatus = (int)InvoiceStatusEnum.New;
             invoiceHeader.InvoiceDate = _dtNowUtc;
             invoiceHeader.InvoiceTime = _dtNowUtc.TimeOfDay;
             invoiceHeader.DueDate = soHeader.DueDate;

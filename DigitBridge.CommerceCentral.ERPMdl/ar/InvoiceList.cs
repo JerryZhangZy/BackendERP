@@ -63,8 +63,8 @@ COALESCE(ist.text, '') invoiceStatusText,
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
 LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.InvoiceUuid = {InfoHelper.TableAllies}.InvoiceUuid)
- LEFT JOIN @InvoiceStatus ist ON ({Helper.TableAllies}.InvoiceStatus = ist.num)
- LEFT JOIN @InvoiceType itt ON ({Helper.TableAllies}.InvoiceType = itt.num)
+ LEFT JOIN @InvoiceStatusEnum ist ON ({Helper.TableAllies}.InvoiceStatus = ist.num)
+ LEFT JOIN @InvoiceTypeEnum itt ON ({Helper.TableAllies}.InvoiceType = itt.num)
 ";
             return this.SQL_From;
         }
@@ -72,8 +72,8 @@ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllie
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-            paramList.Add("@InvoiceStatus".ToEnumParameter<InvoiceStatus>());
-            paramList.Add("@InvoiceType".ToEnumParameter<InvoiceType>());
+            paramList.Add("@InvoiceStatusEnum".ToEnumParameter<InvoiceStatusEnum>());
+            paramList.Add("@InvoiceTypeEnum".ToEnumParameter<InvoiceType>());
 
             return paramList.ToArray();
 
@@ -97,6 +97,7 @@ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllie
             }
             catch (Exception ex)
             {
+                payload.Success = false;
                 payload.InvoiceListCount = 0;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;
@@ -119,6 +120,7 @@ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllie
             }
             catch (Exception ex)
             {
+                payload.Success = false;
                 payload.InvoiceListCount = 0;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;

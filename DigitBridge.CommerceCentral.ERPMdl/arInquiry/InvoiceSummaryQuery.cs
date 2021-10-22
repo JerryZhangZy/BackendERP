@@ -23,8 +23,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> CustomerCode => _CustomerCode;
 
-        protected EnumQueryFilter<InvoiceStatus> _InvoiceStatus = new EnumQueryFilter<InvoiceStatus>("InvoiceStatus", "InvoiceStatus", PREFIX, FilterBy.eq, 0);
-        public EnumQueryFilter<InvoiceStatus> InvoiceStatus => _InvoiceStatus;
+        protected EnumQueryFilter<InvoiceStatusEnum> _InvoiceStatus = new EnumQueryFilter<InvoiceStatusEnum>("InvoiceStatus", "InvoiceStatus", PREFIX, FilterBy.eq, 0);
+        public EnumQueryFilter<InvoiceStatusEnum> InvoiceStatus => _InvoiceStatus;
 
         public InvoiceSummaryQuery() : base(PREFIX)
         {
