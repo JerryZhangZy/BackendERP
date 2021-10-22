@@ -12,6 +12,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -129,9 +130,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<bool> NewPaymentByInvoiceNumberAsync(InvoiceNewPaymentPayload payload, string invoiceNumber)
         {
             NewData();
-
             if (!LoadInvoice(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum))
                 return false;
+
+            CopyInvoiceHeaderToTrans();
+
+            //unpaid amount.
+            Data.InvoiceTransaction.TotalAmount = Data.InvoiceData.InvoiceHeader.Balance.IsZero() ? 0 : Data.InvoiceData.InvoiceHeader.Balance; 
 
             payload.InvoiceTransaction = this.ToDto().InvoiceTransaction;
 
@@ -140,9 +145,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> NewPaymentByCustomerCode(InvoiceNewPaymentPayload payload, string customerCode)
         {
+            if (!await LoadInvoiceList(payload, customerCode))
+            {
+                return false;
+            }
+
+            var invoiceList = JsonConvert.DeserializeObject<List<InvoiceHeader>>(payload.InvoiceList.ToString());
+
             NewData();
+            // All unpaid amount.
+            Data.InvoiceTransaction.TotalAmount = invoiceList.Sum(i => i.Balance.IsZero() ? 0 : i.Balance);
+
             payload.InvoiceTransaction = this.ToDto().InvoiceTransaction;
-            return await LoadInvoiceList(payload, customerCode);
+
+            return true;
         }
 
         private async Task<bool> LoadInvoiceList(InvoiceNewPaymentPayload payload, string customerCode)
