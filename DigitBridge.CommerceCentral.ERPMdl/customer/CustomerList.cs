@@ -17,7 +17,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
 using Helper = DigitBridge.CommerceCentral.ERPDb.CustomerHelper;
 using AdrHelper = DigitBridge.CommerceCentral.ERPDb.CustomerAddressHelper;
-using AtrHelper = DigitBridge.CommerceCentral.ERPDb.CustomerAttributesHelper;
+using AtrHelper = DigitBridge.CommerceCentral.ERPDb.CustomerAddressHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -37,18 +37,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.Digit_seller_id()}, 
-{Helper.RowNum()}, 
 {Helper.CustomerUuid()}, 
 {Helper.CustomerCode()}, 
 {Helper.CustomerName()}, 
 {Helper.Contact()}, 
-{Helper.Contact2()}, 
-{Helper.Contact3()}, 
 {Helper.Phone1()}, 
 {Helper.Phone2()}, 
-{Helper.Phone3()}, 
-{Helper.Phone4()}, 
 {Helper.Email()}, 
 {Helper.WebSite()}, 
 {Helper.CustomerType()}, 
@@ -57,37 +51,22 @@ COALESCE(st.text, '') customerStatusText,
 {Helper.BusinessType()}, 
 {Helper.PriceRule()}, 
 {Helper.FirstDate()}, 
-{Helper.Currency()}, 
 {Helper.CreditLimit()}, 
-{Helper.TaxRate()}, 
-{Helper.DiscountRate()}, 
-{Helper.ShippingCarrier()}, 
-{Helper.ShippingClass()}, 
-{Helper.ShippingAccount()}, 
 {Helper.Priority()}, 
 {Helper.Area()}, 
 {Helper.Region()}, 
 {Helper.Districtn()}, 
 {Helper.Zone()}, 
-{Helper.TaxId()}, 
-{Helper.ResaleLicense()}, 
 {Helper.ClassCode()}, 
 {Helper.DepartmentCode()}, 
 {Helper.DivisionCode()}, 
 {Helper.SourceCode()}, 
 {Helper.Terms()}, 
 {Helper.TermsDays()},
-{AdrHelper.AddressCode()},
-{AdrHelper.AddressType()},
-{AdrHelper.Description()},
-{AdrHelper.Name()},
-{AdrHelper.Company()},
-{AdrHelper.Attention()},
 {AdrHelper.City()},
 {AdrHelper.State()},
 {AdrHelper.PostalCode()},
-{AdrHelper.Country()},
-{AdrHelper.DaytimePhone()}
+{AdrHelper.Country()}
 ";
             return this.SQL_Select;
         }
@@ -230,9 +209,9 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
         private string GetExportSql()
         {
             var sql = $@"
-select {Helper.TableAllies}.*,
+select JSON_QUERY((SELECT * FROM Customer i where i.RowNum={Helper.TableAllies}.RowNum FOR JSON PATH,WITHOUT_ARRAY_WRAPPER)) AS Customer,
 (select {AdrHelper.TableAllies}.* from CustomerAddress {AdrHelper.TableAllies} where {Helper.TableAllies}.CustomerUuid={AdrHelper.TableAllies}.CustomerUuid FOR JSON PATH ) as CustomerAddress,
-(select * from CustomerAttributes {AtrHelper.TableAllies} where {Helper.TableAllies}.CustomerUuid={AtrHelper.TableAllies}.CustomerUuid FOR JSON PATH) as CustomerAttributes 
+JSON_QUERY((select * from CustomerAttributes {AtrHelper.TableAllies} where {Helper.TableAllies}.CustomerUuid={AtrHelper.TableAllies}.CustomerUuid FOR JSON PATH ,WITHOUT_ARRAY_WRAPPER)) as CustomerAttributes 
 from Customer {Helper.TableAllies}
 ";
             return sql;

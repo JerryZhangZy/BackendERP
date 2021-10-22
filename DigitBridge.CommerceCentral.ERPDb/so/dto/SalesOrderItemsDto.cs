@@ -1,4 +1,3 @@
-
               
     
 
@@ -640,6 +639,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasUpdateBy => UpdateBy != null;
+
+		/// <summary>
+		/// (Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false")]
+        public long? OrderDCAssignmentLineNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderDCAssignmentLineNum => OrderDCAssignmentLineNum != null;
 
 
 
