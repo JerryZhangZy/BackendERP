@@ -35,6 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
+{Helper.RowNum()},
 {Helper.ChannelNum()},
 {Helper.ChannelAccountNum()},
 {Helper.ERPEventType()},

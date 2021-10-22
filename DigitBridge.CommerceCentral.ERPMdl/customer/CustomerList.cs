@@ -230,9 +230,9 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
         private string GetExportSql()
         {
             var sql = $@"
-select {Helper.TableAllies}.*,
+select JSON_QUERY((SELECT * FROM Customer i where i.RowNum={Helper.TableAllies}.RowNum FOR JSON PATH,WITHOUT_ARRAY_WRAPPER)) AS Customer,
 (select {AdrHelper.TableAllies}.* from CustomerAddress {AdrHelper.TableAllies} where {Helper.TableAllies}.CustomerUuid={AdrHelper.TableAllies}.CustomerUuid FOR JSON PATH ) as CustomerAddress,
-(select * from CustomerAttributes {AtrHelper.TableAllies} where {Helper.TableAllies}.CustomerUuid={AtrHelper.TableAllies}.CustomerUuid FOR JSON PATH) as CustomerAttributes 
+JSON_QUERY((select * from CustomerAttributes {AtrHelper.TableAllies} where {Helper.TableAllies}.CustomerUuid={AtrHelper.TableAllies}.CustomerUuid FOR JSON PATH ,WITHOUT_ARRAY_WRAPPER)) as CustomerAttributes 
 from Customer {Helper.TableAllies}
 ";
             return sql;

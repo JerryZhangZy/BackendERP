@@ -326,9 +326,9 @@ AND @orderNumbers.exist('/parameters/value[text()=sql:column(''tbl.OrderNumber''
         private string GetExportSql()
         {
             var sql = $@"
-SELECT {SalesOrderHeaderHelper.TableAllies}.*,
-(SELECT * FROM SalesOrderHeaderInfo i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderHeaderInfo,
-(SELECT * FROM SalesOrderHeaderAttributes i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderHeaderAttributes,
+SELECT JSON_QUERY((SELECT * FROM SalesOrderHeader i where i.RowNum={SalesOrderHeaderHelper.TableAllies}.RowNum FOR JSON PATH,WITHOUT_ARRAY_WRAPPER)) AS SalesOrderHeader,
+JSON_QUERY((SELECT * FROM SalesOrderHeaderInfo i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH,WITHOUT_ARRAY_WRAPPER)) AS SalesOrderHeaderInfo,
+JSON_QUERY((SELECT * FROM SalesOrderHeaderAttributes i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH,WITHOUT_ARRAY_WRAPPER)) AS SalesOrderHeaderAttributes,
 (SELECT * FROM SalesOrderItems i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderItems,
 (SELECT * FROM SalesOrderItemsAttributes i WHERE i.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid FOR JSON PATH) AS SalesOrderItemsAttributes
 FROM SalesOrderHeader {SalesOrderHeaderHelper.TableAllies}

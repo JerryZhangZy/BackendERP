@@ -209,9 +209,9 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
         private string GetExportSql()
         {
             var sql = $@"
-SELECT prd.*,
-(SELECT * FROM ProductExt prdx WHERE prd.ProductUuid=prdx.ProductUuid FOR JSON PATH) AS ProductExt,
-(SELECT * FROM ProductExtAttributes prda WHERE prd.ProductUuid=prda.ProductUuid FOR JSON PATH) AS ProductExtAttributes,
+SELECT JSON_QUERY((SELECT * FROM ProductBasic i where i.CentralProductNum=prd.CentralProductNum FOR JSON PATH,WITHOUT_ARRAY_WRAPPER)) AS ProductBasic,
+JSON_QUERY((SELECT * FROM ProductExt prdx WHERE prd.ProductUuid=prdx.ProductUuid FOR JSON PATH,WITHOUT_ARRAY_WRAPPER)) AS ProductExt,
+JSON_QUERY((SELECT * FROM ProductExtAttributes prda WHERE prd.ProductUuid=prda.ProductUuid FOR JSON PATH,WITHOUT_ARRAY_WRAPPER)) AS ProductExtAttributes,
 (SELECT * FROM Inventory inv WHERE prd.ProductUuid=inv.ProductUuid FOR JSON PATH) AS Inventory,
 (SELECT * FROM InventoryAttributes inva WHERE prd.ProductUuid=inva.ProductUuid FOR JSON PATH) AS InventoryAttributes
 FROM ProductBasic prd
