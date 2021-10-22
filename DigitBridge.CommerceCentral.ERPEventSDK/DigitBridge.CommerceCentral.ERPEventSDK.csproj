@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ApiClient\ErpEventClientHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
   </ItemGroup>
 

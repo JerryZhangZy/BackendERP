@@ -19,12 +19,6 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK
     [Serializable()]
     public class EventERPPayload
     {
-        public int MasterAccountNum { get; set; }
-
-        public int ProfileNum { get; set; }
-
-        public int DatabaseNum { get; set; }
-
         public IList<MessageClass> Messages { get; set; } = new List<MessageClass>();
 
         public bool Success { get; set; } = true;
@@ -34,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK
         /// <summary>
         /// (Request and Response Data) Single EventERP entity object which load by Number.
         /// </summary>
-        //public EventERPDataDto EventERP { get; set; }
+        public JObject EventERP { get; set; }
         //[JsonIgnore] public virtual bool HasEventERP => EventERP != null;
         //public bool ShouldSerializeEventERP() => HasEventERP;
 

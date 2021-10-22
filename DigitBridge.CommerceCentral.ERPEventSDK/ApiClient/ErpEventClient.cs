@@ -14,8 +14,10 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK
     {
         public ErpEventClient() : base(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode)
         { }
+        public ErpEventClient(string baseUrl,string authCode) :  base(baseUrl, authCode)
+        { }
 
-        public async Task<bool> AddEventERPAsync(AddErpEventDto eventDto, string functionUrl)
+        protected async Task<bool> AddEventERPAsync(AddErpEventDto eventDto, string functionUrl)
         {
 
             var success = await PostAsync(eventDto, functionUrl);
@@ -26,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK
             return success;
         }
 
-        public async Task<bool> UpdateEventERPAsync(UpdateErpEventDto eventDto)
+        public async Task<bool> SendActionResultAsync(UpdateErpEventDto eventDto)
         {
             var success = await PatchAsync(eventDto);
             if (!success)
