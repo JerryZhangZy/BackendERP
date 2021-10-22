@@ -150,7 +150,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var invoicePayload = new InvoicePayload()
             {
                 MasterAccountNum = payload.MasterAccountNum,
-                ProfileNum = payload.ProfileNum
+                ProfileNum = payload.ProfileNum,
+                LoadAll = true
             };
 
             var invoiceQuery = new InvoiceQuery();
