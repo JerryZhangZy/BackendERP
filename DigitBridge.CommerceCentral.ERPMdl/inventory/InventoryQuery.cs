@@ -16,27 +16,93 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected static string PREFIX_DETAIL = InventoryHelper.TableAllies;
 
         // Filter fields
-
-        protected QueryFilter<string> _ProductUuid = new QueryFilter<string>("ProductUuid", "ProductUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        #region ProductBasic
+        protected QueryFilter<string> _ProductUuid = new QueryFilter<string>("ProductUuid", "ProductUuid", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> ProductUuid => _ProductUuid;
 
-        protected QueryFilter<string> _SKU = new QueryFilter<string>("SKU", "SKU", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _SKU = new QueryFilter<string>("SKU", "SKU", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> SKU => _SKU;
 
-        protected QueryFilter<string> _Brand = new QueryFilter<string>("Brand", "Brand", PREFIX, FilterBy.eq, string.Empty);
+        protected QueryFilter<string> _Brand = new QueryFilter<string>("Brand", "Brand", PREFIX, FilterBy.bw, string.Empty);
         public QueryFilter<string> Brand => _Brand;
 
-        protected QueryFilter<string> _Manufacturer = new QueryFilter<string>("Manufacturer", "Manufacturer", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _Manufacturer = new QueryFilter<string>("Manufacturer", "Manufacturer", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> Manufacturer => _Manufacturer;
 
         protected QueryFilter<string> _ProductTitle = new QueryFilter<string>("ProductTitle", "ProductTitle", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> ProductTitle => _ProductTitle;
 
-        protected QueryFilter<string> _FNSku = new QueryFilter<string>("FNSku", "FNSku", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> FNSku => _FNSku;
-
-        protected QueryFilter<string> _UPC = new QueryFilter<string>("UPC", "UPC", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _UPC = new QueryFilter<string>("UPC", "UPC", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> UPC => _UPC;
+        #endregion
+
+        #region ProductExt
+
+        protected QueryFilter<string> _ClassCode = new QueryFilter<string>("ClassCode", "ClassCode", PREFIX_PRODUCTEX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> ClassCode => _ClassCode;
+
+        protected QueryFilter<string> _SubClassCode = new QueryFilter<string>("SubClassCode", "SubClassCode", PREFIX_PRODUCTEX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> SubClassCode => _SubClassCode;
+
+        protected QueryFilter<string> _DepartmentCode = new QueryFilter<string>("DepartmentCode", "DepartmentCode", PREFIX_PRODUCTEX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> DepartmentCode => _DepartmentCode;
+
+        protected QueryFilter<string> _DivisionCode = new QueryFilter<string>("DivisionCode", "DivisionCode", PREFIX_PRODUCTEX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> DivisionCode => _DivisionCode;
+
+        protected QueryFilter<string> _OEMCode = new QueryFilter<string>("OEMCode", "OEMCode", PREFIX_PRODUCTEX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> OEMCode => _OEMCode;
+
+        protected QueryFilter<string> _AlternateCode = new QueryFilter<string>("AlternateCode", "AlternateCode", PREFIX_PRODUCTEX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> AlternateCode => _AlternateCode;
+
+        protected QueryFilter<string> _Remark = new QueryFilter<string>("Remark", "Remark", PREFIX_PRODUCTEX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> Remark => _Remark;
+
+        protected QueryFilter<string> _Model = new QueryFilter<string>("Model", "Model", PREFIX_PRODUCTEX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> Model => _Model;
+
+        protected QueryFilter<string> _CategoryCode = new QueryFilter<string>("CategoryCode", "CategoryCode", PREFIX_PRODUCTEX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> CategoryCode => _CategoryCode;
+
+        protected QueryFilter<string> _GroupCode = new QueryFilter<string>("GroupCode", "GroupCode", PREFIX_PRODUCTEX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> GroupCode => _GroupCode;
+
+        protected QueryFilter<string> _SubGroupCode = new QueryFilter<string>("SubGroupCode", "SubGroupCode", PREFIX_PRODUCTEX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> SubGroupCode => _SubGroupCode;
+
+        #endregion
+
+        #region Inventory
+
+        protected QueryFilter<string> _InventoryUuid = new QueryFilter<string>("InventoryUuid", "InventoryUuid", PREFIX_DETAIL, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> InventoryUuid => _InventoryUuid;
+
+        protected QueryFilter<string> _StyleCode = new QueryFilter<string>("StyleCode", "StyleCode", PREFIX_DETAIL, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> StyleCode => _StyleCode;
+
+        protected QueryFilter<string> _ColorPatternCode = new QueryFilter<string>("ColorPatternCode", "ColorPatternCode", PREFIX_DETAIL, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> ColorPatternCode => _ColorPatternCode;
+
+        protected QueryFilter<string> _SizeCode = new QueryFilter<string>("SizeCode", "SizeCode", PREFIX_DETAIL, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> SizeCode => _SizeCode;
+
+        protected QueryFilter<string> _WidthCode = new QueryFilter<string>("WidthCode", "WidthCode", PREFIX_DETAIL, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> WidthCode => _WidthCode;
+
+        protected QueryFilter<string> _LengthCode = new QueryFilter<string>("LengthCode", "LengthCode", PREFIX_DETAIL, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> LengthCode => _LengthCode;
+
+        protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", PREFIX_DETAIL, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> WarehouseCode => _WarehouseCode;
+
+        protected QueryFilter<string> _LotNum = new QueryFilter<string>("LotNum", "LotNum", PREFIX_DETAIL, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> LotNum => _LotNum;
+
+        protected QueryFilter<string> _LpnNum = new QueryFilter<string>("LpnNum", "LpnNum", PREFIX_DETAIL, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> LpnNum => _LpnNum;
+
+        #endregion
 
         public InventoryQuery() : base(PREFIX)
         {
@@ -45,8 +111,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_Brand);
             AddFilter(_Manufacturer);
             AddFilter(_ProductTitle);
-            AddFilter(_FNSku);
             AddFilter(_UPC);
+
+            AddFilter(_ClassCode);
+            AddFilter(_SubClassCode);
+            AddFilter(_DepartmentCode);
+            AddFilter(_DivisionCode);
+            AddFilter(_OEMCode);
+            AddFilter(_AlternateCode);
+            AddFilter(_Remark);
+            AddFilter(_Model);
+            AddFilter(_CategoryCode);
+            AddFilter(_GroupCode);
+            AddFilter(_SubGroupCode);
+
+            AddFilter(_InventoryUuid);
+            AddFilter(_StyleCode);
+            AddFilter(_ColorPatternCode);
+            AddFilter(_SizeCode);
+            AddFilter(_WidthCode);
+            AddFilter(_LengthCode);
+            AddFilter(_WarehouseCode);
+            AddFilter(_LotNum);
+            AddFilter(_LpnNum);
         }
         public override void InitQueryFilter()
         {

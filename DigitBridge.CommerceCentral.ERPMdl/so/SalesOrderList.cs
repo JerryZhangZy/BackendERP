@@ -9,6 +9,8 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
+using Hepler = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderHelper;
+using InfoHepler = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -28,32 +30,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{SalesOrderHeaderHelper.RowNum()}, 
-{SalesOrderHeaderHelper.DatabaseNum()}, 
-{SalesOrderHeaderHelper.MasterAccountNum()}, 
-{SalesOrderHeaderHelper.ProfileNum()}, 
-{SalesOrderHeaderHelper.SalesOrderUuid()}, 
-{SalesOrderHeaderHelper.OrderNumber()}, 
-{SalesOrderHeaderHelper.OrderType()}, 
+{Hepler.SalesOrderUuid()}, 
+{Hepler.OrderNumber()}, 
+{Hepler.OrderType()}, 
 COALESCE(ordtp.text, '') orderTypeText, 
-{SalesOrderHeaderHelper.OrderStatus()}, 
+{Hepler.OrderStatus()}, 
 COALESCE(ordst.text, '') orderStatusText, 
-{SalesOrderHeaderHelper.OrderDate()}, 
-{SalesOrderHeaderHelper.ShipDate()}, 
-{SalesOrderHeaderHelper.OrderTime()}, 
-{SalesOrderHeaderHelper.CustomerUuid()}, 
-{SalesOrderHeaderHelper.CustomerCode()}, 
-{SalesOrderHeaderHelper.CustomerName()}, 
-{SalesOrderHeaderHelper.Terms()}, 
-{SalesOrderHeaderHelper.TermsDays()}, 
-{SalesOrderHeaderHelper.SubTotalAmount()},
-{SalesOrderHeaderHelper.TotalAmount()},
-{SalesOrderHeaderInfoHelper.CentralOrderNum()},
-{SalesOrderHeaderInfoHelper.ChannelNum()},
-{SalesOrderHeaderInfoHelper.ChannelOrderID()},
-{SalesOrderHeaderInfoHelper.BillToEmail()},
-{SalesOrderHeaderInfoHelper.ShipToName()}
-
+{Hepler.OrderDate()}, 
+{Hepler.ShipDate()}, 
+{Hepler.CustomerCode()}, 
+{Hepler.CustomerName()}, 
+{Hepler.Terms()}, 
+{Hepler.TermsDays()}, 
+{Hepler.SubTotalAmount()},
+{Hepler.TotalAmount()},
+{Hepler.OrderSourceCode()},
+{InfoHepler.CentralFulfillmentNum()},
+{InfoHepler.ShippingCarrier()},
+{InfoHepler.ShippingClass()},
+{InfoHepler.DistributionCenterNum()},
+{InfoHepler.CentralOrderNum()},
+{InfoHepler.CentralOrderUuid()},
+{InfoHepler.ChannelNum()},
+{InfoHepler.ChannelAccountNum()},
+{InfoHepler.ChannelOrderID()},
+{InfoHepler.SecondaryChannelOrderID()},
+{InfoHepler.WarehouseUuid()},
+{InfoHepler.WarehouseCode()},
+{InfoHepler.RefNum()},
+{InfoHepler.CustomerPoNum()},
+{InfoHepler.ShipToName()},
+{InfoHepler.ShipToAttention()},
+{InfoHepler.ShipToAddressLine1()},
+{InfoHepler.ShipToAddressLine2()},
+{InfoHepler.ShipToCity()},
+{InfoHepler.ShipToState()},
+{InfoHepler.ShipToPostalCode()},
+{InfoHepler.ShipToCountry()},
+{InfoHepler.ShipToEmail()}
 ";
             return this.SQL_Select;
         }
@@ -61,11 +75,11 @@ COALESCE(ordst.text, '') orderStatusText,
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
- FROM {SalesOrderHeaderHelper.TableName} {SalesOrderHeaderHelper.TableAllies} 
- LEFT JOIN {SalesOrderHeaderInfoHelper.TableName} {SalesOrderHeaderInfoHelper.TableAllies} ON ({SalesOrderHeaderInfoHelper.TableAllies}.SalesOrderUuid = {SalesOrderHeaderHelper.TableAllies}.SalesOrderUuid)
- LEFT JOIN {CustomerHelper.TableName} {CustomerHelper.TableAllies} ON ({ERPDb.CustomerHelper.TableAllies}.CustomerUuid = {SalesOrderHeaderHelper.TableAllies}.CustomerUuid)
- LEFT JOIN @SalesOrderStatus ordst ON ({SalesOrderHeaderHelper.TableAllies}.OrderStatus = ordst.num)
- LEFT JOIN @SalesOrderType ordtp ON ({SalesOrderHeaderHelper.TableAllies}.OrderType = ordtp.num)
+ FROM {Hepler.TableName} {Hepler.TableAllies} 
+ LEFT JOIN {InfoHepler.TableName} {InfoHepler.TableAllies} ON ({InfoHepler.TableAllies}.SalesOrderUuid = {InfoHepler.TableAllies}.SalesOrderUuid)
+-- LEFT JOIN {CustomerHelper.TableName} {CustomerHelper.TableAllies} ON ({ERPDb.CustomerHelper.TableAllies}.CustomerUuid = {Hepler.TableAllies}.CustomerUuid)
+ LEFT JOIN @SalesOrderStatus ordst ON ({Hepler.TableAllies}.OrderStatus = ordst.num)
+ LEFT JOIN @SalesOrderType ordtp ON ({Hepler.TableAllies}.OrderType = ordtp.num)
 ";
             return this.SQL_From;
         }

@@ -31,18 +31,72 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
+JSON_QUERY((SELECT 
 {Helper.ProductUuid()}, 
 {Helper.SKU()}, 
-{Helper.FNSku()}, 
-{Helper.Condition()}, 
 {Helper.Brand()}, 
 {Helper.Manufacturer()}, 
 {Helper.ProductTitle()}, 
-{Helper.Subtitle()}, 
-{Helper.ASIN()}, 
 {Helper.UPC()}, 
-{Helper.Price()}, 
-{Helper.MSRP()}, 
+{Helper.BundleType()}, 
+{Helper.ProductType()}
+FROM ProductBasic i WHERE {Helper.TableAllies}.CentralProductNum=i.CentralProductNum FOR JSON PATH,WITHOUT_ARRAY_WRAPPER)) AS ProductBasic,
+JSON_QUERY((SELECT 
+{ExHelper.ClassCode()},
+{ExHelper.SubClassCode()},
+{ExHelper.DepartmentCode()},
+{ExHelper.DivisionCode()},
+{ExHelper.OEMCode()},
+{ExHelper.AlternateCode()},
+{ExHelper.Remark()},
+{ExHelper.Model()},
+{ExHelper.CategoryCode()},
+{ExHelper.GroupCode()},
+{ExHelper.SubGroupCode()},
+{ExHelper.PriceRule()},
+{ExHelper.UOM()},
+{ExHelper.QtyPerCase()},
+{ExHelper.QtyPerBox()},
+{ExHelper.SalesCost()}
+FROM ProductExt i WHERE {Helper.TableAllies}.ProductUuid=i.ProductUuid FOR JSON PATH,WITHOUT_ARRAY_WRAPPER)) AS ProductExt,
+(SELECT 
+{InvHelper.InventoryUuid()},
+{InvHelper.StyleCode()},
+{InvHelper.ColorPatternCode()},
+{InvHelper.SizeType()},
+{InvHelper.SizeCode()},
+{InvHelper.WidthCode()},
+{InvHelper.LengthCode()},
+{InvHelper.WarehouseUuid()},
+{InvHelper.WarehouseCode()},
+{InvHelper.WarehouseName()},
+{InvHelper.LotNum()},
+{InvHelper.LotInDate()},
+{InvHelper.LotExpDate()},
+{InvHelper.LpnNum()},
+{InvHelper.Instock()},
+{InvHelper.OpenSoQty()},
+{InvHelper.OpenFulfillmentQty()},
+{InvHelper.AvaQty()},
+{InvHelper.OpenPoQty()},
+{InvHelper.OpenInTransitQty()},
+{InvHelper.OpenWipQty()},
+{InvHelper.ProjectedQty()}
+FROM Inventory i WHERE {Helper.TableAllies}.ProductUuid=i.ProductUuid FOR JSON PATH) AS Inventory
+";
+            return this.SQL_Select;
+        }
+        /* backup style2
+        protected override string GetSQL_select()
+        {
+            this.SQL_Select = $@"
+SELECT 
+{Helper.ProductUuid()}, 
+{Helper.SKU()}, 
+{Helper.Brand()}, 
+{Helper.Manufacturer()}, 
+{Helper.ProductTitle()}, 
+{Helper.UPC()}, 
 {Helper.BundleType()}, 
 {Helper.ProductType()}, 
 {ExHelper.ClassCode()},
@@ -59,16 +113,92 @@ SELECT
 {ExHelper.PriceRule()},
 {ExHelper.UOM()},
 {ExHelper.QtyPerCase()},
+{ExHelper.QtyPerBox()},
 {ExHelper.SalesCost()},
-{InvHelper.ColorPatternCode()},
-{InvHelper.WarehouseCode()},
+(SELECT 
 {InvHelper.InventoryUuid()},
+{InvHelper.StyleCode()},
+{InvHelper.ColorPatternCode()},
+{InvHelper.SizeType()},
+{InvHelper.SizeCode()},
+{InvHelper.WidthCode()},
+{InvHelper.LengthCode()},
+{InvHelper.WarehouseUuid()},
+{InvHelper.WarehouseCode()},
+{InvHelper.WarehouseName()},
+{InvHelper.LotNum()},
+{InvHelper.LotInDate()},
+{InvHelper.LotExpDate()},
+{InvHelper.LpnNum()},
 {InvHelper.Instock()},
-{InvHelper.AvaQty()}
+{InvHelper.OpenSoQty()},
+{InvHelper.OpenFulfillmentQty()},
+{InvHelper.AvaQty()},
+{InvHelper.OpenPoQty()},
+{InvHelper.OpenInTransitQty()},
+{InvHelper.OpenWipQty()},
+{InvHelper.ProjectedQty()}
+FROM Inventory i WHERE {Helper.TableAllies}.ProductUuid=i.ProductUuid FOR JSON PATH) AS Inventory
+";
+            return this.SQL_Select;
+        }        
+        */
+
+        /* style1
+        protected override string GetSQL_select()
+        {
+            this.SQL_Select = $@"
+SELECT 
+{Helper.ProductUuid()}, 
+{Helper.SKU()}, 
+{Helper.Brand()}, 
+{Helper.Manufacturer()}, 
+{Helper.ProductTitle()}, 
+{Helper.UPC()}, 
+{Helper.BundleType()}, 
+{Helper.ProductType()}, 
+{ExHelper.ClassCode()},
+{ExHelper.SubClassCode()},
+{ExHelper.DepartmentCode()},
+{ExHelper.DivisionCode()},
+{ExHelper.OEMCode()},
+{ExHelper.AlternateCode()},
+{ExHelper.Remark()},
+{ExHelper.Model()},
+{ExHelper.CategoryCode()},
+{ExHelper.GroupCode()},
+{ExHelper.SubGroupCode()},
+{ExHelper.PriceRule()},
+{ExHelper.UOM()},
+{ExHelper.QtyPerCase()},
+{ExHelper.QtyPerBox()},
+{ExHelper.SalesCost()},
+{InvHelper.InventoryUuid()},
+{InvHelper.StyleCode()},
+{InvHelper.ColorPatternCode()},
+{InvHelper.SizeType()},
+{InvHelper.SizeCode()},
+{InvHelper.WidthCode()},
+{InvHelper.LengthCode()},
+{InvHelper.WarehouseUuid()},
+{InvHelper.WarehouseCode()},
+{InvHelper.WarehouseName()},
+{InvHelper.LotNum()},
+{InvHelper.LotInDate()},
+{InvHelper.LotExpDate()},
+{InvHelper.LpnNum()},
+{InvHelper.Instock()},
+{InvHelper.OpenSoQty()},
+{InvHelper.OpenFulfillmentQty()},
+{InvHelper.AvaQty()},
+{InvHelper.OpenPoQty()},
+{InvHelper.OpenInTransitQty()},
+{InvHelper.OpenWipQty()},
+{InvHelper.ProjectedQty()}
 ";
             return this.SQL_Select;
         }
-        
+        */
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
