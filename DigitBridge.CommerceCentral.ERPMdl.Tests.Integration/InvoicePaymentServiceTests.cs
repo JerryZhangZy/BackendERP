@@ -24,6 +24,7 @@ using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
 using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -70,26 +71,45 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
                 InvoiceTransaction = GetFakerPaymentDto(),
-                ApplyInvoices = PrepareApplyInvoice(invoiceDatas)
+                ApplyInvoices = await PrepareApplyInvoiceAsync(invoiceDatas, ProcessingMode.Add)
             };
 
             var paymentService = new InvoicePaymentService(DataBaseFactory);
             var success = await paymentService.AddAsync(paymentPayload);
             Assert.True(success, paymentService.Messages.ObjectToString());
-
-            foreach (var invoiceData in invoiceDatas)
-            {
-                var queryPayload = new InvoicePaymentPayload()
-                {
-                    MasterAccountNum = MasterAccountNum,
-                    ProfileNum = ProfileNum,
-                };
-                await paymentService.GetPaymentWithInvoiceHeaderAsync(queryPayload, invoiceData.InvoiceHeader.InvoiceNumber);
-                Assert.True(queryPayload.Success, paymentService.Messages.ObjectToString());
-
-                Assert.True(queryPayload.InvoiceTransactions.Count > 0, $"no payment trans in db for invoice {invoiceData.InvoiceHeader.InvoiceNumber}");
-            }
         }
+
+        [Fact()]
+        public async Task UpdatePaymentsAsync_Test()
+        {
+            //get 10 invociedatas saved in db.
+            var invoiceDatas = await GenerateInvoiceList();
+
+            var paymentPayload_Add = new InvoicePaymentPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+                InvoiceTransaction = GetFakerPaymentDto(),
+                ApplyInvoices = await PrepareApplyInvoiceAsync(invoiceDatas, ProcessingMode.Add)
+            };
+
+            var paymentService = new InvoicePaymentService(DataBaseFactory);
+            var success = await paymentService.AddAsync(paymentPayload_Add);
+            Assert.True(success, "Add payments error:" + paymentService.Messages.ObjectToString());
+
+
+            var paymentPayload_Update = new InvoicePaymentPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+                InvoiceTransaction = GetFakerPaymentDto(),
+                ApplyInvoices = await PrepareApplyInvoiceAsync(invoiceDatas, ProcessingMode.Edit)
+            }; 
+
+            success = await paymentService.UpdateAsync(paymentPayload_Update);
+            Assert.True(success, "Update payments error:" + paymentService.Messages.ObjectToString());
+        }
+
         #endregion async methods
 
         #region invoice data prepare  
@@ -132,19 +152,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var mapper = new InvoiceTransactionDataDtoMapperDefault();
             return mapper.WriteDto(data, null);
         }
-        protected IList<ApplyInvoice> PrepareApplyInvoice(IList<InvoiceData> invoiceDatas)
+        protected async Task<IList<ApplyInvoice>> PrepareApplyInvoiceAsync(IList<InvoiceData> invoiceDatas, ProcessingMode processingMode)
         {
             var applyInvoices = new List<ApplyInvoice>();
             foreach (var invoiceData in invoiceDatas)
             {
+                var transRowNum = processingMode == ProcessingMode.Edit ? await GetLatestPaymentRowNum(invoiceData.InvoiceHeader.InvoiceNumber) : 0;
                 var applyInvoice = new ApplyInvoice()
                 {
                     InvoiceNumber = invoiceData.InvoiceHeader.InvoiceNumber,
                     InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid,
-                    PaidAmount = new Random().Next(1, 100)
+                    PaidAmount = new Random().Next(1, 100),
+                    TransRowNum = transRowNum,
                 };
+                applyInvoices.Add(applyInvoice);
             }
             return applyInvoices;
+        }
+
+        protected async Task<long> GetLatestPaymentRowNum(string invoiceNumber)
+        {
+            var paymentService = new InvoicePaymentService(DataBaseFactory);
+            var queryPayload = new InvoicePaymentPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+            };
+            await paymentService.GetPaymentWithInvoiceHeaderAsync(queryPayload, invoiceNumber);
+
+            Assert.True(queryPayload.Success, "Get payments by invoiceNumber error:" + paymentService.Messages.ObjectToString());
+
+            Assert.True(queryPayload.InvoiceTransactions.Count > 0, $"no payment trans in db for invoice {invoiceNumber}");
+
+            return queryPayload.InvoiceTransactions.OrderByDescending(i => i.InvoiceTransaction.TransNum).FirstOrDefault().InvoiceTransaction.RowNum.ToLong();
         }
         #endregion
     }

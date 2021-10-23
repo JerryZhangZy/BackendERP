@@ -86,7 +86,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
-        public virtual bool Add(InvoiceTransactionDataDto dto)
+        protected virtual bool Add(InvoiceTransactionDataDto dto)
         {
             if (dto is null)
             {
@@ -119,7 +119,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
-        public virtual async Task<bool> AddAsync(InvoiceTransactionDataDto dto)
+        protected virtual async Task<bool> AddAsync(InvoiceTransactionDataDto dto)
         {
             if (dto is null)
             {
@@ -149,7 +149,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
-        public virtual bool Add(InvoiceTransactionPayload payload)
+        protected virtual bool Add(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
             {
@@ -183,7 +183,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return SaveData();
         }
 
-        public virtual async Task<bool> AddAsync(InvoiceTransactionPayload payload)
+        protected virtual async Task<bool> AddAsync(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
             {
@@ -222,7 +222,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual bool Update(InvoiceTransactionDataDto dto)
+        protected virtual bool Update(InvoiceTransactionDataDto dto)
         {
             if (dto is null || !dto.HasInvoiceTransaction)
             {
@@ -261,7 +261,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual async Task<bool> UpdateAsync(InvoiceTransactionDataDto dto)
+        protected virtual async Task<bool> UpdateAsync(InvoiceTransactionDataDto dto)
         {
             if (dto is null || !dto.HasInvoiceTransaction)
             {
@@ -300,7 +300,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Payload object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual bool Update(InvoiceTransactionPayload payload)
+        protected virtual bool Update(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction || payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong() <= 0)
             {
@@ -343,7 +343,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual async Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
+        protected virtual async Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
             {
@@ -392,7 +392,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //LoadInvoice(invoiceNumber, profileNum, masterAccountNum);
             return await _data.GetDataListAsync(invoiceNumber, masterAccountNum, profileNum, transType, transNum);
         }
-        public virtual async Task<List<InvoiceTransactionDataDto>> GetDtoListAsync(int masterAccountNum, int profileNum, string invoiceNumber, TransTypeEnum transType, int? transNum = null)
+        protected virtual async Task<List<InvoiceTransactionDataDto>> GetDtoListAsync(int masterAccountNum, int profileNum, string invoiceNumber, TransTypeEnum transType, int? transNum = null)
         {
             if (string.IsNullOrEmpty(invoiceNumber)) return null;
             var dataList = await GetDataListAsync(masterAccountNum, profileNum, invoiceNumber, transType, transNum);

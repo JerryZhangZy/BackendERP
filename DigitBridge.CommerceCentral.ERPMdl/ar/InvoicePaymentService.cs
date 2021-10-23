@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public partial class InvoicePaymentService : InvoiceTransactionService
+    public partial class InvoicePaymentService : InvoiceTransactionService, IInvoicePaymentService
     {
         public InvoicePaymentService(IDataBaseFactory dbFactory) : base(dbFactory)
         {
@@ -63,7 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
 
-        #region add payment
+        #region add multi payments
         public virtual async Task<bool> AddAsync(InvoicePaymentPayload payload)
         {
             if (!payload.HasInvoiceTransaction || payload.InvoiceTransaction.InvoiceTransaction is null)
@@ -77,6 +77,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //TODO check this adderror or ApplyPaymentToCurrentInvoice
                 // all payment apply to one invoice linked to trans invoicenumber. 
                 payload.ApplyInvoices = new List<ApplyInvoice>() { ApplyPaymentToCurrentInvoice(payload) };
+            }
+            else if (payload.ApplyInvoices.Count(i => string.IsNullOrEmpty(i.InvoiceNumber)) > 0)
+            {
+                AddError("ApplyInvoices.InvoiceNumber is required.");
+                return false;
             }
 
             foreach (var applyInvoice in payload.ApplyInvoices)
@@ -102,6 +107,51 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return payload.Success;
         }
+
+        public virtual bool Add(InvoicePaymentPayload payload)
+        {
+            if (!payload.HasInvoiceTransaction || payload.InvoiceTransaction.InvoiceTransaction is null)
+            {
+                AddError("InvoiceTransaction is required.");
+                return false;
+            }
+
+            if (!payload.HasApplyInvoices)
+            {
+                //TODO check this adderror or ApplyPaymentToCurrentInvoice
+                // all payment apply to one invoice linked to trans invoicenumber. 
+                payload.ApplyInvoices = new List<ApplyInvoice>() { ApplyPaymentToCurrentInvoice(payload) };
+            }
+            else if (payload.ApplyInvoices.Count(i => string.IsNullOrEmpty(i.InvoiceNumber)) > 0)
+            {
+                AddError("ApplyInvoices.InvoiceNumber is required.");
+                return false;
+            }
+
+            foreach (var applyInvoice in payload.ApplyInvoices)
+            {
+                var paymentPayload = GetPayload(payload, applyInvoice);
+                if (!base.Add(paymentPayload))
+                {
+                    payload.Success = false;
+                    applyInvoice.Success = false;
+                    AddError($"Add payment failed for InvoiceNumber:{applyInvoice.InvoiceNumber} ");
+                    continue;
+                }
+
+                //add payment success. then pay invoice.
+                var success = PayInvoice(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
+                if (!success)
+                {
+                    payload.Success = false;
+                    applyInvoice.Success = false;
+                    AddError($"{applyInvoice.InvoiceNumber} is not applied.");
+                }
+            }
+
+            return payload.Success;
+        }
+
         protected InvoicePaymentPayload GetPayload(InvoicePaymentPayload payload, ApplyInvoice applyInvoice)
         {
             var originalTrans = payload.InvoiceTransaction.InvoiceTransaction;
@@ -158,7 +208,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 InvoiceNumber = trans.InvoiceNumber,
                 InvoiceUuid = trans.InvoiceUuid,
-                PaidAmount = Data.InvoiceTransaction.TotalAmount,
+                PaidAmount = trans.TotalAmount.ToAmount(),
                 TransRowNum = trans.RowNum
             };
         }
@@ -169,8 +219,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             using (var trs = new ScopedTransaction(dbFactory))
                 return await InvoiceHelper.PayInvoiceAsync(applyInvoice.InvoiceNumber, changedPaidAmount, masterAccountNum, profileNum);
         }
+
+        protected bool PayInvoice(ApplyInvoice applyInvoice, int masterAccountNum, int profileNum)
+        {
+            var changedPaidAmount = applyInvoice.PaidAmount - Data.InvoiceTransaction.OriginalPaidAmount;
+            using (var trs = new ScopedTransaction(dbFactory))
+                return InvoiceHelper.PayInvoice(applyInvoice.InvoiceNumber, changedPaidAmount, masterAccountNum, profileNum);
+        }
         #endregion
 
+        #region update multi payments
 
         /// <summary>
         /// update payment
@@ -227,6 +285,64 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return payload.Success;
         }
+
+        /// <summary>
+        /// update payment
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <returns></returns>
+        public virtual bool Update(InvoicePaymentPayload payload)
+        {
+            if (!payload.HasInvoiceTransaction || payload.InvoiceTransaction.InvoiceTransaction is null)
+            {
+                AddError("InvoiceTransaction is required.");
+                return false;
+            }
+
+            if (!payload.HasApplyInvoices)
+            {
+                //TODO check this adderror or ApplyPaymentToCurrentInvoice
+                // all payment apply to one invoice linked to trans invoicenumber. 
+                payload.ApplyInvoices = new List<ApplyInvoice>() { ApplyPaymentToCurrentInvoice(payload) };
+            }
+
+            if (payload.ApplyInvoices.Count(i => !i.TransRowNum.HasValue) > 0)
+            {
+                AddError("TransRowNum is required.");
+                return false;
+            }
+
+            if (payload.ApplyInvoices.Count(i => i.TransRowNum.IsZero()) > 0)
+            {
+                AddError("TransRowNum should be a positive number.");
+                return false;
+            }
+
+            foreach (var applyInvoice in payload.ApplyInvoices)
+            {
+                var paymentPayload = GetPayload(payload, applyInvoice);
+                if (!base.Update(paymentPayload))
+                {
+                    payload.Success = false;
+                    applyInvoice.Success = false;
+                    AddError($"Update payment failed for InvoiceNumber:{applyInvoice.InvoiceNumber} ");
+                    continue;
+                }
+
+                //update payment success. then pay invoice.
+                var success = PayInvoice(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
+                if (!success)
+                {
+                    payload.Success = false;
+                    applyInvoice.Success = false;
+                    AddError($"{applyInvoice.InvoiceNumber} is not applied.");
+                }
+            }
+
+            return payload.Success;
+        }
+
+        #endregion
 
         public async Task<bool> GetByNumberAsync(InvoicePaymentPayload payload, string invoiceNumber, int transNum)
         {
