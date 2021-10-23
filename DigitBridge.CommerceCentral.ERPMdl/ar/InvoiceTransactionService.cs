@@ -237,6 +237,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data 
             GetData(dto.InvoiceTransaction.RowNum.ToLong());
 
+            // Keep a copy of Original Paid Amount
+            Data.InvoiceTransaction.OriginalPaidAmount = Data.InvoiceTransaction.TotalAmount;
+
             // load data from dto
             FromDto(dto);
 
@@ -272,6 +275,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data 
             await GetDataAsync(dto.InvoiceTransaction.RowNum.ToLong());
+
+            // Keep a copy of Original Paid Amount
+            Data.InvoiceTransaction.OriginalPaidAmount = Data.InvoiceTransaction.TotalAmount;
 
             // load data from dto
             FromDto(dto);
@@ -312,6 +318,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data 
             GetData(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong());
+
+            // Keep a copy of Original Paid Amount
+            Data.InvoiceTransaction.OriginalPaidAmount = Data.InvoiceTransaction.TotalAmount;
 
             // load data from dto
             FromDto(payload.InvoiceTransaction);
@@ -354,6 +363,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data 
             if (!(await GetDataAsync(payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong())))
                 return false;
+
+            // Keep a copy of Original Paid Amount
+            Data.InvoiceTransaction.OriginalPaidAmount = Data.InvoiceTransaction.TotalAmount;
 
             // load data from dto
             FromDto(payload.InvoiceTransaction);

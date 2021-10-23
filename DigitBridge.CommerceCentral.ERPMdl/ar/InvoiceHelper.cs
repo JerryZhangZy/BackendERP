@@ -150,9 +150,26 @@ AND RowNum= @rowNum
 SELECT COUNT(1) FROM InvoiceHeader tbl
 WHERE SalesOrderUuid = @salesOrderUuid
 ";
-            var result = await SqlQuery.ExecuteScalarAsync<int>(sql, 
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 salesOrderUuid.ToSqlParameter("salesOrderUuid")
                 );
+            return result > 0;
+        }
+
+        public static async Task<bool> PayInvoiceAsync(string invoiceNumber, decimal paidAmount, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+update InvoiceHeader set PaidAmount+=@paidAmount,Balance=Balance-@paidAmount
+where InvoiceNumber=@invoiceNumber 
+and MasterAccountNum=@masterAccountNum 
+and ProfileNum=@profileNum
+";
+            var result = await SqlQuery.ExecuteNonQueryAsync(sql,
+                    paidAmount.ToSqlParameter("paidAmount"),
+                    invoiceNumber.ToSqlParameter("invoiceNumber"),
+                    masterAccountNum.ToSqlParameter("masterAccountNum"),
+                    profileNum.ToSqlParameter("profileNum")
+                    );
             return result > 0;
         }
     }

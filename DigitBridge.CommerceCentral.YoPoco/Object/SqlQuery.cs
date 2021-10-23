@@ -71,25 +71,25 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return sb.ToString();
         }
 
-        public static void ExecuteNonQuery(string cmd, params IDataParameter[] parameters) =>
+        public static int ExecuteNonQuery(string cmd, params IDataParameter[] parameters) =>
             ExecuteNonQuery(cmd, CommandType.Text, parameters);
 
-        public static void ExecuteNonQuery(string cmd, CommandType commandType, params IDataParameter[] parameters)
+        public static int ExecuteNonQuery(string cmd, CommandType commandType, params IDataParameter[] parameters)
         {
             using (var dbCommand = DataBaseFactory.CreateCommand(cmd, commandType, parameters))
             {
-                dbCommand.ExecuteNonQuery();
+               return dbCommand.ExecuteNonQuery();
             }
         }
 
-        public static async Task ExecuteNonQueryAsync(string cmd, params IDataParameter[] parameters) =>
+        public static async Task<int> ExecuteNonQueryAsync(string cmd, params IDataParameter[] parameters) =>
             await ExecuteNonQueryAsync(cmd, CommandType.Text, parameters);
 
-        public static async Task ExecuteNonQueryAsync(string cmd, CommandType commandType, params IDataParameter[] parameters)
+        public static async Task<int> ExecuteNonQueryAsync(string cmd, CommandType commandType, params IDataParameter[] parameters)
         {
             using (var dbCommand = DataBaseFactory.CreateCommand(cmd, commandType, parameters))
             {
-                await ((SqlCommand)dbCommand).ExecuteNonQueryAsync();
+               return await ((SqlCommand)dbCommand).ExecuteNonQueryAsync();
             }
         }
 
