@@ -215,7 +215,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     continue;
                 }
 
-                //add payment success. then pay invoice.
+                //update payment success. then pay invoice.
                 var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
                 if (!success)
                 {

@@ -159,7 +159,7 @@ WHERE SalesOrderUuid = @salesOrderUuid
         public static async Task<bool> PayInvoiceAsync(string invoiceNumber, decimal paidAmount, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-update InvoiceHeader set PaidAmount+=@paidAmount,Balance=Balance-@paidAmount
+update InvoiceHeader set PaidAmount=PaidAmount+@paidAmount,Balance=Balance-@paidAmount
 where InvoiceNumber=@invoiceNumber 
 and MasterAccountNum=@masterAccountNum 
 and ProfileNum=@profileNum

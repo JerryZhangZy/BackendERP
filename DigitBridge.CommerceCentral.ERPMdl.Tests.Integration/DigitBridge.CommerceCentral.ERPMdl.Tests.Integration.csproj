@@ -11,6 +11,7 @@
     <Compile Remove="CustomerServiceTests.Designer.cs" />
     <Compile Remove="InventoryLogServiceTests.cs" />
     <Compile Remove="InventoryLogServiceTests.Designer.cs" />
+    <Compile Remove="InvoicePaymentServiceTests.cs" />
   </ItemGroup>
 
   <ItemGroup>
