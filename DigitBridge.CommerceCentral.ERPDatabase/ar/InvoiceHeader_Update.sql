@@ -42,33 +42,44 @@ END
 
 
 -- 10/24/2021 By junxian
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_QboDocNumber')
-CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_QboDocNumber] ON [dbo].[InvoiceHeader]
-(
-	[QboDocNumber] ASC
-) 
-GO
+----IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_QboDocNumber')
+--CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_QboDocNumber] ON [dbo].[InvoiceHeader]
+--(
+--	[QboDocNumber] ASC
+--) 
+--GO
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_InvoiceDate')
-CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_InvoiceDate] ON [dbo].[InvoiceHeader]
-(
-	[InvoiceDate] ASC
-) 
-GO
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_DueDate')
-CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_DueDate] ON [dbo].[InvoiceHeader]
-(
-	[DueDate] ASC
-) 
-GO
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_CustomerCode')
-CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_CustomerCode] ON [dbo].[InvoiceHeader]
-(
-	[CustomerCode] ASC
-) 
-GO
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_CustomerName')
-CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_CustomerName] ON [dbo].[InvoiceHeader]
-(
-	[CustomerName] ASC
+--CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_InvoiceDate] ON [dbo].[InvoiceHeader]
+--(
+--	[InvoiceDate] ASC
+--) 
+--GO
+----IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_DueDate')
+--CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_DueDate] ON [dbo].[InvoiceHeader]
+--(
+--	[DueDate] ASC
+--) 
+--GO
+----IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_CustomerCode')
+--CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_CustomerCode] ON [dbo].[InvoiceHeader]
+--(
+--	[CustomerCode] ASC
+--) 
+--GO
+----IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_CustomerName')
+--CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_CustomerName] ON [dbo].[InvoiceHeader]
+--(
+--	[CustomerName] ASC
+--) 
+--GO
+
+--TODO put frequently used filter columns in this index.
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_Complex')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_Complex] ON [dbo].[InvoiceHeader]
+( 
+	[InvoiceNumber] ASC,
+	[InvoiceDate] DESC, 
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC
 ) 
 GO
