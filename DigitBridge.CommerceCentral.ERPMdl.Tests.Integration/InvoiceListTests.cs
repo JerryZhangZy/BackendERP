@@ -123,7 +123,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetInvoiceListAsync_Test()
         {
-            var invoice = await SaveInvoice();
+            var invoice = await InvoiceDataTests.SaveFakerInvoice(this.DataBaseFactory);
             var header = invoice.InvoiceHeader;
             var headerInfo = invoice.InvoiceHeaderInfo;
 
@@ -173,26 +173,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.Equal(1, payload.InvoiceListCount);
 
         }
-        #endregion async methods
-
-
-        #region invoice data prepare  
-
-        protected async Task<InvoiceData> SaveInvoice()
-        {
-            var srv = new InvoiceService(DataBaseFactory);
-            srv.Add();
-
-            var mapper = srv.DtoMapper;
-            var data = await InvoiceDataTests.GetFakerInvoiceDataAsync(DataBaseFactory);
-            var dto = mapper.WriteDto(data, null);
-            var success = srv.Add(dto);
-
-            Assert.True(success, srv.Messages.ObjectToString());
-
-            return srv.Data;
-        }
-        #endregion
+        #endregion async methods 
     }
 }
 

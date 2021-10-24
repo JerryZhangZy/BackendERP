@@ -104,7 +104,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ProfileNum = ProfileNum,
                 InvoiceTransaction = GetFakerPaymentDto(),
                 ApplyInvoices = await PrepareApplyInvoiceAsync(invoiceDatas, ProcessingMode.Edit)
-            }; 
+            };
 
             success = await paymentService.UpdateAsync(paymentPayload_Update);
             Assert.True(success, "Update payments error:" + paymentService.Messages.ObjectToString());
@@ -112,29 +112,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         #endregion async methods
 
-        #region invoice data prepare  
-
-        protected async Task<InvoiceData> SaveInvoice()
-        {
-            var srv = new InvoiceService(DataBaseFactory);
-            srv.Add();
-
-            var mapper = srv.DtoMapper;
-            var data = await InvoiceDataTests.GetFakerInvoiceDataAsync(DataBaseFactory);
-            var dto = mapper.WriteDto(data, null);
-            var success = srv.Add(dto);
-
-            Assert.True(success, srv.Messages.ObjectToString());
-
-            return srv.Data;
-        }
+        #region invoice data prepare   
 
         protected async Task<List<InvoiceData>> GenerateInvoiceList(int count = 10)
         {
             var invoiceDataList = new List<InvoiceData>();
             for (int i = 0; i < count; i++)
             {
-                var invoiceData = await SaveInvoice();
+                var invoiceData = await InvoiceDataTests.SaveFakerInvoice(DataBaseFactory);
                 invoiceDataList.Add(invoiceData);
             }
             return invoiceDataList;

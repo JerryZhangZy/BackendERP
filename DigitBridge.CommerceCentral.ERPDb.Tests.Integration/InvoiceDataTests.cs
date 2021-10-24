@@ -21,6 +21,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using Bogus;
 using DigitBridge.CommerceCentral.ERPMdl;
+using Microsoft.Extensions.Configuration;
 
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
@@ -74,6 +75,22 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             }
             data.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
             return data;
+        }
+
+        public static async Task<InvoiceData> SaveFakerInvoice(IDataBaseFactory dbFactory, InvoiceData data = null)
+        {
+            var srv = new InvoiceService(dbFactory);
+            srv.Add();
+
+            var mapper = srv.DtoMapper;
+            if (data == null)
+                data = await GetFakerInvoiceDataAsync(dbFactory);
+            var dto = mapper.WriteDto(data, null);
+            var success = srv.Add(dto);
+
+            Assert.True(success, srv.Messages.ObjectToString());
+
+            return srv.Data;
         }
     }
 }
