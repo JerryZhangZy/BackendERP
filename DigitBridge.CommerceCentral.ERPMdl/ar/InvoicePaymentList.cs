@@ -34,22 +34,44 @@ SELECT
 {Helper.TransNum()}, 
 {Helper.InvoiceUuid()}, 
 {Helper.InvoiceNumber()}, 
+{Helper.TransType()},
+COALESCE(ptt.text, '') TransTypeText, 
 {Helper.TransStatus()},
-{Helper.PaidBy()},  
 COALESCE(pts.text, '') TransStatusText, 
-COALESCE(ppb.text, '') PaidByText, 
 {Helper.TransDate()}, 
 {Helper.TransTime()}, 
+{Helper.Description()}, 
+{Helper.Notes()}, 
+{Helper.PaidBy()},
+{Helper.BankAccountUuid()}, 
+{Helper.BankAccountCode()}, 
+{Helper.CheckNum()}, 
+{Helper.AuthCode()},
 {Helper.TotalAmount()}, 
+
+{InvoiceHeaderHelper.QboDocNumber()}, 
+{InvoiceHeaderHelper.SalesOrderUuid()}, 
+{InvoiceHeaderHelper.OrderNumber()}, 
+{InvoiceHeaderHelper.InvoiceDate()},  
 {InvoiceHeaderHelper.DueDate()}, 
 {InvoiceHeaderHelper.CustomerUuid()}, 
 {InvoiceHeaderHelper.CustomerCode()}, 
 {InvoiceHeaderHelper.CustomerName()},  
+{InvoiceHeaderHelper.TableAllies}.TotalAmount AS InvoiceTotalAmount,  
+{InvoiceHeaderHelper.Balance()},
+
+{InvoiceHeaderInfoHelper.CentralFulfillmentNum()},
+{InvoiceHeaderInfoHelper.OrderShipmentNum()},
+{InvoiceHeaderInfoHelper.OrderShipmentUuid()},
+{InvoiceHeaderInfoHelper.ShippingCarrier()},
+{InvoiceHeaderInfoHelper.ShippingClass()},
+{InvoiceHeaderInfoHelper.DistributionCenterNum()},
 {InvoiceHeaderInfoHelper.CentralOrderNum()},
 {InvoiceHeaderInfoHelper.ChannelNum()},
+{InvoiceHeaderInfoHelper.ChannelAccountNum()},
 {InvoiceHeaderInfoHelper.ChannelOrderID()},
-{InvoiceHeaderInfoHelper.BillToEmail()},
-{InvoiceHeaderInfoHelper.ShipToName()}
+{InvoiceHeaderInfoHelper.RefNum()},
+{InvoiceHeaderInfoHelper.CustomerPoNum()}
 ";
             return this.SQL_Select;
         }
@@ -61,7 +83,7 @@ COALESCE(ppb.text, '') PaidByText,
  LEFT JOIN {InvoiceHeaderHelper.TableName} {InvoiceHeaderHelper.TableAllies} ON ({InvoiceHeaderHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
  LEFT JOIN {InvoiceHeaderInfoHelper.TableName} {InvoiceHeaderInfoHelper.TableAllies} ON ({InvoiceHeaderInfoHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
  LEFT JOIN @PaymentTransStatus pts ON ({Helper.TableAllies}.TransStatus = pts.num)
- LEFT JOIN @PaidBy ppb ON ({Helper.TableAllies}.PaidBy = ppb.num) 
+ LEFT JOIN @PaymentTransType ptt ON ({Helper.TableAllies}.TransType = ptt.num) 
 ";
             return this.SQL_From;
         }
@@ -70,7 +92,7 @@ COALESCE(ppb.text, '') PaidByText,
         {
             var paramList = base.GetSqlParameters().ToList();
             paramList.Add("@PaymentTransStatus".ToEnumParameter<TransStatus>());
-            paramList.Add("@PaidBy".ToEnumParameter<PaidByEnum>());
+            paramList.Add("@PaymentTransType".ToEnumParameter<TransTypeEnum>());
             return paramList.ToArray();
         }
 
