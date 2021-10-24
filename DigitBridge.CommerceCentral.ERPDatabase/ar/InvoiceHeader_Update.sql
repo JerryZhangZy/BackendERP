@@ -78,7 +78,7 @@ END
 CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_Complex] ON [dbo].[InvoiceHeader]
 ( 
 	[InvoiceNumber] ASC,
-	[InvoiceDate] DESC, 
+	[InvoiceDate] ASC, 
 	[MasterAccountNum] ASC,
 	[ProfileNum] ASC
 ) 

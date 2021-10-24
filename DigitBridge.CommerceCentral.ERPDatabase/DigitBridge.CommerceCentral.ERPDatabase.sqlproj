@@ -237,4 +237,7 @@
     <None Include="event\Event_ERP.sql" />
     <None Include="event\Event_ERP_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ar\InvoiceTransaction_Update.sql" />
+  </ItemGroup>
 </Project>
