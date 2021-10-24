@@ -1,12 +1,17 @@
-﻿ 
---TODO put frequently used filter columns in this index.
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'IX_InvoiceTransaction_Complex')
-CREATE NONCLUSTERED INDEX [IX_InvoiceTransaction_Complex] ON [dbo].[InvoiceTransaction]
+﻿
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'IX_InvoiceTransaction_Composite1')
+CREATE NONCLUSTERED INDEX [IX_InvoiceTransaction_Composite1] ON [dbo].[InvoiceTransaction]
 ( 
-	[InvoiceNumber] ASC,
-	[TransDate] ASC, 
-	[TransNum]ASC,
-	[MasterAccountNum] ASC,
-	[ProfileNum] ASC
+    [ProfileNum] ASC,
+    [TransDate] ASC,
+	[PaidBy] ASC
 ) 
 GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceTransaction]') AND name = N'IX_InvoiceTransaction_Composite2')
+CREATE NONCLUSTERED INDEX [IX_InvoiceTransaction_Composite2] ON [dbo].[InvoiceTransaction]
+( 
+    [ProfileNum] ASC,
+    [TransDate] ASC,
+	[TransUuid] ASC
+)
