@@ -24,36 +24,45 @@ using DigitBridge.CommerceCentral.ERPMdl;
 
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
-    public partial class InvoicePaymentDataTests
+    public partial class InvoiceReturnDataTests
     {
 
         public const int MasterAccountNum = 10001;
         public const int ProfileNum = 10001;
-        public static async Task<InvoiceTransactionData> GetFakerInvoicePaymentDataAsync(IDataBaseFactory dbFactory)
+        public static async Task<InvoiceTransactionData> GetFakerInvoiceReturnDataAsync(IDataBaseFactory dbFactory)
         {
             var invoiceData = await InvoiceDataTests.GetFakerInvoiceDataAsync(dbFactory);
             var data = GetFakerData();
-            data.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
+            data.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
             data.InvoiceTransaction.MasterAccountNum = MasterAccountNum;
             data.InvoiceTransaction.ProfileNum = ProfileNum;
             data.InvoiceTransaction.InvoiceNumber = invoiceData.InvoiceHeader.InvoiceNumber;
+            for (int i = 0; i < data.InvoiceReturnItems.Count; i++)
+            {
+                var retrunItem = data.InvoiceReturnItems[i];
+                var invoiceItem = invoiceData.InvoiceItems[i];
+                retrunItem.ReturnQty = new Random().Next(1, invoiceItem.ShipQty.ToInt());
+                retrunItem.SKU = invoiceItem.SKU;
+                retrunItem.WarehouseCode = invoiceItem.WarehouseCode;
+                retrunItem.InvoiceItemsUuid = invoiceItem.InvoiceItemsUuid;
+            }
             data.InvoiceData = invoiceData;
             return data;
         }
 
-        public static async Task<InvoiceTransactionData> SaveFakerInvoicePayment(IDataBaseFactory dbFactory, InvoiceTransactionData data = null)
+        public static async Task<InvoiceTransactionData> SaveFakerInvoiceReturn(IDataBaseFactory dbFactory, InvoiceTransactionData data = null)
         {
             if (data == null)
-                data = await GetFakerInvoicePaymentDataAsync(dbFactory);
+                data = await GetFakerInvoiceReturnDataAsync(dbFactory);
 
             data.InvoiceData = await InvoiceDataTests.SaveFakerInvoice(dbFactory, data.InvoiceData);
 
-            var srv = new InvoicePaymentService(dbFactory);
+            var srv = new InvoiceReturnService(dbFactory);
             srv.Add();
             var mapper = srv.DtoMapper;
             var dto = mapper.WriteDto(data, null);
 
-            var paymentPayload_Add = new InvoicePaymentPayload()
+            var paymentPayload_Add = new InvoiceReturnPayload()
             {
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,

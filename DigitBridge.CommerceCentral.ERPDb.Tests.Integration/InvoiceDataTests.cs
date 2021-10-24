@@ -63,7 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 var item = data.InvoiceItems[i];
 
                 item.DiscountAmount = 0;
-                item.ShipQty = 10;
+                item.ShipQty = new Random().Next(10, 100);
 
                 if (list != null && list.Count > i)
                 {
