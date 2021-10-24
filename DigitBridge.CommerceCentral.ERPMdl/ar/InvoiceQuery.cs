@@ -49,7 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> CustomerCode => _CustomerCode;
 
-        protected QueryFilter<string> _CustomerName = new QueryFilter<string>("CustomerName", "CustomerName", PREFIX, FilterBy.cn, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _CustomerName = new QueryFilter<string>("CustomerName", "CustomerName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> CustomerName => _CustomerName;
 
 
@@ -84,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _CustomerPoNum = new QueryFilter<string>("CustomerPoNum", "CustomerPoNum", PREFIX_INFO, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> CustomerPoNum => _CustomerPoNum;
 
-        protected QueryFilter<string> _ShipToName = new QueryFilter<string>("ShipToName", "ShipToName", PREFIX_INFO, FilterBy.eq, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _ShipToName = new QueryFilter<string>("ShipToName", "ShipToName", PREFIX_INFO, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> ShipToName => _ShipToName;
 
         protected QueryFilter<string> _ShipToState = new QueryFilter<string>("ShipToState", "ShipToState", PREFIX_INFO, FilterBy.eq, string.Empty, isNVarChar: true);
