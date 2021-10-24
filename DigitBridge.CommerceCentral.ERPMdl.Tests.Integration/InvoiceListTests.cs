@@ -25,6 +25,7 @@ using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
 using Newtonsoft.Json.Linq;
 using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
+using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -172,6 +173,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             //make sure result is matched.
             Assert.Equal(1, payload.InvoiceListCount);
 
+            var rowNum_Actual = JArray.Parse(payload.InvoiceList.ToString())[0].Value<long>("rowNum");
+            //make sure result data is matched.
+            Assert.Equal(header.RowNum, rowNum_Actual);
         }
         #endregion async methods 
     }
