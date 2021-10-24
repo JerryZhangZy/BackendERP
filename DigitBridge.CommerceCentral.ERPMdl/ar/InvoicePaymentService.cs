@@ -181,7 +181,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 TransStatus = originalTrans.TransStatus,
                 MasterAccountNum = payload.MasterAccountNum,
                 ProfileNum = payload.ProfileNum,
-                RowNum = applyInvoice.TransRowNum
+                RowNum = applyInvoice.TransUuid
             };
             var dataDto = new InvoiceTransactionDataDto()
             {
@@ -209,7 +209,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 InvoiceNumber = trans.InvoiceNumber,
                 InvoiceUuid = trans.InvoiceUuid,
                 PaidAmount = trans.TotalAmount.ToAmount(),
-                TransRowNum = trans.RowNum
+                TransUuid = trans.RowNum
             };
         }
 
@@ -250,13 +250,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 payload.ApplyInvoices = new List<ApplyInvoice>() { ApplyPaymentToCurrentInvoice(payload) };
             }
 
-            if (payload.ApplyInvoices.Count(i => !i.TransRowNum.HasValue) > 0)
+            if (payload.ApplyInvoices.Count(i => !i.TransUuid.HasValue) > 0)
             {
                 AddError("TransRowNum is required.");
                 return false;
             }
 
-            if (payload.ApplyInvoices.Count(i => i.TransRowNum.IsZero()) > 0)
+            if (payload.ApplyInvoices.Count(i => i.TransUuid.IsZero()) > 0)
             {
                 AddError("TransRowNum should be a positive number.");
                 return false;
@@ -306,13 +306,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 payload.ApplyInvoices = new List<ApplyInvoice>() { ApplyPaymentToCurrentInvoice(payload) };
             }
 
-            if (payload.ApplyInvoices.Count(i => !i.TransRowNum.HasValue) > 0)
+            if (payload.ApplyInvoices.Count(i => !i.TransUuid.HasValue) > 0)
             {
                 AddError("TransRowNum is required.");
                 return false;
             }
 
-            if (payload.ApplyInvoices.Count(i => i.TransRowNum.IsZero()) > 0)
+            if (payload.ApplyInvoices.Count(i => i.TransUuid.IsZero()) > 0)
             {
                 AddError("TransRowNum should be a positive number.");
                 return false;

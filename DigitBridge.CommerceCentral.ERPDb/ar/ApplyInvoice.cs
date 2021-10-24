@@ -14,7 +14,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <summary>
         /// This is used for update trans.
         /// </summary>
-        public long? TransRowNum { get; set; }
+        public string TransUuid { get; set; }
 
         [JsonIgnore]
         public bool Success { get; set; } = true;
