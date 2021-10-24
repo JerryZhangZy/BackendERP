@@ -1,12 +1,3 @@
-
-
-
-
-
-              
-
-
-
               
     
 
@@ -53,6 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ShippingClass(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ShippingClass) AS {name ?? "ShippingClass".ToCamelCase(camelCase)} ";
         public static string DistributionCenterNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DistributionCenterNum AS {name ?? "DistributionCenterNum".ToCamelCase(camelCase)} ";
         public static string CentralOrderNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CentralOrderNum AS {name ?? "CentralOrderNum".ToCamelCase(camelCase)} ";
+        public static string CentralOrderUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CentralOrderUuid) AS {name ?? "CentralOrderUuid".ToCamelCase(camelCase)} ";
         public static string ChannelNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelNum AS {name ?? "ChannelNum".ToCamelCase(camelCase)} ";
         public static string ChannelAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelAccountNum AS {name ?? "ChannelAccountNum".ToCamelCase(camelCase)} ";
         public static string ChannelOrderID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ChannelOrderID) AS {name ?? "ChannelOrderID".ToCamelCase(camelCase)} ";
@@ -125,6 +117,7 @@ RTRIM({allies}ShippingCarrier) AS ShippingCarrier,
 RTRIM({allies}ShippingClass) AS ShippingClass,
 {allies}DistributionCenterNum AS DistributionCenterNum,
 {allies}CentralOrderNum AS CentralOrderNum,
+RTRIM({allies}CentralOrderUuid) AS CentralOrderUuid,
 {allies}ChannelNum AS ChannelNum,
 {allies}ChannelAccountNum AS ChannelAccountNum,
 RTRIM({allies}ChannelOrderID) AS ChannelOrderID,
@@ -199,6 +192,7 @@ RTRIM({allies}ShippingCarrier) AS '{outputAllies}ShippingCarrier',
 RTRIM({allies}ShippingClass) AS '{outputAllies}ShippingClass',
 {allies}DistributionCenterNum AS '{outputAllies}DistributionCenterNum',
 {allies}CentralOrderNum AS '{outputAllies}CentralOrderNum',
+{allies}CentralOrderUuid AS '{outputAllies}CentralOrderUuid',
 {allies}ChannelNum AS '{outputAllies}ChannelNum',
 {allies}ChannelAccountNum AS '{outputAllies}ChannelAccountNum',
 RTRIM({allies}ChannelOrderID) AS '{outputAllies}ChannelOrderID',

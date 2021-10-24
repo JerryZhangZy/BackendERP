@@ -72,7 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var srv = new SalesOrderService(DataBaseFactory);
             srv.Add();
             srv.AttachData(GetFakerData());
-            //srv.Calculate();
+            srv.Calculate();
 			srv.SaveData();
 
             var srvGet = new SalesOrderService(DataBaseFactory);
