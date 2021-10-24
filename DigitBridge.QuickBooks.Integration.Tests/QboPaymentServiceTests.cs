@@ -34,7 +34,7 @@ namespace DigitBridge.QuickBooks.Integration.Tests
         {
             var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
             var srv = new QboPaymentService(payload, DataBaseFactory);
-            (var invoiceNumber, var tranNum) = GetErpInvoiceNumberAndTranNum();
+            (var invoiceNumber, var tranNum) = await GetErpInvoiceNumberAndTranNumAsync();
 
             var success = await ExportInvoiceByNumberAsync(invoiceNumber);
 
@@ -50,7 +50,7 @@ namespace DigitBridge.QuickBooks.Integration.Tests
         {
             var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
             var srv = new QboPaymentService(payload, DataBaseFactory);
-            (var invoiceNumber, var tranNum) = GetErpInvoiceNumberAndTranNum();
+            (var invoiceNumber, var tranNum) = await GetErpInvoiceNumberAndTranNumAsync();
 
             var success = await ExportInvoiceByNumberAsync(invoiceNumber);
 
@@ -64,7 +64,7 @@ namespace DigitBridge.QuickBooks.Integration.Tests
         {
             var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
             var srv = new QboPaymentService(payload, DataBaseFactory);
-            (var invoiceNumber, var tranNum) = GetErpInvoiceNumberAndTranNum();
+            (var invoiceNumber, var tranNum) = await GetErpInvoiceNumberAndTranNumAsync();
 
             var success = await ExportInvoiceByNumberAsync(invoiceNumber);
 
@@ -94,7 +94,7 @@ namespace DigitBridge.QuickBooks.Integration.Tests
             var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
             var srv = new QboPaymentService(payload, DataBaseFactory);
 
-            (var invoiceUuid, var transUuid) = GetErpInvoiceUuidAndTransUuid();
+            (var invoiceUuid, var transUuid) = await GetErpInvoiceUuidAndTransUuidAsync();
             var success = await ExportInvoiceByUuidAsync(invoiceUuid);
             success = success && await srv.ExportByUuidAsync(transUuid);
 
@@ -107,13 +107,13 @@ namespace DigitBridge.QuickBooks.Integration.Tests
             var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
             var srv = new QboPaymentService(payload, DataBaseFactory);
 
-            (var invoiceUuid, var transUuid) = GetErpInvoiceUuidAndTransUuid();
+            (var invoiceUuid, var transUuid) = await GetErpInvoiceUuidAndTransUuidAsync();
             var success = await ExportInvoiceByUuidAsync(invoiceUuid);
             success = success && await srv.ExportByUuidAsync(transUuid);
 
-            success = success && await srv.DeleteQboPaymentByUuidAsync(invoiceUuid);
+            success = success && await srv.DeleteQboPaymentByUuidAsync(transUuid);
 
-            Assert.True(success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.True(success, srv.Messages.ObjectToString());
         }
 
         #endregion

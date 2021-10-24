@@ -142,20 +142,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var applyInvoices = new List<ApplyInvoice>();
             foreach (var invoiceData in invoiceDatas)
             {
-                var transUuid = processingMode == ProcessingMode.Edit ? await GetLatestPaymentUuid(invoiceData.InvoiceHeader.InvoiceNumber) : string.Empty;
+                var transUuid = processingMode == ProcessingMode.Edit ? await GetLatestPaymentRowNum(invoiceData.InvoiceHeader.InvoiceNumber) : 0;
                 var applyInvoice = new ApplyInvoice()
                 {
                     InvoiceNumber = invoiceData.InvoiceHeader.InvoiceNumber,
                     InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid,
                     PaidAmount = new Random().Next(1, 100),
-                    TransUuid = transUuid,
+                    TransRowNum = transUuid,
                 };
                 applyInvoices.Add(applyInvoice);
             }
             return applyInvoices;
         }
 
-        protected async Task<string> GetLatestPaymentUuid(string invoiceNumber)
+        protected async Task<long> GetLatestPaymentRowNum(string invoiceNumber)
         {
             var paymentService = new InvoicePaymentService(DataBaseFactory);
             var queryPayload = new InvoicePaymentPayload()
@@ -169,7 +169,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             Assert.True(queryPayload.InvoiceTransactions.Count > 0, $"no payment trans in db for invoice {invoiceNumber}");
 
-            return queryPayload.InvoiceTransactions.OrderByDescending(i => i.InvoiceTransaction.TransNum).FirstOrDefault().InvoiceTransaction.TransUuid;
+            return queryPayload.InvoiceTransactions.OrderByDescending(i => i.InvoiceTransaction.TransNum).FirstOrDefault().InvoiceTransaction.RowNum.ToLong();
         }
         #endregion
     }
