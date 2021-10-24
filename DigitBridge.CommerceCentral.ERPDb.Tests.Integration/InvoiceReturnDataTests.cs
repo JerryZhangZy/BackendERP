@@ -62,15 +62,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             var mapper = srv.DtoMapper;
             var dto = mapper.WriteDto(data, null);
 
-            var paymentPayload_Add = new InvoiceReturnPayload()
+            var returnPayload_Add = new InvoiceReturnPayload()
             {
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
-                InvoiceTransaction = dto,
-                //ApplyInvoices = await PrepareApplyInvoiceAsync(invoiceDatas, ProcessingMode.Add)
+                InvoiceTransaction = dto, 
             };
 
-            var success = await srv.AddAsync(paymentPayload_Add);
+            var success = await srv.AddAsync(returnPayload_Add);
 
             Assert.True(success, srv.Messages.ObjectToString());
 

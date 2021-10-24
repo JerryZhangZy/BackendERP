@@ -240,4 +240,7 @@
   <ItemGroup>
     <None Include="ar\InvoiceTransaction_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ar\InvoiceHeaderInfo_Update.sql" />
+  </ItemGroup>
 </Project>

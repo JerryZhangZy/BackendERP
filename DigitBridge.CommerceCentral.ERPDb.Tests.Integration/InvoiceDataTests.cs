@@ -43,35 +43,18 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.InvoiceHeader.MasterAccountNum = MasterAccountNum;
             data.InvoiceHeader.ProfileNum = ProfileNum;
 
-            var svc = new InventoryService(dbFactory);
-            var payload = new InventoryPayload()
-            {
-                MasterAccountNum = MasterAccountNum,
-                ProfileNum = ProfileNum,
-                Skus = new List<string>()
-                { 
-                    //TODO read skus from db.
-                    // set skus in your db
-                    "Bacon","Bike","Car","Chair","Cheese","Fish","Hat","ProductExt-NEW-0908-200018546","Salad","Shoes","Towels",
-                },
-
-            };
-            payload = await svc.GetInventoryBySkuArrayAsync(payload);
-            var list = payload.Inventorys;
+            var inventories = GetInventories(dbFactory, data.InvoiceItems.Count);
             for (int i = 0; i < data.InvoiceItems.Count; i++)
             {
                 var item = data.InvoiceItems[i];
 
                 item.DiscountAmount = 0;
-                item.ShipQty = new Random().Next(10, 100);
+                item.ShipQty = new Random().Next(10, 100); 
 
-                if (list != null && list.Count > i)
-                {
-                    var inventory = list[i].Inventory[0];
-                    item.WarehouseCode = inventory.WarehouseCode;
-                    item.SKU = inventory.SKU;
-                    item.InventoryUuid = inventory.InventoryUuid;
-                }
+                var inventory = inventories[i];
+                item.WarehouseCode = inventory.WarehouseCode;
+                item.SKU = inventory.SKU;
+                item.InventoryUuid = inventory.InventoryUuid;
             }
             data.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
             return data;
@@ -92,6 +75,70 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             return srv.Data;
         }
+
+        /// <summary>
+        /// get specified count Inventorys
+        /// </summary>
+        /// <param name="dbFactory"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static Inventory[] GetInventories(IDataBaseFactory dbFactory, int count = 10)
+        {
+            var sql = $@" 
+select  WarehouseCode,SKU,ProductUuid,InventoryUuid,WarehouseUuid 
+from 
+(
+    SELECT  WarehouseCode,SKU,ProductUuid,InventoryUuid,WarehouseUuid
+    ,ROW_NUMBER() over(partition by SKU order by rownum desc) as rid
+    FROM [dbo].[Inventory]
+    where MasterAccountNum = {MasterAccountNum} and ProfileNum = {ProfileNum}
+) tmp 
+where tmp.rid=1
+";
+            var inventories = dbFactory.Find<Inventory>(sql).ToArray();
+            var success = inventories != null && inventories.Length >= count;
+            Assert.True(success, "Inventory is not enough");
+
+            var randomIndexs = GetRandomIndex(inventories.Length - 1, count);
+            var result = new List<Inventory>();
+            foreach (var index in randomIndexs)
+            {
+                result.Add(inventories[index]);
+            }
+            return result.ToArray();
+        }
+
+        private static List<int> GetRandomIndex(int max, int count = 10)
+        {
+            var result = new List<int>();
+            while (result.Count < count)
+            {
+                var random = new Random().Next(0, max);
+                while (!result.Contains(random))
+                {
+                    result.Add(random);
+                }
+            }
+            return result;
+        }
+        //public async static Inventory[] GetInventories(IDataBaseFactory dbFactory)
+        //{
+        //    var svc = new InventoryService(dbFactory);
+        //    var payload = new InventoryPayload()
+        //    {
+        //        MasterAccountNum = MasterAccountNum,
+        //        ProfileNum = ProfileNum,
+        //        Skus = new List<string>()
+        //        { 
+        //            //TODO read skus from db.
+        //            // set skus in your db
+        //            "Bacon","Bike","Car","Chair","Cheese","Fish","Hat","ProductExt-NEW-0908-200018546","Salad","Shoes","Towels",
+        //        },
+
+        //    };
+        //    payload = await svc.GetInventoryBySkuArrayAsync(payload);
+        //    return payload.Inventorys;
+        //}
     }
 }
 
