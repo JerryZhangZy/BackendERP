@@ -17,6 +17,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public long? TransRowNum { get; set; }
 
         [JsonIgnore]
-        public bool Success { get; set; }
+        public bool Success { get; set; } = true;
     }
 }
