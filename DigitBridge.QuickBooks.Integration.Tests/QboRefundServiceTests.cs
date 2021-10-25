@@ -17,7 +17,7 @@ using DigitBridge.CommerceCentral.ERPMdl;
 
 namespace DigitBridge.QuickBooks.Integration.Tests
 {
-    public partial class QboPaymentServiceTests
+    public partial class QboRefundServiceTests
     {
 
         #region Handle by number. This for api
@@ -30,17 +30,17 @@ namespace DigitBridge.QuickBooks.Integration.Tests
 
 
         [Fact()]
-        public async Task GetQboPaymentByNumberAsync_Test()
+        public async Task GetQboRefundByNumberAsync_Test()
         {
-            var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
-            var srv = new QboPaymentService(payload, DataBaseFactory);
+            var payload = new QboRefundPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
+            var srv = new QboRefundService(payload, DataBaseFactory);
             (var invoiceNumber, var tranNum) = await GetErpInvoiceNumberAndTranNumAsync();
 
             var success = await ExportInvoiceByNumberAsync(invoiceNumber);
 
             success = success && await srv.ExportByNumberAsync(invoiceNumber, tranNum);
 
-            success = success && await srv.GetQboPaymentByNumberAsync(invoiceNumber, tranNum);
+            success = success && await srv.GetQboRefundByNumberAsync(invoiceNumber, tranNum);
 
             Assert.True(success, srv.Messages.ObjectToString());
         }
@@ -48,8 +48,8 @@ namespace DigitBridge.QuickBooks.Integration.Tests
         [Fact()]
         public async Task ExportByNumberAsync_Test()
         {
-            var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
-            var srv = new QboPaymentService(payload, DataBaseFactory);
+            var payload = new QboRefundPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
+            var srv = new QboRefundService(payload, DataBaseFactory);
             (var invoiceNumber, var tranNum) = await GetErpInvoiceNumberAndTranNumAsync();
 
             var success = await ExportInvoiceByNumberAsync(invoiceNumber);
@@ -60,19 +60,19 @@ namespace DigitBridge.QuickBooks.Integration.Tests
         }
 
         [Fact()]
-        public async Task DeleteQboPaymentByNumberAsync_Test()
+        public async Task DeleteQboRefundByNumberAsync_Test()
         {
-            var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
-            var srv = new QboPaymentService(payload, DataBaseFactory);
+            var payload = new QboRefundPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
+            var srv = new QboRefundService(payload, DataBaseFactory);
             (var invoiceNumber, var tranNum) = await GetErpInvoiceNumberAndTranNumAsync();
 
             var success = await ExportInvoiceByNumberAsync(invoiceNumber);
 
             success = success && await srv.ExportByNumberAsync(invoiceNumber, tranNum);
 
-            success = success && await srv.DeleteQboPaymentByNumberAsync(invoiceNumber, tranNum);
+            success = success && await srv.DeleteQboRefundByNumberAsync(invoiceNumber, tranNum);
 
-            Assert.True(success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.True(success, srv.Messages.ObjectToString());
         }
 
 
@@ -91,10 +91,10 @@ namespace DigitBridge.QuickBooks.Integration.Tests
         [Fact()]
         public async Task ExportByUuidAsync_Test()
         {
-            var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
-            var srv = new QboPaymentService(payload, DataBaseFactory);
+            var payload = new QboRefundPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
+            var srv = new QboRefundService(payload, DataBaseFactory);
 
-            (var invoiceUuid, var transUuid) = await GetErpInvoiceUuidAndTransUuidAsync();
+            (var invoiceUuid, var transUuid) =await GetErpInvoiceUuidAndTransUuidAsync();
             var success = await ExportInvoiceByUuidAsync(invoiceUuid);
             success = success && await srv.ExportByUuidAsync(transUuid);
 
@@ -102,16 +102,16 @@ namespace DigitBridge.QuickBooks.Integration.Tests
         }
 
         [Fact()]
-        public async Task DeleteQboPaymentByUuidAsync_Test()
+        public async Task DeleteQboRefundByUuidAsync_Test()
         {
-            var payload = new QboPaymentPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
-            var srv = new QboPaymentService(payload, DataBaseFactory);
+            var payload = new QboRefundPayload() { MasterAccountNum = MasterAccountNum, ProfileNum = ProfileNum };
+            var srv = new QboRefundService(payload, DataBaseFactory);
 
             (var invoiceUuid, var transUuid) = await GetErpInvoiceUuidAndTransUuidAsync();
             var success = await ExportInvoiceByUuidAsync(invoiceUuid);
             success = success && await srv.ExportByUuidAsync(transUuid);
 
-            success = success && await srv.DeleteQboPaymentByUuidAsync(transUuid);
+            success = success && await srv.DeleteQboRefundByUuidAsync(invoiceUuid);
 
             Assert.True(success, srv.Messages.ObjectToString());
         }

@@ -33,21 +33,37 @@ SELECT
 {Helper.TransNum()}, 
 {Helper.InvoiceUuid()}, 
 {Helper.InvoiceNumber()}, 
-{Helper.TransStatus()},  
-COALESCE(rts.text, '') TransStatusText,  
+{Helper.TransType()},
+COALESCE(ptt.text, '') TransTypeText, 
+{Helper.TransStatus()},
+COALESCE(pts.text, '') TransStatusText, 
 {Helper.TransDate()}, 
 {Helper.TransTime()}, 
-{Helper.SubTotalAmount()},
 {Helper.TotalAmount()}, 
+
+{InvoiceHeaderHelper.QboDocNumber()}, 
+{InvoiceHeaderHelper.SalesOrderUuid()}, 
+{InvoiceHeaderHelper.OrderNumber()}, 
+{InvoiceHeaderHelper.InvoiceDate()},  
 {InvoiceHeaderHelper.DueDate()}, 
 {InvoiceHeaderHelper.CustomerUuid()}, 
 {InvoiceHeaderHelper.CustomerCode()}, 
 {InvoiceHeaderHelper.CustomerName()},  
+{InvoiceHeaderHelper.TableAllies}.TotalAmount AS InvoiceTotalAmount,  
+{InvoiceHeaderHelper.Balance()},
+
+{InvoiceHeaderInfoHelper.CentralFulfillmentNum()},
+{InvoiceHeaderInfoHelper.OrderShipmentNum()},
+{InvoiceHeaderInfoHelper.OrderShipmentUuid()},
+{InvoiceHeaderInfoHelper.ShippingCarrier()},
+{InvoiceHeaderInfoHelper.ShippingClass()},
+{InvoiceHeaderInfoHelper.DistributionCenterNum()},
 {InvoiceHeaderInfoHelper.CentralOrderNum()},
 {InvoiceHeaderInfoHelper.ChannelNum()},
+{InvoiceHeaderInfoHelper.ChannelAccountNum()},
 {InvoiceHeaderInfoHelper.ChannelOrderID()},
-{InvoiceHeaderInfoHelper.BillToEmail()},
-{InvoiceHeaderInfoHelper.ShipToName()}
+{InvoiceHeaderInfoHelper.RefNum()},
+{InvoiceHeaderInfoHelper.CustomerPoNum()}
 ";
             return this.SQL_Select;
         }
@@ -58,28 +74,17 @@ COALESCE(rts.text, '') TransStatusText,
  FROM {Helper.TableName} {Helper.TableAllies} 
  LEFT JOIN {InvoiceHeaderHelper.TableName} {InvoiceHeaderHelper.TableAllies} ON ({InvoiceHeaderHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
  LEFT JOIN {InvoiceHeaderInfoHelper.TableName} {InvoiceHeaderInfoHelper.TableAllies} ON ({InvoiceHeaderInfoHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
- LEFT JOIN @RetrunTransStatus rts ON ({Helper.TableAllies}.TransStatus = rts.num) 
+ LEFT JOIN @PaymentTransStatus pts ON ({Helper.TableAllies}.TransStatus = pts.num)
+ LEFT JOIN @PaymentTransType ptt ON ({Helper.TableAllies}.TransType = ptt.num) 
 ";
             return this.SQL_From;
         }
-        //protected override string GetSQL_where()
-        //{
-        //    var whereSql = base.GetSQL_where();
-        //    //if (string.IsNullOrWhiteSpace(whereSql))
-        //    //    whereSql = $" WHERE ";
-        //    var existSql =
-        //        $" exists (" +
-        //            $" select 1 from {InvoiceReturnItemsHelper.TableName} {InvoiceReturnItemsHelper.TableAllies}  " +
-        //            $" where  {InvoiceReturnItemsHelper.TableAllies}.TransUuid= {Helper.TableAllies}.TransUuid " +
-        //                $"AND  {InvoiceReturnItemsHelper.TableAllies}.SKU= @SKU "  
-        //        $") ";
-        //    return whereSql;
-        //}
+
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-            paramList.Add("@RetrunTransStatus".ToEnumParameter<TransStatus>());
-            paramList.Add("@PaidBy".ToEnumParameter<PaidByEnum>());
+            paramList.Add("@PaymentTransStatus".ToEnumParameter<TransStatus>());
+            paramList.Add("@PaymentTransType".ToEnumParameter<TransTypeEnum>());
             return paramList.ToArray();
         }
 
