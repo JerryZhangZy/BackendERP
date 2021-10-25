@@ -159,7 +159,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InventoryPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InventoryList(dataBaseFactory, new InventoryQuery());
-            await srv.GetIProductListAsync(payload);
+            await srv.GetProductListAsync(payload);
             return new JsonNetResponse<InventoryPayload>(payload);
         }
 

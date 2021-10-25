@@ -105,7 +105,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 { "customerType",data.Customer.CustomerType },
                 { "customerStatus",data.Customer.CustomerStatus },
                 { "businessType",data.Customer.BusinessType },
-                { "firstDate",data.Customer.FirstDate },
+                { "firstDate",data.Customer.FirstDate.ToString("yyyy-MM-dd") },
                 { "priority",data.Customer.Priority },
                 { "area",data.Customer.Area},
                 { "region",data.Customer.Region },

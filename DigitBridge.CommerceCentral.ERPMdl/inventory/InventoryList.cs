@@ -246,7 +246,7 @@ LEFT JOIN {InvHelper.TableName} {InvHelper.TableAllies} ON ({Helper.TableAllies}
             return payload;
         }
 
-        public virtual async Task<InventoryPayload> GetIProductListAsync(InventoryPayload payload)
+        public virtual async Task<InventoryPayload> GetProductListAsync(InventoryPayload payload)
         {
             if (payload == null)
                 payload = new InventoryPayload();
