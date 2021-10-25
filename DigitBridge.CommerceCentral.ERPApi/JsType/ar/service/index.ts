@@ -1,8 +1,8 @@
 export { 
-    InvoiceTransactionService,
- } from "./invoiceTransactionService";
+    InvoiceService,
+ } from "./invoiceService";
 
 export { 
-    useService as useInvoiceTransactionService, 
-} from "./useInvoiceTransactionService";
+    useService as useInvoiceService, 
+} from "./useInvoiceService";
 
