@@ -140,7 +140,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 var qry = new InventoryQuery();
                 var srv = new InventoryList(dataBaseFactory, qry);
-                await srv.GetInventoryListAsync(payload);
+                await srv.GetIProductListAsync(payload);
                 var json = payload.ObjectToString();
             }
 
