@@ -97,6 +97,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     continue;
                 }
 
+                applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
+
                 //add payment success. then pay invoice.
                 var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
                 if (!success)
@@ -140,6 +142,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError($"Add payment failed for InvoiceNumber:{applyInvoice.InvoiceNumber} ");
                     continue;
                 }
+
+                applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
 
                 //add payment success. then pay invoice.
                 var success = PayInvoice(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
@@ -275,6 +279,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     continue;
                 }
 
+                applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
+
                 //update payment success. then pay invoice.
                 var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
                 if (!success)
@@ -330,6 +336,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError($"Update payment failed for InvoiceNumber:{applyInvoice.InvoiceNumber} ");
                     continue;
                 }
+
+                applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
 
                 //update payment success. then pay invoice.
                 var success = PayInvoice(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
@@ -450,6 +458,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="masterAccountNum"></param>
         /// <param name="profileNum"></param>
         /// <returns></returns>
+        public async Task AddQboPaymentEventAsync(int masterAccountNum, int profileNum, IList<ApplyInvoice> applyInvoices)
+        {
+            if (applyInvoices == null || applyInvoices.Count == 0) return;
+
+            foreach (var item in applyInvoices)
+            {
+                if (!item.Success)
+                    continue;
+
+                var eventDto = new AddEventDto()
+                {
+                    MasterAccountNum = masterAccountNum,
+                    ProfileNum = profileNum,
+                    ProcessUuid = item.TransUuid,
+                };
+                await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPayment");
+            }
+
         public async Task<bool> AddQboPaymentEventAsync(int masterAccountNum, int profileNum)
         {
             var eventDto = new AddErpEventDto()
