@@ -474,7 +474,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        public async Task<bool> DeleteQboRefundEventAsync(int masterAccountNum, int profileNum, List<ApplyInvoice> applyInvoices)
+        public async Task<bool> DeleteQboRefundEventAsync(int masterAccountNum, int profileNum)
         {
             var eventDto = new AddEventDto()
             {
