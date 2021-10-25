@@ -18,5 +18,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [JsonIgnore]
         public bool Success { get; set; } = true;
+
+        [JsonIgnore]
+        public string TransUuid { get; set; }
     }
 }

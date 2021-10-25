@@ -132,8 +132,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Messages = srv.Messages;
 
             //Directly return without waiting this result. 
-            if (payload.Success)
-                srv.AddQboPaymentEventAsync(payload.MasterAccountNum, payload.ProfileNum);
+            //if (payload.Success)
+            srv.AddQboPaymentEventAsync(payload.MasterAccountNum, payload.ProfileNum, payload.ApplyInvoices);
 
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
@@ -161,8 +161,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.InvoiceTransaction = srv.ToDto();
 
             //Directly return without waiting this result. 
-            if (payload.Success)
-                srv.AddQboPaymentEventAsync(payload.MasterAccountNum, payload.ProfileNum);
+            //if (payload.Success)
+            srv.AddQboPaymentEventAsync(payload.MasterAccountNum, payload.ProfileNum, payload.ApplyInvoices);
 
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }
