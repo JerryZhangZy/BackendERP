@@ -490,7 +490,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPayment");
         }
 
-        public async Task<bool> DeleteQboRefundEventAsync(int masterAccountNum, int profileNum)
+        public async Task<bool> DeleteQboPaymentEventAsync(int masterAccountNum, int profileNum)
         {
             var eventDto = new AddErpEventDto()
             {
