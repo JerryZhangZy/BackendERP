@@ -9,13 +9,10 @@
   <ItemGroup>
     <Compile Remove="CustomerServiceTests.cs" />
     <Compile Remove="CustomerServiceTests.Designer.cs" />
-    <Compile Remove="InventoryListTests.cs" />
     <Compile Remove="InventoryLogServiceTests.cs" />
     <Compile Remove="InventoryLogServiceTests.Designer.cs" />
     <Compile Remove="InvoiceTransactionServiceTests.cs" />
     <Compile Remove="InvoiceTransactionServiceTests.Designer.cs" />
-    <Compile Remove="SalesOrderCalculatorTests.cs" />
-    <Compile Remove="SalesOrderCalculatorTests.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
