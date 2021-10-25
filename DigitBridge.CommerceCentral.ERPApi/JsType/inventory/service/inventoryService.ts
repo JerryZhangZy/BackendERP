@@ -8,7 +8,7 @@ import * as util from '../../../util';
  * @param {StoreMobx} store - data store object
  * @param {StoreMobx} ui - ui store object
 */
-export class InventoryManagerService extends serviceBase {
+export class InventoryService extends serviceBase {
 
     constructor(name: string, store: StoreMobx | null, ui: StoreMobx | null) {
         super(name, store, ui);
