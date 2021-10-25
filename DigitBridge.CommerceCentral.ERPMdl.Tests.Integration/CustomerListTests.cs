@@ -24,6 +24,7 @@ using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
 using Newtonsoft.Json.Linq;
+using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -58,30 +59,62 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
         }
 
-        private JObject GetFilters()
+        public CustomerData Save_Test(string prefix="")
+        {
+            var data = CustomerDataTests.GetFakerData();
+
+            data.Customer.MasterAccountNum = 10001;
+            data.Customer.ProfileNum = 10001;
+            data.Customer.CustomerCode = $"{prefix}{data.Customer.CustomerCode}";
+            data.Customer.CustomerName = $"{prefix}{data.Customer.CustomerName}";
+            data.Customer.Contact = $"{prefix}{data.Customer.Contact}";
+            data.Customer.Phone1 = $"{prefix}{data.Customer.Phone1}";
+            data.Customer.Email = $"{prefix}{data.Customer.Email}";
+            //data.Customer.CustomerType = $"{prefix}{data.Customer.CustomerType}";
+            //data.Customer.CustomerStatus = $"{prefix}{data.Customer.CustomerCode}";
+            //data.Customer.BusinessType = $"{prefix}{data.Customer.CustomerCode}";
+            //data.Customer.FirstDate = $"{prefix}{data.Customer.CustomerCode}";
+            data.Customer.Priority = $"{prefix}{data.Customer.Priority}";
+            data.Customer.Area = $"{prefix}{data.Customer.Area}";
+            data.Customer.Region = $"{prefix}{data.Customer.Region}";
+            data.Customer.Districtn = $"{prefix}{data.Customer.Districtn}";
+            data.Customer.Zone = $"{prefix}{data.Customer.Zone}";
+            data.Customer.ClassCode = $"{prefix}{data.Customer.ClassCode}";
+            data.Customer.DepartmentCode = $"{prefix}{data.Customer.DepartmentCode}";
+            data.Customer.DivisionCode = $"{prefix}{data.Customer.DivisionCode}";
+            data.Customer.SourceCode = $"{prefix}{data.Customer.SourceCode}";
+
+            data.SetDataBaseFactory(dataBaseFactory);
+            data.Save();
+            var dataGet = new CustomerData(dataBaseFactory);
+            dataGet.GetById(data.UniqueId);
+            return dataGet;
+        }
+
+        private JObject GetFilters(CustomerData data)
         {
             return new JObject()
             {
-                { "customerUuid","" },
-                { "customerCode","" },
-                { "customerName","" },
-                { "contact","" },
-                { "phone1","" },
-                { "email","" },
-                { "webSite","" },
-                { "customerType","" },
-                { "customerStatus","" },
-                { "businessType","" },
-                { "firstDate","" },
-                { "priority","" },
-                { "area","" },
-                { "region","" },
-                { "districtn","" },
-                { "zone","" },
-                { "classCode","" },
-                { "departmentCode","" },
-                { "divisionCode","" },
-                { "sourceCode","" },
+                { "customerUuid",data.Customer.CustomerUuid },
+                { "customerCode",data.Customer.CustomerCode },
+                { "customerName",data.Customer.CustomerName },
+                { "contact",data.Customer.Contact},
+                { "phone1",data.Customer.Phone1 },
+                { "email",data.Customer.Email},
+                { "webSite",data.Customer.WebSite },
+                { "customerType",data.Customer.CustomerType },
+                { "customerStatus",data.Customer.CustomerStatus },
+                { "businessType",data.Customer.BusinessType },
+                { "firstDate",data.Customer.FirstDate },
+                { "priority",data.Customer.Priority },
+                { "area",data.Customer.Area},
+                { "region",data.Customer.Region },
+                { "districtn",data.Customer.Districtn },
+                { "zone",data.Customer.Zone },
+                { "classCode",data.Customer.ClassCode },
+                { "departmentCode",data.Customer.DepartmentCode },
+                { "divisionCode",data.Customer.DivisionCode },
+                { "sourceCode",data.Customer.SourceCode },
             };
         }
 
@@ -96,44 +129,59 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var payload = new CustomerPayload();
             payload.LoadAll = true;
-            payload.Filter = GetFilters();
+            payload.MasterAccountNum = 10001;
+            payload.ProfileNum = 10001;
+            var customer = Save_Test("JSON_ASYNC");
+            var filters = GetFilters(customer);
+            var srv = new CustomerList(dataBaseFactory, new CustomerQuery());
+            foreach (var obj in filters)
+            {
+                payload.Filter = new JObject() { { obj.Key, obj.Value } };
+                await srv.GetCustomerListAsync(payload);
 
-            var qry = new CustomerQuery();
-            var srv = new CustomerList(dataBaseFactory, qry);
-            srv.LoadRequestParameter(payload);
+                System.Diagnostics.Debug.WriteLine($"filter:{obj.Key},{obj.Value.ToString()}.Success:{payload.Success},List:{payload.CustomerListCount}");
+                Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+                Assert.True(payload.CustomerList!=null&&payload.CustomerList.Length>0,obj.Key);
+                Assert.True(payload.CustomerListCount>0, "This is a generated tester, please report any tester bug to team leader.");
+
+            }
+
+            //var qry = new CustomerQuery();
+            //var srv = new CustomerList(dataBaseFactory, new CustomerQuery());
+            //srv.LoadRequestParameter(payload);
             //qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
             //qry.OrderNumberFrom.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
             //qry.OrderNumberTo.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
             //qry.OrderStatus.MultipleFilterValueString = "11,18,86";
 
-            var totalRecords = 0;
-            var result = false;
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                using (var b = new Benchmark("ExcuteJsonAsync_Test"))
-                {
-                    payload.CustomerListCount = await srv.CountAsync();
-                    result = await srv.ExcuteJsonAsync(sb);
-                    if (result)
-                        payload.CustomerList = sb;
+            //var totalRecords = 0;
+            //var result = false;
+            //StringBuilder sb = new StringBuilder();
+            //try
+            //{
+            //    using (var b = new Benchmark("ExcuteJsonAsync_Test"))
+            //    {
+            //        payload.CustomerListCount = await srv.CountAsync();
+            //        result = await srv.ExcuteJsonAsync(sb);
+            //        if (result)
+            //            payload.CustomerList = sb;
 
-                    //using (var trs = new ScopedTransaction())
-                    //{
-                    //}
-                }
-            }
-            catch (Exception ex)
-            {
-                //Cannot open server 'bobotestsql' requested by the login. Client with IP address '174.81.9.150' is not allowed to access the server.
-                //To enable access, use the Windows Azure Management Portal or run sp_set_firewall_rule on the master database to create a firewall rule
-                //for this IP address or address range.  It may take up to five minutes for this change to take effect.
-                throw;
-            }
+            //        //using (var trs = new ScopedTransaction())
+            //        //{
+            //        //}
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    //Cannot open server 'bobotestsql' requested by the login. Client with IP address '174.81.9.150' is not allowed to access the server.
+            //    //To enable access, use the Windows Azure Management Portal or run sp_set_firewall_rule on the master database to create a firewall rule
+            //    //for this IP address or address range.  It may take up to five minutes for this change to take effect.
+            //    throw;
+            //}
 
-            var json = payload.ObjectToString();
+            //var json = payload.ObjectToString();
 
-            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+            //Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
         [Fact()]
@@ -142,7 +190,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var payload = new CustomerPayload();
             payload.LoadAll = true;
-            payload.Filter = GetFilters();
+            var customer = Save_Test();
+            var filters = GetFilters(customer);
+            payload.Filter = filters;
 
             using (var b = new Benchmark("GetCustomerListAsync_Test"))
             {
