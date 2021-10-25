@@ -49,12 +49,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 var item = data.InvoiceItems[i];
 
                 item.DiscountAmount = 0;
-                item.ShipQty = new Random().Next(10, 100); 
+                item.ShipQty = new Random().Next(10, 100);
 
                 var inventory = inventories[i];
                 item.WarehouseCode = inventory.WarehouseCode;
                 item.SKU = inventory.SKU;
                 item.InventoryUuid = inventory.InventoryUuid;
+                item.ProductUuid = inventory.ProductUuid;
+                item.WarehouseUuid = inventory.WarehouseUuid;
             }
             data.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
             return data;

@@ -449,9 +449,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
 
-        protected QboPaymentClient qboPaymentClient = new QboPaymentClient();
-
+         
         #region To qbo queue 
+
+        private QboPaymentClient _qboPaymentClient;
+
+        protected QboPaymentClient qboPaymentClient
+        {
+            get
+            {
+                if (_qboPaymentClient is null)
+                    _qboPaymentClient = new QboPaymentClient();
+                return _qboPaymentClient;
+            }
+        }
+
         /// <summary>
         /// convert erp invoice payment to a queue message then put it to qbo queue
         /// </summary>
