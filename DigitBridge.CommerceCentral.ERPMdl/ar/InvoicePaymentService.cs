@@ -467,14 +467,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (!item.Success)
                     continue;
 
-                var eventDto = new AddEventDto()
+                var eventDto = new AddErpEventDto()
                 {
                     MasterAccountNum = masterAccountNum,
                     ProfileNum = profileNum,
                     ProcessUuid = item.TransUuid,
                 };
-                await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPayment");
+                //await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPayment");
+                await qboPaymentClient.SendAddQboPaymentAsync(eventDto);
             }
+        }
 
         public async Task<bool> AddQboPaymentEventAsync(int masterAccountNum, int profileNum)
         {
