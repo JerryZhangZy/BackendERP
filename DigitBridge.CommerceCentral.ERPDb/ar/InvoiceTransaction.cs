@@ -33,7 +33,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (transNum.HasValue)
                 sql += $" and TransNum={transNum.Value}";
             return (await dbFactory.FindAsync<InvoiceTransaction>(sql)).ToList();
-        } 
+        }
+
+        public decimal OriginalPaidAmount { get; set; }
     }
 }
 

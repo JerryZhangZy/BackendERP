@@ -14,7 +14,7 @@ using DigitBridge.CommerceCentral.ERPDb;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public partial class InvoiceReturnService : InvoiceTransactionService
+    public partial class InvoiceReturnService : InvoiceTransactionService, IInvoiceReturnService
     {
         public InvoiceReturnService(IDataBaseFactory dbFactory) : base(dbFactory)
         {
@@ -183,6 +183,43 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ProcessUuid = Data.InvoiceTransaction.TransUuid,
             };
             return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksReturnDelete");
+        }
+
+        #endregion
+
+        #region add return
+        public virtual async Task<bool> AddAsync(InvoiceReturnPayload payload)
+        {
+            return await base.AddAsync(payload);
+        }
+
+        public virtual bool Add(InvoiceReturnPayload payload)
+        {
+            return base.Add(payload);
+        }
+
+        #endregion
+
+        #region update return
+
+        /// <summary>
+        /// update payment
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> UpdateAsync(InvoiceReturnPayload payload)
+        {
+            return await base.UpdateAsync(payload);
+        }
+
+        /// <summary>
+        /// update payment
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <returns></returns>
+        public virtual bool Update(InvoiceReturnPayload payload)
+        {
+            return base.Update(payload);
         }
 
         #endregion

@@ -21,27 +21,7 @@ namespace DigitBridge.QuickBooks.Integration.Tests
     {
         protected const int MasterAccountNum = 10001;
         protected const int ProfileNum = 10001;
-        protected InvoiceTransactionData GetFakerPaymentData(string invoiceNumber)
-        {
-            var data = InvoiceTransactionDataTests.GetFakerData();
-            data.InvoiceTransaction.MasterAccountNum = MasterAccountNum;
-            data.InvoiceTransaction.ProfileNum = ProfileNum;
-            data.InvoiceTransaction.InvoiceNumber = invoiceNumber;
-            return data;
-        }
-        protected InvoiceData GetFakerInvoiceData()
-        {
-            var data = InvoiceDataTests.GetFakerData();
-            data.InvoiceHeader.MasterAccountNum = MasterAccountNum;
-            data.InvoiceHeader.ProfileNum = ProfileNum;
 
-            foreach (var item in data.InvoiceItems)
-            {
-                item.DiscountAmount = 0;
-            }
-            data.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
-            return data;
-        }
         protected const string SkipReason = "Debug Helper Function";
 
         protected TestFixture<StartupTest> Fixture { get; }
@@ -63,47 +43,17 @@ namespace DigitBridge.QuickBooks.Integration.Tests
         public void Dispose()
         {
         }
-
-        private string GetErpInvoiceNumber()
+        protected async Task<(string, int)> GetErpInvoiceNumberAndTranNumAsync()
         {
-            var srv = new InvoiceService(DataBaseFactory);
-            srv.Add();
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerInvoiceData();
-            var dto = mapper.WriteDto(data, null);
-            srv.Add(dto);
-            return srv.Data.InvoiceHeader.InvoiceNumber;
+            var paymentData = await InvoicePaymentDataTests.SaveFakerInvoicePayment(DataBaseFactory);
+            return (paymentData.InvoiceTransaction.InvoiceNumber, paymentData.InvoiceTransaction.TransNum);
         }
 
-
-        protected (string, int) GetErpInvoiceNumberAndTranNum()
+        protected async Task<(string, string)> GetErpInvoiceUuidAndTransUuidAsync()
         {
-            var invoiceNumber = GetErpInvoiceNumber();
+            var paymentData = await InvoicePaymentDataTests.SaveFakerInvoicePayment(DataBaseFactory);
 
-            var srv = new InvoicePaymentService(DataBaseFactory);
-            srv.Add();
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerPaymentData(invoiceNumber);
-            var dto = mapper.WriteDto(data, null);
-            srv.Add(dto);
-            return (srv.Data.InvoiceTransaction.InvoiceNumber, srv.Data.InvoiceTransaction.TransNum);
-        }
-
-        protected (string, string) GetErpInvoiceUuidAndTransUuid()
-        {
-            var invoiceNumber = GetErpInvoiceNumber();
-
-            var srv = new InvoicePaymentService(DataBaseFactory);
-            srv.Add();
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerPaymentData(invoiceNumber);
-            var dto = mapper.WriteDto(data, null);
-            srv.Add(dto);
-
-            var trans = srv.Data.InvoiceTransaction;
+            var trans = paymentData.InvoiceTransaction;
 
             return (trans.InvoiceUuid, trans.TransUuid);
         }

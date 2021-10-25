@@ -45,6 +45,31 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasInvoicePaymentSummary => InvoicePaymentSummary != null;
         public bool ShouldSerializeInvoicePaymentSummary() => HasInvoicePaymentSummary;
         #endregion
+
+        /// <summary>
+        /// Delegate function to load request parameter to payload property.
+        /// </summary>
+        public override IDictionary<string, Action<string>> GetOtherParameters()
+        {
+            return new Dictionary<string, Action<string>>
+            {
+                { "applyInvoices", val => ApplyInvoices = val.JsonToObject<List<ApplyInvoice>>()}
+            };
+        }
+
+
+        #region multiple payment list
+
+        /// <summary>
+        /// (Request Parameter) Array of uuid to load multiple Invoice dto data.
+        /// </summary>
+        [OpenApiPropertyDescription("(Request Parameter) Array of applyInvoice  to add multi payments")]
+        public IList<ApplyInvoice> ApplyInvoices { get; set; } = new List<ApplyInvoice>();
+        [JsonIgnore]
+        public virtual bool HasApplyInvoices => ApplyInvoices != null && ApplyInvoices.Count > 0;
+        public bool ShouldSerializeApplyInvoices() => HasApplyInvoices;
+
+        #endregion
     }
 }
 

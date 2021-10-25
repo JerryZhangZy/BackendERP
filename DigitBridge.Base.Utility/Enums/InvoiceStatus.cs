@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DigitBridge.Base.Common
 {
-    public enum InvoiceStatus : int
+    public enum InvoiceStatusEnum : int
     {
         New = 0,
         Outstanding = 1,
