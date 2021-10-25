@@ -58,6 +58,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
         }
 
+        private JObject GetFilters()
+        {
+            return new JObject()
+            {
+                { "customerUuid","" },
+                { "customerCode","" },
+                { "customerName","" },
+                { "contact","" },
+                { "phone1","" },
+                { "email","" },
+                { "webSite","" },
+                { "customerType","" },
+                { "customerStatus","" },
+                { "businessType","" },
+                { "firstDate","" },
+                { "priority","" },
+                { "area","" },
+                { "region","" },
+                { "districtn","" },
+                { "zone","" },
+                { "classCode","" },
+                { "departmentCode","" },
+                { "divisionCode","" },
+                { "sourceCode","" },
+            };
+        }
 
         #region sync methods
 
@@ -70,9 +96,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var payload = new CustomerPayload();
             payload.LoadAll = true;
-            payload.Filter = new JObject()
-            {
-            };
+            payload.Filter = GetFilters();
 
             var qry = new CustomerQuery();
             var srv = new CustomerList(dataBaseFactory, qry);
@@ -118,9 +142,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var payload = new CustomerPayload();
             payload.LoadAll = true;
-            payload.Filter = new JObject()
-            {
-            };
+            payload.Filter = GetFilters();
 
             using (var b = new Benchmark("GetCustomerListAsync_Test"))
             {

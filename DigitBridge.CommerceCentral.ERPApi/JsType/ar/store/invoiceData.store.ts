@@ -1,5 +1,5 @@
-import { setCurrentStore } from '../../../store/dataStore';
-import { InvoiceDataModel, invoiceDataInit } from './invoiceDataModel';
+import { setCurrentStore } from '../../../store/dataStorePool';
+import { InvoiceDataModel, invoiceDataInit } from './invoiceData.model';
 import { isObject, isEqual } from '../../../util';
 import { createStoreMobx, StoreMobx } from '../../../store/StoreMobx';
 

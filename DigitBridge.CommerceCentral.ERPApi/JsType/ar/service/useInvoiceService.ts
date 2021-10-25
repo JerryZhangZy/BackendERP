@@ -1,7 +1,7 @@
-﻿import * as util from '../../../util';
+import * as util from '../../../util';
 import { StoreMobx } from '../../../store';
 import { setCurrentService, getService } from '../../../service';
-import { <#= ServiceName #> } from './<#= ServicePropertyName #>';
+import { InvoiceService } from './invoiceService';
 
 /**
 * Set current service to current page service, 
@@ -9,19 +9,20 @@ import { <#= ServiceName #> } from './<#= ServicePropertyName #>';
 * @param {string} name - service object name
 * @param {StoreMobx} store - screen data store object
 * @param {StoreMobx} ui - screen ui design store object
-* @return {<#= ServiceName #>} service object
+* @return {InvoiceService} service object
 */
-export const useService = (name: string, store: StoreMobx | null, ui: StoreMobx | null): <#= ServiceName #> | null => {
+export const useService = (name: string, store: StoreMobx | null, ui: StoreMobx | null): InvoiceService | null => {
     let service = getService(name) || createService(name, store, ui);
     setCurrentService(name, service);
-    return service as <#= ServiceName #>;
+    return service as InvoiceService;
 };
 
 /**
 * Create new service object
-* @return {<#= ServiceName #>} service object
+* @return {InvoiceService} service object
 */
-export const createService = (name: string, store: StoreMobx | null, ui: StoreMobx | null): <#= ServiceName #> | null => {
-    return new <#= ServiceName #>(name, store, ui);
+export const createService = (name: string, store: StoreMobx | null, ui: StoreMobx | null): InvoiceService | null => {
+    return new InvoiceService(name, store, ui);
 };
+
 

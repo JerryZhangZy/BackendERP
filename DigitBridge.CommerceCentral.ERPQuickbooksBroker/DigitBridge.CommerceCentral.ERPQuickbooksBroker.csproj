@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ApiCommon\DigitBridge.CommerceCentral.ApiCommon.csproj" />
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPEventSDK\DigitBridge.CommerceCentral.ERPEventSDK.csproj" />
     <ProjectReference Include="..\DigitBridge.QuickBooks.Integration\DigitBridge.QuickBooks.Integration.csproj" />
   </ItemGroup>
   <ItemGroup>

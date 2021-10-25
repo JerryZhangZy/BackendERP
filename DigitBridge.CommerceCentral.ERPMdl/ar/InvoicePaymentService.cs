@@ -13,6 +13,8 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using System.Text;
 using Newtonsoft.Json;
+using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
+using DigitBridge.CommerceCentral.ERPEventSDK;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -447,6 +449,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
 
+        protected QboPaymentClient qboPaymentClient = new QboPaymentClient();
+
         #region To qbo queue 
         /// <summary>
         /// convert erp invoice payment to a queue message then put it to qbo queue
@@ -463,26 +467,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (!item.Success)
                     continue;
 
-                var eventDto = new AddEventDto()
+                var eventDto = new AddErpEventDto()
                 {
                     MasterAccountNum = masterAccountNum,
                     ProfileNum = profileNum,
                     ProcessUuid = item.TransUuid,
                 };
-                await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPayment");
+                //await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPayment");
+                await qboPaymentClient.SendAddQboPaymentAsync(eventDto);
             }
-
         }
 
-        public async Task<bool> DeleteQboPaymentEventAsync(int masterAccountNum, int profileNum)
+        public async Task<bool> AddQboPaymentEventAsync(int masterAccountNum, int profileNum)
         {
-            var eventDto = new AddEventDto()
+            var eventDto = new AddErpEventDto()
             {
                 MasterAccountNum = masterAccountNum,
                 ProfileNum = profileNum,
                 ProcessUuid = Data.InvoiceTransaction.TransUuid,
             };
-            return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPaymentDelete");
+            return await qboPaymentClient.SendAddQboPaymentAsync(eventDto);
+            //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPayment");
+        }
+
+        public async Task<bool> DeleteQboPaymentEventAsync(int masterAccountNum, int profileNum)
+        {
+            var eventDto = new AddErpEventDto()
+            {
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
+                ProcessUuid = Data.InvoiceTransaction.TransUuid,
+            };
+            return await qboPaymentClient.SendDeleteQboPaymentAsync(eventDto);
+            //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPaymentDelete");
         }
         #endregion
     }

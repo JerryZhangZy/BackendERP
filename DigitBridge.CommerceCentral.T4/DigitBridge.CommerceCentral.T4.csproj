@@ -428,6 +428,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>JsStructureUi.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\JsUseService.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsUseService.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\ReadDtoGrandChildren.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
