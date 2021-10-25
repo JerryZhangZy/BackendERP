@@ -1,5 +1,7 @@
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
+using DigitBridge.CommerceCentral.ERPEventSDK;
+using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
 using DigitBridge.CommerceCentral.ERPMdl;
 using DigitBridge.QuickBooks.Integration;
 using Microsoft.Azure.WebJobs;
@@ -22,25 +24,35 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
         [FunctionName("ExportErpInvoiceToQbo")]
         public static async Task ExportErpInvoiceToQbo([QueueTrigger(QueueName.Erp_Qbo_Invoice_Queue)] string myQueueItem, ILogger log)
         {
-            ERPQueueMessage message = null;
+            var invoiceClient = new QboInvoiceClient();
+            var eventDto = new UpdateErpEventDto();
             try
             {
-                message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
+                ERPQueueMessage message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
                 var payload = new QboInvoicePayload()
                 {
                     MasterAccountNum = message.MasterAccountNum,
                     ProfileNum = message.ProfileNum
                 };
+                eventDto.EventUuid = message.EventUuid;
+                eventDto.MasterAccountNum = message.MasterAccountNum;
+                eventDto.ProfileNum = message.ProfileNum;
 
                 var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var service = new QboInvoiceService(payload, dataBaseFactory);
                 var success = await service.ExportByUuidAsync(message.ProcessUuid);
 
-                ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
+                eventDto.ActionStatus = success ? 0 : 1;
+                eventDto.EventMessage = service.Messages.ObjectToString();
             }
             catch (Exception e)
             {
-                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
+                eventDto.ActionStatus = 1;
+                eventDto.EventMessage = e.ObjectToString();
+            }
+            finally
+            {
+                await invoiceClient.SendActionResultAsync(eventDto);
             }
         }
 
@@ -53,26 +65,35 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
         [FunctionName("VoidQboInvoice")]
         public static async Task VoidQboInvoice([QueueTrigger(QueueName.Erp_Qbo_Invoice_Void_Queue)] string myQueueItem, ILogger log)
         {
-            ERPQueueMessage message = null;
+            var invoiceClient = new QboInvoiceClient();
+            var eventDto = new UpdateErpEventDto();
             try
             {
-                message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-
+                ERPQueueMessage message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
                 var payload = new QboInvoicePayload()
                 {
                     MasterAccountNum = message.MasterAccountNum,
                     ProfileNum = message.ProfileNum
                 };
+                eventDto.EventUuid = message.EventUuid;
+                eventDto.MasterAccountNum = message.MasterAccountNum;
+                eventDto.ProfileNum = message.ProfileNum;
 
                 var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var service = new QboInvoiceService(payload, dataBaseFactory);
                 var success = await service.VoidQboInvoiceByUuidAsync(message.ProcessUuid);
 
-                ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
+                eventDto.ActionStatus = success ? 0 : 1;
+                eventDto.EventMessage = service.Messages.ObjectToString();
             }
             catch (Exception e)
             {
-                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
+                eventDto.ActionStatus = 1;
+                eventDto.EventMessage = e.ObjectToString();
+            }
+            finally
+            {
+                await invoiceClient.SendActionResultAsync(eventDto);
             }
         }
 

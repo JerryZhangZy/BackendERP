@@ -1,5 +1,7 @@
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
+using DigitBridge.CommerceCentral.ERPEventSDK;
+using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
 using DigitBridge.CommerceCentral.ERPMdl;
 using DigitBridge.QuickBooks.Integration;
 using Microsoft.Azure.WebJobs;
@@ -22,16 +24,19 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
         [FunctionName("ExportErpPaymentToQbo")]
         public static async Task ExportErpPaymentToQbo([QueueTrigger(QueueName.Erp_Qbo_Payment_Queue)] string myQueueItem, ILogger log)
         {
-            ERPQueueMessage message = null;
+            var paymentClient = new QboPaymentClient();
+            var eventDto = new UpdateErpEventDto();
             try
             {
-                message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-
+                ERPQueueMessage message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
                 var payload = new QboPaymentPayload()
                 {
                     MasterAccountNum = message.MasterAccountNum,
                     ProfileNum = message.ProfileNum
                 };
+                eventDto.EventUuid = message.EventUuid;
+                eventDto.MasterAccountNum = message.MasterAccountNum;
+                eventDto.ProfileNum = message.ProfileNum;
 
                 var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var service = new QboPaymentService(payload, dataBaseFactory); 
@@ -39,11 +44,17 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
                 var success = await service.ExportByUuidAsync(message.ProcessUuid);
 
 
-                ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
+                eventDto.ActionStatus = success ? 0 : 1;
+                eventDto.EventMessage = service.Messages.ObjectToString();
             }
             catch (Exception e)
             {
-                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
+                eventDto.ActionStatus = 1;
+                eventDto.EventMessage = e.ObjectToString();
+            }
+            finally
+            {
+                await paymentClient.SendActionResultAsync(eventDto);
             }
         }
 
@@ -56,27 +67,37 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
         [FunctionName("DeleteQboPayment")]
         public static async Task DeleteQboPayment([QueueTrigger(QueueName.Erp_Qbo_Payment_Delete_Queue)] string myQueueItem, ILogger log)
         {
-            ERPQueueMessage message = null;
+            var paymentClient = new QboPaymentClient();
+            var eventDto = new UpdateErpEventDto();
             try
             {
-                message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-
+                ERPQueueMessage message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
                 var payload = new QboPaymentPayload()
                 {
                     MasterAccountNum = message.MasterAccountNum,
                     ProfileNum = message.ProfileNum
                 };
+                eventDto.EventUuid = message.EventUuid;
+                eventDto.MasterAccountNum = message.MasterAccountNum;
+                eventDto.ProfileNum = message.ProfileNum;
 
                 var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var service = new QboPaymentService(payload, dataBaseFactory);
                  
                 var success = await service.DeleteQboPaymentByUuidAsync(message.ProcessUuid);
 
-                ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
+
+                eventDto.ActionStatus = success ? 0 : 1;
+                eventDto.EventMessage = service.Messages.ObjectToString();
             }
             catch (Exception e)
             {
-                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
+                eventDto.ActionStatus = 1;
+                eventDto.EventMessage = e.ObjectToString();
+            }
+            finally
+            {
+                await paymentClient.SendActionResultAsync(eventDto);
             }
         }
 

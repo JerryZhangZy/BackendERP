@@ -5,13 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="apiClient\ApiReturnData.cs" />
+    <Compile Remove="ApiClient\**" />
+    <EmbeddedResource Remove="ApiClient\**" />
+    <None Remove="ApiClient\**" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.AzureStorage\DigitBridge.CommerceCentral.AzureStorage.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPEventSDK\DigitBridge.CommerceCentral.ERPEventSDK.csproj" />
   </ItemGroup>
 
   <ItemGroup>

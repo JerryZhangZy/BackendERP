@@ -19,6 +19,8 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.Base.Common;
 using Newtonsoft.Json;
+using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
+using DigitBridge.CommerceCentral.ERPEventSDK;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -346,6 +348,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return false;
         }
 
+        protected QboInvoiceClient qboInvoiceClient = new QboInvoiceClient();
+
         #region To qbo queue 
         /// <summary>
         /// convert erp invoice to a queue message then put it to qbo queue
@@ -355,24 +359,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public async Task<bool> AddQboInvoiceEventAsync(int masterAccountNum, int profileNum)
         {
-            var eventDto = new AddEventDto()
+            var eventDto = new AddErpEventDto()
             {
                 MasterAccountNum = masterAccountNum,
                 ProfileNum = profileNum,
                 ProcessUuid = Data.InvoiceHeader.InvoiceUuid,
             };
-            return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksInvoice");
+            return await qboInvoiceClient.SendAddQboInvoiceAsync(eventDto);
+            //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksInvoice");
         }
 
         public async Task<bool> VoidQboInvoiceEventAsync(int masterAccountNum, int profileNum)
         {
-            var eventDto = new AddEventDto()
+            var eventDto = new AddErpEventDto()
             {
                 MasterAccountNum = masterAccountNum,
                 ProfileNum = profileNum,
                 ProcessUuid = Data.InvoiceHeader.InvoiceUuid,
             };
-            return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksInvoiceVoid");
+            return await qboInvoiceClient.SendVoidQboInvoiceAsync(eventDto);
+            //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksInvoiceVoid");
         }
 
         #endregion
