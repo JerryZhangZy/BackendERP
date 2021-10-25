@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
+using DigitBridge.CommerceCentral.ERPEventSDK;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -155,6 +157,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion
 
+        protected QboReturnClient qboReturnClient = new QboReturnClient();
 
         #region To qbo queue 
         /// <summary>
@@ -165,24 +168,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public async Task<bool> AddQboRefundEventAsync(int masterAccountNum, int profileNum)
         {
-            var eventDto = new AddEventDto()
+            var eventDto = new AddErpEventDto()
             {
                 MasterAccountNum = masterAccountNum,
                 ProfileNum = profileNum,
                 ProcessUuid = Data.InvoiceTransaction.TransUuid,
             };
-            return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksReturn");
+            return await qboReturnClient.SendAddQboReturnAsync(eventDto);
+            //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksReturn");
         }
 
         public async Task<bool> DeleteQboRefundEventAsync(int masterAccountNum, int profileNum)
         {
-            var eventDto = new AddEventDto()
+            var eventDto = new AddErpEventDto()
             {
                 MasterAccountNum = masterAccountNum,
                 ProfileNum = profileNum,
                 ProcessUuid = Data.InvoiceTransaction.TransUuid,
             };
-            return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksReturnDelete");
+            return await qboReturnClient.SendDeleteQboReturnAsync(eventDto);
+            //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksReturnDelete");
         }
 
         #endregion
