@@ -46,6 +46,8 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
                 ProfileNum=10001
             };
             var result =await client.SendCreateInvoiceByOrderShipmentAsync(data);
+            Assert.True(client.Data != null, "succ");
+            Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
             Assert.True(result, "succ");
         }
         [Fact()]
@@ -58,6 +60,8 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
                 ProfileNum=10001
             };
             var result =await client.SendCreateInvoiceByOrderShipmentAsync(data);
+            Assert.True(client.Data != null, "succ");
+            Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
             Assert.True(result, "succ");
         }
 
@@ -73,6 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
                 ActionStatus=0
             };
             var result =await client.SendActionResultAsync(data);
+            Assert.True(client.Messages.Count > 0, "succ");
             Assert.True(!result, "succ");
         }
 
@@ -88,6 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
                 ActionStatus=0
             };
             var result =await client.SendActionResultAsync(data);
+            Assert.True(client.Messages.Count > 0, "succ");
             Assert.True(!result, "succ");
         }
 
