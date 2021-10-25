@@ -1,5 +1,7 @@
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
+using DigitBridge.CommerceCentral.ERPEventSDK;
+using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
 using DigitBridge.CommerceCentral.ERPMdl;
 using DigitBridge.QuickBooks.Integration;
 using Microsoft.Azure.WebJobs;
@@ -22,27 +24,36 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
         [FunctionName("ExportErpReturnToQbo")]
         public static async Task ExportErpReturnToQbo([QueueTrigger(QueueName.Erp_Qbo_Return_Queue)] string myQueueItem, ILogger log)
         {
-            ERPQueueMessage message = null;
+            var returnClient = new QboReturnClient();
+            var eventDto = new UpdateErpEventDto();
             try
             {
-                message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-
+                ERPQueueMessage message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
                 var payload = new QboRefundPayload()
                 {
                     MasterAccountNum = message.MasterAccountNum,
                     ProfileNum = message.ProfileNum
                 };
+                eventDto.EventUuid = message.EventUuid;
+                eventDto.MasterAccountNum = message.MasterAccountNum;
+                eventDto.ProfileNum = message.ProfileNum;
 
                 var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var service = new QboRefundService(payload, dataBaseFactory);
 
                 var success = await service.ExportByUuidAsync(message.ProcessUuid);
 
-                ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
+                eventDto.ActionStatus = success ? 0 : 1;
+                eventDto.EventMessage = service.Messages.ObjectToString();
             }
             catch (Exception e)
             {
-                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
+                eventDto.ActionStatus = 1;
+                eventDto.EventMessage = e.ObjectToString();
+            }
+            finally
+            {
+                await returnClient.SendActionResultAsync(eventDto);
             }
         }
 
@@ -55,27 +66,36 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
         [FunctionName("DeleteQboRefund")]
         public static async Task DeleteQboRefund([QueueTrigger(QueueName.Erp_Qbo_Return_Delete_Queue)] string myQueueItem, ILogger log)
         {
-            ERPQueueMessage message = null;
+            var returnClient = new QboReturnClient();
+            var eventDto = new UpdateErpEventDto();
             try
             {
-                message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-
+                ERPQueueMessage message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
                 var payload = new QboRefundPayload()
                 {
                     MasterAccountNum = message.MasterAccountNum,
                     ProfileNum = message.ProfileNum
                 };
+                eventDto.EventUuid = message.EventUuid;
+                eventDto.MasterAccountNum = message.MasterAccountNum;
+                eventDto.ProfileNum = message.ProfileNum;
 
                 var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var service = new QboRefundService(payload, dataBaseFactory);
 
                 var success = await service.DeleteQboRefundByUuidAsync(message.ProcessUuid);
 
-                ErpEventClientHelper.UpdateEventERPAsync(success, message, service.Messages.ObjectToString());
+                eventDto.ActionStatus = success ? 0 : 1;
+                eventDto.EventMessage = service.Messages.ObjectToString();
             }
             catch (Exception e)
             {
-                ErpEventClientHelper.UpdateEventERPAsync(false, message, e.ObjectToString());
+                eventDto.ActionStatus = 1;
+                eventDto.EventMessage = e.ObjectToString();
+            }
+            finally
+            {
+                await returnClient.SendActionResultAsync(eventDto);
             }
         }
 
