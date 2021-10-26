@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
 {
+    [ApiFilter(typeof(PaymentBroker))]
     public static class PaymentBroker
     {
         #region payment
