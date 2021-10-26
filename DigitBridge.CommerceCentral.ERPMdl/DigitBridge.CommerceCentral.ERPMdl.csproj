@@ -11,6 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="selectList\SelectListPayload.cs" />
+    <Compile Remove="selectList\SelectListQueryBase.cs" />
+    <Compile Remove="selectList\SelectListService.cs" />
+    <Compile Remove="selectList\so\so_customerCode.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.AzureStorage\DigitBridge.CommerceCentral.AzureStorage.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
@@ -23,6 +30,7 @@
     <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
     <Folder Include="arInquiry\" />
+    <Folder Include="selectList\so\" />
     <Folder Include="shipmentInquiry\" />
     <Folder Include="soInquiry\" />
     <Folder Include="customerInquiry\" />
