@@ -78,7 +78,7 @@ COALESCE(st.text, '') customerStatusText,
 OUTER APPLY ( 
     SELECT TOP 1 i.* FROM {AdrHelper.TableName} i WHERE ({Helper.TableAllies}.CustomerUuid = i.CustomerUuid AND i.AddressCode = 'BILL')
 ) {AdrHelper.TableAllies}
-LEFT JOIN @CustomerStatus st ON ({Helper.TableAllies}.CustomerStatus = st.num)
+LEFT JOIN @CustStatus st ON ({Helper.TableAllies}.CustomerStatus = st.num)
 ";
             return this.SQL_From;
         }
@@ -86,7 +86,7 @@ LEFT JOIN @CustomerStatus st ON ({Helper.TableAllies}.CustomerStatus = st.num)
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-            paramList.Add("@CustomerStatus".ToEnumParameter<CustomerStatus>());
+            paramList.Add("@CustStatus".ToEnumParameter<CustomerStatus>());
 
 
             return paramList.ToArray();

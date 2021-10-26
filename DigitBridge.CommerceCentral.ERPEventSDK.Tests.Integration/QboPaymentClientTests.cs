@@ -46,17 +46,19 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
                 ProfileNum=10001
             };
             var result =await client.SendAddQboPaymentAsync(data);
+            Assert.True(client.Data != null, "succ");
+            Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
             Assert.True(result, "succ");
 
-            data=new AddErpEventDto{
+            data =new AddErpEventDto{
                 MasterAccountNum=10001,
                 ProcessUuid=Guid.NewGuid().ToString(),
                 ProfileNum=10001
             };
             result =await client.SendDeleteQboPaymentAsync(data);
+            Assert.True(client.Data != null, "succ");
+            Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
             Assert.True(result, "succ");
-            //getentity = await tableUniversal.GetEntityAsync(log.UniqueId, entity.PartitionKey);
-            //Assert.True(getentity == null, "succ");
         }
         [Fact()]
         public async Task SendAddDataWithConfig_Test()
@@ -68,17 +70,19 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
                 ProfileNum=10001
             };
             var result =await client.SendAddQboPaymentAsync(data);
+            Assert.True(client.Data != null, "succ");
+            Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
             Assert.True(result, "succ");
 
-            data=new AddErpEventDto{
+            data =new AddErpEventDto{
                 MasterAccountNum=10001,
                 ProcessUuid=Guid.NewGuid().ToString(),
                 ProfileNum=10001
             };
             result =await client.SendDeleteQboPaymentAsync(data);
+            Assert.True(client.Data != null, "succ");
+            Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
             Assert.True(result, "succ");
-            //getentity = await tableUniversal.GetEntityAsync(log.UniqueId, entity.PartitionKey);
-            //Assert.True(getentity == null, "succ");
         }
 
         [Fact()]
@@ -93,6 +97,7 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
                 ActionStatus=0
             };
             var result =await client.SendActionResultAsync(data);
+            Assert.True(client.Messages.Count > 0, "succ");
             Assert.True(!result, "succ");
         }
 
@@ -108,6 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
                 ActionStatus=0
             };
             var result =await client.SendActionResultAsync(data);
+            Assert.True(client.Messages.Count > 0, "succ");
             Assert.True(!result, "succ");
         }
 

@@ -28,21 +28,46 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK
         /// <summary>
         /// (Request and Response Data) Single EventERP entity object which load by Number.
         /// </summary>
-        public JObject EventERP { get; set; }
+        public EventERPData EventERP { get; set; }
         //[JsonIgnore] public virtual bool HasEventERP => EventERP != null;
         //public bool ShouldSerializeEventERP() => HasEventERP;
 
         #endregion single Dto object
 
 
-        #region list service
-        public JArray EventERPList { get; set; }
+        //#region list service
+        //public JArray EventERPList { get; set; }
+
+        ///// <summary>
+        ///// (Response Data) List result count which load filter and paging.
+        ///// </summary>
+        //public int EventERPListCount { get; set; }
+        //#endregion list service
+    }
+
+    public class EventERPData
+    {
+        public EventERP Event_ERP { get; set; }
+    }
+
+    public class EventERP
+    {
+        public int RowNum { get; set; }
+
+        public int ErpEventType { get; set; }
 
         /// <summary>
-        /// (Response Data) List result count which load filter and paging.
+        /// default = int.max;
         /// </summary>
-        public int EventERPListCount { get; set; }
-        #endregion list service
+        public int ActionStatus { get; set; }
+
+        public DateTime ActionDateUtc { get; set; }
+
+        public string ProcessUuid { get; set; }
+
+        public string EventUuid { get; set; }
+
+        public string EventMessage { get; set; }
     }
 }
 

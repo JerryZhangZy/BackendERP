@@ -34,7 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
     { 
         protected SalesOrderData GetFakerData(int itemCount)
         {
-            SalesOrderDataTests.ItemCount = itemCount;
+            //SalesOrderDataTests.ItemCount = itemCount;
             return SalesOrderDataTests.GetFakerData(); 
         } 
 
