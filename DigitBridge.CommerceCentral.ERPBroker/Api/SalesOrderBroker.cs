@@ -7,6 +7,7 @@ using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPEventSDK;
 using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
 using DigitBridge.CommerceCentral.ERPMdl;
+using DigitBridge.Log;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,7 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPBroker
 {
+    [ApiFilter(typeof(SalesOrderBroker))]
     public static class SalesOrderBroker
     {
         [FunctionName("CreateSalesOrderByCentralOrder")]
@@ -44,6 +46,12 @@ namespace DigitBridge.CommerceCentral.ERPBroker
             {
                 eventDto.ActionStatus = 1;
                 eventDto.EventMessage = e.ObjectToString();
+                var reqInfo = new Dictionary<string, object>
+                {
+                    { "QueueFunctionName", "CreateSalesOrderByCentralOrder" },
+                    { "QueueMessage", myQueueItem }
+                };
+                LogCenter.CaptureException(e, reqInfo);
             }
             finally
             {

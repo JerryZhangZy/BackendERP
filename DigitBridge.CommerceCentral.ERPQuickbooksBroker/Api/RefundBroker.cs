@@ -8,10 +8,13 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using DigitBridge.Log;
 
 namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
 {
+    [ApiFilter(typeof(RefundBroker))]
     public static class RefundBroker
     {
         #region quick books Refund
@@ -50,6 +53,12 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
             {
                 eventDto.ActionStatus = 1;
                 eventDto.EventMessage = e.ObjectToString();
+                var reqInfo = new Dictionary<string, object>
+                {
+                    { "QueueFunctionName", "ExportErpReturnToQbo" },
+                    { "QueueMessage", myQueueItem }
+                };
+                LogCenter.CaptureException(e, reqInfo);
             }
             finally
             {
@@ -92,6 +101,12 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
             {
                 eventDto.ActionStatus = 1;
                 eventDto.EventMessage = e.ObjectToString();
+                var reqInfo = new Dictionary<string, object>
+                {
+                    { "QueueFunctionName", "DeleteQboRefund" },
+                    { "QueueMessage", myQueueItem }
+                };
+                LogCenter.CaptureException(e, reqInfo);
             }
             finally
             {

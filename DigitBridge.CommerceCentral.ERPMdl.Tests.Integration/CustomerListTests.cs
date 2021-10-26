@@ -145,43 +145,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 Assert.True(payload.CustomerListCount>0, "This is a generated tester, please report any tester bug to team leader.");
 
             }
-
-            //var qry = new CustomerQuery();
-            //var srv = new CustomerList(dataBaseFactory, new CustomerQuery());
-            //srv.LoadRequestParameter(payload);
-            //qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
-            //qry.OrderNumberFrom.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
-            //qry.OrderNumberTo.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
-            //qry.OrderStatus.MultipleFilterValueString = "11,18,86";
-
-            //var totalRecords = 0;
-            //var result = false;
-            //StringBuilder sb = new StringBuilder();
-            //try
-            //{
-            //    using (var b = new Benchmark("ExcuteJsonAsync_Test"))
-            //    {
-            //        payload.CustomerListCount = await srv.CountAsync();
-            //        result = await srv.ExcuteJsonAsync(sb);
-            //        if (result)
-            //            payload.CustomerList = sb;
-
-            //        //using (var trs = new ScopedTransaction())
-            //        //{
-            //        //}
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    //Cannot open server 'bobotestsql' requested by the login. Client with IP address '174.81.9.150' is not allowed to access the server.
-            //    //To enable access, use the Windows Azure Management Portal or run sp_set_firewall_rule on the master database to create a firewall rule
-            //    //for this IP address or address range.  It may take up to five minutes for this change to take effect.
-            //    throw;
-            //}
-
-            //var json = payload.ObjectToString();
-
-            //Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
         [Fact()]

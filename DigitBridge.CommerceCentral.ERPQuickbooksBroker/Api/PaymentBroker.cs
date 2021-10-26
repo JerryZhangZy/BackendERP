@@ -8,10 +8,13 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using DigitBridge.Log;
 
 namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
 {
+    [ApiFilter(typeof(PaymentBroker))]
     public static class PaymentBroker
     {
         #region payment
@@ -51,6 +54,12 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
             {
                 eventDto.ActionStatus = 1;
                 eventDto.EventMessage = e.ObjectToString();
+                var reqInfo = new Dictionary<string, object>
+                {
+                    { "QueueFunctionName", "ExportErpPaymentToQbo" },
+                    { "QueueMessage", myQueueItem }
+                };
+                LogCenter.CaptureException(e, reqInfo);
             }
             finally
             {
@@ -94,6 +103,12 @@ namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
             {
                 eventDto.ActionStatus = 1;
                 eventDto.EventMessage = e.ObjectToString();
+                var reqInfo = new Dictionary<string, object>
+                {
+                    { "QueueFunctionName", "DeleteQboPayment" },
+                    { "QueueMessage", myQueueItem }
+                };
+                LogCenter.CaptureException(e, reqInfo);
             }
             finally
             {
