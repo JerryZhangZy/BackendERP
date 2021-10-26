@@ -14,7 +14,7 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK
     {
         public ErpEventClient() : base(ConfigUtil.EventApi_BaseUrl, ConfigUtil.EventApi_AuthCode)
         { }
-        public ErpEventClient(string baseUrl,string authCode) :  base(baseUrl, authCode)
+        public ErpEventClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
         public EventERP Data { get; set; }
@@ -36,6 +36,14 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK
             if (ResopneData == null)
             {
                 AddError("Call event api has no resopne.");
+                return false;
+            }
+            if (ResopneData.EventERP == null)
+            {
+                //Maybe the api throw exception.
+                var exception = JsonConvert.DeserializeObject<Exception>(responseData, jsonSerializerSettings);
+                if (exception != null)
+                    AddError(exception.ObjectToString());
                 return false;
             }
             Data = ResopneData.EventERP.Event_ERP;
