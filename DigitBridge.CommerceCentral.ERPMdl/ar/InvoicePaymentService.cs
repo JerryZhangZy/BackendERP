@@ -449,21 +449,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
 
-         
+        protected QboPaymentClient qboPaymentClient = new QboPaymentClient();
+
         #region To qbo queue 
-
-        private QboPaymentClient _qboPaymentClient;
-
-        protected QboPaymentClient qboPaymentClient
-        {
-            get
-            {
-                if (_qboPaymentClient is null)
-                    _qboPaymentClient = new QboPaymentClient();
-                return _qboPaymentClient;
-            }
-        }
-
         /// <summary>
         /// convert erp invoice payment to a queue message then put it to qbo queue
         /// </summary>
@@ -502,7 +490,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPayment");
         }
 
-        public async Task<bool> DeleteQboPaymentEventAsync(int masterAccountNum, int profileNum)
+        public async Task<bool> DeleteQboRefundEventAsync(int masterAccountNum, int profileNum)
         {
             var eventDto = new AddErpEventDto()
             {

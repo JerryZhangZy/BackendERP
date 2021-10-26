@@ -157,21 +157,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion
 
-        
+        protected QboReturnClient qboReturnClient = new QboReturnClient();
+
         #region To qbo queue 
-
-        private QboReturnClient _qboReturnClient;
-
-        protected QboReturnClient qboReturnClient
-        {
-            get
-            {
-                if (_qboReturnClient is null)
-                    _qboReturnClient = new QboReturnClient();
-                return _qboReturnClient;
-            }
-        }
-
         /// <summary>
         /// convert erp invoice return to a queue message then put it to qbo queue
         /// </summary>

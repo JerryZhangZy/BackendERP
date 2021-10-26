@@ -21,7 +21,7 @@
 
     "SentryEnable": true, //Enable Sentrylog
     "SeriEnable": true, //Enable Serilog
-    "SentryDsn": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",
+    "SentryDsn": "https://c6013aba95894c40bd149d5c03d5e7d7@o852268.ingest.sentry.io/6035319",
 
     "ERPQuickBooksInvoiceQueueName": "erp-quickbooks-invoice-queue",
     "ERPQuickBooksInvoiceVoidQueueName": "erp-quickbooks-invoice-void-queue",

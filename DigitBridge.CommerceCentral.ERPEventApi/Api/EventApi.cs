@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.EventERPApi
 {
+    [ERPEventApi.ApiFilter(typeof(EventApi))]
     public static class EventApi
     {
         [FunctionName(nameof(AddQuickBooksInvoiceEvent))]
@@ -208,7 +210,7 @@ namespace DigitBridge.CommerceCentral.EventERPApi
             }
             return new JsonNetResponse<EventERPPayload>(payload);
         }
-        
+
         [FunctionName(nameof(AddQuickBooksPaymentDeleteEvent))]
         [OpenApiOperation(operationId: "AddQuickBooksPaymentDeleteEvent", tags: new[] { "EventERPs" })]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -249,23 +251,30 @@ namespace DigitBridge.CommerceCentral.EventERPApi
         public static async Task<JsonNetResponse<EventERPPayload>> UpdateEventERP(
             [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "erpevents")] HttpRequest req)
         {
-            var eventdata = await req.GetBodyObjectAsync<UpdateEventDto>();
-            var payload = new EventERPPayload()
+            try
             {
-                MasterAccountNum=eventdata.MasterAccountNum,
-                ProfileNum=eventdata.ProfileNum,
-                EventERP = eventdata.ToEventERPDataDto()
-            };
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new EventERPService(dbFactory,MySingletonAppSetting.AzureWebJobsStorage);
-            if (await svc.UpdateAsync(payload))
-                payload.EventERP = svc.ToDto();
-            else
-            {
-                payload.Messages = svc.Messages;
-                payload.Success = false;
+                var eventdata = await req.GetBodyObjectAsync<UpdateEventDto>();
+                var payload = new EventERPPayload()
+                {
+                    MasterAccountNum = eventdata.MasterAccountNum,
+                    ProfileNum = eventdata.ProfileNum,
+                    EventERP = eventdata.ToEventERPDataDto()
+                };
+                var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+                var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
+                if (await svc.UpdateAsync(payload))
+                    payload.EventERP = svc.ToDto();
+                else
+                {
+                    payload.Messages = svc.Messages;
+                    payload.Success = false;
+                }
+                return new JsonNetResponse<EventERPPayload>(payload);
             }
-            return new JsonNetResponse<EventERPPayload>(payload);
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         /// <summary>

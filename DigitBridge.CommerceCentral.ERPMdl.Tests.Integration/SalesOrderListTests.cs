@@ -23,6 +23,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
+using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
@@ -57,36 +58,64 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public void Dispose()
         {
         }
+        
+        public SalesOrderData Save_Test(string prefix = "")
+        {
+            var data = SalesOrderDataTests.GetFakerData();
 
-        private JObject GetFilters()
+            data.SalesOrderHeader.MasterAccountNum = 10001;
+            data.SalesOrderHeader.ProfileNum = 10001;
+            data.SalesOrderHeader.OrderNumber = $"{prefix}{data.SalesOrderHeader.OrderNumber}";
+            data.SalesOrderHeader.CustomerCode = $"{prefix}{data.SalesOrderHeader.CustomerCode}";
+            data.SalesOrderHeader.CustomerName = $"{prefix}{data.SalesOrderHeader.CustomerName}";
+            
+            data.SalesOrderHeaderInfo.ShippingCarrier = $"{prefix}{data.SalesOrderHeaderInfo.ShippingCarrier}";
+            data.SalesOrderHeaderInfo.ChannelOrderID = $"{prefix}{data.SalesOrderHeaderInfo.ChannelOrderID}";
+            data.SalesOrderHeaderInfo.WarehouseCode = $"{prefix}{data.SalesOrderHeaderInfo.WarehouseCode}";
+            data.SalesOrderHeaderInfo.RefNum = $"{prefix}{data.SalesOrderHeaderInfo.RefNum}";
+            data.SalesOrderHeaderInfo.CustomerPoNum = $"{prefix}{data.SalesOrderHeaderInfo.CustomerPoNum}";
+            data.SalesOrderHeaderInfo.ShipToName = $"{prefix}{data.SalesOrderHeaderInfo.ShipToName}";
+            data.SalesOrderHeaderInfo.ShipToState = $"{prefix}{data.SalesOrderHeaderInfo.ShipToState}";
+            data.SalesOrderHeaderInfo.ShipToPostalCode = $"{prefix}{data.SalesOrderHeaderInfo.ShipToPostalCode}";
+
+            data.SetDataBaseFactory(dataBaseFactory);
+            data.Save();
+            var dataGet = new SalesOrderData(dataBaseFactory);
+            dataGet.GetById(data.UniqueId);
+            return dataGet;
+        }
+
+        private JObject GetFilters(SalesOrderData data)
         {
             return new JObject()
             {
-                { "salesOrderUuid","" },
-                { "orderNumberFrom","" },
-                { "orderNumberTo","" },
-                { "orderDateFrom","" },
-                { "orderDateTo","" },
-                { "shipDateFrom","" },
-                { "shipDateTo","" },
-                { "orderType","" },
-                { "orderStatus","" },
-                { "customerCode","" },
-                { "customerName","" },
-                { "shippingCarrier","" },
-                { "distributionCenterNum","" },
-                { "centralOrderNum","" },
-                { "channelNum","" },
-                { "channelAccountNum","" },
-                { "channelOrderID","" },
-                { "warehouseCode","" },
-                { "refNum","" },
-                { "customerPoNum","" },
-                { "shipToName","" },
-                { "shipToState","" },
-                { "shipToPostalCode","" },
+                { "salesOrderUuid",data.SalesOrderHeader.SalesOrderUuid },
+                { "orderNumberFrom",data.SalesOrderHeader.OrderNumber },
+                { "orderNumberTo",data.SalesOrderHeader.OrderNumber },
+                { "orderDateFrom",data.SalesOrderHeader.OrderDate},
+                { "orderDateTo",data.SalesOrderHeader.OrderDate },
+                { "shipDateFrom",data.SalesOrderHeader.ShipDate},
+                { "shipDateTo",data.SalesOrderHeader.ShipDate},
+                { "orderType",data.SalesOrderHeader.OrderType},
+                { "orderStatus",data.SalesOrderHeader.OrderStatus},
+                { "customerCode",data.SalesOrderHeader.CustomerCode},
+                { "customerName",data.SalesOrderHeader.CustomerName},
+
+                { "shippingCarrier",data.SalesOrderHeaderInfo.ShippingCarrier },
+                { "distributionCenterNum",data.SalesOrderHeaderInfo.DistributionCenterNum },
+                { "centralOrderNum",data.SalesOrderHeaderInfo.CentralOrderNum },
+                { "channelNum",data.SalesOrderHeaderInfo.ChannelNum },
+                { "channelAccountNum",data.SalesOrderHeaderInfo.ChannelAccountNum },
+                { "channelOrderID",data.SalesOrderHeaderInfo.ChannelOrderID },
+                { "warehouseCode",data.SalesOrderHeaderInfo.WarehouseCode},
+                { "refNum",data.SalesOrderHeaderInfo.RefNum },
+                { "customerPoNum",data.SalesOrderHeaderInfo.CustomerPoNum },
+                { "shipToName",data.SalesOrderHeaderInfo.ShipToName },
+                { "shipToState",data.SalesOrderHeaderInfo.ShipToState },
+                { "shipToPostalCode",data.SalesOrderHeaderInfo.ShipToPostalCode }
             };
         }
+
 
         #region sync methods
 
@@ -121,46 +150,62 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task ExcuteJsonAsync_Test()
         {
+                
             var payload = new SalesOrderPayload();
             payload.LoadAll = true;
-            payload.Filter = GetFilters();
-
-            var qry = new SalesOrderQuery();
-            var srv = new SalesOrderList(dataBaseFactory, qry);
-            srv.LoadRequestParameter(payload);
-            //qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
-            //qry.OrderNumberFrom.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
-            //qry.OrderNumberTo.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
-            //qry.OrderStatus.MultipleFilterValueString = "11,18,86";
-
-            var totalRecords = 0;
-            var result = false;
-            StringBuilder sb = new StringBuilder();
-            try
+            payload.MasterAccountNum = 10001;
+            payload.ProfileNum = 10001;
+            var data = Save_Test("JSON_ASYNC");
+            var filters = GetFilters(data);
+            var srv = new SalesOrderList(dataBaseFactory, new SalesOrderQuery());
+            foreach (var obj in filters)
             {
-                using (var b = new Benchmark("ExcuteJsonAsync_Test"))
-                {
-                    payload.SalesOrderListCount = await srv.CountAsync();
-                    result = await srv.ExcuteJsonAsync(sb);
-                    if (result)
-                        payload.SalesOrderList = sb;
+                payload.Filter = new JObject() { { obj.Key, obj.Value } };
+                await srv.GetSalesOrderListAsync(payload);
 
-                    //using (var trs = new ScopedTransaction())
-                    //{
-                    //}
-                }
-            }
-            catch (Exception ex)
-            {
-                //Cannot open server 'bobotestsql' requested by the login. Client with IP address '174.81.9.150' is not allowed to access the server.
-                //To enable access, use the Windows Azure Management Portal or run sp_set_firewall_rule on the master database to create a firewall rule
-                //for this IP address or address range.  It may take up to five minutes for this change to take effect.
-                throw;
+                System.Diagnostics.Debug.WriteLine($"filter:{obj.Key},{obj.Value.ToString()}.Success:{payload.Success},List:{payload.SalesOrderList}");
+                Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+                Assert.True(payload.SalesOrderList != null && payload.SalesOrderList.Length > 0, obj.Key);
+                Assert.True(payload.SalesOrderListCount > 0, "This is a generated tester, please report any tester bug to team leader.");
+
             }
 
-            var json = payload.ObjectToString();
+            // var qry = new SalesOrderQuery();
+            // var srv = new SalesOrderList(dataBaseFactory, qry);
+            // srv.LoadRequestParameter(payload);
+            // //qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
+            // //qry.OrderNumberFrom.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
+            // //qry.OrderNumberTo.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
+            // //qry.OrderStatus.MultipleFilterValueString = "11,18,86";
+            //
+            // var totalRecords = 0;
+            // var result = false;
+            // StringBuilder sb = new StringBuilder();
+            // try
+            // {
+            //     using (var b = new Benchmark("ExcuteJsonAsync_Test"))
+            //     {
+            //         payload.SalesOrderListCount = await srv.CountAsync();
+            //         result = await srv.ExcuteJsonAsync(sb);
+            //         if (result)
+            //             payload.SalesOrderList = sb;
+            //
+            //         //using (var trs = new ScopedTransaction())
+            //         //{
+            //         //}
+            //     }
+            // }
+            // catch (Exception ex)
+            // {
+            //     //Cannot open server 'bobotestsql' requested by the login. Client with IP address '174.81.9.150' is not allowed to access the server.
+            //     //To enable access, use the Windows Azure Management Portal or run sp_set_firewall_rule on the master database to create a firewall rule
+            //     //for this IP address or address range.  It may take up to five minutes for this change to take effect.
+            //     throw;
+            // }
 
-            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+            // var json = payload.ObjectToString();
+            //
+            // Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
         [Fact()]
@@ -169,7 +214,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var payload = new SalesOrderPayload();
             payload.LoadAll = true;
-            payload.Filter = GetFilters();
+            var data = Save_Test();
+            var filters = GetFilters(data);
+            payload.Filter = filters;
 
             using (var b = new Benchmark("GetSalesOrderListAsync_Test"))
             {

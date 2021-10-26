@@ -47,10 +47,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _QboDocNumber = new QueryFilter<string>("QboDocNumber", "QboDocNumber", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> QboDocNumber => _QboDocNumber;
 
-        protected QueryFilter<string> _InvoiceNumberFrom = new QueryFilter<string>("InvoiceNumberFrom", "InvoiceNumber", InvoiceHeaderHelper.TableAllies, FilterBy.ge, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _InvoiceNumberFrom = new QueryFilter<string>("InvoiceNumberFrom", "InvoiceNumber", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> InvoiceNumberFrom => _InvoiceNumberFrom;
 
-        protected QueryFilter<string> _InvoiceNumberTo = new QueryFilter<string>("InvoiceNumberTo", "InvoiceNumber", InvoiceHeaderHelper.TableAllies, FilterBy.le, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _InvoiceNumberTo = new QueryFilter<string>("InvoiceNumberTo", "InvoiceNumber", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> InvoiceNumberTo => _InvoiceNumberTo; 
 
         protected QueryFilter<DateTime> _DueDateFrom = new QueryFilter<DateTime>("DueDateFrom", "DueDate", InvoiceHeaderHelper.TableAllies, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);

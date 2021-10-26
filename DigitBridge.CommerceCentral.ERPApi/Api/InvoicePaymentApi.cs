@@ -104,7 +104,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             //Directly return without waiting this result. 
             if (payload.Success)
-                srv.DeleteQboPaymentEventAsync(payload.MasterAccountNum, payload.ProfileNum);
+                srv.DeleteQboRefundEventAsync(payload.MasterAccountNum, payload.ProfileNum);
 
             return new JsonNetResponse<InvoicePaymentPayload>(payload);
         }

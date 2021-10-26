@@ -21,8 +21,8 @@
     "DefaultCacheExpireSlidingMins": "2",
 
     "SentryEnable": true, //Enable Sentrylog
-    "SeriEnable": true, //Enable Serilog
-    "SentryDsn": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",
+    //"SeriEnable": true, //Enable Serilog
+    "SentryDsn": "https://66fea7b91f7b4673bb96adae2cd9a653@o852268.ingest.sentry.io/6035312",
 
     "ERPQuickBooksInvoiceQueueName": "erp-quickbooks-invoice-queue",
     "ERPQuickBooksInvoiceVoidQueueName": "erp-quickbooks-invoice-void-queue",
