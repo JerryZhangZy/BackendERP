@@ -24,8 +24,9 @@
     "DefaultCacheExpireSlidingMins": "2",
 
     "SentryEnable": true, //Enable Sentrylog
-    "SeriEnable": true, //Enable Serilog
-    "SentryDsn": "https://52ebd2aa1c5e4729a9d679972c1a64a0@o852268.ingest.sentry.io/5885416",
+    //"SeriEnable": true, //Enable Serilog
+    "SentryDsn": "https://415c7aadaa804f6e98be04a804a26785@o852268.ingest.sentry.io/6035323",
+
     "QuickBooks_CryptKey": "ABCDEFGH",
     "QuickBooks_RedirectUrl": "http://localhost:7071/api/QboUserCredential/TokenReceiver",
     "QuickBooks_TokenReceiverReturnUrl": "http://localhost:7071/api/QboUserCredential/TokenReceiver",
