@@ -101,7 +101,7 @@ CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ShippingCarrier] ON [dbo].[Sa
 )  
 GO
 
-CREATE NONCLUSTERED INDEX [FK_SalesOrderHeaderInfo_ChannelNum_ChannelAccountNum_ChannelOrderID] ON [dbo].[SalesOrderHeaderInfo]
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ChannelNum_ChannelAccountNum_ChannelOrderID] ON [dbo].[SalesOrderHeaderInfo]
 (
 	[ChannelNum] ASC,
 	[ChannelAccountNum] ASC,
@@ -109,7 +109,7 @@ CREATE NONCLUSTERED INDEX [FK_SalesOrderHeaderInfo_ChannelNum_ChannelAccountNum_
 ) 
 GO
 
-CREATE NONCLUSTERED INDEX [FK_SalesOrderHeaderInfo_WarehouseCode_RefNum_CustomerPoNum] ON [dbo].[SalesOrderHeaderInfo]
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_WarehouseCode_RefNum_CustomerPoNum] ON [dbo].[SalesOrderHeaderInfo]
 (
 	[WarehouseCode] ASC,
 	[RefNum] ASC,
@@ -117,7 +117,7 @@ CREATE NONCLUSTERED INDEX [FK_SalesOrderHeaderInfo_WarehouseCode_RefNum_Customer
 ) 
 GO
 
-CREATE NONCLUSTERED INDEX [FK_SalesOrderHeaderInfo_ShipToName_ShipToState_ShipToPostalCode] ON [dbo].[SalesOrderHeaderInfo]
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ShipToName_ShipToState_ShipToPostalCode] ON [dbo].[SalesOrderHeaderInfo]
 (
 	[ShipToName] ASC,
 	[ShipToState] ASC,

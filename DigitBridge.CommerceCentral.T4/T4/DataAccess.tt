@@ -79,7 +79,7 @@
 //SettingForQuickBooksSetting
 //SettingForEventERP
 #>
-<#@ include file="SettingForInvoiceTransaction.ttinclude" #>
+<#@ include file="SettingForSalesOrder.ttinclude" #>
 <#
     var dtoSuf = "";
     
