@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region override methods
-
+        /*
         protected override string GetSQL_select()
         {
             this.SQL_Select = $@"
@@ -86,6 +86,7 @@ FROM Inventory i WHERE {Helper.TableAllies}.ProductUuid=i.ProductUuid FOR JSON P
 ";
             return this.SQL_Select;
         }
+        */
         /* backup style2
         protected override string GetSQL_select()
         {
@@ -144,7 +145,6 @@ FROM Inventory i WHERE {Helper.TableAllies}.ProductUuid=i.ProductUuid FOR JSON P
         }        
         */
 
-        /* style1
         protected override string GetSQL_select()
         {
             this.SQL_Select = $@"
@@ -198,7 +198,7 @@ SELECT
 ";
             return this.SQL_Select;
         }
-        */
+
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
@@ -246,7 +246,7 @@ LEFT JOIN {InvHelper.TableName} {InvHelper.TableAllies} ON ({Helper.TableAllies}
             return payload;
         }
 
-        public virtual async Task<InventoryPayload> GetIProductListAsync(InventoryPayload payload)
+        public virtual async Task<InventoryPayload> GetProductListAsync(InventoryPayload payload)
         {
             if (payload == null)
                 payload = new InventoryPayload();

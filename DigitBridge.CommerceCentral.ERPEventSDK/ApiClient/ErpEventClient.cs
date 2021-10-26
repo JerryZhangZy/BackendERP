@@ -17,25 +17,17 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK
         public ErpEventClient(string baseUrl,string authCode) :  base(baseUrl, authCode)
         { }
 
+        public EventERP Data { get; set; }
+
         protected async Task<bool> AddEventERPAsync(AddErpEventDto eventDto, string functionUrl)
         {
 
-            var success = await PostAsync(eventDto, functionUrl);
-            if (!success)
-            {
-                //todo write this.Messages to log or do something. 
-            }
-            return success;
+            return await PostAsync(eventDto, functionUrl);
         }
 
         public async Task<bool> SendActionResultAsync(UpdateErpEventDto eventDto)
         {
-            var success = await PatchAsync(eventDto);
-            if (!success)
-            {
-                //todo write this.Messages to log or do something. 
-            }
-            return success;
+            return await PatchAsync(eventDto);
         }
 
 
@@ -46,6 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK
                 AddError("Call event api has no resopne.");
                 return false;
             }
+            Data = ResopneData.EventERP.Event_ERP;
 
             var success = ResopneData.Success;
             if (!success)
