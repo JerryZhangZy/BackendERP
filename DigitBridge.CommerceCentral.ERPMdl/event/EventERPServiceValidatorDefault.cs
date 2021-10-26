@@ -93,21 +93,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.Event_ERP.ProfileNum = pl.ProfileNum;
                 dto.Event_ERP.DatabaseNum = pl.DatabaseNum;
             }
-            else
-            {
-                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    if (!string.IsNullOrEmpty(number))
-                        isValid = EventERPHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
-                    else if(!dto.Event_ERP.RowNum.IsZero())
-                        isValid = EventERPHelper.ExistRowNum(dto.Event_ERP.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
-                    else if (dto.Event_ERP.HasEventUuid)
-                        isValid = EventERPHelper.ExistId(dto.Event_ERP.EventUuid, pl.MasterAccountNum, pl.ProfileNum);
-                }
-                if (!isValid)
-                    AddError($"Data not found.");
-            }
+            // else
+            // {
+            //     //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+            //     using (var tx = new ScopedTransaction(dbFactory))
+            //     {
+            //         if (!string.IsNullOrEmpty(number))
+            //             isValid = EventERPHelper.ExistNumber(number, pl.MasterAccountNum, pl.ProfileNum);
+            //         else if(!dto.Event_ERP.RowNum.IsZero())
+            //             isValid = EventERPHelper.ExistRowNum(dto.Event_ERP.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+            //         else if (dto.Event_ERP.HasEventUuid)
+            //             isValid = EventERPHelper.ExistId(dto.Event_ERP.EventUuid, pl.MasterAccountNum, pl.ProfileNum);
+            //     }
+            //     if (!isValid)
+            //         AddError($"Data not found.");
+            // }
             IsValid = isValid;
             return isValid;
         }
@@ -125,21 +125,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.Event_ERP.ProfileNum = pl.ProfileNum;
                 dto.Event_ERP.DatabaseNum = pl.DatabaseNum;
             }
-            else
-            {
-                //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
-                using (var tx = new ScopedTransaction(dbFactory))
-                {
-                    if (!string.IsNullOrEmpty(number))
-                        isValid = await EventERPHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
-                    else if(!dto.Event_ERP.RowNum.IsZero())
-                        isValid = await EventERPHelper.ExistRowNumAsync(dto.Event_ERP.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
-                    else if (dto.Event_ERP.HasEventUuid)
-                        isValid = await EventERPHelper.ExistIdAsync(dto.Event_ERP.EventUuid, pl.MasterAccountNum, pl.ProfileNum);
-                }
-                if (!isValid)
-                    AddError($"Data not found.");
-            }
+            // else
+            // {
+            //     //For other mode is,check number is belong to MasterAccountNum, ProfileNum and DatabaseNum from payload
+            //     using (var tx = new ScopedTransaction(dbFactory))
+            //     {
+            //         if (!string.IsNullOrEmpty(number))
+            //             isValid = await EventERPHelper.ExistNumberAsync(number, pl.MasterAccountNum, pl.ProfileNum);
+            //         else if(!dto.Event_ERP.RowNum.IsZero())
+            //             isValid = await EventERPHelper.ExistRowNumAsync(dto.Event_ERP.RowNum.ToLong(), pl.MasterAccountNum, pl.ProfileNum);
+            //         else if (dto.Event_ERP.HasEventUuid)
+            //             isValid = await EventERPHelper.ExistIdAsync(dto.Event_ERP.EventUuid, pl.MasterAccountNum, pl.ProfileNum);
+            //     }
+            //     if (!isValid)
+            //         AddError($"Data not found.");
+            // }
             IsValid = isValid;
             return isValid;
         }
