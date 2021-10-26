@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPQuickbooksBroker
 {
+    [ApiFilter(typeof(RefundBroker))]
     public static class RefundBroker
     {
         #region quick books Refund

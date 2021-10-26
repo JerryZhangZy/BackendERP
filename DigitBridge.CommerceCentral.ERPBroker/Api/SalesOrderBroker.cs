@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPBroker
 {
+    [ApiFilter(typeof(SalesOrderBroker))]
     public static class SalesOrderBroker
     {
         [FunctionName("CreateSalesOrderByCentralOrder")]

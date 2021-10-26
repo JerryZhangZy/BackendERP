@@ -16,6 +16,7 @@
     <None Remove="local - Copy.settings.json" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DigitBridge.Log" Version="3.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="0.7.1-preview" />
@@ -27,7 +28,6 @@
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ApiCommon\DigitBridge.CommerceCentral.ApiCommon.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPDb\DigitBridge.CommerceCentral.ERPDb.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPMdl\DigitBridge.CommerceCentral.ERPMdl.csproj" />
-    <ProjectReference Include="..\DigitBridge.Log\DigitBridge.Log.csproj" />
     <ProjectReference Include="..\DigitBridge.QuickBooks.Integration\DigitBridge.QuickBooks.Integration.csproj" />
   </ItemGroup>
   <ItemGroup>

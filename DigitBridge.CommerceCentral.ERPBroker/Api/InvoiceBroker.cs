@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPBroker
 {
+    [ApiFilter(typeof(InvoiceBroker))]
     public static class InvoiceBroker
     {
         [FunctionName("CreateInvoiceByOrderShipment")]
