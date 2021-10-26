@@ -133,6 +133,10 @@ $tf/
 # Guidance Automation Toolkit
 *.gpState
 
+# Mac temp Folders
+*/C:/*
+*/c:/*
+
 # ReSharper is a .NET coding add-in
 _ReSharper*/
 *.[Rr]e[Ss]harper
