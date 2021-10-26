@@ -1312,7 +1312,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             {
                 using (var cmd = CreateCommand(_sharedConnection, commandType, sql, args))
                 {
-                    IDataReader reader;
+                    IDataReader reader = null;
                     var pd = PocoData.ForType(typeof(T), _defaultMapper);
 
                     try
@@ -1323,6 +1323,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     {
                         if (OnException(e))
                             throw;
+                        try
+                        {
+                            cmd?.Dispose();
+                            reader?.Dispose();
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
                         return;
                     }
 
@@ -1341,12 +1350,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
                                 if (readerAsync != null)
                                 {
                                     if (!await readerAsync.ReadAsync())
-                                        return;
+                                        break;
                                 }
                                 else
                                 {
                                     if (!reader.Read())
-                                        return;
+                                        break;
                                 }
 
                                 poco = factory(reader);
@@ -1354,6 +1363,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                             }
                             catch (Exception e)
                             {
+                                CloseSharedConnection();
                                 if (OnException(e))
                                     throw;
                                 return;

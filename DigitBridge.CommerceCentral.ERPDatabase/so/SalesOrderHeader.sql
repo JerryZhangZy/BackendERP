@@ -118,7 +118,7 @@ CREATE NONCLUSTERED INDEX [IX_SalesOrderHeader_OrderType_OrderStatus] ON [dbo].[
 )  
 GO
 
-CREATE NONCLUSTERED INDEX [FK_SalesOrderHeader_CustomerUuid_CustomerCode] ON [dbo].[SalesOrderHeader]
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeader_CustomerUuid_CustomerCode] ON [dbo].[SalesOrderHeader]
 (
 	[CustomerUuid] ASC,
 	[CustomerCode] ASC
