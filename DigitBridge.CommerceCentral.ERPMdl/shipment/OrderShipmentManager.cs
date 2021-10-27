@@ -345,7 +345,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             //set InvoiceNumber back to shipment.
-            shipmentData.OrderShipmentHeader.InvoiceNumber = invoiceService.Data.UniqueId;
+            shipmentData.OrderShipmentHeader.InvoiceNumber = invoiceService.Data.InvoiceHeader.InvoiceNumber;
             return true;
         }
 
