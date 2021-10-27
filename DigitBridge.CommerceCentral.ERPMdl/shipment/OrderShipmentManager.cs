@@ -18,6 +18,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -225,62 +226,83 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion Messages
 
         #region Create shipment
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="centralOrderUuid"></param>
-        /// <returns>Success Create Sales Order, SalesOrder Numbers</returns>
-        public async Task<(bool, string)> CreateShipmentFromPayloadAsync(OrderShipmentPayload payload)
+
+        public async Task<bool> CreateShipmentAsync(OrderShipmentPayload payload)
         {
+            if (payload is null || !payload.HasOrderShipment)
+            {
+                return false;
+            }
+
+            payload.OrderShipment.OrderShipmentHeader.ShipmentStatus = (int)ShipmentStatus.Default;
             var service = new OrderShipmentService(dbFactory);
             var success = await service.AddAsync(payload);
             if (!success)
+            {
                 this.Messages = this.Messages.Concat(service.Messages).ToList();
-            return (success, service.Data.UniqueId);
+                return false;
+            }
+            var orderShipmentData = service.Data;
+
+            // create invoice and set invoicenumber back to shipmentdata.
+            success = await CreateInvoiceFromShipmentAsync(service.Data);
+            if (!success)
+                return false;
+
+            //save shipmentdata to db.
+            orderShipmentData.OrderShipmentHeader.ShipmentStatus = (int)ShipmentStatus.Pending;
+            success = await service.SaveDataAsync();
+
+            if (success)
+            {
+                payload.OrderShipment = service.ToDto(orderShipmentData);
+            }
+
+            return success;
         }
+
+
 
         /// <summary>
         /// Load OrderShipment and SalesOrder, create Invoice for each OrderShipment.
         /// </summary>
         /// <param name="centralOrderUuid"></param>
         /// <returns>Success Create Invoice, Invoice UUID</returns>
-        public async Task<(bool, string)> CreateInvoiceByOrderShipmentIdAsync(string orderShimentUuid)
+        public async Task<bool> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData)
         {
-            //Get OrderShipment by uuid
-            var service = new OrderShipmentService(dbFactory);
-            var success = await service.GetDataByIdAsync(orderShimentUuid);
-            if (!success)
-            {
-                this.Messages = this.Messages.Concat(service.Messages).ToList();
-                return (success, null);
-            }
-
-            var shipmentData = service.Data;
-
+            ////Get OrderShipment by uuid
+            //var service = new OrderShipmentService(dbFactory);
+            //var success = await service.GetDataByIdAsync(orderShimentUuid);
+            //if (!success)
+            //{
+            //    this.Messages = this.Messages.Concat(service.Messages).ToList();
+            //    return (success, null);
+            //} 
+            //var shipmentData = service.Data;
+            var orderShimentUuid = shipmentData.UniqueId;
             var salesOrderUuid = await GetSalesOrderUuid(shipmentData);
             if (string.IsNullOrEmpty(salesOrderUuid))
             {
                 AddError($"SalesOrder not found for orderShimentUuid:{orderShimentUuid}.");
-                return (false, null);
+                return false;
             }
 
             if (await ExistSalesOrderInInvoiceAsync(salesOrderUuid))
             {
                 AddError($"SalesOrderUuid {salesOrderUuid} has been transferred to invoice.");
-                return (false, null);
+                return false;
             }
 
             var salesorderService = new SalesOrderService(dbFactory);
-            success = await salesorderService.GetDataByIdAsync(salesOrderUuid);
+            var success = await salesorderService.GetDataByIdAsync(salesOrderUuid);
             if (!success)
             {
-                this.Messages = this.Messages.Concat(service.Messages).ToList();
-                return (success, null);
+                this.Messages = this.Messages.Concat(salesorderService.Messages).ToList();
+                return false;
             }
-            var salesOrderData = salesorderService.Data;
 
             //Create Invoice 
-            return await CreateInvoiceAsync(shipmentData, salesOrderData);
+            return await CreateInvoiceAsync(shipmentData, salesorderService.Data);
         }
 
         protected async Task<string> GetSalesOrderUuid(OrderShipmentData shipmentData)
@@ -300,13 +322,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return salesOrderUuid;
         }
+
         /// <summary>
         /// Create one invoice from one orderShipment and one salesOrder.
         /// </summary>
         /// <param name="coData"></param>
         /// <param name="dcAssigmentData"></param>
         /// <returns>Success Create Invoice</returns>
-        public async Task<(bool, string)> CreateInvoiceAsync(OrderShipmentData shipmentData, SalesOrderData salesOrderData)
+        protected async Task<bool> CreateInvoiceAsync(OrderShipmentData shipmentData, SalesOrderData salesOrderData)
         {
             InvoiceTransfer invoiceTransfer = new InvoiceTransfer(this, "");
             var invoiceData = invoiceTransfer.FromOrderShipmentAndSalesOrder(shipmentData, salesOrderData);
@@ -318,20 +341,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!success)
             {
                 this.Messages = this.Messages.Concat(invoiceService.Messages).ToList();
+                return false;
             }
-            return (success, invoiceService.Data.UniqueId);
-        }
-        /// <summary>
-        /// Load OrderShipment and SalesOrder, create Invoice for each OrderShipment.
-        /// </summary>
-        /// <param name="centralOrderUuid"></param>
-        /// <returns>Success Create Invoice, Invoice UUID</returns>
-        public async Task<(bool, string)> CreateInvoiceFromSaleOrdersAsync(string orderShimentUuid)
-        {
-            string invoiceUuid = "";
 
-            return (true, invoiceUuid);
+            //set InvoiceNumber back to shipment.
+            shipmentData.OrderShipmentHeader.InvoiceNumber = invoiceService.Data.UniqueId;
+            return true;
         }
+
         /// <summary>
         /// Get SalesOrderData by OrderDCAssignmentNum
         /// </summary>
@@ -343,6 +360,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             using (var trs = new ScopedTransaction(dbFactory))
                 return await SalesOrderHelper.GetSalesOrderUuidAsync(orderDCAssignmentNum);
         }
+
         /// <summary>
         /// Check SalesOrder is already exist in Invoice
         /// </summary>

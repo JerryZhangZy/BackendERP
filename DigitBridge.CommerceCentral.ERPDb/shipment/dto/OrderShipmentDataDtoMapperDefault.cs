@@ -293,18 +293,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		}
 
 
-        #endregion read from dto to data
+		#endregion read from dto to data
 
-        #region write to dto from data
+		#region write to dto from data
 
-        public virtual OrderShipmentDataDto WriteDto(OrderShipmentData data, OrderShipmentDataDto dto)
-        {
-            if (data is null)
-                return null;
-            if (dto is null)
-                dto = new OrderShipmentDataDto();
+		public virtual OrderShipmentDataDto WriteDto(OrderShipmentData data, OrderShipmentDataDto dto = null)
+		{
+			if (data is null)
+				return null;
+			if (dto is null)
+				dto = new OrderShipmentDataDto();
 
-            data.CheckIntegrity();
+			data.CheckIntegrity();
 
 			if (data.OrderShipmentHeader != null)
 			{
@@ -321,8 +321,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				dto.OrderShipmentPackage = new List<OrderShipmentPackageDto>();
 				WriteOrderShipmentPackage(data.OrderShipmentPackage, dto.OrderShipmentPackage);
 			}
-            return dto;
-        }
+			return dto;
+		}
 
 		protected virtual void WriteOrderShipmentHeader(OrderShipmentHeader data, OrderShipmentHeaderDto dto)
 		{
