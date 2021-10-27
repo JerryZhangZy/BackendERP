@@ -35,13 +35,16 @@ namespace DigitBridge.CommerceCentral.YoPoco.Tests.Integration
         public async Task GetTableFiles_Test()
         {
             var folder =
-                "C:\\DigitBridge.CommerceCentral.ERP\\centralerp\\DigitBridge.CommerceCentral.ERPDatabase\\channelOrder";
-            var files = "OrderHeader,OrderLine";
-            var processName = "ChannelOrder";
+                "D:\\ERPNEWWork\\DigitBridge.CommerceCentral.ERPDatabase\\ap";
+            var files = "ApInvoiceHeader,ApInvoiceHeaderInfo,ApInvoiceHeaderAttributes,ApInvoiceItems";
+            var processName = "ApInvoice";
             var structureName = $"{processName}Data";
             var structure = new StructureInfo(structureName,
-                    new StructureTable() { Name = "OrderHeader", MainTable = true, OneToOne = true },
-                    new StructureTable() { Name = "OrderLine", ParentName = "OrderHeader", DetailTable = true, OneToOne = false, LoadByColumn = "CentralOrderNum" }
+                  new StructureTable() { Name = "ApInvoiceHeader", AlliesName = "apih", MainTable = true, OneToOne = true },
+            new StructureTable() { Name = "ApInvoiceHeaderInfo", AlliesName = "apihi", ParentName = "ApInvoiceHeader", OneToOne = true, LoadByColumn = "ApInvoiceUuid" },
+            new StructureTable() { Name = "ApInvoiceHeaderAttributes", AlliesName = "apiha", ParentName = "ApInvoiceHeader", OneToOne = true, LoadByColumn = "ApInvoiceUuid" },
+            new StructureTable() { Name = "ApInvoiceItems", AlliesName = "apii", ParentName = "ApInvoiceHeader", DetailTable = true, OneToOne = false, LoadByColumn = "ApInvoiceUuid"} 
+             
                 );
 
             var parser = new SQLFileParser(folder, files, structure);
