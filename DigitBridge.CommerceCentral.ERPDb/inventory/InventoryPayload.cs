@@ -96,6 +96,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public int InventoryListCount { get; set; }
         [JsonIgnore] public virtual bool HasInventoryListCount => InventoryListCount > 0;
         public bool ShouldSerializeInventoryListCount() => HasInventoryListCount;
+        
+        public int SyncInventoryAvQtyCount { get; set; }
+        [JsonIgnore] public virtual bool HasSyncInventoryAvQtyCount => SyncInventoryAvQtyCount > 0;
+        public bool ShouldSerializeSyncInventoryAvQtyCount() => HasSyncInventoryAvQtyCount;
 
         /// <summary>
         /// (Response Data) List result which load filter and paging.

@@ -24,11 +24,15 @@ namespace DigitBridge.CommerceCentral.EventERPApi
     {
         [FunctionName(nameof(AddQuickBooksInvoiceEvent))]
         [OpenApiOperation(operationId: "AddQuickBooksInvoiceEvent", tags: new[] { "EventERPs" })]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto), Description = "AddEventDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(EventERPPayloadAdd))]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto),
+            Description = "AddEventDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadAdd))]
         public static async Task<JsonNetResponse<EventERPPayload>> AddQuickBooksInvoiceEvent(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksInvoice")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksInvoice")]
+            HttpRequest req)
         {
             var eventdata = await req.GetBodyObjectAsync<AddEventDto>();
             var payload = new EventERPPayload()
@@ -46,16 +50,21 @@ namespace DigitBridge.CommerceCentral.EventERPApi
                 payload.Messages = svc.Messages;
                 payload.Success = false;
             }
+
             return new JsonNetResponse<EventERPPayload>(payload);
         }
 
         [FunctionName(nameof(AddQuickBooksInvoiceVoidEvent))]
         [OpenApiOperation(operationId: "AddQuickBooksInvoiceVoidEvent", tags: new[] { "EventERPs" })]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto), Description = "AddEventDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(EventERPPayloadAdd))]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto),
+            Description = "AddEventDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadAdd))]
         public static async Task<JsonNetResponse<EventERPPayload>> AddQuickBooksInvoiceVoidEvent(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksInvoiceVoid")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksInvoiceVoid")]
+            HttpRequest req)
         {
             var eventdata = await req.GetBodyObjectAsync<AddEventDto>();
             var payload = new EventERPPayload()
@@ -73,16 +82,21 @@ namespace DigitBridge.CommerceCentral.EventERPApi
                 payload.Messages = svc.Messages;
                 payload.Success = false;
             }
+
             return new JsonNetResponse<EventERPPayload>(payload);
         }
 
         [FunctionName(nameof(AddQuickBooksReturnEvent))]
         [OpenApiOperation(operationId: "AddQuickBooksReturnEvent", tags: new[] { "EventERPs" })]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto), Description = "AddEventDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(EventERPPayloadAdd))]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto),
+            Description = "AddEventDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadAdd))]
         public static async Task<JsonNetResponse<EventERPPayload>> AddQuickBooksReturnEvent(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksReturn")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksReturn")]
+            HttpRequest req)
         {
             var eventdata = await req.GetBodyObjectAsync<AddEventDto>();
             var payload = new EventERPPayload()
@@ -100,16 +114,21 @@ namespace DigitBridge.CommerceCentral.EventERPApi
                 payload.Messages = svc.Messages;
                 payload.Success = false;
             }
+
             return new JsonNetResponse<EventERPPayload>(payload);
         }
 
         [FunctionName(nameof(AddQuickBooksReturnDeleteEvent))]
         [OpenApiOperation(operationId: "AddQuickBooksReturnDeleteEvent", tags: new[] { "EventERPs" })]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto), Description = "AddEventDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(EventERPPayloadAdd))]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto),
+            Description = "AddEventDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadAdd))]
         public static async Task<JsonNetResponse<EventERPPayload>> AddQuickBooksReturnDeleteEvent(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksReturnDelete")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksReturnDelete")]
+            HttpRequest req)
         {
             var eventdata = await req.GetBodyObjectAsync<AddEventDto>();
             var payload = new EventERPPayload()
@@ -127,16 +146,21 @@ namespace DigitBridge.CommerceCentral.EventERPApi
                 payload.Messages = svc.Messages;
                 payload.Success = false;
             }
+
             return new JsonNetResponse<EventERPPayload>(payload);
         }
 
         [FunctionName(nameof(AddQuickBooksPaymentEvent))]
         [OpenApiOperation(operationId: "AddQuickBooksPaymentEvent", tags: new[] { "EventERPs" })]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto), Description = "AddEventDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(EventERPPayloadAdd))]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto),
+            Description = "AddEventDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadAdd))]
         public static async Task<JsonNetResponse<EventERPPayload>> AddQuickBooksPaymentEvent(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksPayment")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksPayment")]
+            HttpRequest req)
         {
             var eventdata = await req.GetBodyObjectAsync<AddEventDto>();
             var payload = new EventERPPayload()
@@ -154,16 +178,21 @@ namespace DigitBridge.CommerceCentral.EventERPApi
                 payload.Messages = svc.Messages;
                 payload.Success = false;
             }
+
             return new JsonNetResponse<EventERPPayload>(payload);
         }
 
         [FunctionName(nameof(AddCreateSalesOrderByCentralOrderEvent))]
         [OpenApiOperation(operationId: "AddCreateSalesOrderByCentralOrderEvent", tags: new[] { "EventERPs" })]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto), Description = "AddEventDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(EventERPPayloadAdd))]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto),
+            Description = "AddEventDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadAdd))]
         public static async Task<JsonNetResponse<EventERPPayload>> AddCreateSalesOrderByCentralOrderEvent(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addCreateSalesOrderByCentralOrder")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addCreateSalesOrderByCentralOrder")]
+            HttpRequest req)
         {
             var eventdata = await req.GetBodyObjectAsync<AddEventDto>();
             var payload = new EventERPPayload()
@@ -181,16 +210,21 @@ namespace DigitBridge.CommerceCentral.EventERPApi
                 payload.Messages = svc.Messages;
                 payload.Success = false;
             }
+
             return new JsonNetResponse<EventERPPayload>(payload);
         }
 
         [FunctionName(nameof(AddCreateInvoiceByOrderShipmentEvent))]
         [OpenApiOperation(operationId: "AddCreateInvoiceByOrderShipmentEvent", tags: new[] { "EventERPs" })]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto), Description = "AddEventDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(EventERPPayloadAdd))]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto),
+            Description = "AddEventDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadAdd))]
         public static async Task<JsonNetResponse<EventERPPayload>> AddCreateInvoiceByOrderShipmentEvent(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addCreateInvoiceByOrderShipment")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addCreateInvoiceByOrderShipment")]
+            HttpRequest req)
         {
             var eventdata = await req.GetBodyObjectAsync<AddEventDto>();
             var payload = new EventERPPayload()
@@ -208,16 +242,21 @@ namespace DigitBridge.CommerceCentral.EventERPApi
                 payload.Messages = svc.Messages;
                 payload.Success = false;
             }
+
             return new JsonNetResponse<EventERPPayload>(payload);
         }
 
         [FunctionName(nameof(AddQuickBooksPaymentDeleteEvent))]
         [OpenApiOperation(operationId: "AddQuickBooksPaymentDeleteEvent", tags: new[] { "EventERPs" })]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto), Description = "AddEventDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(EventERPPayloadAdd))]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AddEventDto),
+            Description = "AddEventDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadAdd))]
         public static async Task<JsonNetResponse<EventERPPayload>> AddQuickBooksPaymentDeleteEvent(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksPaymentDelete")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/addQuicksBooksPaymentDelete")]
+            HttpRequest req)
         {
             var eventdata = await req.GetBodyObjectAsync<AddEventDto>();
             var payload = new EventERPPayload()
@@ -235,60 +274,65 @@ namespace DigitBridge.CommerceCentral.EventERPApi
                 payload.Messages = svc.Messages;
                 payload.Success = false;
             }
+
             return new JsonNetResponse<EventERPPayload>(payload);
         }
-
-
 
 
         [FunctionName(nameof(UpdateEventERP))]
         [OpenApiOperation(operationId: "UpdateEventERP", tags: new[] { "EventERPs" })]
         //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UpdateEventDto), Description = "UpdateEventDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(EventERPPayloadUpdate))]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UpdateEventDto),
+            Description = "UpdateEventDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadUpdate))]
         public static async Task<JsonNetResponse<EventERPPayload>> UpdateEventERP(
-            [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "erpevents")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "erpevents")]
+            HttpRequest req)
         {
-            try
+            var eventdata = await req.GetBodyObjectAsync<UpdateEventDto>();
+            var payload = new EventERPPayload()
             {
-                var eventdata = await req.GetBodyObjectAsync<UpdateEventDto>();
-                var payload = new EventERPPayload()
-                {
-                    MasterAccountNum = eventdata.MasterAccountNum,
-                    ProfileNum = eventdata.ProfileNum,
-                    EventERP = eventdata.ToEventERPDataDto()
-                };
-                var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-                var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
-                if (await svc.UpdateAsync(payload))
-                    payload.EventERP = svc.ToDto();
-                else
-                {
-                    payload.Messages = svc.Messages;
-                    payload.Success = false;
-                }
-                return new JsonNetResponse<EventERPPayload>(payload);
-            }
-            catch (Exception e)
+                MasterAccountNum = eventdata.MasterAccountNum,
+                ProfileNum = eventdata.ProfileNum,
+                EventERP = eventdata.ToEventERPDataDto()
+            };
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
+            if (await svc.UpdateAsync(payload))
+                payload.EventERP = svc.ToDto();
+            else
             {
-                return null;
+                payload.Messages = svc.Messages;
+                payload.Success = false;
             }
+
+            return new JsonNetResponse<EventERPPayload>(payload);
         }
 
         /// <summary>
         /// Load erpevent list
         /// </summary>
         [FunctionName(nameof(EventERPsList))]
-        [OpenApiOperation(operationId: "EventERPsList", tags: new[] { "EventERPs" }, Summary = "Load erpevent list data")]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(EventERPPayloadFind))]
+        [OpenApiOperation(operationId: "EventERPsList", tags: new[] { "EventERPs" },
+            Summary = "Load erpevent list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "MasterAccountNum", Description = "From login profile",
+            Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadFind),
+            Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadFind))]
         public static async Task<JsonNetResponse<EventERPPayload>> EventERPsList(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "erpevents/find")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "erpevents/find")]
+            HttpRequest req)
         {
             var payload = await req.GetParameters<EventERPPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -316,16 +360,22 @@ namespace DigitBridge.CommerceCentral.EventERPApi
         /// find erpevent
         /// </summary>
         [FunctionName(nameof(Sample_EventERP_Find))]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiOperation(operationId: "EventERPFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of erpevent find")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(EventERPPayloadFind))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "MasterAccountNum", Description = "From login profile",
+            Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "EventERPFindSample", tags: new[] { "Sample" },
+            Summary = "Get new sample of erpevent find")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadFind))]
         public static async Task<JsonNetResponse<EventERPPayloadFind>> Sample_EventERP_Find(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/erpevents/find")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/erpevents/find")]
+            HttpRequest req)
         {
             return new JsonNetResponse<EventERPPayloadFind>(EventERPPayloadFind.GetSampleData());
         }
     }
 }
-

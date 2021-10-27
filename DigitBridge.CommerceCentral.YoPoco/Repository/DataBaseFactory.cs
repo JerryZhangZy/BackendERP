@@ -158,6 +158,13 @@ namespace DigitBridge.CommerceCentral.YoPoco
             SetDefaultDataBaseFactory(dbFactory);
             return dbFactory;
         }
+        
+        public static IDataBaseFactory CreateNewDefault(DbConnSetting config)
+        {
+            var dbFactory = new DataBaseFactory(config);
+            SetDefaultDataBaseFactory(dbFactory);
+            return dbFactory;
+        }
 
         #endregion static 
 

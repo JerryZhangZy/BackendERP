@@ -142,6 +142,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
             }
             return new JsonNetResponse<InventoryPayload>(payload);
         }
+        
+        [FunctionName(nameof(SyncInventoryAvQty))]
+        [OpenApiOperation(operationId: "SyncInventoryAvQty", tags: new[] { "ProductExts" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayload))]
+        public static async Task<JsonNetResponse<InventoryPayload>> SyncInventoryAvQty(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "productExts/syncInventoryAvQty")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new InventoryService(dbFactory);
+            if (!await svc.SyncInventoryAvQtyToProductDistributionCenterQuantityAsync(payload))
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<InventoryPayload>(payload);
+        }
 
         /// <summary>
         /// Load customer list
