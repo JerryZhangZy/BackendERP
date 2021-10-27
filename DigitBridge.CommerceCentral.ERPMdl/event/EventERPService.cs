@@ -267,15 +267,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //set edit mode before validate
             Edit();
 
-            if (!ValidateAccount(payload))
-                return false;
-
-            if (!Validate(payload.EventERP))
-                return false;
+            // if (!ValidateAccount(payload))
+            //     return false;
+            //
+            // if (!Validate(payload.EventERP))
+            //     return false;
 
             // load data 
-            GetDataById(payload.EventERP.Event_ERP.EventUuid);
-
+            if (!GetDataById(payload.EventERP.Event_ERP.EventUuid))
+            {
+                AddError($"{payload.EventERP.Event_ERP.EventUuid}Data not found");
+                return false;
+            }
             // load data from dto
             FromDto(payload.EventERP);
 
@@ -298,14 +301,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             //set edit mode before validate
             Edit();
-            if (!(await ValidateAccountAsync(payload)))
-                return false;
-
-            if (!(await ValidateAsync(payload.EventERP)))
-                return false;
+            
+            // if (!(await ValidateAccountAsync(payload)))
+            //     return false;
+            //
+            // if (!(await ValidateAsync(payload.EventERP)))
+            //     return false;
 
             // load data 
-            await GetDataByIdAsync(payload.EventERP.Event_ERP.EventUuid);
+            if (!await GetDataByIdAsync(payload.EventERP.Event_ERP.EventUuid))
+            {
+                AddError($"{payload.EventERP.Event_ERP.EventUuid}Data not found");
+                return false;
+            }
+            
+            if(Data.IsNew)
 
             // load data from dto
             FromDto(payload.EventERP);
