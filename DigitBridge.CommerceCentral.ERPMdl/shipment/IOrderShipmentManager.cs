@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a OrderShipmentService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public interface IOrderShipmentManager 
+    public interface IOrderShipmentManager
     {
         Task<byte[]> ExportAsync(OrderShipmentPayload payload);
 
@@ -34,5 +34,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         void Import(OrderShipmentPayload payload, IFormFileCollection files);
 
         Task ImportAsync(OrderShipmentPayload payload, IFormFileCollection files);
+
+        Task<(bool, string)> CreateShipmentFromPayloadAsync(OrderShipmentPayload payload);
+
+        Task<(bool, string)> CreateInvoiceByOrderShipmentIdAsync(string orderShimentUuid);
     }
 }

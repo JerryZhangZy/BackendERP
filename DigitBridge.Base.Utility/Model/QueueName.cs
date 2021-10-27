@@ -15,6 +15,11 @@ namespace DigitBridge.Base.Utility
 
 
         public const string Erp_Qbo_Return_Queue = "erp-quickbooks-return-queue";
-        public const string Erp_Qbo_Return_Delete_Queue = "erp-quickbooks-return-delete-queue"; 
+        public const string Erp_Qbo_Return_Delete_Queue = "erp-quickbooks-return-delete-queue";
+
+        /// <summary>
+        /// TODO put Shipment queue name here
+        /// </summary>
+        public const string Erp_Shipment_Queue = "";
     }
 }

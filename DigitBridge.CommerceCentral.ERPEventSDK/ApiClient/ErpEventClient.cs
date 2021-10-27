@@ -30,6 +30,18 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK
             return await PatchAsync(eventDto);
         }
 
+        public async Task<bool> SendActionResultAsync(ERPQueueMessage message, string error, bool success = false)
+        {
+            var eventDto = new UpdateErpEventDto()
+            {
+                EventMessage = error,
+                ActionStatus = success ? (int)ErpEventActionStatus.Success : (int)ErpEventActionStatus.Other,
+                MasterAccountNum = message.MasterAccountNum,
+                ProfileNum = message.ProfileNum,
+                EventUuid = message.EventUuid,
+            };
+            return await PatchAsync(eventDto);
+        }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
         {
