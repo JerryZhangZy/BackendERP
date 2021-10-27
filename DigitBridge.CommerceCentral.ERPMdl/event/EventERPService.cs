@@ -283,8 +283,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             FromDto(payload.EventERP);
 
             // validate data for Add processing
-            if (!Validate())
-                return false;
+            // if (!Validate())
+            //     return false;
 
             if (Data.Event_ERP.ActionStatus == 0)
                 return _data.Delete();
@@ -311,18 +311,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data 
             if (!await GetDataByIdAsync(payload.EventERP.Event_ERP.EventUuid))
             {
-                AddError($"{payload.EventERP.Event_ERP.EventUuid}Data not found");
                 return false;
             }
-            
-            if(Data.IsNew)
 
             // load data from dto
             FromDto(payload.EventERP);
 
             // validate data for Add processing
-            if (!(await ValidateAsync()))
-                return false;
+            // if (!(await ValidateAsync()))
+            //     return false;
             if (Data.Event_ERP.ActionStatus == 0)
                 return await _data.DeleteAsync();
             return await SaveDataAsync();
