@@ -393,6 +393,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\JsRepositoryModel.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsRepositoryModel.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\JsRepositoryModelInitData.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsRepositoryModelInitData.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\JsStoreIndex.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

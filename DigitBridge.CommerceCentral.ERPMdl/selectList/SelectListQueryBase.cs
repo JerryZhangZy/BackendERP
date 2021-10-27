@@ -27,13 +27,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         int? Offset { get; set; }
         string SQL { get; set; }
 
-        ISelectListQueryBase SetListFilter(DemListClass json);
+        ISelectListQueryBase SetListFilter(SelectListPayload json);
         ISelectListQueryBase SetListFilter(string term, long max_rec = 0);
         ISelectListQueryBase SetSelectFromSQL(string sqlString);
         DataTable GetDataTable(string sql);
         DataTable GetDataTable();
-        DemListClass GetDemListClass(DemListClass obj);
-        string GetSQL(SqlStatementParameter param = null);
+        SelectListPayload GetSelectListPayload(SelectListPayload obj);
+        string GetSQL();
     }
     
     public partial class SelectListQueryBase : ISelectListQueryBase
@@ -74,7 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Offset = offset;
             SetListFilter(term);
         }
-        public SelectListQueryBase(DemListClass obj) : this()
+        public SelectListQueryBase(SelectListPayload obj) : this()
         {
             SetListFilter(obj.term);
         }
@@ -98,7 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
         #region General method for get sql string
-        public virtual ISelectListQueryBase SetListFilter(DemListClass json)
+        public virtual ISelectListQueryBase SetListFilter(SelectListPayload json)
         {
             SetListFilter(json.term, json.max_rec);
             if (json.filter != null)
@@ -152,7 +152,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             return GetDataTable(GetSQL());
         }
-        public virtual DemListClass GetDemListClass(DemListClass obj)
+        public virtual SelectListPayload GetSelectListPayload(SelectListPayload obj)
         {
             if (obj == null) return obj;
             var table = GetDataTable(GetSQL());

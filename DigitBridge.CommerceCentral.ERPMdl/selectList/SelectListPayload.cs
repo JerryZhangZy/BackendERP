@@ -35,24 +35,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #region properties
         public string Term { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
-        public virtual bool With_term { get { return !string.IsNullOrWhiteSpace(Term); } }
-        public virtual bool ShouldSerializeterm() { return (With_term); }
+        public virtual bool With_Term { get { return !string.IsNullOrWhiteSpace(Term); } }
+        public virtual bool ShouldSerializeterm() { return (With_Term); }
 
         public string SelectListName { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual bool With_SelectListName { get { return !string.IsNullOrWhiteSpace(SelectListName); } }
 
         [JsonIgnore, XmlIgnore, IgnoreCompare]
-        public string name { get { return SelectListName; } set { SelectListName = value; }  }
-        public int max_rec { get; set; }
+        public string Name { get { return SelectListName; } set { SelectListName = value; }  }
+        public int Limit { get; set; }
         public int Count { get { return (data == null) ? 0 : data.Count; } }
 
-        public IList<NameValueClass> filter { get; set; }
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        public virtual bool With_filter { get { return filter != null && filter.Count > 0; } }
-        public virtual bool ShouldSerializefilter() { return (With_filter); }
-
-        public IList<SelectListItemClass> data { get; set; }
+        public IList<SelectListItem> data { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public virtual bool With_data { get { return data != null && data.Count > 0; } }
         public virtual bool ShouldSerializedata() { return (With_data); }
@@ -60,19 +55,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public SelectListPayload ClearData()
         {
-            data = new List<SelectListItemClass>();
+            data = new List<SelectListItem>();
             return this;
         }
-        public SelectListPayload AddData(IList<SelectListItemClass> list)
+        public SelectListPayload AddData(IList<SelectListItem> list)
         {
             data = list;
             return this;
         }
-        public SelectListPayload AddData(SelectListItemClass obj)
+        public SelectListPayload AddData(SelectListItem obj)
         {
             if (obj == null) return this;
             if (data == null)
-                data = new List<SelectListItemClass>();
+                data = new List<SelectListItem>();
             data.Add(obj);
             return this;
         }
@@ -80,24 +75,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public SelectListPayload CopyValueFrom(SelectListPayload obj)
         {
             if (obj == null || this == obj) return this;
-            if (With_listFor && !SelectListName.EqualsIgnoreSpace(obj.SelectListName)) return this;
+            if (With_SelectListName && !SelectListName.EqualsIgnoreSpace(obj.SelectListName)) return this;
 
             SelectListName = obj.SelectListName;
             Term = obj.Term;
-            max_rec = obj.max_rec;
-            data = new List<SelectListItemClass>();
+            Limit = obj.Limit;
+            data = new List<SelectListItem>();
             if (obj.With_data)
             {
-                foreach (SelectListItemClass item in obj.data)
+                foreach (SelectListItem item in obj.data)
                     data.Add(item);
             }
 
-            filter = new List<NameValueClass>();
-            if (obj.With_filter)
-            {
-                foreach (NameValueClass item in obj.filter)
-                    filter.Add(item);
-            }
             return this;
         }
         

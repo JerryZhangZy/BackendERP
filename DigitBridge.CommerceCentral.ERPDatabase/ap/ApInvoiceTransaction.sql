@@ -50,7 +50,7 @@ GO
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceTransaction]') AND name = N'UI_ApInvoiceTransaction_TransNum')
 CREATE NONCLUSTERED INDEX [IX_ApInvoiceTransaction_TransNum] ON [dbo].[ApInvoiceTransaction]
 (
-	[ApInvoiceId] ASC,
+	[ApInvoiceUuid] ASC,
 	[TransNum] ASC
 ) ON [PRIMARY]
 GO
