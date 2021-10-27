@@ -17,4 +17,9 @@ END
 IF COL_LENGTH('OrderShipmentHeader', 'DigitBridgeGuid') IS NULL					
 BEGIN					
     ALTER TABLE OrderShipmentHeader ADD [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid())
-END					
+END
+
+IF COL_LENGTH('OrderShipmentHeader', 'InvoiceNumber') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentHeader ADD [InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT ''
+END		

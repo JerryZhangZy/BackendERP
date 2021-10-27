@@ -1,11 +1,11 @@
 ﻿CREATE TABLE [dbo].[ApInvoiceHeader]
 (
-	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
-    [DatabaseNum] INT NOT NULL, --Each database has its own default value.
-	[MasterAccountNum] INT NOT NULL,
-	[ProfileNum] INT NOT NULL,
+	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,--(Readonly) Record Number. Required, <br> Display: false, Editable: false.
+    [DatabaseNum] INT NOT NULL, --(Readonly) Database Number. <br> Display: false, Editable: false.
+	[MasterAccountNum] INT NOT NULL,--(Readonly) Login user account. <br> Display: false, Editable: false.
+	[ProfileNum] INT NOT NULL,--(Readonly) Login user profile. <br> Display: false, Editable: false.
 
-    [ApInvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for ApInvoice
+    [ApInvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --(Readonly) ApInvoice uuid. <br> Display: false, Editable: false
 	[ApInvoiceNum] VARCHAR(50) NOT NULL, --Unique in this database, ProfileNum + ApInvoiceNum is DigitBridgeApInvoiceNum, which is global unique
 
     [ApInvoiceType] INT NULL DEFAULT 0, -- A/P Invoice type
@@ -21,7 +21,7 @@
 	[DueDate] DATE NULL, --Balance Due date
 	[BillDate] DATE NULL, --Next Billing date
 
-	[Currency] VARCHAR(10) NULL,
+	[Currency] VARCHAR(10) NULL,--(Ignore) ApInvoice price in currency. <br> Title: Currency, Display: false, Editable: false
 	[TotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total A/P invoice amount. 
 	[PaidAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total Paid amount 
 	[CreditAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total Credit amount 
@@ -31,16 +31,16 @@
 	[DebitAccount] BIGINT NULL DEFAULT 0, --G/L Debit account 
 
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()),
-    [UpdateDateUtc] DATETIME NULL,
+    [UpdateDateUtc] DATETIME NULL,--(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
     [EnterBy] Varchar(100) NOT NULL,
-    [UpdateBy] Varchar(100) NOT NULL,
+    [UpdateBy] Varchar(100) NOT NULL, --(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
     CONSTRAINT [PK_ApInvoiceHeader] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceHeader]') AND name = N'UI_ApInvoiceHeader_ApInvoiceId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_ApInvoiceHeader_ApInvoiceUuid] ON [dbo].[ApInvoiceHeader]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_ApInvoiceHeader_ApInvoiceUuid] ON [dbo].[ApInvoiceHeader]
 (
 	[ApInvoiceUuid] ASC
 ) ON [PRIMARY]

@@ -444,6 +444,41 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 inventory = new Inventory();
             return inventory;
         }
+
+        public bool SyncInventoryAvQtyToProductDistributionCenterQuantity(InventoryPayload payload)
+        {
+            try
+            {
+                using (var trx = new ScopedTransaction(dbFactory))
+                {
+                    payload.SyncInventoryAvQtyCount = InventoryServiceHelper.SyncInventoryAvQtyToProductDistributionCenterQuantity(payload);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AddError(ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<bool> SyncInventoryAvQtyToProductDistributionCenterQuantityAsync(InventoryPayload payload)
+        {
+            try
+            {
+                using (var trx = new ScopedTransaction(dbFactory))
+                {
+                    payload.SyncInventoryAvQtyCount = await InventoryServiceHelper.SyncInventoryAvQtyToProductDistributionCenterQuantityAsync(payload);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AddError(ex.Message);
+                return false;
+            }
+        }
     }
 }
 
