@@ -520,6 +520,46 @@ where inv.InventoryUuid=il.InventoryUuid
             return 0;
         }
 
+        public static async Task<int> SyncInventoryAvQtyToProductDistributionCenterQuantityAsync(IPayload payload)
+        {
+            var sql = $@"
+update pdcq set 
+                pdcq.AvailableQuantity= Instock-iv.OpenSoQty-iv.OpenFulfillmentQty
+from
+     ProductDistributionCenterQuantity pdcq
+         left outer join DistributionCenter dc on DC.DistributionCenterNum = pdcq.DistributionCenterNum
+         left outer join ProductBasic pb on pb.CentralProductNum = pdcq.CentralProductNum
+         left outer join Inventory iv on iv.ProductUuid=pb.ProductUuid and iv.WarehouseUuid=dc.DistributionCenterUuid
+where 
+      pdcq.MasterAccountNum=@MasterAccountNum and pdcq.ProfileNum=@ProfileNum and pdcq.AvailableQuantity!=iv.Instock-iv.OpenSoQty-iv.OpenFulfillmentQty;";
+            var sqlParameters = new IDataParameter[2]
+            {
+                payload.MasterAccountNum.ToSqlParameter("MasterAccountNum"),
+                payload.MasterAccountNum.ToSqlParameter("ProfileNum")
+            };
+            return await SqlQuery.ExecuteNonQueryAsync(sql,sqlParameters);
+        }
+        
+        public static int SyncInventoryAvQtyToProductDistributionCenterQuantity(IPayload payload)
+        {
+            var sql = $@"
+update pdcq set 
+                pdcq.AvailableQuantity= Instock-iv.OpenSoQty-iv.OpenFulfillmentQty
+from
+     ProductDistributionCenterQuantity pdcq
+         left outer join DistributionCenter dc on DC.DistributionCenterNum = pdcq.DistributionCenterNum
+         left outer join ProductBasic pb on pb.CentralProductNum = pdcq.CentralProductNum
+         left outer join Inventory iv on iv.ProductUuid=pb.ProductUuid and iv.WarehouseUuid=dc.DistributionCenterUuid
+where 
+      pdcq.MasterAccountNum=@MasterAccountNum and pdcq.ProfileNum=@ProfileNum and pdcq.AvailableQuantity!=iv.Instock-iv.OpenSoQty-iv.OpenFulfillmentQty;";
+            var sqlParameters = new IDataParameter[2]
+            {
+                payload.MasterAccountNum.ToSqlParameter("MasterAccountNum"),
+                payload.MasterAccountNum.ToSqlParameter("ProfileNum")
+            };
+            return SqlQuery.ExecuteNonQuery(sql,sqlParameters);
+        }
+
         /// <summary>
         /// If Sales Order created or changed
         /// need use SQL to update open S/O qty in inventory table.
