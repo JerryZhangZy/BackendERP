@@ -15,6 +15,8 @@
     <Compile Remove="selectList\SelectListQueryBase.cs" />
     <Compile Remove="selectList\SelectListService.cs" />
     <Compile Remove="selectList\so\so_customerCode.cs" />
+    <Compile Remove="shipment\CommerceCentralShipment\AddCentralOrderShipment.cs" />
+    <Compile Remove="shipment\CommerceCentralShipment\CommerceCentralOrderShipmentInputType.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +40,11 @@
     <Folder Include="warehouseTransfer\" />
     <Folder Include="po\" />
     <Folder Include="vendor\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="shipment\CommerceCentralShipment\AddCentralOrderShipment.cs" />
+    <None Include="shipment\CommerceCentralShipment\CommerceCentralOrderShipmentInputType.cs" />
   </ItemGroup>
 
   <ItemGroup>
