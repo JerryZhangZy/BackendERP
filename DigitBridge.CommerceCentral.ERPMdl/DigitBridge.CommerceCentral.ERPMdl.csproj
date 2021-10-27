@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Compile Remove="selectList\SelectListService.cs" />
-    <Compile Remove="selectList\so\so_customerCode.cs" />
     <Compile Remove="shipment\CommerceCentralShipment\AddCentralOrderShipment.cs" />
     <Compile Remove="shipment\CommerceCentralShipment\CommerceCentralOrderShipmentInputType.cs" />
   </ItemGroup>

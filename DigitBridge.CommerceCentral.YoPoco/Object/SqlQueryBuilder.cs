@@ -29,8 +29,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public string SQL_OrderBy { get; set; }
 
         public bool HasSQL =>
-            !string.IsNullOrWhiteSpace(this.SQL_Select) &&
-            !string.IsNullOrWhiteSpace(this.SQL_From) &&
+            !string.IsNullOrWhiteSpace(this.SQL_Select) ||
+            !string.IsNullOrWhiteSpace(this.SQL_From) ||
             !string.IsNullOrWhiteSpace(this.SQL_WithoutOrder);
 
         public bool LoadTotalCount { get; set; } = true;
@@ -73,6 +73,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public SqlQueryBuilder(IDataBaseFactory dbFactory)
         {
+            SetDataBaseFactory(dbFactory);
             SQL_Select = string.Empty;
             SQL_SelectSummary = string.Empty;
             SQL_From = string.Empty;
