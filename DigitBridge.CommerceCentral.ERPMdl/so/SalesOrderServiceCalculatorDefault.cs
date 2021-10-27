@@ -216,15 +216,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             //Set SKU info
-            InventoryData inventoryData = null;
-            if (!string.IsNullOrEmpty(item.InventoryUuid))
-            {
-                inventoryData = GetInventoryData_InventoryUuid(data, item.InventoryUuid);
-            }
-            else
-            {
-                inventoryData = GetInventoryData(data, item.SKU);
-            }
+            var inventoryData = GetInventoryData(data, item.SKU);
             // currency priority: user input > customer > Sku
             //if (string.IsNullOrEmpty(item.Currency))
             //    item.Currency = data.SalesOrderHeader.Currency;

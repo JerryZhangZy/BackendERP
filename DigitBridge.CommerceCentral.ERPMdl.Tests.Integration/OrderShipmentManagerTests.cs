@@ -29,14 +29,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
     {
         #region get faker data
         public const int MasterAccountNum = 10001;
-        public const int ProfileNum = 10001; 
+        public const int ProfileNum = 10001;
         protected Inventory[] GetInventories(int count = 10)
         {
             return InventoryDataTests.GetInventories(DataBaseFactory, count);
         }
         protected OrderShipmentDataDto GetFakerDataDto(Inventory[] inventories = null)
         {
-            var data = OrderShipmentDataTests.GetFakerData_SkuInDB(DataBaseFactory, inventories); 
+            var data = OrderShipmentDataTests.GetFakerData_SkuInDB(DataBaseFactory, inventories);
             data.OrderShipmentHeader.OrderDCAssignmentNum = new Random().Next(1, 100000);
 
 
@@ -62,6 +62,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 item.InventoryUuid = inventory.InventoryUuid;
                 item.ProductUuid = inventory.ProductUuid;
             }
+            data.SalesOrderHeader.MasterAccountNum = MasterAccountNum;
+            data.SalesOrderHeader.ProfileNum = ProfileNum;
             data.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
             var mapper = new SalesOrderDataDtoMapperDefault();
             return mapper.WriteDto(data, null);
