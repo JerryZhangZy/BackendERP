@@ -14,7 +14,7 @@ namespace DigitBridge.CommerceCentral.ApiCommon
         {
             var config = await MyCache.GetCommerceCentralDbConnSetting(payload.MasterAccountNum);
             payload.DatabaseNum = config.DatabaseNum;
-            return DataBaseFactory.CreateDefault(config);
+            return DataBaseFactory.CreateNewDefault(config);
         }
 
         /// <summary>
