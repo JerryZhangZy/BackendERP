@@ -7,6 +7,8 @@ namespace DigitBridge.Base.Common
 {
     public enum ShipmentStatus : int
     {
+        [Description("Default")]
+        Default = -1,
         [Description("Pending")]
         Pending = 0,
         [Description("Shipped")]

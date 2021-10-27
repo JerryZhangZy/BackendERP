@@ -21,6 +21,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
+using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -90,65 +91,65 @@ WHERE itm.cnt > 0
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}
 
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public async Task AddDtoAsync_Test()
-		{
-            var srv = new OrderShipmentService(DataBaseFactory);
-            srv.Add();
+//        [Fact()]
+//		//[Fact(Skip = SkipReason)]
+//		public async Task AddDtoAsync_Test()
+//		{
+//            var srv = new OrderShipmentService(DataBaseFactory);
+//            srv.Add();
 
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null); 
+//            var mapper = srv.DtoMapper;
+//            var data = GetFakerData();
+//            var dto = mapper.WriteDto(data, null); 
 
-            await srv.AddAsync(dto);
+//            await srv.AddAsync(dto);
 
-            var id = dto.OrderShipmentHeader.OrderShipmentUuid;
+//            var id = dto.OrderShipmentHeader.OrderShipmentUuid;
 
-            var srvGet = new OrderShipmentService(DataBaseFactory);
-            srvGet.Edit();
-            await srvGet.GetDataByIdAsync(id);
-            var result = srv.Data.Equals(srvGet.Data);
+//            var srvGet = new OrderShipmentService(DataBaseFactory);
+//            srvGet.Edit();
+//            await srvGet.GetDataByIdAsync(id);
+//            var result = srv.Data.Equals(srvGet.Data);
 
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
+//			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+//		}
 
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public async Task UpdateDtoAsync_Test()
-		{
-            await SaveDataAsync_Test();
+//        [Fact()]
+//		//[Fact(Skip = SkipReason)]
+//		public async Task UpdateDtoAsync_Test()
+//		{
+//            await SaveDataAsync_Test();
 
-            var id = await DataBaseFactory.GetValueAsync<OrderShipmentHeader, string>(@"
-SELECT TOP 1 ins.OrderShipmentUuid 
-FROM OrderShipmentHeader ins 
-INNER JOIN (
-    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentPackage it GROUP BY it.OrderShipmentUuid
-) itm ON (itm.OrderShipmentUuid = ins.OrderShipmentUuid)
-WHERE itm.cnt > 0
-");
+//            var id = await DataBaseFactory.GetValueAsync<OrderShipmentHeader, string>(@"
+//SELECT TOP 1 ins.OrderShipmentUuid 
+//FROM OrderShipmentHeader ins 
+//INNER JOIN (
+//    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentPackage it GROUP BY it.OrderShipmentUuid
+//) itm ON (itm.OrderShipmentUuid = ins.OrderShipmentUuid)
+//WHERE itm.cnt > 0
+//");
 
 
-            var srv = new OrderShipmentService(DataBaseFactory);
-            await srv.EditAsync(id);
-            var rowNum = srv.Data.OrderShipmentHeader.RowNum;
+//            var srv = new OrderShipmentService(DataBaseFactory);
+//            await srv.EditAsync(id);
+//            var rowNum = srv.Data.OrderShipmentHeader.RowNum;
 
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            dto.OrderShipmentHeader.RowNum = rowNum;
-            dto.OrderShipmentHeader.OrderShipmentUuid = id;
+//            var mapper = srv.DtoMapper;
+//            var data = GetFakerData();
+//            var dto = mapper.WriteDto(data, null);
+//            dto.OrderShipmentHeader.RowNum = rowNum;
+//            dto.OrderShipmentHeader.OrderShipmentUuid = id;
 
-            srv.Clear();
-            await srv.UpdateAsync(dto);
+//            srv.Clear();
+//            await srv.UpdateAsync(dto);
 
-            var srvGet = new OrderShipmentService(DataBaseFactory);
-            //srvGet.Edit();
-            await srvGet.GetDataByIdAsync(id);
-            var result = srv.Data.Equals(srvGet.Data);
+//            var srvGet = new OrderShipmentService(DataBaseFactory);
+//            //srvGet.Edit();
+//            await srvGet.GetDataByIdAsync(id);
+//            var result = srv.Data.Equals(srvGet.Data);
 
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
+//			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+//		}
 
 
         [Fact()]
@@ -222,78 +223,283 @@ WHERE itm.cnt > 0
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}
 
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public async Task AddPayloadAsync_Test()
-		{
-            var srv = new OrderShipmentService(DataBaseFactory);
-            srv.Add();
+  //      [Fact()]
+		////[Fact(Skip = SkipReason)]
+		//public async Task AddPayloadAsync_Test()
+		//{
+  //          var srv = new OrderShipmentService(DataBaseFactory);
+  //          srv.Add();
 
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
+  //          var mapper = srv.DtoMapper;
+  //          var data = GetFakerData();
+  //          var dto = mapper.WriteDto(data, null);
             
-            var payload = new OrderShipmentPayload();
-            payload.OrderShipment = dto;
-            payload.MasterAccountNum = 1;
-            payload.ProfileNum = 1;
-            payload.DatabaseNum = 1;
+  //          var payload = new OrderShipmentPayload();
+  //          payload.OrderShipment = dto;
+  //          payload.MasterAccountNum = 1;
+  //          payload.ProfileNum = 1;
+  //          payload.DatabaseNum = 1;
 
-            await srv.AddAsync(payload);
+  //          await srv.AddAsync(payload);
 
-            var id = dto.OrderShipmentHeader.OrderShipmentUuid;
+  //          var id = dto.OrderShipmentHeader.OrderShipmentUuid;
+
+  //          var srvGet = new OrderShipmentService(DataBaseFactory);
+  //          srvGet.Edit();
+  //          await srvGet.GetDataByIdAsync(id);
+  //          var result = srv.Data.Equals(srvGet.Data);
+
+		//	Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+		//}
+
+//        [Fact()]
+//		//[Fact(Skip = SkipReason)]
+//		public async Task UpdatePayloadAsync_Test()
+//		{
+//            await SaveDataAsync_Test();
+
+//            var id = await DataBaseFactory.GetValueAsync<OrderShipmentHeader, string>(@"
+//SELECT TOP 1 ins.OrderShipmentUuid 
+//FROM OrderShipmentHeader ins 
+//INNER JOIN (
+//    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentPackage it GROUP BY it.OrderShipmentUuid
+//) itm ON (itm.OrderShipmentUuid = ins.OrderShipmentUuid)
+//WHERE itm.cnt > 0
+//");
+
+
+//            var srv = new OrderShipmentService(DataBaseFactory);
+//            await srv.EditAsync(id);
+//            var rowNum = srv.Data.OrderShipmentHeader.RowNum;
+
+//            var mapper = srv.DtoMapper;
+//            var data = GetFakerData();
+//            var dto = mapper.WriteDto(data, null);
+//            dto.OrderShipmentHeader.RowNum = rowNum;
+//            dto.OrderShipmentHeader.OrderShipmentUuid = id;
+
+//            var payload = new OrderShipmentPayload();
+//            payload.OrderShipment = dto;
+//            payload.MasterAccountNum = srv.Data.OrderShipmentHeader.MasterAccountNum;
+//            payload.ProfileNum = srv.Data.OrderShipmentHeader.ProfileNum;
+//            payload.DatabaseNum = srv.Data.OrderShipmentHeader.DatabaseNum;
+
+//            srv.Clear();
+//            await srv.UpdateAsync(payload);
+
+//            var srvGet = new OrderShipmentService(DataBaseFactory);
+//            //srvGet.Edit();
+//            await srvGet.GetDataByIdAsync(id);
+//            var result = srv.Data.Equals(srvGet.Data);
+
+//			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+//		}
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task AddDtoAsync_Test()
+        {
+            var srv = new OrderShipmentService(DataBaseFactory);
+            var dto = GetFakerDataDto();
+            var success = await srv.AddAsync(dto);
+            Assert.True(success && srv.Data.OrderShipmentHeader.OrderShipmentNum > 0, srv.Messages.ObjectToString());
 
             var srvGet = new OrderShipmentService(DataBaseFactory);
             srvGet.Edit();
-            await srvGet.GetDataByIdAsync(id);
-            var result = srv.Data.Equals(srvGet.Data);
+            success = await srvGet.GetDataByIdAsync(srv.Data.OrderShipmentHeader.OrderShipmentUuid);
+            Assert.True(success && srv.Data.OrderShipmentHeader.OrderShipmentNum == srvGet.Data.OrderShipmentHeader.OrderShipmentNum);
 
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
+            //var result = srv.Data.Equals(srvGet.Data);
+            //Assert.True(result, "Full data not Equals");
+        }
 
         [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public async Task UpdatePayloadAsync_Test()
-		{
-            await SaveDataAsync_Test();
-
-            var id = await DataBaseFactory.GetValueAsync<OrderShipmentHeader, string>(@"
-SELECT TOP 1 ins.OrderShipmentUuid 
-FROM OrderShipmentHeader ins 
-INNER JOIN (
-    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentPackage it GROUP BY it.OrderShipmentUuid
-) itm ON (itm.OrderShipmentUuid = ins.OrderShipmentUuid)
-WHERE itm.cnt > 0
-");
-
-
+        //[Fact(Skip = SkipReason)]
+        public async Task AddPayloadAsync_Test()
+        {
             var srv = new OrderShipmentService(DataBaseFactory);
-            await srv.EditAsync(id);
-            var rowNum = srv.Data.OrderShipmentHeader.RowNum;
+            var dto = GetFakerDataDto();
+            var payload = new OrderShipmentPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+                OrderShipment = dto,
+            };
 
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            dto.OrderShipmentHeader.RowNum = rowNum;
-            dto.OrderShipmentHeader.OrderShipmentUuid = id;
-
-            var payload = new OrderShipmentPayload();
-            payload.OrderShipment = dto;
-            payload.MasterAccountNum = srv.Data.OrderShipmentHeader.MasterAccountNum;
-            payload.ProfileNum = srv.Data.OrderShipmentHeader.ProfileNum;
-            payload.DatabaseNum = srv.Data.OrderShipmentHeader.DatabaseNum;
-
-            srv.Clear();
-            await srv.UpdateAsync(payload);
+            var success = await srv.AddAsync(payload);
+            Assert.True(success && srv.Data.OrderShipmentHeader.OrderShipmentNum > 0, srv.Messages.ObjectToString());
 
             var srvGet = new OrderShipmentService(DataBaseFactory);
-            //srvGet.Edit();
-            await srvGet.GetDataByIdAsync(id);
-            var result = srv.Data.Equals(srvGet.Data);
+            srvGet.Edit();
+            success = await srvGet.GetDataByIdAsync(srv.Data.OrderShipmentHeader.OrderShipmentUuid);
+            Assert.True(success && srv.Data.OrderShipmentHeader.OrderShipmentNum == srvGet.Data.OrderShipmentHeader.OrderShipmentNum);
 
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
+            //var result = srv.Data.Equals(srvGet.Data);
+            //Assert.True(result, "Full data not Equals");
+        }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateDtoAsync_Test()
+        {
+            var srv = new OrderShipmentService(DataBaseFactory);
+            var dto = GetFakerDataDto();
+            var success = await srv.AddAsync(dto);
+            Assert.True(success && srv.Data.OrderShipmentHeader.OrderShipmentNum > 0, srv.Messages.ObjectToString());
+
+            var uuid = srv.Data.OrderShipmentHeader.OrderShipmentUuid;
+
+            srv.List();
+            srv.GetDataById(uuid);
+            var updateDto = GetFakerDataDto_Update(srv.Data);
+
+            success = await srv.UpdateAsync(updateDto);
+
+            Assert.True(success, srv.Messages.ObjectToString());
+
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdatePayloadAsync_Test()
+        {
+            var srv = new OrderShipmentService(DataBaseFactory);
+            var dto = GetFakerDataDto();
+            var success = await srv.AddAsync(dto);
+            Assert.True(success && srv.Data.OrderShipmentHeader.OrderShipmentNum > 0, srv.Messages.ObjectToString());
+
+            var uuid = srv.Data.OrderShipmentHeader.OrderShipmentUuid;
+
+            srv.List();
+            srv.GetDataById(uuid);
+            var updateDto = GetFakerDataDto_Update(srv.Data);
+            var payload = new OrderShipmentPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+                OrderShipment = updateDto,
+            };
+
+            success = await srv.UpdateAsync(payload);
+
+            Assert.True(success, srv.Messages.ObjectToString());
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task DeleteAsync_Test()
+        {
+            var srv = new OrderShipmentService(DataBaseFactory);
+            var dto = GetFakerDataDto();
+            var success = await srv.AddAsync(dto);
+            Assert.True(success && srv.Data.OrderShipmentHeader.OrderShipmentNum > 0, srv.Messages.ObjectToString());
+
+            var payload = new OrderShipmentPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+            };
+            success = await srv.DeleteByNumberAsync(payload, srv.Data.OrderShipmentHeader.OrderShipmentNum);
+
+            Assert.True(success, srv.Messages.ObjectToString());
+
+        }
+
+        #region get faker data
+        public const int MasterAccountNum = 10001;
+        public const int ProfileNum = 10001;
+        protected OrderShipmentData GetFakerData()
+        {
+            var data = OrderShipmentDataTests.GetFakerData();
+            data.OrderShipmentHeader.MasterAccountNum = MasterAccountNum;
+            data.OrderShipmentHeader.ProfileNum = ProfileNum;
+
+            foreach (var item in data.OrderShipmentShippedItem)
+            {
+                item.MasterAccountNum = MasterAccountNum;
+                item.ProfileNum = ProfileNum;
+
+            }
+            foreach (var item in data.OrderShipmentCanceledItem)
+            {
+                item.MasterAccountNum = MasterAccountNum;
+                item.ProfileNum = ProfileNum;
+
+            }
+            foreach (var item in data.OrderShipmentPackage)
+            {
+                item.MasterAccountNum = MasterAccountNum;
+                item.ProfileNum = ProfileNum;
+                foreach (var subItem in item.OrderShipmentShippedItem)
+                {
+                    subItem.MasterAccountNum = MasterAccountNum;
+                    subItem.ProfileNum = ProfileNum;
+                }
+            }
+            return data;
+        }
+        protected OrderShipmentDataDto GetFakerDataDto()
+        {
+            var data = OrderShipmentDataTests.GetFakerData();
+            data.OrderShipmentHeader.MasterAccountNum = MasterAccountNum;
+            data.OrderShipmentHeader.ProfileNum = ProfileNum;
+
+            var mapper = new OrderShipmentDataDtoMapperDefault();
+            return mapper.WriteDto(data, null);
+        }
+
+        protected OrderShipmentDataDto GetFakerDataDto_Update(OrderShipmentData originalData)
+        {
+            var updateData = GetFakerData();
+            var header = originalData.OrderShipmentHeader;
+
+            updateData.OrderShipmentHeader.OrderShipmentNum = header.OrderShipmentNum;
+            updateData.OrderShipmentHeader.RowNum = header.OrderShipmentNum;
+            updateData.OrderShipmentHeader.OrderShipmentUuid = header.OrderShipmentUuid;
+
+            var orderShipmentNum = header.OrderShipmentNum;
+
+            for (int i = 0; i < updateData.OrderShipmentShippedItem.Count; i++)
+            {
+                var item = updateData.OrderShipmentShippedItem[i];
+                var originalItem = originalData.OrderShipmentShippedItem[i];
+                item.OrderShipmentNum = orderShipmentNum;
+                item.OrderShipmentUuid = originalItem.OrderShipmentUuid;
+                item.OrderShipmentShippedItemNum = originalItem.OrderShipmentShippedItemNum;
+                item.RowNum = originalItem.OrderShipmentShippedItemNum;
+            }
+            for (int i = 0; i < updateData.OrderShipmentCanceledItem.Count; i++)
+            {
+                var item = updateData.OrderShipmentCanceledItem[i];
+                var originalItem = originalData.OrderShipmentCanceledItem[i];
+                item.OrderShipmentNum = orderShipmentNum;
+                item.OrderShipmentUuid = originalItem.OrderShipmentUuid;
+                item.OrderShipmentCanceledItemNum = originalItem.OrderShipmentCanceledItemNum;
+                item.RowNum = originalItem.OrderShipmentCanceledItemNum;
+            }
+            for (int i = 0; i < updateData.OrderShipmentPackage.Count; i++)
+            {
+                var item = updateData.OrderShipmentPackage[i];
+                var originalItem = originalData.OrderShipmentPackage[i];
+                item.OrderShipmentNum = orderShipmentNum;
+                item.OrderShipmentUuid = originalItem.OrderShipmentUuid;
+                item.OrderShipmentPackageNum = originalItem.OrderShipmentPackageNum;
+                item.RowNum = originalItem.OrderShipmentPackageNum;
+                for (int j = 0; j < item.OrderShipmentShippedItem.Count; j++)
+                {
+                    var subitem = item.OrderShipmentShippedItem[j];
+                    var suboriginalItem = originalItem.OrderShipmentShippedItem[j];
+                    subitem.OrderShipmentNum = orderShipmentNum;
+                    subitem.OrderShipmentUuid = originalItem.OrderShipmentUuid;
+                    subitem.OrderShipmentPackageNum = originalItem.OrderShipmentPackageNum;
+                    subitem.OrderShipmentShippedItemNum = suboriginalItem.OrderShipmentShippedItemNum;
+                    subitem.RowNum = suboriginalItem.OrderShipmentShippedItemNum;
+                }
+            }
+            var mapper = new OrderShipmentDataDtoMapperDefault();
+            return mapper.WriteDto(updateData, null);
+        }
+        #endregion
     }
 }
 

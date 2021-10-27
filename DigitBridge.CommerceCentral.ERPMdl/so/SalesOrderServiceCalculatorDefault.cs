@@ -96,6 +96,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             });
         }
         /// <summary>
+        /// get inventory data
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="sku"></param>
+        /// <returns></returns>
+        public virtual InventoryData GetInventoryData_InventoryUuid(SalesOrderData data, string inventoryUuid)
+        {
+            var key = data.SalesOrderHeader.MasterAccountNum + "_" + data.SalesOrderHeader.ProfileNum + '_' + inventoryUuid;
+            return data.GetCache(key, () =>
+            {
+                inventoryService.GetDataById(inventoryUuid);
+                return inventoryService.Data;
+            });
+        }
+        /// <summary>
         /// Get Customer Data by customerCode
         /// </summary>
         /// <param name="data"></param>

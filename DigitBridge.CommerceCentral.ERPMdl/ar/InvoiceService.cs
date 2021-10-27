@@ -346,9 +346,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return SaveData();
             }
             return false;
-        }
-
-        protected QboInvoiceClient qboInvoiceClient = new QboInvoiceClient();
+        } 
 
         #region To qbo queue 
         /// <summary>
@@ -365,6 +363,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ProfileNum = profileNum,
                 ProcessUuid = Data.InvoiceHeader.InvoiceUuid,
             };
+            var qboInvoiceClient = new QboInvoiceClient();
             return await qboInvoiceClient.SendAddQboInvoiceAsync(eventDto);
             //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksInvoice");
         }
@@ -377,6 +376,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ProfileNum = profileNum,
                 ProcessUuid = Data.InvoiceHeader.InvoiceUuid,
             };
+            var qboInvoiceClient = new QboInvoiceClient();
             return await qboInvoiceClient.SendVoidQboInvoiceAsync(eventDto);
             //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksInvoiceVoid");
         }

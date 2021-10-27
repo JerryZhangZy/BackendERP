@@ -245,23 +245,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Delete order shipment by order shipment number
         /// </summary>
-        /// <param name="orderShipmentUuid"></param>
+        /// <param name="orderShipmentNum"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByOrderShipmentUuidAsync(OrderShipmentPayload payload, long rowNum)
+        public virtual async Task<bool> DeleteByNumberAsync(OrderShipmentPayload payload, long orderShipmentNum)
         {
-            payload.OrderShipment = new OrderShipmentDataDto();
-            payload.OrderShipment.OrderShipmentHeader = new OrderShipmentHeaderDto();
-            payload.OrderShipment.OrderShipmentHeader.RowNum = rowNum;
+            if (orderShipmentNum.IsZero())
+            {
+                AddError("orderShipmentNum is invalid");
+                return false;
+            }
 
             //set delete mode
             Delete();
-
-            if (!(await ValidateAccountAsync(payload)))
-                return false;
-
             //load data
-            var success = await GetDataAsync(rowNum);
-            //delete salesorder and its sub items
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderShipmentNum.ToString());
             success = success && DeleteData();
             return success;
         }
