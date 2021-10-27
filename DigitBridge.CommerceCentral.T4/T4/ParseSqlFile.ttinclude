@@ -551,6 +551,14 @@
                 ); 
             }
         }
+        public bool ignoreGenerateJs {
+            get { 
+                return (
+                    Name.Equals("EnterDateUtc", StringComparison.CurrentCultureIgnoreCase) ||
+                    Name.Equals("DigitBridgeGuid", StringComparison.CurrentCultureIgnoreCase)
+                ); 
+            }
+        }
         public string jsonDictionaryName {
             get { return $"{Name.Substring(4)}"; }
         }

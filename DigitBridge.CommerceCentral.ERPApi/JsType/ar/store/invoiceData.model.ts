@@ -1,5 +1,6 @@
 
 
+
 import { types, getRoot, destroy, SnapshotIn, cast } from "mobx-state-tree";
 import { createModelActions } from '../../../store';
               
@@ -8,6 +9,7 @@ import { createModelActions } from '../../../store';
  */ 
 const InvoiceHeader = types
 	.model('InvoiceHeader', {
+		rowNum: types.optional(types.number, 0),
 		databaseNum: types.optional(types.number, 0),
 		masterAccountNum: types.optional(types.number, 0),
 		profileNum: types.optional(types.number, 0),
@@ -66,6 +68,7 @@ const InvoiceHeader = types
  */ 
 const InvoiceHeaderAttributes = types
 	.model('InvoiceHeaderAttributes', {
+		rowNum: types.optional(types.number, 0),
 		invoiceUuid: types.optional(types.string, ''),
 		jsonFields: types.optional(types.string, ''),
 	})
@@ -81,6 +84,7 @@ const InvoiceHeaderAttributes = types
  */ 
 const InvoiceHeaderInfo = types
 	.model('InvoiceHeaderInfo', {
+		rowNum: types.optional(types.number, 0),
 		invoiceUuid: types.optional(types.string, ''),
 		centralFulfillmentNum: types.optional(types.number, 0),
 		orderShipmentNum: types.optional(types.number, 0),
@@ -157,6 +161,7 @@ const InvoiceHeaderInfo = types
  */ 
 const InvoiceItems = types
 	.model('InvoiceItems', {
+		rowNum: types.optional(types.number, 0),
 		invoiceItemsUuid: types.optional(types.string, ''),
 		invoiceUuid: types.optional(types.string, ''),
 		seq: types.optional(types.number, 0),
@@ -233,6 +238,7 @@ const InvoiceItems = types
  */ 
 const InvoiceItemsAttributes = types
 	.model('InvoiceItemsAttributes', {
+		rowNum: types.optional(types.number, 0),
 		invoiceItemsUuid: types.optional(types.string, ''),
 		invoiceUuid: types.optional(types.string, ''),
 		jsonFields: types.optional(types.string, ''),
@@ -280,6 +286,7 @@ export const InvoiceDataModel = types
 export const invoiceDataInit = {
 	dataVersion: dataVersionInit,
 	invoiceHeader: {
+		rowNum: 0,
 		databaseNum: 0,
 		masterAccountNum: 0,
 		profileNum: 0,
@@ -330,6 +337,7 @@ export const invoiceDataInit = {
 
 	},
 	invoiceHeaderInfo: {
+		rowNum: 0,
 		invoiceUuid: '',
 		centralFulfillmentNum: 0,
 		orderShipmentNum: 0,
@@ -398,6 +406,7 @@ export const invoiceDataInit = {
 
 	},
 	invoiceHeaderAttributes: {
+		rowNum: 0,
 		invoiceUuid: '',
 		jsonFields: '',
 
@@ -405,6 +414,7 @@ export const invoiceDataInit = {
 
 	},
 	invoiceItems: [{
+		rowNum: 0,
 		invoiceItemsUuid: '',
 		invoiceUuid: '',
 		seq: 0,

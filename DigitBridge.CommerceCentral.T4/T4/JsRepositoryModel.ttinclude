@@ -9,7 +9,7 @@
     // generate all properties
     foreach(var col in table.Columns)
     { 
-        if (col.ignoreGenerate) continue;
+        if (col.ignoreGenerateJs) continue;
         WriteLine($"{new String('\t',indent+1)}{col.JsPropertyName}: {col.JsPropertyModelType},");
     }
 
