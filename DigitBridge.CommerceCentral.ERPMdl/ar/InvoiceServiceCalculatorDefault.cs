@@ -174,7 +174,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (customerData != null && customerData.Customer != null)
             {
                 sum.CustomerUuid = customerData.Customer.CustomerUuid;
-                sum.CustomerName = customerData.Customer.CustomerName;
+                //sum.CustomerName = customerData.Customer.CustomerName;
                 //if (string.IsNullOrEmpty(sum.Currency))
                 //    sum.Currency = customerData.Customer.Currency;
             }

@@ -61,6 +61,8 @@ COALESCE(pts.text, '') TransStatusText,
 {InvoiceHeaderInfoHelper.CentralOrderNum()},
 {InvoiceHeaderInfoHelper.ChannelNum()},
 {InvoiceHeaderInfoHelper.ChannelAccountNum()},
+chanel.ChannelName,
+channelAccount.ChannelAccountName,
 {InvoiceHeaderInfoHelper.ChannelOrderID()},
 {InvoiceHeaderInfoHelper.RefNum()},
 {InvoiceHeaderInfoHelper.CustomerPoNum()}
@@ -75,7 +77,9 @@ COALESCE(pts.text, '') TransStatusText,
  LEFT JOIN {InvoiceHeaderHelper.TableName} {InvoiceHeaderHelper.TableAllies} ON ({InvoiceHeaderHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
  LEFT JOIN {InvoiceHeaderInfoHelper.TableName} {InvoiceHeaderInfoHelper.TableAllies} ON ({InvoiceHeaderInfoHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
  LEFT JOIN @PaymentTransStatus pts ON ({Helper.TableAllies}.TransStatus = pts.num)
- LEFT JOIN @PaymentTransType ptt ON ({Helper.TableAllies}.TransType = ptt.num) 
+ LEFT JOIN @PaymentTransType ptt ON ({Helper.TableAllies}.TransType = ptt.num)
+left join Setting_Channel chanel on ({InvoiceHeaderInfoHelper.TableAllies}.ChannelNum = chanel.ChannelNum)
+ left join Setting_ChannelAccount channelAccount on ({InvoiceHeaderInfoHelper.TableAllies}.ChannelAccountNum = channelAccount.ChannelAccountNum) 
 ";
             return this.SQL_From;
         }

@@ -61,8 +61,10 @@ COALESCE(ist.text, '') invoiceStatusText,
 {InfoHelper.ShippingClass()},
 {InfoHelper.DistributionCenterNum()},
 {InfoHelper.CentralOrderNum()},
-{InfoHelper.ChannelNum()},
+{InfoHelper.ChannelNum()}, 
 {InfoHelper.ChannelAccountNum()},
+chanel.ChannelName,
+channelAccount.ChannelAccountName,
 {InfoHelper.ChannelOrderID()},
 {InfoHelper.WarehouseUuid()},
 {InfoHelper.WarehouseCode()},
@@ -86,7 +88,9 @@ COALESCE(ist.text, '') invoiceStatusText,
         {
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
-LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.InvoiceUuid = {InfoHelper.TableAllies}.InvoiceUuid)
+ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.InvoiceUuid = {InfoHelper.TableAllies}.InvoiceUuid)
+ left join Setting_Channel chanel on ({InfoHelper.TableAllies}.ChannelNum = chanel.ChannelNum)
+ left join Setting_ChannelAccount channelAccount on ({InfoHelper.TableAllies}.ChannelAccountNum = channelAccount.ChannelAccountNum) 
  LEFT JOIN @InvoiceStatusEnum ist ON ({Helper.TableAllies}.InvoiceStatus = ist.num)
  LEFT JOIN @InvoiceTypeEnum itt ON ({Helper.TableAllies}.InvoiceType = itt.num)
 ";

@@ -110,7 +110,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             success = await shipmentService.GetDataByIdAsync(shipmentData.UniqueId);
             Assert.True(success, shipmentService.Messages.ObjectToString());
 
-            Assert.Equal(payload.OrderShipment.OrderShipmentHeader.ShipmentStatus, (int)ShipmentStatus.Pending);
+            Assert.Equal(payload.OrderShipment.OrderShipmentHeader.ShipmentStatus, (int)OrderShipmentStatusEnum.Pending);
         }
         [Fact()]
         public async Task CreateInvoiceFromShipmentAsync_Test()
