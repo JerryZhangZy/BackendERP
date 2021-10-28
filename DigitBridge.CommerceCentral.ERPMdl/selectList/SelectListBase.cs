@@ -32,31 +32,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         protected virtual void SetFilterSqlString()
         {
-            this.QueryObject.LoadAll = false;
-            if (string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
-                this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.customerCode, '') LIKE '{this.QueryObject.Term.FilterValue}%' "
-                );
-            else
-                this.QueryObject.SetTermSqlString(null);
+            //this.QueryObject.LoadAll = false;
+            //if (string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
+            //    this.QueryObject.SetTermSqlString(
+            //        $"COALESCE(tbl.customerCode, '') LIKE '{this.QueryObject.Term.FilterValue}%' "
+            //    );
+            //else
+            //    this.QueryObject.SetTermSqlString(null);
         }
 
         protected override string GetSQL_select()
         {
-            this.SQL_Select = $@"
-SELECT i.*, COALESCE(d.CustomerName, '') AS description 
-FROM (
-    SELECT 
-        tbl.CustomerCode AS cd, 
-        COUNT(1) AS cnt
-    FROM InvoiceHeader tbl
-    WHERE COALESCE(tbl.CustomerCode,'') != '' 
-        AND {this.QueryObject.GetSQL()}
-    GROUP BY tbl.CustomerCode
-) i 
-LEFT JOIN Customer d ON (d.CustomerUuid = i.CustomerUuid) 
-ORDER BY i.cd
-";
+//            this.SQL_Select = $@"
+//SELECT i.*, COALESCE(d.CustomerName, '') AS description 
+//FROM (
+//    SELECT 
+//        tbl.CustomerCode AS cd, 
+//        COUNT(1) AS cnt
+//    FROM InvoiceHeader tbl
+//    WHERE COALESCE(tbl.CustomerCode,'') != '' 
+//        AND {this.QueryObject.GetSQL()}
+//    GROUP BY tbl.CustomerCode
+//) i 
+//LEFT JOIN Customer d ON (d.CustomerUuid = i.CustomerUuid) 
+//ORDER BY i.cd
+//";
             return this.SQL_Select;
         }
 

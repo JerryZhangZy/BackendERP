@@ -35,19 +35,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SetFilterSqlString();
             this.SQL_Select = $@"
-SELECT i.*, COALESCE(d.CustomerName, '') AS description 
+SELECT i.*, COALESCE(d.CustomerName, '') AS [text] 
 FROM (
     SELECT 
         tbl.CustomerUuid AS id, 
-        tbl.CustomerCode AS cd, 
-        COUNT(1) AS cnt
+        tbl.CustomerCode AS [value], 
+        COUNT(1) AS [count]
     FROM InvoiceHeader tbl
     WHERE COALESCE(tbl.CustomerCode,'') != '' 
         AND {this.QueryObject.GetSQL()}
     GROUP BY tbl.CustomerCode, tbl.CustomerUuid
 ) i 
 LEFT JOIN Customer d ON (d.CustomerUuid = i.id) 
-ORDER BY i.cd
+ORDER BY i.[value]
 ";
             return this.SQL_Select;
         }
