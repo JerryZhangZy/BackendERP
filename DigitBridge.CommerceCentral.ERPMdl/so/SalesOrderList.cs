@@ -10,7 +10,7 @@ using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
 using Hepler = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderHelper;
-using InfoHepler = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoHelper;
+using InfoHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -45,29 +45,31 @@ COALESCE(ordst.text, '') orderStatusText,
 {Hepler.SubTotalAmount()},
 {Hepler.TotalAmount()},
 {Hepler.OrderSourceCode()},
-{InfoHepler.CentralFulfillmentNum()},
-{InfoHepler.ShippingCarrier()},
-{InfoHepler.ShippingClass()},
-{InfoHepler.DistributionCenterNum()},
-{InfoHepler.CentralOrderNum()},
-{InfoHepler.CentralOrderUuid()},
-{InfoHepler.ChannelNum()},
-{InfoHepler.ChannelAccountNum()},
-{InfoHepler.ChannelOrderID()},
-{InfoHepler.SecondaryChannelOrderID()},
-{InfoHepler.WarehouseUuid()},
-{InfoHepler.WarehouseCode()},
-{InfoHepler.RefNum()},
-{InfoHepler.CustomerPoNum()},
-{InfoHepler.ShipToName()},
-{InfoHepler.ShipToAttention()},
-{InfoHepler.ShipToAddressLine1()},
-{InfoHepler.ShipToAddressLine2()},
-{InfoHepler.ShipToCity()},
-{InfoHepler.ShipToState()},
-{InfoHepler.ShipToPostalCode()},
-{InfoHepler.ShipToCountry()},
-{InfoHepler.ShipToEmail()}
+{InfoHelper.CentralFulfillmentNum()},
+{InfoHelper.ShippingCarrier()},
+{InfoHelper.ShippingClass()},
+{InfoHelper.DistributionCenterNum()},
+{InfoHelper.CentralOrderNum()},
+{InfoHelper.CentralOrderUuid()},
+{InfoHelper.ChannelNum()},
+{InfoHelper.ChannelAccountNum()},
+chanel.ChannelName,
+channelAccount.ChannelAccountName,
+{InfoHelper.ChannelOrderID()},
+{InfoHelper.SecondaryChannelOrderID()},
+{InfoHelper.WarehouseUuid()},
+{InfoHelper.WarehouseCode()},
+{InfoHelper.RefNum()},
+{InfoHelper.CustomerPoNum()},
+{InfoHelper.ShipToName()},
+{InfoHelper.ShipToAttention()},
+{InfoHelper.ShipToAddressLine1()},
+{InfoHelper.ShipToAddressLine2()},
+{InfoHelper.ShipToCity()},
+{InfoHelper.ShipToState()},
+{InfoHelper.ShipToPostalCode()},
+{InfoHelper.ShipToCountry()},
+{InfoHelper.ShipToEmail()}
 ";
             return this.SQL_Select;
         }
@@ -76,10 +78,13 @@ COALESCE(ordst.text, '') orderStatusText,
         {
             this.SQL_From = $@"
  FROM {Hepler.TableName} {Hepler.TableAllies} 
- LEFT JOIN {InfoHepler.TableName} {InfoHepler.TableAllies} ON ({InfoHepler.TableAllies}.SalesOrderUuid = {InfoHepler.TableAllies}.SalesOrderUuid)
+ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({InfoHelper.TableAllies}.SalesOrderUuid = {InfoHelper.TableAllies}.SalesOrderUuid)
 -- LEFT JOIN {CustomerHelper.TableName} {CustomerHelper.TableAllies} ON ({ERPDb.CustomerHelper.TableAllies}.CustomerUuid = {Hepler.TableAllies}.CustomerUuid)
  LEFT JOIN @SalesOrderStatus ordst ON ({Hepler.TableAllies}.OrderStatus = ordst.num)
  LEFT JOIN @SalesOrderType ordtp ON ({Hepler.TableAllies}.OrderType = ordtp.num)
+left join Setting_Channel chanel on ({InfoHelper.TableAllies}.ChannelNum = chanel.ChannelNum)
+left join Setting_ChannelAccount channelAccount on ({InfoHelper.TableAllies}.ChannelAccountNum = channelAccount.ChannelAccountNum) 
+ 
 ";
             return this.SQL_From;
         }
