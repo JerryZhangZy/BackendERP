@@ -192,7 +192,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     IsValid = false;
                     AddError($"InvoiceItems.SKU cannot be empty.");
                     return IsValid;
-                } 
+                }
                 if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
                     IsValid = false;
@@ -207,12 +207,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual bool ValidateAdd(InvoiceData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.InvoiceHeader.RowNum != 0 && dbFactory.Exists<InvoiceHeader>(data.InvoiceHeader.RowNum))
-            {
-                IsValid = false;
-                AddError($"RowNum: {data.InvoiceHeader.RowNum} is duplicate.");
-                return IsValid;
-            }
+            data.InvoiceHeader.RowNum = 0;
+            //if (data.InvoiceHeader.RowNum != 0 && dbFactory.Exists<InvoiceHeader>(data.InvoiceHeader.RowNum))
+            //{
+            //    IsValid = false;
+            //    AddError($"RowNum: {data.InvoiceHeader.RowNum} is duplicate.");
+            //    return IsValid;
+            //}
             if (!string.IsNullOrEmpty(data.InvoiceHeader.InvoiceNumber))
             {
                 using (var tx = new ScopedTransaction(dbFactory))
@@ -232,7 +233,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual bool ValidateEdit(InvoiceData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.InvoiceHeader.RowNum == 0)
+            if (data.InvoiceHeader.RowNum.IsZero())
             {
                 IsValid = false;
                 AddError($"RowNum: {data.InvoiceHeader.RowNum} not found.");
@@ -311,7 +312,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     IsValid = false;
                     AddError($"InvoiceItems.SKU cannot be empty.");
                     return IsValid;
-                } 
+                }
                 if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
                     IsValid = false;
@@ -326,12 +327,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual async Task<bool> ValidateAddAsync(InvoiceData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.InvoiceHeader.RowNum != 0 && (await dbFactory.ExistsAsync<InvoiceHeader>(data.InvoiceHeader.RowNum)))
-            {
-                IsValid = false;
-                AddError($"RowNum: {data.InvoiceHeader.RowNum} is duplicate.");
-                return IsValid;
-            }
+            data.InvoiceHeader.RowNum = 0;
+            //if (data.InvoiceHeader.RowNum != 0 && (await dbFactory.ExistsAsync<InvoiceHeader>(data.InvoiceHeader.RowNum)))
+            //{
+            //    IsValid = false;
+            //    AddError($"RowNum: {data.InvoiceHeader.RowNum} is duplicate.");
+            //    return IsValid;
+            //}
 
             if (!string.IsNullOrEmpty(data.InvoiceHeader.InvoiceNumber))
             {
@@ -353,7 +355,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual async Task<bool> ValidateEditAsync(InvoiceData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.InvoiceHeader.RowNum == 0)
+            if (data.InvoiceHeader.RowNum.IsZero())
             {
                 IsValid = false;
                 AddError($"RowNum: {data.InvoiceHeader.RowNum} not found.");
