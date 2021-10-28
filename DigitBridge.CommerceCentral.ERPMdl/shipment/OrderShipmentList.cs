@@ -35,6 +35,8 @@ SELECT
 {OrderShipmentHeaderHelper.ProfileNum()}, 
 {OrderShipmentHeaderHelper.ChannelNum()}, 
 {OrderShipmentHeaderHelper.ChannelAccountNum()}, 
+chanel.ChannelName,
+channelAccount.ChannelAccountName,
 {OrderShipmentHeaderHelper.OrderDCAssignmentNum()}, 
 {OrderShipmentHeaderHelper.DistributionCenterNum()}, 
 {OrderShipmentHeaderHelper.CentralOrderNum()}, 
@@ -71,6 +73,9 @@ COALESCE(pst.text, '') ProcessStatusText,
  LEFT JOIN @ShipmentStatusText sst ON ({OrderShipmentHeaderHelper.TableAllies}.ShipmentStatus = sst.num)
  LEFT JOIN @ShipmentTypeText stt ON ({OrderShipmentHeaderHelper.TableAllies}.ShipmentType = stt.num)
  LEFT JOIN @ProcessStatusText pst ON ({OrderShipmentHeaderHelper.TableAllies}.ProcessStatus = pst.num)
+left join Setting_Channel chanel on ({OrderShipmentHeaderHelper.TableAllies}.ChannelNum = chanel.ChannelNum)
+left join Setting_ChannelAccount channelAccount on ({OrderShipmentHeaderHelper.TableAllies}.ChannelAccountNum = channelAccount.ChannelAccountNum) 
+ 
 ";
             return this.SQL_From;
         }

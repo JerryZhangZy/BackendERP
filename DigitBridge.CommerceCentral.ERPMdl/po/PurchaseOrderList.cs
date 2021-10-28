@@ -57,6 +57,9 @@ COALESCE(post.text, '') PoStatusText,
 {PoHeaderHelper.PoSourceCode()}, 
 {PoHeaderInfoHelper.CentralOrderNum()},
 {PoHeaderInfoHelper.ChannelNum()},
+{PoHeaderInfoHelper.ChannelAccountNum()},
+chanel.ChannelName,
+channelAccount.ChannelAccountName,
 {PoHeaderInfoHelper.ChannelOrderID()},
 {PoHeaderInfoHelper.BillToEmail()},
 {PoHeaderInfoHelper.ShipToName()}
@@ -72,6 +75,9 @@ COALESCE(post.text, '') PoStatusText,
  LEFT JOIN {PoHeaderInfoHelper.TableName} {PoHeaderInfoHelper.TableAllies} ON ({PoHeaderInfoHelper.TableAllies}.PoUuid = {PoHeaderHelper.TableAllies}.PoUuid)
  LEFT JOIN @PoStatusText post ON ({PoHeaderHelper.TableAllies}.PoStatus = post.num)
  LEFT JOIN @PoTypeText pott ON ({PoHeaderHelper.TableAllies}.PoType = pott.num)
+left join Setting_Channel chanel on ({PoHeaderInfoHelper.TableAllies}.ChannelNum = chanel.ChannelNum)
+left join Setting_ChannelAccount channelAccount on ({PoHeaderInfoHelper.TableAllies}.ChannelAccountNum = channelAccount.ChannelAccountNum) 
+ 
 ";
             return this.SQL_From;
         }
