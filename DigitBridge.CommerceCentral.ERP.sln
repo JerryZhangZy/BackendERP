@@ -47,7 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.QuickBooks.Integration.Tests", "DigitBridge.QuickBooks.Integration.Tests\DigitBridge.QuickBooks.Integration.Tests.csproj", "{89918B42-7BEA-497E-92AE-689E33C60BE9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPFunc", "DigitBridge.CommerceCentral.ERPFunc\DigitBridge.CommerceCentral.ERPFunc.csproj", "{22831F89-8C68-43CE-B40E-2714F09773A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPFuncApi", "DigitBridge.CommerceCentral.ERPFuncApi\DigitBridge.CommerceCentral.ERPFuncApi.csproj", "{22831F89-8C68-43CE-B40E-2714F09773A9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPBroker", "DigitBridge.CommerceCentral.ERPBroker\DigitBridge.CommerceCentral.ERPBroker.csproj", "{3ACEEDD3-56D0-4534-896E-D4164E3B5767}"
 EndProject
@@ -58,6 +58,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPEventSDK", "DigitBridge.CommerceCentral.ERPEventSDK\DigitBridge.CommerceCentral.ERPEventSDK.csproj", "{3D9199B3-3F6B-447F-ACB3-718950D40B6F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration", "DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration\DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration.csproj", "{436F2903-C78E-40C9-AC4F-65FAC6E79811}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPFuncSDK", "DigitBridge.CommerceCentral.ERPFuncSDK\DigitBridge.CommerceCentral.ERPFuncSDK.csproj", "{56AFD266-4217-4281-9AF5-EAC26FEC07F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPFuncSDK.Tests.Integration", "DigitBridge.CommerceCentral.ERPFuncSDK.Tests.Integration\DigitBridge.CommerceCentral.ERPFuncSDK.Tests.Integration.csproj", "{D9796A9F-076A-43EF-82AC-C3F0709A3F32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -165,6 +169,14 @@ Global
 		{436F2903-C78E-40C9-AC4F-65FAC6E79811}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{436F2903-C78E-40C9-AC4F-65FAC6E79811}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{436F2903-C78E-40C9-AC4F-65FAC6E79811}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56AFD266-4217-4281-9AF5-EAC26FEC07F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56AFD266-4217-4281-9AF5-EAC26FEC07F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56AFD266-4217-4281-9AF5-EAC26FEC07F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56AFD266-4217-4281-9AF5-EAC26FEC07F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9796A9F-076A-43EF-82AC-C3F0709A3F32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9796A9F-076A-43EF-82AC-C3F0709A3F32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9796A9F-076A-43EF-82AC-C3F0709A3F32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9796A9F-076A-43EF-82AC-C3F0709A3F32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

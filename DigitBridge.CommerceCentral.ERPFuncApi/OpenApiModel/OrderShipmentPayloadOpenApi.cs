@@ -20,7 +20,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
 
-namespace DigitBridge.CommerceCentral.ERPBroker
+namespace DigitBridge.CommerceCentral.ERPFuncApi
 {
     /// <summary>
     /// Request and Response payload object for Add API
