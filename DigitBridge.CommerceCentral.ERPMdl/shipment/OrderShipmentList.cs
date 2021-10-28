@@ -68,13 +68,18 @@ COALESCE(pst.text, '') ProcessStatusText,
 
         protected override string GetSQL_from()
         {
+            var masterAccountNum = $"{OrderShipmentHeaderHelper.TableAllies}.MasterAccountNum";
+            var profileNum = $"{OrderShipmentHeaderHelper.TableAllies}.ProfileNum";
+            var channelNum = $"{OrderShipmentHeaderHelper.TableAllies}.ChannelNum";
+            var channelAccountNum = $"{OrderShipmentHeaderHelper.TableAllies}.ChannelAccountNum";
+
             this.SQL_From = $@"
  FROM {OrderShipmentHeaderHelper.TableName} {OrderShipmentHeaderHelper.TableAllies}  
  LEFT JOIN @ShipmentStatusText sst ON ({OrderShipmentHeaderHelper.TableAllies}.ShipmentStatus = sst.num)
  LEFT JOIN @ShipmentTypeText stt ON ({OrderShipmentHeaderHelper.TableAllies}.ShipmentType = stt.num)
  LEFT JOIN @ProcessStatusText pst ON ({OrderShipmentHeaderHelper.TableAllies}.ProcessStatus = pst.num)
-left join Setting_Channel chanel on ({OrderShipmentHeaderHelper.TableAllies}.ChannelNum = chanel.ChannelNum)
-left join Setting_ChannelAccount channelAccount on ({OrderShipmentHeaderHelper.TableAllies}.ChannelAccountNum = channelAccount.ChannelAccountNum) 
+ {SqlStringHelper.Join_Setting_Channel(masterAccountNum, profileNum, channelNum)}
+ {SqlStringHelper.Join_Setting_ChannelAccount(masterAccountNum, profileNum, channelNum, channelAccountNum)}
  
 ";
             return this.SQL_From;

@@ -9,7 +9,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Hepler = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderHelper;
+using Helper = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderHelper;
 using InfoHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
@@ -30,21 +30,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Hepler.SalesOrderUuid()}, 
-{Hepler.OrderNumber()}, 
-{Hepler.OrderType()}, 
+{Helper.SalesOrderUuid()}, 
+{Helper.OrderNumber()}, 
+{Helper.OrderType()}, 
 COALESCE(ordtp.text, '') orderTypeText, 
-{Hepler.OrderStatus()}, 
+{Helper.OrderStatus()}, 
 COALESCE(ordst.text, '') orderStatusText, 
-{Hepler.OrderDate()}, 
-{Hepler.ShipDate()}, 
-{Hepler.CustomerCode()}, 
-{Hepler.CustomerName()}, 
-{Hepler.Terms()}, 
-{Hepler.TermsDays()}, 
-{Hepler.SubTotalAmount()},
-{Hepler.TotalAmount()},
-{Hepler.OrderSourceCode()},
+{Helper.OrderDate()}, 
+{Helper.ShipDate()}, 
+{Helper.CustomerCode()}, 
+{Helper.CustomerName()}, 
+{Helper.Terms()}, 
+{Helper.TermsDays()}, 
+{Helper.SubTotalAmount()},
+{Helper.TotalAmount()},
+{Helper.OrderSourceCode()},
 {InfoHelper.CentralFulfillmentNum()},
 {InfoHelper.ShippingCarrier()},
 {InfoHelper.ShippingClass()},
@@ -76,15 +76,19 @@ channelAccount.ChannelAccountName,
 
         protected override string GetSQL_from()
         {
+            var masterAccountNum = $"{Helper.TableAllies}.MasterAccountNum";
+            var profileNum = $"{Helper.TableAllies}.ProfileNum";
+            var channelNum = $"{InfoHelper.TableAllies}.ChannelNum";
+            var channelAccountNum = $"{InfoHelper.TableAllies}.ChannelAccountNum";
+
             this.SQL_From = $@"
- FROM {Hepler.TableName} {Hepler.TableAllies} 
- LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({InfoHelper.TableAllies}.SalesOrderUuid = {InfoHelper.TableAllies}.SalesOrderUuid)
--- LEFT JOIN {CustomerHelper.TableName} {CustomerHelper.TableAllies} ON ({ERPDb.CustomerHelper.TableAllies}.CustomerUuid = {Hepler.TableAllies}.CustomerUuid)
- LEFT JOIN @SalesOrderStatus ordst ON ({Hepler.TableAllies}.OrderStatus = ordst.num)
- LEFT JOIN @SalesOrderType ordtp ON ({Hepler.TableAllies}.OrderType = ordtp.num)
-left join Setting_Channel chanel on ({InfoHelper.TableAllies}.ChannelNum = chanel.ChannelNum)
-left join Setting_ChannelAccount channelAccount on ({InfoHelper.TableAllies}.ChannelAccountNum = channelAccount.ChannelAccountNum) 
- 
+ FROM {Helper.TableName} {Helper.TableAllies} 
+ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.SalesOrderUuid = {InfoHelper.TableAllies}.SalesOrderUuid)
+-- LEFT JOIN {CustomerHelper.TableName} {CustomerHelper.TableAllies} ON ({ERPDb.CustomerHelper.TableAllies}.CustomerUuid = {Helper.TableAllies}.CustomerUuid)
+ LEFT JOIN @SalesOrderStatus ordst ON ({Helper.TableAllies}.OrderStatus = ordst.num)
+ LEFT JOIN @SalesOrderType ordtp ON ({Helper.TableAllies}.OrderType = ordtp.num)
+ {SqlStringHelper.Join_Setting_Channel(masterAccountNum, profileNum, channelNum)}
+ {SqlStringHelper.Join_Setting_ChannelAccount(masterAccountNum, profileNum, channelNum, channelAccountNum)}
 ";
             return this.SQL_From;
         }

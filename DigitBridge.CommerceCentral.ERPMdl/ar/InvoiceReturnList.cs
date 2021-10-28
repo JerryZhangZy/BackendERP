@@ -72,14 +72,19 @@ channelAccount.ChannelAccountName,
 
         protected override string GetSQL_from()
         {
+            var masterAccountNum = $"{Helper.TableAllies}.MasterAccountNum";
+            var profileNum = $"{Helper.TableAllies}.ProfileNum";
+            var channelNum = $"{InvoiceHeaderInfoHelper.TableAllies}.ChannelNum";
+            var channelAccountNum = $"{InvoiceHeaderInfoHelper.TableAllies}.ChannelAccountNum";
+
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
  LEFT JOIN {InvoiceHeaderHelper.TableName} {InvoiceHeaderHelper.TableAllies} ON ({InvoiceHeaderHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
  LEFT JOIN {InvoiceHeaderInfoHelper.TableName} {InvoiceHeaderInfoHelper.TableAllies} ON ({InvoiceHeaderInfoHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
  LEFT JOIN @PaymentTransStatus pts ON ({Helper.TableAllies}.TransStatus = pts.num)
  LEFT JOIN @PaymentTransType ptt ON ({Helper.TableAllies}.TransType = ptt.num)
-left join Setting_Channel chanel on ({InvoiceHeaderInfoHelper.TableAllies}.ChannelNum = chanel.ChannelNum)
- left join Setting_ChannelAccount channelAccount on ({InvoiceHeaderInfoHelper.TableAllies}.ChannelAccountNum = channelAccount.ChannelAccountNum) 
+ {SqlStringHelper.Join_Setting_Channel(masterAccountNum, profileNum, channelNum)} 
+ {SqlStringHelper.Join_Setting_ChannelAccount(masterAccountNum, profileNum, channelNum, channelAccountNum)} 
 ";
             return this.SQL_From;
         }

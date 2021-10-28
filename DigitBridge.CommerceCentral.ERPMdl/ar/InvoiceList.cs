@@ -86,11 +86,16 @@ channelAccount.ChannelAccountName,
 
         protected override string GetSQL_from()
         {
+            var masterAccountNum = $"{Helper.TableAllies}.MasterAccountNum";
+            var profileNum = $"{Helper.TableAllies}.ProfileNum";
+            var channelNum = $"{InfoHelper.TableAllies}.ChannelNum";
+            var channelAccountNum = $"{InfoHelper.TableAllies}.ChannelAccountNum";
+
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
  LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.InvoiceUuid = {InfoHelper.TableAllies}.InvoiceUuid)
- left join Setting_Channel chanel on ({InfoHelper.TableAllies}.ChannelNum = chanel.ChannelNum)
- left join Setting_ChannelAccount channelAccount on ({InfoHelper.TableAllies}.ChannelAccountNum = channelAccount.ChannelAccountNum) 
+ {SqlStringHelper.Join_Setting_Channel(masterAccountNum, profileNum, channelNum)} 
+ {SqlStringHelper.Join_Setting_ChannelAccount(masterAccountNum, profileNum, channelNum, channelAccountNum)} 
  LEFT JOIN @InvoiceStatusEnum ist ON ({Helper.TableAllies}.InvoiceStatus = ist.num)
  LEFT JOIN @InvoiceTypeEnum itt ON ({Helper.TableAllies}.InvoiceType = itt.num)
 ";
