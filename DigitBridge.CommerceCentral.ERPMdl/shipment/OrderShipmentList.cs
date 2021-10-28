@@ -78,9 +78,9 @@ COALESCE(pst.text, '') ProcessStatusText,
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-            paramList.Add("@ShipmentStatusText".ToEnumParameter<ShipmentStatus>());
-            paramList.Add("@ShipmentTypeText".ToEnumParameter<ShipmentType>());
-            paramList.Add("@ProcessStatusText".ToEnumParameter<ShipmentProcessStatus>());
+            paramList.Add("@ShipmentStatusText".ToEnumParameter<OrderShipmentStatusEnum>());
+            paramList.Add("@ShipmentTypeText".ToEnumParameter<OrderShipmentTypeEnum>());
+            paramList.Add("@ProcessStatusText".ToEnumParameter<OrderShipmentProcessStatusEnum>());
             return paramList.ToArray();
 
         }

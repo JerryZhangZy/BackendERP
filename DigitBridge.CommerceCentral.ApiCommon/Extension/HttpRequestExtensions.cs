@@ -119,5 +119,14 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             }
             return value;
         }
+
+        public static int MasterAccountNum(this HttpRequest req)
+        {
+            return req.GetHeaderValue("masterAccountNum").ToInt();
+        }
+        public static int ProfileNum(this HttpRequest req)
+        {
+            return req.GetHeaderValue("profileNum").ToInt();
+        }
     }
 }
