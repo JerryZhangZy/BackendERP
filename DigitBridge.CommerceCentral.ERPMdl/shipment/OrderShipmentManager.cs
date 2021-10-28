@@ -309,17 +309,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var orderShimentUuid = shipmentData.UniqueId;
             //Get Sale by uuid
-            string salesOrderUuid = "";// osData.OrderShipmentHeader.s
-            if (string.IsNullOrEmpty(salesOrderUuid))
+            long orderDCAssignmentNum = shipmentData.OrderShipmentHeader.OrderDCAssignmentNum ?? 0;
+            if (orderDCAssignmentNum == 0)
             {
-                long orderDCAssignmentNum = shipmentData.OrderShipmentHeader.OrderDCAssignmentNum ?? 0;
-                if (orderDCAssignmentNum == 0)
-                {
-                    AddError($"No OrderDCAssignmentNum of OrderShipment {orderShimentUuid}.");
-                    return null;
-                }
-                salesOrderUuid = await GetSalesOrderUuidAsync(orderDCAssignmentNum);
+                AddError($"No OrderDCAssignmentNum of OrderShipment {orderShimentUuid}.");
+                return null;
             }
+            var salesOrderUuid = await GetSalesOrderUuidAsync(orderDCAssignmentNum);
             return salesOrderUuid;
         }
 
