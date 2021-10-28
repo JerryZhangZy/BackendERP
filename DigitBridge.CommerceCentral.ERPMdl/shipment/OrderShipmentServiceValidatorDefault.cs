@@ -162,6 +162,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
+            if (data.OrderShipmentCanceledItem != null && data.OrderShipmentCanceledItem.Count > 0
+                && data.OrderShipmentCanceledItem.Count(i => i.CanceledQty <= 0) > 0)
+            {
+                IsValid = false;
+                AddError($"CanceledQty error.");
+                return IsValid;
+            }
+            
             //if (string.IsNullOrEmpty(data.OrderShipmentHeader.CustomerUuid))
             //{
             //    IsValid = false;
@@ -175,12 +183,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual bool ValidateAdd(OrderShipmentData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.OrderShipmentHeader.RowNum != 0 && dbFactory.Exists<OrderShipmentHeader>(data.OrderShipmentHeader.RowNum))
+            data.OrderShipmentHeader.RowNum = 0;
+            if (!string.IsNullOrEmpty(data.OrderShipmentHeader.ShipmentID))
             {
-                IsValid = false;
-                AddError($"RowNum: {data.OrderShipmentHeader.RowNum} is duplicate.");
-                return IsValid;
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    IsValid = OrderShipmentHelper.ExistShipmentID(data.OrderShipmentHeader.ShipmentID, data.OrderShipmentHeader.MasterAccountNum, data.OrderShipmentHeader.ProfileNum);
+                    if (!IsValid)
+                    {
+                        AddError($"Data existed for ShipmentID:{data.OrderShipmentHeader.ShipmentID}");
+                        return false;
+                    }
+
+                }
             }
+            if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
+            {
+                foreach (var item in data.OrderShipmentPackage)
+                {
+                    if (item.OrderShipmentShippedItem.Count(j => j.ShippedQty <= 0) > 0)
+                    {
+                        AddError($"ShippedQty error, PackageID :{item.PackageID}");
+                        IsValid = false;
+                    }
+                }
+                if (!IsValid)
+                    return false;
+            }
+            //if (data.OrderShipmentHeader.RowNum != 0 && dbFactory.Exists<OrderShipmentHeader>(data.OrderShipmentHeader.RowNum))
+            //{
+            //    IsValid = false;
+            //    AddError($"RowNum: {data.OrderShipmentHeader.RowNum} is duplicate.");
+            //    return IsValid;
+            //}
             return true;
 
         }
@@ -195,12 +230,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return IsValid;
             }
 
-            if (data.OrderShipmentHeader.RowNum != 0 && !dbFactory.Exists<OrderShipmentHeader>(data.OrderShipmentHeader.RowNum))
+            if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
             {
-                IsValid = false;
-                AddError($"RowNum: {data.OrderShipmentHeader.RowNum} not found.");
-                return IsValid;
+                foreach (var item in data.OrderShipmentPackage)
+                {
+                    if (item.OrderShipmentShippedItem.Count(j => j.ShippedQty <= 0) > 0)
+                    {
+                        AddError($"ShippedQty error, PackageID :{item.PackageID}");
+                        IsValid = false;
+                    }
+                }
+                if (!IsValid)
+                    return false;
             }
+
+            //if (data.OrderShipmentHeader.RowNum != 0 && !dbFactory.Exists<OrderShipmentHeader>(data.OrderShipmentHeader.RowNum))
+            //{
+            //    IsValid = false;
+            //    AddError($"RowNum: {data.OrderShipmentHeader.RowNum} not found.");
+            //    return IsValid;
+            //}
             return true;
         }
 
@@ -254,6 +303,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"Unique Id cannot be empty.");
                 return IsValid;
             }
+            if (data.OrderShipmentCanceledItem != null && data.OrderShipmentCanceledItem.Count > 0
+                && data.OrderShipmentCanceledItem.Count(i => i.CanceledQty <= 0) > 0)
+            {
+                IsValid = false;
+                AddError($"CanceledQty error.");
+                return IsValid;
+            }
             //if (string.IsNullOrEmpty(data.OrderShipmentHeader.CustomerUuid))
             //{
             //    IsValid = false;
@@ -267,12 +323,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual async Task<bool> ValidateAddAsync(OrderShipmentData data)
         {
             var dbFactory = data.dbFactory;
-            if (data.OrderShipmentHeader.RowNum != 0 && (await dbFactory.ExistsAsync<OrderShipmentHeader>(data.OrderShipmentHeader.RowNum)))
+            data.OrderShipmentHeader.RowNum = 0;
+            if (!string.IsNullOrEmpty(data.OrderShipmentHeader.ShipmentID))
             {
-                IsValid = false;
-                AddError($"RowNum: {data.OrderShipmentHeader.RowNum} is duplicate.");
-                return IsValid;
+                using (var tx = new ScopedTransaction(dbFactory))
+                {
+                    IsValid = await OrderShipmentHelper.ExistShipmentIDAsync(data.OrderShipmentHeader.ShipmentID, data.OrderShipmentHeader.MasterAccountNum, data.OrderShipmentHeader.ProfileNum);
+                    if (!IsValid)
+                    {
+                        AddError($"Data existed for ShipmentID:{data.OrderShipmentHeader.ShipmentID}");
+                        return false;
+                    }
+
+                }
             }
+            if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
+            {
+                foreach (var item in data.OrderShipmentPackage)
+                {
+                    if (item.OrderShipmentShippedItem.Count(j => j.ShippedQty <= 0) > 0)
+                    {
+                        AddError($"ShippedQty error, PackageID :{item.PackageID}");
+                        IsValid = false;
+                    }
+                }
+                if (!IsValid)
+                    return false;
+            }
+            //if (data.OrderShipmentHeader.RowNum != 0 && (await dbFactory.ExistsAsync<OrderShipmentHeader>(data.OrderShipmentHeader.RowNum)))
+            //{
+            //    IsValid = false;
+            //    AddError($"RowNum: {data.OrderShipmentHeader.RowNum} is duplicate.");
+            //    return IsValid;
+            //}
             return true;
 
         }
@@ -287,12 +370,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return IsValid;
             }
 
-            if (data.OrderShipmentHeader.RowNum != 0 && !(await dbFactory.ExistsAsync<OrderShipmentHeader>(data.OrderShipmentHeader.RowNum)))
+            if (data.OrderShipmentPackage != null && data.OrderShipmentPackage.Count > 0)
             {
-                IsValid = false;
-                AddError($"RowNum: {data.OrderShipmentHeader.RowNum} not found.");
-                return IsValid;
+                foreach (var item in data.OrderShipmentPackage)
+                {
+                    if (item.OrderShipmentShippedItem.Count(j => j.ShippedQty <= 0) > 0)
+                    {
+                        AddError($"ShippedQty error, PackageID :{item.PackageID}");
+                        IsValid = false;
+                    }
+                }
+                if (!IsValid)
+                    return false;
             }
+
+            //if (data.OrderShipmentHeader.RowNum != 0 && !(await dbFactory.ExistsAsync<OrderShipmentHeader>(data.OrderShipmentHeader.RowNum)))
+            //{
+            //    IsValid = false;
+            //    AddError($"RowNum: {data.OrderShipmentHeader.RowNum} not found.");
+            //    return IsValid;
+            //}
             return true;
         }
 
