@@ -92,6 +92,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
                 dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
                 dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
+               
+                foreach (var item in dto.OrderShipmentCanceledItem)
+                {
+                    item.MasterAccountNum = pl.MasterAccountNum;
+                    item.ProfileNum = pl.DatabaseNum;
+
+                }
+                foreach (var item in dto.OrderShipmentPackage)
+                {
+                    item.MasterAccountNum = pl.MasterAccountNum;
+                    item.ProfileNum = pl.DatabaseNum; 
+                    for (int i = 0; i < item.OrderShipmentShippedItem.Count; i++)
+                    {
+                        var subItem = item.OrderShipmentShippedItem[i];
+                        subItem.MasterAccountNum = pl.MasterAccountNum;
+                        subItem.ProfileNum = pl.DatabaseNum; 
+                    }
+                }
             }
             else
             {
@@ -119,6 +137,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.OrderShipmentHeader.MasterAccountNum = pl.MasterAccountNum;
                 dto.OrderShipmentHeader.ProfileNum = pl.ProfileNum;
                 dto.OrderShipmentHeader.DatabaseNum = pl.DatabaseNum;
+                foreach (var item in dto.OrderShipmentCanceledItem)
+                {
+                    item.MasterAccountNum = pl.MasterAccountNum;
+                    item.ProfileNum = pl.DatabaseNum;
+
+                }
+                foreach (var item in dto.OrderShipmentPackage)
+                {
+                    item.MasterAccountNum = pl.MasterAccountNum;
+                    item.ProfileNum = pl.DatabaseNum;
+                    for (int i = 0; i < item.OrderShipmentShippedItem.Count; i++)
+                    {
+                        var subItem = item.OrderShipmentShippedItem[i];
+                        subItem.MasterAccountNum = pl.MasterAccountNum;
+                        subItem.ProfileNum = pl.DatabaseNum;
+                    }
+                }
             }
             else
             {
