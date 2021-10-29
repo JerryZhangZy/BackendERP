@@ -12,6 +12,11 @@
     "EventApi_BaseUrl": "http://localhost:7073/api/erpevents",
     "EventApi_AuthCode": "qPFIt1dSCo46yCwCpm3N6sBBJsSTzsWOViwmKr4mqpHaGyBfyUfmuw==",
 
+    //The maximum number of instances that the app can scale out to. Default is no limit.
+    "WEBSITE_MAX_DYNAMIC_APPLICATION_SCALE_OUT": 1,
+    ////Specifies the maximum number of language worker processes, with a default value of 1. The maximum value allowed is 10
+    //"FUNCTIONS_WORKER_PROCESS_COUNT": 1,
+
     //local
     "DebugMode": "true",
     "UseOrchestration": "false",
