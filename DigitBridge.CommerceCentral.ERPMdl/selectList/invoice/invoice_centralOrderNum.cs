@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"CentralOrderNum = {this.QueryObject.Term.FilterValue.ToSqlSafeString()}' "
+                    $"CentralOrderNum = {this.QueryObject.Term.FilterValue.ToSqlSafeString()} "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.SetFilterSqlString();
             this.SQL_Select = $@"
 SELECT CentralOrderNum AS [value], '' AS [text], COUNT(1) AS [count]
-FROM InvoiceHeaderInfo
+FROM InvoiceHeaderInfo INNER JOIN InvoiceHeader tbl ON InvoiceHeaderInfo.InvoiceUuid=tbl.InvoiceUUid
 WHERE {this.QueryObject.GetSQL()}
 GROUP BY CentralOrderNum
 ORDER BY [value]

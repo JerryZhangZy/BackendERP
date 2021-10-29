@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.QboDocNumber, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"tbl.QboDocNumber LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -36,9 +36,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.SetFilterSqlString();
             this.SQL_Select = $@"
 SELECT QboDocNumber AS [value], '' AS [text], COUNT(1) AS [count]
-FROM InvoiceHeader
+FROM InvoiceHeader tbl
 WHERE {this.QueryObject.GetSQL()}
 GROUP BY QboDocNumber
+ORDER BY [value]
 ";
             return this.SQL_Select;
         }

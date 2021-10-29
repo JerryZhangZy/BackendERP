@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.SetFilterSqlString();
             this.SQL_Select = $@"
 SELECT OrderNumber AS [value], '' AS [text], 1 AS [count]
-FROM InvoiceHeader
+FROM InvoiceHeader tbl
 WHERE {this.QueryObject.GetSQL()}
 ORDER BY [value]
 ";

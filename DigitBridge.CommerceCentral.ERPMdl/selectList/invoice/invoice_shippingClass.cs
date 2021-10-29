@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.SetFilterSqlString();
             this.SQL_Select = $@"
 SELECT ShippingClass AS id, ShippingClass AS [value], ShippingClass AS [text], COUNT(1) AS [count]
-FROM InvoiceHeaderInfo
+FROM InvoiceHeaderInfo INNER JOIN InvoiceHeader tbl ON InvoiceHeaderInfo.InvoiceUuid=tbl.InvoiceUUid
 WHERE {this.QueryObject.GetSQL()}
 GROUP BY ShippingClass
 ORDER BY [value]
