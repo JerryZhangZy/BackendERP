@@ -13,7 +13,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         // Table prefix which use in this sql query
         protected static string PREFIX = "tbl";
 
-        protected QueryFilterRawSql _Term = new QueryFilterRawSql("COALESCE(tbl.customerCode, '') LIKE 'term%' ", PREFIX, true);
+        protected QueryFilterRawSql _Term = new QueryFilterRawSql(string.Empty, PREFIX, true);
         public QueryFilterRawSql Term => _Term;
 
         public SelectListQuery() : base(PREFIX)
@@ -28,7 +28,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 Term.SqlString = string.Empty;
                 Term.Enable = false;
             }
-
+            else
+            {
+                Term.SqlString = sql;
+                Term.Enable = true;
+            }
         }
     }
 }
