@@ -14,18 +14,18 @@ using Microsoft.AspNetCore.Http;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public partial class invoice_customerCode : SelectListBase
+    public partial class invoice_qboDocNumber : SelectListBase
     {
-        public override string Name => "invoice_customerCode";
+        public override string Name => "invoice_qboDocNumber";
 
-        public invoice_customerCode(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public invoice_qboDocNumber(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.customerCode, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"COALESCE(tbl.QboDocNumber, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -35,19 +35,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SetFilterSqlString();
             this.SQL_Select = $@"
-SELECT i.*, COALESCE(d.CustomerName, '') AS [text] 
-FROM (
-    SELECT 
-        tbl.CustomerUuid AS id, 
-        tbl.CustomerCode AS [value], 
-        COUNT(1) AS [count]
-    FROM InvoiceHeader tbl
-    WHERE COALESCE(tbl.CustomerCode,'') != '' 
-        AND {this.QueryObject.GetSQL()}
-    GROUP BY tbl.CustomerCode, tbl.CustomerUuid
-) i 
-LEFT JOIN Customer d ON (d.CustomerUuid = i.id) 
-ORDER BY i.[value]
+SELECT QboDocNumber AS [value], '' AS [text], COUNT(1) AS [count]
+FROM InvoiceHeader
+WHERE {this.QueryObject.GetSQL()}
+GROUP BY QboDocNumber
 ";
             return this.SQL_Select;
         }
