@@ -71,7 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ProfileNum = 10001,
                 LoadAll = false,
                 Name = "invoice_CustomerCode",
-                Term = "'",
+                Term = "cus",
                 Top = 20,
             };
             using (var b = new Benchmark("invoice_CustomerCode_Test"))
