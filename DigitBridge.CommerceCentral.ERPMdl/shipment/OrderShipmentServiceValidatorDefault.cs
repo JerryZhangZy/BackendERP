@@ -223,7 +223,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    IsValid = OrderShipmentHelper.ExistShipmentID(data.OrderShipmentHeader.ShipmentID, data.OrderShipmentHeader.MasterAccountNum, data.OrderShipmentHeader.ProfileNum);
+                    IsValid = OrderShipmentHelper.ExistMainTrackingNumber(data.OrderShipmentHeader.MainTrackingNumber, data.OrderShipmentHeader.MasterAccountNum, data.OrderShipmentHeader.ProfileNum);
                     if (!IsValid)
                     {
                         AddError($"Data existed for ShipmentID:{data.OrderShipmentHeader.ShipmentID}");
@@ -363,7 +363,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    IsValid = await OrderShipmentHelper.ExistShipmentIDAsync(data.OrderShipmentHeader.ShipmentID, data.OrderShipmentHeader.MasterAccountNum, data.OrderShipmentHeader.ProfileNum);
+                    IsValid = await OrderShipmentHelper.ExistMainTrackingNumberAsync(data.OrderShipmentHeader.MainTrackingNumber, data.OrderShipmentHeader.MasterAccountNum, data.OrderShipmentHeader.ProfileNum);
                     if (!IsValid)
                     {
                         AddError($"Data existed for ShipmentID:{data.OrderShipmentHeader.ShipmentID}");
