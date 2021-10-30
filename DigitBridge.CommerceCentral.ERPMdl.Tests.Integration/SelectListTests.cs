@@ -82,6 +82,269 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task invoice_InvoiceNumber_Test()
+        {
+            var payload = new SelectListPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Name = "invoice_InvoiceNumber",
+                Term = "2021101",
+                Top = 20,
+            };
+            using (var b = new Benchmark("invoice_InvoiceNumber_Test"))
+            {
+                var factory = new SelectListFactory(dataBaseFactory);
+                var result = await factory.GetSelectListAsync(payload);
+            }
+            Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.NotEmpty(payload.Data.ToString());
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task invoice_QboDocNumber_Test()
+        {
+            var payload = new SelectListPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Name = "invoice_QboDocNumber",
+                Term = "10",
+                Top = 20,
+            };
+            using (var b = new Benchmark("invoice_QboDocNumber_Test"))
+            {
+                var factory = new SelectListFactory(dataBaseFactory);
+                var result = await factory.GetSelectListAsync(payload);
+            }
+            Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.NotEmpty(payload.Data.ToString());
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task invoice_OrderNumber_Test()
+        {
+            var payload = new SelectListPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Name = "invoice_OrderNumber",
+                Term = "Sales",
+                Top = 20,
+            };
+            using (var b = new Benchmark("invoice_OrderNumber_Test"))
+            {
+                var factory = new SelectListFactory(dataBaseFactory);
+                var result = await factory.GetSelectListAsync(payload);
+            }
+            Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.NotEmpty(payload.Data.ToString());
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task invoice_CustomerName_Test()
+        {
+            var payload = new SelectListPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Name = "invoice_CustomerName",
+                Term = "fi",
+                Top = 20,
+            };
+            using (var b = new Benchmark("invoice_CustomerName_Test"))
+            {
+                var factory = new SelectListFactory(dataBaseFactory);
+                var result = await factory.GetSelectListAsync(payload);
+            }
+            Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.NotEmpty(payload.Data.ToString());
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task invoice_Terms_Test()
+        {
+            var payload = new SelectListPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Name = "invoice_Terms",
+                Term = "mou",
+                Top = 20,
+            };
+            using (var b = new Benchmark("invoice_Terms_Test"))
+            {
+                var factory = new SelectListFactory(dataBaseFactory);
+                var result = await factory.GetSelectListAsync(payload);
+            }
+            Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.NotEmpty(payload.Data.ToString());
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task invoice_ShippingCarrier_Test()
+        {
+            var payload = new SelectListPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Name = "invoice_ShippingCarrier",
+                Term = "mk",
+                Top = 20,
+            };
+            using (var b = new Benchmark("invoice_ShippingCarrier_Test"))
+            {
+                var factory = new SelectListFactory(dataBaseFactory);
+                var result = await factory.GetSelectListAsync(payload);
+            }
+            Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.NotEmpty(payload.Data.ToString());
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task invoice_ShippingClass_Test()
+        {
+            var payload = new SelectListPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Name = "invoice_ShippingClass",
+                Term = "yqpqs",
+                Top = 20,
+            };
+            using (var b = new Benchmark("invoice_ShippingClass_Test"))
+            {
+                var factory = new SelectListFactory(dataBaseFactory);
+                var result = await factory.GetSelectListAsync(payload);
+            }
+            Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.NotEmpty(payload.Data.ToString());
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task invoice_CentralOrderNum_Test()
+        {
+            var payload = new SelectListPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Name = "invoice_CentralOrderNum",
+                Term = "0",
+                Top = 20,
+            };
+            using (var b = new Benchmark("invoice_CentralOrderNum_Test"))
+            {
+                var factory = new SelectListFactory(dataBaseFactory);
+                var result = await factory.GetSelectListAsync(payload);
+            }
+            Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.NotEmpty(payload.Data.ToString());
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task invoice_ChannelOrderID_Test()
+        {
+            var payload = new SelectListPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Name = "invoice_ChannelOrderID",
+                Term = "8b",
+                Top = 20,
+            };
+            using (var b = new Benchmark("invoice_ChannelOrderID_Test"))
+            {
+                var factory = new SelectListFactory(dataBaseFactory);
+                var result = await factory.GetSelectListAsync(payload);
+            }
+            Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.NotEmpty(payload.Data.ToString());
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task invoice_WarehouseCode_Test()
+        {
+            var payload = new SelectListPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Name = "invoice_WarehouseCode",
+                Term = "nes",
+                Top = 20,
+            };
+            using (var b = new Benchmark("invoice_WarehouseCode_Test"))
+            {
+                var factory = new SelectListFactory(dataBaseFactory);
+                var result = await factory.GetSelectListAsync(payload);
+            }
+            Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.NotEmpty(payload.Data.ToString());
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task invoice_RefNum_Test()
+        {
+            var payload = new SelectListPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Name = "invoice_RefNum",
+                Term = "mol",
+                Top = 20,
+            };
+            using (var b = new Benchmark("invoice_RefNum_Test"))
+            {
+                var factory = new SelectListFactory(dataBaseFactory);
+                var result = await factory.GetSelectListAsync(payload);
+            }
+            Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.NotEmpty(payload.Data.ToString());
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task invoice_CustomerPoNum_Test()
+        {
+            var payload = new SelectListPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = false,
+                Name = "invoice_CustomerPoNum",
+                Term = "duc",
+                Top = 20,
+            };
+            using (var b = new Benchmark("invoice_CustomerPoNum_Test"))
+            {
+                var factory = new SelectListFactory(dataBaseFactory);
+                var result = await factory.GetSelectListAsync(payload);
+            }
+            Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+            Assert.NotEmpty(payload.Data.ToString());
+        }
         #endregion async methods
     }
 }
