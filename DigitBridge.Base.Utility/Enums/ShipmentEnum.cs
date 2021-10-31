@@ -5,10 +5,8 @@ using System.Text;
 
 namespace DigitBridge.Base.Common
 {
-    public enum ShipmentStatus : int
+    public enum OrderShipmentStatusEnum : int
     {
-        [Description("Default")]
-        Default = -1,
         [Description("Pending")]
         Pending = 0,
         [Description("Shipped")]
@@ -19,14 +17,39 @@ namespace DigitBridge.Base.Common
         Cancelled = 3,
         [Description("Shipping")]
         Shipping = 9,
+        [Description("Canceled")]
+        Canceled = 16
     }
-    public enum ShipmentType : int
+    public enum OrderShipmentTypeEnum : int
     {
         Default = 0
     }
-    public enum ShipmentProcessStatus : int
+    public enum OrderShipmentProcessStatusEnum : int
     {
-        Default = 0
+        Default = -1,
+        [Description("Shipment transferred to erp invoice")]
+        Transferred = 0,
     }
 
+    public enum OrderShipmentPackageTypeEnum : int
+    {
+        Solid = 0,
+        Mix = 1,
+        PrePack = 2,
+    }
+
+    public enum VolumeUnitEnum : int
+    {
+        CubicInch
+    }
+
+    public enum LengthUnitEnum : int
+    {
+        Inch
+    }
+
+    public enum WeightUnitEnum : int
+    {
+        Pound
+    }
 }

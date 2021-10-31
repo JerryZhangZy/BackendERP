@@ -23,9 +23,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
-            if (string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
+            if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.customerCode, '') LIKE '{this.QueryObject.Term.FilterValue}%' "
+                    $"COALESCE(tbl.customerCode, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);

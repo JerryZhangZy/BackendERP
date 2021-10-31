@@ -61,8 +61,10 @@ COALESCE(ist.text, '') invoiceStatusText,
 {InfoHelper.ShippingClass()},
 {InfoHelper.DistributionCenterNum()},
 {InfoHelper.CentralOrderNum()},
-{InfoHelper.ChannelNum()},
+{InfoHelper.ChannelNum()}, 
 {InfoHelper.ChannelAccountNum()},
+chanel.ChannelName,
+channelAccount.ChannelAccountName,
 {InfoHelper.ChannelOrderID()},
 {InfoHelper.WarehouseUuid()},
 {InfoHelper.WarehouseCode()},
@@ -84,9 +86,16 @@ COALESCE(ist.text, '') invoiceStatusText,
 
         protected override string GetSQL_from()
         {
+            var masterAccountNum = $"{Helper.TableAllies}.MasterAccountNum";
+            var profileNum = $"{Helper.TableAllies}.ProfileNum";
+            var channelNum = $"{InfoHelper.TableAllies}.ChannelNum";
+            var channelAccountNum = $"{InfoHelper.TableAllies}.ChannelAccountNum";
+
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
-LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.InvoiceUuid = {InfoHelper.TableAllies}.InvoiceUuid)
+ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.InvoiceUuid = {InfoHelper.TableAllies}.InvoiceUuid)
+ {SqlStringHelper.Join_Setting_Channel(masterAccountNum, profileNum, channelNum)} 
+ {SqlStringHelper.Join_Setting_ChannelAccount(masterAccountNum, profileNum, channelNum, channelAccountNum)} 
  LEFT JOIN @InvoiceStatusEnum ist ON ({Helper.TableAllies}.InvoiceStatus = ist.num)
  LEFT JOIN @InvoiceTypeEnum itt ON ({Helper.TableAllies}.InvoiceType = itt.num)
 ";

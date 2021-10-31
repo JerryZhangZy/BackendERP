@@ -57,6 +57,9 @@ COALESCE(post.text, '') PoStatusText,
 {PoHeaderHelper.PoSourceCode()}, 
 {PoHeaderInfoHelper.CentralOrderNum()},
 {PoHeaderInfoHelper.ChannelNum()},
+{PoHeaderInfoHelper.ChannelAccountNum()},
+chanel.ChannelName,
+channelAccount.ChannelAccountName,
 {PoHeaderInfoHelper.ChannelOrderID()},
 {PoHeaderInfoHelper.BillToEmail()},
 {PoHeaderInfoHelper.ShipToName()}
@@ -67,11 +70,18 @@ COALESCE(post.text, '') PoStatusText,
 
         protected override string GetSQL_from()
         {
+            var masterAccountNum = $"{PoHeaderHelper.TableAllies}.MasterAccountNum";
+            var profileNum = $"{PoHeaderHelper.TableAllies}.ProfileNum";
+            var channelNum = $"{PoHeaderInfoHelper.TableAllies}.ChannelNum";
+            var channelAccountNum = $"{PoHeaderInfoHelper.TableAllies}.ChannelAccountNum";
+
             this.SQL_From = $@"
  FROM {PoHeaderHelper.TableName} {PoHeaderHelper.TableAllies} 
  LEFT JOIN {PoHeaderInfoHelper.TableName} {PoHeaderInfoHelper.TableAllies} ON ({PoHeaderInfoHelper.TableAllies}.PoUuid = {PoHeaderHelper.TableAllies}.PoUuid)
  LEFT JOIN @PoStatusText post ON ({PoHeaderHelper.TableAllies}.PoStatus = post.num)
  LEFT JOIN @PoTypeText pott ON ({PoHeaderHelper.TableAllies}.PoType = pott.num)
+ {SqlStringHelper.Join_Setting_Channel(masterAccountNum, profileNum, channelNum)} 
+ {SqlStringHelper.Join_Setting_ChannelAccount(masterAccountNum, profileNum, channelNum, channelAccountNum)} 
 ";
             return this.SQL_From;
         }

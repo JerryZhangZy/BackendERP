@@ -35,6 +35,8 @@ SELECT
 {OrderShipmentHeaderHelper.ProfileNum()}, 
 {OrderShipmentHeaderHelper.ChannelNum()}, 
 {OrderShipmentHeaderHelper.ChannelAccountNum()}, 
+chanel.ChannelName,
+channelAccount.ChannelAccountName,
 {OrderShipmentHeaderHelper.OrderDCAssignmentNum()}, 
 {OrderShipmentHeaderHelper.DistributionCenterNum()}, 
 {OrderShipmentHeaderHelper.CentralOrderNum()}, 
@@ -66,11 +68,19 @@ COALESCE(pst.text, '') ProcessStatusText,
 
         protected override string GetSQL_from()
         {
+            var masterAccountNum = $"{OrderShipmentHeaderHelper.TableAllies}.MasterAccountNum";
+            var profileNum = $"{OrderShipmentHeaderHelper.TableAllies}.ProfileNum";
+            var channelNum = $"{OrderShipmentHeaderHelper.TableAllies}.ChannelNum";
+            var channelAccountNum = $"{OrderShipmentHeaderHelper.TableAllies}.ChannelAccountNum";
+
             this.SQL_From = $@"
  FROM {OrderShipmentHeaderHelper.TableName} {OrderShipmentHeaderHelper.TableAllies}  
  LEFT JOIN @ShipmentStatusText sst ON ({OrderShipmentHeaderHelper.TableAllies}.ShipmentStatus = sst.num)
  LEFT JOIN @ShipmentTypeText stt ON ({OrderShipmentHeaderHelper.TableAllies}.ShipmentType = stt.num)
  LEFT JOIN @ProcessStatusText pst ON ({OrderShipmentHeaderHelper.TableAllies}.ProcessStatus = pst.num)
+ {SqlStringHelper.Join_Setting_Channel(masterAccountNum, profileNum, channelNum)}
+ {SqlStringHelper.Join_Setting_ChannelAccount(masterAccountNum, profileNum, channelNum, channelAccountNum)}
+ 
 ";
             return this.SQL_From;
         }
@@ -78,9 +88,9 @@ COALESCE(pst.text, '') ProcessStatusText,
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-            paramList.Add("@ShipmentStatusText".ToEnumParameter<ShipmentStatus>());
-            paramList.Add("@ShipmentTypeText".ToEnumParameter<ShipmentType>());
-            paramList.Add("@ProcessStatusText".ToEnumParameter<ShipmentProcessStatus>());
+            paramList.Add("@ShipmentStatusText".ToEnumParameter<OrderShipmentStatusEnum>());
+            paramList.Add("@ShipmentTypeText".ToEnumParameter<OrderShipmentTypeEnum>());
+            paramList.Add("@ProcessStatusText".ToEnumParameter<OrderShipmentProcessStatusEnum>());
             return paramList.ToArray();
 
         }

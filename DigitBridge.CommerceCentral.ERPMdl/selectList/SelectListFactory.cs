@@ -257,8 +257,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             #endregion
 
             #region invoice
+            if (payload.Name.EqualsIgnoreSpace("invoice_invoiceNumber"))
+                return new invoice_invoiceNumber(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("invoice_qboDocNumber"))
+                return new invoice_qboDocNumber(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("invoice_orderNumber"))
+                return new invoice_orderNumber(dbFactory);
             if (payload.Name.EqualsIgnoreSpace("invoice_customerCode"))
                 return new invoice_customerCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("invoice_customerName"))
+                return new invoice_customerName(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("invoice_terms"))
+                return new invoice_terms(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("invoice_shippingCarrier"))
+                return new invoice_shippingCarrier(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("invoice_shippingClass"))
+                return new invoice_shippingClass(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("invoice_centralOrderNum"))
+                return new invoice_centralOrderNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("invoice_channelOrderID"))
+                return new invoice_channelOrderID(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("invoice_warehouseCode"))
+                return new invoice_warehouseCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("invoice_refNum"))
+                return new invoice_refNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("invoice_customerPoNum"))
+                return new invoice_customerPoNum(dbFactory);
 
             //if (obj.listFor.EqualsIgnoreSpace("ins_cus_id"))
             //    return new DemList_ins_cus_id(obj);
