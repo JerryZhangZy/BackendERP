@@ -23,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
-            if (string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
+            if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
                     $"COALESCE(tbl.DivisionCode, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
@@ -45,6 +45,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
     WHERE COALESCE(tbl.DivisionCode,'') != '' 
         AND {this.QueryObject.GetSQL()}
     GROUP BY tbl.DivisionCode
+ORDER BY tbl.DivisionCode 
 ";
             return this.SQL_Select;
         }
