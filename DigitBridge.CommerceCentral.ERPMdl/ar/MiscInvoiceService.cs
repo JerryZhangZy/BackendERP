@@ -301,7 +301,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Add MiscInvoice from salesOrder
         /// </summary>
-        public virtual async Task<bool> AddAsync(SalesOrderHeader salesOrder)
+        public virtual async Task<bool> AddFromSalesOrderAsync(SalesOrderHeader salesOrder)
         {
             Add();
 

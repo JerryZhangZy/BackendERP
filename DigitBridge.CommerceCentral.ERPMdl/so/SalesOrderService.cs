@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -377,7 +378,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="orderNumber"></param>
         /// <param name="amount"></param>
         /// <returns></returns>
-        public virtual async Task<bool> AddPreSalesAmount(SalesOrderPayload payload, string orderNumber, decimal amount)
+        public virtual async Task<bool> AddPreSalesAmountAsync(SalesOrderPayload payload, string orderNumber, decimal amount)
         {
             if (string.IsNullOrEmpty(orderNumber))
             {
@@ -390,7 +391,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            List();
             //load salesorder data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             if (!success)
@@ -400,7 +400,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Data.SalesOrderHeader.DepositAmount = amount;
 
             var miscInvoiceService = new MiscInvoiceService(dbFactory);
-            if (!(await miscInvoiceService.AddAsync(Data.SalesOrderHeader)))
+            if (!(await miscInvoiceService.AddFromSalesOrderAsync(Data.SalesOrderHeader)))
             {
                 this.Messages = this.Messages.Concat(miscInvoiceService.Messages).ToList();
                 return false;
@@ -410,6 +410,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Data.SalesOrderHeader.MiscInvoiceUuid = miscInvoiceService.Data.MiscInvoiceHeader.MiscInvoiceUuid;
 
 
+            _ProcessMode = ProcessingMode.Edit;
             return await SaveDataAsync();
         }
     }
