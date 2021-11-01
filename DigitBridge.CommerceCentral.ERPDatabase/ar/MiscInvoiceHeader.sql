@@ -46,15 +46,15 @@ GO
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[MiscInvoiceHeader]') AND name = N'UK_MiscInvoiceHeader_InvoiceId')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_MiscInvoiceHeader] ON [dbo].[MiscInvoiceHeader]
 (
-	[InvoiceUuid] ASC
+	[MiscInvoiceUuid] ASC
 ) 
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[MiscInvoiceHeader]') AND name = N'UI_MiscInvoiceHeader_InvoiceNumber')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_MiscInvoiceHeader_InvoiceNumber] ON [dbo].[MiscInvoiceHeader]
+CREATE UNIQUE NONCLUSTERED INDEX [UI_MiscInvoiceHeader_MiscInvoiceNumber] ON [dbo].[MiscInvoiceHeader]
 (
 	[ProfileNum] ASC,
-	[InvoiceNumber] ASC
+	[MiscInvoiceNumber] ASC
 ) 
 GO
 
@@ -69,19 +69,5 @@ GO
 CREATE NONCLUSTERED INDEX [IX_MiscInvoiceHeader_InvoiceSourceCode] ON [dbo].[MiscInvoiceHeader]
 (
 	[InvoiceSourceCode] ASC
-) 
-GO
-
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[MiscInvoiceHeader]') AND name = N'IX_MiscInvoiceHeader_SalesOrderUuid')
-CREATE NONCLUSTERED INDEX [IX_MiscInvoiceHeader_SalesOrderUuid] ON [dbo].[MiscInvoiceHeader]
-(
-	[SalesOrderUuid] ASC
-) 
-GO
-
---IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[MiscInvoiceHeader]') AND name = N'IX_MiscInvoiceHeader_OrderNumber')
-CREATE NONCLUSTERED INDEX [IX_MiscInvoiceHeader_OrderNumber] ON [dbo].[MiscInvoiceHeader]
-(
-	[OrderNumber] ASC
 ) 
 GO

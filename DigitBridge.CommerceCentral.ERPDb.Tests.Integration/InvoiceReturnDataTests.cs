@@ -29,9 +29,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
         public const int MasterAccountNum = 10001;
         public const int ProfileNum = 10001;
-        public static async Task<InvoiceTransactionData> GetFakerInvoiceReturnDataAsync(IDataBaseFactory dbFactory)
+        public static async Task<InvoiceTransactionData> GetFakerInvoiceReturnDataAsync(IDataBaseFactory dbFactory, InvoiceData invoiceData)
         {
-            var invoiceData = await InvoiceDataTests.GetFakerInvoiceDataAsync(dbFactory);
+            //var invoiceData = await InvoiceDataTests.GetFakerInvoiceDataAsync(dbFactory);
             var data = GetFakerData();
             data.InvoiceTransaction.TransType = (int)TransTypeEnum.Return;
             data.InvoiceTransaction.MasterAccountNum = MasterAccountNum;
@@ -42,20 +42,24 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 var retrunItem = data.InvoiceReturnItems[i];
                 var invoiceItem = invoiceData.InvoiceItems[i];
                 retrunItem.ReturnQty = new Random().Next(1, invoiceItem.ShipQty.ToInt());
+
                 retrunItem.SKU = invoiceItem.SKU;
                 retrunItem.WarehouseCode = invoiceItem.WarehouseCode;
+                retrunItem.InventoryUuid = invoiceItem.InventoryUuid;
+                retrunItem.ProductUuid = invoiceItem.ProductUuid;
+                retrunItem.WarehouseUuid = invoiceItem.WarehouseUuid;
+
                 retrunItem.InvoiceItemsUuid = invoiceItem.InvoiceItemsUuid;
             }
             data.InvoiceData = invoiceData;
             return data;
         }
 
-        public static async Task<InvoiceTransactionData> SaveFakerInvoiceReturn(IDataBaseFactory dbFactory, InvoiceTransactionData data = null)
+        public static async Task<InvoiceTransactionData> SaveFakerInvoiceReturn(IDataBaseFactory dbFactory)
         {
-            if (data == null)
-                data = await GetFakerInvoiceReturnDataAsync(dbFactory);
+            var invoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(dbFactory);
 
-            data.InvoiceData = await InvoiceDataTests.SaveFakerInvoice(dbFactory, data.InvoiceData);
+            var data = await GetFakerInvoiceReturnDataAsync(dbFactory, invoiceData); 
 
             var srv = new InvoiceReturnService(dbFactory);
             srv.Add();
@@ -66,7 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             {
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
-                InvoiceTransaction = dto, 
+                InvoiceTransaction = dto,
             };
 
             var success = await srv.AddAsync(returnPayload_Add);

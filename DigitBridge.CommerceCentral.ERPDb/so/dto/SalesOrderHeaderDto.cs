@@ -403,10 +403,30 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderSourceCode => OrderSourceCode != null;
 
-		/// <summary>
-		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
+        /// <summary>
+		/// (Ignore) Deposit Amount. <br> Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false")]
+		[OpenApiPropertyDescription("(Ignore) Deposit Amount. <br> Display: true, Editable: false")]
+        public decimal? DepositAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasDepositAmount => DepositAmount != null;
+
+        /// <summary>
+        /// Misc Invoice Uuid. <br> Display: true, Editable: false.
+        /// </summary>
+        [OpenApiPropertyDescription("Misc Invoice Uuid. <br> Display: true, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The MiscInvoiceUuid value cannot exceed 50 characters. ")]
+        public string MiscInvoiceUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasMiscInvoiceUuid => MiscInvoiceUuid != null;
+
+
+        /// <summary>
+        /// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
+        /// </summary>
+        [OpenApiPropertyDescription("(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false")]
         [DataType(DataType.DateTime)]
         public DateTime? UpdateDateUtc { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

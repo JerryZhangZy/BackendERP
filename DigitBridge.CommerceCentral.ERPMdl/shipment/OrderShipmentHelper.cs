@@ -146,31 +146,31 @@ AND OrderShipmentNum= @rowNum
             return result > 0;
         }
 
-        public static bool ExistShipmentID(string shipmentID, int masterAccountNum, int profileNum)
+        public static bool ExistMainTrackingNumber(string mainTrackingNumber, int masterAccountNum, int profileNum)
         {
             var sql = $@"
 SELECT COUNT(1) FROM OrderShipmentHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND ShipmentID= @shipmentID
+AND MainTrackingNumber= @mainTrackingNumber
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql, masterAccountNum.ToSqlParameter("masterAccountNum"),
                  profileNum.ToSqlParameter("profileNum"),
-                 shipmentID.ToSqlParameter("shipmentID"));
+                 mainTrackingNumber.ToSqlParameter("mainTrackingNumber"));
             return result > 0;
         }
 
-        public static async Task<bool> ExistShipmentIDAsync(string shipmentID, int masterAccountNum, int profileNum)
+        public static async Task<bool> ExistMainTrackingNumberAsync(string mainTrackingNumber, int masterAccountNum, int profileNum)
         {
             var sql = $@"
 SELECT COUNT(1) FROM OrderShipmentHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND ShipmentID= @shipmentID
+AND MainTrackingNumber= @mainTrackingNumber
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql, masterAccountNum.ToSqlParameter("masterAccountNum"),
                  profileNum.ToSqlParameter("profileNum"),
-                 shipmentID.ToSqlParameter("shipmentID"));
+                 mainTrackingNumber.ToSqlParameter("mainTrackingNumber"));
             return result > 0;
         }
     }

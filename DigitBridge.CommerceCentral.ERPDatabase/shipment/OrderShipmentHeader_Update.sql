@@ -22,4 +22,14 @@ END
 IF COL_LENGTH('OrderShipmentHeader', 'InvoiceNumber') IS NULL					
 BEGIN					
     ALTER TABLE OrderShipmentHeader ADD [InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT ''
-END		
+END	
+
+--Add by junxian 10/30/2021
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'UI_OrderShipmentHeader_MainTrackingNumber')
+CREATE UNIQUE NONCLUSTERED INDEX [UI_OrderShipmentHeader_MainTrackingNumber] ON [dbo].[OrderShipmentHeader]
+(
+	[ProfileNum] ASC,
+	[MainTrackingNumber] ASC
+) 
+GO
+

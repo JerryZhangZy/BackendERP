@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.CommerceCentral.ERPMdl.selectList.poHeader;
+using DigitBridge.CommerceCentral.ERPMdl.selectList.poHeaderInfo;
+using DigitBridge.CommerceCentral.ERPMdl.selectList.customer;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
@@ -60,7 +63,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload == null || string.IsNullOrWhiteSpace(payload.Name))
                 return null;
 
-            #region system global 
+            #region system global
+            if (payload.Name.EqualsIgnoreSpace("inventory_alternateCode")) return new inventory_alternateCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_oemCode")) return new inventory_oemCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_catalogPage")) return new inventory_catalogPage(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_productYear")) return new inventory_productYear(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_categoryCode")) return new inventory_categoryCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_remark")) return new inventory_remark(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_classCode")) return new inventory_classCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_sizeCode")) return new inventory_sizeCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_colorPatternCode")) return new inventory_colorPatternCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_sizeType")) return new inventory_sizeType(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_departmentCode")) return new inventory_departmentCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_sku")) return new inventory_sku(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_divisionCode")) return new inventory_divisionCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_styleCode")) return new inventory_styleCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_groupCode")) return new inventory_groupCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_subClassCode")) return new inventory_subClassCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_lengthCode")) return new inventory_lengthCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_subGroupCode")) return new inventory_subGroupCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_lotNum")) return new inventory_lotNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_warehouseCode")) return new inventory_warehouseCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_lpnNum")) return new inventory_lpnNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_widthCode")) return new inventory_widthCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_model")) return new inventory_model(dbFactory);
             //if (obj.listFor.EqualsIgnoreSpace("oms_ar_term"))
             //    return new DemList_oms_ar_term(obj);
             //if (obj.listFor.EqualsIgnoreSpace("oms_src_file"))
@@ -185,34 +211,72 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             #endregion
 
             #region customer
-            //if (obj.listFor.EqualsIgnoreSpace("cus_cus_id"))
-            //    return new DemList_cus_cus_id(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_cus_nm"))
-            //    return new DemList_cus_cus_nm(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_phone"))
-            //    return new DemList_cus_phone(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_email_adr"))
-            //    return new DemList_cus_email_adr(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_city"))
-            //    return new DemList_cus_city(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_state"))
-            //    return new DemList_cus_state(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_sales_num"))
-            //    return new DemList_cus_sales_num(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_dept_num"))
-            //    return new DemList_cus_dept_num(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_terr_cd"))
-            //    return new DemList_cus_terr_cd(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_cus_sur"))
-            //    return new DemList_cus_cus_sur(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_area_cd"))
-            //    return new DemList_cus_area_cd(obj);
+            if (payload.Name.EqualsIgnoreSpace("customer_area"))
+                return new customer_area(dbFactory);
 
+            if (payload.Name.EqualsIgnoreSpace("customer_customerCode"))
+                return new customer_customerCode(dbFactory);
 
+            if (payload.Name.EqualsIgnoreSpace("customer_classCode"))
+                return new customer_classCode(dbFactory);
 
+            if (payload.Name.EqualsIgnoreSpace("customer_customerCode"))
+                return new customer_customerCode(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_customerName"))
+                return new customer_customerName(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_departmentCode"))
+                return new customer_departmentCode(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_districtn"))
+                return new customer_districtn(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_divisionCode"))
+                return new customer_divisionCode(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_email"))
+                return new customer_email(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_phone1"))
+                return new customer_phone1(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_region"))
+                return new customer_region(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_sourceCode"))
+                return new customer_sourceCode(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_zone"))
+                return new customer_zone(dbFactory);
+   
+ 
             #endregion
 
             #region S/O
+            if (payload.Name.EqualsIgnoreSpace("so_orderNumber"))
+                return new so_orderNumber(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_customerCode"))
+                return new so_customerCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_customerName"))
+                return new so_customerName(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_terms"))
+                return new so_terms(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("so_shippingCarrier"))
+                return new so_shippingCarrier(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_shippingClass"))
+                return new so_shippingClass(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_centralOrderNum"))
+                return new so_centralOrderNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_channelOrderID"))
+                return new so_channelOrderID(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_warehouseCode"))
+                return new so_warehouseCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_refNum"))
+                return new so_refNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_customerPoNum"))
+                return new so_customerPoNum(dbFactory);
             //if (obj.listFor.EqualsIgnoreSpace("so_ord_num"))
             //    return new DemList_so_ord_num(obj);
             //if (obj.listFor.EqualsIgnoreSpace("so_cus_id"))
@@ -239,7 +303,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //    return new DemList_so_str_num(obj);
 
             #endregion
-
             #region invoice
             if (payload.Name.EqualsIgnoreSpace("invoice_invoiceNumber"))
                 return new invoice_invoiceNumber(dbFactory);
@@ -293,6 +356,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //    return new DemList_ins_processor(obj);
             #endregion
 
+
+            #region PO
+            if (payload.Name.EqualsIgnoreSpace("poHeader_poNum"))
+                return new poHeader_poNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeader_vendorName"))
+                return new poHeader_poNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeader_vendorNum"))
+                return new poHeader_vendorNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_centralOrderNum"))
+                return new poHeaderInfo_centralOrderNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_channelAccountNum"))
+                return new poHeaderInfo_channelAccountNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_channelNum"))
+                return new poHeaderInfo_channelNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_channelOrderID"))
+                return new poHeaderInfo_channelOrderID(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_customerPoNum"))
+                return new poHeaderInfo_customerPoNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_refNum"))
+                return new poHeaderInfo_refNum(dbFactory);
+
+
+            #endregion 
 
             return null;
         }
