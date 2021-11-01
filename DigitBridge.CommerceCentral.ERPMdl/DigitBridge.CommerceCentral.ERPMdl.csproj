@@ -34,7 +34,6 @@
     <Folder Include="customerInquiry\" />
     <Folder Include="companySummary\" />
     <Folder Include="warehouseTransfer\" />
-    <Folder Include="po\" />
     <Folder Include="vendor\" />
   </ItemGroup>
 

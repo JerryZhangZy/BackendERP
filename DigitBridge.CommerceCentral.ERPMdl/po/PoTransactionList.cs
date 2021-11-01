@@ -15,16 +15,16 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Helper = DigitBridge.CommerceCentral.ERPDb.ApInvoiceHeaderHelper;
+using Helper = DigitBridge.CommerceCentral.ERPDb.PoTransactionHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class ApInvoiceList : SqlQueryBuilder<ApInvoiceQuery>
+    public class PoTransactionList : SqlQueryBuilder<PoTransactionQuery>
     {
-        public ApInvoiceList(IDataBaseFactory dbFactory) : base(dbFactory)
+        public PoTransactionList(IDataBaseFactory dbFactory) : base(dbFactory)
         {
         }
-        public ApInvoiceList(IDataBaseFactory dbFactory, ApInvoiceQuery queryObject)
+        public PoTransactionList(IDataBaseFactory dbFactory, PoTransactionQuery queryObject)
             : base(dbFactory, queryObject)
         {
         }
@@ -35,119 +35,85 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.RowNum()}, 
-{Helper.ApInvoiceUuid()}, 
-{Helper.ApInvoiceNum()}, 
-{Helper.ApInvoiceType()}, 
-{Helper.ApInvoiceStatus()}, 
-{Helper.ApInvoiceDate()},
-
-{Helper.ApInvoiceTime()},
-
-{Helper.VendorUuid()}, 
-{Helper.VendorNum()}, 
-{Helper.VendorName()}, 
-{Helper.VendorInvoiceNum()}, 
-{Helper.VendorUuid()}, 
-{Helper.VendorInvoiceNum()}, 
-{Helper.VendorInvoiceDate()}, 
-{Helper.DueDate()}, 
-{Helper.Currency()}, 
-{Helper.BillDate()}, 
-{Helper.TotalAmount()}, 
-{Helper.PaidAmount()}, 
-{Helper.CreditAmount()}, 
-{Helper.Balance()}, 
-{Helper.CreditAccount()}, 
-{Helper.DebitAccount()}, 
-{Helper.EnterDateUtc()}, 
-{Helper.UpdateDateUtc()}, 
-{Helper.EnterBy()}, 
-{Helper.UpdateBy()}, 
-{Helper.DigitBridgeGuid()} 
+{Helper.TableAllies}.*
 ";
             return this.SQL_Select;
         }
 
         protected override string GetSQL_from()
         {
-            var masterAccountNum = $"{Helper.TableAllies}.MasterAccountNum";
-            var profileNum = $"{Helper.TableAllies}.ProfileNum";
-
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
- LEFT JOIN @InvoiceStatusEnum ist ON ({Helper.TableAllies}.ApInvoiceStatus = ist.num)
- LEFT JOIN @InvoiceTypeEnum itt ON ({Helper.TableAllies}.ApInvoiceType = itt.num)
 ";
- 
             return this.SQL_From;
         }
 
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-            paramList.Add("@InvoiceStatusEnum".ToEnumParameter<InvoiceStatusEnum>());
-            paramList.Add("@InvoiceTypeEnum".ToEnumParameter<InvoiceType>());
+                        
+            //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
+            //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
 
             return paramList.ToArray();
         }
         
         #endregion override methods
         
-        public virtual ApInvoicePayload GetApInvoiceList(ApInvoicePayload payload)
+        public virtual PoTransactionPayload GetPoTransactionList(PoTransactionPayload payload)
         {
             if (payload == null)
-                payload = new ApInvoicePayload();
+                payload = new PoTransactionPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.ApInvoiceListCount = Count();
+                payload.PoTransactionListCount = Count();
                 result = ExcuteJson(sb);
                 if (result)
-                    payload.ApInvoiceList = sb;
+                    payload.PoTransactionList = sb;
             }
             catch (Exception ex)
             {
-                payload.ApInvoiceListCount = 0;
-                payload.ApInvoiceList = null;
+                payload.PoTransactionListCount = 0;
+                payload.PoTransactionList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<ApInvoicePayload> GetApInvoiceListAsync(ApInvoicePayload payload)
+        public virtual async Task<PoTransactionPayload> GetPoTransactionListAsync(PoTransactionPayload payload)
         {
             if (payload == null)
-                payload = new ApInvoicePayload();
+                payload = new PoTransactionPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.ApInvoiceListCount = await CountAsync();
+                payload.PoTransactionListCount = await CountAsync();
                 result = await ExcuteJsonAsync(sb);
                 if (result)
-                    payload.ApInvoiceList = sb;
+                    payload.PoTransactionList = sb;
             }
             catch (Exception ex)
             {
-                payload.ApInvoiceListCount = 0;
-                payload.ApInvoiceList = null;
+                payload.PoTransactionListCount = 0;
+                payload.PoTransactionList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<IList<long>> GetRowNumListAsync(ApInvoicePayload payload)
+        public virtual async Task<IList<long>> GetRowNumListAsync(PoTransactionPayload payload)
         {
             if (payload == null)
-                payload = new ApInvoicePayload();
+                payload = new PoTransactionPayload();
 
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
@@ -177,10 +143,10 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
             return rowNumList;
         }
 
-        public virtual IList<long> GetRowNumList(ApInvoicePayload payload)
+        public virtual IList<long> GetRowNumList(PoTransactionPayload payload)
         {
             if (payload == null)
-                payload = new ApInvoicePayload();
+                payload = new PoTransactionPayload();
 
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();

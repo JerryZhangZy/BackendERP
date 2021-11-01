@@ -437,7 +437,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return dto;
         }
 
-        protected virtual void WritePoHeader(PoHeader data, PoHeaderDto dto)
+        public virtual void WritePoHeader(PoHeader data, PoHeaderDto dto)
         {
             if (data is null || dto is null)
                 return;
