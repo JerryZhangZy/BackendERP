@@ -397,7 +397,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // create misc invoice
-            Data.SalesOrderHeader.DepositAmount = amount;
+            Data.SalesOrderHeader.DepositAmount = amount.ToAmount();
 
             var miscInvoiceService = new MiscInvoiceService(dbFactory);
             if (!(await miscInvoiceService.AddFromSalesOrderAsync(Data.SalesOrderHeader)))

@@ -301,7 +301,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            var invoiceUuid = string.Empty;
+            string invoiceUuid;
             //Create Invoice 
             (success, invoiceUuid) = await CreateInvoiceAsync(shipmentData, salesorderService.Data);
             if (!success)
