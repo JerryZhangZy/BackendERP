@@ -190,6 +190,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ProfileNum = payload.ProfileNum,
                 RowNum = applyInvoice.TransRowNum
             };
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                trans.TransNum = InvoiceTransactionHelper.GetTranSeqNum(originalTrans.InvoiceNumber, payload.ProfileNum);
+            }
+
             var dataDto = new InvoiceTransactionDataDto()
             {
                 InvoiceTransaction = trans
@@ -225,6 +230,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var changedPaidAmount = applyInvoice.PaidAmount - Data.InvoiceTransaction.OriginalPaidAmount;
             using (var trs = new ScopedTransaction(dbFactory))
                 return await InvoiceHelper.PayInvoiceAsync(applyInvoice.InvoiceNumber, changedPaidAmount, masterAccountNum, profileNum);
+        }
+        protected async Task<bool> PayInvoiceAsync(string invoiceNumber, int masterAccountNum, int profileNum, decimal paidAmount)
+        {
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await InvoiceHelper.PayInvoiceAsync(invoiceNumber, paidAmount, masterAccountNum, profileNum);
         }
 
         protected bool PayInvoice(ApplyInvoice applyInvoice, int masterAccountNum, int profileNum)
@@ -517,7 +527,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
         #region Add payment for presales
-        public async Task<bool> AddPaymentForPresalesAsync(string misInvoiceUuid, string invoiceUuid, decimal amount)
+        public async Task<bool> AddPaymentAndPayInvoiceForPresalesAsync(string misInvoiceUuid, string invoiceUuid, decimal amount)
         {
             Add();
             if (misInvoiceUuid.IsZero())
@@ -525,16 +535,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"misInvoiceUuid is null");
                 return false;
             }
-               
+
             if (invoiceUuid.IsZero())
             {
                 AddError($"invoiceUuid is null");
                 return false;
             }
             if (!await LoadInvoiceAsync(invoiceUuid))
-            { 
+            {
                 return false;
-            } 
+            }
             var header = Data.InvoiceData.InvoiceHeader;
             Data.InvoiceTransaction = new InvoiceTransaction()
             {
@@ -563,7 +573,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 Data.InvoiceTransaction.TransNum = await InvoiceTransactionHelper.GetTranSeqNumAsync(header.InvoiceNumber, header.ProfileNum);
             }
 
-            return await SaveDataAsync();
+            var success = await SaveDataAsync();
+            if (!success)
+            {
+                AddError("SaveDataAsync error.");
+                return false;
+            }
+
+            var trans = Data.InvoiceTransaction;
+            //add payment success. then pay invoice.
+            success = await PayInvoiceAsync(trans.InvoiceNumber, trans.MasterAccountNum, trans.ProfileNum, trans.TotalAmount);
+            if (!success)
+            {
+                AddError($"Apply payment to invoice failed for transuuid:{trans.TransUuid}");
+                return false;
+            }
+
+            return true;
         }
         #endregion
     }

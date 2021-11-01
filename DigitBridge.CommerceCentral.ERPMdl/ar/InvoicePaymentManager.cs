@@ -78,7 +78,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var listService = new InvoicePaymentList(dbFactory);
             var service = new InvoicePaymentService(dbFactory);
             var invoicePaymentDataDtoCsv = new InvoicePaymentDataDtoCsv();
-            var rowNumList =await listService.GetRowNumListAsync(payload);
+            var rowNumList = await listService.GetRowNumListAsync(payload);
             var dtoList = new List<InvoiceTransactionDataDto>();
             foreach (var x in rowNumList)
             {
@@ -189,6 +189,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
+        #endregion
+
+        #region Add payment from presales.
+
+        public async Task<bool> AddPaymentFromPresales(string misInvoiceUuid, string invoiceUuid, decimal amount)
+        {
+            //Add mis payment
+            var srv_MisPayment = new MiscInvoicePaymentService(dbFactory);
+            var success = await srv_MisPayment.AddMiscPayment(misInvoiceUuid, invoiceUuid, amount);
+            if (!success)
+                return false;
+            var misPaymentData = srv_MisPayment.Data;
+
+            var actualApplyAmount = misPaymentData.MiscInvoiceTransaction.TotalAmount;
+
+
+            //update misc invoice set balance = originalbalance-actualApplyAmount;
+            var srv_MiscInvoice = new MiscInvoiceService(dbFactory);
+            await srv_MiscInvoice.WithdrawAsync(misInvoiceUuid, actualApplyAmount);
+
+            //Add payment to invoice trans and pay invoice.
+            var srv_payment = new InvoicePaymentService(dbFactory);
+            return await srv_payment.AddPaymentAndPayInvoiceForPresalesAsync(misInvoiceUuid, invoiceUuid, actualApplyAmount);
+        }
+
         #endregion
     }
 }

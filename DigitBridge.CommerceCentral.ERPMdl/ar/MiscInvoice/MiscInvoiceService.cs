@@ -337,9 +337,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
-        /// Update MiscInvoice balance(this method is for internal,no validate for uuid)
+        /// Withdraw money from misc invoice(this method is for internal,no validate for uuid)
         /// </summary>
-        public virtual async Task<bool> UpdateBalanceAsync(string miscInvoiceUuid, decimal balance)
+        public virtual async Task<bool> WithdrawAsync(string miscInvoiceUuid, decimal amount)
         {
             Edit();
 
@@ -348,7 +348,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("Data not found for miscInvoiceUuid:{miscInvoiceUuid}");
                 return false;
             }
-            Data.MiscInvoiceHeader.Balance = balance;
+            Data.MiscInvoiceHeader.Balance = Data.MiscInvoiceHeader.Balance - amount;
             return await SaveDataAsync();
         }
     }

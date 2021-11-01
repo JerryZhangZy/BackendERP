@@ -314,13 +314,13 @@ WHERE itm.cnt > 0
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task UpdateBalanceAsync_Test()
+        public async Task WithdrawAsync_Test()
         {
             var misInvoiceData = MiscInvoiceDataTests.SaveFakerMiscInvoice(DataBaseFactory);
 
             var service = new MiscInvoiceService(DataBaseFactory);
             var banlance = new Random().Next(1, 100);
-            var success = await service.UpdateBalanceAsync(misInvoiceData.UniqueId, banlance);
+            var success = await service.WithdrawAsync(misInvoiceData.UniqueId, banlance);
             Assert.True(success, service.Messages.ObjectToString());
 
 

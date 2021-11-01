@@ -112,14 +112,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
 
         [Fact()]
-        public async Task AddPaymentForPresalesAsync_Test()
+        public async Task AddPaymentAndPayInvoiceForPresalesAsync_Test()
          {
             var miscInvoiceData = MiscInvoiceDataTests.SaveFakerMiscInvoice(DataBaseFactory);
             var invoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(DataBaseFactory);
             var presalesAmount = new Random().Next();
             var service = new InvoicePaymentService(DataBaseFactory);
 
-            var success = await service.AddPaymentForPresalesAsync(miscInvoiceData.UniqueId, invoiceData.UniqueId, presalesAmount);
+            var success = await service.AddPaymentAndPayInvoiceForPresalesAsync(miscInvoiceData.UniqueId, invoiceData.UniqueId, presalesAmount);
 
             Assert.True(success, "AddMiscPayment error:" + service.Messages.ObjectToString());
         }
