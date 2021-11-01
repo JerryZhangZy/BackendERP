@@ -339,7 +339,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Update MiscInvoice balance(this method is for internal,no validate for uuid)
         /// </summary>
-        public virtual async Task<bool> UpdateBalance(string miscInvoiceUuid, decimal balance)
+        public virtual async Task<bool> UpdateBalanceAsync(string miscInvoiceUuid, decimal balance)
         {
             Edit();
 
