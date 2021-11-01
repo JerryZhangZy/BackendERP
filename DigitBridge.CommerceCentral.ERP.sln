@@ -57,11 +57,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPEventSDK", "DigitBridge.CommerceCentral.ERPEventSDK\DigitBridge.CommerceCentral.ERPEventSDK.csproj", "{3D9199B3-3F6B-447F-ACB3-718950D40B6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration", "DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration\DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration.csproj", "{436F2903-C78E-40C9-AC4F-65FAC6E79811}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration", "DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration\DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration.csproj", "{436F2903-C78E-40C9-AC4F-65FAC6E79811}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPFuncSDK", "DigitBridge.CommerceCentral.ERPFuncSDK\DigitBridge.CommerceCentral.ERPFuncSDK.csproj", "{56AFD266-4217-4281-9AF5-EAC26FEC07F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPFuncSDK", "DigitBridge.CommerceCentral.ERPFuncSDK\DigitBridge.CommerceCentral.ERPFuncSDK.csproj", "{56AFD266-4217-4281-9AF5-EAC26FEC07F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERPFuncSDK.Tests.Integration", "DigitBridge.CommerceCentral.ERPFuncSDK.Tests.Integration\DigitBridge.CommerceCentral.ERPFuncSDK.Tests.Integration.csproj", "{D9796A9F-076A-43EF-82AC-C3F0709A3F32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPFuncSDK.Tests.Integration", "DigitBridge.CommerceCentral.ERPFuncSDK.Tests.Integration\DigitBridge.CommerceCentral.ERPFuncSDK.Tests.Integration.csproj", "{D9796A9F-076A-43EF-82AC-C3F0709A3F32}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "payload", "payload", "{B98819AF-57E6-45BB-A147-CF6D6F6E615C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wms shipment", "wms shipment", "{0DA7F585-F3DA-4506-8EED-8BAD611416BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -180,6 +184,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0DA7F585-F3DA-4506-8EED-8BAD611416BC} = {B98819AF-57E6-45BB-A147-CF6D6F6E615C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9341E990-605F-49D2-86E7-EEDD882E9D82}
