@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 NewData();
             Data.InvoiceData = invoiceData;
             Data.InvoiceTransaction.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
-            
+
             //if (Data.InvoiceReturnItems == null) return success;
 
             //foreach (var item in Data.InvoiceReturnItems)
@@ -63,7 +63,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return success;
         }
+        /// <summary>
+        /// Load Invoice data.
+        /// </summary>
+        /// <param name="invoiceUuid"></param>
+        protected async Task<bool> LoadInvoiceAsync(string invoiceUuid)
+        {
+            // load invoice data
+            var invoiceData = new InvoiceData(dbFactory);
+            var success = await invoiceData.GetByIdAsync(invoiceUuid);
+            if (!success)
+            {
+                AddError($"Data not found for invoiceUuid:{invoiceUuid}");
+                return success;
+            }
 
+            if (Data == null)
+                NewData();
+            Data.InvoiceData = invoiceData;
+            Data.InvoiceTransaction.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid; 
+
+            return success;
+        }
 
         /// <summary>
         /// Load returned qty for each trans return item 

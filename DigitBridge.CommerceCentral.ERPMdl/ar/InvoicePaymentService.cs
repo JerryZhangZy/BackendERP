@@ -15,6 +15,7 @@ using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
 using DigitBridge.CommerceCentral.ERPEventSDK;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -449,7 +450,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
 
-         
+
         #region To qbo queue 
 
         private QboPaymentClient _qboPaymentClient;
@@ -512,6 +513,58 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
             return await qboPaymentClient.SendDeleteQboPaymentAsync(eventDto);
             //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPaymentDelete");
+        }
+        #endregion
+
+        #region Add payment for presales
+        public async Task<bool> AddPaymentForPresales(string misInvoiceUuid, string invoiceUuid, decimal amount)
+        { 
+            if (misInvoiceUuid.IsZero())
+            {
+                AddError($"misInvoiceUuid is null");
+                return false;
+            }
+               
+            if (invoiceUuid.IsZero())
+            {
+                AddError($"invoiceUuid is null");
+                return false;
+            }
+            if (!await LoadInvoiceAsync(invoiceUuid))
+            { 
+                return false;
+            }
+
+            Add();
+            var header = Data.InvoiceData.InvoiceHeader;
+            Data.InvoiceTransaction = new InvoiceTransaction()
+            {
+                ProfileNum = header.ProfileNum,
+                MasterAccountNum = header.MasterAccountNum,
+                DatabaseNum = header.DatabaseNum,
+
+                TransDate = DateTime.Now,
+                TransTime = DateTime.Now.TimeOfDay,
+                TransType = (int)TransTypeEnum.Payment,
+                TransStatus = (int)TransStatus.Paid,
+
+                Currency = header.Currency,
+                InvoiceNumber = header.InvoiceNumber,
+                InvoiceUuid = header.InvoiceUuid,
+                TaxRate = header.TaxRate,
+
+                TotalAmount = amount,
+                PaidBy = (int)PaidByEnum.PreSales,
+                CheckNum = misInvoiceUuid,
+                Description = "Add payment from presales",
+            };
+
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                Data.InvoiceTransaction.TransNum = await InvoiceTransactionHelper.GetTranSeqNumAsync(header.InvoiceNumber, header.ProfileNum);
+            }
+
+            return await SaveDataAsync();
         }
         #endregion
     }

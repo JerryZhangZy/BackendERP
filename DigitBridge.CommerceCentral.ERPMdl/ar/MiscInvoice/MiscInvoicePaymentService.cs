@@ -35,7 +35,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             Add();
             if (misInvoiceUuid.IsZero())
+            {
+                AddError($"misInvoiceUuid is null");
                 return false;
+            }
+
+            if (invoiceUuid.IsZero())
+            {
+                AddError($"invoiceUuid is null");
+                return false;
+            }
             if (!await LoadMiscInvoiceAsync(misInvoiceUuid))
                 return false;
 
