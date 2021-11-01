@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.CommerceCentral.ERPMdl.selectList.poHeader;
+using DigitBridge.CommerceCentral.ERPMdl.selectList.poHeaderInfo;
 using DigitBridge.CommerceCentral.ERPMdl.selectList.customer;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
@@ -309,6 +311,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //    return new DemList_ins_processor(obj);
             #endregion
 
+
+            #region PO
+            if (payload.Name.EqualsIgnoreSpace("poHeader_poNum"))
+                return new poHeader_poNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeader_vendorName"))
+                return new poHeader_poNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeader_vendorNum"))
+                return new poHeader_vendorNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_centralOrderNum"))
+                return new poHeaderInfo_centralOrderNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_channelAccountNum"))
+                return new poHeaderInfo_channelAccountNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_channelNum"))
+                return new poHeaderInfo_channelNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_channelOrderID"))
+                return new poHeaderInfo_channelOrderID(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_customerPoNum"))
+                return new poHeaderInfo_customerPoNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_refNum"))
+                return new poHeaderInfo_refNum(dbFactory);
+
+
+            #endregion 
 
             return null;
         }
