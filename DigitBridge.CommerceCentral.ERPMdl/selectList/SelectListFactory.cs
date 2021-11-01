@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -9,6 +9,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl.selectList.poHeader;
 using DigitBridge.CommerceCentral.ERPMdl.selectList.poHeaderInfo;
+using DigitBridge.CommerceCentral.ERPMdl.selectList.customer;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
@@ -187,31 +188,46 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             #endregion
 
             #region customer
-            //if (obj.listFor.EqualsIgnoreSpace("cus_cus_id"))
-            //    return new DemList_cus_cus_id(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_cus_nm"))
-            //    return new DemList_cus_cus_nm(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_phone"))
-            //    return new DemList_cus_phone(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_email_adr"))
-            //    return new DemList_cus_email_adr(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_city"))
-            //    return new DemList_cus_city(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_state"))
-            //    return new DemList_cus_state(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_sales_num"))
-            //    return new DemList_cus_sales_num(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_dept_num"))
-            //    return new DemList_cus_dept_num(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_terr_cd"))
-            //    return new DemList_cus_terr_cd(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_cus_sur"))
-            //    return new DemList_cus_cus_sur(obj);
-            //if (obj.listFor.EqualsIgnoreSpace("cus_area_cd"))
-            //    return new DemList_cus_area_cd(obj);
+            if (payload.Name.EqualsIgnoreSpace("customer_area"))
+                return new customer_area(dbFactory);
 
+            if (payload.Name.EqualsIgnoreSpace("customer_customerCode"))
+                return new customer_customerCode(dbFactory);
 
+            if (payload.Name.EqualsIgnoreSpace("customer_classCode"))
+                return new customer_classCode(dbFactory);
 
+            if (payload.Name.EqualsIgnoreSpace("customer_customerCode"))
+                return new customer_customerCode(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_customerName"))
+                return new customer_customerName(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_departmentCode"))
+                return new customer_departmentCode(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_districtn"))
+                return new customer_districtn(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_divisionCode"))
+                return new customer_divisionCode(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_email"))
+                return new customer_email(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_phone1"))
+                return new customer_phone1(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_region"))
+                return new customer_region(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_sourceCode"))
+                return new customer_sourceCode(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("customer_zone"))
+                return new customer_zone(dbFactory);
+   
+ 
             #endregion
 
             #region S/O

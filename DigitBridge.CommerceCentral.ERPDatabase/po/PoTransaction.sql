@@ -8,7 +8,7 @@
 	[PoNum] VARCHAR(50) NOT NULL DEFAULT '', --Readable invoice number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
 
     [TransType] INT NULL DEFAULT 0, --P/O Transaction type (Receive, return, cancel)
-    [TransStatus] INT NULL DEFAULT 0, --P/O Transaction status
+    [TransStatus] INT NULL DEFAULT 0, --P/O Transaction status, new, close
 	[TransDate] DATE NOT NULL, --Transaction date
 	[TransTime] TIME NOT NULL, --Transaction time
     [Description] NVARCHAR(200) NULL DEFAULT '', --Description of purchase order Transaction

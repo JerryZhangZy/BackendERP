@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.CommerceCentral.ERPEventSDK;
+using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -304,6 +306,43 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
+        /// <summary>
+        /// Delete data by number
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByApInvoiceNumberAsync(ApInvoicePayload payload, string apInvoiceNumber)
+        {
+            if (string.IsNullOrEmpty(apInvoiceNumber))
+                return false;
+            //set delete mode
+            Delete();
+            //load data
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, apInvoiceNumber);
+            success = success && DeleteData();
+            return success;
+        }
+
+        #region To qbo queue 
+        /// <summary>
+        /// convert erp invoice to a queue message then put it to qbo queue
+        /// </summary>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        /// <returns></returns>
+        public async Task<bool> AddQboApInvoiceEventAsync(int masterAccountNum, int profileNum)
+        {
+            var eventDto = new AddErpEventDto()
+            {
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
+                ProcessUuid = Data.ApInvoiceHeader.ApInvoiceUuid,
+            };
+            var qboInvoiceClient = new QboInvoiceClient();
+            return await qboInvoiceClient.SendAddQboInvoiceAsync(eventDto);
+            //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksInvoice");
+        }
+        #endregion
 
     }
 }
