@@ -20,7 +20,7 @@ END
 -- 11/2/2021 By junxian
 IF COL_LENGTH('SalesOrderHeader', 'MiscInvoiceUuid') IS NULL					
 BEGIN					
-    ALTER TABLE SalesOrderHeader ADD [MiscInvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50)))	
+    ALTER TABLE SalesOrderHeader ADD [MiscInvoiceUuid] VARCHAR(50) NOT NULL DEFAULT ''
 END
 
 

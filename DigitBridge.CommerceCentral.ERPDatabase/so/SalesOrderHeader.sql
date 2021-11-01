@@ -50,7 +50,7 @@
 	[OrderSourceCode] VARCHAR(100) NOT NULL DEFAULT '', --(Readonly) Order created from other entity number, use to prevent import duplicate order. <br> Title: Source Number, Display: false, Editable: false
 
 	[DepositAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Deposit Amount. <br> Display: true, Editable: false
-	[MiscInvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Misc Invoice Uuid. <br> Display: true, Editable: false.
+	[MiscInvoiceUuid] VARCHAR(50) NOT NULL DEFAULT '', --Misc Invoice Uuid. <br> Display: true, Editable: false.
 
     [UpdateDateUtc] DATETIME NULL, --(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
