@@ -57,16 +57,6 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             return new JsonNetResponse<ApInvoicePayload>(payload);
         }
 
-        /// <summary>
-        /// Add apinvoice
-        /// </summary>
-        [FunctionName(nameof(Sample_Apinvocies_Post))]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiOperation(operationId: "ApInvociesSample", tags: new[] { "Sample" }, Summary = "Get new sample of a/p invoice")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ApInvoicePayloadAdd))]
-        public static async Task<JsonNetResponse<ApInvoicePayloadAdd>> Sample_Apinvocies_Post(
         ///  Update Apinvoice 
         /// </summary>
         /// <param name="req"></param>
