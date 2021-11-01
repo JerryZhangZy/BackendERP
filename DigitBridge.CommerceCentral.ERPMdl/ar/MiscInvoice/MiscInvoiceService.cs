@@ -335,6 +335,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
             return await SaveDataAsync();
         }
+
+        /// <summary>
+        /// Update MiscInvoice balance(this method is for internal,no validate for uuid)
+        /// </summary>
+        public virtual async Task<bool> UpdateBalance(string miscInvoiceUuid, decimal balance)
+        {
+            Edit();
+
+            if (!await GetDataByIdAsync(miscInvoiceUuid))
+            {
+                AddError("Data not found for miscInvoiceUuid:{miscInvoiceUuid}");
+                return false;
+            }
+            Data.MiscInvoiceHeader.Balance = balance;
+            return await SaveDataAsync();
+        }
     }
 }
 
