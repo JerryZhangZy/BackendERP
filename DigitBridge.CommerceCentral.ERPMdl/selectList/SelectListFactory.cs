@@ -213,6 +213,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             #endregion
 
             #region S/O
+            if (payload.Name.EqualsIgnoreSpace("so_orderNumber"))
+                return new so_orderNumber(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_customerCode"))
+                return new so_customerCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_customerName"))
+                return new so_customerName(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_terms"))
+                return new so_terms(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("so_shippingCarrier"))
+                return new so_shippingCarrier(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_shippingClass"))
+                return new so_shippingClass(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_centralOrderNum"))
+                return new so_centralOrderNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_channelOrderID"))
+                return new so_channelOrderID(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_warehouseCode"))
+                return new so_warehouseCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_refNum"))
+                return new so_refNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_customerPoNum"))
+                return new so_customerPoNum(dbFactory);
             //if (obj.listFor.EqualsIgnoreSpace("so_ord_num"))
             //    return new DemList_so_ord_num(obj);
             //if (obj.listFor.EqualsIgnoreSpace("so_cus_id"))
@@ -239,7 +262,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //    return new DemList_so_str_num(obj);
 
             #endregion
-
             #region invoice
             if (payload.Name.EqualsIgnoreSpace("invoice_invoiceNumber"))
                 return new invoice_invoiceNumber(dbFactory);

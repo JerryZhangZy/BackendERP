@@ -14,18 +14,18 @@ using Microsoft.AspNetCore.Http;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public partial class invoice_terms : SelectListBase
+    public partial class so_customerCode : SelectListBase
     {
-        public override string Name => "invoice_terms";
+        public override string Name => "so_customerCode";
 
-        public invoice_terms(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public so_customerCode(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"Terms LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"COALESCE(tbl.customerCode, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -35,11 +35,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SetFilterSqlString();
             this.SQL_Select = $@"
-SELECT Terms AS [value], '' AS [text], COUNT(1) AS [count]
-FROM InvoiceHeader tbl
-WHERE {this.QueryObject.GetSQL()}
-GROUP BY Terms
-ORDER BY [value]
+SELECT i.*, COALESCE(d.CustomerName, '') AS [text] 
+FROM (
+    SELECT 
+        tbl.CustomerUuid AS id, 
+        tbl.CustomerCode AS [value], 
+        COUNT(1) AS [count]
+    FROM SalesOrderHeader tbl
+    WHERE COALESCE(tbl.CustomerCode,'') != '' 
+        AND {this.QueryObject.GetSQL()}
+    GROUP BY tbl.CustomerCode, tbl.CustomerUuid
+) i 
+LEFT JOIN Customer d ON (d.CustomerUuid = i.id) 
+ORDER BY i.[value]
 ";
             return this.SQL_Select;
         }

@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"CentralOrderNum = {this.QueryObject.Term.FilterValue.ToSqlSafeString()} "
+                    $"CAST(CentralOrderNum as varchar(max)) LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
