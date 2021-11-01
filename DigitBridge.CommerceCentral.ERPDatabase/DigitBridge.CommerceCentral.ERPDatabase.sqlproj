@@ -252,4 +252,16 @@
   <ItemGroup>
     <None Include="customer\Customer_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ar\MiscInvoiceHeader.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ar\MiscInvoiceTransaction.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomDefineCodes\SystemCodes.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomDefineCodes\SystemSetting.sql" />
+  </ItemGroup>
 </Project>
