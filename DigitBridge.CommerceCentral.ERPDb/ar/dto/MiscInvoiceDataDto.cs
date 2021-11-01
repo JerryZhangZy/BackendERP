@@ -28,10 +28,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasMiscInvoiceHeader => MiscInvoiceHeader != null;
 
-        public IList<MiscInvoiceTransactionDto> MiscInvoiceTransaction { get; set; }
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        public bool HasMiscInvoiceTransaction => MiscInvoiceTransaction != null;
-
     }
 }
 

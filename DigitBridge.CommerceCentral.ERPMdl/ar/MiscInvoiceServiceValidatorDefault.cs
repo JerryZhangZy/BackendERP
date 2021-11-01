@@ -343,11 +343,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 //for Add mode, always reset uuid
                 dto.MiscInvoiceHeader.MiscInvoiceUuid = Guid.NewGuid().ToString();
-                if (dto.MiscInvoiceTransaction != null && dto.MiscInvoiceTransaction.Count > 0)
-                {
-                    foreach (var detailItem in dto.MiscInvoiceTransaction)
-                        detailItem.TransUuid = Guid.NewGuid().ToString();
-                }
   
             }
             else if (processingMode == ProcessingMode.Edit)
@@ -364,11 +359,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.MiscInvoiceHeader.MiscInvoiceUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
-                if (dto.MiscInvoiceTransaction != null && dto.MiscInvoiceTransaction.Count > 0)
-                {
-                    foreach (var detailItem in dto.MiscInvoiceTransaction)
-                        detailItem.TransUuid = null;
-                }
             }
             IsValid=isValid;
             return isValid;
@@ -395,11 +385,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 //for Add mode, always reset uuid
                 dto.MiscInvoiceHeader.MiscInvoiceUuid = Guid.NewGuid().ToString();
-                if (dto.MiscInvoiceTransaction != null && dto.MiscInvoiceTransaction.Count > 0)
-                {
-                    foreach (var detailItem in dto.MiscInvoiceTransaction)
-                        detailItem.TransUuid = Guid.NewGuid().ToString();
-                }
   
             }
             else if (processingMode == ProcessingMode.Edit)
@@ -416,11 +401,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.MiscInvoiceHeader.MiscInvoiceUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
-                if (dto.MiscInvoiceTransaction != null && dto.MiscInvoiceTransaction.Count > 0)
-                {
-                    foreach (var detailItem in dto.MiscInvoiceTransaction)
-                        detailItem.TransUuid = null;
-                }
   
             }
             IsValid=isValid;

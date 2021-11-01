@@ -38,12 +38,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore]
         public new string UniqueId => MiscInvoiceHeader.UniqueId;
         
-		 [JsonIgnore, XmlIgnore] 
-		public static string MiscInvoiceHeaderTable ="MiscInvoiceHeader ";
-		
-		 [JsonIgnore, XmlIgnore] 
-		public static string MiscInvoiceTransactionTable ="MiscInvoiceTransaction ";
-		
+			 [JsonIgnore, XmlIgnore] 
+			public static string MiscInvoiceHeaderTable ="MiscInvoiceHeader ";
+			
         #region CRUD Methods
 
         public override bool Equals(MiscInvoiceData other)
@@ -59,10 +56,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				return false; 
 			if (MiscInvoiceHeader != null && other.MiscInvoiceHeader != null && !MiscInvoiceHeader.Equals(other.MiscInvoiceHeader)) 
 				return false; 
-			if (MiscInvoiceTransaction == null && other.MiscInvoiceTransaction != null || MiscInvoiceTransaction != null && other.MiscInvoiceTransaction == null) 
-				return false; 
-			if (MiscInvoiceTransaction != null && other.MiscInvoiceTransaction != null && !MiscInvoiceTransaction.EqualsList(other.MiscInvoiceTransaction)) 
-				return false; 
             return true;
         }
 
@@ -71,7 +64,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
 			if (MiscInvoiceHeader is null) return this; 
 			MiscInvoiceHeader.CheckIntegrity(); 
-			CheckIntegrityMiscInvoiceTransaction(); 
 			CheckIntegrityOthers(); 
             return this;
         }
@@ -80,8 +72,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void Clear()
         {
 			MiscInvoiceHeader?.Clear(); 
-			MiscInvoiceTransaction = new List<MiscInvoiceTransaction>(); 
-			ClearMiscInvoiceTransactionDeleted(); 
 			ClearOthers(); 
 			if (_OnClear != null)
 				_OnClear(this);
@@ -92,16 +82,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             Clear();
 			MiscInvoiceHeader = NewMiscInvoiceHeader(); 
-			MiscInvoiceTransaction = new List<MiscInvoiceTransaction>(); 
-			AddMiscInvoiceTransaction(NewMiscInvoiceTransaction()); 
-			ClearMiscInvoiceTransactionDeleted(); 
             return;
         }
 
         public virtual void CopyFrom(MiscInvoiceData data)
         {
 			CopyMiscInvoiceHeaderFrom(data); 
-			CopyMiscInvoiceTransactionFrom(data); 
             CheckIntegrity();
             return;
         }
@@ -112,7 +98,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			newData.New(); 
 			newData?.CopyFrom(this); 
 			newData.MiscInvoiceHeader.ClearMetaData(); 
-			newData.MiscInvoiceTransaction.ClearMetaData(); 
             newData.CheckIntegrity();
             return newData;
         }
@@ -143,7 +128,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             
 			if (string.IsNullOrEmpty(MiscInvoiceHeader.MiscInvoiceUuid)) return; 
-			MiscInvoiceTransaction = GetMiscInvoiceTransactionByMiscInvoiceUuid(MiscInvoiceHeader.MiscInvoiceUuid); 
         }
 
         public override bool Save()
@@ -158,15 +142,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			{
 				MiscInvoiceHeader.SetDataBaseFactory(dbFactory);
 				if (!MiscInvoiceHeader.Save()) return false;
-			}
-
-			 if (NeedSave(MiscInvoiceTransactionTable))
-			{
-				if (MiscInvoiceTransaction != null) 
-					MiscInvoiceTransaction.SetDataBaseFactory(dbFactory)?.Save();
-				var delMiscInvoiceTransaction = _MiscInvoiceTransactionDeleted;
-				if (delMiscInvoiceTransaction != null)
-					delMiscInvoiceTransaction.SetDataBaseFactory(dbFactory)?.Delete();
 			}
 
 			if (_OnSave != null)
@@ -194,11 +169,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			{
 				MiscInvoiceHeader.SetDataBaseFactory(dbFactory); 
 				if (MiscInvoiceHeader.Delete() <= 0) return false; 
-			}
-			 if (NeedDelete(MiscInvoiceTransactionTable))
-			{
-				if (MiscInvoiceTransaction != null) 
-					MiscInvoiceTransaction?.SetDataBaseFactory(dbFactory)?.Delete(); 
 			}
 			if (_OnDelete != null)
 			{
@@ -241,7 +211,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             
 			if (string.IsNullOrEmpty(MiscInvoiceHeader.MiscInvoiceUuid)) return; 
-			MiscInvoiceTransaction = await GetMiscInvoiceTransactionByMiscInvoiceUuidAsync(MiscInvoiceHeader.MiscInvoiceUuid); 
         }
 
         public override async Task<bool> SaveAsync()
@@ -257,15 +226,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				MiscInvoiceHeader.SetDataBaseFactory(dbFactory); 
 				if (!(await MiscInvoiceHeader.SaveAsync())) return false; 
 			}
-			 if (NeedSave(MiscInvoiceTransactionTable))
-			{
-				if (MiscInvoiceTransaction != null) 
-					await MiscInvoiceTransaction.SetDataBaseFactory(dbFactory).SaveAsync(); 
-				var delMiscInvoiceTransaction = _MiscInvoiceTransactionDeleted;
-				if (delMiscInvoiceTransaction != null)
-					await delMiscInvoiceTransaction.SetDataBaseFactory(dbFactory).DeleteAsync();
-			}
-
 			if (_OnSave != null)
 			{
 				if (!_OnSave(dbFactory, this))
@@ -290,11 +250,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			{
 			MiscInvoiceHeader.SetDataBaseFactory(dbFactory); 
 			if ((await MiscInvoiceHeader.DeleteAsync()) <= 0) return false; 
-			}
-			 if (NeedDelete(MiscInvoiceTransactionTable))
-			{
-				if (MiscInvoiceTransaction != null) 
-					await MiscInvoiceTransaction.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			if (_OnDelete != null)
 			{
@@ -358,119 +313,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 
         #endregion MiscInvoiceHeader - Generated 
-
-        #region MiscInvoiceTransaction - Generated 
-        // One to many children
-        protected IList<MiscInvoiceTransaction> _MiscInvoiceTransactionDeleted;
-        public virtual MiscInvoiceTransaction AddMiscInvoiceTransactionDeleted(MiscInvoiceTransaction del) 
-        {
-            if (_MiscInvoiceTransactionDeleted is null)
-                _MiscInvoiceTransactionDeleted = new List<MiscInvoiceTransaction>();
-            var lst = _MiscInvoiceTransactionDeleted.ToList();
-            lst.Add(del);
-            _MiscInvoiceTransactionDeleted = lst;
-            return del;
-        } 
-
-        public virtual IList<MiscInvoiceTransaction> AddMiscInvoiceTransactionDeleted(IList<MiscInvoiceTransaction> del) 
-        {
-            if (_MiscInvoiceTransactionDeleted is null)
-                _MiscInvoiceTransactionDeleted = new List<MiscInvoiceTransaction>();
-            var lst = _MiscInvoiceTransactionDeleted.ToList();
-            lst.AddRange(del);
-            _MiscInvoiceTransactionDeleted = lst;
-            return del;
-        } 
-
-        public virtual void SetMiscInvoiceTransactionDeleted(IList<MiscInvoiceTransaction> del) =>
-            _MiscInvoiceTransactionDeleted = del;
-
-        public virtual void ClearMiscInvoiceTransactionDeleted() =>
-            _MiscInvoiceTransactionDeleted = null;
-
-
-        protected IList<MiscInvoiceTransaction> _MiscInvoiceTransaction;
-
-        public virtual IList<MiscInvoiceTransaction> MiscInvoiceTransaction 
-        { 
-            get 
-            {
-                if (_MiscInvoiceTransaction is null)
-                    _MiscInvoiceTransaction = new List<MiscInvoiceTransaction>();
-                return _MiscInvoiceTransaction;
-            } 
-            set
-            {
-                if (value != null)
-                {
-                    var valueList = value.ToList();
-                    valueList.ForEach(i => i?.SetParent(this));
-                    _MiscInvoiceTransaction = valueList;
-                }
-                else
-                    _MiscInvoiceTransaction = null;
-            } 
-        }
-
-        public virtual void CopyMiscInvoiceTransactionFrom(MiscInvoiceData data) 
-        {
-            if  (data is null) return;
-            var lstDeleted = MiscInvoiceTransaction?.CopyFrom(data.MiscInvoiceTransaction, new string[] {"MiscInvoiceUuid"});
-            SetMiscInvoiceTransactionDeleted(lstDeleted);
-            foreach (var c in MiscInvoiceTransaction)
-                c?.CopyChildrenFrom(data.MiscInvoiceTransaction?.FindByRowNum(c.RowNum));
-        } 
-
-        public virtual MiscInvoiceTransaction NewMiscInvoiceTransaction() => new MiscInvoiceTransaction(dbFactory);
-
-        public virtual MiscInvoiceTransaction AddMiscInvoiceTransaction(MiscInvoiceTransaction obj) => 
-            MiscInvoiceTransaction.AddOrReplace(obj.SetParent(this));
-
-        public virtual MiscInvoiceTransaction RemoveMiscInvoiceTransaction(MiscInvoiceTransaction obj) => 
-            AddMiscInvoiceTransactionDeleted(MiscInvoiceTransaction.RemoveObject(obj.SetParent(this)));
-
-        public virtual IList<MiscInvoiceTransaction> GetMiscInvoiceTransactionByMiscInvoiceUuid(string MiscInvoiceUuid) =>
-            (string.IsNullOrEmpty(MiscInvoiceUuid)) 
-                ? null 
-                : dbFactory.Find<MiscInvoiceTransaction>("WHERE MiscInvoiceUuid = @0 ORDER BY RowNum ", MiscInvoiceUuid).ToList();
-
-        public virtual bool SaveMiscInvoiceTransaction(IList<MiscInvoiceTransaction> data) =>
-            (data is null) ? false : data.Save();
-
-        public virtual int DeleteMiscInvoiceTransaction(IList<MiscInvoiceTransaction> data) =>
-            (data is null) ? 0 : data.Delete();
-
-        public virtual async Task<IList<MiscInvoiceTransaction>> GetMiscInvoiceTransactionByMiscInvoiceUuidAsync(string MiscInvoiceUuid) =>
-            (string.IsNullOrEmpty(MiscInvoiceUuid)) 
-                ? null
-                : (await dbFactory.FindAsync<MiscInvoiceTransaction>("WHERE MiscInvoiceUuid = @0 ORDER BY RowNum ", MiscInvoiceUuid)).ToList();
-
-        public virtual async Task<bool> SaveMiscInvoiceTransactionAsync(IList<MiscInvoiceTransaction> data) =>
-            (data is null) ? false : await data.SaveAsync();
-
-        public virtual async Task<int> DeleteMiscInvoiceTransactionAsync(IList<MiscInvoiceTransaction> data) =>
-            (data is null) ? 0 : await data.DeleteAsync();
-
-        public virtual IList<MiscInvoiceTransaction> CheckIntegrityMiscInvoiceTransaction()
-        {
-            if (MiscInvoiceTransaction is null || MiscInvoiceHeader is null) 
-                return MiscInvoiceTransaction;
-            var seq = 0;
-            MiscInvoiceTransaction.RemoveEmpty();
-            var children = MiscInvoiceTransaction.ToList();
-            foreach (var child in children.Where(x => x != null))
-            {
-                child.SetParent(this);
-                if (child.MiscInvoiceUuid != MiscInvoiceHeader.MiscInvoiceUuid)
-                    child.MiscInvoiceUuid = MiscInvoiceHeader.MiscInvoiceUuid;
-                child.CheckIntegrity();
-            }
-            return children;
-        }
-
-
-
-        #endregion MiscInvoiceTransaction - Generated 
 
 
     }

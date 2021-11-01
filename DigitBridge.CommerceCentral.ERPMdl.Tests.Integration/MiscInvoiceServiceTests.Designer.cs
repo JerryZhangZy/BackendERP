@@ -92,10 +92,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var id = DataBaseFactory.GetValue<MiscInvoiceHeader, string>(@"
 SELECT TOP 1 ins.MiscInvoiceUuid 
 FROM MiscInvoiceHeader ins 
-INNER JOIN (
-    SELECT it.MiscInvoiceUuid, COUNT(1) AS cnt FROM MiscInvoiceTransaction it GROUP BY it.MiscInvoiceUuid
-) itm ON (itm.MiscInvoiceUuid = ins.MiscInvoiceUuid)
-WHERE itm.cnt > 0
 ");
 
 
@@ -131,10 +127,6 @@ WHERE itm.cnt > 0
             var id = DataBaseFactory.GetValue<MiscInvoiceHeader, string>(@"
 SELECT TOP 1 ins.MiscInvoiceUuid 
 FROM MiscInvoiceHeader ins 
-INNER JOIN (
-    SELECT it.MiscInvoiceUuid, COUNT(1) AS cnt FROM MiscInvoiceTransaction it GROUP BY it.MiscInvoiceUuid
-) itm ON (itm.MiscInvoiceUuid = ins.MiscInvoiceUuid)
-WHERE itm.cnt > 0
 ");
 
 
@@ -179,10 +171,6 @@ WHERE itm.cnt > 0
             var id = await DataBaseFactory.GetValueAsync<MiscInvoiceHeader, string>(@"
 SELECT TOP 1 ins.MiscInvoiceUuid 
 FROM MiscInvoiceHeader ins 
-INNER JOIN (
-    SELECT it.MiscInvoiceUuid, COUNT(1) AS cnt FROM MiscInvoiceTransaction it GROUP BY it.MiscInvoiceUuid
-) itm ON (itm.MiscInvoiceUuid = ins.MiscInvoiceUuid)
-WHERE itm.cnt > 0
 ");
 
 
@@ -218,10 +206,6 @@ WHERE itm.cnt > 0
             var id = await DataBaseFactory.GetValueAsync<MiscInvoiceHeader, string>(@"
 SELECT TOP 1 ins.MiscInvoiceUuid 
 FROM MiscInvoiceHeader ins 
-INNER JOIN (
-    SELECT it.MiscInvoiceUuid, COUNT(1) AS cnt FROM MiscInvoiceTransaction it GROUP BY it.MiscInvoiceUuid
-) itm ON (itm.MiscInvoiceUuid = ins.MiscInvoiceUuid)
-WHERE itm.cnt > 0
 ");
 
 

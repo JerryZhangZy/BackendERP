@@ -94,7 +94,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             var data = new MiscInvoiceDataDto();
 			data.MiscInvoiceHeader = new MiscInvoiceHeaderDto().GetFaker().Generate();
-			data.MiscInvoiceTransaction = new MiscInvoiceTransactionDto().GetFaker().Generate(3);
             return data;
         }
 
@@ -133,44 +132,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.CreditAmount, f => f.Random.Decimal(1, 1000, 2))
 				.RuleFor(u => u.Balance, f => f.Random.Decimal(1, 1000, 2))
 				.RuleFor(u => u.InvoiceSourceCode, f => f.Lorem.Word())
-				.RuleFor(u => u.UpdateDateUtc, f => null)
-				.RuleFor(u => u.EnterBy, f => null)
-				.RuleFor(u => u.UpdateBy, f => null)
-				;
-			#endregion faker data rules
-		}
-		/// <summary>
-		/// Get faker object for MiscInvoiceTransactionDto
-		/// </summary>
-		/// <param name="dto">MiscInvoiceTransactionDto</param>
-		/// <returns>Faker object use to generate data</returns>
-		public static Faker<MiscInvoiceTransactionDto> GetFaker(this MiscInvoiceTransactionDto dto)
-		{
-			#region faker data rules
-			return new Faker<MiscInvoiceTransactionDto>()
-				.RuleFor(u => u.DatabaseNum, f => null)
-				.RuleFor(u => u.MasterAccountNum, f => null)
-				.RuleFor(u => u.ProfileNum, f => null)
-				.RuleFor(u => u.TransUuid, f => String.Empty)
-				.RuleFor(u => u.TransNum, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.MiscInvoiceUuid, f => f.Random.Guid().ToString())
-				.RuleFor(u => u.MiscInvoiceNumber, f => f.Random.AlphaNumeric(50))
-				.RuleFor(u => u.TransType, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.TransStatus, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.TransDate, f => f.Date.Past(0).Date)
-				.RuleFor(u => u.TransTime, f => f.Date.Timespan().ToDateTime())
-				.RuleFor(u => u.Description, f => f.Commerce.ProductName())
-				.RuleFor(u => u.Notes, f => f.Lorem.Sentence().TruncateTo(500))
-				.RuleFor(u => u.PaidBy, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.BankAccountUuid, f => f.Random.Guid().ToString())
-				.RuleFor(u => u.BankAccountCode, f => f.Lorem.Word())
-				.RuleFor(u => u.CheckNum, f => f.Lorem.Sentence().TruncateTo(100))
-				.RuleFor(u => u.AuthCode, f => f.Lorem.Word())
-				.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))
-				.RuleFor(u => u.TotalAmount, f => f.Random.Decimal(1, 1000, 2))
-				.RuleFor(u => u.CreditAccount, f => default(long))
-				.RuleFor(u => u.DebitAccount, f => default(long))
-				.RuleFor(u => u.TransSourceCode, f => f.Lorem.Word())
 				.RuleFor(u => u.UpdateDateUtc, f => null)
 				.RuleFor(u => u.EnterBy, f => null)
 				.RuleFor(u => u.UpdateBy, f => null)
