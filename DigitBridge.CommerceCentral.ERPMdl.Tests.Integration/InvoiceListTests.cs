@@ -124,7 +124,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetInvoiceListAsync_Test()
         {
-            var invoice = await InvoiceDataTests.SaveFakerInvoice(this.DataBaseFactory);
+            var invoice = await InvoiceDataTests.SaveFakerInvoiceAsync(this.DataBaseFactory);
             var header = invoice.InvoiceHeader;
             var headerInfo = invoice.InvoiceHeaderInfo;
 
@@ -177,6 +177,80 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             //make sure result data is matched.
             Assert.Equal(header.RowNum, rowNum_Actual);
         }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetInvoiceListAsync_EachFilter_Test()
+        {
+            var invoice = await InvoiceDataTests.SaveFakerInvoiceAsync(this.DataBaseFactory);
+            var header = invoice.InvoiceHeader;
+            var headerInfo = invoice.InvoiceHeaderInfo;
+
+            var payload = new InvoicePayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+                LoadAll = true,
+            };
+            var filters = new JObject()
+            {
+                {"InvoiceUuid",  $"{header.InvoiceUuid}"},
+                {"QboDocNumber",  $"{header.QboDocNumber}"},
+                {"InvoiceNumberFrom",  $"{header.InvoiceNumber}"},
+                {"InvoiceNumberTo",  $"{header.InvoiceNumber}"},
+                {"InvoiceDateFrom",  $"{header.InvoiceDate}"},
+                {"InvoiceDateTo",  $"{header.InvoiceDate}"},
+                {"DueDateFrom",  $"{header.DueDate}"},
+                {"DueDateTo",  $"{header.DueDate}"},
+                {"InvoiceType",   header.InvoiceType},
+                {"InvoiceStatus",   header.InvoiceStatus },
+                {"CustomerCode",  $"{header.CustomerCode}"},
+                {"CustomerName",  $"{header.CustomerName}"},
+
+                {"OrderShipmentNum",  $"{headerInfo.OrderShipmentNum}"},
+                {"ShippingCarrier", $"{headerInfo.ShippingCarrier}"},
+                {"DistributionCenterNum", $"{headerInfo.DistributionCenterNum}"},
+                {"CentralOrderNum",  $"{headerInfo.CentralOrderNum}"},
+                {"ChannelNum",  $"{headerInfo.ChannelNum}"},
+                {"ChannelAccountNum", $"{headerInfo.ChannelAccountNum}"},
+                {"ChannelOrderID", $"{headerInfo.ChannelOrderID}"},
+                {"WarehouseCode",  $"{headerInfo.WarehouseCode}"},
+                {"RefNum",  $"{headerInfo.RefNum}"},
+                {"CustomerPoNum",  $"{headerInfo.CustomerPoNum}"},
+                {"ShipToName", $"{headerInfo.ShipToName}"},
+                {"ShipToState",  $"{headerInfo.ShipToState}"},
+                {"ShipToPostalCode",  $"{headerInfo.ShipToPostalCode}"},
+            };
+
+            var filterList = filters.Properties();
+            foreach (var filter in filterList)
+            {
+                payload.Filter = new JObject() { filter };
+                await TestEachFilter(payload, header.RowNum);
+            }
+
+            //test all
+            payload.Filter = filters;
+            await TestEachFilter(payload, header.RowNum);
+        }
+
+        private async Task TestEachFilter(InvoicePayload payload, long expectedRowNum)
+        {
+            var listService = new InvoiceList(this.DataBaseFactory);
+            await listService.GetInvoiceListAsync(payload);
+
+            //make sure query is correct.
+            Assert.True(payload.Success, listService.Messages.ObjectToString());
+
+            //make sure InvoiceListCount is matched.
+            Assert.True(payload.InvoiceListCount >= 1, "No data found." + payload.Filter.ToString());
+            
+            var queryResult = JArray.Parse(payload.InvoiceList.ToString());
+            var rowNumMatchedCount = queryResult.Count(i => i.Value<long>("rowNum") == expectedRowNum);
+            //make sure result data is matched.
+            Assert.Equal(1, rowNumMatchedCount);
+        }
+
         #endregion async methods 
     }
 }

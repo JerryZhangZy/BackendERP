@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SetFilterSqlString();
             this.SQL_Select = $@"
-SELECT Terms AS [value], '' AS [text], 1 AS [count]
+SELECT Terms AS [value], '' AS [text], COUNT(1) AS [count]
 FROM InvoiceHeader tbl
 WHERE {this.QueryObject.GetSQL()}
 GROUP BY Terms

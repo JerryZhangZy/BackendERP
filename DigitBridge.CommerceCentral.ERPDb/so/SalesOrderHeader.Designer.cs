@@ -159,6 +159,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("OrderSourceCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _orderSourceCode;
 
+        [Column("DepositAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _depositAmount;
+
+        [Column("MiscInvoiceUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _miscInvoiceUuid;
+
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
 
@@ -818,6 +824,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Ignore) Deposit Amount. <br> Display: true, Editable: false
+		/// </summary>
+        public virtual decimal DepositAmount
+        {
+            get
+            {
+				return _depositAmount; 
+            }
+            set
+            {
+				_depositAmount = value; 
+				OnPropertyChanged("DepositAmount", value);
+            }
+        }
+
+		/// <summary>
+		/// Misc Invoice Uuid. <br> Display: true, Editable: false.
+		/// </summary>
+        public virtual string MiscInvoiceUuid
+        {
+            get
+            {
+				return _miscInvoiceUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_miscInvoiceUuid = value.TruncateTo(50); 
+				OnPropertyChanged("MiscInvoiceUuid", value);
+            }
+        }
+
+		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
@@ -937,6 +975,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_avgCost = default(decimal); 
 			_lotCost = default(decimal); 
 			_orderSourceCode = String.Empty; 
+			_depositAmount = default(decimal); 
+			_miscInvoiceUuid = String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 

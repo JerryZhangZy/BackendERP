@@ -21,6 +21,7 @@ namespace DigitBridge.Base.Common
         Check = 1,
         CreditCard = 2,
         Expense = 3,
-        Other = 4
+        PreSales=4,
+        Other = 5 
     }
 }

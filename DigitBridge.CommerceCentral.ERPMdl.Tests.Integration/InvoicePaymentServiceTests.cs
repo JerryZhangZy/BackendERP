@@ -110,6 +110,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.True(success, "Update payments error:" + paymentService.Messages.ObjectToString());
         }
 
+
+        [Fact()]
+        public async Task AddPaymentAndPayInvoiceForPresalesAsync_Test()
+         {
+            var miscInvoiceData = MiscInvoiceDataTests.SaveFakerMiscInvoice(DataBaseFactory);
+            var invoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(DataBaseFactory);
+            var presalesAmount = new Random().Next();
+            var service = new InvoicePaymentService(DataBaseFactory);
+
+            var success = await service.AddPaymentAndPayInvoiceForPresalesAsync(miscInvoiceData.UniqueId, invoiceData.UniqueId, presalesAmount);
+
+            Assert.True(success, "AddMiscPayment error:" + service.Messages.ObjectToString());
+        }
+
         #endregion async methods
 
         #region invoice data prepare   
@@ -119,7 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var invoiceDataList = new List<InvoiceData>();
             for (int i = 0; i < count; i++)
             {
-                var invoiceData = await InvoiceDataTests.SaveFakerInvoice(DataBaseFactory);
+                var invoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(DataBaseFactory);
                 invoiceDataList.Add(invoiceData);
             }
             return invoiceDataList;
@@ -170,7 +184,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.True(queryPayload.InvoiceTransactions.Count > 0, $"no payment trans in db for invoice {invoiceNumber}");
 
             return queryPayload.InvoiceTransactions.OrderByDescending(i => i.InvoiceTransaction.TransNum).FirstOrDefault().InvoiceTransaction.RowNum.ToLong();
-        }
+        } 
         #endregion
     }
 }

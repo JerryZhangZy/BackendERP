@@ -15,6 +15,7 @@ using System.Text;
 using Newtonsoft.Json;
 using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
 using DigitBridge.CommerceCentral.ERPEventSDK;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -189,6 +190,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ProfileNum = payload.ProfileNum,
                 RowNum = applyInvoice.TransRowNum
             };
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                trans.TransNum = InvoiceTransactionHelper.GetTranSeqNum(originalTrans.InvoiceNumber, payload.ProfileNum);
+            }
+
             var dataDto = new InvoiceTransactionDataDto()
             {
                 InvoiceTransaction = trans
@@ -224,6 +230,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var changedPaidAmount = applyInvoice.PaidAmount - Data.InvoiceTransaction.OriginalPaidAmount;
             using (var trs = new ScopedTransaction(dbFactory))
                 return await InvoiceHelper.PayInvoiceAsync(applyInvoice.InvoiceNumber, changedPaidAmount, masterAccountNum, profileNum);
+        }
+        protected async Task<bool> PayInvoiceAsync(string invoiceNumber, int masterAccountNum, int profileNum, decimal paidAmount)
+        {
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await InvoiceHelper.PayInvoiceAsync(invoiceNumber, paidAmount, masterAccountNum, profileNum);
         }
 
         protected bool PayInvoice(ApplyInvoice applyInvoice, int masterAccountNum, int profileNum)
@@ -449,9 +460,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
 
-        protected QboPaymentClient qboPaymentClient = new QboPaymentClient();
 
         #region To qbo queue 
+
+        private QboPaymentClient _qboPaymentClient;
+
+        protected QboPaymentClient qboPaymentClient
+        {
+            get
+            {
+                if (_qboPaymentClient is null)
+                    _qboPaymentClient = new QboPaymentClient();
+                return _qboPaymentClient;
+            }
+        }
+
         /// <summary>
         /// convert erp invoice payment to a queue message then put it to qbo queue
         /// </summary>
@@ -490,7 +513,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPayment");
         }
 
-        public async Task<bool> DeleteQboRefundEventAsync(int masterAccountNum, int profileNum)
+        public async Task<bool> DeleteQboPaymentEventAsync(int masterAccountNum, int profileNum)
         {
             var eventDto = new AddErpEventDto()
             {
@@ -500,6 +523,73 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
             return await qboPaymentClient.SendDeleteQboPaymentAsync(eventDto);
             //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksPaymentDelete");
+        }
+        #endregion
+
+        #region Add payment for presales
+        public async Task<bool> AddPaymentAndPayInvoiceForPresalesAsync(string miscInvoiceUuid, string invoiceUuid, decimal amount)
+        {
+            Add();
+            if (miscInvoiceUuid.IsZero())
+            {
+                AddError($"miscInvoiceUuid is null");
+                return false;
+            }
+
+            if (invoiceUuid.IsZero())
+            {
+                AddError($"invoiceUuid is null");
+                return false;
+            }
+            if (!await LoadInvoiceAsync(invoiceUuid))
+            {
+                return false;
+            }
+            var header = Data.InvoiceData.InvoiceHeader;
+            Data.InvoiceTransaction = new InvoiceTransaction()
+            {
+                ProfileNum = header.ProfileNum,
+                MasterAccountNum = header.MasterAccountNum,
+                DatabaseNum = header.DatabaseNum,
+
+                TransDate = DateTime.Now,
+                TransTime = DateTime.Now.TimeOfDay,
+                TransType = (int)TransTypeEnum.Payment,
+                TransStatus = (int)TransStatus.Paid,
+
+                Currency = header.Currency,
+                InvoiceNumber = header.InvoiceNumber,
+                InvoiceUuid = header.InvoiceUuid,
+                TaxRate = header.TaxRate,
+
+                TotalAmount = amount,
+                PaidBy = (int)PaidByEnum.PreSales,
+                CheckNum = miscInvoiceUuid,
+                Description = "Add payment from presales",
+            };
+
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                Data.InvoiceTransaction.TransNum = await InvoiceTransactionHelper.GetTranSeqNumAsync(header.InvoiceNumber, header.ProfileNum);
+            }
+
+            var success = await SaveDataAsync();
+            if (!success)
+            {
+                AddError("AddPaymentAndPayInvoiceForPresalesAsync->SaveDataAsync error.");
+                return false;
+            }
+
+            var trans = Data.InvoiceTransaction;
+            //add payment success. then pay invoice.
+            success = await PayInvoiceAsync(trans.InvoiceNumber, trans.MasterAccountNum, trans.ProfileNum, trans.TotalAmount);
+            if (!success)
+            {
+                AddError($"AddPaymentAndPayInvoiceForPresalesAsync->PayInvoiceAsync error.");
+                return false;
+            }
+
+            return true;
         }
         #endregion
     }

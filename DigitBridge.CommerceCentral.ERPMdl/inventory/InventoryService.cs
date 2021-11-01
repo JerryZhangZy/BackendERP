@@ -416,6 +416,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND SKU=@1", 
                 warehouseCode.ToSqlParameter("WarehouseCode"), sku.ToSqlParameter("SKU")).FirstOrDefault();
         }
+        
+        public Inventory GetInventoryBySkuWithWarehouseUuid(string sku,string warehouseUuid)
+        {
+            return dbFactory.Find<Inventory>("WHERE WarehouseUuid=@0 AND SKU=@1", 
+                warehouseUuid.ToSqlParameter("WarehouseUuid"), sku.ToSqlParameter("SKU")).FirstOrDefault();
+        }
 
 
         public Inventory GetInventory(InventoryData inventoryData, dynamic sourceData, SKUType skuType = SKUType.GeneralMerchandise)

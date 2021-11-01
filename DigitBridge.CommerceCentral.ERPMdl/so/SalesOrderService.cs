@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -368,6 +369,49 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             success = success && DeleteData();
             return success;
+        }
+
+        /// <summary>
+        /// Add pre sales amount.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="orderNumber"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> AddPreSalesAmountAsync(SalesOrderPayload payload, string orderNumber, decimal amount)
+        {
+            if (string.IsNullOrEmpty(orderNumber))
+            {
+                AddError("orderNumber is null.");
+                return false;
+            }
+            if (amount.IsZero())
+            {
+                AddError($"amount:{amount} is invalid.");
+                return false;
+            }
+
+            //load salesorder data
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
+            if (!success)
+                return false;
+
+            // create misc invoice
+            Data.SalesOrderHeader.DepositAmount = amount.ToAmount();
+
+            var miscInvoiceService = new MiscInvoiceService(dbFactory);
+            if (!(await miscInvoiceService.AddFromSalesOrderAsync(Data.SalesOrderHeader)))
+            {
+                this.Messages = this.Messages.Concat(miscInvoiceService.Messages).ToList();
+                return false;
+            }
+
+            //set misc invoice uuid back to salesorder.
+            Data.SalesOrderHeader.MiscInvoiceUuid = miscInvoiceService.Data.MiscInvoiceHeader.MiscInvoiceUuid;
+
+
+            _ProcessMode = ProcessingMode.Edit;
+            return await SaveDataAsync();
         }
     }
 }

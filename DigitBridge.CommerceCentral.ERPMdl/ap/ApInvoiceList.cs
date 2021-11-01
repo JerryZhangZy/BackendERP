@@ -35,25 +35,59 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.RowNum()}, 
+{Helper.ApInvoiceUuid()}, 
+{Helper.ApInvoiceNum()}, 
+{Helper.ApInvoiceType()}, 
+{Helper.ApInvoiceStatus()}, 
+{Helper.ApInvoiceDate()},
+
+{Helper.ApInvoiceTime()},
+
+{Helper.VendorUuid()}, 
+{Helper.VendorNum()}, 
+{Helper.VendorName()}, 
+{Helper.VendorInvoiceNum()}, 
+{Helper.VendorUuid()}, 
+{Helper.VendorInvoiceNum()}, 
+{Helper.VendorInvoiceDate()}, 
+{Helper.DueDate()}, 
+{Helper.Currency()}, 
+{Helper.BillDate()}, 
+{Helper.TotalAmount()}, 
+{Helper.PaidAmount()}, 
+{Helper.CreditAmount()}, 
+{Helper.Balance()}, 
+{Helper.CreditAccount()}, 
+{Helper.DebitAccount()}, 
+{Helper.EnterDateUtc()}, 
+{Helper.UpdateDateUtc()}, 
+{Helper.EnterBy()}, 
+{Helper.UpdateBy()}, 
+{Helper.DigitBridgeGuid()} 
 ";
             return this.SQL_Select;
         }
 
         protected override string GetSQL_from()
         {
+            var masterAccountNum = $"{Helper.TableAllies}.MasterAccountNum";
+            var profileNum = $"{Helper.TableAllies}.ProfileNum";
+
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
+ LEFT JOIN @InvoiceStatusEnum ist ON ({Helper.TableAllies}.ApInvoiceStatus = ist.num)
+ LEFT JOIN @InvoiceTypeEnum itt ON ({Helper.TableAllies}.ApInvoiceType = itt.num)
 ";
+ 
             return this.SQL_From;
         }
 
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
-                        
-            //paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
-            //paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
+            paramList.Add("@InvoiceStatusEnum".ToEnumParameter<InvoiceStatusEnum>());
+            paramList.Add("@InvoiceTypeEnum".ToEnumParameter<InvoiceType>());
 
             return paramList.ToArray();
         }

@@ -46,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             if (data == null)
                 data = await GetFakerInvoicePaymentDataAsync(dbFactory);
 
-            data.InvoiceData = await InvoiceDataTests.SaveFakerInvoice(dbFactory, data.InvoiceData);
+            data.InvoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(dbFactory, data.InvoiceData);
 
             var srv = new InvoicePaymentService(dbFactory);
             srv.Add();

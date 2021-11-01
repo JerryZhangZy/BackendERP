@@ -23,28 +23,68 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected static string PREFIX = Helper.TableAllies;
 
         // Filter fields
-        //protected QueryFilter<DateTime> _OrderDateFrom = new QueryFilter<DateTime>("OrderDateFrom", "OrderDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
-        //public QueryFilter<DateTime> OrderDateFrom => _OrderDateFrom;
+        protected QueryFilter<string> _ApInvoiceUuid = new QueryFilter<string>("ApInvoiceUuid", "ApInvoiceUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> ApInvoiceUuid => _ApInvoiceUuid;
 
-        //protected QueryFilter<DateTime> _OrderDateTo = new QueryFilter<DateTime>("OrderDateTo", "OrderDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
-        //public QueryFilter<DateTime> OrderDateTo => _OrderDateTo;
 
-        //protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty);
-        //public QueryFilter<string> CustomerCode => _CustomerCode;
+        protected QueryFilter<string> _ApInvoiceNum = new QueryFilter<string>("ApInvoiceNum", "ApInvoiceNum", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> ApInvoiceNum => _ApInvoiceNum;
 
-        //protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
 
-        //protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
+        protected QueryFilter<long> _ApInvoiceType = new QueryFilter<long>("ApInvoiceType", "ApInvoiceType", PREFIX, FilterBy.eq, 0);
+        public QueryFilter<long> ApInvoiceType => _ApInvoiceType;
+
+
+        protected QueryFilter<long> _ApInvoiceStatus = new QueryFilter<long>("ApInvoiceStatus", "ApInvoiceStatus", PREFIX, FilterBy.eq, 0);
+        public QueryFilter<long> ApInvoiceStatus => _ApInvoiceStatus;
+
+
+        protected QueryFilter<DateTime> _ApInvoiceDate = new QueryFilter<DateTime>("ApInvoiceDate", "ApInvoiceDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> ApInvoiceDate => _ApInvoiceDate;
+
+
+        //protected QueryFilter<DateTime> _ApInvoiceTime = new QueryFilter<DateTime>("ApInvoiceTime", "ApInvoiceTime", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
+        //public QueryFilter<DateTime> ApInvoiceTime => _ApInvoiceTime;
+
+
+        protected QueryFilter<string> _VendorUuid = new QueryFilter<string>("VendorUuid", "VendorUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorUuid => _VendorUuid;
+
+
+        protected QueryFilter<string> _VendorName = new QueryFilter<string>("VendorName", "VendorName", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorName => _VendorName;
+
+
+        protected QueryFilter<string> _VendorInvoiceNum = new QueryFilter<string>("VendorInvoiceNum", "VendorInvoiceNum", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorInvoiceNum => _VendorInvoiceNum;
+
+        protected QueryFilter<DateTime> _VendorInvoiceDate = new QueryFilter<DateTime>("VendorInvoiceDate ", "VendorInvoiceDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> VendorInvoiceDate => _VendorInvoiceDate;
+
+
+        protected QueryFilter<DateTime> _DueDate = new QueryFilter<DateTime>("DueDate", "DueDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> DueDate => _DueDate;
+
+
+        protected QueryFilter<DateTime> _BillDate = new QueryFilter<DateTime>("BillDate", "BillDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> BillDate => _BillDate;
+
+
+
 
         public ApInvoiceQuery() : base(PREFIX)
         {
-            //AddFilter(_OrderDateFrom);
-            //AddFilter(_OrderDateTo);
-            //AddFilter(_CustomerCode);
-            //AddFilter(_OrderStatus);
-            //AddFilter(_OrderType);
+            AddFilter(_ApInvoiceUuid);
+            AddFilter(_ApInvoiceNum);
+            AddFilter(_ApInvoiceType);
+            AddFilter(_ApInvoiceStatus);
+            AddFilter(_ApInvoiceDate);
+            AddFilter(_VendorUuid);
+            AddFilter(_VendorName);
+            AddFilter(_VendorInvoiceNum);
+            AddFilter(_VendorInvoiceDate);
+            AddFilter(_DueDate);
+            AddFilter(_BillDate);
         }
 
         public override void InitQueryFilter()
@@ -53,4 +93,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //_OrderDateTo.FilterValue = DateTime.Today.AddDays(7);
         }
     }
+
+   
 }
