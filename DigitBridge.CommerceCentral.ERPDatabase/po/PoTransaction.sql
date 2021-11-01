@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[PoTransaction]
 (
-	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,
+	[RowNum] BIGINT IDENTITY(1,1) NOT NULL,--(Readonly) Record Number. Required, <br> Display: false, Editable: false.
     [TransUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for purchase order Transaction
     [TransNum] INT NOT NULL DEFAULT 1, --Transaction number
 
@@ -36,7 +36,7 @@
     [UpdateDateUtc] DATETIME NULL,--(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
     [EnterBy] Varchar(100) NOT NULL,--(Readonly) User who created this order. <br> Title: Created By, Display: true, Editable: false
     [UpdateBy] Varchar(100) NOT NULL,--(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
-    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()),
+    [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)
     CONSTRAINT [PK_PoTransaction] PRIMARY KEY ([RowNum]), 
 ) ON [PRIMARY]
 GO
