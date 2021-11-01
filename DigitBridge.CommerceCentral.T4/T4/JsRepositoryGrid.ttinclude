@@ -98,7 +98,7 @@ export const <#= table.JsPropertyName #>Grid = {
 
         columns: gridColumns,
 	},
-	editer: {
+	editor: {
 <# 
     WriteLine($"{new String('\t',indent)}//#region grid editor for {table.Name}");
     // generate all properties
