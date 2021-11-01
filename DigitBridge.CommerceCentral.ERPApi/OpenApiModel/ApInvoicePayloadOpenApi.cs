@@ -135,14 +135,21 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class ApInvoiceFilter
     {
-        //public string City { get; set; }
+        public string ApInvoiceNum { get; set; }
+
+        public string ApInvoiceType { get; set; }
+
+        public string ApInvoiceStatus { get; set; }
+
+       
 
         public static Faker<ApInvoiceFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<ApInvoiceFilter>()
-                //.RuleFor(u => u.City, f => "")
-                ;
+                .RuleFor(u => u.ApInvoiceNum, f => string.Empty)
+                .RuleFor(u => u.ApInvoiceType, f => string.Empty)
+                .RuleFor(u => u.ApInvoiceStatus, f => string.Empty);
             #endregion faker data rules
         }
     }
