@@ -49,10 +49,9 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_MiscInvoiceTransaction_TransUuid] ON [dbo].
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[MiscInvoiceTransaction]') AND name = N'FK_MiscInvoiceTransaction_InvoiceId')
-CREATE NONCLUSTERED INDEX [FK_MiscInvoiceTransaction_InvoiceUuid] ON [dbo].[MiscInvoiceTransaction]
+CREATE NONCLUSTERED INDEX [FK_MiscInvoiceTransaction_MiscInvoiceUuid] ON [dbo].[MiscInvoiceTransaction]
 (
-	[InvoiceUuid] ASC,
-	[TransNum] ASC
+	[MiscInvoiceUuid] ASC
 ) 
 GO
 
@@ -60,7 +59,7 @@ GO
 CREATE UNIQUE NONCLUSTERED INDEX [UI_MiscInvoiceTransaction_TransNum] ON [dbo].[MiscInvoiceTransaction]
 (
 	[ProfileNum] ASC,
-	[InvoiceNumber] ASC,
+	[MiscInvoiceNumber] ASC,
 	[TransNum] ASC
 ) 
 GO

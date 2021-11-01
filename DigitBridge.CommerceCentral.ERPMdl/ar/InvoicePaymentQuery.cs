@@ -37,21 +37,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<int> TransStatus => _TransStatus;
 
         protected QueryFilter<int> _PaidBy = new QueryFilter<int>("PaidBy", "PaidBy", PREFIX, FilterBy.eq, 0);
-        public QueryFilter<int> PaidBy => _PaidBy; 
-        
-		 
-		 
+        public QueryFilter<int> PaidBy => _PaidBy;
+
+
+
         protected QueryFilter<string> _InvoiceUuid = new QueryFilter<string>("InvoiceUuid", "InvoiceUuid", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> InvoiceUuid => _InvoiceUuid;
 
         protected QueryFilter<string> _QboDocNumber = new QueryFilter<string>("QboDocNumber", "QboDocNumber", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> QboDocNumber => _QboDocNumber;
 
-        protected QueryFilter<string> _InvoiceNumberFrom = new QueryFilter<string>("InvoiceNumberFrom", "InvoiceNumber", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _InvoiceNumberFrom = new QueryFilter<string>("InvoiceNumberFrom", "InvoiceNumber", InvoiceHeaderHelper.TableAllies, FilterBy.ge, string.Empty, isNVarChar: true);
         public QueryFilter<string> InvoiceNumberFrom => _InvoiceNumberFrom;
 
-        protected QueryFilter<string> _InvoiceNumberTo = new QueryFilter<string>("InvoiceNumberTo", "InvoiceNumber", InvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> InvoiceNumberTo => _InvoiceNumberTo; 
+        protected QueryFilter<string> _InvoiceNumberTo = new QueryFilter<string>("InvoiceNumberTo", "InvoiceNumber", InvoiceHeaderHelper.TableAllies, FilterBy.le, string.Empty, isNVarChar: true);
+        public QueryFilter<string> InvoiceNumberTo => _InvoiceNumberTo;
 
         protected QueryFilter<DateTime> _DueDateFrom = new QueryFilter<DateTime>("DueDateFrom", "DueDate", InvoiceHeaderHelper.TableAllies, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
         public QueryFilter<DateTime> DueDateFrom => _DueDateFrom;
@@ -121,7 +121,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_TransDateTo);
             AddFilter(_TransType);
             AddFilter(_TransStatus);
-            AddFilter(_PaidBy); 
+            AddFilter(_PaidBy);
 
 
             AddFilter(_InvoiceUuid);

@@ -69,9 +69,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var mapper = new SalesOrderDataDtoMapperDefault();
             return mapper.WriteDto(data, null);
         }
-
-
-        protected async Task<OrderShipmentData> SaveShipment()
+         
+        protected async Task<OrderShipmentData> SaveShipmentAndSalesOrder()
         {
             var skus = GetInventories();
 
@@ -80,20 +79,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var success = await shipmentService.AddAsync(shipmentDto);
             Assert.True(success && shipmentService.Data.OrderShipmentHeader.OrderShipmentNum > 0, shipmentService.Messages.ObjectToString());
 
-            var salesorderService = new SalesOrderService(DataBaseFactory);
-            var salesorderDataDto = GetFakerSalesorderDataDto(shipmentService.Data, skus);
-            success = await salesorderService.AddAsync(salesorderDataDto);
-            Assert.True(success, salesorderService.Messages.ObjectToString());
+            await SaveSalesOrder(shipmentService.Data, skus);
 
             return shipmentService.Data;
         }
+        protected async Task SaveSalesOrder(OrderShipmentData shipmentData, Inventory[] skus)
+        {
+            var salesorderService = new SalesOrderService(DataBaseFactory);
+            var salesorderDataDto = GetFakerSalesorderDataDto(shipmentData, skus);
+            var success = await salesorderService.AddAsync(salesorderDataDto);
+            Assert.True(success, salesorderService.Messages.ObjectToString());
 
+            //add misinvoice info.
+            var soHeader = salesorderService.Data.SalesOrderHeader;
+            var salesOrderPayload = new SalesOrderPayload()
+            {
+                MasterAccountNum = soHeader.MasterAccountNum,
+                ProfileNum = soHeader.ProfileNum,
+            };
+            success = await salesorderService.AddPreSalesAmountAsync(salesOrderPayload, soHeader.OrderNumber, soHeader.DepositAmount);
+            Assert.True(success, salesorderService.Messages.ObjectToString());
+
+        }
         #endregion
 
         [Fact()]
         public async Task CreateShipmentAsync_Test()
         {
-            var shipmentData = await SaveShipment();
+            var shipmentData = await SaveShipmentAndSalesOrder();
 
             var dto = new OrderShipmentDataDtoMapperDefault().WriteDto(shipmentData);
             var payload = new OrderShipmentPayload()
@@ -115,7 +128,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         [Fact()]
         public async Task CreateInvoiceFromShipmentAsync_Test()
         {
-            var shipmentData = await SaveShipment();
+            var shipmentData = await SaveShipmentAndSalesOrder();
             var managerService = new OrderShipmentManager(DataBaseFactory);
             var success = await managerService.CreateInvoiceFromShipmentAsync(shipmentData);
             Assert.True(success, managerService.Messages.ObjectToString());

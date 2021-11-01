@@ -74,6 +74,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.AvgCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.LotCost, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.OrderSourceCode, f => f.Lorem.Word())
+					.RuleFor(u => u.DepositAmount, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.MiscInvoiceUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EnterBy, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.UpdateBy, f => f.Lorem.Sentence().TruncateTo(100))

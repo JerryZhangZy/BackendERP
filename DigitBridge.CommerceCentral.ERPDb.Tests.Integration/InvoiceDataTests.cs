@@ -49,18 +49,20 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 var item = data.InvoiceItems[i];
 
                 item.DiscountAmount = 0;
-                item.ShipQty = new Random().Next(10, 100); 
+                item.ShipQty = new Random().Next(10, 100);
 
                 var inventory = inventories[i];
                 item.WarehouseCode = inventory.WarehouseCode;
                 item.SKU = inventory.SKU;
                 item.InventoryUuid = inventory.InventoryUuid;
+                item.ProductUuid = inventory.ProductUuid;
+                item.WarehouseUuid = inventory.WarehouseUuid;
             }
             data.InvoiceHeader.InvoiceNumber = NumberGenerate.Generate();
             return data;
         }
 
-        public static async Task<InvoiceData> SaveFakerInvoice(IDataBaseFactory dbFactory, InvoiceData data = null)
+        public static async Task<InvoiceData> SaveFakerInvoiceAsync(IDataBaseFactory dbFactory, InvoiceData data = null)
         {
             var srv = new InvoiceService(dbFactory);
             srv.Add();

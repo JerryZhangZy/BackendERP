@@ -79,8 +79,10 @@
 //SettingForQuickBooksSetting
 //SettingForEventERP
 //SettingForApInvoice
+//SettingForMiscInvoice
+//SettingForMiscInvoiceTransaction
 #>
-<#@ include file="SettingForApInvoice.ttinclude" #>
+<#@ include file="SettingForMiscInvoiceTransaction.ttinclude" #>
 <#
     var dtoSuf = "";
     
