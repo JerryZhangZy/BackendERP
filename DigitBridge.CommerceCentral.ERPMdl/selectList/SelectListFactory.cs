@@ -63,7 +63,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload == null || string.IsNullOrWhiteSpace(payload.Name))
                 return null;
 
-            #region system global 
+            #region system global
+            if (payload.Name.EqualsIgnoreSpace("inventory_alternateCode")) return new inventory_alternateCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_oemCode")) return new inventory_oemCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_catalogPage")) return new inventory_catalogPage(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_productYear")) return new inventory_productYear(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_categoryCode")) return new inventory_categoryCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_remark")) return new inventory_remark(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_classCode")) return new inventory_classCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_sizeCode")) return new inventory_sizeCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_colorPatternCode")) return new inventory_colorPatternCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_sizeType")) return new inventory_sizeType(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_departmentCode")) return new inventory_departmentCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_sku")) return new inventory_sku(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_divisionCode")) return new inventory_divisionCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_styleCode")) return new inventory_styleCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_groupCode")) return new inventory_groupCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_subClassCode")) return new inventory_subClassCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_lengthCode")) return new inventory_lengthCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_subGroupCode")) return new inventory_subGroupCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_lotNum")) return new inventory_lotNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_warehouseCode")) return new inventory_warehouseCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_lpnNum")) return new inventory_lpnNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_widthCode")) return new inventory_widthCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("inventory_model")) return new inventory_model(dbFactory);
             //if (obj.listFor.EqualsIgnoreSpace("oms_ar_term"))
             //    return new DemList_oms_ar_term(obj);
             //if (obj.listFor.EqualsIgnoreSpace("oms_src_file"))
@@ -231,6 +254,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             #endregion
 
             #region S/O
+            if (payload.Name.EqualsIgnoreSpace("so_orderNumber"))
+                return new so_orderNumber(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_customerCode"))
+                return new so_customerCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_customerName"))
+                return new so_customerName(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_terms"))
+                return new so_terms(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("so_shippingCarrier"))
+                return new so_shippingCarrier(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_shippingClass"))
+                return new so_shippingClass(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_centralOrderNum"))
+                return new so_centralOrderNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_channelOrderID"))
+                return new so_channelOrderID(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_warehouseCode"))
+                return new so_warehouseCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_refNum"))
+                return new so_refNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("so_customerPoNum"))
+                return new so_customerPoNum(dbFactory);
             //if (obj.listFor.EqualsIgnoreSpace("so_ord_num"))
             //    return new DemList_so_ord_num(obj);
             //if (obj.listFor.EqualsIgnoreSpace("so_cus_id"))
@@ -257,7 +303,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //    return new DemList_so_str_num(obj);
 
             #endregion
-
             #region invoice
             if (payload.Name.EqualsIgnoreSpace("invoice_invoiceNumber"))
                 return new invoice_invoiceNumber(dbFactory);

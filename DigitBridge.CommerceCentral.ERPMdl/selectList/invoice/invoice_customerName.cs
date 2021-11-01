@@ -35,9 +35,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SetFilterSqlString();
             this.SQL_Select = $@"
-SELECT CustomerUuid as id, CustomerName AS [value], CustomerCode AS [text], COUNT(1) AS [count]
+SELECT CustomerUuid as id, MIN(CustomerName) AS [value], MIN(CustomerCode) AS [text], COUNT(1) AS [count]
 FROM InvoiceHeader tbl WHERE {this.QueryObject.GetSQL()}
-GROUP BY CustomerUuid, CustomerName, CustomerCode 
+GROUP BY CustomerUuid
 ORDER BY [value]
 ";
             return this.SQL_Select;

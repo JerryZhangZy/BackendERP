@@ -14,18 +14,18 @@ using Microsoft.AspNetCore.Http;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public partial class invoice_terms : SelectListBase
+    public partial class inventory_catalogPage : SelectListBase
     {
-        public override string Name => "invoice_terms";
+        public override string Name => "inventory_catalogPage";
 
-        public invoice_terms(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public inventory_catalogPage(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"Terms LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"CatalogPage LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -35,10 +35,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SetFilterSqlString();
             this.SQL_Select = $@"
-SELECT Terms AS [value], '' AS [text], COUNT(1) AS [count]
-FROM InvoiceHeader tbl
+SELECT CatalogPage AS [value], '' AS [text], COUNT(1) AS [count]
+FROM ProductExt tbl
 WHERE {this.QueryObject.GetSQL()}
-GROUP BY Terms
+GROUP BY CatalogPage
 ORDER BY [value]
 ";
             return this.SQL_Select;
