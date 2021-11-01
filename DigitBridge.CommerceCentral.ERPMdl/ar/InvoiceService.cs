@@ -348,8 +348,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return false;
         } 
 
-        protected QboInvoiceClient qboInvoiceClient = new QboInvoiceClient();
-
+        
         #region To qbo queue 
 
         private QboInvoiceClient _qboInvoiceClient;

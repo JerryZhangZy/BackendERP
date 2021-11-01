@@ -215,6 +215,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return base.Add(payload);
         }
 
+        public virtual bool Add(InvoiceTransactionDataDto dto)
+        {
+            return base.Add(dto);
+        }
+        public virtual async Task<bool> AddAsync(InvoiceTransactionDataDto dto)
+        {
+            return await base.AddAsync(dto);
+        }
+
         #endregion
 
         #region update return

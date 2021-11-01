@@ -92,6 +92,11 @@ channelAccount.ChannelAccountName,
         public override SqlParameter[] GetSqlParameters()
         {
             var paramList = base.GetSqlParameters().ToList();
+
+            var transTypePara = paramList.Where(i => i.ParameterName.ToLower() == "transtype").FirstOrDefault();
+            if (transTypePara != null)
+                transTypePara.Value = (int)TransTypeEnum.Return;
+
             paramList.Add("@PaymentTransStatus".ToEnumParameter<TransStatus>());
             paramList.Add("@PaymentTransType".ToEnumParameter<TransTypeEnum>());
             return paramList.ToArray();
