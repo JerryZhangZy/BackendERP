@@ -31,12 +31,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
 
-        public async Task<bool> AddMiscPayment(string misInvoiceUuid, string invoiceUuid, decimal amount)
+        public async Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceUuid, decimal amount)
         {
             Add();
-            if (misInvoiceUuid.IsZero())
+            if (miscInvoiceUuid.IsZero())
             {
-                AddError($"misInvoiceUuid is null");
+                AddError($"miscInvoiceUuid is null");
                 return false;
             }
 
@@ -45,7 +45,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"invoiceUuid is null");
                 return false;
             }
-            if (!await LoadMiscInvoiceAsync(misInvoiceUuid))
+            if (!await LoadMiscInvoiceAsync(miscInvoiceUuid))
                 return false;
 
             var header = Data.MiscInvoiceData.MiscInvoiceHeader;

@@ -323,9 +323,9 @@ WHERE itm.cnt > 0
             success = await srv_AddPresales.AddPreSalesAmountAsync(salesOrder_Payload, salesOrderHeader_FromDB.OrderNumber, presalesAmount);
             Assert.True(success, "Add Pre sales amount  error:" + srv_AddPresales.Messages.ObjectToString());
 
-            var misInvoiceUuid = srv_AddPresales.Data.SalesOrderHeader.MiscInvoiceUuid;
+            var miscInvoiceUuid = srv_AddPresales.Data.SalesOrderHeader.MiscInvoiceUuid;
             var misSrv_Get = new MiscInvoiceService(DataBaseFactory);
-            success = await misSrv_Get.GetDataByIdAsync(misInvoiceUuid);
+            success = await misSrv_Get.GetDataByIdAsync(miscInvoiceUuid);
             Assert.True(success, "Get mis invoice  error:" + misSrv_Get.Messages.ObjectToString());
         }
     }

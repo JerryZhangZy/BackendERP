@@ -301,8 +301,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
+            var invoiceUuid = string.Empty;
             //Create Invoice 
-            return await CreateInvoiceAsync(shipmentData, salesorderService.Data);
+            (success, invoiceUuid) = await CreateInvoiceAsync(shipmentData, salesorderService.Data);
+            if (!success)
+                return false;
+
+            var soHeader = salesorderService.Data.SalesOrderHeader;
+            var paymentManager = new InvoicePaymentManager(dbFactory);
+            return await paymentManager.AddPaymentFromPresales(soHeader.MiscInvoiceUuid, invoiceUuid, soHeader.DepositAmount);
         }
 
         protected async Task<string> GetSalesOrderUuid(OrderShipmentData shipmentData)
@@ -325,7 +332,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="coData"></param>
         /// <param name="dcAssigmentData"></param>
         /// <returns>Success Create Invoice</returns>
-        protected async Task<bool> CreateInvoiceAsync(OrderShipmentData shipmentData, SalesOrderData salesOrderData)
+        protected async Task<(bool, string)> CreateInvoiceAsync(OrderShipmentData shipmentData, SalesOrderData salesOrderData)
         {
             InvoiceTransfer invoiceTransfer = new InvoiceTransfer(this, "");
             var invoiceData = invoiceTransfer.FromOrderShipmentAndSalesOrder(shipmentData, salesOrderData);
@@ -337,12 +344,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!success)
             {
                 this.Messages = this.Messages.Concat(invoiceService.Messages).ToList();
-                return false;
+                return (false, null);
             }
 
             //set InvoiceNumber back to shipment.
             shipmentData.OrderShipmentHeader.InvoiceNumber = invoiceService.Data.InvoiceHeader.InvoiceNumber;
-            return true;
+            return (true, invoiceService.Data.InvoiceHeader.InvoiceUuid);
         }
 
         /// <summary>
@@ -367,7 +374,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             using (var trs = new ScopedTransaction(dbFactory))
                 return await InvoiceHelper.ExistSalesOrderUuidAsync(salesOrderUuid);
         }
-
         #endregion
     }
 }

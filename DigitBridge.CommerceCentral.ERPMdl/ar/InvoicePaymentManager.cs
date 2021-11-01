@@ -193,13 +193,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Add payment from presales.
 
-        public async Task<bool> AddPaymentFromPresales(string misInvoiceUuid, string invoiceUuid, decimal amount)
+        public async Task<bool> AddPaymentFromPresales(string miscInvoiceUuid, string invoiceUuid, decimal amount)
         {
+
+            //no need to add payment.
+            if (miscInvoiceUuid.IsZero())
+                return true;
+
+            if (invoiceUuid.IsZero())
+            {
+                AddError("invoiceUuid is required.");
+                return false;
+            }
+            if (amount.IsZero())
+            {
+                AddError("amount is error.");
+                return false;
+            }
+
             //Add mis payment
             var srv_MisPayment = new MiscInvoicePaymentService(dbFactory);
-            var success = await srv_MisPayment.AddMiscPayment(misInvoiceUuid, invoiceUuid, amount);
+            var success = await srv_MisPayment.AddMiscPayment(miscInvoiceUuid, invoiceUuid, amount);
             if (!success)
+            {
+                this.Messages = this.Messages.Concat(srv_MisPayment.Messages).ToList();
                 return false;
+            }
+
             var misPaymentData = srv_MisPayment.Data;
 
             var actualApplyAmount = misPaymentData.MiscInvoiceTransaction.TotalAmount;
@@ -207,13 +227,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //update misc invoice set balance = originalbalance-actualApplyAmount;
             var srv_MiscInvoice = new MiscInvoiceService(dbFactory);
-            success = await srv_MiscInvoice.WithdrawAsync(misInvoiceUuid, actualApplyAmount);
+            success = await srv_MiscInvoice.WithdrawAsync(miscInvoiceUuid, actualApplyAmount);
             if (!success)
+            {
+                this.Messages = this.Messages.Concat(srv_MiscInvoice.Messages).ToList();
                 return false;
+            }
 
             //Add payment to invoice trans and pay invoice.
             var srv_payment = new InvoicePaymentService(dbFactory);
-            return await srv_payment.AddPaymentAndPayInvoiceForPresalesAsync(misInvoiceUuid, invoiceUuid, actualApplyAmount);
+            success = await srv_payment.AddPaymentAndPayInvoiceForPresalesAsync(miscInvoiceUuid, invoiceUuid, actualApplyAmount);
+            if (!success)
+            {
+                this.Messages = this.Messages.Concat(srv_payment.Messages).ToList();
+                return false;
+            }
+
+            return true;
         }
 
         #endregion
