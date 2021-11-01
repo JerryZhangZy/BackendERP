@@ -9,7 +9,19 @@ BEGIN
 	(
 		[ShipDate] ASC
 	)  
-END					
+END			
+
+-- 11/2/2021 By junxian
+IF COL_LENGTH('SalesOrderHeader', 'DepositAmount') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderHeader ADD [DepositAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END	
+
+-- 11/2/2021 By junxian
+IF COL_LENGTH('SalesOrderHeader', 'MiscInvoiceUuid') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderHeader ADD [MiscInvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50)))	
+END
 
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'IX_SalesOrderHeader_MasterAccountNum_ProfileNum')

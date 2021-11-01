@@ -1298,6 +1298,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		/// <summary>
 		/// (Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+   
+   CONSTRAINT
 		/// </summary>
         public virtual long OrderDCAssignmentLineNum
         {
