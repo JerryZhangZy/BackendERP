@@ -295,6 +295,113 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
+        
+        /// <summary>
+        /// Get PoHeader by invoiceNumber//TODO move to invoice service
+        /// </summary>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        protected async Task<PoHeaderDto> GetPoHeaderAsync(int masterAccountNum, int profileNum, string invoiceNumber)
+        {
+            var poHeader = await new PoHeader(_dbFactory).GetByPoNumAsync(invoiceNumber, masterAccountNum, profileNum);
+            var dto = new PoHeaderDto();
+            if (poHeader != null)
+                new PurchaseOrderDataDtoMapperDefault().WritePoHeader(poHeader, dto);
+                // new PoDataDtoMapperDefault().WriteInvoiceHeader(invoiceHeader, dto);
+            return dto;
+        }
+        
+        protected virtual async Task<List<PoTransactionDataDto>> GetPoTransactionDataDtoListAsync(int masterAccountNum, int profileNum, string poNum,int? transNum = null)
+        {
+            if (string.IsNullOrEmpty(poNum)) return null;
+            var dataList = await GetDataListAsync(masterAccountNum, profileNum, poNum,transNum);
+            if (dataList == null || dataList.Count == 0) return null;
+            var dtoList = new List<PoTransactionDataDto>();
+            foreach (var dataItem in dataList)
+            {
+                var dtoItem = new PoTransactionDataDto();
+                dtoList.Add(this.DtoMapper.WriteDto(dataItem, dtoItem));
+            }
+            return dtoList;
+        }
+        
+        protected virtual async Task<List<PoTransactionData>> GetDataListAsync(int masterAccountNum, int profileNum, string poNum, int? transNum = null)
+        {
+            List();
+            if (string.IsNullOrEmpty(poNum)) return null;
+            //LoadInvoice(invoiceNumber, profileNum, masterAccountNum);
+            return await _data.GetDataListAsync(poNum, masterAccountNum, profileNum, transNum);
+        }
+        
+        protected async Task<bool> GetByNumberAsync(PoTransactionPayload payload, string poNum, int transNum)
+        {
+            return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, poNum, transNum);
+        }
+        protected async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string poNum, int transNum)
+        {
+            List();
+            var success = await base.GetByNumberAsync(masterAccountNum, profileNum, poNum + "_" + transNum);
+            LoadPurchaseOrderData(poNum, profileNum, masterAccountNum);
+            return success;
+        }
+        /// <summary>
+        /// Load LoadPurchaseOrder data.
+        /// </summary>
+        /// <param name="poNum"></param>
+        protected bool LoadPurchaseOrderData(string poNum, int profileNum, int masterAccountNum)
+        {
+            // load LoadPurchaseOrderData
+            var poData = new PurchaseOrderData(dbFactory);
+            var success = poData.GetByNumber(masterAccountNum, profileNum, poNum);
+            if (!success) return false;
+
+            if (Data == null)
+                NewData();
+            Data.PurchaseOrderData = poData;
+            Data.PoTransaction.PoUuid = poData.PoHeader.PoUuid;
+            if (Data.PoTransactionItems == null) return success;
+
+            foreach (var item in Data.PoTransactionItems)
+            {
+                item.PoUuid = poData.PoHeader.PoUuid;
+                if (!item.RowNum.IsZero()) continue;
+                item.PoItemUuid = poData.PoItems.FirstOrDefault(i => i.SKU == item.SKU && i.WarehouseUuid == item.WarehouseUuid)?.PoItemUuid;
+            }
+
+            return success;
+        }
+        
+        /// <summary>
+        /// Delete invoice by invoice number
+        /// </summary>
+        /// <param name="poNum"></param>
+        /// <returns></returns>
+        protected virtual async Task<bool> DeleteByNumberAsync(PoTransactionPayload payload, string poNum, int transNum)
+        {
+            //set delete mode
+            Delete();
+            //load data
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, poNum + "_" + transNum);
+            success = success && DeleteData();
+            return success;
+        }
+
+        /// <summary>
+        /// Delete data by number
+        /// </summary>
+        /// <param name="poNum"></param>
+        /// <returns></returns>
+        protected virtual bool DeleteByNumber(PoTransactionPayload payload, string poNum, int transNum)
+        {
+            if (string.IsNullOrEmpty(poNum))
+                return false;
+            //set delete mode
+            Delete();
+            //load data
+            var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, poNum + "_" + transNum);
+            success = success && DeleteData();
+            return success;
+        }
 
     }
 }

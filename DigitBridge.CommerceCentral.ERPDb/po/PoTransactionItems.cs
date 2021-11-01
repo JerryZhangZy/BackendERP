@@ -17,6 +17,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class PoTransactionItems
     {
+        public virtual async Task<List<PoTransactionItems>> GetPoTransactionItemsItems(List<string> transUuids)
+        {
+            if (transUuids == null || transUuids.Count == 0) return null;
+            var sql = $"SELECT * FROM PoTransactionItems where TransUuid in ('{string.Join("','", transUuids)}') ";
+            return (await dbFactory.FindAsync<PoTransactionItems>(sql)).ToList();
+        }
 
     }
 }
