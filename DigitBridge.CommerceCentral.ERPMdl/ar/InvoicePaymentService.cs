@@ -576,7 +576,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = await SaveDataAsync();
             if (!success)
             {
-                AddError("SaveDataAsync error.");
+                AddError("AddPaymentAndPayInvoiceForPresalesAsync->SaveDataAsync error.");
                 return false;
             }
 
@@ -585,7 +585,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = await PayInvoiceAsync(trans.InvoiceNumber, trans.MasterAccountNum, trans.ProfileNum, trans.TotalAmount);
             if (!success)
             {
-                AddError($"Apply payment to invoice failed for transuuid:{trans.TransUuid}");
+                AddError($"AddPaymentAndPayInvoiceForPresalesAsync->PayInvoiceAsync error.");
                 return false;
             }
 

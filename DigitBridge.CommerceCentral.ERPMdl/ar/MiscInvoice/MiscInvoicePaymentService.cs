@@ -81,7 +81,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 Data.MiscInvoiceTransaction.TransNum = await MiscInvoiceTransactionHelper.GetTranSeqNumAsync(header.MiscInvoiceNumber, header.ProfileNum);
             }
 
-            return await SaveDataAsync();
+            if (!await SaveDataAsync())
+            {
+                AddError($"AddMiscPayment->SaveDataAsync error.");
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -33,6 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.MiscInvoiceHeader.MasterAccountNum = MasterAccountNum;
             data.MiscInvoiceHeader.ProfileNum = ProfileNum;
             data.MiscInvoiceHeader.MiscInvoiceNumber = NumberGenerate.Generate();
+            data.MiscInvoiceHeader.Balance = data.MiscInvoiceHeader.TotalAmount;
             return data;
         }
 

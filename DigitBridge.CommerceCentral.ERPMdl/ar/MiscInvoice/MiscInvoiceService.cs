@@ -345,11 +345,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (!await GetDataByIdAsync(miscInvoiceUuid))
             {
-                AddError("Data not found for miscInvoiceUuid:{miscInvoiceUuid}");
+                AddError($"Data not found for miscInvoiceUuid:{miscInvoiceUuid}");
                 return false;
             }
             Data.MiscInvoiceHeader.Balance = Data.MiscInvoiceHeader.Balance - amount;
-            return await SaveDataAsync();
+
+            if (!await SaveDataAsync())
+            {
+                AddError("WithdrawAsync->SaveDataAsync error.");
+                return false;
+            }
+
+            return true;
         }
     }
 }

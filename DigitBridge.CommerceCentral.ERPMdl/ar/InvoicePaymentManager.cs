@@ -207,7 +207,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //update misc invoice set balance = originalbalance-actualApplyAmount;
             var srv_MiscInvoice = new MiscInvoiceService(dbFactory);
-            await srv_MiscInvoice.WithdrawAsync(misInvoiceUuid, actualApplyAmount);
+            success = await srv_MiscInvoice.WithdrawAsync(misInvoiceUuid, actualApplyAmount);
+            if (!success)
+                return false;
 
             //Add payment to invoice trans and pay invoice.
             var srv_payment = new InvoicePaymentService(dbFactory);
