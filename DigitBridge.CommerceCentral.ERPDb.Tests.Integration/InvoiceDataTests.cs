@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             return data;
         }
 
-        public static async Task<InvoiceData> SaveFakerInvoice(IDataBaseFactory dbFactory, InvoiceData data = null)
+        public static async Task<InvoiceData> SaveFakerInvoiceAsync(IDataBaseFactory dbFactory, InvoiceData data = null)
         {
             var srv = new InvoiceService(dbFactory);
             srv.Add();

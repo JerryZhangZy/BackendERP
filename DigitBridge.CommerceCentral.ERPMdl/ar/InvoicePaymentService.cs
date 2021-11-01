@@ -517,8 +517,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
         #region Add payment for presales
-        public async Task<bool> AddPaymentForPresales(string misInvoiceUuid, string invoiceUuid, decimal amount)
-        { 
+        public async Task<bool> AddPaymentForPresalesAsync(string misInvoiceUuid, string invoiceUuid, decimal amount)
+        {
+            Add();
             if (misInvoiceUuid.IsZero())
             {
                 AddError($"misInvoiceUuid is null");
@@ -533,9 +534,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!await LoadInvoiceAsync(invoiceUuid))
             { 
                 return false;
-            }
-
-            Add();
+            } 
             var header = Data.InvoiceData.InvoiceHeader;
             Data.InvoiceTransaction = new InvoiceTransaction()
             {

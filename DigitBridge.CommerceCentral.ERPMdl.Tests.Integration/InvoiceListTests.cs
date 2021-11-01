@@ -124,7 +124,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetInvoiceListAsync_Test()
         {
-            var invoice = await InvoiceDataTests.SaveFakerInvoice(this.DataBaseFactory);
+            var invoice = await InvoiceDataTests.SaveFakerInvoiceAsync(this.DataBaseFactory);
             var header = invoice.InvoiceHeader;
             var headerInfo = invoice.InvoiceHeaderInfo;
 
@@ -182,7 +182,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         //[Fact(Skip = SkipReason)]
         public async Task GetInvoiceListAsync_EachFilter_Test()
         {
-            var invoice = await InvoiceDataTests.SaveFakerInvoice(this.DataBaseFactory);
+            var invoice = await InvoiceDataTests.SaveFakerInvoiceAsync(this.DataBaseFactory);
             var header = invoice.InvoiceHeader;
             var headerInfo = invoice.InvoiceHeaderInfo;
 

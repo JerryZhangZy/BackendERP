@@ -57,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
         public static async Task<InvoiceTransactionData> SaveFakerInvoiceReturn(IDataBaseFactory dbFactory)
         {
-            var invoiceData = await InvoiceDataTests.SaveFakerInvoice(dbFactory);
+            var invoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(dbFactory);
 
             var data = await GetFakerInvoiceReturnDataAsync(dbFactory, invoiceData); 
 

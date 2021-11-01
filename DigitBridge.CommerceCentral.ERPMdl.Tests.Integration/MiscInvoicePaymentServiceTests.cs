@@ -61,8 +61,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         [Fact()]
         public async Task AddMiscPayment_Test()
         {
-            var miscInvoiceData = SaveMiscInvoice();
-            var invoiceData = SaveInvoice();
+            var miscInvoiceData = MiscInvoiceDataTests.SaveFakerMiscInvoice(DataBaseFactory);
+            var invoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(DataBaseFactory);
             var presalesAmount = new Random().Next();
             var service = new MiscInvoicePaymentService(DataBaseFactory);
 
@@ -71,41 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.True(success, "AddMiscPayment error:" + service.Messages.ObjectToString());
         }
         #endregion async methods
-
-        #region data prepare
-
-        protected MiscInvoiceTransactionDataDto GetFakerPaymentDto(string MiscInvoiceNumber = null)
-        {
-            var data = MiscInvoiceTransactionDataTests.GetFakerData();
-            //data.MiscInvoiceTransaction.MasterAccountNum = MasterAccountNum;
-            //data.MiscInvoiceTransaction.ProfileNum = ProfileNum;
-            data.MiscInvoiceTransaction.MiscInvoiceNumber = MiscInvoiceNumber;
-            var mapper = new MiscInvoiceTransactionDataDtoMapperDefault();
-            return mapper.WriteDto(data, null);
-        }
-
-        protected MiscInvoiceData SaveMiscInvoice()
-        {
-            var data = MiscInvoiceDataTests.GetFakerData(); 
-            var mapper = new MiscInvoiceDataDtoMapperDefault();
-            var dto = mapper.WriteDto(data, null);
-            var service = new MiscInvoiceService(DataBaseFactory);
-            var success = service.Add(dto);
-            Assert.True(success, "SaveMiscInvoice error:" + service.Messages.ObjectToString());
-            return service.Data;
-        }
-
-        protected InvoiceData SaveInvoice()
-        {
-            var data = InvoiceDataTests.GetFakerData();
-            var mapper = new InvoiceDataDtoMapperDefault();
-            var dto = mapper.WriteDto(data, null);
-            var service = new InvoiceService(DataBaseFactory);
-            var success = service.Add(dto);
-            Assert.True(success, "SaveInvoice error:" + service.Messages.ObjectToString());
-            return service.Data;
-        }
-        #endregion
+         
     }
 }
 
