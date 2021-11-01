@@ -2,6 +2,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
+using DigitBridge.CommerceCentral.ERPMdl.po;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -180,10 +181,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static async Task<JsonNetResponse<PoReceivePayload>> PoReceivesList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "poReceives/find")] HttpRequest req)
         {
-            var payload = await req.GetParameters<PoReceivePayload>(true);
+             
+               var payload = await req.GetParameters<PoReceivePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            // var srv = new PoReceiveList(dataBaseFactory, new PoReceiveQuery());
-            // await srv.GetPoReceiveListAsync(payload);
+            var srv = new PoReceiveList(dataBaseFactory, new PoReceiveQuery());
+            await srv.GetPoReceiveListAsync(payload);
             return new JsonNetResponse<PoReceivePayload>(payload);
         }
         

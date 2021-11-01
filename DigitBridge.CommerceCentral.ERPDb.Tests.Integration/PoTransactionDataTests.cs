@@ -19,12 +19,26 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using Bogus;
+using DigitBridge.CommerceCentral.ERPMdl;
 
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     public partial class PoTransactionDataTests
     {
+        public static async Task<PoTransactionData> SaveFakerPoTransaction(IDataBaseFactory dbFactory, PoTransactionData data = null)
+        {
+            var srv = new PoTransactionService(dbFactory);
+            srv.Add();
 
+            var mapper = srv.DtoMapper;
+             
+            var dto = mapper.WriteDto(data, null);
+            var success = srv.Add(dto);
+
+            Assert.True(success, srv.Messages.ObjectToString());
+
+            return srv.Data;
+        }
     }
 }
 
