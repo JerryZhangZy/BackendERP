@@ -33,39 +33,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
-/*
-            var sql = $@"
-SELECT COUNT(1) FROM MiscInvoiceTransaction tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum
-AND OrderNumber = @number
-";
-            var result = SqlQuery.ExecuteScalar<int>(sql,
-                masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum"),
-                number.ToSqlParameter("number")
-            );
-            return result > 0;
-*/
+            /*
+                        var sql = $@"
+            SELECT COUNT(1) FROM MiscInvoiceTransaction tbl
+            WHERE MasterAccountNum = @masterAccountNum
+            AND ProfileNum = @profileNum
+            AND OrderNumber = @number
+            ";
+                        var result = SqlQuery.ExecuteScalar<int>(sql,
+                            masterAccountNum.ToSqlParameter("masterAccountNum"),
+                            profileNum.ToSqlParameter("profileNum"),
+                            number.ToSqlParameter("number")
+                        );
+                        return result > 0;
+            */
             return true;
         }
 
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
-/*
-            var sql = $@"
-SELECT COUNT(1) FROM MiscInvoiceTransaction tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum
-AND OrderNumber = @number
-";
-            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
-                masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum"),
-                number.ToSqlParameter("number")
-            );
-            return result > 0;
-*/
+            /*
+                        var sql = $@"
+            SELECT COUNT(1) FROM MiscInvoiceTransaction tbl
+            WHERE MasterAccountNum = @masterAccountNum
+            AND ProfileNum = @profileNum
+            AND OrderNumber = @number
+            ";
+                        var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                            masterAccountNum.ToSqlParameter("masterAccountNum"),
+                            profileNum.ToSqlParameter("profileNum"),
+                            number.ToSqlParameter("number")
+                        );
+                        return result > 0;
+            */
             return true;
         }
 
@@ -132,7 +132,7 @@ AND RowNum= @rowNum
             );
             return result > 0;
         }
-        
+
         public static List<long> GetRowNums(int masterAccountNum, int profileNum)
         {
             var sql = $@"
@@ -156,78 +156,104 @@ AND ProfileNum = @profileNum";
         }
         public static long GetRowNumByNumber(string number, int masterAccountNum, int profileNum)
         {
-/*
-            var sql = $@"
-SELECT RowNum FROM MiscInvoiceTransaction tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum
-AND OrderNumber = @number
-";
-            return SqlQuery.ExecuteScalar<long>(sql,
-                masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum"),
-                number.ToSqlParameter("number")
-            );
-*/
+            /*
+                        var sql = $@"
+            SELECT RowNum FROM MiscInvoiceTransaction tbl
+            WHERE MasterAccountNum = @masterAccountNum
+            AND ProfileNum = @profileNum
+            AND OrderNumber = @number
+            ";
+                        return SqlQuery.ExecuteScalar<long>(sql,
+                            masterAccountNum.ToSqlParameter("masterAccountNum"),
+                            profileNum.ToSqlParameter("profileNum"),
+                            number.ToSqlParameter("number")
+                        );
+            */
             return 0;
         }
 
         public static async Task<long> GetRowNumByNumberAsync(string number, int masterAccountNum, int profileNum)
         {
-/*
-            var sql = $@"
-SELECT RowNum FROM MiscInvoiceTransaction tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum
-AND OrderNumber = @number
-";
-            return await SqlQuery.ExecuteScalarAsync<long>(sql,
-                masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum"),
-                number.ToSqlParameter("number")
-            );
-*/
+            /*
+                        var sql = $@"
+            SELECT RowNum FROM MiscInvoiceTransaction tbl
+            WHERE MasterAccountNum = @masterAccountNum
+            AND ProfileNum = @profileNum
+            AND OrderNumber = @number
+            ";
+                        return await SqlQuery.ExecuteScalarAsync<long>(sql,
+                            masterAccountNum.ToSqlParameter("masterAccountNum"),
+                            profileNum.ToSqlParameter("profileNum"),
+                            number.ToSqlParameter("number")
+                        );
+            */
             return 0;
         }
 
         public static List<long> GetRowNumsByNums(IList<string> nums, int masterAccountNum, int profileNum)
         {
-/*
-            var sql = $@"
-SELECT RowNum FROM MiscInvoiceTransaction tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum
-AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
+            /*
+                        var sql = $@"
+            SELECT RowNum FROM MiscInvoiceTransaction tbl
+            WHERE MasterAccountNum = @masterAccountNum
+            AND ProfileNum = @profileNum
+            AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
 
-            return SqlQuery.Execute(
-                sql,
-                (long rowNum) => rowNum,
-                masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum"),
-                nums.ToParameter<string>("nums"));
-*/
+                        return SqlQuery.Execute(
+                            sql,
+                            (long rowNum) => rowNum,
+                            masterAccountNum.ToSqlParameter("masterAccountNum"),
+                            profileNum.ToSqlParameter("profileNum"),
+                            nums.ToParameter<string>("nums"));
+            */
             return new List<long>();
         }
 
         public static async Task<List<long>> GetRowNumsByNumsAsync(IList<string> nums, int masterAccountNum, int profileNum)
         {
-/*
-            var sql = $@"
-SELECT RowNum FROM MiscInvoiceTransaction tbl
-WHERE MasterAccountNum = @masterAccountNum
-AND ProfileNum = @profileNum
-AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
+            /*
+                        var sql = $@"
+            SELECT RowNum FROM MiscInvoiceTransaction tbl
+            WHERE MasterAccountNum = @masterAccountNum
+            AND ProfileNum = @profileNum
+            AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
 
-            return await SqlQuery.ExecuteAsync(
-                sql,
-                (long rowNum) => rowNum,
-                masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum"),
-                nums.ToParameter<string>("nums"));
-*/
+                        return await SqlQuery.ExecuteAsync(
+                            sql,
+                            (long rowNum) => rowNum,
+                            masterAccountNum.ToSqlParameter("masterAccountNum"),
+                            profileNum.ToSqlParameter("profileNum"),
+                            nums.ToParameter<string>("nums"));
+            */
             return new List<long>();
         }
 
+        public static async Task<int> GetTranSeqNumAsync(string miscInvoiceNumber, int profileNum)
+        {
+            var sql = $@"
+SELECT isnull(max(TransNum),0)+1 FROM MiscInvoiceTransaction tbl
+WHERE ProfileNum = @profileNum
+AND miscInvoiceNumber= @miscInvoiceNumber
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                profileNum.ToSqlParameter("profileNum"),
+                miscInvoiceNumber.ToSqlParameter("miscInvoiceNumber")
+            );
+            return result;
+        }
+        public static int GetTranSeqNum(string miscInvoiceNumber, int profileNum)
+        {
+            var sql = $@"
+SELECT isnull(max(TransNum),0)+1 FROM MiscInvoiceTransaction tbl
+WHERE ProfileNum = @profileNum
+AND miscInvoiceNumber= @miscInvoiceNumber
+";
+            var result = SqlQuery.ExecuteScalar<int>(sql,
+                profileNum.ToSqlParameter("profileNum"),
+                miscInvoiceNumber.ToSqlParameter("miscInvoiceNumber")
+            );
+            return result;
+        }
     }
 }
 
