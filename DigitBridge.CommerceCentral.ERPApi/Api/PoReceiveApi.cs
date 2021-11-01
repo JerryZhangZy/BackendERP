@@ -18,58 +18,58 @@ namespace DigitBridge.CommerceCentral.ERPApi
 {
 
     /// <summary>
-    /// Process invoice payment 
+    /// Process po receive 
     /// </summary> 
     [ApiFilter(typeof(PoReceiveApi))]
     public static class PoReceiveApi
     {
         /// <summary>
-        /// Get po Receives by invoice num
+        /// Get po Receives by po num
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="invoiceNumber"></param>
+        /// <param name="poNum"></param>
         /// <returns></returns>
         [FunctionName(nameof(GetPoReceives))]
-        [OpenApiOperation(operationId: "GetPoReceives", tags: new[] { "Po Receives" }, Summary = "Get po Receives by invoice number")]
+        [OpenApiOperation(operationId: "GetPoReceives", tags: new[] { "Po Receives" }, Summary = "Get po Receives by po number")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "poNum", Description = "Po number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadGetSingle))]
         public static async Task<JsonNetResponse<PoReceivePayload>> GetPoReceives(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "poReceives/{invoiceNumber}")] HttpRequest req,
-            string invoiceNumber)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "poReceives/{poNum}")] HttpRequest req,
+            string poNum)
         {
             var payload = await req.GetParameters<PoReceivePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new PoReceiveService(dataBaseFactory);
-            await srv.GetPaymentWithPoHeaderAsync(payload, invoiceNumber);
+            await srv.GetPaymentWithPoHeaderAsync(payload, poNum);
             return new JsonNetResponse<PoReceivePayload>(payload);
         }
 
         /// <summary>
-        /// Get invoice payment by invoice num
+        /// Get po receive by po num
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="invoiceNumber"></param>
+        /// <param name="poNum"></param>
         /// <param name="transNum"></param>
         /// <returns></returns>
         [FunctionName(nameof(GetPoReceive))]
-        [OpenApiOperation(operationId: "GetPoReceive", tags: new[] { "Po Receives" }, Summary = "Get invoice payment by invoice number and trannum")]
+        [OpenApiOperation(operationId: "GetPoReceive", tags: new[] { "Po Receives" }, Summary = "Get po receive by po number and trannum")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "poNum", Description = "Po number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "transNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "transNum", Description = "Transaction Num. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadGetSingle))]
         public static async Task<JsonNetResponse<PoReceivePayload>> GetPoReceive(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "poReceives/{invoiceNumber}/{transNum}")] HttpRequest req,
-            string invoiceNumber, int transNum)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "poReceives/{poNum}/{transNum}")] HttpRequest req,
+            string poNum, int transNum)
         {
             var payload = await req.GetParameters<PoReceivePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new PoReceiveService(dataBaseFactory);
-            payload.Success = await srv.GetByNumberAsync(payload, invoiceNumber, transNum);
+            payload.Success = await srv.GetByNumberAsync(payload, poNum, transNum);
             if (payload.Success)
                 payload.PoTransaction = srv.ToDto();
             payload.Messages = srv.Messages;
@@ -78,29 +78,29 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
 
         /// <summary>
-        /// Delete invoice payment  
+        /// Delete po receive
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="invoiceNumber"></param>
+        /// <param name="poNum"></param>
         /// <param name="transNum"></param>
         /// <returns></returns>
         [FunctionName(nameof(DeletePoReceives))]
-        [OpenApiOperation(operationId: "DeletePoReceives", tags: new[] { "Po Receives" }, Summary = "Delete one invoice payment ")]
+        [OpenApiOperation(operationId: "DeletePoReceives", tags: new[] { "Po Receives" }, Summary = "Delete one po receive ")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "poNum", Description = "Po number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "transNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "transNum", Description = "Transaction Num. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadDelete))]
         public static async Task<JsonNetResponse<PoReceivePayload>> DeletePoReceives(
-           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "poReceives/{invoiceNumber}/{transNum}")]
+           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "poReceives/{poNum}/{transNum}")]
             HttpRequest req,
-            string invoiceNumber, int transNum)
+            string poNum, int transNum)
         {
             var payload = await req.GetParameters<PoReceivePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new PoReceiveService(dataBaseFactory);
-            payload.Success = await srv.DeleteByNumberAsync(payload, invoiceNumber, transNum);
+            payload.Success = await srv.DeleteByNumberAsync(payload, poNum, transNum);
             payload.Messages = srv.Messages;
 
             //Directly return without waiting this result. 
@@ -111,12 +111,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         /// <summary>
-        ///  Update invoice payment  
+        ///  Update po receive  
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
         [FunctionName(nameof(UpdatePoReceives))]
-        [OpenApiOperation(operationId: "UpdatePoReceives", tags: new[] { "Po Receives" }, Summary = "Update one invoice payment ")]
+        [OpenApiOperation(operationId: "UpdatePoReceives", tags: new[] { "Po Receives" }, Summary = "Update one po receive ")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -145,7 +145,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="req"></param>
         /// <returns></returns>
         [FunctionName(nameof(AddPoReceives))]
-        [OpenApiOperation(operationId: "AddPoReceives", tags: new[] { "Po Receives" }, Summary = "Add one invoice payment ")]
+        [OpenApiOperation(operationId: "AddPoReceives", tags: new[] { "Po Receives" }, Summary = "Add one po receive ")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -176,8 +176,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadFind))]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PoReceivePayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadFind))]
         public static async Task<JsonNetResponse<PoReceivePayload>> PoReceivesList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "poReceives/find")] HttpRequest req)
         {
@@ -190,7 +190,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
         
         /// <summary>
-        /// Add Invoice payment
+        /// Add Po Receive
         /// </summary>
         [FunctionName(nameof(Sample_PoReceives_Post))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -208,7 +208,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiOperation(operationId: "PoReceiveFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of invoice payment find")]
+        [OpenApiOperation(operationId: "PoReceiveFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of po receive find")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadFind))]
         public static async Task<JsonNetResponse<PoReceivePayloadFind>> Sample_PoReceive_Find(
            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/poReceives/find")] HttpRequest req)
@@ -259,15 +259,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
         // }
 
         // /// <summary>
-        // /// Get invoice payment summary by search criteria
+        // /// Get po receive summary by search criteria
         // /// </summary>
         // /// <param name="req"></param> 
         // [FunctionName(nameof(PoReceiveSummary))]
-        // [OpenApiOperation(operationId: "PoReceiveSummary", tags: new[] { "Po Receives" }, Summary = "Get invoice payment summary")]
+        // [OpenApiOperation(operationId: "PoReceiveSummary", tags: new[] { "Po Receives" }, Summary = "Get po receive summary")]
         // [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         // [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         // [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        // [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceReturnPayloadFind), Description = "Result is List<PoReceiveDataDto>")]
+        // [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadFind), Description = "Result is List<PoReceiveDataDto>")]
         // public static async Task<JsonNetResponse<PoReceivePayload>> PoReceiveSummary(
         //     [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "poReceives/Summary")] HttpRequest req)
         // {
