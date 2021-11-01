@@ -592,6 +592,55 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         }
         #endregion so
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task inventory_Test()
+        {
+            var data = new Dictionary<string, string>();
+            data["inventory_alternateCode"] = "do";
+            data["inventory_oemCode"] = "m";
+            data["inventory_catalogPage"] = "m8";
+            data["inventory_productYear"] = "v";
+            data["inventory_categoryCode"] = "n";
+            data["inventory_remark"] = "l";
+            data["inventory_classCode"] = "b";
+            data["inventory_departmentCode"] = "n";
+            data["inventory_sku"] = "product";
+            data["inventory_divisionCode"] = "a";
+            data["inventory_styleCode"] = "p";
+            data["inventory_groupCode"] = "e";
+            data["inventory_subClassCode"] = "e";
+            data["inventory_subGroupCode"] = "i";
+            data["inventory_model"] = "3";
+            data["inventory_sizeCode"] = "quia";
+            data["inventory_colorPatternCode"] = "yellow";
+            data["inventory_sizeType"] = "9";
+            data["inventory_lengthCode"] = "d";
+            data["inventory_lotNum"] = "re";
+            data["inventory_warehouseCode"] = "pr";
+            data["inventory_lpnNum"] = "au";
+            data["inventory_widthCode"] = "al";
+            foreach(var pair in data)
+            {
+                var payload = new SelectListPayload()
+                {
+                    MasterAccountNum = 10001,
+                    ProfileNum = 10001,
+                    LoadAll = false,
+                    Name = pair.Key,
+                    Term = pair.Value,
+                    Top = 20,
+                };
+                using (var b = new Benchmark(pair.Key+"_Test"))
+                {
+                    var factory = new SelectListFactory(dataBaseFactory);
+                    var result = await factory.GetSelectListAsync(payload);
+                }
+                Assert.True(payload.Success, "This is a generated tester, please report any tester bug to team leader.");
+                Assert.True(payload.Data.Length > 0, pair.Key + " not empty");
+            }
+        }
+
         #endregion async methods
     }
 }

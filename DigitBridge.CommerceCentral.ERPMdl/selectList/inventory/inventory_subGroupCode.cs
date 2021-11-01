@@ -14,18 +14,18 @@ using Microsoft.AspNetCore.Http;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public partial class invoice_customerName : SelectListBase
+    public partial class inventory_subGroupCode : SelectListBase
     {
-        public override string Name => "invoice_customerName";
+        public override string Name => "inventory_subGroupCode";
 
-        public invoice_customerName(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public inventory_subGroupCode(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"tbl.customerName LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"SubGroupCode LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -35,9 +35,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SetFilterSqlString();
             this.SQL_Select = $@"
-SELECT CustomerUuid as id, MIN(CustomerName) AS [value], MIN(CustomerCode) AS [text], COUNT(1) AS [count]
-FROM InvoiceHeader tbl WHERE {this.QueryObject.GetSQL()}
-GROUP BY CustomerUuid
+SELECT SubGroupCode AS [value], '' AS [text], COUNT(1) AS [count]
+FROM ProductExt tbl
+WHERE {this.QueryObject.GetSQL()}
+GROUP BY SubGroupCode
 ORDER BY [value]
 ";
             return this.SQL_Select;
