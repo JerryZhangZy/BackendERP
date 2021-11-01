@@ -35,6 +35,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
             #region faker data rules
             return new Faker<PoTransaction>()
+					.RuleFor(u => u.DatabaseNum, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.MasterAccountNum, f => f.Random.Int(1, 100))
+					.RuleFor(u => u.ProfileNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.TransUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.TransNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.PoUuid, f => f.Random.Guid().ToString())
