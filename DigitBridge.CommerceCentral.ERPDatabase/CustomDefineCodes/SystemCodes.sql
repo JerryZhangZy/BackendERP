@@ -25,7 +25,7 @@ GO
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SystemCodes]') AND name = N'UI_SystemCodesId')
 CREATE UNIQUE NONCLUSTERED INDEX [UK_SystemCodesUuid] ON [dbo].[SystemCodes]
 (
-	[SystemCodesUuid] ASC
+	[SystemCodeUuid] ASC
 ) ON [PRIMARY]
 GO
 
