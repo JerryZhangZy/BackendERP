@@ -30,6 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
+             
         }
 
         protected override string GetSQL_select()
