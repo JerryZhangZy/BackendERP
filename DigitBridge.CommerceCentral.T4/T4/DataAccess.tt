@@ -80,8 +80,9 @@
 //SettingForEventERP
 //SettingForApInvoice
 //SettingForMiscInvoice
+//SettingForMiscInvoiceTransaction
 #>
-<#@ include file="SettingForMiscInvoice.ttinclude" #>
+<#@ include file="SettingForMiscInvoiceTransaction.ttinclude" #>
 <#
     var dtoSuf = "";
     

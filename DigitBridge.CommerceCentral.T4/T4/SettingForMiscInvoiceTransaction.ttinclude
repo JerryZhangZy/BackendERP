@@ -2,19 +2,18 @@
 	// Database table define file path
     var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\ar";
     // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
-    var Files = "MiscInvoiceHeader,MiscInvoiceTransaction";
+    var Files = "MiscInvoiceTransaction";
 
     // current solution path
 	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
     var project = Path.Combine(path,DatabaseProjectName);
-    var processName = "MiscInvoice";
+    var processName = "MiscInvoiceTransaction";
     var processForlderName = "ar";
 
     // Tables relatonship
     var structureName = $"{processName}Data";
     var StructureClass = new StructureInfo(structureName,
-            new StructureTable() { Name = "MiscInvoiceHeader", AlliesName = "mins", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "MiscInvoiceTransaction", AlliesName = "minsl", ParentName = "MiscInvoiceHeader", DetailTable = true, OneToOne = false, LoadByColumn = "MiscInvoiceUuid"}
+            new StructureTable() { Name = "MiscInvoiceTransaction", AlliesName = "minst", MainTable = true, OneToOne = true }
         );
 
 
