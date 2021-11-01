@@ -309,7 +309,29 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<SalesOrderPayload>(payload);
         }
 
-
+        /// <summary>
+        /// Add sales order preSalesAmount
+        /// </summary>
+        [FunctionName(nameof(AddPreSalesAmount))]
+        [OpenApiOperation(operationId: "AddPreSalesAmount", tags: new[] { "SalesOrders" }, Summary = "Add pre sales amount to salesorder")]
+        [OpenApiParameter(name: Consts.MasterAccountNum, In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: Consts.ProfileNum, In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "amount", In = ParameterLocation.Path, Required = true, Type = typeof(decimal), Summary = "pre sales amount", Description = "pre sales amount. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadAdd))]
+        public static async Task<JsonNetResponse<SalesOrderPayload>> AddPreSalesAmount(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/preSales/{orderNumber}/{amount}")] HttpRequest req,
+           string orderNumber, decimal amount)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderService(dataBaseFactory);
+            payload.Success = await srv.AddPreSalesAmount(payload, orderNumber, amount);
+            if (!payload.Success)
+                payload.Messages = srv.Messages;
+            payload.SalesOrder = srv.ToDto();
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
     }
 }
 

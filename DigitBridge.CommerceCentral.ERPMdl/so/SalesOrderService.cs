@@ -369,6 +369,49 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
+
+        /// <summary>
+        /// Add pre sales amount.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="orderNumber"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> AddPreSalesAmount(SalesOrderPayload payload, string orderNumber, decimal amount)
+        {
+            if (string.IsNullOrEmpty(orderNumber))
+            {
+                AddError("orderNumber is null.");
+                return false;
+            }
+            if (amount.IsZero())
+            {
+                AddError($"amount:{amount} is invalid.");
+                return false;
+            }
+
+            List();
+            //load salesorder data
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
+            if (!success)
+                return false;
+
+            // create misc invoice
+            Data.SalesOrderHeader.DepositAmount = amount;
+
+            var miscInvoiceService = new MiscInvoiceService(dbFactory);
+            if (!(await miscInvoiceService.AddAsync(Data.SalesOrderHeader)))
+            {
+                this.Messages = this.Messages.Concat(miscInvoiceService.Messages).ToList();
+                return false;
+            }
+
+            //set misc invoice uuid back to salesorder.
+            Data.SalesOrderHeader.MiscInvoiceUuid = miscInvoiceService.Data.MiscInvoiceHeader.MiscInvoiceUuid;
+
+
+            return await SaveDataAsync();
+        }
     }
 }
 
