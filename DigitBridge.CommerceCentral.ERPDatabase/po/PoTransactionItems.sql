@@ -7,7 +7,7 @@
     [Seq] INT NOT NULL DEFAULT 0, --Invoice Item Line sort sequence
 
     [PoUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice
-    [PoItemUuid] VARCHAR(50) NULL, --Global Unique Guid for Invoice
+    [PoItemUuid] VARCHAR(50)  NOT NULL DEFAULT '', --Global Unique Guid for Invoice
 
     [ItemType] INT NULL DEFAULT 0, --Invoice item type
     [ItemStatus] INT NULL DEFAULT 0, --Invoice item status
@@ -25,8 +25,8 @@
 	[Description] NVarchar(200) NOT NULL,--Invoice item description 
 	[Notes] NVarchar(500) NOT NULL,--Invoice item notes 
 
-	[Currency] VARCHAR(10) NULL,--(Ignore) po transaction price in currency. <br> Title: Currency, Display: false, Editable: false
-	[UOM] Varchar(50) NULL,--Product SKU Qty unit of measure 
+	[Currency] VARCHAR(10)  NOT NULL DEFAULT '',--(Ignore) po transaction price in currency. <br> Title: Currency, Display: false, Editable: false
+	[UOM] Varchar(50)  NOT NULL DEFAULT '',--Product SKU Qty unit of measure 
 	[TransQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Claim return Qty. 
 
 	[Price] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Invoice price. 
@@ -34,7 +34,7 @@
 	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for Invoice items. 
 	[TaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total Invoice tax amount (include shipping tax and misc tax) 
 	[DiscountRate] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice level discount rate. 
-	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice level discount amount, base on [SubTotalAmount]
+	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice level discount amount, base on SubTotalAmount
 	[ShippingAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total shipping fee for all items
 	[ShippingTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of shipping fee
 	[MiscAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice handling charge 
@@ -56,7 +56,7 @@
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransactionItems]') AND name = N'UI_PoTransactionItems_PoTransactionItemsId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_PoTransactionItems_PoTransactionItemsUuid] ON [dbo].[PoTransactionItems]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_PoTransactionItems_PoTransactionItemsUuid] ON [dbo].[PoTransactionItems]
 (
 	[TransItemUuid] ASC
 ) ON [PRIMARY]

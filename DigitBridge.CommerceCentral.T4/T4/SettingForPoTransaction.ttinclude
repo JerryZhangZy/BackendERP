@@ -2,7 +2,7 @@
 	// Database table define file path
     var DatabaseProjectName = "DigitBridge.CommerceCentral.ERPDatabase\\po";
     // tables define file name, mutiple join with ",",if blank,read all the tables;GetColumnAtrribute
-    var Files = "PoTransation,PoTransationItems";
+    var Files = "PoTransaction,PoTransactionItems";
 
     // current solution path
 	var path = Host.ResolveAssemblyReference("$(SolutionDir)");
@@ -13,8 +13,8 @@
     // Tables relatonship
     var structureName = $"{processName}Data";
     var StructureClass = new StructureInfo(structureName,
-            new StructureTable() { Name = "PoTransation", AlliesName = "pot", MainTable = true, OneToOne = true },
-            new StructureTable() { Name = "PoTransationItems", AlliesName = "poti", ParentName = "PoTransation", OneToOne = true, LoadByColumn = "PoUuid" }
+            new StructureTable() { Name = "PoTransaction", AlliesName = "pot", MainTable = true, OneToOne = true },
+            new StructureTable() { Name = "PoTransactionItems", AlliesName = "poti", ParentName = "PoTransaction", DetailTable = true, OneToOne = false, LoadByColumn = "TransUuid" }
         );
 
 
