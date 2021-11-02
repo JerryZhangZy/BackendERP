@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <Folder Include="CustomDefineCodes\dto\" />
-	<Folder Include="ap\" />
     <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
     <Folder Include="arInquiry\" />

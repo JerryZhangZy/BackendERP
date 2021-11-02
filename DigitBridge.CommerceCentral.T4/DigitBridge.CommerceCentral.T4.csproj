@@ -140,6 +140,10 @@
       <LastGenOutput>SettingForEventERP.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForApTransaction.ttinclude">
+      <LastGenOutput>SettingForMiscInvoice.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForMiscInvoiceTransaction.ttinclude">
       <LastGenOutput>SettingForMiscInvoice.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>

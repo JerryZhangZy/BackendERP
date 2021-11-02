@@ -191,9 +191,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         #endregion
 
-        #region Add payment from presales.
+        #region Add payment from prepayment.
 
-        public async Task<bool> AddPaymentFromPresales(string miscInvoiceUuid, string invoiceUuid, decimal amount)
+        public async Task<bool> AddPaymentFromPrepayment(string miscInvoiceUuid, string invoiceUuid, decimal amount)
         {
 
             //no need to add payment.
@@ -236,7 +236,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //Add payment to invoice trans and pay invoice.
             var srv_payment = new InvoicePaymentService(dbFactory);
-            success = await srv_payment.AddPaymentAndPayInvoiceForPresalesAsync(miscInvoiceUuid, invoiceUuid, actualApplyAmount);
+            success = await srv_payment.AddPaymentAndPayInvoiceForPrepaymentAsync(miscInvoiceUuid, invoiceUuid, actualApplyAmount);
             if (!success)
             {
                 this.Messages = this.Messages.Concat(srv_payment.Messages).ToList();

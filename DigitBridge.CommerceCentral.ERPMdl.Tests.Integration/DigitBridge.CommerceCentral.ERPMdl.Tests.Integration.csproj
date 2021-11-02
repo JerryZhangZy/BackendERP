@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ApTransactionServiceTests.cs" />
+    <Compile Remove="ApTransactionServiceTests.Designer.cs" />
     <Compile Remove="CustomerServiceTests.cs" />
     <Compile Remove="CustomerServiceTests.Designer.cs" />
     <Compile Remove="InventoryListTests.cs" />

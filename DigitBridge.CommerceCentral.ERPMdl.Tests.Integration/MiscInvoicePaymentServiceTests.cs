@@ -63,10 +63,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var miscInvoiceData = MiscInvoiceDataTests.SaveFakerMiscInvoice(DataBaseFactory);
             var invoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(DataBaseFactory);
-            var presalesAmount = new Random().Next();
+            var prepaymentAmount = new Random().Next();
             var service = new MiscInvoicePaymentService(DataBaseFactory);
 
-            var success = await service.AddMiscPayment(miscInvoiceData.UniqueId, invoiceData.UniqueId, presalesAmount);
+            var success = await service.AddMiscPayment(miscInvoiceData.UniqueId, invoiceData.UniqueId, prepaymentAmount);
 
             Assert.True(success, "AddMiscPayment error:" + service.Messages.ObjectToString());
         }

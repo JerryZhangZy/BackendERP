@@ -118,11 +118,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             AddFilter(_ApInvoiceType);
             AddFilter(_ApInvoiceStatus);
-
             AddFilter(_ApInvoiceDateFrom);
             AddFilter(_ApInvoiceDateTo);
-
-
             AddFilter(_VendorUuid);
             AddFilter(_VendorNum);
             AddFilter(_VendorName);
@@ -150,6 +147,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _ApInvoiceDateTo.FilterValue = DateTime.Today.AddDays(7);
 
  
+        }
+
+        /// <summary>
+        /// get all ap invoice by vendorNum
+        /// </summary>
+        /// <param name="vendorNum"></param>
+        public void InitForNewPaymet(string vendorNum)
+        {
+            _ApInvoiceStatus.FilterValue = (int)InvoiceStatusEnum.Outstanding;
+            _ApInvoiceNum.FilterValue = vendorNum;
+
+            _ApInvoiceDateFrom.FilterValue = DateTime.Today.AddYears(-5);//TODO. this is a tmp begin date. make sure this logic.
+            _ApInvoiceDateTo.FilterValue = DateTime.Today;
         }
     }
 
