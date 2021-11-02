@@ -13,6 +13,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
+using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -85,7 +86,54 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         #endregion sync methods
 
         #region async methods
+
+        [Fact()]
+        public async Task CreateInvoiceFromShipmentAsync_Test()
+        {
+            var shipmentData = await SaveShipmentAndSalesOrder();
+            var managerService = new InvoiceManager(DataBaseFactory);
+            (var success, string invoiceUuid) = await managerService.CreateInvoiceFromShipmentAsync(shipmentData);
+            Assert.True(success, managerService.Messages.ObjectToString());
+            Assert.False(string.IsNullOrEmpty(invoiceUuid));
+        }
+
         #endregion async methods
 
+        #region get faker data
+        public const int MasterAccountNum = 10001;
+        public const int ProfileNum = 10001;
+
+        protected async Task<OrderShipmentData> SaveShipmentAndSalesOrder()
+        {
+            var skus = InventoryDataTests.GetInventories(DataBaseFactory);
+
+            var shipmentService = new OrderShipmentService(DataBaseFactory);
+            var shipmentDto = OrderShipmentDataDtoTests.GetFakerDataDto(DataBaseFactory, skus);
+            var success = await shipmentService.AddAsync(shipmentDto);
+            Assert.True(success && shipmentService.Data.OrderShipmentHeader.OrderShipmentNum > 0, shipmentService.Messages.ObjectToString());
+
+            await SaveSalesOrder(shipmentService.Data, skus);
+
+            return shipmentService.Data;
+        }
+        protected async Task SaveSalesOrder(OrderShipmentData shipmentData, Inventory[] skus)
+        {
+            var salesorderService = new SalesOrderService(DataBaseFactory);
+            var salesorderDataDto = SalesOrderDataDtoTests.GetFakerSalesorderDataDto(shipmentData, skus);
+            var success = await salesorderService.AddAsync(salesorderDataDto);
+            Assert.True(success, salesorderService.Messages.ObjectToString());
+
+            //add misinvoice info.
+            var soHeader = salesorderService.Data.SalesOrderHeader;
+            var salesOrderPayload = new SalesOrderPayload()
+            {
+                MasterAccountNum = soHeader.MasterAccountNum,
+                ProfileNum = soHeader.ProfileNum,
+            };
+            success = await salesorderService.AddPrepaymentAsync(salesOrderPayload, soHeader.OrderNumber, soHeader.DepositAmount);
+            Assert.True(success, salesorderService.Messages.ObjectToString());
+
+        }
+        #endregion
     }
 }
