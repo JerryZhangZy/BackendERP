@@ -206,12 +206,6 @@
     <None Include="channelOrder\OrderDCAssignmentLine_Update.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="channelOrder\OrderLineMerchantExt.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="channelOrder\OrderLineMerchantExt_Update.sql" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="so\SalesOrderItems_Update.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -266,5 +260,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ap\ApInvoiceHeader_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="channelOrder\OrderHeaderMerchantExt.sql" />
+    <Build Include="channelOrder\OrderHeaderMarketplaceExt_Update.sql" />
   </ItemGroup>
 </Project>
