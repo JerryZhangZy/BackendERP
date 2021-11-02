@@ -25,112 +25,79 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a ApTransactionService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class ApTransactionManager :  IApTransactionManager , IMessage
+    public class ApTransactionManager : IMessage, IApTransactionManager
     {
+        private IApTransactionService _ApTransactionService;
 
-        public ApTransactionManager() : base() {}
-
-        public ApTransactionManager(IDataBaseFactory dbFactory)
+        public ApTransactionManager() : base() { }
+        public ApTransactionManager(IDataBaseFactory dbFactory, IApTransactionService ApTransactionService)
         {
             SetDataBaseFactory(dbFactory);
-        }
-        
-        [XmlIgnore, JsonIgnore]
-        protected ApTransactionService _apTransactionService;
-        [XmlIgnore, JsonIgnore]
-        public ApTransactionService apTransactionService
-        {
-            get
-            {
-                if (_apTransactionService is null)
-                    _apTransactionService = new ApTransactionService(dbFactory);
-                return _apTransactionService;
-            }
-        }
-
-        [XmlIgnore, JsonIgnore]
-        protected ApTransactionDataDtoCsv _apTransactionDataDtoCsv;
-        [XmlIgnore, JsonIgnore]
-        public ApTransactionDataDtoCsv apTransactionDataDtoCsv
-        {
-            get
-            {
-                if (_apTransactionDataDtoCsv is null)
-                    _apTransactionDataDtoCsv = new ApTransactionDataDtoCsv();
-                return _apTransactionDataDtoCsv;
-            }
-        }
-
-        [XmlIgnore, JsonIgnore]
-        protected ApTransactionList _apTransactionList;
-        [XmlIgnore, JsonIgnore]
-        public ApTransactionList apTransactionList
-        {
-            get
-            {
-                if (_apTransactionList is null)
-                    _apTransactionList = new ApTransactionList(dbFactory);
-                return _apTransactionList;
-            }
+            _ApTransactionService = ApTransactionService;
         }
 
         public async Task<byte[]> ExportAsync(ApTransactionPayload payload)
         {
-            var rowNumList =await apTransactionList.GetRowNumListAsync(payload);
+            var ApTransactionDataDtoCsv = new ApTransactionDataDtoCsv();
+            var ApTransactionList = new ApTransactionList(dbFactory);
+            var rowNumList = await ApTransactionList.GetRowNumListAsync(payload);
             var dtoList = new List<ApTransactionDataDto>();
-           foreach(var x in rowNumList)
+            foreach (var x in rowNumList)
             {
-                if (apTransactionService.GetData(x))
-                    dtoList.Add(apTransactionService.ToDto());
+                if (_ApTransactionService.GetData(x))
+                    dtoList.Add(_ApTransactionService.ToDto());
             };
             if (dtoList.Count == 0)
                 dtoList.Add(new ApTransactionDataDto());
-            return apTransactionDataDtoCsv.Export(dtoList);
+            return ApTransactionDataDtoCsv.Export(dtoList);
         }
 
         public byte[] Export(ApTransactionPayload payload)
         {
-            var rowNumList =apTransactionList.GetRowNumList(payload);
+            var ApTransactionDataDtoCsv = new ApTransactionDataDtoCsv();
+            var ApTransactionList = new ApTransactionList(dbFactory);
+            var rowNumList = ApTransactionList.GetRowNumList(payload);
             var dtoList = new List<ApTransactionDataDto>();
             foreach (var x in rowNumList)
             {
-                if (apTransactionService.GetData(x))
-                    dtoList.Add(apTransactionService.ToDto());
+                if (_ApTransactionService.GetData(x))
+                    dtoList.Add(_ApTransactionService.ToDto());
             };
             if (dtoList.Count == 0)
                 dtoList.Add(new ApTransactionDataDto());
-            return apTransactionDataDtoCsv.Export(dtoList);
+            return ApTransactionDataDtoCsv.Export(dtoList);
         }
 
         public void Import(ApTransactionPayload payload, IFormFileCollection files)
         {
-            if(files==null||files.Count==0)
+            if (files == null || files.Count == 0)
             {
                 AddError("no files upload");
                 return;
             }
-            foreach(var file in files)
+            var ApTransactionDataDtoCsv = new ApTransactionDataDtoCsv();
+            foreach (var file in files)
             {
                 if (!file.FileName.ToLower().EndsWith("csv"))
                 {
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list = apTransactionDataDtoCsv.Import(file.OpenReadStream());
+                var list = ApTransactionDataDtoCsv.Import(file.OpenReadStream());
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.ApTransaction = item;
-                    if (apTransactionService.Add(payload))
+                    if (_ApTransactionService.Add(payload))
                         addsucccount++;
                     else
                     {
                         errorcount++;
-                        foreach (var msg in apTransactionService.Messages)
+                        foreach (var msg in _ApTransactionService.Messages)
                             Messages.Add(msg);
-                        apTransactionService.Messages.Clear();
+                        _ApTransactionService.Messages.Clear();
                     }
                 }
                 if (payload.HasApTransaction)
@@ -141,33 +108,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task ImportAsync(ApTransactionPayload payload, IFormFileCollection files)
         {
-            if(files==null||files.Count==0)
+            if (files == null || files.Count == 0)
             {
                 AddError("no files upload");
                 return;
             }
-            foreach(var file in files)
+            var ApTransactionDataDtoCsv = new ApTransactionDataDtoCsv();
+            foreach (var file in files)
             {
                 if (!file.FileName.ToLower().EndsWith("csv"))
                 {
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list =apTransactionDataDtoCsv.Import(file.OpenReadStream());
+                var list = ApTransactionDataDtoCsv.Import(file.OpenReadStream());
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.ApTransaction = item;
-                    if (await apTransactionService.AddAsync(payload))
+                    if (await _ApTransactionService.AddAsync(payload))
                         addsucccount++;
                     else
                     {
                         errorcount++;
-                        foreach (var msg in apTransactionService.Messages)
+                        foreach (var msg in _ApTransactionService.Messages)
                             Messages.Add(msg);
-                        apTransactionService.Messages.Clear();
+                        _ApTransactionService.Messages.Clear();
                     }
                 }
                 if (payload.HasApTransaction)

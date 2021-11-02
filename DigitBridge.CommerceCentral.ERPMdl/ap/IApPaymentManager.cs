@@ -22,17 +22,17 @@ using Microsoft.AspNetCore.Http;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a ApTransactionService.
+    /// Represents a InvoiceTransactionService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public interface IApTransactionManager
+    public interface IApPaymentManager
     {
-        Task<byte[]> ExportAsync(ApTransactionPayload payload);
+        Task<byte[]> ExportAsync(ApPaymentPayload payload);
 
-        byte[] Export(ApTransactionPayload payload);
+        byte[] Export(ApPaymentPayload payload);
 
-        void Import(ApTransactionPayload payload, IFormFileCollection files);
+        void Import(ApPaymentPayload payload, IFormFileCollection files);
 
-        Task ImportAsync(ApTransactionPayload payload, IFormFileCollection files);
+        Task ImportAsync(ApPaymentPayload payload, IFormFileCollection files);
     }
 }

@@ -377,24 +377,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             NewData();
             if (string.IsNullOrEmpty(number))
             {
-                AddError($"Data not found for {number}.");
+                AddError($"Number is required.");
                 return false;
             }
             var success = _data.GetByNumber(masterAccountNum, profileNum, number);
             if (!success)
-                AddError($"Data not found for {number.Split("_")[0]}.");
+                AddError($"Data not found for {number}.");
+            return success;
+        }
+        public virtual bool GetByNumber(int masterAccountNum, int profileNum, string number, int transType, int? transNum = null)
+        {
+            NewData();
+            if (string.IsNullOrEmpty(number))
+            {
+                AddError($"Number is required.");
+                return false;
+            }
+            var success = _data.GetByNumber(masterAccountNum, profileNum, number, transType, transNum);
+            if (!success)
+                AddError($"Data not found for {number}.");
             return success;
         }
         public virtual bool GetDataById(string id)
         {
             if (ProcessMode == ProcessingMode.Add || string.IsNullOrWhiteSpace(id))
                 return false;
-            ClearData(); 
+            ClearData();
 
-            var success =   _data.GetById(id);
+            var success = _data.GetById(id);
 
             if (!success)
-                AddError($"Data not found for unique key : {id}"); 
+                AddError($"Data not found for unique key : {id}");
 
             return success;
         }
@@ -432,13 +445,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             NewData();
             if (string.IsNullOrEmpty(number))
             {
-                AddError($"Data not found for {number}.");
+                AddError($"number is required.");
                 return false;
             }
 
             var success = await _data.GetByNumberAsync(masterAccountNum, profileNum, number);
             if (!success)
-                AddError($"Data not found for {number.Split("_")[0]}.");
+                AddError($"Data not found for {number}.");
+            return success;
+        }
+        public virtual async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number, int transType, int? transNum = null)
+        {
+            NewData();
+            if (string.IsNullOrEmpty(number))
+            {
+                AddError($"number is required.");
+                return false;
+            }
+
+            var success = await _data.GetByNumberAsync(masterAccountNum, profileNum, number, transType, transNum);
+            if (!success)
+                AddError($"Data not found for {number}.");
             return success;
         }
         public virtual async Task<bool> GetDataByIdAsync(string id)

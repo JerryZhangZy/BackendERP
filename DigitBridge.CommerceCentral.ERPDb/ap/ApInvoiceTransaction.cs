@@ -17,7 +17,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class ApInvoiceTransaction
     {
-
+        public decimal OriginalPaidAmount { get; set; }
     }
 }
 

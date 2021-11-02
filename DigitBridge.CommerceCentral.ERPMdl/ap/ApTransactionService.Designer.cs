@@ -27,7 +27,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a ApTransactionService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public partial class ApTransactionService : ServiceBase<ApTransactionService, ApTransactionData, ApTransactionDataDto>, IApTransactionService
+    public partial class ApTransactionService : ServiceBase<ApTransactionService, ApTransactionData, ApTransactionDataDto>//, IApTransactionService
     {
         public ApTransactionService() : base() {}
         public ApTransactionService(IDataBaseFactory dbFactory): base(dbFactory) {}

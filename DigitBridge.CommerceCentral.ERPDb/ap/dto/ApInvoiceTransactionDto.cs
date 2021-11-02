@@ -185,6 +185,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasBankAccountUuid => BankAccountUuid != null;
 
 		/// <summary>
+		/// Readable payment Bank account code. <br> Title: Bank, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Readable payment Bank account code. <br> Title: Bank, Display: true, Editable: true")]
+        [StringLength(50, ErrorMessage = "The BankAccountCode value cannot exceed 50 characters. ")]
+        public string BankAccountCode { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasBankAccountCode => BankAccountCode != null;
+
+		/// <summary>
 		/// Check number
 		/// </summary>
 		[OpenApiPropertyDescription("Check number")]
