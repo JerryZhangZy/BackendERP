@@ -48,8 +48,6 @@ SELECT
 {Helper.VendorNum()}, 
 {Helper.VendorName()}, 
 {Helper.VendorInvoiceNum()}, 
-{Helper.VendorUuid()}, 
-{Helper.VendorInvoiceNum()}, 
 {Helper.VendorInvoiceDate()}, 
 {Helper.DueDate()}, 
 {Helper.Currency()}, 
@@ -60,10 +58,8 @@ SELECT
 {Helper.Balance()}, 
 {Helper.CreditAccount()}, 
 {Helper.DebitAccount()}, 
-{Helper.EnterDateUtc()}, 
-{Helper.UpdateDateUtc()}, 
-{Helper.EnterBy()}, 
-{Helper.UpdateBy()}, 
+{Helper.PoUuid()}, 
+{Helper.PoNum()},
 {Helper.DigitBridgeGuid()} 
 ";
             return this.SQL_Select;

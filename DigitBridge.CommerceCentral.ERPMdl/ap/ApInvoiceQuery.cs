@@ -59,6 +59,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<string> VendorUuid => _VendorUuid;
 
 
+        protected QueryFilter<string> _VendorNum = new QueryFilter<string>("VendorNum", "VendorNum", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorNum => _VendorNum;
+
         protected QueryFilter<string> _VendorName = new QueryFilter<string>("VendorName", "VendorName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorName => _VendorName;
 
@@ -99,6 +102,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
 
+        protected QueryFilter<string> _PoUuid = new QueryFilter<string>("PoUuid", "PoUuid", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> PoUuid => _PoUuid;
+
+
+        protected QueryFilter<string> _PoNum = new QueryFilter<string>("PoNum", "PoNum", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> PoNum => _PoNum;
+
         public ApInvoiceQuery() : base(PREFIX)
         {
             AddFilter(_ApInvoiceUuid);
@@ -114,6 +124,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
             AddFilter(_VendorUuid);
+            AddFilter(_VendorNum);
             AddFilter(_VendorName);
             AddFilter(_VendorInvoiceNum);
 
@@ -127,6 +138,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             AddFilter(_BillDateFrom);
             AddFilter(_BillDateTo);
+
+            AddFilter(_PoUuid);
+            AddFilter(_PoNum);
+            
         }
 
         public override void InitQueryFilter()
