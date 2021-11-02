@@ -333,6 +333,65 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.PurchaseOrders = result;
         }
 
+        
+        public virtual async Task<bool> UpdateByPoReceiveAsync(PoTransactionData data)
+        {
+            if (data == null || data.PoTransaction == null)
+                return false;
+            
+            Edit();
+            // load data 
+            if (!await GetDataByIdAsync(data.PoTransaction.PoUuid))
+            {
+                return false;
+            }
+
+            // load data from po receive
+            LoadTransactionToData(data);
+
+            return await SaveDataAsync();
+        }
+        
+        public virtual bool UpdateByPoReceive(PoTransactionData data)
+        {
+            if (data == null || data.PoTransaction == null)
+                return false;
+            
+            Edit();
+            // load data 
+            if (!GetDataById(data.PoTransaction.PoUuid))
+            {
+                return false;
+            }
+
+            // load data from po receive
+            LoadTransactionToData(data);
+
+            return SaveData();
+        }
+
+        private void LoadTransactionToData(PoTransactionData data)
+        {
+            var poHeader = Data.PoHeader;
+            poHeader.TotalAmount = data.PoTransaction.TotalAmount.ToAmount();
+            poHeader.Currency = data.PoTransaction.Currency;
+            poHeader.DiscountAmount = data.PoTransaction.DiscountAmount;
+            poHeader.DiscountRate = data.PoTransaction.DiscountRate;
+            poHeader.ShippingAmount = data.PoTransaction.ShippingAmount;
+            poHeader.ShippingTaxAmount = data.PoTransaction.ShippingTaxAmount;
+            poHeader.SubTotalAmount = data.PoTransaction.SubTotalAmount;
+            poHeader.MiscAmount = data.PoTransaction.MiscAmount;
+            poHeader.MiscTaxAmount = data.PoTransaction.MiscTaxAmount;
+            foreach (var transItem in data.PoTransactionItems)
+            {
+                var poItem = Data.PoItems.FirstOrDefault(r => r.PoItemUuid == transItem.PoItemUuid);
+                if(poItem==null)
+                    continue;
+                poItem.Price = transItem.Price;
+                poItem.ShippingAmount = transItem.ShippingAmount;
+                poItem.ReceivedQty = transItem.TransQty;
+            }
+        }
     }
 }
 

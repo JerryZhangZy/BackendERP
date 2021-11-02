@@ -89,6 +89,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasApInvoiceNum => ApInvoiceNum != null;
 
 		/// <summary>
+		/// Link to PoHeader uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Link to PoHeader uuid. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The PoUuid value cannot exceed 50 characters. ")]
+        public string PoUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasPoUuid => PoUuid != null;
+
+		/// <summary>
+		/// Link to PoHeader number, unique in same database and profile. <br> Title: PoHeader Number, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Link to PoHeader number, unique in same database and profile. <br> Title: PoHeader Number, Display: true, Editable: false")]
+        [StringLength(50, ErrorMessage = "The PoNum value cannot exceed 50 characters. ")]
+        public string PoNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasPoNum => PoNum != null;
+
+		/// <summary>
 		/// A/P Invoice type
 		/// </summary>
 		[OpenApiPropertyDescription("A/P Invoice type")]

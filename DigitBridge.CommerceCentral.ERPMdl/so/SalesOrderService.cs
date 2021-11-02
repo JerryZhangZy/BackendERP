@@ -372,13 +372,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
-        /// Add pre sales amount.
+        /// Add pre payment.
         /// </summary>
         /// <param name="payload"></param>
         /// <param name="orderNumber"></param>
         /// <param name="amount"></param>
         /// <returns></returns>
-        public virtual async Task<bool> AddPreSalesAmountAsync(SalesOrderPayload payload, string orderNumber, decimal amount)
+        public virtual async Task<bool> AddPrepaymentAsync(SalesOrderPayload payload, string orderNumber, decimal amount)
         {
             if (string.IsNullOrEmpty(orderNumber))
             {

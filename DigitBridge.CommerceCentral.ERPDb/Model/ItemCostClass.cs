@@ -34,25 +34,45 @@ namespace DigitBridge.CommerceCentral.ERPDb
             ProductUuid = productUuid;
             InventoryUuid = inventoryUuid;
         }
-        //public ItemCostClass(Inventory inv) : this()
-        //{
-        //    ProductUuid = inv.ProductUuid;
-        //    InventoryUuid = inv.InventoryUuid;
+        public ItemCostClass(Inventory inv) : this()
+        {
+            ProductUuid = inv.ProductUuid;
+            InventoryUuid = inv.InventoryUuid;
 
-        //    BaseCost = inv.BaseCost;
-        //    ShippingAmount = inv.ShippingAmount;
-        //    MiscAmount = inv.MiscAmount;
-        //    ChargeAndAllowanceAmount = inv.ChargeAndAllowanceAmount;
-        //    TaxRate = inv.TaxRate;
-        //    TaxAmount = inv.TaxAmount;
+            BaseCost = inv.BaseCost;
+            ShippingAmount = inv.ShippingAmount.ToAmount();
+            MiscAmount = inv.MiscAmount.ToAmount();
+            ChargeAndAllowanceAmount = inv.ChargeAndAllowanceAmount.ToAmount();
+            TaxRate = inv.TaxRate.ToRate();
+            TaxAmount = inv.TaxAmount.ToAmount();
 
-        //    UnitCost = inv.UnitCost;
-        //    AvgCost = inv.AvgCost;
-        //    SalesCost = inv.SalesCost;
-        //    Cost = (AvgCost.IsZero()) ? UnitCost : AvgCost;
+            UnitCost = inv.UnitCost;
+            AvgCost = inv.AvgCost;
+            SalesCost = inv.SalesCost;
+            Cost = (AvgCost.IsZero()) ? UnitCost : AvgCost;
 
-        //    Instock = inv.Instock;
-        //}
+            Instock = inv.Instock;
+        }
+        
+        public ItemCostClass(PoTransactionItems item) : this()
+        {
+            ProductUuid = item.ProductUuid;
+            InventoryUuid = item.InventoryUuid;
+
+            BaseCost = item.Price.ToAmount();
+            ShippingAmount = item.ShippingAmount.ToAmount();
+            MiscAmount = item.MiscAmount.ToAmount();
+            ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount();
+            TaxRate = item.TaxRate.ToRate();
+            TaxAmount = item.TaxAmount.ToAmount();
+
+            UnitCost = item.Price.ToAmount();
+            AvgCost = item.Price.ToAmount();
+            SalesCost = item.Price.ToAmount();
+            Cost = (AvgCost.IsZero()) ? UnitCost : AvgCost;
+
+            Instock = item.TransQty;
+        }
 
         /// <summary>
         /// Calculate UnitCost, and return cost

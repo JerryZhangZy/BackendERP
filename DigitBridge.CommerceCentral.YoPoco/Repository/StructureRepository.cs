@@ -142,13 +142,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public virtual TEntity Clone() => (TEntity)null;
         public virtual bool Get(long RowNum) => false;
         public virtual bool GetByNumber(int masterAccountNum, int profileNum, string number) => false;
-        
+        public virtual bool GetByNumber(int masterAccountNum, int profileNum, string number, int transType, int? transNum = null) => false;
+
         public virtual bool GetById(string InvoiceId) => false;
         public virtual bool Save() => false;
         public virtual bool Delete() => false;
 
         public virtual async Task<bool> GetAsync(long RowNum) => false;
         public virtual async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number) => false;
+        public virtual async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number, int transType, int? transNum = null) => false;
         public virtual async Task<bool> GetByIdAsync(string id) => false;
         public virtual async Task<bool> SaveAsync() => false;
         public virtual async Task<bool> DeleteAsync() => false;

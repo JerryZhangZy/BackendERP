@@ -226,8 +226,7 @@ AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
                 nums.ToParameter<string>("nums"));
 */
             return new List<long>();
-        }
-
+        } 
     }
 }
 

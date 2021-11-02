@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         Task<(bool, string)> CreateInvoiceByOrderShipmentIdAsync(string orderShimentUuid);
 
-        Task<InvoiceData> CreateInvoiceAsync(OrderShipmentData osData, SalesOrderData soData);
+        Task<(bool, string)> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData);
 
     }
 }

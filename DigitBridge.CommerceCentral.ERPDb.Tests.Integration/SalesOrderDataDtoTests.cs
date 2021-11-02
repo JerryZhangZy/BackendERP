@@ -22,6 +22,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.CommerceCentral.ERPMdl;
 
 namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
@@ -127,6 +128,36 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+
+        #region prepare dto
+        public const int MasterAccountNum = 10001;
+        public const int ProfileNum = 10001;
+
+        public static SalesOrderDataDto GetFakerSalesorderDataDto(OrderShipmentData shipmentData, Inventory[] inventories)
+        {
+            var data = SalesOrderDataTests.GetFakerData();
+            data.SalesOrderHeader.OrderSourceCode = $"OrderDCAssignmentNum:{shipmentData.OrderShipmentHeader.OrderDCAssignmentNum}";
+            for (int i = 0; i < data.SalesOrderItems.Count; i++)
+            {
+                var item = data.SalesOrderItems[i];
+
+                item.DiscountAmount = 0;
+                item.ShipQty = new Random().Next(10, 100);//TOdo set to shipment shipqty
+
+                var inventory = inventories[i];
+                item.WarehouseCode = inventory.WarehouseCode;
+                item.WarehouseUuid = inventory.WarehouseUuid;
+                item.SKU = inventory.SKU;
+                item.InventoryUuid = inventory.InventoryUuid;
+                item.ProductUuid = inventory.ProductUuid;
+            }
+            data.SalesOrderHeader.MasterAccountNum = MasterAccountNum;
+            data.SalesOrderHeader.ProfileNum = ProfileNum;
+            data.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
+            var mapper = new SalesOrderDataDtoMapperDefault();
+            return mapper.WriteDto(data, null);
+        }
+        #endregion
     }
 }
 

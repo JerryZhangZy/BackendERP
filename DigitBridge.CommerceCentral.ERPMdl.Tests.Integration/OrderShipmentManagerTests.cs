@@ -31,62 +31,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         #region get faker data
         public const int MasterAccountNum = 10001;
         public const int ProfileNum = 10001;
-        protected Inventory[] GetInventories(int count = 10)
-        {
-            return InventoryDataTests.GetInventories(DataBaseFactory, count);
-        }
-        protected OrderShipmentDataDto GetFakerDataDto(Inventory[] inventories = null)
-        {
-            var data = OrderShipmentDataTests.GetFakerData_SkuInDB(DataBaseFactory, inventories);
-            data.OrderShipmentHeader.OrderDCAssignmentNum = new Random().Next(1, 100000);
-            data.OrderShipmentHeader.ShipmentStatus = int.MinValue;
-
-            var mapper = new OrderShipmentDataDtoMapperDefault();
-            return mapper.WriteDto(data, null);
-        }
-
-        protected SalesOrderDataDto GetFakerSalesorderDataDto(OrderShipmentData shipmentData, Inventory[] inventories)
-        {
-            var data = SalesOrderDataTests.GetFakerData();
-            data.SalesOrderHeader.OrderSourceCode = $"OrderDCAssignmentNum:{shipmentData.OrderShipmentHeader.OrderDCAssignmentNum}";
-            for (int i = 0; i < data.SalesOrderItems.Count; i++)
-            {
-                var item = data.SalesOrderItems[i];
-
-                item.DiscountAmount = 0;
-                item.ShipQty = new Random().Next(10, 100);//TOdo set to shipment shipqty
-
-                var inventory = inventories[i];
-                item.WarehouseCode = inventory.WarehouseCode;
-                item.WarehouseUuid = inventory.WarehouseUuid;
-                item.SKU = inventory.SKU;
-                item.InventoryUuid = inventory.InventoryUuid;
-                item.ProductUuid = inventory.ProductUuid;
-            }
-            data.SalesOrderHeader.MasterAccountNum = MasterAccountNum;
-            data.SalesOrderHeader.ProfileNum = ProfileNum;
-            data.SalesOrderHeader.OrderNumber = NumberGenerate.Generate();
-            var mapper = new SalesOrderDataDtoMapperDefault();
-            return mapper.WriteDto(data, null);
-        }
          
-        protected async Task<OrderShipmentData> SaveShipmentAndSalesOrder()
+        protected async Task<OrderShipmentDataDto> GetShipmenDtotWithSavedSalesOrder()
         {
-            var skus = GetInventories();
+            var skus = InventoryDataTests.GetInventories(DataBaseFactory);
 
-            var shipmentService = new OrderShipmentService(DataBaseFactory);
-            var shipmentDto = GetFakerDataDto(skus);
-            var success = await shipmentService.AddAsync(shipmentDto);
-            Assert.True(success && shipmentService.Data.OrderShipmentHeader.OrderShipmentNum > 0, shipmentService.Messages.ObjectToString());
-
-            await SaveSalesOrder(shipmentService.Data, skus);
-
-            return shipmentService.Data;
+            var data = OrderShipmentDataTests.GetFakerData_SkuInDB(DataBaseFactory, skus);
+            data.OrderShipmentHeader.OrderDCAssignmentNum = new Random().Next(1, 100000);
+            data.OrderShipmentHeader.ProcessStatus = int.MinValue;
+             
+            await SaveSalesOrder(data, skus);
+            return new OrderShipmentDataDtoMapperDefault().WriteDto(data);
         }
         protected async Task SaveSalesOrder(OrderShipmentData shipmentData, Inventory[] skus)
         {
             var salesorderService = new SalesOrderService(DataBaseFactory);
-            var salesorderDataDto = GetFakerSalesorderDataDto(shipmentData, skus);
+            var salesorderDataDto = SalesOrderDataDtoTests.GetFakerSalesorderDataDto(shipmentData, skus);
             var success = await salesorderService.AddAsync(salesorderDataDto);
             Assert.True(success, salesorderService.Messages.ObjectToString());
 
@@ -97,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 MasterAccountNum = soHeader.MasterAccountNum,
                 ProfileNum = soHeader.ProfileNum,
             };
-            success = await salesorderService.AddPreSalesAmountAsync(salesOrderPayload, soHeader.OrderNumber, soHeader.DepositAmount);
+            success = await salesorderService.AddPrepaymentAsync(salesOrderPayload, soHeader.OrderNumber, soHeader.DepositAmount);
             Assert.True(success, salesorderService.Messages.ObjectToString());
 
         }
@@ -106,42 +66,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         [Fact()]
         public async Task CreateShipmentAsync_Test()
         {
-            var shipmentData = await SaveShipmentAndSalesOrder();
-
-            var dto = new OrderShipmentDataDtoMapperDefault().WriteDto(shipmentData);
+            var shipmentDataDto = await GetShipmenDtotWithSavedSalesOrder(); 
             var payload = new OrderShipmentPayload()
             {
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
-                OrderShipment = dto,
+                OrderShipment = shipmentDataDto,
             };
             var srv = new OrderShipmentManager(DataBaseFactory);
             var success = await srv.CreateShipmentAsync(payload);
             Assert.True(success, srv.Messages.ObjectToString());
 
             var shipmentService = new OrderShipmentService(DataBaseFactory);
-            success = await shipmentService.GetDataByIdAsync(shipmentData.UniqueId);
+            success = await shipmentService.GetDataByIdAsync(payload.OrderShipment.OrderShipmentHeader.OrderShipmentUuid);
             Assert.True(success, shipmentService.Messages.ObjectToString());
 
-            Assert.Equal(payload.OrderShipment.OrderShipmentHeader.ShipmentStatus, (int)OrderShipmentStatusEnum.Pending);
+            Assert.Equal(payload.OrderShipment.OrderShipmentHeader.ProcessStatus, (int)OrderShipmentStatusEnum.Pending);
         }
-        [Fact()]
-        public async Task CreateInvoiceFromShipmentAsync_Test()
-        {
-            var shipmentData = await SaveShipmentAndSalesOrder();
-            var managerService = new OrderShipmentManager(DataBaseFactory);
-            var success = await managerService.CreateInvoiceFromShipmentAsync(shipmentData);
-            Assert.True(success, managerService.Messages.ObjectToString());
-            Assert.False(string.IsNullOrEmpty(shipmentData.OrderShipmentHeader.InvoiceNumber));
-            //InvoiceNumber is not saved to db.
-            //var invoiceNumber = shipmentData.OrderShipmentHeader.InvoiceNumber;
-
-            //var shipmentService = new OrderShipmentService(DataBaseFactory);
-            //shipmentService.GetDataById(shipmentData.UniqueId);
-            //Assert.Equal(invoiceNumber, shipmentService.Data.OrderShipmentHeader.InvoiceNumber);
-        }
-
-
     }
 }
 
