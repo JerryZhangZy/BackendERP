@@ -44,6 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string TransUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.TransUuid) AS {name ?? "TransUuid".ToCamelCase(camelCase)} ";
         public static string TransNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TransNum AS {name ?? "TransNum".ToCamelCase(camelCase)} ";
         public static string ApInvoiceUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ApInvoiceUuid) AS {name ?? "ApInvoiceUuid".ToCamelCase(camelCase)} ";
+        public static string ApInvoiceNum(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ApInvoiceNum) AS {name ?? "ApInvoiceNum".ToCamelCase(camelCase)} ";
         public static string TransType(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TransType AS {name ?? "TransType".ToCamelCase(camelCase)} ";
         public static string TransStatus(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TransStatus AS {name ?? "TransStatus".ToCamelCase(camelCase)} ";
         public static string TransDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TransDate AS {name ?? "TransDate".ToCamelCase(camelCase)} ";
@@ -78,6 +79,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 RTRIM({allies}TransUuid) AS TransUuid,
 {allies}TransNum AS TransNum,
 RTRIM({allies}ApInvoiceUuid) AS ApInvoiceUuid,
+RTRIM({allies}ApInvoiceNum) AS ApInvoiceNum,
 {allies}TransType AS TransType,
 {allies}TransStatus AS TransStatus,
 {allies}TransDate AS TransDate,

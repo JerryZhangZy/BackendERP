@@ -59,6 +59,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasTransUuid) data.TransUuid = dto.TransUuid;
 			if (dto.HasTransNum) data.TransNum = dto.TransNum.ToInt();
 			if (dto.HasApInvoiceUuid) data.ApInvoiceUuid = dto.ApInvoiceUuid;
+			if (dto.HasApInvoiceNum) data.ApInvoiceNum = dto.ApInvoiceNum;
 			if (dto.HasTransType) data.TransType = dto.TransType;
 			if (dto.HasTransStatus) data.TransStatus = dto.TransStatus;
 			if (dto.HasTransDate) data.TransDate = dto.TransDate.ToDateTime();
@@ -121,6 +122,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.TransUuid = data.TransUuid;
 			dto.TransNum = data.TransNum;
 			dto.ApInvoiceUuid = data.ApInvoiceUuid;
+			dto.ApInvoiceNum = data.ApInvoiceNum;
 			dto.TransType = data.TransType;
 			dto.TransStatus = data.TransStatus;
 			dto.TransDate = data.TransDate;

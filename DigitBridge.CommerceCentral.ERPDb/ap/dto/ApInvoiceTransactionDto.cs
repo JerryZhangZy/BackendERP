@@ -98,6 +98,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasApInvoiceUuid => ApInvoiceUuid != null;
 
 		/// <summary>
+		/// Unique in this database, ProfileNum + ApInvoiceNum is DigitBridgeApInvoiceNum, which is global unique
+		/// </summary>
+		[OpenApiPropertyDescription("Unique in this database, ProfileNum + ApInvoiceNum is DigitBridgeApInvoiceNum, which is global unique")]
+        [StringLength(50, ErrorMessage = "The ApInvoiceNum value cannot exceed 50 characters. ")]
+        public string ApInvoiceNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasApInvoiceNum => ApInvoiceNum != null;
+
+		/// <summary>
 		/// Transaction type
 		/// </summary>
 		[OpenApiPropertyDescription("Transaction type")]

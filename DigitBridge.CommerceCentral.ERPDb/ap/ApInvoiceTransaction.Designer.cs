@@ -60,6 +60,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ApInvoiceUuid",SqlDbType.VarChar,NotNull=true)]
         private string _apInvoiceUuid;
 
+        [Column("ApInvoiceNum",SqlDbType.VarChar,NotNull=true)]
+        private string _apInvoiceNum;
+
         [Column("TransType",SqlDbType.Int,IsDefault=true)]
         private int? _transType;
 
@@ -217,6 +220,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_apInvoiceUuid = value.TruncateTo(50); 
 				OnPropertyChanged("ApInvoiceUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Unique in this database, ProfileNum + ApInvoiceNum is DigitBridgeApInvoiceNum, which is global unique
+		/// </summary>
+        public virtual string ApInvoiceNum
+        {
+            get
+            {
+				return _apInvoiceNum?.TrimEnd(); 
+            }
+            set
+            {
+				_apInvoiceNum = value.TruncateTo(50); 
+				OnPropertyChanged("ApInvoiceNum", value);
             }
         }
 
@@ -597,6 +616,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_transUuid = String.Empty; 
 			_transNum = default(int); 
 			_apInvoiceUuid = String.Empty; 
+			_apInvoiceNum = String.Empty; 
 			_transType = AllowNull ? (int?)null : default(int); 
 			_transStatus = AllowNull ? (int?)null : default(int); 
 			_transDate = new DateTime().MinValueSql(); 

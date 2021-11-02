@@ -10,6 +10,7 @@
     [TransNum] INT NOT NULL DEFAULT 1, --Transaction number
 
     [ApInvoiceUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for ApInvoice
+	[ApInvoiceNum] VARCHAR(50) NOT NULL, --Unique in this database, ProfileNum + ApInvoiceNum is DigitBridgeApInvoiceNum, which is global unique
     [TransType] INT NULL DEFAULT 0, --Transaction type
     [TransStatus] INT NULL DEFAULT 0, --Transaction status
 	[TransDate] DATE NOT NULL, --Transaction date

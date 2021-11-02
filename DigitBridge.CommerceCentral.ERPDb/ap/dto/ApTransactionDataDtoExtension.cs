@@ -113,6 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.TransUuid, f => String.Empty)
 				.RuleFor(u => u.TransNum, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.ApInvoiceUuid, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.ApInvoiceNum, f => f.Random.AlphaNumeric(50))
 				.RuleFor(u => u.TransType, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.TransStatus, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.TransDate, f => f.Date.Past(0).Date)
