@@ -422,7 +422,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (payload.InvoiceList.ToString().IsZero())
             {
-                AddError($"No Invoice for vendorNum:{customerCode}");
+                AddError($"No outstanding invoice for vendorNum:{customerCode}");
                 return false;
             }
 

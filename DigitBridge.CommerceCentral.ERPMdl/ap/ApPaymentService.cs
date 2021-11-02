@@ -420,7 +420,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (payload.InvoiceList.ToString().IsZero())
             {
-                AddError($"No ApInvoice for vendorNum:{vendorNum}");
+                AddError($"No outstanding apInvoice for vendorNum:{vendorNum}");
                 return false;
             }
 
