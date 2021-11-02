@@ -18,6 +18,8 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.CommerceCentral.ERPDb.inventorySync.dto;
+using DigitBridge.CommerceCentral.ERPDb.inventorySync;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -47,6 +49,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _inventoryUpdateService;
             }
         }
+
+
+
 
         [XmlIgnore, JsonIgnore]
         protected InventoryUpdateDataDtoCsv _inventoryUpdateDataDtoCsv;
@@ -237,6 +242,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
+
+
+
+        public async Task UpdateStockByList(InventorySyncUpdatePayload inventorySyncUpdatePayload)
+        {
+
+            // inventorySyncUpdatePayload.InventorySyncUpdateData
+           // InventoryServiceHelper.
+
+        }
+
 
         #region DataBase
         [XmlIgnore, JsonIgnore]

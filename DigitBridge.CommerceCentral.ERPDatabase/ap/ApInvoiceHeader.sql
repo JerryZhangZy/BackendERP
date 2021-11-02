@@ -4,10 +4,10 @@
     [DatabaseNum] INT NOT NULL, --(Readonly) Database Number. <br> Display: false, Editable: false.
 	[MasterAccountNum] INT NOT NULL,--(Readonly) Login user account. <br> Display: false, Editable: false.
 	[ProfileNum] INT NOT NULL,--(Readonly) Login user profile. <br> Display: false, Editable: false.
-
     [ApInvoiceUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --(Readonly) ApInvoice uuid. <br> Display: false, Editable: false
 	[ApInvoiceNum] VARCHAR(50) NOT NULL, --Unique in this database, ProfileNum + ApInvoiceNum is DigitBridgeApInvoiceNum, which is global unique
-
+	[PoUuid] VARCHAR(50) NOT NULL DEFAULT '', --Link to PoHeader uuid. <br> Display: false, Editable: false.
+	[PoNum] VARCHAR(50) NOT NULL DEFAULT '', --Link to PoHeader number, unique in same database and profile. <br> Title: PoHeader Number, Display: true, Editable: false
     [ApInvoiceType] INT NULL DEFAULT 0, -- A/P Invoice type
     [ApInvoiceStatus] INT NULL DEFAULT 0, -- A/P Invoice status
 	[ApInvoiceDate] DATE NOT NULL, --A/P Invoice date
@@ -60,4 +60,16 @@ CREATE NONCLUSTERED INDEX [UI_ApInvoiceHeader_VendorUuid] ON [dbo].[ApInvoiceHea
 ) ON [PRIMARY]
 GO
 
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_PoUuid')
+CREATE NONCLUSTERED INDEX [IX_ApInvoiceHeader_PoUuid] ON [dbo].[ApInvoiceHeader]
+(
+	[PoUuid] ASC
+) 
+GO
 
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_PoNum')
+CREATE NONCLUSTERED INDEX [IX_ApInvoiceHeader_PoNum] ON [dbo].[ApInvoiceHeader]
+(
+	[PoNum] ASC
+) 
+GO

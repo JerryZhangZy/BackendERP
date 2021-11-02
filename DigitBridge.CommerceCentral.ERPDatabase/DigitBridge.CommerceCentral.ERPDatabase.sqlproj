@@ -264,4 +264,7 @@
   <ItemGroup>
     <None Include="CustomDefineCodes\SystemSetting.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ap\ApInvoiceHeader_Update.sql" />
+  </ItemGroup>
 </Project>

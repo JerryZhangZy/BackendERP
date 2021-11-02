@@ -308,7 +308,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
-
+			dto.PoUuid = data.PoUuid;
+			dto.PoNum = data.PoNum;
 			#endregion read properties
 
 			return;
