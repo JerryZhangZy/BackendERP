@@ -472,6 +472,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion
+
+        #region copy apinvoice info to ApInvoicepayment for  NewPayment
+
+        protected void CopyApInvoiceHeaderToTrans()
+        {
+            var invoiceHeader = Data.ApInvoiceData.ApInvoiceHeader;
+            Data.ApInvoiceTransaction = new ApInvoiceTransaction()
+            {
+                Currency = invoiceHeader.Currency,
+                ApInvoiceNum = invoiceHeader.ApInvoiceNum,
+                ApInvoiceUuid = invoiceHeader.ApInvoiceUuid,
+                TransType = (int)TransTypeEnum.Payment,
+            };
+        }
+        #endregion
     }
 }
 

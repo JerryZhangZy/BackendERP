@@ -394,68 +394,68 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
 
-        //#region New payment
+        #region New payment
 
-        //public async Task<bool> NewPaymentByapInvoiceNumberAsync(InvoiceNewPaymentPayload payload, string apInvoiceNumber)
-        //{
-        //    NewData();
-        //    if (!LoadInvoice(apInvoiceNumber, payload.ProfileNum, payload.MasterAccountNum))
-        //        return false;
+        public async Task<bool> NewPaymentByApInvoiceNumAsync(ApNewPaymentPayload payload, string apInvoiceNum)
+        {
+            NewData();
+            if (!await LoadApInvoiceAsync(payload.MasterAccountNum, payload.ProfileNum, apInvoiceNum))
+                return false;
 
-        //    CopyInvoiceHeaderToTrans();
+            CopyApInvoiceHeaderToTrans();
 
-        //    //unpaid amount.
-        //    Data.ApTransaction.TotalAmount = Data.InvoiceData.InvoiceHeader.Balance.IsZero() ? 0 : Data.InvoiceData.InvoiceHeader.Balance;
+            //unpaid amount.
+            Data.ApInvoiceTransaction.Amount = Data.ApInvoiceData.ApInvoiceHeader.Balance.IsZero() ? 0 : Data.ApInvoiceData.ApInvoiceHeader.Balance.ToDecimal();
 
-        //    payload.ApTransaction = this.ToDto().ApTransaction;
+            payload.ApTransaction = this.ToDto().ApInvoiceTransaction;
 
-        //    return await LoadInvoiceList(payload, Data.InvoiceData.InvoiceHeader.CustomerCode);
-        //}
+            return await LoadApInvoiceList(payload, Data.ApInvoiceData.ApInvoiceHeader.VendorNum);
+        }
 
-        //public async Task<bool> NewPaymentByCustomerCode(InvoiceNewPaymentPayload payload, string customerCode)
-        //{
-        //    if (!await LoadInvoiceList(payload, customerCode))
-        //    {
-        //        return false;
-        //    }
+        public async Task<bool> NewPaymentByVendorNum(ApNewPaymentPayload payload, string vendorNum)
+        {
+            if (!await LoadApInvoiceList(payload, vendorNum))
+            {
+                return false;
+            }
 
-        //    var invoiceList = JsonConvert.DeserializeObject<List<InvoiceHeader>>(payload.InvoiceList.ToString());
+            var apInvoiceList = JsonConvert.DeserializeObject<List<ApInvoiceHeader>>(payload.InvoiceList.ToString());
 
-        //    NewData();
-        //    // All unpaid amount.
-        //    Data.ApTransaction.TotalAmount = invoiceList.Sum(i => i.Balance.IsZero() ? 0 : i.Balance);
+            NewData();
+            // All unpaid amount.
+            Data.ApInvoiceTransaction.Amount = apInvoiceList.Sum(i => i.Balance.IsZero() ? 0 : i.Balance.ToDecimal());
 
-        //    payload.ApTransaction = this.ToDto().ApTransaction;
+            payload.ApTransaction = this.ToDto().ApInvoiceTransaction;
 
-        //    return true;
-        //}
+            return true;
+        }
 
-        //private async Task<bool> LoadInvoiceList(InvoiceNewPaymentPayload payload, string customerCode)
-        //{
-        //    var invoicePayload = new InvoicePayload()
-        //    {
-        //        MasterAccountNum = payload.MasterAccountNum,
-        //        ProfileNum = payload.ProfileNum,
-        //        LoadAll = true
-        //    };
+        private async Task<bool> LoadApInvoiceList(ApNewPaymentPayload payload, string vendorNum)
+        {
+            var apInvoicePayload = new ApInvoicePayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                LoadAll = true
+            };
 
-        //    var invoiceQuery = new InvoiceQuery();
-        //    invoiceQuery.InitForNewPaymet(customerCode);
+            var apInvoiceQuery = new ApInvoiceQuery();
+            apInvoiceQuery.InitForNewPaymet(vendorNum);
 
-        //    var srv = new InvoiceList(this.dbFactory, invoiceQuery);
-        //    await srv.GetInvoiceListAsync(invoicePayload);
+            var srv = new ApInvoiceList(this.dbFactory, apInvoiceQuery);
+            await srv.GetApInvoiceListAsync(apInvoicePayload);
 
-        //    if (!invoicePayload.Success)
-        //        this.Messages = this.Messages.Concat(srv.Messages).ToList();
+            if (!apInvoicePayload.Success)
+                this.Messages = this.Messages.Concat(srv.Messages).ToList();
 
-        //    payload.InvoiceList = invoicePayload.InvoiceList;
+            payload.InvoiceList = apInvoicePayload.ApInvoiceList;
 
-        //    payload.InvoiceListCount = invoicePayload.InvoiceListCount;
+            payload.InvoiceListCount = apInvoicePayload.ApInvoiceListCount;
 
-        //    return invoicePayload.Success;
-        //}
+            return apInvoicePayload.Success;
+        }
 
-        //#endregion
+        #endregion
 
     }
 }
