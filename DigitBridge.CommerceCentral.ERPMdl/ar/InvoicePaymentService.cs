@@ -420,6 +420,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 return false;
             }
+            if (payload.InvoiceList.ToString().IsZero())
+            {
+                AddError($"No Invoice for vendorNum:{customerCode}");
+                return false;
+            }
 
             var invoiceList = JsonConvert.DeserializeObject<List<InvoiceHeader>>(payload.InvoiceList.ToString());
 

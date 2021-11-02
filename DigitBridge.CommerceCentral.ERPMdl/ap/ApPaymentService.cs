@@ -418,6 +418,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 return false;
             }
+            if (payload.InvoiceList.ToString().IsZero())
+            {
+                AddError($"No ApInvoice for vendorNum:{vendorNum}");
+                return false;
+            }
 
             var apInvoiceList = JsonConvert.DeserializeObject<List<ApInvoiceHeader>>(payload.InvoiceList.ToString());
 
