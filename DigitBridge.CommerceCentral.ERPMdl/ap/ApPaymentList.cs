@@ -80,8 +80,8 @@ channelAccount.ChannelAccountName,
 
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies} 
- LEFT JOIN {ApInvoiceHeaderHelper.TableName} {ApInvoiceHeaderHelper.TableAllies} ON ({ApInvoiceHeaderHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
- LEFT JOIN {ApInvoiceHeaderInfoHelper.TableName} {ApInvoiceHeaderInfoHelper.TableAllies} ON ({ApInvoiceHeaderInfoHelper.TableAllies}.InvoiceUuid = {Helper.TableAllies}.InvoiceUuid)
+ LEFT JOIN {ApInvoiceHeaderHelper.TableName} {ApInvoiceHeaderHelper.TableAllies} ON ({ApInvoiceHeaderHelper.TableAllies}.ApInvoiceUuid = {Helper.TableAllies}.ApInvoiceUuid)
+ LEFT JOIN {ApInvoiceHeaderInfoHelper.TableName} {ApInvoiceHeaderInfoHelper.TableAllies} ON ({ApInvoiceHeaderInfoHelper.TableAllies}.ApInvoiceUuid = {Helper.TableAllies}.ApInvoiceUuid)
  LEFT JOIN @PaymentTransStatus pts ON ({Helper.TableAllies}.TransStatus = pts.num)
  LEFT JOIN @PaymentTransType ptt ON ({Helper.TableAllies}.TransType = ptt.num) 
  {SqlStringHelper.Join_Setting_Channel(masterAccountNum, profileNum, channelNum)}

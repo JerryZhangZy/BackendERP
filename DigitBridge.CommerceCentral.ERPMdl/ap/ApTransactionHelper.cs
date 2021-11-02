@@ -228,29 +228,29 @@ AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
             return new List<long>();
         }
 
-        public static async Task<int> GetTranSeqNumAsync(string invoiceNumber, int profileNum)
+        public static async Task<int> GetTranSeqNumAsync(string apInvoiceNum, int profileNum)
         {
             var sql = $@"
 SELECT isnull(max(TransNum),0)+1 FROM ApInvoiceTransaction tbl
 WHERE ProfileNum = @profileNum
-AND invoiceNumber= @invoiceNumber
+AND ApInvoiceNum= @apInvoiceNum
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 profileNum.ToSqlParameter("profileNum"),
-                invoiceNumber.ToSqlParameter("invoiceNumber")
+                apInvoiceNum.ToSqlParameter("apInvoiceNum")
             );
             return result;
         }
-        public static int GetTranSeqNum(string invoiceNumber, int profileNum)
+        public static int GetTranSeqNum(string apInvoiceNum, int profileNum)
         {
             var sql = $@"
 SELECT isnull(max(TransNum),0)+1 FROM ApInvoiceTransaction tbl
 WHERE ProfileNum = @profileNum
-AND invoiceNumber= @invoiceNumber
+AND ApInvoiceNum= @apInvoiceNum
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 profileNum.ToSqlParameter("profileNum"),
-                invoiceNumber.ToSqlParameter("invoiceNumber")
+                apInvoiceNum.ToSqlParameter("apInvoiceNum")
             );
             return result;
         }

@@ -32,29 +32,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public ApPaymentServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) : base(serviceMessage, dbFactory) { }
         public override bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var pl = (payload as InvoicePaymentPayload);
+            var pl = (payload as ApPaymentPayload);
 
-            if (pl is null || pl.InvoiceTransaction is null || pl.InvoiceTransaction.InvoiceTransaction is null)
+            if (pl is null || pl.ApTransaction is null || pl.ApTransaction.ApInvoiceTransaction is null)
             {
                 AddError("InvoiceTransaction is require.");
                 return false;
             }
 
-            pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
-            pl.InvoiceTransaction.InvoiceReturnItems = null;
+            pl.ApTransaction.ApInvoiceTransaction.TransType = (int)TransTypeEnum.Payment; 
             return base.ValidateAccount(payload, number, processingMode);
         }
         public override async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            var pl = (payload as InvoicePaymentPayload);
-            if (pl is null || pl.InvoiceTransaction is null || pl.InvoiceTransaction.InvoiceTransaction is null)
+            var pl = (payload as ApPaymentPayload);
+            if (pl is null || pl.ApTransaction is null || pl.ApTransaction.ApInvoiceTransaction is null)
             {
                 AddError("InvoiceTransaction is require.");
                 return false;
             }
 
-            pl.InvoiceTransaction.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
-            pl.InvoiceTransaction.InvoiceReturnItems = null;
+            pl.ApTransaction.ApInvoiceTransaction.TransType = (int)TransTypeEnum.Payment; 
             return await base.ValidateAccountAsync(payload, number, processingMode);
         }
         public override bool Validate(ApTransactionDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)

@@ -150,7 +150,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //load invoice data.
             //load invoice data.
-            if (!LoadApInvoice(payload.MasterAccountNum, payload.ProfileNum, payload.ApTransaction.ApInvoiceTransaction.ApInvoiceNum))
+            if (!await LoadApInvoiceAsync(payload.MasterAccountNum, payload.ProfileNum, payload.ApTransaction.ApInvoiceTransaction.ApInvoiceNum))
                 return false;
 
             // validate data for Add processing
@@ -308,7 +308,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //load invoice data.
             if (!await LoadApInvoiceAsync(Data.ApInvoiceTransaction.ApInvoiceUuid))
-                return false; 
+                return false;
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -365,6 +365,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load ap invoice data
             var data = new ApInvoiceData(dbFactory);
             var success = data.GetByNumber(masterAccountNum, profileNum, apInvoiceNumber);
+            if (!success) return success;
+
+            if (Data == null)
+                NewData();
+            Data.ApInvoiceData = data;
+            Data.ApInvoiceTransaction.ApInvoiceUuid = data.ApInvoiceHeader.ApInvoiceUuid;
+
+            return success;
+        }
+        /// <summary>
+        /// Load Invoice data.
+        /// </summary>
+        /// <param name="invoiceUuid"></param>
+        protected async Task<bool> LoadApInvoiceAsync(int masterAccountNum, int profileNum, string apInvoiceNumber)
+        {
+            // load ap invoice data
+            var data = new ApInvoiceData(dbFactory);
+            var success = await data.GetByNumberAsync(masterAccountNum, profileNum, apInvoiceNumber);
             if (!success) return success;
 
             if (Data == null)

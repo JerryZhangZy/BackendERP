@@ -192,7 +192,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
             using (var tx = new ScopedTransaction(dbFactory))
             {
-                trans.TransNum = InvoiceTransactionHelper.GetTranSeqNum(originalTrans.InvoiceNumber, payload.ProfileNum);
+                trans.TransNum = InvoiceTransactionHelper.GetTranSeqNum(trans.InvoiceNumber, payload.ProfileNum);
             }
 
             var dataDto = new InvoiceTransactionDataDto()

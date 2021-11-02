@@ -37,9 +37,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #region add multi payments
         public virtual async Task<bool> AddAsync(ApPaymentPayload payload)
         {
-            if (!payload.HasApTransaction || payload.ApTransaction.ApInvoiceTransaction is null)
+            if (!payload.HasApTransaction)
             {
                 AddError("ApTransaction is required.");
+                return false;
+            }
+
+            if (!payload.ApTransaction.HasApInvoiceTransaction)
+            {
+                AddError("ApTransaction.ApInvoiceTransaction is required.");
                 return false;
             }
 
@@ -160,7 +166,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
             using (var tx = new ScopedTransaction(dbFactory))
             {
-                trans.TransNum = ApTransactionHelper.GetTranSeqNum(originalTrans.ApInvoiceNum, payload.ProfileNum);
+                trans.TransNum = ApTransactionHelper.GetTranSeqNum(trans.ApInvoiceNum, payload.ProfileNum);
             }
 
             var dataDto = new ApTransactionDataDto()
