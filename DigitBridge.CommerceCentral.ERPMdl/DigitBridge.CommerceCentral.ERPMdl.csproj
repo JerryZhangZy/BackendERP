@@ -29,13 +29,11 @@
     <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
     <Folder Include="arInquiry\" />
-    <Folder Include="selectList\so\" />
     <Folder Include="shipmentInquiry\" />
     <Folder Include="soInquiry\" />
     <Folder Include="customerInquiry\" />
     <Folder Include="companySummary\" />
     <Folder Include="warehouseTransfer\" />
-    <Folder Include="po\" />
     <Folder Include="vendor\" />
   </ItemGroup>
 

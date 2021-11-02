@@ -19,4 +19,10 @@ namespace DigitBridge.Base.Common
         ChannelOrder = 1,
         DropShipOrder = 2,
     }
+
+    public enum PoTransStatus : int
+    {
+        StockReceive=1,
+        APReceive
+    }
 }

@@ -782,6 +782,110 @@ where inv.InventoryUuid=il.InventoryUuid
         }
         #endregion
 
+        #region UpdateByPoReceive
+        public bool UpdateByPoReceive(PoTransactionData data)
+        {
+            if (data == null || data.PoTransaction == null)
+                return false;
+            var header = data.PoTransaction;
+            if(header.TransStatus!=(int)PoTransStatus.StockReceive&&header.TransStatus!=(int)PoTransStatus.APReceive)
+                return false;
+            var logUuid = data.PoTransaction.PoUuid;
+            ClearInventoryLogByLogUuid(logUuid);
+            //if remove all items or delete inventoryupdate
+            if (data.PoTransactionItems == null || data.PoTransactionItems.Count == 0)
+            {
+                return true;
+            }
+            var detailItems = data.PoTransactionItems;
+            var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
+            var list = ConvertPoTransactionItemsToInventoryLogList(header, detailItems, batchNum, logUuid);
+            list.SetDataBaseFactory(dbFactory).Save();
+
+            UpdateInventoryInStock(logUuid, 1);
+            return true;
+        }
+
+        public async Task<bool> UpdateByPoReceiveAsync(PoTransactionData data)
+        {
+            if (data == null || data.PoTransaction == null)
+                return false;
+            var header = data.PoTransaction;
+            if(header.TransStatus!=(int)PoTransStatus.StockReceive&&header.TransStatus!=(int)PoTransStatus.APReceive)
+                return false;
+            var logUuid = data.PoTransaction.PoUuid;
+            await ClearInventoryLogByLogUuidAsync(logUuid);
+            //if remove all items or delete inventoryupdate
+            if (data.PoTransactionItems == null || data.PoTransactionItems.Count == 0)
+            {
+                return true;
+            }
+            var detailItems = data.PoTransactionItems;
+            var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
+            var list = ConvertPoTransactionItemsToInventoryLogList(header, detailItems, batchNum, logUuid);
+            await list.SetDataBaseFactory(dbFactory).SaveAsync();
+
+            await UpdateInventoryInStockAsync(logUuid, 1);
+            return true;
+        }
+
+        private IList<InventoryLog> ConvertPoTransactionItemsToInventoryLogList(PoTransaction header, IList<PoTransactionItems> detailItems, long batchNum, string logUuid)
+        {
+            var list = new List<InventoryLog>();
+            foreach (var item in detailItems)
+            {
+                if (item.Stockable)
+                {
+                    if (item.TransQty > 0)
+                    {
+                        var inv = InventoryService.GetInventoryBySkuWithWarehouseUuid(item.SKU, item.WarehouseUuid);
+                        var line = new InventoryLog
+                        {
+                            DatabaseNum = header.DatabaseNum,
+                            MasterAccountNum = header.MasterAccountNum,
+                            ProfileNum = header.ProfileNum,
+                            InventoryLogUuid = Guid.NewGuid().ToString(),
+                            InventoryUuid = item.InventoryUuid,
+                            ProductUuid = item.ProductUuid,
+                            LogUuid = logUuid,
+                            BatchNum = batchNum,
+                            LogNumber = header.PoNum,
+                            LogItemUuid = item.PoItemUuid,
+                            LogDate = DateTime.Today,
+                            LogTime = DateTime.Now.TimeOfDay,
+                            LogBy = "PoReceive",
+                            LogType = InventoyLogType.POReceive.ToString(),
+                            SKU = item.SKU,
+                            Description = item.Description,
+                            LotNum = item.LotNum,
+                            UOM = item.UOM,
+                            LogQty = item.TransQty,
+                            EnterBy = ""
+                        };
+                        if (inv != null)
+                        {
+                            line.WarehouseCode = inv.WarehouseCode;
+                            line.LotInDate = inv.LotInDate;
+                            line.LotExpDate = inv.LotExpDate;
+                            line.StyleCode = inv.StyleCode;
+                            line.ColorPatternCode = inv.ColorPatternCode;
+                            line.SizeCode = inv.SizeCode;
+                            line.WidthCode = inv.WidthCode;
+                            line.LengthCode = inv.LengthCode;
+                            line.BeforeBaseCost = inv.BaseCost;
+                            line.BeforeUnitCost = inv.UnitCost;
+                            line.BeforeAvgCost = inv.AvgCost;
+
+                        }
+                        list.Add(line);
+                    }
+                    
+                }
+            }
+            return list;
+        }
+        #endregion
+
         #region UpdateByShipment
         private OrderShipmentService _orderShipmentService;
 
@@ -923,7 +1027,7 @@ where inv.InventoryUuid=il.InventoryUuid
             return list;
         }
         #endregion
-
+        
         #region UpdateByWarehouseTransfer
         public bool UpdateByWarehouseTransfer(WarehouseTransferData data)
         {
@@ -1036,6 +1140,8 @@ where inv.InventoryUuid=il.InventoryUuid
             return list;
         }
         #endregion
+        
+        
     }
 }
 
