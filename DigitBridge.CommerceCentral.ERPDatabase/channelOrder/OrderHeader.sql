@@ -99,8 +99,9 @@
     [DCAssignmentStatus] INT NULL, 
     [DCAssignmentDateUtc] DATETIME NULL, 
 
-    [RowNum]      BIGINT NOT NULL DEFAULT 0,
     [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))),
+    [RowNum]      BIGINT NOT NULL DEFAULT 0,
+    [TotalDueSellerAmount]      MONEY NOT NULL DEFAULT 0,
 
     CONSTRAINT [PK_OrderHeader] PRIMARY KEY CLUSTERED ([CentralOrderNum])
 ) ON [PRIMARY]
