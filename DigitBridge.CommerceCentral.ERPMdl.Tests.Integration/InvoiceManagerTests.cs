@@ -32,12 +32,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             InitForTest();
 
-            CreateInvoice_Test();
+           // CreateInvoice_Test();
         }
         protected void InitForTest()
         {
             var Seq = 0;
-            DataBaseFactory = new DataBaseFactory(Configuration["DBConnectionString"]);
+            DataBaseFactory = new DataBaseFactory(Configuration["dsn"]);
         }
         public void Dispose()
         {

@@ -287,7 +287,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var paymentManager = new InvoicePaymentManager(dbFactory);
             success = await paymentManager.AddPaymentFromPrepayment(soHeader.MiscInvoiceUuid, invoiceUuid, soHeader.DepositAmount);
 
-            return (false, invoiceUuid);
+            return (success, invoiceUuid);
         }
         protected async Task<string> GetSalesOrderUuid(OrderShipmentData shipmentData)
         {
