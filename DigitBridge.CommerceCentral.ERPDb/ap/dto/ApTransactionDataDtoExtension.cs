@@ -122,6 +122,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.Notes, f => f.Lorem.Sentence().TruncateTo(500))
 				.RuleFor(u => u.PaidBy, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.BankAccountUuid, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.BankAccountCode, f => f.Lorem.Word())
 				.RuleFor(u => u.CheckNum, f => f.Lorem.Sentence().TruncateTo(100))
 				.RuleFor(u => u.AuthCode, f => f.Lorem.Word())
 				.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))

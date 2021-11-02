@@ -20,6 +20,7 @@
 
 	[PaidBy] INT NOT NULL DEFAULT 1, --Payment method number
 	[BankAccountUuid] VARCHAR(50) NULL, --Global Unique Guid for Bank account
+	[BankAccountCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable payment Bank account code. <br> Title: Bank, Display: true, Editable: true
 	[CheckNum] VARCHAR(100) NULL, --Check number
 	[AuthCode] VARCHAR(100) NULL, --Auth code from merchant bank
 

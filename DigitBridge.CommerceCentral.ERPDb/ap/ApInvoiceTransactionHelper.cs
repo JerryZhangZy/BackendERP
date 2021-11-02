@@ -53,6 +53,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string Notes(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Notes) AS {name ?? "Notes".ToCamelCase(camelCase)} ";
         public static string PaidBy(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.PaidBy AS {name ?? "PaidBy".ToCamelCase(camelCase)} ";
         public static string BankAccountUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BankAccountUuid) AS {name ?? "BankAccountUuid".ToCamelCase(camelCase)} ";
+        public static string BankAccountCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.BankAccountCode) AS {name ?? "BankAccountCode".ToCamelCase(camelCase)} ";
         public static string CheckNum(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CheckNum) AS {name ?? "CheckNum".ToCamelCase(camelCase)} ";
         public static string AuthCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.AuthCode) AS {name ?? "AuthCode".ToCamelCase(camelCase)} ";
         public static string Currency(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Currency) AS {name ?? "Currency".ToCamelCase(camelCase)} ";
@@ -88,6 +89,7 @@ RTRIM({allies}Description) AS Description,
 RTRIM({allies}Notes) AS Notes,
 {allies}PaidBy AS PaidBy,
 RTRIM({allies}BankAccountUuid) AS BankAccountUuid,
+RTRIM({allies}BankAccountCode) AS BankAccountCode,
 RTRIM({allies}CheckNum) AS CheckNum,
 RTRIM({allies}AuthCode) AS AuthCode,
 RTRIM({allies}Currency) AS Currency,

@@ -68,6 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasNotes) data.Notes = dto.Notes;
 			if (dto.HasPaidBy) data.PaidBy = dto.PaidBy.ToInt();
 			if (dto.HasBankAccountUuid) data.BankAccountUuid = dto.BankAccountUuid;
+			if (dto.HasBankAccountCode) data.BankAccountCode = dto.BankAccountCode;
 			if (dto.HasCheckNum) data.CheckNum = dto.CheckNum;
 			if (dto.HasAuthCode) data.AuthCode = dto.AuthCode;
 			if (dto.HasCurrency) data.Currency = dto.Currency;
@@ -131,6 +132,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.Notes = data.Notes;
 			dto.PaidBy = data.PaidBy;
 			dto.BankAccountUuid = data.BankAccountUuid;
+			dto.BankAccountCode = data.BankAccountCode;
 			dto.CheckNum = data.CheckNum;
 			dto.AuthCode = data.AuthCode;
 			dto.Currency = data.Currency;

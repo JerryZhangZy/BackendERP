@@ -87,6 +87,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("BankAccountUuid",SqlDbType.VarChar)]
         private string _bankAccountUuid;
 
+        [Column("BankAccountCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _bankAccountCode;
+
         [Column("CheckNum",SqlDbType.VarChar)]
         private string _checkNum;
 
@@ -393,6 +396,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Readable payment Bank account code. <br> Title: Bank, Display: true, Editable: true
+		/// </summary>
+        public virtual string BankAccountCode
+        {
+            get
+            {
+				return _bankAccountCode?.TrimEnd(); 
+            }
+            set
+            {
+				_bankAccountCode = value.TruncateTo(50); 
+				OnPropertyChanged("BankAccountCode", value);
+            }
+        }
+
+		/// <summary>
 		/// Check number
 		/// </summary>
         public virtual string CheckNum
@@ -625,6 +644,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_notes = AllowNull ? (string)null : String.Empty; 
 			_paidBy = default(int); 
 			_bankAccountUuid = AllowNull ? (string)null : String.Empty; 
+			_bankAccountCode = String.Empty; 
 			_checkNum = AllowNull ? (string)null : String.Empty; 
 			_authCode = AllowNull ? (string)null : String.Empty; 
 			_currency = AllowNull ? (string)null : String.Empty; 
