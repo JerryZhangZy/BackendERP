@@ -38,6 +38,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region - static SQL fileds statement
 
         public static string RowNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum".ToCamelCase(camelCase)} ";
+        public static string DatabaseNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DatabaseNum AS {name ?? "DatabaseNum".ToCamelCase(camelCase)} ";
+        public static string MasterAccountNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MasterAccountNum AS {name ?? "MasterAccountNum".ToCamelCase(camelCase)} ";
+        public static string ProfileNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum".ToCamelCase(camelCase)} ";
         public static string TransUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.TransUuid) AS {name ?? "TransUuid".ToCamelCase(camelCase)} ";
         public static string TransNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TransNum AS {name ?? "TransNum".ToCamelCase(camelCase)} ";
         public static string ApInvoiceUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ApInvoiceUuid) AS {name ?? "ApInvoiceUuid".ToCamelCase(camelCase)} ";
@@ -69,6 +72,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             var allies = string.IsNullOrEmpty(tableAllies) ? string.Empty : $"{tableAllies.TrimEnd()}.";
             return $@"
 {allies}RowNum AS RowNum,
+{allies}DatabaseNum AS DatabaseNum,
+{allies}MasterAccountNum AS MasterAccountNum,
+{allies}ProfileNum AS ProfileNum,
 RTRIM({allies}TransUuid) AS TransUuid,
 {allies}TransNum AS TransNum,
 RTRIM({allies}ApInvoiceUuid) AS ApInvoiceUuid,

@@ -39,6 +39,36 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region Properties - Generated 
 
 		/// <summary>
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public int? DatabaseNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasDatabaseNum => DatabaseNum != null;
+
+		/// <summary>
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public int? MasterAccountNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasMasterAccountNum => MasterAccountNum != null;
+
+		/// <summary>
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public int? ProfileNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasProfileNum => ProfileNum != null;
+
+		/// <summary>
 		/// Global Unique Guid for ApInvoice Transaction
 		/// </summary>
 		[OpenApiPropertyDescription("Global Unique Guid for ApInvoice Transaction")]

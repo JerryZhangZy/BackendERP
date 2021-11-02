@@ -42,6 +42,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public ApInvoiceTransaction(IDataBaseFactory dbFactory): base(dbFactory) {}
 
         #region Fields - Generated 
+        [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
+        private int _databaseNum;
+
+        [Column("MasterAccountNum",SqlDbType.Int,NotNull=true)]
+        private int _masterAccountNum;
+
+        [Column("ProfileNum",SqlDbType.Int,NotNull=true)]
+        private int _profileNum;
+
         [Column("TransUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _transUuid;
 
@@ -115,6 +124,54 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (string.IsNullOrEmpty(TransUuid)) 
 				TransUuid = Guid.NewGuid().ToString(); 
 		}
+		/// <summary>
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual int DatabaseNum
+        {
+            get
+            {
+				return _databaseNum; 
+            }
+            set
+            {
+				_databaseNum = value; 
+				OnPropertyChanged("DatabaseNum", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Login user account. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual int MasterAccountNum
+        {
+            get
+            {
+				return _masterAccountNum; 
+            }
+            set
+            {
+				_masterAccountNum = value; 
+				OnPropertyChanged("MasterAccountNum", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual int ProfileNum
+        {
+            get
+            {
+				return _profileNum; 
+            }
+            set
+            {
+				_profileNum = value; 
+				OnPropertyChanged("ProfileNum", value);
+            }
+        }
+
 		/// <summary>
 		/// Global Unique Guid for ApInvoice Transaction
 		/// </summary>
@@ -534,6 +591,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override ApInvoiceTransaction Clear()
         {
             base.Clear();
+			_databaseNum = default(int); 
+			_masterAccountNum = default(int); 
+			_profileNum = default(int); 
 			_transUuid = String.Empty; 
 			_transNum = default(int); 
 			_apInvoiceUuid = String.Empty; 

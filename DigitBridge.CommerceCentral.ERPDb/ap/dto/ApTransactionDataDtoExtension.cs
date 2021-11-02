@@ -107,6 +107,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		{
 			#region faker data rules
 			return new Faker<ApInvoiceTransactionDto>()
+				.RuleFor(u => u.DatabaseNum, f => null)
+				.RuleFor(u => u.MasterAccountNum, f => null)
+				.RuleFor(u => u.ProfileNum, f => null)
 				.RuleFor(u => u.TransUuid, f => String.Empty)
 				.RuleFor(u => u.TransNum, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.ApInvoiceUuid, f => f.Random.Guid().ToString())
