@@ -97,7 +97,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 MasterAccountNum = soHeader.MasterAccountNum,
                 ProfileNum = soHeader.ProfileNum,
             };
-            success = await salesorderService.AddPreSalesAmountAsync(salesOrderPayload, soHeader.OrderNumber, soHeader.DepositAmount);
+            success = await salesorderService.AddPrepaymentAsync(salesOrderPayload, soHeader.OrderNumber, soHeader.DepositAmount);
             Assert.True(success, salesorderService.Messages.ObjectToString());
 
         }
