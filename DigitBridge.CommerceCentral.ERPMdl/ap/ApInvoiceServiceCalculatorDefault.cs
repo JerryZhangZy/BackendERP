@@ -110,6 +110,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null)
                 return false;
 
+            if (processingMode == ProcessingMode.Add)
+            {
+                if(data.ApInvoiceHeader.ApInvoiceNum.IsZero())
+                    data.ApInvoiceHeader.ApInvoiceNum=NumberGenerate.Generate();
+            }
             //TODO: add set default summary data logic
             /* This is generated sample code
             var sum = data.ApInvoiceHeader;
