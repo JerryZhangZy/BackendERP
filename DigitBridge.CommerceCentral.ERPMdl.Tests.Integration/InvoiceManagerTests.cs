@@ -96,7 +96,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.True(success, managerService.Messages.ObjectToString());
             Assert.False(string.IsNullOrEmpty(invoiceUuid));
         }
-
+        [Fact()]
+        public async Task CreateInvoiceByOrderShipmentIdAsync_Test()
+        {
+            var shipmentData = await SaveShipmentAndSalesOrder();
+            var managerService = new InvoiceManager(DataBaseFactory);
+            (var success, string invoiceUuid) = await managerService.CreateInvoiceByOrderShipmentIdAsync(shipmentData.UniqueId);
+            Assert.True(success, managerService.Messages.ObjectToString());
+            Assert.False(string.IsNullOrEmpty(invoiceUuid));
+        }
         #endregion async methods
 
         #region get faker data
