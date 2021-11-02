@@ -20,6 +20,8 @@ using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 using DigitBridge.CommerceCentral.ERPDb.inventorySync.dto;
 using DigitBridge.CommerceCentral.ERPDb.inventorySync;
+using DigitBridge.Base.Utility.Model;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -247,9 +249,63 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task UpdateStockByList(InventorySyncUpdatePayload inventorySyncUpdatePayload)
         {
+            List<StringArray> stringArrays = new List<StringArray>();
+            if (!inventorySyncUpdatePayload.HasInventorySyncUpdateData || !inventorySyncUpdatePayload.InventorySyncUpdateData.HasInventorySyncItems)
+            {
+                AddError("no data sync");
+                return;
+            }
+            foreach (var item in inventorySyncUpdatePayload.InventorySyncUpdateData.InventorySyncItems)
+                stringArrays.Add(new StringArray() { Item0 = item.SKU, Item1 = item.WarehouseCode });
 
+
+            // inventorySyncUpdatePayload.InventorySyncUpdateData.InventorySyncItems
+            var inventoryList = await InventoryServiceHelper.GetInventoryInfoBySkuWithWarehouseCodesAsync(stringArrays, inventorySyncUpdatePayload.MasterAccountNum, inventorySyncUpdatePayload.ProfileNum);
+
+            var inventoryUpdateDatalist = new List<InventoryUpdateDataDto>();
+
+            foreach (var item in inventorySyncUpdatePayload.InventorySyncUpdateData.InventorySyncItems)
+            {
+                var existInventory = inventoryList.Find(r => r.Item0 == item.SKU && r.Item1 == item.WarehouseCode);
+                if (existInventory == null) continue;
+
+                InventoryUpdateItemsDto InventoryUpdateItems = new InventoryUpdateItemsDto()
+                {
+                    WarehouseCode = item.WarehouseCode,
+                    SKU = item.SKU,
+                    WarehouseUuid = existInventory.Item3,
+                    CountQty = item.Qty,
+                    InventoryUuid = existInventory.Item2
+                };
+                var data = new InventoryUpdateDataDto()
+                {
+
+                    InventoryUpdateHeader = new InventoryUpdateHeaderDto
+                    {
+                        WarehouseCode = item.WarehouseCode,
+                        WarehouseUuid = existInventory.Item3,
+                        DatabaseNum = inventorySyncUpdatePayload.DatabaseNum,
+                        ProfileNum = inventorySyncUpdatePayload.ProfileNum,
+                        MasterAccountNum = inventorySyncUpdatePayload.MasterAccountNum,
+                        InventoryUpdateType = (int)InventoryUpdateType.PhysicalCount,
+                    },
+                    InventoryUpdateItems = new List<InventoryUpdateItemsDto>() { InventoryUpdateItems }
+                };
+                inventoryUpdateDatalist.Add(data);
+            }
+
+
+            InventoryUpdatePayload payload = new InventoryUpdatePayload();
+            foreach (var item in inventoryUpdateDatalist)
+            {
+                payload.InventoryUpdate = item;
+                if (await inventoryUpdateService.AddAsync(payload))
+                {
+
+                }
+            }
             // inventorySyncUpdatePayload.InventorySyncUpdateData
-           // InventoryServiceHelper.
+            // InventoryServiceHelper.
 
         }
 

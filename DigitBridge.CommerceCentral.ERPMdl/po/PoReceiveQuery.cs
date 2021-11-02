@@ -39,8 +39,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _PoUuid = new QueryFilter<string>("PoUuid", "PoUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> PoUuid => _PoUuid;
 
-        protected QueryFilter<string> _PoNum = new QueryFilter<string>("PoNum", "PoNum", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> PoNum => _PoNum;
+  
+        protected QueryFilter<string> _PoNumFrom = new QueryFilter<string>("_PoNumFrom", "PoNum", InvoiceHeaderHelper.TableAllies, FilterBy.ge, string.Empty, isNVarChar: true);
+        public QueryFilter<string> PoNumFrom => _PoNumFrom;
+
+        protected QueryFilter<string> _PoNumTo = new QueryFilter<string>("_PoNumTo", "PoNum", InvoiceHeaderHelper.TableAllies, FilterBy.le, string.Empty, isNVarChar: true);
+        public QueryFilter<string> PoNumTo => _PoNumTo;
+
 
 
         protected QueryFilter<int> _TransType = new QueryFilter<int>("TransType", "TransType", PREFIX, FilterBy.eq, 0);
@@ -52,67 +57,77 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
 
-
-        protected QueryFilter<DateTime> _TransDate = new QueryFilter<DateTime>("TransDate", "TransDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
-        public QueryFilter<DateTime> TransDate => _TransDate;
+ 
 
 
+        protected QueryFilter<DateTime> _TransDateFrom = new QueryFilter<DateTime>("TransDateFrom", "TransDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> TransDateFrom => _TransDateFrom;
 
-        //protected QueryFilter<DateTime> _TransTime = new QueryFilter<DateTime>("TransDateTo", "TransDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
-        //public QueryFilter<DateTime> TransTime => _TransTime;
+        protected QueryFilter<DateTime> _TransDateTo = new QueryFilter<DateTime>("TransDateTo", "TransDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
+        public QueryFilter<DateTime> TransDateTo => _TransDateTo;
 
 
-
-        protected QueryFilter<string> _VendorUuid = new QueryFilter<string>("VendorUuid", "VendorUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+ 
+        protected QueryFilter<string> _VendorUuid = new QueryFilter<string>("VendorUuid", "VendorUuid", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorUuid => _VendorUuid;
 
 
-        protected QueryFilter<string> _VendorInvoiceNum = new QueryFilter<string>("VendorInvoiceNum", "VendorInvoiceNum", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> VendorInvoiceNum => _VendorInvoiceNum;
+    
+
+        protected QueryFilter<string> _VendorInvoiceNumFrom = new QueryFilter<string>("_PoNumFrom", "VendorInvoiceNum", InvoiceHeaderHelper.TableAllies, FilterBy.ge, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorInvoiceNumFrom => _VendorInvoiceNumFrom;
+
+        protected QueryFilter<string> _VendorInvoiceNumTo = new QueryFilter<string>("_VendorInvoiceNumTo", "VendorInvoiceNum", InvoiceHeaderHelper.TableAllies, FilterBy.le, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorInvoiceNumTo => _VendorInvoiceNumTo;
 
  
 
-        protected QueryFilter<DateTime> _VendorInvoiceDate = new QueryFilter<DateTime>("VendorInvoiceDate", "VendorInvoiceDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
-        public QueryFilter<DateTime> VendorInvoiceDate => _VendorInvoiceDate;
+        protected QueryFilter<DateTime> _VendorInvoiceDateFrom = new QueryFilter<DateTime>("VendorInvoiceDateFrom", "VendorInvoiceDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> VendorInvoiceDateFrom => _VendorInvoiceDateFrom;
 
-
-        protected QueryFilter<DateTime> _DueDate = new QueryFilter<DateTime>("DueDate", "DueDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
-        public QueryFilter<DateTime> DueDate => _DueDate;
-
-
-
-        protected QueryFilter<string> _Currency = new QueryFilter<string>("Currency", "Currency", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> Currency => _Currency;
-
-
-
+        protected QueryFilter<DateTime> _VendorInvoiceDateTo = new QueryFilter<DateTime>("VendorInvoiceDateTo", "VendorInvoiceDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
+        public QueryFilter<DateTime> VendorInvoiceDateTo => _VendorInvoiceDateTo;
 
 
  
 
+        protected QueryFilter<DateTime> _DueDateFrom = new QueryFilter<DateTime>("DueDateFrom", "DueDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> DueDateFrom => _DueDateFrom;
+
+        protected QueryFilter<DateTime> _DueDateTo = new QueryFilter<DateTime>("DueDateTo", "DueDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
+        public QueryFilter<DateTime> DueDateTo => _DueDateTo;
+
+
+ 
         public PoReceiveQuery() : base(TranSactionPREFIX)
         {
-            //AddFilter(_TransNum);
-            //AddFilter(_InvoiceNumber);
+ 
             AddFilter(_TransUuid);
             AddFilter(_TransNum);
-            AddFilter(_PoUuid); //
-            AddFilter(_PoNum);
+            AddFilter(_PoUuid);  
+            AddFilter(_PoNumFrom);
+            AddFilter(_PoNumTo);
             AddFilter(_TransType);
             AddFilter(_TransStatus);
 
-            AddFilter(_TransDate);
+            AddFilter(_TransDateFrom);
+            AddFilter(_TransDateTo);
+
             AddFilter(_VendorUuid);
-            AddFilter(_VendorInvoiceNum);
-            AddFilter(_VendorInvoiceDate);
-            AddFilter(_DueDate);
-            AddFilter(_Currency);
+            AddFilter(_VendorInvoiceNumFrom);
+            AddFilter(_VendorInvoiceNumTo);
+
+            AddFilter(_VendorInvoiceDateFrom);
+            AddFilter(_VendorInvoiceDateTo);
+            AddFilter(_DueDateFrom);
+            AddFilter(_DueDateTo);
+      
          
         }
         public override void InitQueryFilter()
         {
-            //_TransDate.FilterValue = DateTime.Today.AddDays(-30);
-            //_DueDate.FilterValue = DateTime.Today.AddDays(-30);
+            _TransDateFrom.FilterValue = DateTime.Today.AddDays(-30);
+            _TransDateTo.FilterValue = DateTime.Today;
 
         }
 

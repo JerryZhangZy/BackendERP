@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
 using System.Collections.Generic;
@@ -14,5 +14,6 @@ namespace DigitBridge.CommerceCentral.ERPDb.inventorySync.dto
    public class InventorySyncUpdateDataDto
     {
         public IList<InventorySyncItemsDto> InventorySyncItems { get; set; }
+        public bool HasInventorySyncItems => InventorySyncItems != null;
     }
 }
