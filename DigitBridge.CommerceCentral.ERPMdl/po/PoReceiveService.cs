@@ -92,11 +92,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        private PurchaseOrderService _purchaseOrderService;
+
+        protected PurchaseOrderService PurchaseOrderService
+        {
+            get
+            {
+                if (_purchaseOrderService == null)
+                    _purchaseOrderService = new PurchaseOrderService(dbFactory);
+                return _purchaseOrderService;
+            }
+        }
+
+        private ApInvoiceService _apInvoiceService;
+
+        protected ApInvoiceService ApInvoiceService
+        {
+            get
+            {
+                if (_apInvoiceService == null)
+                    _apInvoiceService = new ApInvoiceService(dbFactory);
+                return _apInvoiceService;
+            }
+        }
+
         public override async Task<bool> SaveDataAsync()
         {
             if (await base.SaveDataAsync())
             {
                 await InventoryLogService.UpdateByPoReceiveAsync(_data);
+                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);
+                await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
                 return true;
             }
             return false;
@@ -107,6 +133,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (base.SaveData())
             {
                 InventoryLogService.UpdateByPoReceive(_data);
+                ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
+                PurchaseOrderService.UpdateByPoReceive(_data);
                 return true;
             }
             return false;

@@ -58,10 +58,8 @@ SELECT
 {Helper.Balance()}, 
 {Helper.CreditAccount()}, 
 {Helper.DebitAccount()}, 
-{Helper.EnterDateUtc()}, 
-{Helper.UpdateDateUtc()}, 
-{Helper.EnterBy()}, 
-{Helper.UpdateBy()}, 
+{Helper.PoUuid()}, 
+{Helper.PoNum()},
 {Helper.DigitBridgeGuid()} 
 ";
             return this.SQL_Select;
