@@ -81,7 +81,7 @@
 //SettingForApInvoice
 //SettingForPoTransaction
 #>
-<#@ include file="SettingForSalesOrder.ttinclude" #>
+<#@ include file="SettingForVendor.ttinclude" #>
 <#
     var dtoSuf = "";
     
