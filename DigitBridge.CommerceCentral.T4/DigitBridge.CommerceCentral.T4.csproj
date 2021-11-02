@@ -460,6 +460,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ReadDtoGrandChildren.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\SettingForChannelOrder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForChannelOrder.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\SettingForCustomer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

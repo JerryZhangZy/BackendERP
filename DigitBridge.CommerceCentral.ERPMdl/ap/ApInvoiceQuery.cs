@@ -156,7 +156,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public void InitForNewPaymet(string vendorNum)
         {
             _ApInvoiceStatus.FilterValue = (int)InvoiceStatusEnum.Outstanding;
-            _ApInvoiceNum.FilterValue = vendorNum;
+            _VendorNum.FilterValue = vendorNum;
 
             _ApInvoiceDateFrom.FilterValue = DateTime.Today.AddYears(-5);//TODO. this is a tmp begin date. make sure this logic.
             _ApInvoiceDateTo.FilterValue = DateTime.Today;

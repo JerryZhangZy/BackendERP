@@ -131,6 +131,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.DCAssignmentStatus, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.DCAssignmentDateUtc, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.CentralOrderUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.TotalDueSellerAmount, f => f.Random.Decimal(1, 1000, 0))
 					;
             #endregion faker data rules
         }

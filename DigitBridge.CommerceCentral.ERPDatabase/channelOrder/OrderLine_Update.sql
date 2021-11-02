@@ -26,6 +26,10 @@ BEGIN
 END					
 				
 
+IF COL_LENGTH('OrderLine', 'UnitDueSellerAmount') IS NULL					
+BEGIN					
+    ALTER TABLE OrderLine ADD [UnitDueSellerAmount] MONEY NOT NULL DEFAULT 0
+END		
 /*
     UPDATE spp
     SET spp.CentralOrderUuid = sph.CentralOrderUuid

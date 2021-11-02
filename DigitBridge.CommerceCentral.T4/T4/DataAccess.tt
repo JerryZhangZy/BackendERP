@@ -82,7 +82,7 @@
 //SettingForPoTransaction
 //SettingForApTransaction
 #>
-<#@ include file="SettingForApTransaction.ttinclude" #>
+<#@ include file="SettingForChannelOrder.ttinclude" #>
 <#
     var dtoSuf = "";
     
