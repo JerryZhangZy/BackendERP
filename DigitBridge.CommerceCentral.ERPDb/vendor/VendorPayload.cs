@@ -32,7 +32,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "VendorUuids", val => VendorUuids = val.Split(",").ToList() }
+                { "VendorUuids", val => VendorUuids = val.Split(",").ToList() },
+                { "VendorCodes", val => VendorCodes = val.Split(",").ToList() }
             };
         }
 
@@ -47,6 +48,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] 
         public virtual bool HasVendorUuids => VendorUuids != null && VendorUuids.Count > 0;
         public bool ShouldSerializeSalesOrderUuids() => HasVendorUuids;
+
+        /// <summary>
+        /// (Request Parameter) Array of customer code to load multiple Customer dto data.
+        /// </summary>
+        [OpenApiPropertyDescription("(Request Parameter) Array of customer code to load multiple Vendor dto data.")]
+        public IList<string> VendorCodes { get; set; } = new List<string>();
+        [JsonIgnore]
+        public virtual bool HasVendorCodes => VendorCodes != null && VendorCodes.Count > 0;
+        public bool ShouldSerializeVendorCodes() => HasVendorCodes;
 
         /// <summary>
         /// (Response Data) Array of Vendor entity object which load by uuid array.
@@ -91,6 +101,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeVendorListCount() => HasVendorListCount;
 
         #endregion list service
+
+        #region summary service 
+
+        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder VendorSummary { get; set; }
+        [JsonIgnore] public virtual bool HasVendorSummary => VendorSummary != null;
+        public bool ShouldSerializeVendorSummary() => HasVendorSummary;
+        #endregion
     }
 }
 

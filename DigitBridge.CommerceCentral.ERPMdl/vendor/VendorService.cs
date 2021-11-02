@@ -219,16 +219,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasVendor)
                 return false;
+
             //set edit mode before validate
             Edit();
+
             if (!(await ValidateAccountAsync(payload)))
                 return false;
 
             if (!(await ValidateAsync(payload.Vendor)))
                 return false;
 
-            // load data 
-            await GetDataAsync(payload.Vendor.Vendor.RowNum.ToLong());
+            // set Add mode and clear data
+            await EditAsync(payload.Vendor.Vendor.RowNum.ToLong());
 
             // load data from dto
             FromDto(payload.Vendor);
@@ -240,62 +242,79 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
-        /// <summary>
-        ///  get data by number
-        /// </summary>
-        /// <param name="payload"></param>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> GetDataAsync(VendorPayload payload, string orderNumber)
+
+        public VendorPayload GetVendorsByCodeArray(VendorPayload payload)
         {
-            return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
+            if (!payload.HasVendorCodes)
+                return payload;
+            var list = new List<VendorDataDto>();
+            var msglist = new List<MessageClass>();
+            var rowNumList = new List<long>();
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNumList = VendorServiceHelper.GetRowNumsByVendorCodes(payload.VendorCodes, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rowNum in rowNumList)
+            {
+                if (GetData(rowNum))
+                    list.Add(ToDto());
+            }
+            payload.Vendors = list;
+            payload.Messages = msglist;
+            return payload;
         }
 
-        /// <summary>
-        /// get data by number
-        /// </summary>
-        /// <param name="payload"></param>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual bool GetData(VendorPayload payload, string orderNumber)
+        public async Task<VendorPayload> GetVendorsByCodeArrayAsync(VendorPayload payload)
         {
-            return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
+            if (!payload.HasVendorCodes)
+                return payload;
+            var list = new List<VendorDataDto>();
+            var msglist = new List<MessageClass>();
+            var rowNumList = new List<long>();
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                rowNumList = await VendorServiceHelper.GetRowNumsByVendorCodesAsync(payload.VendorCodes, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            foreach (var rowNum in rowNumList)
+            {
+                if (await GetDataAsync(rowNum))
+                    list.Add(ToDto());
+            }
+            payload.Vendors = list;
+            payload.Messages = msglist;
+            return payload;
         }
 
-        /// <summary>
-        /// Delete data by number
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> DeleteByNumberAsync(VendorPayload payload, string orderNumber)
+        public async Task<bool> GetVendorByVendorCodeAsync(VendorPayload payload, string vendorCode)
         {
-            if (string.IsNullOrEmpty(orderNumber))
+            if (string.IsNullOrEmpty(vendorCode))
                 return false;
-            //set delete mode
-            Delete();
-            //load data
-            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-            success = success && DeleteData();
-            return success;
-        }
-
-        /// <summary>
-        /// Delete data by number
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual bool DeleteByNumber(VendorPayload payload, string orderNumber)
-        {
-            if (string.IsNullOrEmpty(orderNumber))
+            List();
+            if (!(await ValidateAccountAsync(payload, vendorCode)))
                 return false;
-            //set delete mode
-            Delete();
-            //load data
-            var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-            success = success && DeleteData();
-            return success;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await VendorServiceHelper.GetRowNumByVendorCodeAsync(vendorCode, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            return await GetDataAsync(rowNum);
         }
 
+        public async Task<bool> DeleteByCodeAsync(VendorPayload payload, string vendorCode)
+        {
+            if (string.IsNullOrEmpty(vendorCode))
+                return false;
+            Delete();
+            if (!(await ValidateAccountAsync(payload, vendorCode)))
+                return false;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await VendorServiceHelper.GetRowNumByVendorCodeAsync(vendorCode, payload.MasterAccountNum, payload.ProfileNum);
+            }
+            var success = await GetDataAsync(rowNum);
+            return success && (await DeleteDataAsync());
+        }
     }
 }
 
