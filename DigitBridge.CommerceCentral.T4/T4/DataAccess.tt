@@ -80,8 +80,9 @@
 //SettingForEventERP
 //SettingForApInvoice
 //SettingForPoTransaction
+//SettingForApTransaction
 #>
-<#@ include file="SettingForPoTransaction.ttinclude" #>
+<#@ include file="SettingForApTransaction.ttinclude" #>
 <#
     var dtoSuf = "";
     

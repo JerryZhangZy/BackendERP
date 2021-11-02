@@ -41,7 +41,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_ApInvoiceTransaction_TransUuid] ON [dbo].[A
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceTransaction]') AND name = N'UI_ApInvoiceTransaction_ApInvoiceNum')
-CREATE NONCLUSTERED INDEX [IX_ApInvoiceTransaction_ApInvoiceUuid] ON [dbo].[ApInvoiceTransaction]
+CREATE NONCLUSTERED INDEX [FK_ApInvoiceTransaction_ApInvoiceUuid] ON [dbo].[ApInvoiceTransaction]
 (
 	[ApInvoiceUuid] ASC
 ) ON [PRIMARY]
