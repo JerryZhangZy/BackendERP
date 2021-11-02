@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.inventorySync
         /// (Request Data) ApInvoice object to update.
         /// (Response Data) ApInvoice object which has been updated.
         /// </summary>
-        [OpenApiPropertyDescription("(Request and Response) ApInvoice object to update.")]
+        [OpenApiPropertyDescription("(Request and Response) InventorySync object to update.")]
         public InventorySyncUpdateDataDto InventorySyncUpdateData { get; set; }
 
         [JsonIgnore] public virtual bool HasInventorySyncUpdateData => InventorySyncUpdateData != null;

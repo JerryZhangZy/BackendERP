@@ -14,5 +14,6 @@ namespace DigitBridge.CommerceCentral.ERPDb.inventorySync.dto
    public class InventorySyncUpdateDataDto
     {
         public IList<InventorySyncItemsDto> InventorySyncItems { get; set; }
+        public bool HasInventorySyncItems => InventorySyncItems != null;
     }
 }
