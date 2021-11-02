@@ -37,7 +37,6 @@
     <Folder Include="Attribute\" />
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="DTO\" />
-    <Folder Include="inventoryUpdate\dto\" />
     <Folder Include="po\" />
     <Folder Include="vendor\dto\" />
     <Folder Include="warehouseTransfer\dto\" />
