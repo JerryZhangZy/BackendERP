@@ -68,19 +68,42 @@ FOR JSON PATH
 ) AS SalesOrderItems";
             return columns;
         }
+        protected string GetItem_Columns()
+        {
+            var columns = $@"
+( 
+SELECT 
+ {ItemHelper.SelectAll(ItemHelper.TableAllies)} 
+FROM { ItemHelper.TableName} { ItemHelper.TableAllies}
+WHERE { ItemHelper.TableAllies}.SalesOrderUuid = { Helper.TableAllies}.SalesOrderUuid 
+FOR JSON PATH
+) AS SalesOrderItems";
+            return columns;
+        }
         #endregion
 
         #region override methods
 
         protected override string GetSQL_select()
         {
+            //            // No Header attributes & item attributes.
+            //            this.SQL_Select = $@"
+            //SELECT 
+            // {GetHeader_Columns()}
+            //,{GetHeaderInfo_Columns()}
+            //,{GetItem_Columns()} 
+            //";
+
+            //with Header attributes & item attributes.
             this.SQL_Select = $@"
-SELECT 
- {GetHeader_Columns()}
-,{GetHeaderInfo_Columns()}
-,{GetHeaderAttr_Columns()}
-,{GetItemWithItemAttr_Columns()}  
-";
+            SELECT 
+             {GetHeader_Columns()}
+            ,{GetHeaderAttr_Columns()}
+            ,{GetHeaderInfo_Columns()}
+            ,{GetItemWithItemAttr_Columns()} 
+            ,{GetItemWithItemAttr_Columns()}
+            ";
+
             return this.SQL_Select;
         }
 
