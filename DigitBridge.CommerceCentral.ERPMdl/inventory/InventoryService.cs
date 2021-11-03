@@ -493,11 +493,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> UpdatAvgCostByPoReceiveAsync(PoTransactionData data)
         {
-            if (data == null || data.PoTransaction == null)
+            if (data == null || data.PoTransaction == null||!data.FirstAPReceiveStatus)
                 return false;
             var header = data.PoTransaction;
-            if (header.TransStatus != (int)PoTransStatus.APReceive)
-                return false;
             if (data.PoTransactionItems == null || data.PoTransactionItems.Count == 0)
             {
                 return true;
@@ -517,11 +515,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         
         public bool UpdatAvgCostByPoReceive(PoTransactionData data)
         {
-            if (data == null || data.PoTransaction == null)
+            if (data == null || data.PoTransaction == null||!data.FirstAPReceiveStatus)
                 return false;
             var header = data.PoTransaction;
-            if (header.TransStatus != (int)PoTransStatus.APReceive)
-                return false;
             if (data.PoTransactionItems == null || data.PoTransactionItems.Count == 0)
             {
                 return true;
@@ -539,24 +535,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
         
-        private void UpdateAvgCost(string inventoryUuid,decimal avgCost)
+        private void UpdateAvgCost(string inventoryUuid,decimal avgCost,decimal baseCost)
         {
-            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 WHERE InventoryUuid = @1", avgCost.ToSqlParameter("AvgCost"),inventoryUuid.ToSqlParameter("inventoryUuid"));
+            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", avgCost.ToSqlParameter("AvgCost"),baseCost.ToSqlParameter("BaseCost"),inventoryUuid.ToSqlParameter("inventoryUuid"));
         }
 
-        private async Task UpdateAvgCostAsync(string inventoryUuid,decimal avgCost)
+        private async Task UpdateAvgCostAsync(string inventoryUuid,decimal avgCost,decimal baseCost)
         {
-            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 WHERE InventoryUuid = @1", avgCost.ToSqlParameter("AvgCost"),inventoryUuid.ToSqlParameter("inventoryUuid"));
+            await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", avgCost.ToSqlParameter("AvgCost"),baseCost.ToSqlParameter("BaseCost"),inventoryUuid.ToSqlParameter("inventoryUuid"));
         }
         
         private void UpdateAvgCost(ItemCostClass cost)
         {
-            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 WHERE InventoryUuid = @1", cost.AvgCost.ToSqlParameter("AvgCost"),cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
+            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
         }
 
         private async Task UpdateAvgCostAsync(ItemCostClass cost)
         {
-            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 WHERE InventoryUuid = @1", cost.AvgCost.ToSqlParameter("AvgCost"),cost.AvgCost.ToSqlParameter("inventoryUuid"));
+            await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.AvgCost.ToSqlParameter("inventoryUuid"));
         }
     }
 }
