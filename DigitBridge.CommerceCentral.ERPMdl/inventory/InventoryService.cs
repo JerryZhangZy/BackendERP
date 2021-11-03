@@ -13,7 +13,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
-
+using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -451,6 +451,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return dbFactory.Find<Inventory>("WHERE WarehouseUuid=@0 AND SKU=@1", 
                 warehouseUuid.ToSqlParameter("WarehouseUuid"), sku.ToSqlParameter("SKU")).FirstOrDefault();
         }
+        
+        public Inventory GetInventoryByInventoryUuid(string inventoryUuid)
+        {
+            return dbFactory.Find<Inventory>("WHERE InventoryUuid=@0", inventoryUuid.ToSqlParameter("InventoryUuid")).FirstOrDefault();
+        }
 
 
         public Inventory GetInventory(InventoryData inventoryData, dynamic sourceData, SKUType skuType = SKUType.GeneralMerchandise)
@@ -513,6 +518,74 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError(ex.Message);
                 return false;
             }
+        }
+
+        public async Task<bool> UpdatAvgCostByPoReceiveAsync(PoTransactionData data)
+        {
+            if (data == null || data.PoTransaction == null)
+                return false;
+            var header = data.PoTransaction;
+            if (header.TransStatus != (int)PoTransStatus.APReceive)
+                return false;
+            if (data.PoTransactionItems == null || data.PoTransactionItems.Count == 0)
+            {
+                return true;
+            }
+            foreach (var items in data.PoTransactionItems)
+            {
+                var inventory = GetInventoryByInventoryUuid(items.InventoryUuid);
+                if(inventory==null)
+                    continue;
+                var itemCost = new ItemCostClass(inventory);
+                var cost = itemCost.CalculateAvgCost(new ItemCostClass(items));
+                await UpdateAvgCostAsync(cost);
+            }
+
+            return true;
+        }
+        
+        public bool UpdatAvgCostByPoReceive(PoTransactionData data)
+        {
+            if (data == null || data.PoTransaction == null)
+                return false;
+            var header = data.PoTransaction;
+            if (header.TransStatus != (int)PoTransStatus.APReceive)
+                return false;
+            if (data.PoTransactionItems == null || data.PoTransactionItems.Count == 0)
+            {
+                return true;
+            }
+            foreach (var items in data.PoTransactionItems)
+            {
+                var inventory = GetInventoryByInventoryUuid(items.InventoryUuid);
+                if(inventory==null)
+                    continue;
+                var itemCost = new ItemCostClass(inventory);
+                var cost = itemCost.CalculateAvgCost(new ItemCostClass(items));
+                UpdateAvgCost(cost);
+            }
+
+            return true;
+        }
+        
+        private void UpdateAvgCost(string inventoryUuid,decimal avgCost)
+        {
+            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 WHERE InventoryUuid = @1", avgCost.ToSqlParameter("AvgCost"),inventoryUuid.ToSqlParameter("inventoryUuid"));
+        }
+
+        private async Task UpdateAvgCostAsync(string inventoryUuid,decimal avgCost)
+        {
+            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 WHERE InventoryUuid = @1", avgCost.ToSqlParameter("AvgCost"),inventoryUuid.ToSqlParameter("inventoryUuid"));
+        }
+        
+        private void UpdateAvgCost(ItemCostClass cost)
+        {
+            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 WHERE InventoryUuid = @1", cost.AvgCost.ToSqlParameter("AvgCost"),cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
+        }
+
+        private async Task UpdateAvgCostAsync(ItemCostClass cost)
+        {
+            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 WHERE InventoryUuid = @1", cost.AvgCost.ToSqlParameter("AvgCost"),cost.AvgCost.ToSqlParameter("inventoryUuid"));
         }
     }
 }

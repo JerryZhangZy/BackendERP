@@ -1,0 +1,1879 @@
+{
+	"info": {
+		"_postman_id": "a79f8fe3-4bf5-4d07-a7af-e53d2d187ce8",
+		"name": "Qbo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Qbo Refund",
+			"item": [
+				{
+					"name": "Export",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksRefunds/:invoiceNumber/:transNum?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksRefunds",
+								":invoiceNumber",
+								":transNum"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "invoiceNumber",
+									"value": "{{InvoiceNumber}}"
+								},
+								{
+									"key": "transNum",
+									"value": "{{TransNum}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Export",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "masterAccountNum",
+										"value": "{{masterAccountNum}}",
+										"type": "text"
+									},
+									{
+										"key": "profileNum",
+										"value": "{{profileNum}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/quickBooksRefunds/:invoiceNumber?code={{code}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"quickBooksRefunds",
+										":invoiceNumber"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"description": "(Required) Azure Function App key"
+										}
+									],
+									"variable": [
+										{
+											"key": "invoiceNumber",
+											"value": null
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Get",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksRefunds/:invoiceNumber/:transNum?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksRefunds",
+								":invoiceNumber",
+								":transNum"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "invoiceNumber",
+									"value": "{{InvoiceNumber}}"
+								},
+								{
+									"key": "transNum",
+									"value": "{{TransNum}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get payment",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "masterAccountNum",
+										"value": "{{masterAccountNum}}",
+										"type": "text"
+									},
+									{
+										"key": "profileNum",
+										"value": "{{profileNum}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/quickBooksRefunds/:invoiceNumber?code={{code}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"quickBooksRefunds",
+										":invoiceNumber"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"description": "(Required) Azure Function App key"
+										}
+									],
+									"variable": [
+										{
+											"key": "invoiceNumber",
+											"value": null
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksRefunds/:invoiceNumber/:transNum?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksRefunds",
+								":invoiceNumber",
+								":transNum"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "invoiceNumber",
+									"value": "{{InvoiceNumber}}"
+								},
+								{
+									"key": "transNum",
+									"value": "{{TransNum}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "delete",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "masterAccountNum",
+										"value": "{{masterAccountNum}}",
+										"type": "text"
+									},
+									{
+										"key": "profileNum",
+										"value": "{{profileNum}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/quickBooksRefunds/:invoiceNumber?code={{code}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"quickBooksRefunds",
+										":invoiceNumber"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"description": "(Required) Azure Function App key"
+										}
+									],
+									"variable": [
+										{
+											"key": "invoiceNumber",
+											"value": null
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "api discard",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksRefunds/:invoiceNumber/:transNum?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksRefunds",
+								":invoiceNumber",
+								":transNum"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "invoiceNumber",
+									"value": "{{InvoiceNumber}}"
+								},
+								{
+									"key": "transNum",
+									"value": "{{TransNum}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "void refund",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "masterAccountNum",
+										"value": "{{masterAccountNum}}",
+										"type": "text"
+									},
+									{
+										"key": "profileNum",
+										"value": "{{profileNum}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/quickBooksRefunds/:invoiceNumber?code={{code}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"quickBooksRefunds",
+										":invoiceNumber"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"description": "(Required) Azure Function App key"
+										}
+									],
+									"variable": [
+										{
+											"key": "invoiceNumber",
+											"value": null
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"if (pm.response.headers.get('Content-Type') == 'application/json; charset=utf-8')",
+							"    pm.test(\"Response Success Status\", function () {",
+							"        pm.response.to.have.jsonBody('success', true)",
+							"    });",
+							"else",
+							"    pm.test(\"Content-Type is Csv File\", function () {",
+							"        pm.response.to.have.header(\"Content-Type\", \"text/csv\");",
+							"    });",
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Qbo invoices",
+			"item": [
+				{
+					"name": "Export invoice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksInvoices/:invoiceNumber?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksInvoices",
+								":invoiceNumber"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "invoiceNumber",
+									"value": "{{InvoiceNumber}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Export qbo invoice",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "masterAccountNum",
+										"value": "{{masterAccountNum}}",
+										"type": "text"
+									},
+									{
+										"key": "profileNum",
+										"value": "{{profileNum}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/quickBooksInvoices/:invoiceNumber?code={{code}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"quickBooksInvoices",
+										":invoiceNumber"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"description": "(Required) Azure Function App key"
+										}
+									],
+									"variable": [
+										{
+											"key": "invoiceNumber",
+											"value": null
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Get by invoiceNumber",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksInvoices/:invoiceNumber?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksInvoices",
+								":invoiceNumber"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "invoiceNumber",
+									"value": "{{InvoiceNumber}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get invoice by invoiceNumber",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "masterAccountNum",
+										"value": "{{masterAccountNum}}",
+										"type": "text"
+									},
+									{
+										"key": "profileNum",
+										"value": "{{profileNum}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/quickBooksInvoices/:invoiceNumber?code={{code}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"quickBooksInvoices",
+										":invoiceNumber"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"description": "(Required) Azure Function App key"
+										}
+									],
+									"variable": [
+										{
+											"key": "invoiceNumber",
+											"value": null
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Request-Context",
+									"value": "appId=cid-v1:4c4e1bfe-72f2-4a8e-af1e-2bcf2c92c831"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 06 Sep 2021 11:14:11 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"invoiceNumbers\": [\n        \"Invoice-NEW-0906-191356195\"\n    ],\n    \"invoices\": [\n        {\n            \"invoiceHeader\": {\n                \"rowNum\": 125,\n                \"invoiceUuid\": \"ed41b201-2978-4a4a-8fd5-3d139eeae179\",\n                \"invoiceNumber\": \"Invoice-NEW-0906-191356195\",\n                \"salesOrderUuid\": \"\",\n                \"orderNumber\": \"5\",\n                \"invoiceType\": 54,\n                \"invoiceStatus\": 93,\n                \"invoiceDate\": \"2021-09-06T00:00:00\",\n                \"invoiceTime\": \"2021-09-06T19:13:56+00:00\",\n                \"dueDate\": \"1753-01-01T00:00:00\",\n                \"billDate\": \"1753-01-01T00:00:00\",\n                \"customerUuid\": \"431ec765-0556-4e3a-b0fc-c119d7ef7e85\",\n                \"customerCode\": \"cumque\",\n                \"customerName\": \"Wisoky - Powlowski\",\n                \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n                \"termsDays\": 31,\n                \"currency\": \"Qui mollit\",\n                \"subTotalAmount\": 825.13,\n                \"salesAmount\": 0,\n                \"totalAmount\": 795.91,\n                \"taxableAmount\": 5.19,\n                \"nonTaxableAmount\": 6.85,\n                \"taxRate\": 0.57,\n                \"taxAmount\": 179.18,\n                \"discountRate\": 0.79,\n                \"discountAmount\": 799.66,\n                \"shippingAmount\": 679.95,\n                \"shippingTaxAmount\": 930.99,\n                \"miscAmount\": 545.39,\n                \"miscTaxAmount\": 212.93,\n                \"chargeAndAllowanceAmount\": 279.22,\n                \"paidAmount\": 610.23,\n                \"creditAmount\": 481.74,\n                \"balance\": 997.93,\n                \"unitCost\": 968.75,\n                \"avgCost\": 200.18,\n                \"lotCost\": 917.76,\n                \"invoiceSourceCode\": \"facere\",\n                \"updateDateUtc\": \"2021-09-06T00:00:00\",\n                \"enterBy\": \"\",\n                \"updateBy\": \"\"\n            },\n            \"invoiceHeaderInfo\": {\n                \"rowNum\": 120,\n                \"enterDateUtc\": \"2021-09-06T11:13:58.43\",\n                \"digitBridgeGuid\": \"90005fd1-a40b-4a58-a2a2-7efd08e0e0bf\",\n                \"invoiceUuid\": \"ed41b201-2978-4a4a-8fd5-3d139eeae179\",\n                \"centralFulfillmentNum\": 0,\n                \"orderShipmentNum\": 0,\n                \"orderShipmentUuid\": \"\",\n                \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n                \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n                \"distributionCenterNum\": 1,\n                \"centralOrderNum\": 0,\n                \"channelNum\": 13,\n                \"channelAccountNum\": 39,\n                \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n                \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n                \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n                \"warehouseUuid\": \"983ba346-f670-b1cb-9191-baac5ad3d4dc\",\n                \"warehouseCode\": \"quaerat\",\n                \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n                \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n                \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n                \"endBuyerName\": \"Winfield Cole\",\n                \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n                \"shipToName\": \"Gordon Gutkowski\",\n                \"shipToFirstName\": \"Hester\",\n                \"shipToLastName\": \"Donnelly\",\n                \"shipToSuffix\": \"Jr.\",\n                \"shipToCompany\": \"Runte, Wuckert and Smith\",\n                \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n                \"shipToAttention\": \"Non quod eveniet eum aut.\",\n                \"shipToAddressLine1\": \"22770 Enoch Forks\",\n                \"shipToAddressLine2\": \"Apt. 275\",\n                \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n                \"shipToCity\": \"Lulahaven\",\n                \"shipToState\": \"OK\",\n                \"shipToStateFullName\": \"Utah\",\n                \"shipToPostalCode\": \"63249-4995\",\n                \"shipToPostalCodeExt\": \"ducimus\",\n                \"shipToCounty\": \"Buckinghamshire\",\n                \"shipToCountry\": \"Monaco\",\n                \"shipToEmail\": \"Francesca25@yahoo.com\",\n                \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n                \"shipToNightPhone\": \"285-533-5627 x1500\",\n                \"billToName\": \"Trace Kerluke\",\n                \"billToFirstName\": \"German\",\n                \"billToLastName\": \"Terry\",\n                \"billToSuffix\": \"DVM\",\n                \"billToCompany\": \"Jacobson - Dibbert\",\n                \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n                \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n                \"billToAddressLine1\": \"793 Velda Motorway\",\n                \"billToAddressLine2\": \"Suite 672\",\n                \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n                \"billToCity\": \"East Orlando\",\n                \"billToState\": \"RI\",\n                \"billToStateFullName\": \"California\",\n                \"billToPostalCode\": \"24889-2649\",\n                \"billToPostalCodeExt\": \"autem\",\n                \"billToCounty\": \"Borders\",\n                \"billToCountry\": \"Macao\",\n                \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n                \"billToDaytimePhone\": \"782.805.4796\",\n                \"billToNightPhone\": \"1-799-763-1949 x18340\",\n                \"updateDateUtc\": \"1753-01-01T00:00:00\",\n                \"enterBy\": \"\",\n                \"updateBy\": \"\"\n            },\n            \"invoiceHeaderAttributes\": {\n                \"rowNum\": 102,\n                \"enterDateUtc\": \"2021-09-06T11:13:58.47\",\n                \"digitBridgeGuid\": \"76fd877f-a173-43a2-ba00-b443f8a23c87\",\n                \"invoiceUuid\": \"ed41b201-2978-4a4a-8fd5-3d139eeae179\",\n                \"fields\": {\n                    \"schema\": {},\n                    \"values\": {\n                        \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                        \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                        \"ClassInt\": 94,\n                        \"ClassDecimal\": 323.218\n                    }\n                }\n            },\n            \"invoiceItems\": [\n                {\n                    \"rowNum\": 58,\n                    \"enterDateUtc\": \"2021-09-06T11:13:58.51\",\n                    \"digitBridgeGuid\": \"afb29821-ce07-4068-af18-c0625aad2753\",\n                    \"invoiceItemsUuid\": \"466cc6b9-4be5-4ae7-9884-45bf499e428a\",\n                    \"invoiceUuid\": \"ed41b201-2978-4a4a-8fd5-3d139eeae179\",\n                    \"seq\": 1,\n                    \"invoiceItemType\": 7,\n                    \"invoiceItemStatus\": 9,\n                    \"itemDate\": \"2021-08-31T00:00:00\",\n                    \"itemTime\": \"2021-09-06T22:08:21.3954802+00:00\",\n                    \"shipDate\": \"2021-08-31T00:00:00\",\n                    \"etaArrivalDate\": \"2021-08-31T00:00:00\",\n                    \"sku\": \"Bacon\",\n                    \"productUuid\": \"6d9e1287-1e13-43cb-81b0-88e8ea96ecd5\",\n                    \"inventoryUuid\": \"\",\n                    \"warehouseUuid\": \"\",\n                    \"warehouseCode\": \"\",\n                    \"lotNum\": \"\",\n                    \"description\": \"Rustic Frozen Gloves\",\n                    \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                    \"currency\": \"\",\n                    \"uom\": \"\",\n                    \"packType\": \"EA\",\n                    \"packQty\": 224.93,\n                    \"orderPack\": 721.74,\n                    \"shipPack\": 989.06,\n                    \"cancelledPack\": 91.35,\n                    \"openPack\": 25.36,\n                    \"orderQty\": 48.23,\n                    \"shipQty\": 458.74,\n                    \"cancelledQty\": 643.43,\n                    \"openQty\": 616.55,\n                    \"priceRule\": \"3\",\n                    \"price\": 639.66,\n                    \"discountRate\": 0.57,\n                    \"discountAmount\": 205.52,\n                    \"discountPrice\": 632.3,\n                    \"extAmount\": 286.53,\n                    \"taxableAmount\": 255.8,\n                    \"nonTaxableAmount\": 969.8,\n                    \"taxRate\": 0.41,\n                    \"taxAmount\": 296.35,\n                    \"shippingAmount\": 819.21,\n                    \"shippingTaxAmount\": 855.43,\n                    \"miscAmount\": 946.7,\n                    \"miscTaxAmount\": 609.34,\n                    \"chargeAndAllowanceAmount\": 950.83,\n                    \"itemTotalAmount\": 699.17,\n                    \"orderAmount\": 811.17,\n                    \"cancelledAmount\": 913.69,\n                    \"openAmount\": 525.13,\n                    \"stockable\": true,\n                    \"isAr\": false,\n                    \"taxable\": true,\n                    \"costable\": false,\n                    \"isProfit\": false,\n                    \"unitCost\": 175.35,\n                    \"avgCost\": 929.95,\n                    \"lotCost\": 243.33,\n                    \"lotInDate\": \"2021-08-31T00:00:00\",\n                    \"lotExpDate\": \"2021-08-31T00:00:00\",\n                    \"updateDateUtc\": \"2021-09-06T00:00:00\",\n                    \"enterBy\": \"\",\n                    \"updateBy\": \"\",\n                    \"invoiceItemsAttributes\": {\n                        \"rowNum\": 42,\n                        \"enterDateUtc\": \"2021-09-06T11:13:58.547\",\n                        \"digitBridgeGuid\": \"f93460f5-f2f3-447c-af0d-35a5ae82f2e3\",\n                        \"invoiceItemsUuid\": \"466cc6b9-4be5-4ae7-9884-45bf499e428a\",\n                        \"invoiceUuid\": \"ed41b201-2978-4a4a-8fd5-3d139eeae179\",\n                        \"fields\": {\n                            \"schema\": {},\n                            \"values\": {\n                                \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                                \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                                \"ClassInt\": 93,\n                                \"ClassDecimal\": 446.4218\n                            }\n                        }\n                    }\n                }\n            ]\n        }\n    ],\n    \"$skip\": 0,\n    \"$count\": false,\n    \"$loadAll\": false,\n    \"success\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "api discard--Delete by invoice number",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksInvoices/:invoiceNumber?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksInvoices",
+								":invoiceNumber"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "invoiceNumber",
+									"value": "{{InvoiceNumber}}",
+									"description": "(Required) "
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete one invoice",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "masterAccountNum",
+										"value": "{{masterAccountNum}}",
+										"type": "text"
+									},
+									{
+										"key": "profileNum",
+										"value": "{{profileNum}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/quickBooksInvoices/:invoiceNumber?code={{code}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"quickBooksInvoices",
+										":invoiceNumber"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"description": "(Required) Azure Function App key"
+										}
+									],
+									"variable": [
+										{
+											"key": "invoiceNumber",
+											"value": "{{InvoiceNumber}}",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Void by invoice number",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksInvoices/:invoiceNumber?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksInvoices",
+								":invoiceNumber"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "invoiceNumber",
+									"value": "{{InvoiceNumber}}",
+									"description": "(Required) "
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Void one invoice",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "masterAccountNum",
+										"value": "{{masterAccountNum}}",
+										"type": "text"
+									},
+									{
+										"key": "profileNum",
+										"value": "{{profileNum}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/quickBooksInvoices/:invoiceNumber?code={{code}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"quickBooksInvoices",
+										":invoiceNumber"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"description": "(Required) Azure Function App key"
+										}
+									],
+									"variable": [
+										{
+											"key": "invoiceNumber",
+											"value": "{{InvoiceNumber}}",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"if (pm.response.headers.get('Content-Type') == 'application/json; charset=utf-8')",
+							"    pm.test(\"Response Success Status\", function () {",
+							"        pm.response.to.have.jsonBody('success', true)",
+							"    });",
+							"else",
+							"    pm.test(\"Content-Type is Csv File\", function () {",
+							"        pm.response.to.have.header(\"Content-Type\", \"text/csv\");",
+							"    });",
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Qbo payment",
+			"item": [
+				{
+					"name": "Export payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksPayments/:invoiceNumber/:transNum?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksPayments",
+								":invoiceNumber",
+								":transNum"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "invoiceNumber",
+									"value": "{{InvoiceNumber}}"
+								},
+								{
+									"key": "transNum",
+									"value": "{{TransNum}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Export payment",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "masterAccountNum",
+										"value": "{{masterAccountNum}}",
+										"type": "text"
+									},
+									{
+										"key": "profileNum",
+										"value": "{{profileNum}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/quickBooksPayments/:invoiceNumber?code={{code}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"quickBooksPayments",
+										":invoiceNumber"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"description": "(Required) Azure Function App key"
+										}
+									],
+									"variable": [
+										{
+											"key": "invoiceNumber",
+											"value": null
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Get payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksPayments/:invoiceNumber/:transNum?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksPayments",
+								":invoiceNumber",
+								":transNum"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "invoiceNumber",
+									"value": "{{InvoiceNumber}}"
+								},
+								{
+									"key": "transNum",
+									"value": "{{TransNum}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get payment",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "masterAccountNum",
+										"value": "{{masterAccountNum}}",
+										"type": "text"
+									},
+									{
+										"key": "profileNum",
+										"value": "{{profileNum}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/quickBooksPayments/:invoiceNumber?code={{code}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"quickBooksPayments",
+										":invoiceNumber"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"description": "(Required) Azure Function App key"
+										}
+									],
+									"variable": [
+										{
+											"key": "invoiceNumber",
+											"value": null
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "delete payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksPayments/:invoiceNumber/:transNum?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksPayments",
+								":invoiceNumber",
+								":transNum"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "invoiceNumber",
+									"value": "{{InvoiceNumber}}"
+								},
+								{
+									"key": "transNum",
+									"value": "{{TransNum}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "delete payment",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "masterAccountNum",
+										"value": "{{masterAccountNum}}",
+										"type": "text"
+									},
+									{
+										"key": "profileNum",
+										"value": "{{profileNum}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/quickBooksPayments/:invoiceNumber?code={{code}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"quickBooksPayments",
+										":invoiceNumber"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"description": "(Required) Azure Function App key"
+										}
+									],
+									"variable": [
+										{
+											"key": "invoiceNumber",
+											"value": null
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "api discard--void payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksPayments/:invoiceNumber/:transNum?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksPayments",
+								":invoiceNumber",
+								":transNum"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							],
+							"variable": [
+								{
+									"key": "invoiceNumber",
+									"value": "{{InvoiceNumber}}"
+								},
+								{
+									"key": "transNum",
+									"value": "{{TransNum}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "void payment",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "masterAccountNum",
+										"value": "{{masterAccountNum}}",
+										"type": "text"
+									},
+									{
+										"key": "profileNum",
+										"value": "{{profileNum}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/quickBooksPayments/:invoiceNumber?code={{code}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"quickBooksPayments",
+										":invoiceNumber"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"description": "(Required) Azure Function App key"
+										}
+									],
+									"variable": [
+										{
+											"key": "invoiceNumber",
+											"value": null
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"if (pm.response.headers.get('Content-Type') == 'application/json; charset=utf-8')",
+							"    pm.test(\"Response Success Status\", function () {",
+							"        pm.response.to.have.jsonBody('success', true)",
+							"    });",
+							"else",
+							"    pm.test(\"Content-Type is Csv File\", function () {",
+							"        pm.response.to.have.header(\"Content-Type\", \"text/csv\");",
+							"    });",
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "UserCredential",
+			"item": [
+				{
+					"name": "Get QuickBooks OAuthUrl",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/QboUserCredential/oauthUrl?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"QboUserCredential",
+								"oauthUrl"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get QuickBooks TokenStaus",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/QboUserCredential/tokenStatus?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"QboUserCredential",
+								"tokenStatus"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disconnect QuickBooks User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/QboUserCredential/disconnectUser?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"QboUserCredential",
+								"disconnectUser"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IntegrationSetting",
+			"item": [
+				{
+					"name": "Get Integration Setting",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/QuickBooksIntegrationSetting?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"QuickBooksIntegrationSetting"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch Integration Setting",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"settingInfo\": {\n        \"qboChnlAccSettings\": [\n            {\n                \"channelAccountName\": \"Amazon\",\n                \"channelAccountNum\": 1001,\n                \"channelName\": \"Amazon\",\n                \"channelNum\": 1001,\n                \"channelQboCustomerName\": \"Cool Cars\",\n                \"channelQboCustomerId\": 3,\n                \"channelQboFeeAcountName\": \"\",\n                \"channelQboFeeAcountId\": 3,\n                \"channelQboBankAcountName\": \"\",\n                \"channelQboBankAcountId\": 4,\n                \"enterDate\": \"2021-10-06T02:04:30.588Z\",\n                \"lastUpdate\": \"2021-10-06T02:04:30.588Z\",\n                \"dailySummaryLastExport\": \"2021-10-06T02:04:30.588Z\"\n            }\n        ],\n        \"exportByOrderStatus\": 0,\n        \"exportOrderAs\": 0,\n        \"exportOrderDateType\": 0,\n        \"exportOrderFromDate\": \"2021-10-06T02:04:30.588Z\",\n        \"exportOrderToDate\": \"2021-10-06T02:04:30.588Z\",\n        \"dailySummaryOrderDateType\": 0,\n        \"qboCustomerCreateRule\": 0,\n        \"qboItemCreateRule\": 0,\n        \"salesTaxExportRule\": 0,\n        \"qboEndCustomerPoNumCustFieldName\": \"\",\n        \"qboEndCustomerPoNumCustFieldId\": 0,\n        \"qboChnlOrderIdCustFieldName\": \"\",\n        \"qboChnlOrderIdCustFieldId\": \"\",\n        \"qbo2ndChnlOrderIdCustFieldName\": \"\",\n        \"qbo2ndChnlOrderIdCustFieldId\": \"\",\n        \"qboDefaultItemName\": \"\",\n        \"qboDefaultItemId\": \"\",\n        \"qboSalesTaxItemName\": \"\",\n        \"qboSalesTaxItemId\": \"\",\n        \"qboHandlingServiceItemName\": \"\",\n        \"qboHandlingServiceItemId\": 0,\n        \"qboDiscountItemName\": \"\",\n        \"qboDiscountItemId\": \"\",\n        \"qboShippingItemName\": \"\",\n        \"qboShippingItemId\": \"\",\n        \"qboMiscItemName\": \"\",\n        \"qboMiscItemId\": \"\",\n        \"qboChargeAndAllowanceItemName\": \"\",\n        \"qboChargeAndAllowanceItemId\": \"\",\n        \"qboHandlingServiceAccName\": \"\",\n        \"qboHandlingServiceAccId\": 0,\n        \"qboSalesTaxAccName\": \"\",\n        \"qboSalesTaxAccId\": 0,\n        \"qboDiscountAccName\": \"\",\n        \"qboDiscountAccId\": 0,\n        \"qboItemAssetAccName\": \"\",\n        \"qboItemAssetAccId\": 0,\n        \"qboItemExpenseAccName\": \"\",\n        \"qboItemExpenseAccId\": 0,\n        \"qboItemIncomeAccName\": \"\",\n        \"qboItemIncomeAccId\": 0,\n        \"qboPostageRule\": 0,\n        \"qboInvoiceImportRule\": 0,\n        \"qboSalesOrderImportRule\": 0,\n        \"qboSettingStatus\": 0,\n        \"qboImportOrderAfterUpdateDate\": \"2021-10-06T02:04:30.588Z\",\n        \"enterDate\": \"2021-10-06T02:04:30.588Z\",\n        \"lastUpdate\": \"2021-10-06T02:04:30.588Z\",\n        \"qboInvoiceNumberFieldID\": \"\",\n        \"qboTaxExportRule\": 0\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/QuickBooksIntegrationSetting?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"QuickBooksIntegrationSetting"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Qbo ExportLogs",
+			"item": [
+				{
+					"name": "Load Qbo ExportLog List data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"$top\": {{top}},\n    \"$skip\": 0,\n    \"$count\": true,\n    \"$sortBy\": \"\",\n    \"$loadAll\": false,\n    \"$filter\": {\n        \"customerCode\": \"\",\n        \"customerName\": \"\",\n        \"area\": \"\",\n        \"region\": \"\",\n        \"shippingCarrier\": \"\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/quickBooksExportLogs/find?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"quickBooksExportLogs",
+								"find"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"description": "(Required) Azure Function App key"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

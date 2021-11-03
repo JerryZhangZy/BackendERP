@@ -1,10 +1,16 @@
 ﻿CREATE TABLE [dbo].[ApInvoiceTransaction]
 (
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL, --(Readonly) Record Number. Required, <br> Display: false, Editable: false.
-    [TransUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for ApInvoice Transaction
+    [DatabaseNum] INT NOT NULL, --(Readonly) Database Number. <br> Display: false, Editable: false.
+	[MasterAccountNum] INT NOT NULL, --(Readonly) Login user account. <br> Display: false, Editable: false.
+	[ProfileNum] INT NOT NULL, --(Readonly) Login user profile. <br> Display: false, Editable: false.
+
+
+	[TransUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for ApInvoice Transaction
     [TransNum] INT NOT NULL DEFAULT 1, --Transaction number
 
     [ApInvoiceUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for ApInvoice
+	[ApInvoiceNum] VARCHAR(50) NOT NULL, --Unique in this database, ProfileNum + ApInvoiceNum is DigitBridgeApInvoiceNum, which is global unique
     [TransType] INT NULL DEFAULT 0, --Transaction type
     [TransStatus] INT NULL DEFAULT 0, --Transaction status
 	[TransDate] DATE NOT NULL, --Transaction date
@@ -14,6 +20,7 @@
 
 	[PaidBy] INT NOT NULL DEFAULT 1, --Payment method number
 	[BankAccountUuid] VARCHAR(50) NULL, --Global Unique Guid for Bank account
+	[BankAccountCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable payment Bank account code. <br> Title: Bank, Display: true, Editable: true
 	[CheckNum] VARCHAR(100) NULL, --Check number
 	[AuthCode] VARCHAR(100) NULL, --Auth code from merchant bank
 
@@ -41,7 +48,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_ApInvoiceTransaction_TransUuid] ON [dbo].[A
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ApInvoiceTransaction]') AND name = N'UI_ApInvoiceTransaction_ApInvoiceNum')
-CREATE NONCLUSTERED INDEX [IX_ApInvoiceTransaction_ApInvoiceUuid] ON [dbo].[ApInvoiceTransaction]
+CREATE NONCLUSTERED INDEX [FK_ApInvoiceTransaction_ApInvoiceUuid] ON [dbo].[ApInvoiceTransaction]
 (
 	[ApInvoiceUuid] ASC
 ) ON [PRIMARY]

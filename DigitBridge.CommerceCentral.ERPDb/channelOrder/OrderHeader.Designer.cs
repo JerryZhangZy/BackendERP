@@ -343,6 +343,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CentralOrderUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _centralOrderUuid;
 
+        [Column("TotalDueSellerAmount",SqlDbType.Money,NotNull=true,IsDefault=true)]
+        private decimal _totalDueSellerAmount;
+
         #endregion Fields - Generated 
 
         #region Properties - Generated 
@@ -2303,6 +2306,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+        public virtual decimal TotalDueSellerAmount
+        {
+            get
+            {
+				return _totalDueSellerAmount; 
+            }
+            set
+            {
+				_totalDueSellerAmount = value; 
+				OnPropertyChanged("TotalDueSellerAmount", value);
+            }
+        }
+
 
 
         #endregion Properties - Generated 
@@ -2428,6 +2447,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_dCAssignmentStatus = AllowNull ? (int?)null : default(int); 
 			_dCAssignmentDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_centralOrderUuid = String.Empty; 
+			_totalDueSellerAmount = default(decimal); 
             ClearChildren();
             return this;
         }

@@ -21,6 +21,7 @@
 
     [CentralOrderUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder
     [CentralOrderHeaderMarketplaceExtUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder line
+	[TotalMarketplaceFee]	money NOT NULL DEFAULT 0, 
  CONSTRAINT [PK_OrderHeaderMarketplaceExt] PRIMARY KEY CLUSTERED 
 (
 	[DatabaseNum] ASC,

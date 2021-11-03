@@ -63,10 +63,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 MiscInvoiceNumber = header.MiscInvoiceNumber,
                 MiscInvoiceUuid = header.MiscInvoiceUuid,
-                Description = "Add misc payment trans for applying presales amount",
+                Description = "Add misc payment trans for applying prepayment amount",
 
                 TotalAmount = amount > header.Balance ? header.Balance : amount,
-                PaidBy = (int)PaidByEnum.PreSales,
+                PaidBy = (int)PaidByEnum.Prepayment,
                 CheckNum = invoiceUuid,
                 TransDate = DateTime.Now,
                 TransTime = DateTime.Now.TimeOfDay,
