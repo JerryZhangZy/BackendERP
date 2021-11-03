@@ -88,6 +88,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return true;
         }
+
+        /// <summary>
+        /// Get misc invoice payment with detail and miscinvoiceheader by miscInvoiceNumber
+        /// </summary>
+        /// <param name="miscInvoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task GetPaymentWithMiscInvoiceHeaderAsync(MiscPaymentPayload payload, string miscInvoiceNumber, int? transNum = null)
+        {
+            payload.Success = await LoadMiscInvoiceAsync(payload.MasterAccountNum, payload.ProfileNum, miscInvoiceNumber);
+            if (!payload.Success)
+            {
+                payload.Messages = this.Messages;
+                return;
+            }
+
+            payload.MiscTransactions = await GetDtoListAsync(payload.MasterAccountNum, payload.ProfileNum, miscInvoiceNumber, TransTypeEnum.Payment, transNum);
+            var miscInvoiceMapper = new MiscInvoiceDataDtoMapperDefault();
+            payload.MiscInvoiceDataDto = miscInvoiceMapper.WriteDto(Data.MiscInvoiceData, null);
+        }
     }
 }
 

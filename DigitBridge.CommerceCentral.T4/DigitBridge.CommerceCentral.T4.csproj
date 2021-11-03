@@ -136,6 +136,10 @@
       <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForVendor.ttinclude">
+      <LastGenOutput>SettingForVendor.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForEventERP.ttinclude">
       <LastGenOutput>SettingForEventERP.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -205,7 +209,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForCustomer.ttinclude">
-      <LastGenOutput>SettingForCustomer.cs</LastGenOutput>
+      <LastGenOutput>SettingForVendor.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="T4\SettingForShipment.ttinclude">
@@ -365,26 +369,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="T4\GenerateJsDocRepositoryDto.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateJsDocRepositoryDto.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateRepositoryDto.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateRepositoryDto.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateRepositoryHelper.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateRepositoryHelper.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateRepositoryPartialClass.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateRepositoryPartialClass.ttinclude</DependentUpon>
-    </Compile>
     <Compile Update="T4\GenerateStructureDto - Copy.cs">
       <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -394,41 +378,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateJsDocPayload.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateStructureDtoTest.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructureDtoTest.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\GenerateStructureTest.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>GenerateStructureTest.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\JsRepositoryModel.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>JsRepositoryModel.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\JsRepositoryModelInitData.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>JsRepositoryModelInitData.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\JsStoreIndex.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>JsStoreIndex.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\JsRepositoryGrid.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>JsRepositoryGrid.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\JsScreenUi.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>JsScreenUi.ttinclude</DependentUpon>
     </Compile>
     <Compile Update="T4\JsStructureModel - Copy.cs">
       <DependentUpon>JsStructureModel.cs</DependentUpon>

@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "MiscInvoiceUuids", val => MiscInvoiceUuids = val.Split(",").ToList() }
+                { "MiscInvoiceNumbers", val => MiscInvoiceNumbers = val.Split(",").ToList() }
             };
         }
 
@@ -43,10 +43,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// (Request Parameter) Array of uuid to load multiple MiscInvoice dto data.
         /// </summary>
         [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple MiscInvoice dto data.")]
-        public IList<string> MiscInvoiceUuids { get; set; } = new List<string>();
+        public IList<string> MiscInvoiceNumbers { get; set; } = new List<string>();
         [JsonIgnore] 
-        public virtual bool HasMiscInvoiceUuids => MiscInvoiceUuids != null && MiscInvoiceUuids.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasMiscInvoiceUuids;
+        public virtual bool HasMiscInvoiceNumbers => MiscInvoiceNumbers != null && MiscInvoiceNumbers.Count > 0;
+        public bool ShouldSerializeSalesOrderNumbers() => HasMiscInvoiceNumbers;
 
         /// <summary>
         /// (Response Data) Array of MiscInvoice entity object which load by uuid array.
@@ -91,6 +91,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeMiscInvoiceListCount() => HasMiscInvoiceListCount;
 
         #endregion list service
+
+        #region summary service 
+
+        [OpenApiPropertyDescription("(Response Data) summary result which load filter")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder MiscInvoiceSummary { get; set; }
+        [JsonIgnore] public virtual bool HasMiscInvoiceSummary => MiscInvoiceSummary != null;
+        public bool ShouldSerializeMiscInvoiceSummary() => HasMiscInvoiceSummary;
+        #endregion
     }
 }
 

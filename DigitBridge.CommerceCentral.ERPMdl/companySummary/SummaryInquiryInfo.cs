@@ -100,6 +100,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public decimal InvoiceAmount { get; set; }
 
+        public int MiscInvoiceCount { get; set; }
+
+        public decimal MiscInvoiceAmount { get; set; }
+
         public int InvoicePaymentCount { get; set; }
 
         public decimal InvoicePaymentAmount { get; set; }

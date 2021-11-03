@@ -320,10 +320,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadAdd))]
         public static async Task<JsonNetResponse<SalesOrderPayload>> AddPrepayment(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/Prepayment/{orderNumber}/{amount}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/prepayment/{orderNumber}/{amount}")] HttpRequest req,
            string orderNumber, decimal amount)
         {
-            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var payload = await req.GetParameters<SalesOrderPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new SalesOrderService(dataBaseFactory);
             payload.Success = await srv.AddPrepaymentAsync(payload, orderNumber, amount);

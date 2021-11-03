@@ -135,13 +135,31 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class MiscInvoiceFilter
     {
-        //public string City { get; set; }
+        public string MiscInvoiceNumber { get; set; }
+
+        public string MiscInvoiceType { get; set; }
+
+        public string MiscInvoiceStatus { get; set; }
+
+        public DateTime MiscInvoiceDateFrom { get; set; }
+
+        public DateTime MiscInvoiceDateTo { get; set; }
+
+        public string CustomerCode { get; set; }
+
+        public string CustomerName { get; set; }
 
         public static Faker<MiscInvoiceFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<MiscInvoiceFilter>()
-                //.RuleFor(u => u.City, f => "")
+                .RuleFor(u => u.MiscInvoiceNumber, f => string.Empty)
+                .RuleFor(u => u.MiscInvoiceType, f => string.Empty)
+                .RuleFor(u => u.MiscInvoiceStatus, f => string.Empty)
+                .RuleFor(u => u.MiscInvoiceDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
+                .RuleFor(u => u.MiscInvoiceDateTo, f => f.Date.Past(0).Date.Date)
+                .RuleFor(u => u.CustomerCode, f => string.Empty)
+                .RuleFor(u => u.CustomerName, f => string.Empty)
                 ;
             #endregion faker data rules
         }
