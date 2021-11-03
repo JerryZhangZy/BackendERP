@@ -146,7 +146,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 sum.MiscInvoiceDate = now.Date;
                 sum.MiscInvoiceTime = now.TimeOfDay;
             }
-            sum.UpdateDateUtc = now;
+            sum.UpdateDateUtc = DateTime.UtcNow;
 
             if (processingMode == ProcessingMode.Add)
             {
