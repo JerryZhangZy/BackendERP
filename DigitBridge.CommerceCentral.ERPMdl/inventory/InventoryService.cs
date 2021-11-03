@@ -158,6 +158,35 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
+        /// Add new data from Dto object
+        /// </summary>
+        public virtual async Task<bool> AddInventoryAsync(InventoryDataDto dto)
+        {
+            if (dto is null)
+                return false;
+            // set Add mode and clear data
+            Add();
+            
+            
+            if (!(await ValidateAsync(dto)))
+                return false;
+
+            // load data from dto
+            FromDto(dto);
+
+            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
+            Data.AddIgnoreSave(InventoryData.ProductExtTable);
+            Data.AddIgnoreSave(InventoryData.ProductExtAttributesTable);
+            Data.AddIgnoreSave(InventoryData.InventoryAttributesTable);
+            // validate data for Add processing
+            if (!(await ValidateAsync()))
+                return false;
+
+            return await SaveDataAsync();
+        }
+
+
+        /// <summary>
         /// Update data from Dto object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
