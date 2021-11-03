@@ -12,12 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using UneedgoHelper.DotNet.Common;
 using Task = System.Threading.Tasks.Task;
-using JsonIgnore = Newtonsoft.Json.JsonIgnoreAttribute;
+//using JsonIgnore = Newtonsoft.Json.JsonIgnoreAttribute;
 
 namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
 {
