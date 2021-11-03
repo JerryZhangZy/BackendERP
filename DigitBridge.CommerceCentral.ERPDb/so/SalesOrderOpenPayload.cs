@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Request and Response payload object
     /// </summary>
     [Serializable()]
-    public class SalesOrderOpenPayload : PayloadBase
+    public class SalesOrderOpenListPayload : PayloadBase
     {
         #region list service
 

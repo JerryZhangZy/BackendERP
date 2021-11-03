@@ -80,7 +80,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var qry = new SalesOrderOpenQuery();
             var srv = new SalesOrderOpenList(dataBaseFactory, qry);
 
-            var payload = new SalesOrderOpenPayload()
+            var payload = new SalesOrderOpenListPayload()
             {
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
@@ -113,7 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var qry = new SalesOrderOpenQuery();
             var srv = new SalesOrderOpenList(dataBaseFactory, qry);
 
-            var payload = new SalesOrderOpenPayload()
+            var payload = new SalesOrderOpenListPayload()
             {
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,

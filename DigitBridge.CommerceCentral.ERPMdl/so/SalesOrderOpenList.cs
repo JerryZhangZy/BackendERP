@@ -28,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
         }
 
-        #region select TODO
+        #region select TODO pick necessary table and columns.
         protected string GetHeader_Columns()
         {
             var columns = $@"
@@ -115,10 +115,10 @@ SELECT
 
         #endregion override methods 
 
-        public virtual async Task GetSalesOrdersOpenListAsync(SalesOrderOpenPayload payload)
+        public virtual async Task GetSalesOrdersOpenListAsync(SalesOrderOpenListPayload payload)
         {
             if (payload == null)
-                payload = new SalesOrderOpenPayload();
+                payload = new SalesOrderOpenListPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
