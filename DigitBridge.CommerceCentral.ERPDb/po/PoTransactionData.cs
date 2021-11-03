@@ -15,6 +15,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// Load original invoicedata.
         /// </summary>
         public PurchaseOrderData PurchaseOrderData;
+
+        public bool FirstAPReceiveStatus { get; set; } = false;
+        
         public async Task<List<PoTransactionData>> GetDataListAsync(string poNum, int masterAccountNum, int profileNum,
             int? transNum = null)
         {
