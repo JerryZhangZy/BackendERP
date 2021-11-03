@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -8,10 +5,18 @@ using DigitBridge.CommerceCentral.ERPEventSDK;
 using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
 using DigitBridge.CommerceCentral.ERPMdl;
 using DigitBridge.Log;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPBroker
 {
@@ -27,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPBroker
             try
             {
                 ERPQueueMessage message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-                var payload = new SalesOrderPayload()
+                var payload = new SalesOrderOpenPayload()
                 {
                     MasterAccountNum = message.MasterAccountNum,
                     ProfileNum = message.ProfileNum
@@ -57,6 +62,26 @@ namespace DigitBridge.CommerceCentral.ERPBroker
             {
                 await salesOrderClient.SendActionResultAsync(eventDto);
             }
+        }
+
+        /// <summary>
+        /// Load sales order list
+        /// </summary>
+        [FunctionName(nameof(SalesOrdersOpenList))]
+        [OpenApiOperation(operationId: "SalesOrdersOpenList", tags: new[] { "SalesOrders" }, Summary = "Load open sales order list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderOpenPayload), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderOpenPayload))]
+        public static async Task<JsonNetResponse<SalesOrderOpenPayload>> SalesOrdersOpenList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/find")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderOpenPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderOpenList(dataBaseFactory, new SalesOrderOpenQuery());
+            await srv.GetSalesOrdersOpenListAsync(payload);
+            return new JsonNetResponse<SalesOrderOpenPayload>(payload);
         }
     }
 }
