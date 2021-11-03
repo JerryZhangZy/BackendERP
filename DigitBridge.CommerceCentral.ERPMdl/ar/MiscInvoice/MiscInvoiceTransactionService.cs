@@ -240,27 +240,40 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
-        /// <summary>
-        ///  get data by number
-        /// </summary>
-        /// <param name="payload"></param>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> GetDataAsync(MiscInvoiceTransactionPayload payload, string orderNumber)
+        #region get by ap invoice number 
+
+        protected async Task<bool> GetByNumberAsync(MiscInvoiceTransactionPayload payload, string apInvoiceNumber, TransTypeEnum transType, int transNum)
         {
-            return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
+            return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, apInvoiceNumber, (int)transType, transNum);
+        }
+        protected bool GetByNumber(MiscInvoiceTransactionPayload payload, string apInvoiceNumber, TransTypeEnum transType, int transNum)
+        {
+            return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, apInvoiceNumber, (int)transType, transNum);
         }
 
-        /// <summary>
-        /// get data by number
-        /// </summary>
-        /// <param name="payload"></param>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual bool GetData(MiscInvoiceTransactionPayload payload, string orderNumber)
+        protected virtual async Task<List<MiscInvoiceTransaction>> GetDataListAsync(int masterAccountNum, int profileNum, string apInvoiceNumber, TransTypeEnum transType, int? transNum = null)
         {
-            return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
+            if (string.IsNullOrEmpty(apInvoiceNumber)) return null;
+            //LoadApInvoice(invoiceNumber, profileNum, masterAccountNum);
+            return await _data.GetListByNumberAsync(masterAccountNum, profileNum, apInvoiceNumber, (int)transType, transNum);
         }
+        protected virtual async Task<List<MiscInvoiceTransactionDataDto>> GetDtoListAsync(int masterAccountNum, int profileNum, string invoiceNumber, TransTypeEnum transType, int? transNum = null)
+        {
+            if (string.IsNullOrEmpty(invoiceNumber)) return null;
+            var dataList = await GetDataListAsync(masterAccountNum, profileNum, invoiceNumber, transType, transNum);
+            if (dataList == null || dataList.Count == 0) return null;
+            var dtoList = new List<MiscInvoiceTransactionDataDto>();
+            foreach (var dataItem in dataList)
+            {
+                var data = new MiscInvoiceTransactionData() { MiscInvoiceTransaction = dataItem };
+                dtoList.Add(this.DtoMapper.WriteDto(data, null));
+            }
+            return dtoList;
+        }
+
+        #endregion
+
+        #region delete by number
 
         /// <summary>
         /// Delete data by number
@@ -295,9 +308,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
+        #endregion
 
-
-
+        #region Load misc invoice
         /// <summary>
         /// Load MiscInvoice data.
         /// </summary>
@@ -343,6 +356,61 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return success;
         }
+
+        /// <summary>
+        /// Load MiscInvoice data.
+        /// </summary>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        /// <param name="miscInvoiceNumber"></param>
+        /// <returns></returns>
+        protected bool LoadMiscInvoice(int masterAccountNum, int profileNum, string miscInvoiceNumber)
+        {
+            // load miscinvoice data
+            var miscInvoiceData = new MiscInvoiceData(dbFactory);
+            var success = miscInvoiceData.GetByNumber(masterAccountNum, profileNum, miscInvoiceNumber);
+            if (!success)
+            {
+                AddError($"Data not found for miscInvoiceNumber:{miscInvoiceNumber}");
+                return success;
+            }
+
+            if (Data == null)
+                NewData();
+            Data.MiscInvoiceData = miscInvoiceData;
+            Data.MiscInvoiceTransaction.MiscInvoiceUuid = miscInvoiceData.MiscInvoiceHeader.MiscInvoiceUuid;
+
+            return success;
+        }
+
+        /// <summary>
+        /// Load MiscInvoice data.
+        /// </summary>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        /// <param name="miscInvoiceNumber"></param>
+        /// <returns></returns>
+        protected async Task<bool> LoadMiscInvoiceAsync(int masterAccountNum, int profileNum, string miscInvoiceNumber)
+        {
+            // load miscinvoice data
+            var miscInvoiceData = new MiscInvoiceData(dbFactory);
+            var success = await miscInvoiceData.GetByNumberAsync(masterAccountNum, profileNum, miscInvoiceNumber);
+            if (!success)
+            {
+                AddError($"Data not found for miscInvoiceNumber:{miscInvoiceNumber}");
+                return success;
+            }
+
+            if (Data == null)
+                NewData();
+            Data.MiscInvoiceData = miscInvoiceData;
+            Data.MiscInvoiceTransaction.MiscInvoiceUuid = miscInvoiceData.MiscInvoiceHeader.MiscInvoiceUuid;
+
+            return success;
+        }
+        #endregion
+
+
     }
 }
 

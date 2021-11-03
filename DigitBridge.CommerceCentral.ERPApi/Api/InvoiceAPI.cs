@@ -266,13 +266,15 @@ namespace DigitBridge.CommerceCentral.ERPApi
             [HttpTrigger(AuthorizationLevel.Function, "POST"
             , Route = "invoices/createinvoicebyordershipmentuuid")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
-            var payload = await req.GetParameters<InvoicePayload>();
+            var payload = await req.GetParameters<InvoicePayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InvoiceManager(dbFactory);
 
-            string bodyString = await req.GetBodyStringAsync();
-            var crtPayLoad = bodyString.StringToObject<InvoicePayloadCreateByOrderShipmentUuid>();
-            (bool ret, string invoiceUuid) = await svc.CreateInvoiceByOrderShipmentIdAsync(crtPayLoad.OrderShipmentUuid);
+            var crtPayLoad = new InvoicePayloadCreateByOrderShipmentUuid()
+            {
+                OrderShipmentUuid = payload.OrderShipmentUuid
+            };
+            (bool ret, string invoiceUuid) = await svc.CreateInvoiceByOrderShipmentIdAsync(payload.OrderShipmentUuid);
             if (ret)
             {
                 crtPayLoad.Success = true;

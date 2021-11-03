@@ -102,6 +102,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasInvoiceSummary => InvoiceSummary != null;
         public bool ShouldSerializeInvoiceSummary() => HasInvoiceSummary;
         #endregion
+
+        #region MyRegion
+        public string OrderShipmentUuid { get; set; }
+        #endregion
     }
 }
 

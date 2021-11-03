@@ -342,6 +342,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (processingMode == ProcessingMode.Add)
             {
                 //for Add mode, always reset uuid
+                if(!dto.PoTransaction.HasPoNum)
+                {
+                    isValid = false;
+                    AddError($"PoTransaction.PoNum required");
+                }
+
+                if (dto.PoTransactionItems.Count(r => !r.HasPoItemUuid) > 0)
+                {
+                    isValid = false;
+                    AddError($"PoTransactionItems.PoItemUuid required");
+                }
                 dto.PoTransaction.TransUuid = Guid.NewGuid().ToString();
                 if (dto.PoTransactionItems != null && dto.PoTransactionItems.Count > 0)
                 {
@@ -393,6 +404,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
+                if(!dto.PoTransaction.HasPoNum)
+                {
+                    isValid = false;
+                    AddError($"PoTransaction.PoNum required");
+                }
+
+                if (dto.PoTransactionItems.Count(r => !r.HasPoItemUuid) > 0)
+                {
+                    isValid = false;
+                    AddError($"PoTransactionItems.PoItemUuid required");
+                }
                 //for Add mode, always reset uuid
                 dto.PoTransaction.TransUuid = Guid.NewGuid().ToString();
                 if (dto.PoTransactionItems != null && dto.PoTransactionItems.Count > 0)

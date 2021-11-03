@@ -358,6 +358,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return true;
         }
+        public virtual async Task GetListByMiscInvoiceNumbersAsync(MiscInvoicePayload payload)
+        {
+            if (payload is null || !payload.HasMiscInvoiceNumbers)
+            {
+                AddError("InvoiceNumbers is required.");
+                payload.Messages = this.Messages;
+                payload.Success = false;
+            }
+            //var rowNums = await new InvoiceList(dbFactory).GetRowNumListAsync(payload.InvoiceNumbers, payload.MasterAccountNum, payload.ProfileNum);
+
+            var result = new List<MiscInvoiceDataDto>();
+            foreach (var miscInvoiceNumber in payload.MiscInvoiceNumbers)
+            {
+                if (!(await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, miscInvoiceNumber)))
+                    continue;
+                result.Add(this.ToDto());
+                this.DetachData(this.Data);
+            }
+            payload.MiscInvoices = result;
+        }
     }
 }
 

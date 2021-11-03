@@ -39,14 +39,14 @@
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorAddress]') AND name = N'UI_VendorAddress_AddressId')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_VendorAddress_AddressUuid] ON [dbo].[VendorAddress]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_VendorAddress_AddressUuid] ON [dbo].[VendorAddress]
 (
 	[AddressUuid] ASC
 ) ON [PRIMARY]
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorAddress]') AND name = N'UI_VendorAddress_VendorId_AddressCode')
-CREATE UNIQUE NONCLUSTERED INDEX [UI_VendorAddress_VendorUuid_AddressCode] ON [dbo].[VendorAddress]
+CREATE UNIQUE NONCLUSTERED INDEX [UK_VendorAddress_VendorUuid_AddressCode] ON [dbo].[VendorAddress]
 (
 	[VendorUuid] ASC,
 	[AddressCode] ASC
@@ -54,7 +54,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_VendorAddress_VendorUuid_AddressCode] ON [d
 GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[VendorAddress]') AND name = N'UI_VendorAddress_VendorId')
-CREATE NONCLUSTERED INDEX [UI_VendorAddress_VendorUuid] ON [dbo].[VendorAddress]
+CREATE NONCLUSTERED INDEX [UK_VendorAddress_VendorUuid] ON [dbo].[VendorAddress]
 (
 	[VendorUuid] ASC
 ) ON [PRIMARY]

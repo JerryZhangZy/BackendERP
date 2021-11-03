@@ -1,0 +1,63 @@
+{
+	"info": {
+		"_postman_id": "06095d42-d72a-420e-9821-81ac378a8db7",
+		"name": "Broker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "S/O",
+			"item": [
+				{
+					"name": "open list",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/file",
+								"type": "text"
+							},
+							{
+								"key": "x-functions-key",
+								"value": "qPFIt1dSCo46yCwCpm3N6sBBJsSTzsWOViwmKr4mqpHaGyBfyUfmuw==",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"$top\": 20,\n    \"$skip\": 0,\n    \"$count\": true,\n    \"$sortBy\": \"\",\n    \"$loadAll\": false,\n    \"$filter\": {\n        //\"salesOrderUuid\": \"15082ed6-b62f-4faf-9491-dc182d7bd4a9\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{Broker_Url}}/salesOrders/find?code={{Broker_Code}}",
+							"host": [
+								"{{Broker_Url}}"
+							],
+							"path": [
+								"salesOrders",
+								"find"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{Broker_Code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

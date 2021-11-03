@@ -70,9 +70,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "postman", "postman", "{86B5841E-0CF6-4131-BBA7-D7F59EECD98B}"
 	ProjectSection(SolutionItems) = preProject
 		payload\postman\Add data.postman_collection.json = payload\postman\Add data.postman_collection.json
+		payload\postman\Broker.postman_collection.json = payload\postman\Broker.postman_collection.json
 		payload\postman\DigiBridge ERP System.postman_collection.json = payload\postman\DigiBridge ERP System.postman_collection.json
 		payload\postman\DigitBridge ERP Event.postman_collection.json = payload\postman\DigitBridge ERP Event.postman_collection.json
 		payload\postman\Qbo.postman_collection.json = payload\postman\Qbo.postman_collection.json
+		payload\postman\WorkFlow.postman_collection.json = payload\postman\WorkFlow.postman_collection.json
 	EndProjectSection
 EndProject
 Global
