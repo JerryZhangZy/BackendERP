@@ -242,7 +242,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     var exist = OrderShipmentHelper.ExistMainTrackingNumber(data.OrderShipmentHeader.MainTrackingNumber, data.OrderShipmentHeader.MasterAccountNum, data.OrderShipmentHeader.ProfileNum);
                     if (exist)
                     {
-                        AddError($"Data existed for ShipmentID:{data.OrderShipmentHeader.ShipmentID}");
+                        AddError($"Data existed for ShipmentID:{data.OrderShipmentHeader.MainTrackingNumber}");
                         return false;
                     }
 
