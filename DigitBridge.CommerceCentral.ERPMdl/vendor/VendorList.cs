@@ -16,6 +16,8 @@ using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
 using Helper = DigitBridge.CommerceCentral.ERPDb.VendorHelper;
+using VdrHelper = DigitBridge.CommerceCentral.ERPDb.VendorAddressHelper;
+using VtrHelper = DigitBridge.CommerceCentral.ERPDb.VendorAttributesHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -173,6 +175,49 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
                 throw;
             }
             return rowNumList;
+        }
+
+        private string GetExportSql()
+        {
+            var sql = $@"
+select JSON_QUERY((SELECT * FROM Vendor i where i.RowNum={Helper.TableAllies}.RowNum FOR JSON PATH,WITHOUT_ARRAY_WRAPPER)) AS Vendor,
+(select {VdrHelper.TableAllies}.* from VendorAddress {VdrHelper.TableAllies} where {Helper.TableAllies}.VendorUuid={VdrHelper.TableAllies}.VendorUuid FOR JSON PATH ) as VendorAddress,
+JSON_QUERY((select * from VendorAttributes {VtrHelper.TableAllies} where {Helper.TableAllies}.VendorUuid={VtrHelper.TableAllies}.VendorUuid FOR JSON PATH ,WITHOUT_ARRAY_WRAPPER)) as VendorAttributes 
+from Vendor {Helper.TableAllies}
+";
+            return sql;
+        }
+        private string GetExportCommandText(VendorPayload payload)
+        {
+            this.LoadRequestParameter(payload);
+            return $@"
+{GetExportSql()}
+{GetSQL_where()}
+ORDER BY  {Helper.TableAllies}.RowNum  
+OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
+FOR JSON PATH
+";
+        }
+        public virtual async Task GetExportJsonListAsync(VendorPayload payload)
+        {
+            if (payload == null)
+                payload = new VendorPayload();
+
+            var sql = GetExportCommandText(payload);
+
+            try
+            {
+                payload.VendorListCount = await CountAsync();
+                StringBuilder sb = new StringBuilder();
+                var result = await ExcuteJsonAsync(sb, sql, GetSqlParameters().ToArray());
+                if (result)
+                    payload.VendorDataList = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.VendorDataList = null;
+                throw;
+            }
         }
     }
 }

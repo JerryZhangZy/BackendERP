@@ -31,6 +31,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public static class VendorHelper
     {
+        public static readonly string TableName = "Vendor";
+        public static readonly string TableAllies = "vd";
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
 /*
