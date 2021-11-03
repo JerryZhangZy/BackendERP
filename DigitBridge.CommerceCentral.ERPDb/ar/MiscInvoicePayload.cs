@@ -91,6 +91,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeMiscInvoiceListCount() => HasMiscInvoiceListCount;
 
         #endregion list service
+
+        #region summary service 
+
+        [OpenApiPropertyDescription("(Response Data) summary result which load filter")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder MiscInvoiceSummary { get; set; }
+        [JsonIgnore] public virtual bool HasMiscInvoiceSummary => MiscInvoiceSummary != null;
+        public bool ShouldSerializeMiscInvoiceSummary() => HasMiscInvoiceSummary;
+        #endregion
     }
 }
 
