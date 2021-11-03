@@ -76,7 +76,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<MiscInvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new MiscInvoiceService(dataBaseFactory);
-            //await srv.GetListByMiscInvoiceNumbersAsync(payload);
+            await srv.GetListByMiscInvoiceNumbersAsync(payload);
             return new JsonNetResponse<MiscInvoicePayload>(payload);
         }
 
