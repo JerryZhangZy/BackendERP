@@ -14,3 +14,8 @@ BEGIN
     ALTER TABLE OrderHeader ADD [RowNum] BIGINT NOT NULL DEFAULT 0
 END					
 
+IF COL_LENGTH('OrderHeader', 'TotalDueSellerAmount') IS NULL					
+BEGIN					
+    ALTER TABLE OrderHeader ADD [TotalDueSellerAmount] MONEY NOT NULL DEFAULT 0
+END					
+

@@ -48,8 +48,6 @@ SELECT
 {Helper.VendorNum()}, 
 {Helper.VendorName()}, 
 {Helper.VendorInvoiceNum()}, 
-{Helper.VendorUuid()}, 
-{Helper.VendorInvoiceNum()}, 
 {Helper.VendorInvoiceDate()}, 
 {Helper.DueDate()}, 
 {Helper.Currency()}, 
@@ -60,10 +58,8 @@ SELECT
 {Helper.Balance()}, 
 {Helper.CreditAccount()}, 
 {Helper.DebitAccount()}, 
-{Helper.EnterDateUtc()}, 
-{Helper.UpdateDateUtc()}, 
-{Helper.EnterBy()}, 
-{Helper.UpdateBy()}, 
+{Helper.PoUuid()}, 
+{Helper.PoNum()},
 {Helper.DigitBridgeGuid()} 
 ";
             return this.SQL_Select;
@@ -91,57 +87,53 @@ SELECT
 
             return paramList.ToArray();
         }
-        
+
         #endregion override methods
-        
-        public virtual ApInvoicePayload GetApInvoiceList(ApInvoicePayload payload)
+
+        public virtual void GetApInvoiceList(ApInvoicePayload payload)
         {
             if (payload == null)
                 payload = new ApInvoicePayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.ApInvoiceListCount = Count();
-                result = ExcuteJson(sb);
-                if (result)
+                payload.Success = ExcuteJson(sb);
+                if (payload.Success)
                     payload.ApInvoiceList = sb;
             }
             catch (Exception ex)
             {
+                payload.Success = false;
                 payload.ApInvoiceListCount = 0;
-                payload.ApInvoiceList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
-        public virtual async Task<ApInvoicePayload> GetApInvoiceListAsync(ApInvoicePayload payload)
+        public virtual async Task GetApInvoiceListAsync(ApInvoicePayload payload)
         {
             if (payload == null)
                 payload = new ApInvoicePayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
-            var result = false;
             try
             {
                 payload.ApInvoiceListCount = await CountAsync();
-                result = await ExcuteJsonAsync(sb);
-                if (result)
+                payload.Success = await ExcuteJsonAsync(sb);
+                if (payload.Success)
                     payload.ApInvoiceList = sb;
             }
             catch (Exception ex)
             {
+                payload.Success = false;
                 payload.ApInvoiceListCount = 0;
-                payload.ApInvoiceList = null;
-                return payload;
-                throw;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
             }
-            return payload;
         }
 
         public virtual async Task<IList<long>> GetRowNumListAsync(ApInvoicePayload payload)

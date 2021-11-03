@@ -80,6 +80,7 @@
 //SettingForEventERP
 //SettingForApInvoice
 //SettingForPoTransaction
+//SettingForApTransaction
 #>
 <#@ include file="SettingForVendor.ttinclude" #>
 <#

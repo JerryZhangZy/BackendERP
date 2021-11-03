@@ -30,12 +30,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         bool Get(long RowNum);
         bool GetByNumber(int masterAccountNum, int profileNum, string number);
+        bool GetByNumber(int masterAccountNum, int profileNum, string number, int transType, int? transNum = null);
         bool GetById(string InvoiceId);
         bool Save();
         bool Delete();
 
         Task<bool> GetAsync(long RowNum);
         Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number);
+        Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number, int transType, int? transNum = null);
         Task<bool> GetByIdAsync(string id);
         Task<bool> SaveAsync();
         Task<bool> DeleteAsync();

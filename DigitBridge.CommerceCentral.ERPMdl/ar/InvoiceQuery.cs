@@ -22,11 +22,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _QboDocNumber = new QueryFilter<string>("QboDocNumber", "QboDocNumber", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> QboDocNumber => _QboDocNumber;
 
-        protected QueryFilter<string> _InvoiceNumberFrom = new QueryFilter<string>("InvoiceNumberFrom", "InvoiceNumber", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _InvoiceNumberFrom = new QueryFilter<string>("InvoiceNumberFrom", "InvoiceNumber", PREFIX, FilterBy.ge, string.Empty, isNVarChar: true);
         public QueryFilter<string> InvoiceNumberFrom => _InvoiceNumberFrom;
 
-        protected QueryFilter<string> _InvoiceNumberTo = new QueryFilter<string>("InvoiceNumberTo", "InvoiceNumber", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> InvoiceNumberTo => _InvoiceNumberTo;
+        protected QueryFilter<string> _InvoiceNumberTo = new QueryFilter<string>("InvoiceNumberTo", "InvoiceNumber", PREFIX, FilterBy.le, string.Empty, isNVarChar: true);
 
         protected QueryFilter<DateTime> _InvoiceDateFrom = new QueryFilter<DateTime>("InvoiceDateFrom", "InvoiceDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
         public QueryFilter<DateTime> InvoiceDateFrom => _InvoiceDateFrom;

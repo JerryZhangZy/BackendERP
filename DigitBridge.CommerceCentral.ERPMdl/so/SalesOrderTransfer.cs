@@ -124,7 +124,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //MiscAmount
             //MiscTaxAmount
             //ChargeAndAllowanceAmount
-            //PaidAmount
+            soHeader.PaidAmount = (coHeader.PaymentStatus) ? coHeader.TotalDueSellerAmount : 0;
             //CreditAmount
             //Balance
             //UnitCost
@@ -217,7 +217,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     //CancelledQty
                     OpenQty = dcLine.OrderQty,
                     //PriceRule
-                    Price = coLine.UnitPrice ?? 0,
+                    Price = coLine.UnitDueSellerAmount, // coLine.UnitPrice ?? 0,
                     //DiscountRate
                     DiscountAmount = coLine.LinePromotionAmount ?? 0,
                     //DiscountPrice

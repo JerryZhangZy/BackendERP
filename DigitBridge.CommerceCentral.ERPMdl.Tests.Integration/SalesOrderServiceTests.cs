@@ -293,7 +293,7 @@ WHERE itm.cnt > 0
         }
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task AddPreSalesAmountAsync_Test()
+        public async Task AddPrepaymentAmountAsync_Test()
         {
             //Save salesorder
             var salesOrderData = GetFakerData();
@@ -313,17 +313,17 @@ WHERE itm.cnt > 0
 
             var salesOrderHeader_FromDB = srv_Get.Data.SalesOrderHeader;
             //Add Pre sales amount 
-            var srv_AddPresales = new SalesOrderService(DataBaseFactory);
+            var srv_AddPrepayment = new SalesOrderService(DataBaseFactory);
             var salesOrder_Payload = new SalesOrderPayload()
             {
                 MasterAccountNum = salesOrderHeader_FromDB.MasterAccountNum,
                 ProfileNum = salesOrderHeader_FromDB.ProfileNum,
             };
-            var presalesAmount = new Random().Next();
-            success = await srv_AddPresales.AddPreSalesAmountAsync(salesOrder_Payload, salesOrderHeader_FromDB.OrderNumber, presalesAmount);
-            Assert.True(success, "Add Pre sales amount  error:" + srv_AddPresales.Messages.ObjectToString());
+            var prepaymentAmount = new Random().Next();
+            success = await srv_AddPrepayment.AddPrepaymentAsync(salesOrder_Payload, salesOrderHeader_FromDB.OrderNumber, prepaymentAmount);
+            Assert.True(success, "Add Pre sales amount  error:" + srv_AddPrepayment.Messages.ObjectToString());
 
-            var miscInvoiceUuid = srv_AddPresales.Data.SalesOrderHeader.MiscInvoiceUuid;
+            var miscInvoiceUuid = srv_AddPrepayment.Data.SalesOrderHeader.MiscInvoiceUuid;
             var misSrv_Get = new MiscInvoiceService(DataBaseFactory);
             success = await misSrv_Get.GetDataByIdAsync(miscInvoiceUuid);
             Assert.True(success, "Get mis invoice  error:" + misSrv_Get.Messages.ObjectToString());

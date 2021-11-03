@@ -70,6 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.DBChannelOrderLineRowID, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.CentralOrderUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.CentralOrderLineUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.UnitDueSellerAmount, f => f.Random.Decimal(1, 1000, 0))
 					;
             #endregion faker data rules
         }

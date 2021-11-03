@@ -192,7 +192,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
             using (var tx = new ScopedTransaction(dbFactory))
             {
-                trans.TransNum = InvoiceTransactionHelper.GetTranSeqNum(originalTrans.InvoiceNumber, payload.ProfileNum);
+                trans.TransNum = InvoiceTransactionHelper.GetTranSeqNum(trans.InvoiceNumber, payload.ProfileNum);
             }
 
             var dataDto = new InvoiceTransactionDataDto()
@@ -420,6 +420,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 return false;
             }
+            if (payload.InvoiceList.ToString().IsZero())
+            {
+                AddError($"No outstanding invoice for vendorNum:{customerCode}");
+                return false;
+            }
 
             var invoiceList = JsonConvert.DeserializeObject<List<InvoiceHeader>>(payload.InvoiceList.ToString());
 
@@ -526,8 +531,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         #endregion
 
-        #region Add payment for presales
-        public async Task<bool> AddPaymentAndPayInvoiceForPresalesAsync(string miscInvoiceUuid, string invoiceUuid, decimal amount)
+        #region Add payment for prepayment
+        public async Task<bool> AddPaymentAndPayInvoiceForPrepaymentAsync(string miscInvoiceUuid, string invoiceUuid, decimal amount)
         {
             Add();
             if (miscInvoiceUuid.IsZero())
@@ -563,9 +568,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 TaxRate = header.TaxRate,
 
                 TotalAmount = amount,
-                PaidBy = (int)PaidByEnum.PreSales,
+                PaidBy = (int)PaidByEnum.Prepayment,
                 CheckNum = miscInvoiceUuid,
-                Description = "Add payment from presales",
+                Description = "Add payment from prepayment",
             };
 
             using (var tx = new ScopedTransaction(dbFactory))
@@ -576,7 +581,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = await SaveDataAsync();
             if (!success)
             {
-                AddError("AddPaymentAndPayInvoiceForPresalesAsync->SaveDataAsync error.");
+                AddError("AddPaymentAndPayInvoiceForPrepaymentAsync->SaveDataAsync error.");
                 return false;
             }
 
@@ -585,7 +590,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = await PayInvoiceAsync(trans.InvoiceNumber, trans.MasterAccountNum, trans.ProfileNum, trans.TotalAmount);
             if (!success)
             {
-                AddError($"AddPaymentAndPayInvoiceForPresalesAsync->PayInvoiceAsync error.");
+                AddError($"AddPaymentAndPayInvoiceForPrepaymentAsync->PayInvoiceAsync error.");
                 return false;
             }
 

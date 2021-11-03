@@ -310,23 +310,23 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         /// <summary>
-        /// Add sales order preSalesAmount
+        /// Add sales order prepayment 
         /// </summary>
-        [FunctionName(nameof(AddPreSalesAmount))]
-        [OpenApiOperation(operationId: "AddPreSalesAmount", tags: new[] { "SalesOrders" }, Summary = "Add pre sales amount to salesorder")]
+        [FunctionName(nameof(AddPrepayment))]
+        [OpenApiOperation(operationId: "AddPrepayment", tags: new[] { "SalesOrders" }, Summary = "Add pre payment amount to salesorder")]
         [OpenApiParameter(name: Consts.MasterAccountNum, In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: Consts.ProfileNum, In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "amount", In = ParameterLocation.Path, Required = true, Type = typeof(decimal), Summary = "pre sales amount", Description = "pre sales amount. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Description = "Sales Order Number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadAdd))]
-        public static async Task<JsonNetResponse<SalesOrderPayload>> AddPreSalesAmount(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/preSales/{orderNumber}/{amount}")] HttpRequest req,
+        public static async Task<JsonNetResponse<SalesOrderPayload>> AddPrepayment(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/prepayment/{orderNumber}/{amount}")] HttpRequest req,
            string orderNumber, decimal amount)
         {
-            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var payload = await req.GetParameters<SalesOrderPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new SalesOrderService(dataBaseFactory);
-            payload.Success = await srv.AddPreSalesAmountAsync(payload, orderNumber, amount);
+            payload.Success = await srv.AddPrepaymentAsync(payload, orderNumber, amount);
             if (!payload.Success)
                 payload.Messages = srv.Messages;
             payload.SalesOrder = srv.ToDto();

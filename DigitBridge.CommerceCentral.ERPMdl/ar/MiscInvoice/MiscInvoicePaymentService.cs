@@ -63,10 +63,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 MiscInvoiceNumber = header.MiscInvoiceNumber,
                 MiscInvoiceUuid = header.MiscInvoiceUuid,
-                Description = "Add misc payment trans for applying presales amount",
+                Description = "Add misc payment trans for applying prepayment amount",
 
                 TotalAmount = amount > header.Balance ? header.Balance : amount,
-                PaidBy = (int)PaidByEnum.PreSales,
+                PaidBy = (int)PaidByEnum.Prepayment,
                 CheckNum = invoiceUuid,
                 TransDate = DateTime.Now,
                 TransTime = DateTime.Now.TimeOfDay,
@@ -87,6 +87,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Get misc invoice payment with detail and miscinvoiceheader by miscInvoiceNumber
+        /// </summary>
+        /// <param name="miscInvoiceNumber"></param>
+        /// <returns></returns>
+        public virtual async Task GetPaymentWithMiscInvoiceHeaderAsync(MiscPaymentPayload payload, string miscInvoiceNumber, int? transNum = null)
+        {
+            payload.Success = await LoadMiscInvoiceAsync(payload.MasterAccountNum, payload.ProfileNum, miscInvoiceNumber);
+            if (!payload.Success)
+            {
+                payload.Messages = this.Messages;
+                return;
+            }
+
+            payload.MiscTransactions = await GetDtoListAsync(payload.MasterAccountNum, payload.ProfileNum, miscInvoiceNumber, TransTypeEnum.Payment, transNum);
+            var miscInvoiceMapper = new MiscInvoiceDataDtoMapperDefault();
+            payload.MiscInvoiceDataDto = miscInvoiceMapper.WriteDto(Data.MiscInvoiceData, null);
         }
     }
 }

@@ -48,13 +48,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         #region async methods
 
         [Fact]
-        public async Task AddPaymentFromPresales_Test()
+        public async Task AddPaymentFromPrepayment_Test()
         {
             var miscInvoiceData = MiscInvoiceDataTests.SaveFakerMiscInvoice(DataBaseFactory);
             var invoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(DataBaseFactory);
-            var presalesAmount = new Random().Next(1, 100);
+            var prepaymentAmount = new Random().Next(1, 100);
             var srv = new InvoicePaymentManager(DataBaseFactory);
-            var success = await srv.AddPaymentFromPresales(miscInvoiceData.UniqueId, invoiceData.UniqueId, presalesAmount);
+            var success = await srv.AddPaymentFromPrepayment(miscInvoiceData.UniqueId, invoiceData.UniqueId, prepaymentAmount);
 
             Assert.True(success, srv.Messages.ObjectToString());
 

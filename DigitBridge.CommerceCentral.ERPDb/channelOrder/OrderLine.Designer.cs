@@ -84,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private string _channelItemID;
 
         [Column("SKU",SqlDbType.VarChar)]
-        private string _sKU;
+        private string _sku;
 
         [Column("ItemTitle",SqlDbType.NVarChar)]
         private string _itemTitle;
@@ -157,6 +157,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("CentralOrderLineUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _centralOrderLineUuid;
+
+        [Column("UnitDueSellerAmount",SqlDbType.Money,NotNull=true,IsDefault=true)]
+        private decimal _unitDueSellerAmount;
 
         #endregion Fields - Generated 
 
@@ -329,15 +332,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _sKU is null) 
-					_sKU = String.Empty; 
-				return _sKU?.TrimEnd(); 
+				if (!AllowNull && _sku is null) 
+					_sku = String.Empty; 
+				return _sku?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
 				{
-					_sKU = value.TruncateTo(100); 
+					_sku = value.TruncateTo(100); 
 					OnPropertyChanged("SKU", value);
 				}
             }
@@ -837,6 +840,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+        public virtual decimal UnitDueSellerAmount
+        {
+            get
+            {
+				return _unitDueSellerAmount; 
+            }
+            set
+            {
+				_unitDueSellerAmount = value; 
+				OnPropertyChanged("UnitDueSellerAmount", value);
+            }
+        }
+
 
 
         #endregion Properties - Generated 
@@ -943,7 +962,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_channelOrderID = String.Empty; 
 			_centralProductNum = AllowNull ? (long?)null : default(long); 
 			_channelItemID = AllowNull ? (string)null : String.Empty; 
-			_sKU = AllowNull ? (string)null : String.Empty; 
+			_sku = AllowNull ? (string)null : String.Empty; 
 			_itemTitle = AllowNull ? (string)null : String.Empty; 
 			_orderQty = AllowNull ? (decimal?)null : default(decimal); 
 			_unitPrice = AllowNull ? (decimal?)null : default(decimal); 
@@ -968,6 +987,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_dBChannelOrderLineRowID = AllowNull ? (string)null : String.Empty; 
 			_centralOrderUuid = String.Empty; 
 			_centralOrderLineUuid = String.Empty; 
+			_unitDueSellerAmount = default(decimal); 
             ClearChildren();
             return this;
         }

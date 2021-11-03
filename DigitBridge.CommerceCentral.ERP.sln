@@ -67,6 +67,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "payload", "payload", "{B988
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wms shipment", "wms shipment", "{0DA7F585-F3DA-4506-8EED-8BAD611416BC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "postman", "postman", "{86B5841E-0CF6-4131-BBA7-D7F59EECD98B}"
+	ProjectSection(SolutionItems) = preProject
+		payload\postman\Add data.postman_collection.json = payload\postman\Add data.postman_collection.json
+		payload\postman\Broker.postman_collection.json = payload\postman\Broker.postman_collection.json
+		payload\postman\DigiBridge ERP System.postman_collection.json = payload\postman\DigiBridge ERP System.postman_collection.json
+		payload\postman\DigitBridge ERP Event.postman_collection.json = payload\postman\DigitBridge ERP Event.postman_collection.json
+		payload\postman\Qbo.postman_collection.json = payload\postman\Qbo.postman_collection.json
+		payload\postman\WorkFlow.postman_collection.json = payload\postman\WorkFlow.postman_collection.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,6 +197,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0DA7F585-F3DA-4506-8EED-8BAD611416BC} = {B98819AF-57E6-45BB-A147-CF6D6F6E615C}
+		{86B5841E-0CF6-4131-BBA7-D7F59EECD98B} = {B98819AF-57E6-45BB-A147-CF6D6F6E615C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9341E990-605F-49D2-86E7-EEDD882E9D82}

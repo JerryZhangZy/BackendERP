@@ -144,6 +144,10 @@
       <LastGenOutput>SettingForEventERP.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForApTransaction.ttinclude">
+      <LastGenOutput>SettingForMiscInvoice.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForMiscInvoiceTransaction.ttinclude">
       <LastGenOutput>SettingForMiscInvoice.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -379,6 +383,66 @@
       <DependentUpon>JsStructureModel.cs</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="T4\JsStructureModel.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsStructureModel.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\JsStructureModelInitData.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsStructureModelInitData.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\JsStructureUi.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsStructureUi.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\JsUseService.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JsUseService.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\ReadDtoGrandChildren.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReadDtoGrandChildren.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForChannelOrder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForChannelOrder.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForCustomer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForCustomer.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForEventERP.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForEventERP.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForInventory.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInventory.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForInventoryLog.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInventoryLog.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForInvoice.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForInvoice.ttinclude</DependentUpon>
+    </Compile>
+    <Compile Update="T4\SettingForSalesOrder.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SettingForSalesOrder.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 
