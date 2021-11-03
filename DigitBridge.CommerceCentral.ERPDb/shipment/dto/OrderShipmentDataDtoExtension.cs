@@ -137,6 +137,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			data.OrderShipmentHeader = new OrderShipmentHeaderDto().GetFaker().Generate();
 			data.OrderShipmentCanceledItem = new OrderShipmentCanceledItemDto().GetFaker().Generate(3);
 			data.OrderShipmentPackage = new OrderShipmentPackageDto().GetFaker().Generate(3);
+			foreach (var item in data.OrderShipmentPackage)
+			{
+				item.OrderShipmentShippedItem= new OrderShipmentShippedItemDto().GetFaker().Generate(3);
+			}
             return data;
         }
 
