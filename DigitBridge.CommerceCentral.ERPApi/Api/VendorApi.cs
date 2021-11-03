@@ -181,7 +181,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<VendorPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new VendorList(dataBaseFactory, new VendorQuery());
-            await srv.GetExportJsonListAsync(payload);
+            //await srv.GetExportJsonListAsync(payload);
             return new JsonNetResponse<VendorPayload>(payload);
         }
 
@@ -271,8 +271,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var payload = await req.GetParameters<VendorPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new VendorSummaryInquiry(dataBaseFactory, new VendorSummaryQuery());
-            await srv.GetVendorSummaryAsync(payload);
+            //var srv = new VendorSummaryInquiry(dataBaseFactory, new VendorSummaryQuery());
+            //await srv.GetVendorSummaryAsync(payload);
             return new JsonNetResponse<VendorPayload>(payload);
         }
     }
