@@ -5,6 +5,7 @@ using System.Text;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
+    [Serializable]
     public class AddOrderHeaderModel
     {
         [Required]

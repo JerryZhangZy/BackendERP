@@ -2,6 +2,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -64,10 +65,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             if (client.ResopneData.SalesOrderOpenListCount <= 0) return;
 
-            Assert.True(!client.ResopneData.SalesOrderOpenList.IsZero(), $"Count:{client.ResopneData.SalesOrderOpenListCount}, SalesOrderOpenList:no data.");
-
-            var wmsOrderList =JsonConvert.DeserializeObject<List<AddOrderHeaderModel>>(client.ResopneData.SalesOrderOpenList);
-            Assert.True(client.ResopneData.SalesOrderOpenListCount == wmsOrderList.Count, "Data and count not match.");
+            Assert.True(!client.ResopneData.SalesOrderOpenList.ToString().IsZero(), $"Count:{client.ResopneData.SalesOrderOpenListCount}, SalesOrderOpenList:no data.");
         }
     }
 }

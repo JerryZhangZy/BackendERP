@@ -50,7 +50,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             {
                 this.jsonSerializerSettings = new JsonSerializerSettings
                 {
-                    FloatParseHandling = FloatParseHandling.Decimal
+                    FloatParseHandling = FloatParseHandling.Decimal,
+                    Converters = new List<JsonConverter>() { new StringBuilderConverter() }
                 };
             }
 
@@ -100,7 +101,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
                 // Deserialize response
                 ResopneData = JsonConvert.DeserializeObject<T>(responseData, jsonSerializerSettings);
-
                 success = await AnalysisResponseAsync(responseData);
             }
             catch (Exception ex)

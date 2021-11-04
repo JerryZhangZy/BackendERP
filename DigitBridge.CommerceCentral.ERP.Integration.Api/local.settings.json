@@ -1,23 +1,24 @@
 {
   "IsEncrypted": false,
   "Host": {
-    "CORS": "*"
+    "CORS": "*",
+    "LocalHttpPort": 7074
   },
   "Values": {
     "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "dsn": "Data Source=DESKTOP-SSB3DTP\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=True;Pooling=False;Connect Timeout=30",
+    "dsn": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
 
     //local
     "DebugMode": "true",
-    //"UseOrchestration": "false",
-    //"OrchestrationDbConnString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
-    //"OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
-    //"DBConnectionString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
-    //"DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
-    //"UseAzureManagedIdentity": "false",
-    //"AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
-    //"DefaultCacheExpireSlidingMins": "2",
+    "UseOrchestration": "false",
+    "OrchestrationDbConnString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
+    "OrchestrationDbTenantId": "6ad2d80c-c4ff-4ad2-be84-9fa1ca57b78e",
+    "DBConnectionString": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
+    "DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    "UseAzureManagedIdentity": "false",
+    "AzureTokenProviderConnectionString": "RunAs=Developer;DeveloperTool=VisualStudio",
+    "DefaultCacheExpireSlidingMins": "2",
 
     "SentryEnable": true, //Enable Sentrylog
     "SeriEnable": true, //Enable Serilog
@@ -46,7 +47,7 @@
     "ERPCreateInvoiceByOrdershipmentQueueName": "erp-create-invoice-by-ordershipment",
     "ERPCreateSalesOrderByCentralorderQueueName": "erp-create-salesorder-by-centralorder",
     "ERPSummaryTableName": "ErpSummaryCache",
-    "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net",
+    "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net"
 
     //test
     //"UseOrchestration": "false",
@@ -59,14 +60,14 @@
     //"DefaultCacheExpireSlidingMins": "2"
 
     //dev
-    "UseOrchestration": "false",
-    "OrchestrationDbConnString": "Server=tcp:bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-Orchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
-    "OrchestrationDbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
-    "DBConnectionString": "Data Source=DESKTOP-SSB3DTP\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=True;Pooling=False;Connect Timeout=30",
-    "DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
-    "UseAzureManagedIdentity": "false",
-    "AzureTokenProviderConnectionString": "runas=developer;developertool=visualstudio",
-    "DefaultCacheExpireSlidingMins": "2"
+    //"UseOrchestration": "false",
+    //"OrchestrationDbConnString": "Server=tcp:bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-Orchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    //"OrchestrationDbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    //"DBConnectionString": "Data Source=DESKTOP-SSB3DTP\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=True;Pooling=False;Connect Timeout=30",
+    //"DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    //"UseAzureManagedIdentity": "false",
+    //"AzureTokenProviderConnectionString": "runas=developer;developertool=visualstudio",
+    //"DefaultCacheExpireSlidingMins": "2"
 
     //Staging
     //"UseOrchestration": "true",

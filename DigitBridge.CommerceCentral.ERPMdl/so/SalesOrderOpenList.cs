@@ -31,7 +31,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #region get select columns
         protected string GetHeader_Columns()
         {
-            var header = "WMSOrderHeader";
+            var header = "AddOrderHeaderModel";
             var columns = $@"
 {Helper.TableAllies}.RowNum as '{header}.RowNum',
 {InfoHelper.TableAllies}.WarehouseCode as '{header}.WarehouseCode',
@@ -95,7 +95,7 @@ channelAccount.ChannelAccountName as '{header}.ChannelAccountName',
         }
         protected string GetItem_Columns()
         {
-            var item = "WMSOrderLine";
+            var item = "OrderLineModel";
 
             var columns = $@"
 {ItemHelper.TableAllies}.SKU as '{item}.SKU',
@@ -119,7 +119,7 @@ SELECT
 FROM { ItemHelper.TableName} { ItemHelper.TableAllies}
 WHERE { ItemHelper.TableAllies}.SalesOrderUuid = { Helper.TableAllies}.SalesOrderUuid 
 FOR JSON PATH
-) AS SalesOrderItems";
+) AS OrderLineList";
             return columns;
         }
         #endregion
@@ -182,7 +182,7 @@ FOR JSON PATH
                     payload.SalesOrderOpenListCount = await CountAsync();
                 payload.Success = await ExcuteJsonAsync(sb);
                 if (payload.Success)
-                    payload.SalesOrderOpenList = sb.ToString();
+                    payload.SalesOrderOpenList = sb;
             }
             catch (Exception ex)
             {
