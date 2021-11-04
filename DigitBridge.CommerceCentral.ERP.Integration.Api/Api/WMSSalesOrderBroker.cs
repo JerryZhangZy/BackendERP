@@ -17,52 +17,11 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace DigitBridge.CommerceCentral.ERPBroker
+namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 {
-    [ApiFilter(typeof(SalesOrderBroker))]
-    public static class SalesOrderBroker
+    [ApiFilter(typeof(WMSSalesOrderBroker))]
+    public static class WMSSalesOrderBroker
     {
-        [FunctionName("CreateSalesOrderByCentralOrder")]
-        public static async Task CreateSalesOrderByCentralOrder([QueueTrigger("erp-create-salesorder-by-centralorder")] string myQueueItem, ILogger log)
-        {
-            log.LogInformation($"C# Queue trigger function processed: {myQueueItem}");
-            var salesOrderClient = new SalesOrderClient();
-            var eventDto = new UpdateErpEventDto();
-            try
-            {
-                ERPQueueMessage message = JsonConvert.DeserializeObject<ERPQueueMessage>(myQueueItem);
-                var payload = new SalesOrderOpenListPayload()
-                {
-                    MasterAccountNum = message.MasterAccountNum,
-                    ProfileNum = message.ProfileNum
-                };
-                eventDto.EventUuid = message.EventUuid;
-                eventDto.MasterAccountNum = message.MasterAccountNum;
-                eventDto.ProfileNum = message.ProfileNum;
-                var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-                var svc = new SalesOrderManager(dbFactory);
-                (bool ret, List<string> salesOrderUuids) = await svc.CreateSalesOrderByChannelOrderIdAsync(message.ProcessUuid);
-
-                eventDto.ActionStatus = ret ? 0 : 1;
-                eventDto.EventMessage = svc.Messages.ObjectToString();
-            }
-            catch (Exception e)
-            {
-                eventDto.ActionStatus = 1;
-                eventDto.EventMessage = e.ObjectToString();
-                var reqInfo = new Dictionary<string, object>
-                {
-                    { "QueueFunctionName", "CreateSalesOrderByCentralOrder" },
-                    { "QueueMessage", myQueueItem }
-                };
-                LogCenter.CaptureException(e, reqInfo);
-            }
-            finally
-            {
-                await salesOrderClient.SendActionResultAsync(eventDto);
-            }
-        }
-
         /// <summary>
         /// Load sales order list
         /// </summary>

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DigitBridge.CommerceCentral.ERPEventSDK
+namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     public class AddErpEventDto
     {
