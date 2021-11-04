@@ -30,8 +30,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         protected readonly JsonSerializerSettings jsonSerializerSettings;
 
         protected Dictionary<string, string> headers;
-
-        protected T ResopneData;
+        protected int MasterAccountNum;
+        protected int ProfileNum;
+        public T ResopneData;
 
         #endregion Member Variables
 
@@ -49,7 +50,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             {
                 this.jsonSerializerSettings = new JsonSerializerSettings
                 {
-                    FloatParseHandling = FloatParseHandling.Decimal
+                    FloatParseHandling = FloatParseHandling.Decimal,
+                    Converters = new List<JsonConverter>() { new StringBuilderConverter() }
                 };
             }
 
@@ -99,7 +101,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
                 // Deserialize response
                 ResopneData = JsonConvert.DeserializeObject<T>(responseData, jsonSerializerSettings);
-
                 success = await AnalysisResponseAsync(responseData);
             }
             catch (Exception ex)
@@ -221,13 +222,28 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             //if (requiresToken)
             //    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
 
+            AddHeader(httpClient);
+
+            return httpClient;
+        }
+
+        private void AddHeader(HttpClient httpClient)
+        {
             foreach (var header in headers)
             {
                 httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
             }
 
-            return httpClient;
+            var masterAccountNumKey = "masterAccountNum";
+            var profileNumKey = "profileNum";
+
+            httpClient.DefaultRequestHeaders.Remove(masterAccountNumKey);
+            httpClient.DefaultRequestHeaders.Remove(profileNumKey);
+
+            httpClient.DefaultRequestHeaders.Add(masterAccountNumKey, MasterAccountNum.ToString());
+            httpClient.DefaultRequestHeaders.Add(profileNumKey, ProfileNum.ToString());
         }
+
         #endregion Virtual Methods - Protected
 
         #region Messages
