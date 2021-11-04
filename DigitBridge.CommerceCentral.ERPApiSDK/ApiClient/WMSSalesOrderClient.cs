@@ -19,7 +19,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         { }
 
 
-        public async Task<bool> GetSalesOrdersOpenList(WMSSalesOrderRequestPayload requestPayload)
+        public async Task<bool> GetSalesOrdersOpenListAsync(WMSSalesOrderRequestPayload requestPayload)
         {
             if (!requestPayload.HasMasterAccountNum)
             {
