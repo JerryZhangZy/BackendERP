@@ -405,7 +405,7 @@ SELECT SKU,WarehouseCode,WarehouseUuid,ProductUuid,InventoryUuid,Instock FROM In
             };
             return await SqlQuery.ExecuteAsync(
                 sql,
-                (string sku, string warehouseCode,string warehouseUuid, string productUuid,string inventoryUuid,string instock) => new StringArray() { Item0 = sku, Item1 = warehouseCode, Item2 = inventoryUuid,Item3= warehouseUuid,Item4= productUuid , Item5= instock },
+                (string sku, string warehouseCode,string warehouseUuid, string productUuid,string inventoryUuid,string instock) => new StringArray() { Item0 = sku, Item1 = warehouseCode, Item2 = warehouseUuid, Item3= productUuid, Item4= inventoryUuid, Item5= instock },
                 sqlParameters);
         }
 
