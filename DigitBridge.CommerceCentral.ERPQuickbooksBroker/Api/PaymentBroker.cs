@@ -1,7 +1,6 @@
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
-using DigitBridge.CommerceCentral.ERPEventSDK;
-using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
+using DigitBridge.CommerceCentral.ERPApiSDK;
 using DigitBridge.CommerceCentral.ERPMdl;
 using DigitBridge.QuickBooks.Integration;
 using Microsoft.Azure.WebJobs;

@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using System.Xml.Serialization;
 
-namespace DigitBridge.CommerceCentral.ERPEventSDK
+namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     public abstract class ApiClientBase<T> : IMessage
     {
