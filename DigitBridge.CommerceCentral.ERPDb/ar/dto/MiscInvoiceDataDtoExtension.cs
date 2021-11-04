@@ -16,6 +16,7 @@ using System.IO;
 using Bogus;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
+using System.Dynamic;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -25,6 +26,31 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// </summary>
     public static class MiscInvoiceDataDtoExtension
     {
+        static dynamic ToDynamicName(object obj)
+        {
+            dynamic expando = new ExpandoObject();
+
+            // get obj Schema
+            var objSchema = ObjectSchema.ForType(obj.GetType());
+            foreach (var item in objSchema.Properties)
+            {
+                ObjectSchemaExtension.AddExpandoObjectPropertyName(expando, item.Value);
+            }
+            return expando;
+        }
+        static dynamic ToDynamic(object obj)
+        {
+            dynamic expando = new ExpandoObject();
+
+            // get obj Schema
+            var objSchema = ObjectSchema.ForType(obj.GetType());
+            foreach (var item in objSchema.Properties)
+            {
+                ObjectSchemaExtension.AddExpandoObjectProperty(expando, item.Value, obj);
+            }
+
+            return expando;
+        }
         /// <summary>
         /// Merge MiscInvoiceDataDto header objects to one dynamic object
         /// </summary>
@@ -37,9 +63,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if(!dto.HasMiscInvoiceHeader)
                 return result;
             //TODO change to merge Dto children object
-            //if (withHeaderText)
-            //    result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
-            //result.Add(dto.SalesOrderHeader.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
+            if (withHeaderText)
+                result.Add(ToDynamicName(dto.MiscInvoiceHeader));
+            result.Add(ToDynamic(dto.MiscInvoiceHeader));
             return result;
         }
 
@@ -51,7 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
         public static IEnumerable<dynamic> MergeDetailRecord(this MiscInvoiceDataDto dto, bool withHeaderText = false)
         {
-            return null;
+            return new List<dynamic>();
             //TODO change to merge Dto children object
             //var result = new List<dynamic>();
             //if (!dto.HasSalesOrderItems) 

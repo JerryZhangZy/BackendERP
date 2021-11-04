@@ -31,9 +31,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "dataEntryCode/selectList")] HttpRequest req,
             ILogger log)
         {
-            var payload = await req.GetParameters<SelectListPayload>();
-            payload.SelectListName = req.Query["selectListName"];
-            payload.Term = req.Query["term"];
+            var payload = await req.GetParameters<SelectListPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var slf = new SelectListFactory(dataBaseFactory);
             var result = await slf.GetSelectListAsync(payload);
