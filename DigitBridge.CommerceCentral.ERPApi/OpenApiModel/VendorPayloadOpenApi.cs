@@ -135,13 +135,22 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class VendorFilter
     {
-        //public string City { get; set; }
+        public string VendorCode { get; set; }
 
+        public string VendorName { get; set; }
+
+        public string Area { get; set; }
+        
+        public string ShippingCarrier { get; set; }
+        
         public static Faker<VendorFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<VendorFilter>()
-                //.RuleFor(u => u.City, f => "")
+                .RuleFor(u => u.VendorCode, f => "")
+                .RuleFor(u => u.VendorName, f => "")
+                .RuleFor(u => u.Area, f => "")
+                .RuleFor(u => u.ShippingCarrier, f => "")
                 ;
             #endregion faker data rules
         }
