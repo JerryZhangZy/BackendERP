@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using DigitBridge.Base.Utility;
 using Newtonsoft.Json.Linq;
 
-namespace DigitBridge.CommerceCentral.ERPEventSDK
+namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     /// <summary>
     /// Request and Response payload object

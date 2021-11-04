@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPEventSDK\DigitBridge.CommerceCentral.ERPEventSDK.csproj" />
+    <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPApiSDK\DigitBridge.CommerceCentral.ERPApiSDK.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.XUnit.Common\DigitBridge.CommerceCentral.XUnit.Common.csproj" />
   </ItemGroup>
 

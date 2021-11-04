@@ -55,9 +55,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPEventApi", "DigitBridge.CommerceCentral.ERPEventApi\DigitBridge.CommerceCentral.ERPEventApi.csproj", "{F1498E07-88FC-4655-A16D-5014991445CA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPEventSDK", "DigitBridge.CommerceCentral.ERPEventSDK\DigitBridge.CommerceCentral.ERPEventSDK.csproj", "{3D9199B3-3F6B-447F-ACB3-718950D40B6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPApiSDK", "DigitBridge.CommerceCentral.ERPApiSDK\DigitBridge.CommerceCentral.ERPApiSDK.csproj", "{3D9199B3-3F6B-447F-ACB3-718950D40B6F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration", "DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration\DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration.csproj", "{436F2903-C78E-40C9-AC4F-65FAC6E79811}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration", "DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration\DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration.csproj", "{436F2903-C78E-40C9-AC4F-65FAC6E79811}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERPFuncSDK", "DigitBridge.CommerceCentral.ERPFuncSDK\DigitBridge.CommerceCentral.ERPFuncSDK.csproj", "{56AFD266-4217-4281-9AF5-EAC26FEC07F0}"
 EndProject
@@ -76,6 +76,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "postman", "postman", "{86B5
 		payload\postman\Qbo.postman_collection.json = payload\postman\Qbo.postman_collection.json
 		payload\postman\WorkFlow.postman_collection.json = payload\postman\WorkFlow.postman_collection.json
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitBridge.CommerceCentral.ERP.Integration.Api", "DigitBridge.CommerceCentral.ERP.Integration.Api\DigitBridge.CommerceCentral.ERP.Integration.Api.csproj", "{96F28F2D-5698-41DE-8895-90E5B91154C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -191,6 +193,10 @@ Global
 		{D9796A9F-076A-43EF-82AC-C3F0709A3F32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9796A9F-076A-43EF-82AC-C3F0709A3F32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9796A9F-076A-43EF-82AC-C3F0709A3F32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96F28F2D-5698-41DE-8895-90E5B91154C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96F28F2D-5698-41DE-8895-90E5B91154C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96F28F2D-5698-41DE-8895-90E5B91154C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96F28F2D-5698-41DE-8895-90E5B91154C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
