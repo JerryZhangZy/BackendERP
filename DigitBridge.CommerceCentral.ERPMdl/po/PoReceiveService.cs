@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -115,14 +115,40 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _apInvoiceService;
             }
         }
+        private InventoryService _inventoryService;
+
+        protected InventoryService InventoryService
+        {
+            get
+            {
+                if (_inventoryService == null)
+                    _inventoryService = new InventoryService(dbFactory);
+                return _inventoryService;
+            }
+        }
+
+        public int GetUnUpdateTransStatus()
+        {
+            return dbFactory.GetValue<ApInvoiceHeader,int>("SELECT TOP 1 TransStatus FROM PoTransaction WHERE TransUuid=@0",Data.PoTransaction.TransUuid.ToSqlParameter("@0"));
+        }
+        
+        public async Task<int> GetUnUpdateTransStatusAsync()
+        {
+            return dbFactory.GetValue<ApInvoiceHeader,int>("SELECT TOP 1 TransStatus FROM PoTransaction WHERE TransUuid=@0",Data.PoTransaction.TransUuid.ToSqlParameter("@0"));
+        }
 
         public override async Task<bool> SaveDataAsync()
         {
+            if (Data.PoTransaction.RowNum.IsZero())
+                Data.FirstAPReceiveStatus = Data.PoTransaction.TransStatus == (int)PoTransStatus.APReceive;
+            else
+                Data.FirstAPReceiveStatus=await GetUnUpdateTransStatusAsync()!=(int)PoTransStatus.APReceive;
             if (await base.SaveDataAsync())
             {
                 await InventoryLogService.UpdateByPoReceiveAsync(_data);
                 await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);
                 await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
+                await InventoryService.UpdatAvgCostByPoReceiveAsync(_data);
                 return true;
             }
             return false;
@@ -130,11 +156,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public override bool SaveData()
         {
+            if (Data.PoTransaction.RowNum.IsZero())
+                Data.FirstAPReceiveStatus = Data.PoTransaction.TransStatus == (int)PoTransStatus.APReceive;
+            else
+                Data.FirstAPReceiveStatus=GetUnUpdateTransStatus()!=(int)PoTransStatus.APReceive;
             if (base.SaveData())
             {
                 InventoryLogService.UpdateByPoReceive(_data);
                 ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
                 PurchaseOrderService.UpdateByPoReceive(_data);
+                InventoryService.UpdatAvgCostByPoReceive(_data);
                 return true;
             }
             return false;

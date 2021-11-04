@@ -418,13 +418,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 return false;
             }
-            if (payload.InvoiceList.ToString().IsZero())
+            if (payload.ApInvoiceList.ToString().IsZero())
             {
                 AddError($"No outstanding apInvoice for vendorNum:{vendorNum}");
                 return false;
             }
 
-            var apInvoiceList = JsonConvert.DeserializeObject<List<ApInvoiceHeader>>(payload.InvoiceList.ToString());
+            var apInvoiceList = JsonConvert.DeserializeObject<List<ApInvoiceHeader>>(payload.ApInvoiceList.ToString());
 
             NewData();
             // All unpaid amount.
@@ -451,11 +451,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await srv.GetApInvoiceListAsync(apInvoicePayload);
 
             if (!apInvoicePayload.Success)
-                this.Messages = this.Messages.Concat(srv.Messages).ToList();
-
-            payload.InvoiceList = apInvoicePayload.ApInvoiceList;
-
-            payload.InvoiceListCount = apInvoicePayload.ApInvoiceListCount;
+                this.Messages = this.Messages.Concat(srv.Messages).ToList(); 
 
             return apInvoicePayload.Success;
         }

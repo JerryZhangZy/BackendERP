@@ -104,22 +104,73 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             SetDefaultDetail(data, processingMode);
             return true;
         }
+        private CustomerService _customerService;
+
+        protected CustomerService customerService
+        {
+            get
+            {
+                if (_customerService is null)
+                    _customerService = new CustomerService(dbFactory);
+                return _customerService;
+            }
+        }
+        /// <summary>
+        /// Get Customer Data by customerCode
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="customerCode"></param>
+        /// <returns></returns>
+        public virtual CustomerData GetCustomerData(MiscInvoiceData data, string customerCode)
+        {
+            var header = data.MiscInvoiceHeader;
+            var key = header.MasterAccountNum + "_" + header.ProfileNum + '_' + customerCode;
+            return data.GetCache(key, () =>
+            {
+                customerService.GetByNumber(header.MasterAccountNum, header.ProfileNum, customerCode);
+                return customerService.Data;
+            });
+        }
 
         public virtual bool SetDefaultSummary(MiscInvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
 
-            //TODO: add set default summary data logic
-            /* This is generated sample code
+            var now = DateTime.Now;
             var sum = data.MiscInvoiceHeader;
-            if (sum.InvoiceDate.IsZero()) sum.InvoiceDate = DateTime.Today;
-            if (sum.InvoiceTime.IsZero()) sum.InvoiceTime = DateTime.Now.TimeOfDay;
 
-            //UpdateDateUtc
+            if (sum.MiscInvoiceTime.IsZero()) sum.MiscInvoiceTime = now.TimeOfDay;
+            if (sum.MiscInvoiceDate.IsZero())
+            {
+                sum.MiscInvoiceDate = now.Date;
+                sum.MiscInvoiceTime = now.TimeOfDay;
+            }
+            sum.UpdateDateUtc = DateTime.UtcNow;
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                if (string.IsNullOrEmpty(sum.MiscInvoiceNumber))
+                {
+                    sum.MiscInvoiceNumber = NumberGenerate.Generate();
+                }
+
+                //for Add mode, always reset uuid
+                sum.MiscInvoiceUuid = Guid.NewGuid().ToString();
+            }
+
+            // get customer data
+            var customerData = GetCustomerData(data, sum.CustomerCode);
+            if (customerData != null && customerData.Customer != null)
+            {
+                sum.CustomerUuid = customerData.Customer.CustomerUuid;
+                //sum.CustomerName = customerData.Customer.CustomerName;
+                //if (string.IsNullOrEmpty(sum.Currency))
+                //    sum.Currency = customerData.Customer.Currency;
+            }
+
             //EnterBy
             //UpdateBy
-            */
 
             return true;
         }

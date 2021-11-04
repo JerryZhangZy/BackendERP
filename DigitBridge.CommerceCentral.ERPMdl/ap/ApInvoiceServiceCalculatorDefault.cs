@@ -73,7 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //    }
             //}
         }
-        
+
         #region Service Property
 
         //private CustomerService _customerService;
@@ -97,6 +97,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //}
 
         #endregion
+        
+        private DateTime now = DateTime.Now;
 
         public virtual bool SetDefault(ApInvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
@@ -115,11 +117,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if(data.ApInvoiceHeader.ApInvoiceNum.IsZero())
                     data.ApInvoiceHeader.ApInvoiceNum=NumberGenerate.Generate();
             }
+
+            var sum = data.ApInvoiceHeader;
+            
+            if (sum.ApInvoiceTime.IsZero()) sum.ApInvoiceTime = now.TimeOfDay;
+            if (sum.ApInvoiceDate.IsZero())
+            {
+                sum.ApInvoiceDate = now.Date;
+                sum.ApInvoiceTime = now.TimeOfDay;
+            }
+            sum.UpdateDateUtc = now;
+
             //TODO: add set default summary data logic
             /* This is generated sample code
-            var sum = data.ApInvoiceHeader;
-            if (sum.InvoiceDate.IsZero()) sum.InvoiceDate = DateTime.Today;
-            if (sum.InvoiceTime.IsZero()) sum.InvoiceTime = DateTime.Now.TimeOfDay;
+            
 
             //UpdateDateUtc
             //EnterBy
@@ -134,26 +145,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null)
                 return false;
 
-            //TODO: add set default for detail list logic
-            /* This is generated sample code
+            
 
-            foreach (var item in data.InvoiceItems)
+            foreach (var item in data.ApInvoiceItems)
             {
                 if (item is null || item.IsEmpty)
                     continue;
                 SetDefault(item, data, processingMode);
-            }
-
-            */
+            } 
             return true;
         }
 
-        //TODO: add set default for detail line logic
-        /* This is generated sample code
-        protected virtual bool SetDefault(InvoiceItems item, ApInvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
+         
+        protected virtual bool SetDefault(ApInvoiceItems item, ApInvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;
+
+            item.UpdateDateUtc = now;
+            if (item.ItemTime.IsZero()) item.ItemTime = now.TimeOfDay;
+            if (item.ItemDate.IsZero())
+            {
+                item.ItemDate = now.Date;
+                item.ItemTime = now.TimeOfDay;
+            }
+            item.UpdateDateUtc = now;
 
             var setting = new ERPSetting();
             var sum = data.ApInvoiceHeader;
@@ -180,8 +196,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //Currency
 
             return true;
-        }
-        */
+        } 
 
 
         public virtual bool Calculate(ApInvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
