@@ -30,4 +30,12 @@
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\DigitBridge.CommerceCentral.ApiCommon\DigitBridge.CommerceCentral.ApiCommon.csproj" />
+      <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPApi\DigitBridge.CommerceCentral.ERPApi.csproj" />
+      <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPMdl\DigitBridge.CommerceCentral.ERPMdl.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="OpenApiModel" />
+    </ItemGroup>
 </Project>
