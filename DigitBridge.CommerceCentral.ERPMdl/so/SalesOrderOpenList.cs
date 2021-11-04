@@ -33,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var header = "WMSOrderHeader";
             var columns = $@"
-
+{Helper.TableAllies}.RowNum as '{header}.RowNum',
 {InfoHelper.TableAllies}.WarehouseCode as '{header}.WarehouseCode',
 {Helper.TableAllies}.DatabaseNum as '{header}.CentralDatabaseNum',
 {InfoHelper.TableAllies}.CentralOrderNum as '{header}.CentralOrderNum',
