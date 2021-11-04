@@ -545,7 +545,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (!AllowNull && _updateDateUtc is null) 
 					_updateDateUtc = new DateTime().MinValueSql(); 
-				return _updateDateUtc; 
+				return _updateDateUtc?.AddMilliseconds(-_updateDateUtc.Value.Millisecond); 
             }
             set
             {

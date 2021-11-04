@@ -105,15 +105,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeVendorListCount() => HasVendorListCount;
 
         #endregion list service
-
-        #region summary service 
-
-        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
-        [JsonConverter(typeof(StringBuilderConverter))]
-        public StringBuilder VendorSummary { get; set; }
-        [JsonIgnore] public virtual bool HasVendorSummary => VendorSummary != null;
-        public bool ShouldSerializeVendorSummary() => HasVendorSummary;
-        #endregion
     }
 }
 
