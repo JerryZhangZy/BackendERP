@@ -16,6 +16,10 @@ namespace DigitBridge.Base.Utility
 
         public static string EventApi_BaseUrl => GetValueByName("EventApi_BaseUrl");
         public static string EventApi_AuthCode => GetValueByName("EventApi_AuthCode");
+        
+        public static string Api_BaseUrl => GetValueByName("Api_BaseUrl");
+        public static string Api_AuthCode => GetValueByName("Api_BaseUrl");
+        
         public static string GetValueByName(string name)
         {
             try
