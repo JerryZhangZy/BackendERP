@@ -70,6 +70,8 @@
     <Folder Include="inventory\utility" />
     <Folder Include="qbo" />
     <Folder Include="event" />
+    <Folder Include="setting" />
+    <Folder Include="sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -256,13 +258,12 @@
     <None Include="CustomDefineCodes\SystemCodes.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CustomDefineCodes\SystemSetting.sql" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="ap\ApInvoiceHeader_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="channelOrder\OrderHeaderMerchantExt.sql" />
     <Build Include="channelOrder\OrderHeaderMarketplaceExt_Update.sql" />
+    <None Include="setting\SystemSetting.sql" />
+    <None Include="setting\InitNumbers.sql" />
   </ItemGroup>
 </Project>
