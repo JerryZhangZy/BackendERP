@@ -16,12 +16,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
         public async Task<bool> SendAddQboPaymentAsync(AddErpEventDto eventDto)
         {
-            return await AddEventERPAsync(eventDto, ERPEventFunctionUrl.QuickBooksPayment);
+            return await AddEventERPAsync(eventDto, FunctionUrl.QuickBooksPayment);
         }
 
         public async Task<bool> SendDeleteQboPaymentAsync(AddErpEventDto eventDto)
         {
-            return await AddEventERPAsync(eventDto, ERPEventFunctionUrl.QuickBooksPaymentDelete);
+            return await AddEventERPAsync(eventDto, FunctionUrl.QuickBooksPaymentDelete);
         }
     }
 }

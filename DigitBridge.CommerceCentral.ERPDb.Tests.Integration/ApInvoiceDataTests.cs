@@ -59,6 +59,36 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             return srv.Data;
         }
+        public static async Task<ApInvoiceData> GetApInvoiceFromDBAsync(IDataBaseFactory dbFactory, string apInvoiceUuid)
+        {
+            var sql = @"
+SELECT TOP 1 rownum
+FROM ApInvoiceHeader ins 
+INNER JOIN (
+    SELECT it.ApInvoiceUuid, COUNT(1) AS cnt 
+    FROM ApInvoiceItems it
+    GROUP BY it.ApInvoiceUuid
+) itm ON (itm.ApInvoiceUuid = ins.ApInvoiceUuid)
+WHERE itm.cnt > 0
+{0}
+order by ins.rownum desc
+";
+            if (apInvoiceUuid.IsZero())
+                sql = string.Format(sql, string.Empty);
+            else
+                sql = string.Format(sql, $" And ins.ApInvoiceUuid='{apInvoiceUuid}'");
+
+            var rownum = dbFactory.GetValue<InvoiceHeader, long>(sql);
+
+            Assert.True(rownum > 0, "No Invoice in db");
+
+            var srv = new ApInvoiceService(dbFactory);
+            var success = await srv.GetDataAsync(rownum);
+            Assert.True(success, srv.Messages.ObjectToString());
+
+            return srv.Data;
+        }
+
     }
 }
 

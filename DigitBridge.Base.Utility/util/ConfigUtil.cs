@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,10 +16,10 @@ namespace DigitBridge.Base.Utility
 
         public static string EventApi_BaseUrl => GetValueByName("EventApi_BaseUrl");
         public static string EventApi_AuthCode => GetValueByName("EventApi_AuthCode");
-        
-        public static string Api_BaseUrl => GetValueByName("Api_BaseUrl");
-        public static string Api_AuthCode => GetValueByName("Api_BaseUrl");
-        
+
+        public static string ERP_Integration_Api_BaseUrl => GetValueByName("ERP_Integration_Api_BaseUrl");
+        public static string ERP_Integration_Api_AuthCode => GetValueByName("ERP_Integration_Api_AuthCode");
+
         public static string GetValueByName(string name)
         {
             try

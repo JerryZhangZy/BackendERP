@@ -120,15 +120,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         #endregion sync methods
 
         #region async methods 
-
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task GetApPaymentListAsync_EachFilter_Test()
+        public async Task GetApPaymentListAsync_Simple_Test()
         {
-            var paymentData = await ApPaymentDataTests.SaveFakerApPayment(this.DataBaseFactory);
-            var header = paymentData.ApInvoiceData.ApInvoiceHeader;
-            var headerInfo = paymentData.ApInvoiceData.ApInvoiceHeaderInfo;
+            var payload = new ApPaymentPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+                LoadAll = true,
+            };
+            var listService = new ApPaymentList(this.DataBaseFactory);
+            await listService.GetApPaymentListAsync(payload);
+
+            //make sure query is correct.
+            Assert.True(payload.Success, listService.Messages.ObjectToString());
+        }
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetApPaymentListAsync_Full_Test()
+        {
+            var paymentData = await ApPaymentDataTests.GetApPaymentFromDBAsync(this.DataBaseFactory);
             var trans = paymentData.ApInvoiceTransaction;
+
+            var apInvoiceData = await ApInvoiceDataTests.GetApInvoiceFromDBAsync(this.DataBaseFactory, paymentData.ApInvoiceTransaction.ApInvoiceUuid);
+            var header = apInvoiceData.ApInvoiceHeader;
+            var headerInfo = apInvoiceData.ApInvoiceHeaderInfo;
+
 
             var payload = new ApPaymentPayload()
             {
@@ -179,15 +197,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             foreach (var filter in filterList)
             {
                 payload.Filter = new JObject() { filter };
-                await TestEachFilter(payload, trans.RowNum);
+                await TestFilter(payload, trans.RowNum);
             }
 
             //test all
             payload.Filter = filters;
-            await TestEachFilter(payload, trans.RowNum);
+            await TestFilter(payload, trans.RowNum);
         }
 
-        private async Task TestEachFilter(ApPaymentPayload payload, long expectedRowNum)
+        private async Task TestFilter(ApPaymentPayload payload, long expectedRowNum)
         {
             var listService = new ApPaymentList(this.DataBaseFactory);
             await listService.GetApPaymentListAsync(payload);
@@ -196,7 +214,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.True(payload.Success, listService.Messages.ObjectToString());
 
             //make sure InvoiceListCount is matched.
-            Assert.True(payload.ApTransactionListCount >= 1, $"rowNum:{expectedRowNum},filters:{payload.Filter}");
+            Assert.True(payload.ApTransactionListCount >= 1, $"TestFilter error. filter data from record by rownum:{expectedRowNum},filter is :{payload.Filter}");
 
             var queryResult = JArray.Parse(payload.ApTransactionList.ToString());
             var rowNumMatchedCount = queryResult.Count(i => i.Value<long>("rowNum") == expectedRowNum);
