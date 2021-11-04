@@ -66,6 +66,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             if (client.ResopneData.SalesOrderOpenListCount <= 0) return;
 
             Assert.True(!client.ResopneData.SalesOrderOpenList.ToString().IsZero(), $"Count:{client.ResopneData.SalesOrderOpenListCount}, SalesOrderOpenList:no data.");
+             
+            var wmsOrderList = JsonConvert.DeserializeObject<List<AddOrderHeaderModel>>(client.ResopneData.SalesOrderOpenList.ToString());
+            Assert.True(client.ResopneData.SalesOrderOpenListCount == wmsOrderList.Count, "Data and count not match.");
         }
     }
 }
