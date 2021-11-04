@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "DigitBridge.CommerceCentral.ERP.Integration.Api": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\Microsoft\\Azure Functions Core Tools\\func.exe",
+      "commandLineArgs": "host start"
+    }
+  }
+}
