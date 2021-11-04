@@ -346,7 +346,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return expando;
         }
 
-        private static void AddExpandoObjectProperty(ExpandoObject expando, PocoColumn col, object obj)
+        public static void AddExpandoObjectProperty(ExpandoObject expando, PocoColumn col, object obj)
         {
             if (expando == null || col == null || col.PropertyInfo is null) return;
 
@@ -403,7 +403,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return expando;
         }
 
-        private static void AddExpandoObjectPropertyName(ExpandoObject expando, PocoColumn col)
+        public static void AddExpandoObjectPropertyName(ExpandoObject expando, PocoColumn col)
         {
             if (expando == null || col == null || col.PropertyInfo is null) return;
 
