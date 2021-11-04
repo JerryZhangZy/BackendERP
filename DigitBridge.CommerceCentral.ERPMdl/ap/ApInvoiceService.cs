@@ -16,8 +16,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
-using DigitBridge.CommerceCentral.ERPEventSDK;
-using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
+using DigitBridge.CommerceCentral.ERPApiSDK;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {

@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DigitBridge.CommerceCentral.ERPEventSDK
+namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     public class ErpEventClient : ApiClientBase<EventERPPayload>
     {

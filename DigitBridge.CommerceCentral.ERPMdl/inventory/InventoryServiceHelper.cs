@@ -395,7 +395,7 @@ SELECT SKU,WarehouseCode,InventoryUuid FROM Inventory inv WHERE Exists (SELECT i
             if (param == null || param.Count == 0)
                 return new List<StringArray>(0);
             var sql = $@" 
-SELECT SKU,WarehouseCode,WarehouseUuid,ProductUuid,InventoryUuid FROM Inventory inv WHERE Exists (SELECT item0 AS SKU,item1 AS WarehouseCode FROM @SKUTable st WHERE inv.SKU=st.item0 AND inv.WarehouseCode=st.item1)
+SELECT SKU,WarehouseCode,WarehouseUuid,ProductUuid,InventoryUuid,Instock FROM Inventory inv WHERE Exists (SELECT item0 AS SKU,item1 AS WarehouseCode FROM @SKUTable st WHERE inv.SKU=st.item0 AND inv.WarehouseCode=st.item1)
 ";
             var sqlParameters = new IDataParameter[3]
             {
@@ -405,7 +405,27 @@ SELECT SKU,WarehouseCode,WarehouseUuid,ProductUuid,InventoryUuid FROM Inventory 
             };
             return await SqlQuery.ExecuteAsync(
                 sql,
-                (string sku, string warehouseCode, string inventoryUuid,string warehouseUuid,string productUuid) => new StringArray() { Item0 = sku, Item1 = warehouseCode, Item2 = inventoryUuid,Item3= warehouseUuid,Item4= productUuid },
+                (string sku, string warehouseCode,string warehouseUuid, string productUuid,string inventoryUuid,string instock) => new StringArray() { Item0 = sku, Item1 = warehouseCode, Item2 = inventoryUuid,Item3= warehouseUuid,Item4= productUuid , Item5= instock },
+                sqlParameters);
+        }
+
+
+        public static async Task<List<StringArray>> GetProductBySkuAsync(List<StringArray> param, int masterAccountNum, int profileNum)
+        {
+            if (param == null || param.Count == 0)
+                return new List<StringArray>(0);
+            var sql = $@" 
+SELECT SKU,ProductUuid FROM ProductBasic inv WHERE Exists (SELECT item0 AS SKU  FROM @SKUTable st WHERE inv.SKU=st.item0 ) And MasterAccountNum=@masterAccountNum and ProfileNum=@pofileNum
+";
+            var sqlParameters = new IDataParameter[3]
+            {
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("pofileNum"),
+                param.ToStringArrayListParameters("SKUTable")
+            };
+            return await SqlQuery.ExecuteAsync(
+                sql,
+                (string sku,string productUuid) => new StringArray() { Item0 = sku,Item1=productUuid},
                 sqlParameters);
         }
 

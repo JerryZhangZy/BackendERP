@@ -81,6 +81,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+
+
+        //
+
+        [XmlIgnore, JsonIgnore]
+        protected InventoryService _inventoryService;
+        [XmlIgnore, JsonIgnore]
+        public InventoryService inventoryService
+        {
+            get
+            {
+                if (_inventoryService is null)
+                    _inventoryService = new InventoryService(dbFactory);
+                return _inventoryService;
+            }
+        }
+
+
         public async Task<byte[]> ExportAsync(InventoryUpdatePayload payload)
         {
             var rowNumList =await inventoryUpdateList.GetRowNumListAsync(payload);
@@ -247,35 +265,104 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
 
-        public async Task UpdateStockByList(InventorySyncUpdatePayload inventorySyncUpdatePayload)
+        public async Task<bool> UpdateStockByList(InventorySyncUpdatePayload inventorySyncUpdatePayload)
         {
-            List<StringArray> stringArrays = new List<StringArray>();
-            if (!inventorySyncUpdatePayload.HasInventorySyncUpdateData || !inventorySyncUpdatePayload.InventorySyncUpdateData.HasInventorySyncItems)
+            List<StringArray> updateSkuArrays = new List<StringArray>();
+            if (!inventorySyncUpdatePayload.HasInventorySyncData || !inventorySyncUpdatePayload.InventorySyncData.HasInventorySyncItems)
             {
                 AddError("no data sync");
-                return;
+                return false;
             }
-            foreach (var item in inventorySyncUpdatePayload.InventorySyncUpdateData.InventorySyncItems)
-                stringArrays.Add(new StringArray() { Item0 = item.SKU, Item1 = item.WarehouseCode });
+
+            var inventorySyncItems = inventorySyncUpdatePayload.InventorySyncData.InventorySyncItems;
+
+            foreach (var item in inventorySyncItems)
+                updateSkuArrays.Add(new StringArray() { Item0 = item.SKU, Item1 = item.WarehouseCode,Item2=item.Qty.ToString() });
+
+            var inventoryList = new List<StringArray>();
+            var productList = new List<StringArray>();
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                productList = await InventoryServiceHelper.GetProductBySkuAsync(updateSkuArrays, inventorySyncUpdatePayload.MasterAccountNum, inventorySyncUpdatePayload.ProfileNum);
+
+            }
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                inventoryList = await InventoryServiceHelper.GetInventoryInfoBySkuWithWarehouseCodesAsync(updateSkuArrays, inventorySyncUpdatePayload.MasterAccountNum, inventorySyncUpdatePayload.ProfileNum);
+            }
+
+            #region check product sku is exists
+
+            var notExistSku = (from u in updateSkuArrays
+                               join p in productList
+                               on u.Item0 equals p.Item0
+                               into rr
+                               where !rr.Any()
+                               select u).ToList();
+
+            if (notExistSku.Count != 0)
+            {
+                notExistSku.ToList().ForEach(
+                  r =>
+                     AddError($"sku { r.Item0 } not fund")
+                    );
+                return false;
+            }
+
+            #endregion
+
+            #region if SKU inventory does not exist inventory will be added
 
 
-            // inventorySyncUpdatePayload.InventorySyncUpdateData.InventorySyncItems
-            var inventoryList = await InventoryServiceHelper.GetInventoryInfoBySkuWithWarehouseCodesAsync(stringArrays, inventorySyncUpdatePayload.MasterAccountNum, inventorySyncUpdatePayload.ProfileNum);
+            var notExistinventorySku = (from u in updateSkuArrays
+                                        join i in inventoryList
+                                        on u.Item0 equals i.Item0
+                                        into rr
+                                        where !rr.Any()
+                                        select u).ToList();
 
+            foreach (var item in notExistinventorySku)
+            {
+
+                var inventoryData = new InventoryDataDto()
+                {
+                    Inventory = new List<InventoryDto>() { new InventoryDto() { SKU = item.Item0, WarehouseCode = item.Item1, Instock = decimal.Parse(item.Item2),
+                        ProductUuid = productList.Find(r=>r.Item0==item.Item0).Item1,
+                        MasterAccountNum = inventorySyncUpdatePayload.MasterAccountNum, ProfileNum = inventorySyncUpdatePayload.ProfileNum,
+ 
+                    
+                    } }
+                };
+                inventoryData.ProductBasic = new ProductBasicDto() { SKU = item.Item0 };
+                inventoryData.ProductExt = new ProductExtDto() { SKU=item.Item0 };
+                if (!await inventoryService.AddInventoryAsync(inventoryData))
+                {
+                    AddError($"sync data faild");
+                    return false;
+                }
+            };
+
+          
+ 
+            #endregion
+
+ 
             var inventoryUpdateDatalist = new List<InventoryUpdateDataDto>();
-
-            foreach (var item in inventorySyncUpdatePayload.InventorySyncUpdateData.InventorySyncItems)
+            
+            foreach (var item in inventorySyncItems)
             {
                 var existInventory = inventoryList.Find(r => r.Item0 == item.SKU && r.Item1 == item.WarehouseCode);
                 if (existInventory == null) continue;
 
                 InventoryUpdateItemsDto InventoryUpdateItems = new InventoryUpdateItemsDto()
-                {
+                {  
                     WarehouseCode = item.WarehouseCode,
                     SKU = item.SKU,
                     WarehouseUuid = existInventory.Item3,
-                    CountQty = item.Qty,
-                    InventoryUuid = existInventory.Item2
+                    UpdateQty = item.Qty- decimal.Parse( existInventory.Item5),
+                    InventoryUuid = existInventory.Item2,
+                    ProductUuid= existInventory.Item4,
+ 
                 };
                 var data = new InventoryUpdateDataDto()
                 {
@@ -287,7 +374,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         DatabaseNum = inventorySyncUpdatePayload.DatabaseNum,
                         ProfileNum = inventorySyncUpdatePayload.ProfileNum,
                         MasterAccountNum = inventorySyncUpdatePayload.MasterAccountNum,
-                        InventoryUpdateType = (int)InventoryUpdateType.PhysicalCount,
+                        InventoryUpdateType = (int)InventoryUpdateType.Adjust,
                     },
                     InventoryUpdateItems = new List<InventoryUpdateItemsDto>() { InventoryUpdateItems }
                 };
@@ -295,17 +382,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
 
-            InventoryUpdatePayload payload = new InventoryUpdatePayload();
+            var payload = new InventoryUpdatePayload();
+            payload.InventoryUpdateType = InventoryUpdateType.Adjust;
+            payload.MasterAccountNum = inventorySyncUpdatePayload.MasterAccountNum;
+            payload.ProfileNum = inventorySyncUpdatePayload.ProfileNum;
             foreach (var item in inventoryUpdateDatalist)
             {
+       
                 payload.InventoryUpdate = item;
-                if (await inventoryUpdateService.AddAsync(payload))
+                if (!await inventoryUpdateService.AddAsync(payload))
                 {
-
+                    AddError($"sync data faild");
+                    return false;
                 }
             }
-            // inventorySyncUpdatePayload.InventorySyncUpdateData
-            // InventoryServiceHelper.
+
+            return true;
+ 
 
         }
 

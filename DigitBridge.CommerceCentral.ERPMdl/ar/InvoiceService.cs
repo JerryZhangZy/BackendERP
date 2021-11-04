@@ -19,8 +19,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.Base.Common;
 using Newtonsoft.Json;
-using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
-using DigitBridge.CommerceCentral.ERPEventSDK;
+using DigitBridge.CommerceCentral.ERPApiSDK;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {

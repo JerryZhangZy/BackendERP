@@ -97,6 +97,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data from dto
             FromDto(payload.PoTransaction);
+            
+            if (!LoadPurchaseOrderData(payload.PoTransaction.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
+                return false;
 
             // validate data for Add processing
             if (!Validate())
@@ -121,6 +124,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data from dto
             FromDto(payload.PoTransaction);
+            
+            if (!LoadPurchaseOrderData(payload.PoTransaction.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
+                return false;
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -204,6 +210,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.PoTransaction);
 
+            if (!LoadPurchaseOrderData(payload.PoTransaction.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
+                return false;
+            
             // validate data for Add processing
             if (!Validate())
                 return false;
@@ -232,6 +241,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // load data from dto
             FromDto(payload.PoTransaction);
+            
+            if (!LoadPurchaseOrderData(payload.PoTransaction.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
+                return false;
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -329,7 +341,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             List();
             if (string.IsNullOrEmpty(poNum)) return null;
-            //LoadInvoice(invoiceNumber, profileNum, masterAccountNum);
+            LoadPurchaseOrderData(poNum, profileNum, masterAccountNum);
             return await _data.GetDataListAsync(poNum, masterAccountNum, profileNum, transNum);
         }
         
@@ -353,7 +365,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load LoadPurchaseOrderData
             var poData = new PurchaseOrderData(dbFactory);
             var success = poData.GetByNumber(masterAccountNum, profileNum, poNum);
-            if (!success) return false;
+            if (!success)
+            { 
+                AddError($"PurchaseOrderData no found");
+                return false;
+            }
 
             if (Data == null)
                 NewData();
@@ -366,6 +382,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.PoUuid = poData.PoHeader.PoUuid;
                 if (!item.RowNum.IsZero()) continue;
                 item.PoItemUuid = poData.PoItems.FirstOrDefault(i => i.SKU == item.SKU && i.WarehouseUuid == item.WarehouseUuid)?.PoItemUuid;
+            }
+
+            var emptyItems = Data.PoTransactionItems.Where(r => r.PoItemUuid.IsZero()).ToList();
+
+            foreach (var emptyItem in emptyItems)
+            {
+                Data.PoTransactionItems.Remove(emptyItem);
+            }
+            if(!Data.PoTransactionItems.Any()){
+                AddError($"No Math PoTransactionItems");
+                return false;
             }
 
             return success;
