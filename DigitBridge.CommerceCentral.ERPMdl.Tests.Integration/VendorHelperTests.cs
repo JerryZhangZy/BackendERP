@@ -58,6 +58,43 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         #endregion async methods
 
+        [Fact()]
+        public void Query_Test()
+        {
+            var paramlist = new List<string>()
+            {
+                "VendorCode-Tester-0827-072806697", "VendorCode-Tester-0826-220213558", "VendorCode-Tester-0826-220201635", "VendorCode-Tester-0826-220138564", "VendorCode-Tester-0826-220048344",
+                "VendorCode-Tester-0826-072313569"
+            };
+
+            var filters = new List<IQueryFilter>
+            {
+                new QueryFilter<int>("MasterAccountNum", "MasterAccountNum", "", FilterBy.eq, 0)
+                {
+                    FilterValue = 10001
+                },
+                new QueryFilter<int>("ProfileNum", "ProfileNum", "", FilterBy.eq, 0)
+                {
+                    FilterValue = 10001
+                },
+                new QueryFilter<string>("VendorCode", "VendorCode", "", FilterBy.eq, "")
+                {
+                    MultipleFilterValueList = paramlist
+                }
+        };
+
+            var whereSql = string.Join(" and ", filters.Select(f => f.GetFilterSQLBySqlParameter()));
+            var sqlParams = filters.Select(f => f.GetSqlParameter()).ToArray();
+            var sql = $"SELECT RowNum,VendorUuid,VendorCode FROM Vendor WHERE {whereSql}";
+            using (var trs = new ScopedTransaction(DataBaseFactory))
+            {
+                var result = SqlQuery.Execute(
+                sql,
+                (long RowNum, string VendorUuid, string VendorCode) => (RowNum, VendorUuid, VendorCode),
+                sqlParams);
+            }
+        }
+
     }
 }
 

@@ -67,6 +67,23 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             return srv.Data;
         }
+
+        public static async Task<InvoiceTransactionData> GetInvoicePaymentFromDBAsync(IDataBaseFactory dbFactory)
+        {
+            var rownum = dbFactory.GetValue<InvoiceTransaction, long>($@"
+SELECT TOP 1 rownum
+FROM InvoiceTransaction ins  
+where transtype={(int)TransTypeEnum.Payment}
+order by ins.rownum desc
+");
+            Assert.True(rownum > 0, "No invoice payment in db");
+
+            var srv = new InvoicePaymentService(dbFactory);
+            var success = await srv.GetDataAsync(rownum);
+            Assert.True(success, srv.Messages.ObjectToString());
+
+            return srv.Data;
+        }
     }
 }
 

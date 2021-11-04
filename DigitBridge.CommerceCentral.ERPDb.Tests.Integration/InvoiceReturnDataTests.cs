@@ -59,7 +59,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         {
             var invoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(dbFactory);
 
-            var data = await GetFakerInvoiceReturnDataAsync(dbFactory, invoiceData); 
+            var data = await GetFakerInvoiceReturnDataAsync(dbFactory, invoiceData);
 
             var srv = new InvoiceReturnService(dbFactory);
             srv.Add();
@@ -75,6 +75,23 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             var success = await srv.AddAsync(returnPayload_Add);
 
+            Assert.True(success, srv.Messages.ObjectToString());
+
+            return srv.Data;
+        }
+
+        public static async Task<InvoiceTransactionData> GetInvoiceReturnFromDBAsync(IDataBaseFactory dbFactory)
+        {
+            var rownum = dbFactory.GetValue<InvoiceTransaction, long>($@"
+SELECT TOP 1 rownum
+FROM InvoiceTransaction ins  
+where transtype={(int)TransTypeEnum.Return}
+order by ins.rownum desc
+");
+            Assert.True(rownum > 0, "No invoice return in db");
+
+            var srv = new InvoicePaymentService(dbFactory);
+            var success = await srv.GetDataAsync(rownum);
             Assert.True(success, srv.Messages.ObjectToString());
 
             return srv.Data;

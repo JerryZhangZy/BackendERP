@@ -388,3 +388,4 @@ local.settings.json
 /centralerp/DigitBridge.CommerceCentral.ERPApi/local.settings.json
 /DigitBridge.CommerceCentral.ERPApi/local.settings.json
 /DigitBridge.CommerceCentral.ERPBroker/Properties/ServiceDependencies/DigitBridge-ERP-Broker-Func-Dev - Zip Deploy/profile.arm.json
+/DigitBridge.CommerceCentral.ERP.Integration.Api/Properties/launchSettings.json

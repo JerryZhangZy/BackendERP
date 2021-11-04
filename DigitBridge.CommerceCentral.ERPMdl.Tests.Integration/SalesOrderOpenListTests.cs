@@ -75,7 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         /// <returns></returns>
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task GetSalesOrdersOpenListAsync_Test_Simple_Check()
+        public async Task GetSalesOrdersOpenListAsync_Simple_Test()
         {
             var qry = new SalesOrderOpenQuery();
             var srv = new SalesOrderOpenList(dataBaseFactory, qry);
@@ -85,15 +85,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
                 IsQueryTotalCount = true,
+                LoadAll = true
             };
-            payload.Top = 10;
-            payload.LoadAll = true;
-            payload.Filter = new JObject()
-            {
-                { "OrderStatus",(int)SalesOrderStatus.Open},
-                { "UpdateDateUtcFrom",DateTime.Now.AddMonths(-6).Date},
-                { "UpdateDateUtcTo",DateTime.Now.AddDays(1).Date},
-            };
+
+            //payload.Filter = new JObject()
+            //{
+            //    { "OrderStatus",(int)SalesOrderStatus.Open},
+            //    { "UpdateDateUtcFrom",DateTime.Now.AddMonths(-6).Date},
+            //    { "UpdateDateUtcTo",DateTime.Now.AddDays(1).Date},
+            //};
 
             using (var b = new Benchmark("GetSalesOrdersOpenListAsync_Test"))
             {
@@ -108,45 +108,128 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         /// </summary>
         /// <returns></returns>
         [Fact()]
-        public async Task GetSalesOrdersOpenListAsync_Test_Full_Check()
+        public async Task GetSalesOrdersOpenListAsync_Full_Test()
         {
-            var qry = new SalesOrderOpenQuery();
-            var srv = new SalesOrderOpenList(dataBaseFactory, qry);
+            var data = await GetSalesOrderFromDBAsync();
+            var header = data.SalesOrderHeader;
+            var info = data.SalesOrderHeaderInfo;
 
             var payload = new SalesOrderOpenListPayload()
             {
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
                 IsQueryTotalCount = true,
+                LoadAll = true,
             };
-            //payload.Top = 20;
-            payload.LoadAll = true;
-            payload.Filter = new JObject()
+
+            var filters = new JObject()
+            {
+                { "OrderStatus",header.OrderStatus},
+                { "UpdateDateUtcFrom",header.UpdateDateUtc},
+                { "UpdateDateUtcTo",header.UpdateDateUtc},
+
+                { "SalesOrderUuid",header.SalesOrderUuid },
+                { "orderNumberFrom",header.OrderNumber },
+                { "orderNumberTo",header.OrderNumber },
+                { "orderDateFrom",header.OrderDate},
+                { "orderDateTo",header.OrderDate },
+                { "shipDateFrom",header.ShipDate},
+                { "shipDateTo",header.ShipDate},
+                { "orderType",header.OrderType},
+                { "orderStatus",header.OrderStatus},
+                { "customerCode",header.CustomerCode},
+                { "customerName",header.CustomerName},
+
+                { "shippingCarrier",info.ShippingCarrier },
+                { "distributionCenterNum",info.DistributionCenterNum },
+                { "centralOrderNum",info.CentralOrderNum },
+                { "channelNum",info.ChannelNum },
+                { "channelAccountNum",info.ChannelAccountNum },
+                { "channelOrderID",info.ChannelOrderID },
+                { "warehouseCode",info.WarehouseCode},
+                { "refNum",info.RefNum },
+                { "customerPoNum",info.CustomerPoNum },
+                { "shipToName",info.ShipToName },
+                { "shipToState",info.ShipToState },
+                { "shipToPostalCode",info.ShipToPostalCode }
+            };
+
+            var filterList = filters.Properties();
+            foreach (var filter in filterList)
+            {
+                payload.Filter = GetInitFilter(filter);
+                await TestFilter(payload, header.RowNum);
+            }
+
+            //test all
+            payload.Filter = filters;
+            await TestFilter(payload, header.RowNum);
+        }
+        private JObject GetInitFilter(JProperty currentFilter)
+        {
+            var initFilters = new JObject()
             {
                 { "OrderStatus",(int)SalesOrderStatus.Open},
                 { "UpdateDateUtcFrom",DateTime.Now.AddYears(-1).Date},
                 { "UpdateDateUtcTo",DateTime.Now.AddDays(1).Date},
-                //{ "OrderNumberFrom","jihcgv92qz6m70j5fykl7aq6v6qemccedc0jij9a7tabf9ei6h"},
-                //{ "OrderNumberTo","jihcgv92qz6m70j5fykl7aq6v6qemccedc0jij9a7tabf9ei6h"},
-
             };
-
-            using (var b = new Benchmark("GetSalesOrdersOpenListAsync_Test"))
+            if (initFilters.ContainsKey(currentFilter.Name))
             {
-                await srv.GetSalesOrdersOpenListAsync(payload);
+                initFilters[currentFilter.Name] = currentFilter.Value;
             }
-
-            Assert.True(payload.Success, payload.Messages.ObjectToString());
-
-            Assert.True(payload.SalesOrderOpenListCount > 0 && !payload.SalesOrderOpenList.ToString().IsZero());
-
-            IList<SalesOrderData> datas = payload.SalesOrderOpenList.ToString().StringToObject<List<SalesOrderData>>();
-
-            Assert.True(datas != null && datas.Count == payload.SalesOrderOpenListCount, "datas.Count should be equal payload.SalesOrderOpenListCount ");
+            else
+            {
+                initFilters.Add(currentFilter);
+            }
+            return initFilters;
         }
+        private async Task TestFilter(SalesOrderOpenListPayload payload, long expectedRowNum)
+        {
+            var qry = new SalesOrderOpenQuery();
+            var listService = new SalesOrderOpenList(dataBaseFactory, qry);
+            await listService.GetSalesOrdersOpenListAsync(payload);
 
+            //make sure query is correct.
+            Assert.True(payload.Success, listService.Messages.ObjectToString());
+
+            //make sure InvoiceListCount is matched.
+            Assert.True(payload.SalesOrderOpenListCount >= 1, $"TestFilter error. filter data from record by rownum:{expectedRowNum},filter is :{payload.Filter}");
+
+            var queryResult = JArray.Parse(payload.SalesOrderOpenList.ToString());
+            
+            var rowNumMatchedCount = queryResult.Count(i => i.SelectToken("WMSOrderHeader.RowNum").Value<long>()== expectedRowNum);
+            //make sure result data is matched.
+            Assert.Equal(1, rowNumMatchedCount);
+        }
         #endregion async methods
 
+        #region prepare data
+        public async Task<SalesOrderData> GetSalesOrderFromDBAsync()
+        {
+            //where condition match the init query filter.
+
+            var sql = $@"
+SELECT TOP 1 rownum
+FROM SalesOrderHeader ins  
+WHERE MasterAccountNum={MasterAccountNum}
+AND ProfileNum={ProfileNum} 
+AND OrderStatus={(int)SalesOrderStatus.Open}
+AND UpdateDateUtc >= '{DateTime.Now.AddYears(-1).Date}'
+AND UpdateDateUtc <= '{DateTime.Now.AddDays(1).Date}'
+order by ins.rownum desc
+";
+
+            var rownum = await dataBaseFactory.GetValueAsync<SalesOrderHeader, long>(sql);
+
+            Assert.True(rownum > 0, "No SalesOrder in db");
+
+            var srv = new SalesOrderService(dataBaseFactory);
+            var success = await srv.GetDataAsync(rownum);
+            Assert.True(success, srv.Messages.ObjectToString());
+
+            return srv.Data;
+        }
+        #endregion
     }
 }
 

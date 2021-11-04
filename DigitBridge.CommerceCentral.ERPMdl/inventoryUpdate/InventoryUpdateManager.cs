@@ -358,10 +358,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {  
                     WarehouseCode = item.WarehouseCode,
                     SKU = item.SKU,
-                    WarehouseUuid = existInventory.Item3,
+                    WarehouseUuid = existInventory.Item2,
                     UpdateQty = item.Qty- decimal.Parse( existInventory.Item5),
-                    InventoryUuid = existInventory.Item2,
-                    ProductUuid= existInventory.Item4,
+                    InventoryUuid = existInventory.Item4,
+                    ProductUuid= existInventory.Item3,
  
                 };
                 var data = new InventoryUpdateDataDto()
@@ -370,7 +370,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     InventoryUpdateHeader = new InventoryUpdateHeaderDto
                     {
                         WarehouseCode = item.WarehouseCode,
-                        WarehouseUuid = existInventory.Item3,
+                        WarehouseUuid = existInventory.Item2,
                         DatabaseNum = inventorySyncUpdatePayload.DatabaseNum,
                         ProfileNum = inventorySyncUpdatePayload.ProfileNum,
                         MasterAccountNum = inventorySyncUpdatePayload.MasterAccountNum,

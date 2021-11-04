@@ -430,6 +430,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.DiscountPrice = (item.Price * item.DiscountRate.ToRate()).ToPrice();
                 item.ExtAmount = (item.DiscountPrice * item.ShipQty).ToAmount();
             }
+            else item.ExtAmount = (item.Price * item.ShipQty).ToAmount();
             item.ExtAmount = item.ExtAmount - item.DiscountAmount;
 
             item.ShipAmount = (item.Price * item.ShipQty).ToAmount();

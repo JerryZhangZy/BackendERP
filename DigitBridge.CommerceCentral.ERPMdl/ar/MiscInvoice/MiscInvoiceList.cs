@@ -102,6 +102,7 @@ SELECT
             }
             catch (Exception ex)
             {
+                payload.Success = false;
                 payload.MiscInvoiceListCount = 0;
                 payload.MiscInvoiceList = null;
                 return payload;
