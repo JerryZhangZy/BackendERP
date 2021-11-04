@@ -63,105 +63,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
 
         #region sync methods
-        //[Fact()]
-        ////[Fact(Skip = SkipReason)]
-        //public void GetInvoiceList_Test()
-        //{
-        //    var invoice = await SaveInvoice();
-        //    var header = invoice.InvoiceHeader;
-        //    var headerInfo = invoice.InvoiceHeaderInfo;
-
-        //    var payload = new InvoicePayload()
-        //    {
-        //        MasterAccountNum = MasterAccountNum,
-        //        ProfileNum = ProfileNum
-        //    };
-        //    payload.LoadAll = true;
-        //    payload.Filter = new JObject()
-        //    {
-        //        {"InvoiceUuid",  $"{header.InvoiceUuid}"},
-        //        {"QboDocNumber",  $"{header.QboDocNumber}"},
-        //        {"InvoiceNumberFrom",  $"{header.InvoiceNumber}"},
-        //        {"InvoiceNumberTo",  $"{header.InvoiceNumber}"},
-        //        {"InvoiceDateFrom",  $"{header.InvoiceDate}"},
-        //        {"InvoiceDateTo",  $"{header.InvoiceDate}"},
-        //        {"DueDateFrom",  $"{header.DueDate}"},
-        //        {"DueDateTo",  $"{header.DueDate}"},
-        //        {"InvoiceType",   header.InvoiceType},
-        //        {"InvoiceStatus",   header.InvoiceStatus },
-        //        {"CustomerCode",  $"{header.CustomerCode}"},
-        //        {"CustomerName",  $"{header.CustomerName}"},
-
-        //        {"OrderShipmentNum",  $"{headerInfo.OrderShipmentNum}"},
-        //        {"ShippingCarrier", $"{headerInfo.ShippingCarrier}"},
-        //        {"DistributionCenterNum", $"{headerInfo.DistributionCenterNum}"},
-        //        {"CentralOrderNum",  $"{headerInfo.CentralOrderNum}"},
-        //        {"ChannelNum",  $"{headerInfo.ChannelNum}"},
-        //        {"ChannelAccountNum", $"{headerInfo.ChannelAccountNum}"},
-        //        {"ChannelOrderID", $"{headerInfo.ChannelOrderID}"},
-        //        {"WarehouseCode",  $"{headerInfo.WarehouseCode}"},
-        //        {"RefNum",  $"{headerInfo.RefNum}"},
-        //        {"CustomerPoNum",  $"{headerInfo.CustomerPoNum}"},
-        //        {"ShipToName", $"{headerInfo.ShipToName}"},
-        //        {"ShipToState",  $"{headerInfo.ShipToState}"},
-        //        {"ShipToPostalCode",  $"{headerInfo.ShipToPostalCode}"},
-        //    };
-
-        //    var listService = new InvoiceList(this.DataBaseFactory);
-        //    listService.GetInvoiceList(payload);
-
-        //    //make sure query is correct.
-        //    Assert.True(payload.Success, listService.Messages.ObjectToString());
-
-        //    //make sure result is matched.
-        //    Assert.Equal(1, payload.InvoiceListCount);
-
-        //}
+         
         #endregion sync methods
 
         #region async methods
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task GetInvoiceListAsync_Test()
+        public async Task GetInvoiceListAsync_Simple_Test()
         {
-            var invoice = await InvoiceDataTests.SaveFakerInvoiceAsync(this.DataBaseFactory);
-            var header = invoice.InvoiceHeader;
-            var headerInfo = invoice.InvoiceHeaderInfo;
-
             var payload = new InvoicePayload()
             {
                 MasterAccountNum = MasterAccountNum,
-                ProfileNum = ProfileNum
-            };
-            payload.LoadAll = true;
-            payload.Filter = new JObject()
-            {
-                {"InvoiceUuid",  $"{header.InvoiceUuid}"},
-                {"QboDocNumber",  $"{header.QboDocNumber}"},
-                {"InvoiceNumberFrom",  $"{header.InvoiceNumber}"},
-                {"InvoiceNumberTo",  $"{header.InvoiceNumber}"},
-                {"InvoiceDateFrom",  $"{header.InvoiceDate}"},
-                {"InvoiceDateTo",  $"{header.InvoiceDate}"},
-                {"DueDateFrom",  $"{header.DueDate}"},
-                {"DueDateTo",  $"{header.DueDate}"},
-                {"InvoiceType",   header.InvoiceType},
-                {"InvoiceStatus",   header.InvoiceStatus },
-                {"CustomerCode",  $"{header.CustomerCode}"},
-                {"CustomerName",  $"{header.CustomerName}"},
-
-                {"OrderShipmentNum",  $"{headerInfo.OrderShipmentNum}"},
-                {"ShippingCarrier", $"{headerInfo.ShippingCarrier}"},
-                {"DistributionCenterNum", $"{headerInfo.DistributionCenterNum}"},
-                {"CentralOrderNum",  $"{headerInfo.CentralOrderNum}"},
-                {"ChannelNum",  $"{headerInfo.ChannelNum}"},
-                {"ChannelAccountNum", $"{headerInfo.ChannelAccountNum}"},
-                {"ChannelOrderID", $"{headerInfo.ChannelOrderID}"},
-                {"WarehouseCode",  $"{headerInfo.WarehouseCode}"},
-                {"RefNum",  $"{headerInfo.RefNum}"},
-                {"CustomerPoNum",  $"{headerInfo.CustomerPoNum}"},
-                {"ShipToName", $"{headerInfo.ShipToName}"},
-                {"ShipToState",  $"{headerInfo.ShipToState}"},
-                {"ShipToPostalCode",  $"{headerInfo.ShipToPostalCode}"},
+                ProfileNum = ProfileNum,
+                LoadAll = true
             };
 
             var listService = new InvoiceList(this.DataBaseFactory);
@@ -169,20 +83,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             //make sure query is correct.
             Assert.True(payload.Success, listService.Messages.ObjectToString());
-
-            //make sure result is matched.
-            Assert.Equal(1, payload.InvoiceListCount);
-
-            var rowNum_Actual = JArray.Parse(payload.InvoiceList.ToString())[0].Value<long>("rowNum");
-            //make sure result data is matched.
-            Assert.Equal(header.RowNum, rowNum_Actual);
-        }
+        } 
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task GetInvoiceListAsync_EachFilter_Test()
+        public async Task GetInvoiceListAsync_Full_Test()
         {
-            var invoice = await InvoiceDataTests.SaveFakerInvoiceAsync(this.DataBaseFactory);
+            var invoice = await InvoiceDataTests.GetInvoiceFromDBAsync(this.DataBaseFactory);
             var header = invoice.InvoiceHeader;
             var headerInfo = invoice.InvoiceHeaderInfo;
 
@@ -226,15 +133,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             foreach (var filter in filterList)
             {
                 payload.Filter = new JObject() { filter };
-                await TestEachFilter(payload, header.RowNum);
+                await TestFilter(payload, header.RowNum);
             }
 
             //test all
             payload.Filter = filters;
-            await TestEachFilter(payload, header.RowNum);
+            await TestFilter(payload, header.RowNum);
         }
 
-        private async Task TestEachFilter(InvoicePayload payload, long expectedRowNum)
+        private async Task TestFilter(InvoicePayload payload, long expectedRowNum)
         {
             var listService = new InvoiceList(this.DataBaseFactory);
             await listService.GetInvoiceListAsync(payload);
@@ -243,8 +150,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.True(payload.Success, listService.Messages.ObjectToString());
 
             //make sure InvoiceListCount is matched.
-            Assert.True(payload.InvoiceListCount >= 1, "No data found." + payload.Filter.ToString());
-            
+            Assert.True(payload.InvoiceListCount >= 1, $"TestFilter error. filter data from record by rownum:{expectedRowNum},filter is :{payload.Filter}");
+
             var queryResult = JArray.Parse(payload.InvoiceList.ToString());
             var rowNumMatchedCount = queryResult.Count(i => i.Value<long>("rowNum") == expectedRowNum);
             //make sure result data is matched.

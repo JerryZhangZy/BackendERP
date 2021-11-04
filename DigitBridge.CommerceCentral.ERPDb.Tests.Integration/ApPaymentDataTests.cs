@@ -67,6 +67,24 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 
             return srv.Data;
         }
+
+        public static async Task<ApTransactionData> GetApPaymentFromDBAsync(IDataBaseFactory dbFactory)
+        {
+            var rownum = dbFactory.GetValue<ApInvoiceTransaction, long>($@"
+SELECT TOP 1 rownum
+FROM ApInvoiceTransaction ins  
+where transtype={(int)TransTypeEnum.Payment}
+order by ins.rownum desc
+");
+            Assert.True(rownum > 0, "No ApPayment in db");
+
+            var srv = new ApPaymentService(dbFactory);
+            var success = await srv.GetDataAsync(rownum);
+            Assert.True(success, srv.Messages.ObjectToString());
+
+            return srv.Data;
+        }
+
     }
 }
 

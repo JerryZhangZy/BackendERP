@@ -141,6 +141,38 @@ where tmp.rid=1
         //    payload = await svc.GetInventoryBySkuArrayAsync(payload);
         //    return payload.Inventorys;
         //}
+
+
+        public static async Task<InvoiceData> GetInvoiceFromDBAsync(IDataBaseFactory dbFactory, string invoiceUuid = null)
+        {
+            var sql = @"
+SELECT TOP 1 rownum
+FROM InvoiceHeader ins 
+INNER JOIN (
+    SELECT it.InvoiceUuid, COUNT(1) AS cnt 
+    FROM InvoiceItems it
+    GROUP BY it.InvoiceUuid
+) itm ON (itm.InvoiceUuid = ins.InvoiceUuid)
+WHERE itm.cnt > 0
+{0}
+order by ins.rownum desc
+";
+            if (invoiceUuid.IsZero())
+                sql = string.Format(sql, "");
+            else
+                sql = string.Format(sql, $" And ins.InvoiceUuid='{invoiceUuid}'");
+
+            var rownum = dbFactory.GetValue<InvoiceHeader, long>(sql);
+
+            Assert.True(rownum > 0, "No Invoice in db");
+
+            var srv = new InvoiceService(dbFactory);
+            var success = await srv.GetDataAsync(rownum);
+            Assert.True(success, srv.Messages.ObjectToString());
+
+            return srv.Data;
+        }
+
     }
 }
 

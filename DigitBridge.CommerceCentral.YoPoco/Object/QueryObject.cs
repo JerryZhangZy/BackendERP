@@ -457,6 +457,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     var qry = QueryFilterList.FirstOrDefault(x => x.Name.EqualsIgnoreSpace(kv.Key));
                     if (qry == null) continue;
                     qry.ReadJObject(kv.Value);
+                   var vendorName= qry.GetMultipleFilterValueList();
                 }
                 return;
             }
