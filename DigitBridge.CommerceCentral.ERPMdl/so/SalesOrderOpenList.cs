@@ -132,7 +132,7 @@ FOR JSON PATH
             SELECT 
              {GetHeader_Columns()}
             ,{GetItem_Script()} 
-            "; 
+            ";
 
             return this.SQL_Select;
         }
@@ -182,10 +182,11 @@ FOR JSON PATH
                     payload.SalesOrderOpenListCount = await CountAsync();
                 payload.Success = await ExcuteJsonAsync(sb);
                 if (payload.Success)
-                    payload.SalesOrderOpenList = sb;
+                    payload.SalesOrderOpenList = sb.ToString();
             }
             catch (Exception ex)
             {
+                payload.Success = false;
                 payload.SalesOrderOpenListCount = 0;
                 payload.SalesOrderOpenList = null;
                 AddError(ex.ObjectToString());

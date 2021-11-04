@@ -25,14 +25,14 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         /// <summary>
         /// Load sales order list
         /// </summary>
-        [FunctionName(nameof(SalesOrdersOpenList))]
-        [OpenApiOperation(operationId: "SalesOrdersOpenList", tags: new[] { "SalesOrders" }, Summary = "Load open sales order list data")]
+        [FunctionName(nameof(GetSalesOrdersOpenList))]
+        [OpenApiOperation(operationId: "GetSalesOrdersOpenList", tags: new[] { "SalesOrders" }, Summary = "Load open sales order list data")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SalesOrderOpenListPayload), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderOpenListPayload))]
-        public static async Task<JsonNetResponse<SalesOrderOpenListPayload>> SalesOrdersOpenList(
+        public static async Task<JsonNetResponse<SalesOrderOpenListPayload>> GetSalesOrdersOpenList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/find")] HttpRequest req)
         {
             var payload = await req.GetParameters<SalesOrderOpenListPayload>(true);
