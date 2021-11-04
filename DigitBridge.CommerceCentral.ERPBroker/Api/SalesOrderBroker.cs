@@ -1,8 +1,7 @@
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
-using DigitBridge.CommerceCentral.ERPEventSDK;
-using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
+using DigitBridge.CommerceCentral.ERPApiSDK;
 using DigitBridge.CommerceCentral.ERPMdl;
 using DigitBridge.Log;
 using Microsoft.AspNetCore.Http;

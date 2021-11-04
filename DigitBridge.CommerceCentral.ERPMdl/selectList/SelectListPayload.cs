@@ -22,11 +22,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public static string ListAll = "ALL";
         public SelectListPayload()
         {
+            Top = 20;
+            Skip = 0;
+            LoadAll = false;
         }
         public SelectListPayload(string selectListName, string term) : this()
         {
             SelectListName = selectListName;
             Term = term;
+            Top = 20;
+            Skip = 0;
+            LoadAll = false;
         }
         public void ClearAll()
         {

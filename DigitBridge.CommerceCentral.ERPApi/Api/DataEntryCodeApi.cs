@@ -32,6 +32,8 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
             ILogger log)
         {
             var payload = await req.GetParameters<SelectListPayload>(true);
+            payload.Skip = 0;
+            payload.LoadAll = false;
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var slf = new SelectListFactory(dataBaseFactory);
             var result = await slf.GetSelectListAsync(payload);

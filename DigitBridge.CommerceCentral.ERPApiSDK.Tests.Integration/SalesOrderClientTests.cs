@@ -1,13 +1,12 @@
-using DigitBridge.CommerceCentral.ERPEventSDK.ApiClient;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
+namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
-    public partial class QboInvoiceClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class SalesOrderClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug TableUniversalTests Function";
 
@@ -17,7 +16,7 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
         private string _baseUrl = "https://digitbridge-erp-event-api-dev.azurewebsites.net/api/erpevents";
         private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
 
-        public QboInvoiceClientTests(TestFixture<StartupTest> fixture)
+        public SalesOrderClientTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -39,23 +38,13 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
         [Fact()]
         public async Task SendAddData_Test()
         {
-            var client = new QboInvoiceClient(_baseUrl, _code);
+            var client = new SalesOrderClient(_baseUrl, _code);
             var data=new AddErpEventDto{
                 MasterAccountNum=10001,
                 ProcessUuid=Guid.NewGuid().ToString(),
                 ProfileNum=10001
             };
-            var result =await client.SendAddQboInvoiceAsync(data);
-            Assert.True(client.Data!=null, "succ");
-            Assert.True(client.Data.ProcessUuid==data.ProcessUuid, "succ");
-            Assert.True(result, "succ");
-
-            data=new AddErpEventDto{
-                MasterAccountNum=10001,
-                ProcessUuid=Guid.NewGuid().ToString(),
-                ProfileNum=10001
-            };
-            result =await client.SendVoidQboInvoiceAsync(data);
+            var result =await client.SendCreateSalesOrderByCentralOrderAsync(data);
             Assert.True(client.Data != null, "succ");
             Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
             Assert.True(result, "succ");
@@ -63,23 +52,13 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
         [Fact()]
         public async Task SendAddDataWithConfig_Test()
         {
-            var client = new QboInvoiceClient();
+            var client = new SalesOrderClient();
             var data=new AddErpEventDto{
                 MasterAccountNum=10001,
                 ProcessUuid=Guid.NewGuid().ToString(),
                 ProfileNum=10001
             };
-            var result =await client.SendAddQboInvoiceAsync(data);
-            Assert.True(client.Data != null, "succ");
-            Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
-            Assert.True(result, "succ");
-
-            data =new AddErpEventDto{
-                MasterAccountNum=10001,
-                ProcessUuid=Guid.NewGuid().ToString(),
-                ProfileNum=10001
-            };
-            result =await client.SendVoidQboInvoiceAsync(data);
+            var result =await client.SendCreateSalesOrderByCentralOrderAsync(data);
             Assert.True(client.Data != null, "succ");
             Assert.True(client.Data.ProcessUuid == data.ProcessUuid, "succ");
             Assert.True(result, "succ");
@@ -88,7 +67,7 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
         [Fact()]
         public async Task SendActionResult_Test()
         {
-            var client = new QboInvoiceClient(_baseUrl, _code);
+            var client = new SalesOrderClient(_baseUrl, _code);
             var data=new UpdateErpEventDto{
                 MasterAccountNum=10001,
                 EventUuid=Guid.NewGuid().ToString(),
@@ -97,14 +76,14 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
                 ActionStatus=0
             };
             var result =await client.SendActionResultAsync(data);
-            Assert.True(client.Messages.Count>0, "succ");
+            Assert.True(client.Messages.Count > 0, "succ");
             Assert.True(!result, "succ");
         }
 
         [Fact()]
         public async Task SendActionResultWithConfig_Test()
         {
-            var client = new QboInvoiceClient();
+            var client = new SalesOrderClient();
             var data=new UpdateErpEventDto{
                 MasterAccountNum=10001,
                 EventUuid=Guid.NewGuid().ToString(),
@@ -113,6 +92,7 @@ namespace DigitBridge.CommerceCentral.ERPEventSDK.Tests.Integration
                 ActionStatus=0
             };
             var result =await client.SendActionResultAsync(data);
+            Assert.True(client.Messages.Count > 0, "succ");
             Assert.True(!result, "succ");
         }
 

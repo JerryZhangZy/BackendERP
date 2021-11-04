@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DigitBridge.CommerceCentral.ERPEventSDK.ApiClient
+namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     public class QboReturnClient : ErpEventClient
     {
