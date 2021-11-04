@@ -12,7 +12,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     public class WmsPurchaseOrderClient : ApiClientBase<WmsPurchaseOrderPayload>
     {
-        public WmsPurchaseOrderClient() : base(ConfigUtil.Api_BaseUrl, ConfigUtil.Api_AuthCode)
+        public WmsPurchaseOrderClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
         { }
         public WmsPurchaseOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }

@@ -66,7 +66,13 @@
     "DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
     "UseAzureManagedIdentity": "false",
     "AzureTokenProviderConnectionString": "runas=developer;developertool=visualstudio",
-    "DefaultCacheExpireSlidingMins": "2"
+    "DefaultCacheExpireSlidingMins": "2",
+
+    "ERP_Integration_Api_BaseUrl": "https://digitbridge-erp-integration-api-dev.azurewebsites.net",
+    "ERP_Integration_Api_AuthCode": "yaEyeN7PjOovcgu4h2Q2JEgOtQt5gSb5uC9jHR840ca/qjErIxxMZw==",
+
+    "EventApi_BaseUrl": "https://digitbridge-erp-event-api-dev.azurewebsites.net",
+    "EventApi_AuthCode": "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==",
 
     //Staging
     //"UseOrchestration": "true",

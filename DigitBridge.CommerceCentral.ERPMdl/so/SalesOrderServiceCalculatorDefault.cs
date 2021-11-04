@@ -264,52 +264,43 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null)
                 return false;
 
-            //TODO: add calculate summary object logic
-            //This is generated sample code
-
             var sum = data.SalesOrderHeader;
             sum.ShippingAmount = sum.ShippingAmount.ToAmount();
             sum.MiscAmount = sum.MiscAmount.ToAmount();
             sum.ChargeAndAllowanceAmount = sum.ChargeAndAllowanceAmount.ToAmount();
 
-            // if exist DiscountRate, calculate discount amount, otherwise use entry discount amount
+            // We support both discount rate and discount amount
+            // if exist discount rate, it will apply to unit price and get after discount price
+            sum.DiscountAmount = sum.DiscountAmount.ToAmount();
+            var discountRateAmount = (decimal)0;
+            // if exist DiscountRate, calculate discount amount
             if (!sum.DiscountRate.IsZero())
-                sum.DiscountAmount = (sum.SubTotalAmount * sum.DiscountRate.ToRate()).ToAmount();
-            else
-            {
-                sum.DiscountRate = 0;
-                sum.DiscountAmount = sum.DiscountAmount.ToAmount();
-            }
+                discountRateAmount = (sum.SubTotalAmount * sum.DiscountRate.ToRate()).ToAmount();
+            var totalDiscountAmount = discountRateAmount + sum.DiscountAmount;
 
             //manual input max discount amount is SubTotalAmount
-
             // tax calculate should deduct discount from taxable amount
-            //sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
-
-            var discountRate = sum.SubTotalAmount != 0 ? (sum.DiscountAmount / sum.SubTotalAmount) : 0;
-            sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate;
-            sum.TaxAmount = sum.TaxAmount.ToAmount();
+            var discountRate = sum.SubTotalAmount != 0 ? (totalDiscountAmount / sum.SubTotalAmount) : 0;
+            sum.TaxAmount = ((sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate).ToAmount();
 
             var setting = new ERPSetting();
             if (setting.TaxForShippingAndHandling)
             {
                 sum.ShippingTaxAmount = (sum.ShippingAmount * sum.TaxRate).ToAmount();
                 sum.MiscTaxAmount = (sum.MiscAmount * sum.TaxRate).ToAmount();
-                sum.TaxAmount = (sum.TaxAmount + sum.ShippingTaxAmount + sum.MiscTaxAmount).ToAmount();
+                sum.TaxAmount += (sum.ShippingTaxAmount + sum.MiscTaxAmount);
             }
 
-
-            sum.SalesAmount = (sum.SubTotalAmount - sum.DiscountAmount).ToAmount();
+            sum.SalesAmount = (sum.SubTotalAmount - totalDiscountAmount).ToAmount();
             sum.TotalAmount = (
-                 (sum.SubTotalAmount - sum.DiscountAmount) +
+                (sum.SubTotalAmount - totalDiscountAmount) +
                 sum.TaxAmount +
                 sum.ShippingAmount +
-                sum.MiscAmount +
-                sum.ChargeAndAllowanceAmount
+                sum.MiscAmount
+                //sum.ChargeAndAllowanceAmount
                 ).ToAmount();
 
             sum.Balance = (sum.TotalAmount - sum.PaidAmount - sum.CreditAmount).ToAmount();
-
 
             return true;
         }
@@ -319,16 +310,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (data is null)
                 return false;
-            //TODO: add calculate summary object logic
             //This is generated sample code
 
             var sum = data.SalesOrderHeader;
-            //sum.SubTotalAmount = 0;
-            //sum.TaxableAmount = 0;
-            //sum.NonTaxableAmount = 0;
-            //sum.UnitCost = 0;
-            //sum.AvgCost = 0;
-            //sum.LotCost = 0;
             sum.SubTotalAmount = 0;
             sum.SalesAmount = 0;
             sum.TotalAmount = 0;
@@ -340,6 +324,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.AvgCost = 0;
             sum.LotCost = 0;
             sum.TaxRate = sum.TaxRate.ToRate();
+            sum.ChargeAndAllowanceAmount = 0;
 
             foreach (var item in data.SalesOrderItems)
             {
@@ -353,6 +338,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     sum.SubTotalAmount += item.ExtAmount;
                     sum.TaxableAmount += item.TaxableAmount;
                     sum.NonTaxableAmount += item.NonTaxableAmount;
+                    sum.ChargeAndAllowanceAmount += item.ChargeAndAllowanceAmount;
                 }
                 sum.UnitCost += item.UnitCost;
                 sum.AvgCost += item.AvgCost;
@@ -377,21 +363,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.ShipAmount = 0;
             item.CancelledAmount = 0;
             item.OpenAmount = 0;
-            item.MiscTaxAmount = 0;
             item.TaxAmount = 0;
             item.DiscountPrice = 0;
             item.ExtAmount = 0;
             item.TaxableAmount = 0;
             item.NonTaxableAmount = 0;
             item.ShippingTaxAmount = 0;
+            item.MiscTaxAmount = 0;
 
             var setting = new ERPSetting();
             var sum = data.SalesOrderHeader;
+
+            //TODO need get inventory object and load inventory cost
             //var prod = data.GetCache<ProductBasic>(ProductId);
             //var inv = data.GetCache<Inventory>(InventoryId);
             //var invCost = new ItemCostClass(inv);
             var invCost = new ItemCostClass();
 
+            // format number var
             item.Price = item.Price.ToPrice();
             item.ShippingAmount = item.ShippingAmount.ToAmount();
             item.MiscAmount = item.MiscAmount.ToAmount();
@@ -402,7 +391,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.OpenQty = item.OpenQty.ToQty();
             item.DiscountRate = item.DiscountRate.ToRate();
             item.DiscountAmount = item.DiscountAmount.ToAmount();
-            //TODO 
+
+            //Sales by package function  
             item.PackType = string.Empty;
             if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
                 item.PackQty = 1;
@@ -422,21 +412,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.OpenPack = item.OpenQty;
             }
 
-            //PriceRule
+            // We support both discount rate and discount amount
+            // if exist discount rate, it will apply to unit price and get after discount price
             item.DiscountPrice = item.Price;
-            // if exist DiscountRate, calculate after discount unit price
             if (!item.DiscountRate.IsZero())
             {
                 item.DiscountPrice = (item.Price * item.DiscountRate.ToRate()).ToPrice();
-                item.ExtAmount = (item.DiscountPrice * item.ShipQty).ToAmount();
             }
-            else item.ExtAmount = (item.Price * item.ShipQty).ToAmount();
-            item.ExtAmount = item.ExtAmount - item.DiscountAmount;
+            // use after discount price to calculate ext. amount
+            item.ExtAmount = (item.DiscountPrice * item.ShipQty).ToAmount();
+            // discount amount will apply to total ext.amount
+            item.ExtAmount -= item.DiscountAmount.ToAmount();
 
-            item.ShipAmount = (item.Price * item.ShipQty).ToAmount();
-            item.CancelledAmount = (item.Price * item.CancelledQty).ToAmount();
-            item.OpenAmount = (item.Price * item.OpenQty).ToAmount();
+            item.ShipAmount = (item.DiscountPrice * item.ShipQty).ToAmount();
+            item.CancelledAmount = (item.DiscountPrice * item.CancelledQty).ToAmount();
+            item.OpenAmount = (item.DiscountPrice * item.OpenQty).ToAmount();
 
+            // if item is taxable, need add item amount to TaxableAmount
             if (item.Taxable)
             {
                 item.TaxableAmount = item.ExtAmount;
@@ -453,12 +445,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             item.TaxAmount = (item.TaxableAmount * item.TaxRate).ToAmount();
 
+            // depend on erp setting, it may charge tax for shipping and handling amount
             if (setting.TaxForShippingAndHandling)
             {
                 item.ShippingTaxAmount = (item.ShippingAmount * item.TaxRate).ToAmount();
                 item.MiscTaxAmount = (item.MiscAmount * item.TaxRate).ToAmount();
             }
 
+            // this item total amount is item reference total
             item.ItemTotalAmount = (
                 item.ExtAmount +
                 item.TaxAmount +
@@ -467,11 +461,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.MiscAmount +
                 item.MiscTaxAmount +
                 item.ChargeAndAllowanceAmount
-                ).ToAmount();
+            ).ToAmount();
 
-            item.UnitCost = invCost.UnitCost;
-            item.AvgCost = invCost.AvgCost;
-            item.LotCost = invCost.AvgCost;
+            // Only when add new sales order, or new item, load cost from inventory 
+            if (processingMode == ProcessingMode.Add || item.IsNew)
+            {
+                item.UnitCost = invCost.UnitCost;
+                item.AvgCost = invCost.AvgCost;
+                item.LotCost = invCost.AvgCost;
+            }
+
+            // some item maybe not calculate cost or profilt
             if (!item.Costable)
             {
                 item.UnitCost = 0;
