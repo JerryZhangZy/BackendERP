@@ -39,8 +39,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("PoTransaction is require.");
                 return false;
             }
-
-            pl.PoTransaction.PoTransaction.TransType = (int)TransTypeEnum.Payment;
             return base.ValidateAccount(payload, number, processingMode);
         }
         public override async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
