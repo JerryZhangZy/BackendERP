@@ -10,11 +10,20 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     public class WMSSalesOrderClient : ApiClientBase<WMSSalesOrderResponsePayload>
     {
-
+        /// <summary>
+        /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were not config in config file
+        /// Local config file is 'local.settings.json'
+        /// </summary>
         public WMSSalesOrderClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_BaseUrl)
         {
 
         }
+        /// <summary>
+        /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were config in config file
+        /// Local config file is 'local.settings.json'
+        /// </summary>
+        /// <param name="baseUrl"></param>
+        /// <param name="authCode"></param>
         public WMSSalesOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
