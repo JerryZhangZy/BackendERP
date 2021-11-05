@@ -32,6 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected string GetHeader_Columns()
         {
             var columns = $@" 
+{Helper.TableAllies}.SalesOrderUuid as 'SalesOrderUuid',
 {InfoHelper.TableAllies}.WarehouseCode as 'WarehouseCode',
 {Helper.TableAllies}.DatabaseNum as 'CentralDatabaseNum',
 {InfoHelper.TableAllies}.CentralOrderNum as 'CentralOrderNum',
@@ -96,6 +97,7 @@ channelAccount.ChannelAccountName as 'ChannelAccountName',
             
 
                var columns = $@"
+{ItemHelper.TableAllies}.SalesOrderItemsUuid as 'SalesOrderItemsUuid',
 {ItemHelper.TableAllies}.SKU as 'SKU',
 CAST({ ItemHelper.TableAllies}.OrderQty as INT) as 'OrderQty',
 CAST({ ItemHelper.TableAllies}.ShipQty as INT) as 'ShipQty',

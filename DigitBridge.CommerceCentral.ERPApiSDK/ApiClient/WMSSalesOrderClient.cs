@@ -19,20 +19,21 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         { }
 
 
-        public async Task<bool> GetSalesOrdersOpenListAsync(WMSSalesOrderRequestPayload requestPayload)
+        /// <summary>
+        /// Query open s/o.
+        /// When requestPayload is null,the default setting will be applied to query.
+        /// </summary>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        /// <param name="requestPayload"></param>
+        /// <returns></returns>
+        public async Task<bool> GetSalesOrdersOpenListAsync(int masterAccountNum, int profileNum, WMSSalesOrderRequestPayload requestPayload = null)
         {
-            if (!requestPayload.HasMasterAccountNum)
+            if (!SetHeader(masterAccountNum, profileNum))
             {
-                AddError("MasterAccountNum is invalid.");
                 return false;
             }
-            if (!requestPayload.HasProfileNum)
-            {
-                AddError("ProfileNum is invalid.");
-                return false;
-            }
-            MasterAccountNum = requestPayload.MasterAccountNum;
-            ProfileNum = requestPayload.ProfileNum;
+
             return await PostAsync(requestPayload, FunctionUrl.GetSalesOrderOpenList);
         }
 
@@ -49,7 +50,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
             if (!ResopneData.Success)
             {
-                this.Messages = this.Messages.Concat(ResopneData.Messages).ToList();
+                this.Messages.Add(ResopneData.Messages);
             }
 
             return ResopneData.Success;

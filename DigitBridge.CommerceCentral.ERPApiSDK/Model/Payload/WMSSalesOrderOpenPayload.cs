@@ -1,5 +1,8 @@
 using DigitBridge.Base.Utility;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -18,7 +21,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     ///  Response payload object
     /// </summary>
     [Serializable()]
-    public class WMSSalesOrderResponsePayload : ResponsePayloadBase
+    public class WMSSalesOrderResponsePayload : WMSSalesOrderRequestPayload, IResponsePayloadBase
     {
         #region list service
 
@@ -33,7 +36,28 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// </summary>
         public int SalesOrderOpenListCount { get; set; }
 
-        #endregion list service 
+        #endregion list service
+
+        #region response base
+
+        /// <summary>
+        /// Request success
+        /// </summary>
+        [Display(Name = "success")]
+        [DataMember(Name = "success")]
+        public bool Success { get; set; } = true;
+
+        /// <summary>
+        /// Message list for this request
+        /// </summary>
+        [Display(Name = "messages")]
+        [DataMember(Name = "messages")]
+        public IList<MessageClass> Messages { get; set; } = new List<MessageClass>();
+        [JsonIgnore] public virtual bool HasMessages => Messages != null && Messages.Count > 0;
+        public bool ShouldSerializeMessages() => HasMessages;
+
+        #endregion
+
     }
 }
 
