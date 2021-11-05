@@ -304,13 +304,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (item is null || item.IsEmpty)
                 return false;
 
+            item.ItemTotalAmount = 0;
+            item.TaxAmount = 0;
+            item.DiscountPrice = 0;
+            item.ExtAmount = 0;
+            item.TaxableAmount = 0;
+            item.NonTaxableAmount = 0;
+            item.ShippingTaxAmount = 0;
+            item.MiscTaxAmount = 0;
+
             var setting = new ERPSetting();
             var sum = data.PoHeader;
+            //TODO need get inventory object and load inventory cost
             //var prod = data.GetCache<ProductBasic>(ProductId);
             //var inv = data.GetCache<Inventory>(InventoryId);
             //var invCost = new ItemCostClass(inv);
             var invCost = new ItemCostClass();
 
+            // format number var
             item.Price = item.Price.ToPrice();
             item.ShippingAmount = item.ShippingAmount.ToAmount();
             item.MiscAmount = item.MiscAmount.ToAmount();
@@ -318,37 +329,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.PoQty = item.PoQty.ToQty();
             item.ReceivedQty = item.ReceivedQty.ToQty();
             item.CancelledQty = item.CancelledQty.ToQty();
-            //item.PackType = string.Empty;
-            //if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
-            //    item.PackQty = 1;
-
-            //if (item.PackQty > 1)
-            //{
-            //    item.OrderQty = item.OrderPack * item.PackQty;
-            //    item.ShipQty = item.ShipPack * item.PackQty;
-            //    item.CancelledQty = item.CancelledPack * item.PackQty;
-            //}
-            //else
-            //{
-            //    item.OrderPack = item.OrderQty;
-            //    item.ShipPack = item.ShipQty;
-            //    item.CancelledPack = item.CancelledQty;
-            //}
 
             //PriceRule
             // if exist DiscountRate, calculate after discount unit price
+            item.DiscountPrice = item.Price;
             if (!item.DiscountRate.IsZero())
             {
-                item.DiscountPrice = (item.Price * (item.DiscountRate.ToRate() / 100)).ToPrice();
-                item.ExtAmount = (item.DiscountPrice * item.ReceivedQty).ToAmount();
-                item.DiscountAmount = (item.Price * item.ReceivedQty).ToAmount() - item.ExtAmount;
+                item.DiscountPrice = (item.Price * item.DiscountRate.ToRate()).ToPrice();
             }
-            else
-            {
-                item.DiscountPrice = item.Price;
-                item.ExtAmount = (item.Price * item.ReceivedQty - item.DiscountAmount).ToAmount();
-            }
+            // use after discount price to calculate ext. amount
+            item.ExtAmount = (item.DiscountPrice * item.ReceivedQty).ToAmount();
+            item.ExtAmount -= item.DiscountAmount.ToAmount();
 
+            // if item is taxable, need add item amount to TaxableAmount
             if (item.Taxable)
             {
                 item.TaxableAmount = item.ExtAmount;
@@ -365,12 +358,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             item.TaxAmount = (item.TaxableAmount * item.TaxRate).ToAmount();
 
+            // depend on erp setting, it may charge tax for shipping and handling amount
             if (setting.TaxForShippingAndHandling)
             {
                 item.ShippingTaxAmount = (item.ShippingAmount * item.TaxRate).ToAmount();
                 item.MiscTaxAmount = (item.MiscAmount * item.TaxRate).ToAmount();
             }
 
+            // this item total amount is item reference total
             item.ItemTotalAmount = (
                 item.ExtAmount +
                 item.TaxAmount +
@@ -380,22 +375,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.MiscTaxAmount +
                 item.ChargeAndAllowanceAmount
                 ).ToAmount();
-
-            //item.UnitCost = invCost.UnitCost;
-            //item.AvgCost = invCost.AvgCost;
-            //item.LotCost = invCost.AvgCost;
-            //if (!item.Costable)
-            //{
-            //    item.UnitCost = 0;
-            //    item.AvgCost = 0;
-            //    item.LotCost = 0;
-            //}
-            //else if (!item.IsProfit)
-            //{
-            //    item.UnitCost = item.ExtAmount;
-            //    item.AvgCost = item.ExtAmount;
-            //    item.LotCost = item.ExtAmount;
-            //}
 
             return true;
         }
