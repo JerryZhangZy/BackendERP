@@ -28,8 +28,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <summary>
         /// (Response Data) List result which load filter and paging.
         /// </summary>   
-        [JsonConverter(typeof(StringBuilderConverter))]
-        public StringBuilder SalesOrderOpenList { get; set; }
+        //[JsonConverter(typeof(StringBuilderConverter))]
+        public string SalesOrderOpenList { get; set; }
 
         /// <summary>
         /// (Response Data) List result count which load filter and paging.
