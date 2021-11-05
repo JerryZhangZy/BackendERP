@@ -19,5 +19,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         internal static string CreateInvoiceByOrderShipment = "/addCreateInvoiceByOrderShipment";
 
         internal const string GetSalesOrderOpenList = "salesOrders/find";
+
+        internal static string InventorySync = "/InventorySyncs";
     }
 }
