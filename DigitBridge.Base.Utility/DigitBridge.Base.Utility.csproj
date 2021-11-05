@@ -14,6 +14,7 @@
     <Compile Remove="Extension\AssemblyExtensions.cs" />
     <Compile Remove="Extension\FunctionAttributeExtensions.cs" />
     <Compile Remove="Extension\GenericExtensions.cs" />
+    <Compile Remove="JsonConverter\StringBuilderConverter - Copy.cs" />
   </ItemGroup>
 
   <ItemGroup>

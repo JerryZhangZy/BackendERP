@@ -26,6 +26,10 @@ namespace DigitBridge.CommerceCentral.ApiCommon
             where TPayload : PayloadBase, new()
         {
             var instance = await req.GetBodyObjectAsync<TPayload>();
+            if (instance is null)
+            {
+                instance = new TPayload();
+            }
             instance.MasterAccountNum = req.GetHeaderValue("masterAccountNum").ToInt();
             instance.ProfileNum = req.GetHeaderValue("profileNum").ToInt();
             return instance;
