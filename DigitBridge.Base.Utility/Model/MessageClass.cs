@@ -91,7 +91,8 @@ namespace DigitBridge.Base.Utility
         {
             if (lst == null)
                 lst = new List<MessageClass>();
-            lst = lst.Concat(messages).ToList();
+            foreach (var message in messages)
+                lst.Add(message);
             return lst;
         }
 
