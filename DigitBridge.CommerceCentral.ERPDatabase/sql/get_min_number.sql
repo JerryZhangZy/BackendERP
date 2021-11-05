@@ -19,8 +19,8 @@ select count(1) from SalesOrderHeader where ISNUMERIC(OrderNumber) = 1
 --ORDER BY 1
 
 -- select min number from table
---SELECT TOP 1 * FROM (
-SELECT * FROM (
+SELECT TOP 1 * FROM (
+--SELECT * FROM (
     SELECT t1.OrderNumber+1 AS number
     FROM (SELECT CAST(OrderNumber AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t1
     WHERE NOT EXISTS(
@@ -29,7 +29,7 @@ SELECT * FROM (
 		WHERE t2.OrderNumber = t1.OrderNumber + 1
 	) 
 ) ot
-WHERE ot.number >= 2021101311323675862
+WHERE ot.number > 2021101311323675862
 ORDER BY ot.number
 
 -- select first not exist number from table
