@@ -59,6 +59,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         [OpenApiPropertyDescription("(Response Data) List result.")]
         [JsonConverter(typeof(StringBuilderConverter))]
         public StringBuilder Data { get; set; }
+        [JsonIgnore] public virtual bool HasData => Data != null && Data.Length > 0;
+        public bool ShouldSerializeData() => HasData;
 
         #endregion properties
 
