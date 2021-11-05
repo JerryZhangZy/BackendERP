@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <returns></returns>
         public async Task<bool> AddSingleShipmentAsync(int masterAccountNum, int profileNum, InputOrderShipmentType shipment)
         {
-            if (!SetHeader(masterAccountNum, profileNum))
+            if (!SetAccount(masterAccountNum, profileNum))
             {
                 return false;
             }
