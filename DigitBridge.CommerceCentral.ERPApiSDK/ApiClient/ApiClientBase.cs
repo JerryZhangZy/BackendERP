@@ -230,7 +230,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             return httpClient;
         }
 
-        protected virtual bool SetHeader(int masterAccountNum, int profileNum)
+        public virtual Dictionary<string, string> AddToHeaders(Dictionary<string, string> disc)
+        {
+            headers = headers.MergeFrom<string, string>(disc);
+            return headers;
+        }
+
+        protected virtual bool SetAccount(int masterAccountNum, int profileNum)
         {
             if (masterAccountNum.IsZero())
             {

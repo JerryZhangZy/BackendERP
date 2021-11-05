@@ -38,7 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <returns></returns>
         public async Task<bool> GetSalesOrdersOpenListAsync(int masterAccountNum, int profileNum, WMSSalesOrderRequestPayload requestPayload = null)
         {
-            if (!SetHeader(masterAccountNum, profileNum))
+            if (!SetAccount(masterAccountNum, profileNum))
             {
                 return false;
             }
