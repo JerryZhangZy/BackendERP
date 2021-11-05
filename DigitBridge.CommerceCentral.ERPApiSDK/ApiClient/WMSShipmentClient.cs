@@ -35,13 +35,17 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <param name="profileNum"></param>
         /// <param name="payload"></param>
         /// <returns></returns>
-        public async Task<bool> AddSingleShipment(int masterAccountNum, int profileNum, InputOrderShipmentType shipment)
+        public async Task<bool> AddSingleShipmentAsync(int masterAccountNum, int profileNum, InputOrderShipmentType shipment)
         {
             if (!SetHeader(masterAccountNum, profileNum))
             {
                 return false;
             }
-
+            if (shipment is null)
+            {
+                AddError("shipment cann't be empty.");
+                return false;
+            }
             return await PostAsync(shipment, FunctionUrl.AddSingleShipment);
         }
 

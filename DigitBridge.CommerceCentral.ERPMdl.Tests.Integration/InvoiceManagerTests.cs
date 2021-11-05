@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             InitForTest();
 
-           // CreateInvoice_Test();
+            // CreateInvoice_Test();
         }
         protected void InitForTest()
         {
@@ -127,7 +127,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         protected async Task SaveSalesOrder(OrderShipmentData shipmentData, Inventory[] skus)
         {
             var salesorderService = new SalesOrderService(DataBaseFactory);
-            var salesorderDataDto = SalesOrderDataDtoTests.GetFakerSalesorderDataDto(shipmentData, skus);
+            var salesorderDataDto = SalesOrderDataDtoTests.GetFakerSalesorderDataDto(shipmentData.OrderShipmentHeader.OrderDCAssignmentNum.ToLong(), skus);
             var success = await salesorderService.AddAsync(salesorderDataDto);
             Assert.True(success, salesorderService.Messages.ObjectToString());
 

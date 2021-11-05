@@ -262,6 +262,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             (success, response.InvoiceUuid) = await invoiceManager.CreateInvoiceFromShipmentAsync(service.Data);
             if (!success)
             {
+                this.Messages.Add(invoiceManager.Messages);
                 return response;
             }
 
