@@ -85,6 +85,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sales order", "sales order"
 	ProjectSection(SolutionItems) = preProject
 		payload\wms connector\salesorder\local.settings.json.txt = payload\wms connector\salesorder\local.settings.json.txt
 		payload\wms connector\salesorder\readme.txt = payload\wms connector\salesorder\readme.txt
+		Requestpayload.txt = Requestpayload.txt
 		payload\wms connector\salesorder\SalesOrder mapping.xlsx = payload\wms connector\salesorder\SalesOrder mapping.xlsx
 		payload\wms connector\salesorder\Sdk invoke unit test.png = payload\wms connector\salesorder\Sdk invoke unit test.png
 	EndProjectSection

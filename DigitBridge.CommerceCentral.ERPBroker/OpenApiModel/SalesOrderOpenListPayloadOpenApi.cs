@@ -68,9 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPBroker
 
         public DateTime OrderDateTo { get; set; }
 
-        public DateTime UpdateDateUtcFrom { get; set; }
-
-        public DateTime UpdateDateUtcTo { get; set; }
+        public DateTime UpdateDateUtc { get; set; } 
 
         //public SalesOrderStatus OrderStatus { get; set; }
 
@@ -90,8 +88,7 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 .RuleFor(u => u.ShipDateTo, f => f.Date.Past(0).Date)
                 .RuleFor(u => u.OrderDateFrom, f => f.Date.Past(0).Date.AddDays(-30))
                 .RuleFor(u => u.OrderDateTo, f => f.Date.Past(0).Date)
-                .RuleFor(u => u.UpdateDateUtcFrom, f => f.Date.Past(0).Date.AddDays(-30))
-                .RuleFor(u => u.UpdateDateUtcTo, f => f.Date.Past(0).Date)
+                .RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date.AddDays(-30))
                 .RuleFor(u => u.OrderType, f => (int)SalesOrderType.ChannelOrder)
                 .RuleFor(u => u.CustomerCode, f => string.Empty)
                 .RuleFor(u => u.CustomerName, f => string.Empty)

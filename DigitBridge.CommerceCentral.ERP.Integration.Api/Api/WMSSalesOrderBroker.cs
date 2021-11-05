@@ -42,16 +42,16 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             return new JsonNetResponse<SalesOrderOpenListPayload>(payload);
         }
 
-        //[FunctionName(nameof(Sample_SalesOrder_Find))]
-        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        //[OpenApiOperation(operationId: "SalesOrderFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of salesorder find")]
-        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderOpenListPayloadFind))]
-        //public static async Task<JsonNetResponse<SalesOrderOpenListPayloadFind>> Sample_SalesOrder_Find(
-        //   [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/salesOrders/find")] HttpRequest req)
-        //{
-        //    return new JsonNetResponse<SalesOrderOpenListPayloadFind>(SalesOrderOpenListPayloadFind.GetSampleData());
-        //}
+        [FunctionName(nameof(Sample_SalesOrder_Find))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "SalesOrderFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of salesorder find")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderOpenListPayloadFind))]
+        public static async Task<JsonNetResponse<SalesOrderOpenListPayloadFind>> Sample_SalesOrder_Find(
+           [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/salesOrders/find")] HttpRequest req)
+        {
+            return new JsonNetResponse<SalesOrderOpenListPayloadFind>(SalesOrderOpenListPayloadFind.GetSampleData());
+        }
     }
 }
