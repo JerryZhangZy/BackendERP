@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -22,5 +22,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         
         internal const string GetPurchaseOrderList = "purchaseOrder/find";
         internal const string CreatePoReceive = "poReceives";
+
+        internal const string AddSingleShipment = "shipments/single";
     }
 }

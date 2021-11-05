@@ -242,7 +242,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     var exist = OrderShipmentHelper.ExistMainTrackingNumber(data.OrderShipmentHeader.MainTrackingNumber, data.OrderShipmentHeader.MasterAccountNum, data.OrderShipmentHeader.ProfileNum);
                     if (exist)
                     {
-                        AddError($"Data existed for ShipmentID:{data.OrderShipmentHeader.MainTrackingNumber}");
+                        AddError($"Data existed for MainTrackingNumber:{data.OrderShipmentHeader.MainTrackingNumber}");
                         return false;
                     }
 
@@ -382,7 +382,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     var exist = await OrderShipmentHelper.ExistMainTrackingNumberAsync(data.OrderShipmentHeader.MainTrackingNumber, data.OrderShipmentHeader.MasterAccountNum, data.OrderShipmentHeader.ProfileNum);
                     if (exist)
                     {
-                        AddError($"Data existed for ShipmentID:{data.OrderShipmentHeader.MainTrackingNumber}");
+                        AddError($"Data existed for MainTrackingNumber:{data.OrderShipmentHeader.MainTrackingNumber}");
                         return false;
                     }
 

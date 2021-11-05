@@ -227,42 +227,73 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Create shipment
 
-        public async Task<bool> CreateShipmentAsync(OrderShipmentPayload payload)
+        public async Task<WmsOrderShipmentPayload> CreateShipmentAsync(OrderShipmentPayload payload, InputOrderShipmentType wmsShipment)
         {
-            if (payload is null || !payload.HasOrderShipment)
+            var response = new WmsOrderShipmentPayload();
+            //reset message.
+            _messages = new List<MessageClass>();
+
+            if (payload is null)
             {
-                return false;
+                AddError("Request is invalid.");
+                return response;
+            }
+            if (wmsShipment is null)
+            {
+                AddError("Shipment data is empty.");
+                return response;
             }
 
-            payload.OrderShipment.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Default;
+            var mapper = new WMSOrderShipmentMapper(payload.MasterAccountNum, payload.ProfileNum);
+            var erpShipment = mapper.MapperToErpShipment(wmsShipment);
+            erpShipment.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Default;
+
             var service = new OrderShipmentService(dbFactory);
-            var success = await service.AddAsync(payload);
+            var success = await service.AddAsync(erpShipment);
             if (!success)
             {
-                this.Messages = this.Messages.Concat(service.Messages).ToList();
-                return false;
+                Messages.Add(service.Messages);
+                return response;
             }
             var orderShipmentData = service.Data;
 
-            // create invoice and set invoicenumber back to shipmentdata.
-
+            // create invoice and set invoicenumber back to shipmentdata. 
             var invoiceManager = new InvoiceManager(dbFactory);
-            string invoiceUuid;
-            (success, invoiceUuid) = await invoiceManager.CreateInvoiceFromShipmentAsync(service.Data);
+            (success, response.InvoiceUuid) = await invoiceManager.CreateInvoiceFromShipmentAsync(service.Data);
             if (!success)
-                return false;
+            {
+                this.Messages.Add(invoiceManager.Messages);
+                return response;
+            }
 
             //save shipmentdata to db.
             orderShipmentData.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Transferred;
             success = await service.SaveDataAsync();
-
-            if (success)
+            if (!success)
             {
-                payload.OrderShipment = service.ToDto(orderShipmentData);
+                Messages.Add(service.Messages);
             }
+            response.Success = success;
 
-            return success;
+            return response;
         }
+        public async Task<List<WmsOrderShipmentPayload>> CreateShipmentListAsync(OrderShipmentPayload payload, IList<InputOrderShipmentType> wmsShipments)
+        {
+            var resultList = new List<WmsOrderShipmentPayload>();
+            foreach (var shipment in wmsShipments)
+            {
+                var shipmentPayload = new OrderShipmentPayload()
+                {
+                    MasterAccountNum = payload.MasterAccountNum,
+                    ProfileNum = payload.ProfileNum,
+                };
+                var result = await CreateShipmentAsync(shipmentPayload, shipment);
+                result.Messages = this.Messages;
+                resultList.Add(result);
+            }
+            return resultList;
+        }
+
         #endregion
     }
 }

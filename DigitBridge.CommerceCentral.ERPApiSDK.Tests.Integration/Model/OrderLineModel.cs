@@ -8,6 +8,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
     [Serializable]
     public class OrderLineModel
     {
+        public string SalesOrderItemsUuid { get; set; }
         public string OriginalLineId { get; set; }
         public int CentralDatabaseNum { get; set; }
         public int CentralOrderLineNum { get; set; }

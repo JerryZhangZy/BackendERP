@@ -21,28 +21,19 @@ using DigitBridge.Base.Utility;
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
-    /// Request and Response payload object
+    /// Response payload object
     /// </summary>
     [Serializable()]
-    public class SalesOrderOpenListPayload : PayloadBase
+    public class WmsOrderShipmentPayload : ResponsePayloadBase
     {
-        #region list service
-
+        public WmsOrderShipmentPayload(bool success = false)
+        {
+            this.Success = success;
+        }
         /// <summary>
-        /// (Response Data) List result which load filter and paging.
+        /// The uuid of invoice tranferred from shipment.
         /// </summary>
-        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
-        //[JsonConverter(typeof(StringBuilderConverter))]
-        public string SalesOrderOpenList { get; set; } 
-
-        /// <summary>
-        /// (Response Data) List result count which load filter and paging.
-        /// </summary>
-        public int SalesOrderOpenListCount { get; set; }
-        [JsonIgnore] public virtual bool HasSalesOrderOpenListCount => SalesOrderOpenListCount > 0;
-        public bool ShouldSerializeSalesOrderOpenListCount() => HasSalesOrderOpenListCount;
-
-        #endregion list service 
+        public string InvoiceUuid { get; set; }
     }
 }
 
