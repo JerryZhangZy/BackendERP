@@ -37,9 +37,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if(!dto.HasVendor)
                 return result;
             //TODO change to merge Dto children object
-            //if (withHeaderText)
-            //    result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
-            //result.Add(dto.SalesOrderHeader.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
+            if (withHeaderText)
+                result.Add(dto.Vendor.MergeName(dto.VendorAttributes));
+            result.Add(dto.Vendor.Merge(dto.VendorAttributes));
             return result;
         }
 
@@ -51,32 +51,31 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
         public static IEnumerable<dynamic> MergeDetailRecord(this VendorDataDto dto, bool withHeaderText = false)
         {
-            return null;
-            //TODO change to merge Dto children object
-            //var result = new List<dynamic>();
-            //if (!dto.HasSalesOrderItems) 
-            //    return result;
-            //
-            //var salesOrderItems = new SalesOrderItems() { SalesOrderItemsAttributes = new SalesOrderItemsAttributes()};
-            //
-            //if (withHeaderText)
-            //    result.Add(salesOrderItems.MergeName(salesOrderItems.SalesOrderItemsAttributes));
-            //
-            //foreach (var item in dto.SalesOrderItems)
-            //{
-            //    result.Add(item.Merge(item.SalesOrderItemsAttributes));
-            //}
-            //return result;
-        }
+			//TODO change to merge Dto children object
+			var result = new List<dynamic>();
+			if (!dto.HasVendorAddress)
+				return result;
+
+			var addressList = new VendorAddressDto();
+
+			if (withHeaderText)
+				result.Add(addressList.MergeName(addressList));
+
+			foreach (var item in dto.VendorAddress)
+			{
+				result.Add(item.Merge(item));
+			}
+			return result;
+		}
 
 
-        /// <summary>
-        /// Generate fake data for SalesOrderDataDto object
-        /// </summary>
-        /// <param name="dto">SalesOrderDataDto object</param>
-        /// <param name="count">Generate multiple fake data</param>
-        /// <returns>list for Fake data</returns>
-        public static IList<VendorDataDto> GetFakerData(this VendorDataDto dto, int count)
+		/// <summary>
+		/// Generate fake data for SalesOrderDataDto object
+		/// </summary>
+		/// <param name="dto">SalesOrderDataDto object</param>
+		/// <param name="count">Generate multiple fake data</param>
+		/// <returns>list for Fake data</returns>
+		public static IList<VendorDataDto> GetFakerData(this VendorDataDto dto, int count)
         {
             var obj = new VendorDataDto();
             var datas = new List<VendorDataDto>();

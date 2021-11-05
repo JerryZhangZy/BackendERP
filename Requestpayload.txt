@@ -1,0 +1,20 @@
+{
+  "$top": 20,
+  "$skip": 0,
+  "$count": true,
+  "$sortBy": "",
+  "$loadAll": false,
+  "$filter": {
+    "salesOrderUuid": "",
+    "orderNumberFrom": "",
+    "orderNumberTo": "",
+    "shipDateFrom": "2021-10-06T00:00:00+08:00",
+    "shipDateTo": "2021-11-05T00:00:00+08:00",
+    "orderDate": "2021-10-06T00:00:00+08:00",
+    "updateDateUtcFrom": "2021-10-06T00:00:00+08:00",
+    "updateDateUtcTo": "2021-11-05T00:00:00+08:00",
+    "orderType": 1,
+    "customerCode": "",
+    "customerName": ""
+  }
+}

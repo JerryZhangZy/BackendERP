@@ -87,6 +87,14 @@ namespace DigitBridge.Base.Utility
             lst.Add(new MessageClass(message, level, code));
             return lst;
         }
+        public static IList<MessageClass> Add(this IList<MessageClass> lst, IList<MessageClass> messages)
+        {
+            if (lst == null)
+                lst = new List<MessageClass>();
+            foreach (var message in messages)
+                lst.Add(message);
+            return lst;
+        }
 
         public static bool Remove(this IList<MessageClass> lst, MessageClass obj) =>
             lst.Remove(obj);
@@ -102,19 +110,19 @@ namespace DigitBridge.Base.Utility
             return removeList;
         }
 
-        public static IList<MessageClass> RemoveEmpty(this IList<MessageClass> lst) => 
+        public static IList<MessageClass> RemoveEmpty(this IList<MessageClass> lst) =>
             lst.RemoveBy(x => string.IsNullOrEmpty(x.Message));
 
 
-        public static IList<MessageClass> AddInfo(this IList<MessageClass> lst, string message, string code = null) => 
+        public static IList<MessageClass> AddInfo(this IList<MessageClass> lst, string message, string code = null) =>
             lst?.Add(message, MessageLevel.Info, code);
-        public static IList<MessageClass> AddWarning(this IList<MessageClass> lst, string message, string code = null) => 
+        public static IList<MessageClass> AddWarning(this IList<MessageClass> lst, string message, string code = null) =>
             lst?.Add(message, MessageLevel.Warning, code);
-        public static IList<MessageClass> AddError(this IList<MessageClass> lst, string message, string code = null) => 
+        public static IList<MessageClass> AddError(this IList<MessageClass> lst, string message, string code = null) =>
             lst?.Add(message, MessageLevel.Error, code);
-        public static IList<MessageClass> AddFatal(this IList<MessageClass> lst, string message, string code = null) => 
+        public static IList<MessageClass> AddFatal(this IList<MessageClass> lst, string message, string code = null) =>
             lst?.Add(message, MessageLevel.Fatal, code);
-        public static IList<MessageClass> AddDebug(this IList<MessageClass> lst, string message, string code = null) => 
+        public static IList<MessageClass> AddDebug(this IList<MessageClass> lst, string message, string code = null) =>
             lst?.Add(message, MessageLevel.Debug, code);
 
     }

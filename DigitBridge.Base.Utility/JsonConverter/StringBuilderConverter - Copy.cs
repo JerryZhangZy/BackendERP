@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -13,20 +13,16 @@ namespace DigitBridge.Base.Utility
         {
             if (sb == null || sb.Length == 0)
                 return;
-            writer.WriteRawValue(sb.ToString());
+            var jarry = JArray.Parse(sb.ToString());
+            writer.WriteRawValue(jarry.ToString());
         }
 
         public override StringBuilder ReadJson(JsonReader reader, Type objectType, StringBuilder existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
-            if (hasExistingValue)
-            {
-                var jsonObject = JArray.Load(reader);
-                var sb = new StringBuilder();
-                sb.Append(jsonObject.ToString());
-                return sb;
-            }
-
-            return new StringBuilder();
+            var jsonObject = JArray.Load(reader);
+            var sb = new StringBuilder();
+            sb.Append(jsonObject.ToString());
+            return sb;
         }
     }
 }

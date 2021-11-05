@@ -17,6 +17,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
         private string _baseUrl = "http://localhost:7074/api/";
         private string _code = "put online app key";
+        protected const int MasterAccountNum = 10001;
+        protected const int ProfileNum = 10001;
 
         public WMSSalesOrderClientTests(TestFixture<StartupTest> fixture)
         {
@@ -36,14 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task GetSalesOrdersOpenListAsync_Simple_Test()
         {
             var client = new WMSSalesOrderClient(_baseUrl, _code);
-            var requestData = new WMSSalesOrderRequestPayload
-            {
-                MasterAccountNum = 10001,
-                ProfileNum = 10001,
-                IsQueryTotalCount = true,
-                LoadAll = true
-            };
-            var success = await client.GetSalesOrdersOpenListAsync(requestData);
+            var success = await client.GetSalesOrdersOpenListAsync(MasterAccountNum, ProfileNum);
             Assert.True(success, client.Messages.ObjectToString());
         }
 
@@ -51,14 +46,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task GetSalesOrdersOpenListAsync_Full_Test()
         {
             var client = new WMSSalesOrderClient(_baseUrl, _code);
-            var requestData = new WMSSalesOrderRequestPayload
+
+            var payload = new WMSSalesOrderRequestPayload()
             {
-                MasterAccountNum = 10001,
-                ProfileNum = 10001,
-                IsQueryTotalCount = true,
-                LoadAll = true
+                LoadAll = true,
             };
-            var success = await client.GetSalesOrdersOpenListAsync(requestData);
+
+            var success = await client.GetSalesOrdersOpenListAsync(MasterAccountNum, ProfileNum, payload);
 
             Assert.True(success, client.Messages.ObjectToString());
             Assert.True(client.ResopneData != null);
@@ -66,7 +60,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             if (client.ResopneData.SalesOrderOpenListCount <= 0) return;
 
             Assert.True(!client.ResopneData.SalesOrderOpenList.ToString().IsZero(), $"Count:{client.ResopneData.SalesOrderOpenListCount}, SalesOrderOpenList:no data.");
-             
+
             var wmsOrderList = JsonConvert.DeserializeObject<List<AddOrderHeaderModel>>(client.ResopneData.SalesOrderOpenList.ToString());
             Assert.True(client.ResopneData.SalesOrderOpenListCount == wmsOrderList.Count, "Data and count not match.");
         }

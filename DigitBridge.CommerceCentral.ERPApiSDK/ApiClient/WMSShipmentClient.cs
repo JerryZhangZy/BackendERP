@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
-    public class WMSSalesOrderClient : ApiClientBase<WMSSalesOrderResponsePayload>
+    public class WMSShipmentClient : ApiClientBase<WmsOrderShipmentPayload>
     {
         /// <summary>
         /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were not config in config file
         /// Local config file is 'local.settings.json'
         /// </summary>
-        public WMSSalesOrderClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_BaseUrl)
+        public WMSShipmentClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_BaseUrl)
         {
 
         }
@@ -24,26 +24,29 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// </summary>
         /// <param name="baseUrl"></param>
         /// <param name="authCode"></param>
-        public WMSSalesOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
+        public WMSShipmentClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
 
         /// <summary>
-        /// Query open s/o.
-        /// When requestPayload is null,the default setting will be applied to query.
+        /// Add single shipment
         /// </summary>
         /// <param name="masterAccountNum"></param>
         /// <param name="profileNum"></param>
-        /// <param name="requestPayload"></param>
+        /// <param name="payload"></param>
         /// <returns></returns>
-        public async Task<bool> GetSalesOrdersOpenListAsync(int masterAccountNum, int profileNum, WMSSalesOrderRequestPayload requestPayload = null)
+        public async Task<bool> AddSingleShipmentAsync(int masterAccountNum, int profileNum, InputOrderShipmentType shipment)
         {
             if (!SetHeader(masterAccountNum, profileNum))
             {
                 return false;
             }
-
-            return await PostAsync(requestPayload, FunctionUrl.GetSalesOrderOpenList);
+            if (shipment is null)
+            {
+                AddError("shipment cann't be empty.");
+                return false;
+            }
+            return await PostAsync(shipment, FunctionUrl.AddSingleShipment);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
