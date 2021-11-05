@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -65,9 +66,45 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return base.Add(payload);
         }
 
-        public Task<bool> AddAsync(PoReceivePayload payload)
+        public async Task<bool> AddAsync(PoReceivePayload payload)
         {
-            return base.AddAsync(payload);
+            if (!payload.HasPoTransaction)
+            {
+                AddError("PoTransaction cannot be blank");
+                return false;
+            }
+
+            var transdata = payload.PoTransaction;
+            if(!transdata.HasPoTransaction||!transdata.HasPoTransactionItems)
+            {
+                AddError("PoTransaction cannot be blank");
+                return false;
+            }
+
+            var list = SplitPoTransaction(transdata);
+            payload.PoTransactions = new List<PoTransactionDataDto>();
+            foreach (var dto in list)
+            {
+                payload.PoTransaction = dto;
+                if (await ExistPoUuidAsync(dto.PoTransaction.PoUuid))
+                {
+                    if (await base.UpdateAsync(payload))
+                    {
+                        payload.PoTransactions.Add(ToDto());
+                    }
+                }
+                else
+                {
+                    if (await base.AddAsync(payload))
+                    {
+                        payload.PoTransactions.Add(ToDto());
+                    }
+                }
+            }
+
+            payload.PoTransaction = null;
+            payload.Messages = Messages;
+            return true;
         }
 
         public bool Update(PoReceivePayload payload)
@@ -191,6 +228,59 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return true;
             }
             return false;
+        }
+
+        public async Task<bool> ExistPoUuidAsync(string poUuid)
+        {
+            return await dbFactory.ExistsAsync<PoTransaction>("PoUuid=@0", poUuid.ToSqlParameter("@0"));
+        }
+
+        private IList<PoTransactionDataDto> SplitPoTransaction(PoTransactionDataDto dto)
+        {
+            var list = new List<PoTransactionDataDto>();
+            var poUUids = dto.PoTransactionItems.Select(r => r.PoUuid).Distinct();
+            var totalQty = dto.PoTransactionItems.Sum(r => r.TransQty.ToInt());
+            var toalTaxAmount = dto.PoTransaction.TaxAmount.ToAmount();
+            var totalShipmentAmount = dto.PoTransaction.ShippingAmount.ToAmount();
+            var totalShipmentTaxAmount = dto.PoTransaction.ShippingTaxAmount.ToAmount();
+            var totalMiscAmount = dto.PoTransaction.MiscAmount.ToAmount();
+            var totalMiscTaxAmount = dto.PoTransaction.MiscTaxAmount.ToAmount();
+            var totalDiscountAmount = dto.PoTransaction.DiscountAmount.ToAmount();
+            foreach (var poUUid in poUUids)
+            {
+                var poTransactionItems = dto.PoTransactionItems.Where(r => r.PoUuid==poUUid).ToList();
+                var currentQty = poTransactionItems.Sum(r => r.TransQty);
+                var potransaction = new PoTransactionDto()
+                {
+                    PoUuid = poUUid,
+                    ProfileNum = dto.PoTransaction.ProfileNum,
+                    MasterAccountNum = dto.PoTransaction.MasterAccountNum,
+                    DatabaseNum = dto.PoTransaction.DatabaseNum,
+                    Currency = dto.PoTransaction.Currency,
+                    ChargeAndAllowanceAmount = dto.PoTransaction.ChargeAndAllowanceAmount,
+                    Description = dto.PoTransaction.Description,
+                    DiscountAmount = totalDiscountAmount/totalQty*currentQty,
+                    DiscountRate = dto.PoTransaction.DiscountRate,
+                    ShippingAmount = totalShipmentAmount/totalQty*currentQty,
+                    ShippingTaxAmount = totalShipmentTaxAmount/totalQty*currentQty,
+                    MiscAmount = totalMiscAmount/totalQty*currentQty,
+                    MiscTaxAmount = totalMiscTaxAmount/totalQty*currentQty,
+                    TaxAmount = toalTaxAmount/totalQty*currentQty,
+                    TransStatus = dto.PoTransaction.TransStatus,
+                    TransType = dto.PoTransaction.TransType,
+                    VendorName = dto.PoTransaction.VendorName,
+                    VendorUuid = dto.PoTransaction.VendorUuid,
+                    VendorInvoiceDate = dto.PoTransaction.VendorInvoiceDate,
+                    VendorInvoiceNum = dto.PoTransaction.VendorInvoiceNum
+                };
+                list.Add(new PoTransactionDataDto()
+                {
+                    PoTransaction = potransaction,
+                    PoTransactionItems = poTransactionItems
+                });
+            }
+
+            return list;
         }
     }
 }

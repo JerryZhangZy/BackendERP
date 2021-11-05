@@ -23,6 +23,16 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
         public async Task<bool> QueryWmsPurchaseOrderListAsync(WmsQueryModel query)
         {
+            if (query.MasterAccountNum.IsZero())
+            {
+                AddError("MasterAccountNum is invalid.");
+                return false;
+            }
+            if (query.ProfileNum.IsZero())
+            {
+                AddError("ProfileNum is invalid.");
+                return false;
+            }
             var payload = new WmsPurchaseOrderPayload()
             {
                 Filter = new Dictionary<string, object>()
@@ -31,9 +41,30 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                     { "UpdateDateTo", query.UpdateDateTo }
                 }
             };
-            headers["MasterAccountNum"] = query.MasterAccountNum.ToString();
-            headers["ProfileNum"] = query.ProfileNum.ToString();
-            return await PostAsync(payload);
+            MasterAccountNum = query.MasterAccountNum;
+            ProfileNum = query.ProfileNum;
+            return await PostAsync(payload,FunctionUrl.GetPurchaseOrderList);
+        }
+        
+        public async Task<bool> CreatePoReceiveAsync(int masterAccountNum,int profileNum,PoHeader receive)
+        {
+            if (masterAccountNum.IsZero())
+            {
+                AddError("MasterAccountNum is invalid.");
+                return false;
+            }
+            if (profileNum.IsZero())
+            {
+                AddError("ProfileNum is invalid.");
+                return false;
+            }
+            var payload = new WmsPurchaseOrderPayload()
+            {
+                PoTransaction = new PoTransactionDataDto(receive)
+            };
+            MasterAccountNum = masterAccountNum;
+            ProfileNum = profileNum;
+            return await PostAsync(payload,FunctionUrl.CreatePoReceive);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
