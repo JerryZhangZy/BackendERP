@@ -8,8 +8,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         
         public int ProfileNum { get; set; }
 
-        public DateTime UpdateDateFrom { get; set; } = DateTime.Now.AddDays(-1);
+        public DateTime UpdateDateFrom { get; set; } = DateTime.UtcNow.AddDays(-1);
         
-        public DateTime UpdateDateTo { get; set; }=DateTime.Now;
+        public DateTime UpdateDateTo { get; set; }=DateTime.UtcNow;
     }
 }

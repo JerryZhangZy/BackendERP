@@ -23,6 +23,16 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
         public async Task<bool> QueryWmsPurchaseOrderListAsync(WmsQueryModel query)
         {
+            if (query.MasterAccountNum.IsZero())
+            {
+                AddError("MasterAccountNum is invalid.");
+                return false;
+            }
+            if (query.ProfileNum.IsZero())
+            {
+                AddError("ProfileNum is invalid.");
+                return false;
+            }
             var payload = new WmsPurchaseOrderPayload()
             {
                 Filter = new Dictionary<string, object>()
@@ -31,8 +41,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                     { "UpdateDateTo", query.UpdateDateTo }
                 }
             };
-            headers["MasterAccountNum"] = query.MasterAccountNum.ToString();
-            headers["ProfileNum"] = query.ProfileNum.ToString();
+            MasterAccountNum = query.MasterAccountNum;
+            ProfileNum = query.ProfileNum;
             return await PostAsync(payload);
         }
 
