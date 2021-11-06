@@ -15,8 +15,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
 
-        //private string _baseUrl = "http://localhost:7074/api/"; 
-        private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
+        private string _baseUrl = "http://localhost:7074/api/";
+        //private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
         private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
         protected const int MasterAccountNum = 10001;
         protected const int ProfileNum = 10001;
@@ -37,23 +37,57 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
 
         [Fact()]
-        public async Task AddSingleShipmentAsync_Simple_Test()
+        public async Task AddShipmentAsync_Simple_Test()
         {
             var client = new WMSShipmentClient(_baseUrl, _code);
             var shipment = GetWmsShipment();
-            await client.AddSingleShipmentAsync(MasterAccountNum, ProfileNum, shipment);
+            var success = await client.AddShipmentAsync(MasterAccountNum, ProfileNum, shipment);
             Assert.True(client.ResopneData != null, $"SDK invoice failed. Error is {client.Messages.ObjectToString()}");
             //Assert.True(success, client.Messages.ObjectToString());
         }
 
         [Fact()]
-        public async Task AddSingleShipmentAsync_Full_Test()
+        public async Task AddShipmentAsync_Full_Test()
         {
             var client = new WMSShipmentClient(_baseUrl, _code);
             var shipment = GetWmsShipment();
-            var success = await client.AddSingleShipmentAsync(MasterAccountNum, ProfileNum, shipment);
-            Assert.True(client.ResopneData != null, "Invoke sdk method (AddSingleShipmentAsync) failed.");
-            Assert.True(success, $"SDK invoice succeed. You can try CreateShipmentAsync_Test to test logic,Logic error is{client.Messages.ObjectToString()}");
+            var success = await client.AddShipmentAsync(MasterAccountNum, ProfileNum, shipment);
+            Assert.True(client.ResopneData != null, $"SDK invoice failed. Error is {client.Messages.ObjectToString()}");
+            Assert.True(success, $"SDK invoice succeed.But call integration api failed. You can try CreateShipmentAsync_Test to test logic,Logic error is{client.Messages.ObjectToString()}");
+        }
+
+
+        [Fact()]
+        public async Task AddShipmentListAsync_Simple_Test()
+        {
+            var client = new WMSShipmentClient(_baseUrl, _code);
+            var shipmentList = GetWmsShipmentList();
+            var success = await client.AddShipmentListAsync(MasterAccountNum, ProfileNum, shipmentList);
+            Assert.True(client.ResopneData != null, $"SDK invoice failed. Error is {client.Messages.ObjectToString()}");
+            //Assert.True(success, client.Messages.ObjectToString());
+        }
+
+        [Fact()]
+        public async Task AddShipmentListAsync_Full_Test()
+        {
+            var client = new WMSShipmentClient(_baseUrl, _code);
+            var shipmentList = GetWmsShipmentList();
+            var success = await client.AddShipmentListAsync(MasterAccountNum, ProfileNum, shipmentList);
+            Assert.True(client.ResopneData != null, $"SDK invoice failed. Error is {client.Messages.ObjectToString()}");
+            Assert.True(success, $"SDK invoice succeed.But call integration api failed. You can try CreateShipmentAsync_Test to test logic,Logic error is{client.Messages.ObjectToString()}");
+        }
+
+        protected List<InputOrderShipmentType> GetWmsShipmentList(int count = 10)
+        {
+            var list = new List<InputOrderShipmentType>();
+            int i = 0;
+            while (i < count)
+            {
+                i++;
+                list.Add(GetWmsShipment());
+            }
+
+            return list;
         }
 
         protected InputOrderShipmentType GetWmsShipment()

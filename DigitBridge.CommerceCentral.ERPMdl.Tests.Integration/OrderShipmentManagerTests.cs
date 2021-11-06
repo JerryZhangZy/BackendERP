@@ -127,6 +127,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             //Assert.Equal(payload.OrderShipment.OrderShipmentHeader.ProcessStatus, (int)OrderShipmentStatusEnum.Pending);
         }
+
+        [Fact()]
+        public async Task CreateShipmentListAsync_Test()
+        {
+            var wmsShipmentList = new List<InputOrderShipmentType>();
+            int i = 0;
+            while (i < 10)
+            {
+                wmsShipmentList.Add(await GetWmsShipmentWithSavedSalesOrder());
+                i++;
+            }
+
+            var payload = new OrderShipmentPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+            };
+            var srv = new OrderShipmentManager(DataBaseFactory);
+            var result = await srv.CreateShipmentListAsync(payload, wmsShipmentList);
+            var success = result.Count(i => !i.Success) == 0;
+            Assert.True(success, result.Where(i => !i.Success).SelectMany(j => j.Messages).ObjectToString());
+             
+            //Assert.True(!result.InvoiceUuid.IsZero(), "Shipment Added. But invoice was not transferred.");
+        }
     }
 }
 
