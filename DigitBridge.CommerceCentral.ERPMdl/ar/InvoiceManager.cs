@@ -254,13 +254,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns>Success Create Invoice, Invoice UUID</returns>
         public async Task<(bool, string)> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData)
         {
-            var orderShimentUuid = shipmentData.UniqueId;
-
+            var mainTrackingNumber = shipmentData.OrderShipmentHeader.MainTrackingNumber;
 
             var orderDCAssignmentNum = shipmentData.OrderShipmentHeader.OrderDCAssignmentNum;
             if (orderDCAssignmentNum.IsZero())
             {
-                AddError($"No OrderDCAssignmentNum of OrderShipment {orderShimentUuid}.");
+                AddError($"OrderDCAssignmentNum cannot be empty.");
                 return (false, null);
             }
             //Get Sale by uuid
@@ -268,7 +267,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (string.IsNullOrEmpty(salesOrderUuid))
             {
-                AddError($"SalesOrder not found for orderShimentUuid:{orderShimentUuid}.");
+                AddError($"SalesOrder not found for OrderShipment.");
                 return (false, null);
             }
 
