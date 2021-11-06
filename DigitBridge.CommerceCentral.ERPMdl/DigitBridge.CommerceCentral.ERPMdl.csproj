@@ -27,6 +27,7 @@
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
+    <Folder Include="selectList\vender\" />
     <Folder Include="shipmentInquiry\" />
     <Folder Include="soInquiry\" />
     <Folder Include="customerInquiry\" />
