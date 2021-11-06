@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Request and Response payload object
     /// </summary>
     [Serializable()]
-    public class SalesOrderOpenListPayload : PayloadBase
+    public class InvoiceUnprocessPayload : PayloadBase
     {
         #region list service
 
@@ -33,15 +33,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
         [JsonConverter(typeof(StringBuilderConverter))]
-        public StringBuilder SalesOrderOpenList { get; set; }
-        [JsonIgnore] public virtual bool HasSalesOrderOpenList => SalesOrderOpenList != null && SalesOrderOpenList.Length > 0;
-        public bool ShouldSerializeSalesOrderOpenList() => HasSalesOrderOpenList;
+        public StringBuilder InvoiceUnprocessList { get; set; }
+        [JsonIgnore] public virtual bool HasInvoiceUnprocessList => InvoiceUnprocessList != null && InvoiceUnprocessList.Length > 0;
+        public bool ShouldSerializeInvoiceUnprocessList() => HasInvoiceUnprocessList;
+
         /// <summary>
         /// (Response Data) List result count which load filter and paging.
         /// </summary>
-        public int SalesOrderOpenListCount { get; set; }
-        [JsonIgnore] public virtual bool HasSalesOrderOpenListCount => SalesOrderOpenListCount > 0;
-        public bool ShouldSerializeSalesOrderOpenListCount() => HasSalesOrderOpenListCount;
+        public int InvoiceUnprocessListCount { get; set; }
+        [JsonIgnore] public virtual bool HasInvoiceUnprocessListCount => InvoiceUnprocessListCount > 0;
+        public bool ShouldSerializeInvoiceUnprocessListCount() => HasInvoiceUnprocessListCount;
 
         #endregion list service 
     }
