@@ -40,3 +40,24 @@ CREATE NONCLUSTERED INDEX [IX_Customer_A_R_D_Z] ON [dbo].[Customer]
 	[SourceCode] ASC
 ) 
 GO
+
+
+-- 11/5/2021 By Jerry
+IF COL_LENGTH('Customer', 'ChannelNum') IS NULL					
+BEGIN					
+    ALTER TABLE Customer ADD [ChannelNum] INT NOT NULL DEFAULT 0
+END	
+
+IF COL_LENGTH('Customer', 'ChannelAccountNum') IS NULL					
+BEGIN					
+    ALTER TABLE Customer ADD [ChannelAccountNum] INT NOT NULL DEFAULT 0
+END	
+
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_ChannelNum_ChannelAccountNum')
+CREATE NONCLUSTERED INDEX [IX_Customer_ChannelNum_ChannelAccountNum] ON [dbo].[Customer]
+(
+	[ChannelNum] ASC, 
+	[ChannelAccountNum] ASC
+) 
+GO
