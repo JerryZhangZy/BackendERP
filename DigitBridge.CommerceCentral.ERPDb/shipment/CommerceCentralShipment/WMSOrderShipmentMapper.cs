@@ -113,28 +113,30 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             if (inputPackageItem is null)
                 return null;
-            var packageItem = Write(inputPackageItem.ShipmentPackage);
+            var package = Write(inputPackageItem.ShipmentPackage);
 
             if (inputPackageItem.ShippedItems is null || inputPackageItem.ShippedItems.Count == 0)
-                return packageItem;
+                return package;
 
-            packageItem.OrderShipmentShippedItem = new List<OrderShipmentShippedItemDto>();
-            foreach (var item in inputPackageItem.ShippedItems)
+            package.OrderShipmentShippedItem = new List<OrderShipmentShippedItemDto>();
+            foreach (var packageItem in inputPackageItem.ShippedItems)
             {
-                packageItem.OrderShipmentShippedItem.Add(Write(item));
+                package.OrderShipmentShippedItem.Add(Write(packageItem, package.OrderShipmentPackageNum));
             }
-            return packageItem;
+            return package;
         }
         /// <summary>
         /// write package item.
         /// </summary>
         /// <param name="inputOrderShippedPackageItem"></param>
         /// <returns></returns>
-        protected OrderShipmentShippedItemDto Write(InputOrderShipmentShippedItemType inputOrderShippedPackageItem)
+        protected OrderShipmentShippedItemDto Write(InputOrderShipmentShippedItemType inputOrderShippedPackageItem, long? orderShipmentPackageNum)
         {
             if (inputOrderShippedPackageItem is null)
                 return null;
             var orderShippedPackageItem = new OrderShipmentShippedItemDto();
+            orderShippedPackageItem.OrderShipmentNum = 0;
+            orderShippedPackageItem.OrderShipmentPackageNum = orderShipmentPackageNum.HasValue ? orderShipmentPackageNum : 0;
             orderShippedPackageItem.MasterAccountNum = MasterAccountNum;
             orderShippedPackageItem.ProfileNum = ProfileNum;
             //TODO column not exist in table 
@@ -162,27 +164,28 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             if (inputShipmentPackage is null)
                 return null;
-            var packageItem = new OrderShipmentPackageDto();
-            packageItem.MasterAccountNum = MasterAccountNum;
-            packageItem.ProfileNum = ProfileNum;
+            var package = new OrderShipmentPackageDto();
+            package.OrderShipmentNum = 0;
+            package.MasterAccountNum = MasterAccountNum;
+            package.ProfileNum = ProfileNum;
 
-            packageItem.PackageID = inputShipmentPackage.PackageID;
-            packageItem.PackageType = (int)inputShipmentPackage.PackageType;
-            packageItem.PackagePatternNum = inputShipmentPackage.PackagePatternNum;
+            package.PackageID = inputShipmentPackage.PackageID;
+            package.PackageType = (int)inputShipmentPackage.PackageType;
+            package.PackagePatternNum = inputShipmentPackage.PackagePatternNum;
 
-            packageItem.PackageTrackingNumber = inputShipmentPackage.PackageTrackingNumber;
-            packageItem.PackageReturnTrackingNumber = inputShipmentPackage.PackageReturnTrackingNumber;
-            packageItem.PackageWeight = inputShipmentPackage.PackageWeight;
-            packageItem.PackageLength = inputShipmentPackage.PackageLength;
-            packageItem.PackageWidth = inputShipmentPackage.PackageWidth;
-            packageItem.PackageHeight = inputShipmentPackage.PackageHeight;
-            packageItem.PackageVolume = inputShipmentPackage.PackageVolume;
+            package.PackageTrackingNumber = inputShipmentPackage.PackageTrackingNumber;
+            package.PackageReturnTrackingNumber = inputShipmentPackage.PackageReturnTrackingNumber;
+            package.PackageWeight = inputShipmentPackage.PackageWeight;
+            package.PackageLength = inputShipmentPackage.PackageLength;
+            package.PackageWidth = inputShipmentPackage.PackageWidth;
+            package.PackageHeight = inputShipmentPackage.PackageHeight;
+            package.PackageVolume = inputShipmentPackage.PackageVolume;
 
-            packageItem.PackageQty = inputShipmentPackage.PackageQty;
-            packageItem.ParentPackageNum = inputShipmentPackage.ParentPackageNum;
-            packageItem.HasChildPackage = inputShipmentPackage.HasChildPackage = false;
+            package.PackageQty = inputShipmentPackage.PackageQty;
+            package.ParentPackageNum = inputShipmentPackage.ParentPackageNum;
+            package.HasChildPackage = inputShipmentPackage.HasChildPackage = false;
 
-            return packageItem;
+            return package;
         }
         /// <summary>
         /// write canceled item.
@@ -213,6 +216,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 return null;
 
             var canceledItem = new OrderShipmentCanceledItemDto();
+            canceledItem.OrderShipmentNum = 0;
             canceledItem.MasterAccountNum = MasterAccountNum;
             canceledItem.ProfileNum = ProfileNum;
             //TODO column not exist in table 

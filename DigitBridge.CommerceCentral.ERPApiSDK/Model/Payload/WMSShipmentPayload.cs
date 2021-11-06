@@ -128,11 +128,16 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
     #endregion
     public class WmsOrderShipmentPayload : ResponsePayloadBase
-    {
+    { 
         /// <summary>
         /// The uuid of invoice tranferred from shipment.
         /// </summary>
         public string InvoiceUuid { get; set; }
+
+        /// <summary>
+        /// the main tracking number of the request wms shipment.
+        /// </summary>
+        public string MainTrackingNumber { get; set; }
     }
 }
 

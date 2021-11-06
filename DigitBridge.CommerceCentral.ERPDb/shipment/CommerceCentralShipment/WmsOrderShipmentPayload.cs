@@ -34,6 +34,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// The uuid of invoice tranferred from shipment.
         /// </summary>
         public string InvoiceUuid { get; set; }
+
+        /// <summary>
+        /// the main tracking number of the request wms shipment.
+        /// </summary>
+        public string MainTrackingNumber { get; set; }
     }
 }
 

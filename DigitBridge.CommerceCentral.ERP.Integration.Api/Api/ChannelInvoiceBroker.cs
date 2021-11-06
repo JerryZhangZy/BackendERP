@@ -1,45 +1,45 @@
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.CommerceCentral.ERPApiSDK;
 using DigitBridge.CommerceCentral.ERPMdl;
+using DigitBridge.Log;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 {
-    [ApiFilter(typeof(WMSShipmentBroker))]
-    public static class WMSShipmentBroker
+    [ApiFilter(typeof(ChannelInvoiceBroker))]
+    public static class ChannelInvoiceBroker
     {
-        //// <summary>
-        /// Add Shipment list
+        /// <summary>
+        /// Load InvoiceUnprocessList
         /// </summary>
-        /// <param name="req"></param>
-        /// <returns></returns>
-        [FunctionName(nameof(CreateShipmentList))]
-        [OpenApiOperation(operationId: "CreateShipmentList", tags: new[] { "Shipments" }, Summary = "Add WMS shipment list to ERP")]
+        [FunctionName(nameof(GetInvoiceUnprocessList))]
+        [OpenApiOperation(operationId: "GetInvoiceUnprocessList", tags: new[] { "Invoices" }, Summary = "Get invoice unprocess list")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InputOrderShipmentType[]), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WmsOrderShipmentPayload[]))]
-        public static async Task<JsonNetResponse<IList<WmsOrderShipmentPayload>>> CreateShipmentList(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "shipments")] HttpRequest req)
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceUnprocessListPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceUnprocessListPayloadFind))]
+        public static async Task<JsonNetResponse<InvoiceUnprocessListPayload>> GetInvoiceUnprocessList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/find")] HttpRequest req)
         {
-            var inputShipments = await req.GetBodyObjectAsync<IList<InputOrderShipmentType>>();
-            var payload = await req.GetParameters<OrderShipmentPayload>();
-
+            var payload = await req.GetParameters<InvoiceUnprocessListPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-
-            var shipmentManager = new OrderShipmentManager(dataBaseFactory);
-            var result = await shipmentManager.CreateShipmentListAsync(payload, inputShipments);
-
-            return new JsonNetResponse<IList<WmsOrderShipmentPayload>>(result);
+            var srv = new InvoiceUnprocessList(dataBaseFactory, new InvoiceQuery());
+            await srv.GetInvoiceUnprocessListAsync(payload);
+            return new JsonNetResponse<InvoiceUnprocessListPayload>(payload);
         }
     }
 }
