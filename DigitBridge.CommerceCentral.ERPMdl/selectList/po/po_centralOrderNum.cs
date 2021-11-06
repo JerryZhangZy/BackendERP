@@ -12,21 +12,21 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 
-namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poHeader
+namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
 {
  
-    public partial class poHeader_vendorNum : SelectListBase
+    public partial class po_centralOrderNum : SelectListBase
     {
-        public override string Name => "poHeader_vendorNum";
+        public override string Name => "po_centralOrderNum";
 
-        public poHeader_vendorNum(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public po_centralOrderNum(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.VendorNum, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                     $"COALESCE(poh.CentralOrderNum, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -39,16 +39,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poHeader
             this.SQL_Select = $@"
  
     SELECT 
-      COALESCE(tbl.VendorNum,'') AS [value],
+      COALESCE(poh.CentralOrderNum,'') AS [value],
       '' AS[text],
         COUNT(1) AS [count] FROM
-      [dbo].[PoHeader] tbl
-   
-    WHERE COALESCE(tbl.VendorNum,'') != '' 
+      [dbo].[PoHeaderInfo] poh
+   INNER JOIN PoHeader tbl ON tbl.PoUuid=poh.PoUuid
+    WHERE COALESCE(poh.CentralOrderNum,'') != '' 
         AND {this.QueryObject.GetSQL()}
-    GROUP BY tbl.VendorNum
-ORDER BY tbl.VendorNum 
-";
+    GROUP BY poh.CentralOrderNum
+ORDER BY poh.CentralOrderNum ";
             return this.SQL_Select;
         }
     }
