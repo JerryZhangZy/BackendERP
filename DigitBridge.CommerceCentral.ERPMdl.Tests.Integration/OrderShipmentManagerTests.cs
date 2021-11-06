@@ -23,6 +23,7 @@ using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
 using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 using DigitBridge.Base.Common;
+using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
