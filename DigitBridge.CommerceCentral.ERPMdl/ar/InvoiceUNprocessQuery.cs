@@ -15,11 +15,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected static string eventHelperTableAllies = "event";//TODO change to helper.
 
 
-        protected QueryFilter<long> _ChannelNum = new QueryFilter<long>("ChannelNum", "ChannelNum", PREFIX_INFO, FilterBy.eq, 0);
-        public QueryFilter<long> ChannelNum => _ChannelNum;
+        protected QueryFilter<int> _ChannelNum = new QueryFilter<int>("ChannelNum", "ChannelNum", PREFIX_INFO, FilterBy.eq, 0);
+        public QueryFilter<int> ChannelNum => _ChannelNum;
 
-        protected QueryFilter<long> _ChannelAccountNum = new QueryFilter<long>("ChannelAccountNum", "ChannelAccountNum", PREFIX_INFO, FilterBy.eq, 0);
-        public QueryFilter<long> ChannelAccountNum => _ChannelAccountNum;
+        protected QueryFilter<int> _ChannelAccountNum = new QueryFilter<int>("ChannelAccountNum", "ChannelAccountNum", PREFIX_INFO, FilterBy.eq, 0);
+        public QueryFilter<int> ChannelAccountNum => _ChannelAccountNum;
 
         protected QueryFilter<int> _EventProcessActionStatus = new QueryFilter<int>("EventProcessActionStatus", "ActionStatus", eventHelperTableAllies, FilterBy.eq, 0);
         public QueryFilter<int> EventProcessActionStatus => _EventProcessActionStatus;
