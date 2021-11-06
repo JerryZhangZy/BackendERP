@@ -11,6 +11,9 @@
     "EventApi_BaseUrl": "http://localhost:7073/api/erpevents",
     "EventApi_AuthCode": "qPFIt1dSCo46yCwCpm3N6sBBJsSTzsWOViwmKr4mqpHaGyBfyUfmuw==",
 
+    "EventApi_BaseUrl": "http://localhost:7073/api/erpevents",
+    "EventApi_AuthCode": "qPFIt1dSCo46yCwCpm3N6sBBJsSTzsWOViwmKr4mqpHaGyBfyUfmuw==",
+
     //local
     "DebugMode": "true",
     "UseOrchestration": "false",
@@ -47,7 +50,7 @@
     "ERP-SalesOrder-Queue": "erp-salesorder-queue",
     "ERP-Invoice-Queue": "erp-invoice-queue",
     "ERPSummaryTableName": "ErpSummaryCache",
-    "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net",
+    "ERPSummaryTableConnectionString": "DefaultEndpointsProtocol=https;AccountName=dbgerpappdev;AccountKey=aWPYrh70VS/L2h9vqQwWHUcfbUkPuMQ/OHKSPvRdDsAZp2yzk4CehN/gRHvd0qNx4BeJ2+3KbmIz2ERrN7ShMw==;EndpointSuffix=core.windows.net"
 
     //test
     //"UseOrchestration": "false",

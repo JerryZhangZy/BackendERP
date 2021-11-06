@@ -9,11 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="appsettings.test.json" />
+    <None Remove="appsettings - Copy.test.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="appsettings.test.json">
+    <Content Include="appsettings - Copy.test.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
