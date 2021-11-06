@@ -51,7 +51,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         {
             var client = new WMSShipmentClient(_baseUrl, _code);
             var shipment = GetWmsShipment();
-            var jsonData = JsonConvert.SerializeObject(shipment);
             var success = await client.AddSingleShipmentAsync(MasterAccountNum, ProfileNum, shipment);
             Assert.True(client.ResopneData != null, "Invoke sdk method (AddSingleShipmentAsync) failed.");
             Assert.True(success, $"SDK invoice succeed. You can try CreateShipmentAsync_Test to test logic,Logic error is{client.Messages.ObjectToString()}");

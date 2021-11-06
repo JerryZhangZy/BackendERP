@@ -107,6 +107,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task CreateShipmentAsync_Test()
         {
             var wmsShipment = await GetWmsShipmentWithSavedSalesOrder();
+            //copy json data to postman for test create shipment from wms shipment.
+            var jsonData = JsonConvert.SerializeObject(wmsShipment);
             var payload = new OrderShipmentPayload()
             {
                 MasterAccountNum = MasterAccountNum,
