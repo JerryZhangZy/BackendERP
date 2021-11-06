@@ -23,6 +23,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         internal const string GetPurchaseOrderList = "purchaseOrder/find";
         internal const string CreatePoReceive = "poReceives";
 
+        internal const string AddSingleShipment = "shipments/single";
+
+        internal static string InventorySync = "/InventorySyncs";
         internal const string AddShipments = "shipments";
     }
 }

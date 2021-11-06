@@ -61,12 +61,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion message
 
         //private string _soUuid;
-        public SalesOrderData FromChannelOrder(DCAssignmentData dcData, ChannelOrderData coData)
+        public SalesOrderData FromChannelOrder(DCAssignmentData dcData, ChannelOrderData coData, SalesOrderService service)
         {
             _dtNowUtc = DateTime.UtcNow;
             //_soUuid = Guid.NewGuid().ToString();
 
-            SalesOrderData soData = new SalesOrderData();
+            //SalesOrderData soData = new SalesOrderData();
+            SalesOrderData soData = service.Data;
             decimal dcQty = dcData.OrderDCAssignmentLine.Sum(p => p.OrderQty);
             decimal coQty = coData.OrderLine.Sum(p => p.OrderQty ?? 0);
             if (coQty <= 0)
@@ -82,7 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             soData.SalesOrderHeaderInfo = ChannelOrderToSalesOrderHeaderInfo(dcData.OrderDCAssignmentHeader, coData.OrderHeader);
 
-            soData.SalesOrderItems = ChannelOrderToSalesOrderLines(dcData, coData);
+            soData.SalesOrderItems = ChannelOrderToSalesOrderLines(dcData, coData, soData);
 
             return soData;
         }
@@ -167,12 +168,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return soHeaderInfo;
         }
 
-        private List<SalesOrderItems> ChannelOrderToSalesOrderLines(DCAssignmentData dcData, ChannelOrderData coData)
+        private List<SalesOrderItems> ChannelOrderToSalesOrderLines(DCAssignmentData dcData, ChannelOrderData coData, SalesOrderData soData)
         {
-            List<SalesOrderItems> soItemList = new List<SalesOrderItems>();
+            var soItemList = soData.SalesOrderItems.ToList();
 
             var coHeader = coData.OrderHeader;
-
             int itemSeq = 1;
             //string soLnUuid = Guid.NewGuid().ToString();
             foreach (var dcLine in dcData.OrderDCAssignmentLine)
@@ -185,81 +185,80 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     return (null);
                 }
 
-                SalesOrderItems soItem = new SalesOrderItems()
-                {
-                    //SalesOrderItemsUuid = soLnUuid,
-                    //SalesOrderUuid = _soUuid,
-                    Seq = itemSeq++,
-                    OrderItemType = (int)SalesOrderType.ChannelOrder,
-                    SalesOrderItemstatus = (int)SalesOrderStatus.New,
-                    ItemDate = coHeader.OriginalOrderDateUtc,
-                    ItemTime = coHeader.OriginalOrderDateUtc.TimeOfDay,
-                    ShipDate = _initNowUtc,
-                    EtaArrivalDate = _initNowUtc,
-                    SKU = coLine.SKU,
-                    //ProductUuid
-                    //InventoryUuid
-                    //WarehouseUuid
-                    WarehouseCode = dcData.OrderDCAssignmentHeader.SellerWarehouseID,
-                    //LotNum
-                    Description = coLine.ItemTitle,
-                    //Notes
-                    Currency = coData.OrderHeader.Currency,
-                    //UOM
-                    //PackType
-                    //PackQty
-                    //OrderPack
-                    //ShipPack
-                    //CancelledPack
-                    //OpenPack
-                    OrderQty = dcLine.OrderQty,
-                    //ShipQty
-                    //CancelledQty
-                    OpenQty = dcLine.OrderQty,
-                    //PriceRule
-                    Price = coLine.UnitDueSellerAmount, // coLine.UnitPrice ?? 0,
-                    //DiscountRate
-                    DiscountAmount = coLine.LinePromotionAmount ?? 0,
-                    //DiscountPrice
-                    //ExtAmount
-                    //TaxableAmount,
-                    //NonTaxableAmount
-                    //TaxRate
-                    TaxAmount = coLine.LineItemTaxAmount ?? 0,
-                    ShippingAmount = coLine.LineShippingAmount ?? 0,
-                    ShippingTaxAmount = coLine.LineShippingTaxAmount ?? 0,
-                    MiscAmount = coLine.LineGiftAmount ?? 0,
-                    MiscTaxAmount = coLine.LineGiftTaxAmount ?? 0,
-                    //ChargeAndAllowanceAmount
-                    //ItemTotalAmount
-                    //ShipAmount
-                    //CancelledAmount
-                    //OpenAmount
-                    //Stockable
-                    //IsAr
-                    Taxable = coLine.LineItemTaxAmount.Value > 0,
-                    //Costable
-                    //IsProfit
-                    //UnitCost
-                    //AvgCost
-                    //LotCost
-                    LotInDate = _initNowUtc,
-                    LotExpDate = _initNowUtc,
-                    UpdateDateUtc = _dtNowUtc,
-                    EnterBy = _userId,
-                    //UpdateBy
-                    //EnterDateUtc
-                    //DigitBridgeGuid
-                    CentralOrderLineUuid = dcLine.CentralOrderLineUuid,
-                    DBChannelOrderLineRowID = dcLine.DBChannelOrderLineRowID,
-                    OrderDCAssignmentLineUuid = dcLine.OrderDCAssignmentLineUuid,
-                    OrderDCAssignmentLineNum = dcLine.OrderDCAssignmentLineNum
-                };
+                var soItem = soData.GetNewSalesOrderItems();
+                //soItem.SalesOrderItemsUuid = soLnUuid;
+                //soItem.SalesOrderUuid = _soUuid;
+                soItem.Seq = itemSeq++;
+                soItem.OrderItemType = (int)SalesOrderType.ChannelOrder;
+                soItem.SalesOrderItemstatus = (int)SalesOrderStatus.New;
+                soItem.ItemDate = coHeader.OriginalOrderDateUtc;
+                soItem.ItemTime = coHeader.OriginalOrderDateUtc.TimeOfDay;
+                soItem.ShipDate = _initNowUtc;
+                soItem.EtaArrivalDate = _initNowUtc;
+                soItem.SKU = coLine.SKU;
+                //soItem.ProductUuid
+                //soItem.InventoryUuid
+                //soItem.WarehouseUuid
+                //soItem.WarehouseCode = dcData.OrderDCAssignmentHeader.SellerWarehouseID,
+                soItem.WarehouseCode = dcData.WarehouseCode;
+                //soItem.LotNum
+                soItem.Description = coLine.ItemTitle;
+                //soItem.Notes
+                soItem.Currency = coData.OrderHeader.Currency;
+                //soItem.UOM
+                //soItem.PackType
+                //soItem.PackQty
+                //soItem.OrderPack
+                //soItem.ShipPack
+                //soItem.CancelledPack
+                //soItem.OpenPack
+                soItem.OrderQty = dcLine.OrderQty;
+                soItem.ShipQty = 0;
+                soItem.CancelledQty = 0;
+                soItem.OpenQty = dcLine.OrderQty;
+                //soItem.PriceRule
+                soItem.Price = coLine.UnitDueSellerAmount; // coLine.UnitPrice ?? 0,
+                //soItem.DiscountRate
+                soItem.DiscountAmount = coLine.LinePromotionAmount ?? 0;
+                //soItem.DiscountPrice
+                //soItem.ExtAmount
+                //soItem.TaxableAmount,
+                //soItem.NonTaxableAmount
+                //soItem.TaxRate
+                soItem.TaxAmount = coLine.LineItemTaxAmount ?? 0;
+                soItem.ShippingAmount = coLine.LineShippingAmount ?? 0;
+                soItem.ShippingTaxAmount = coLine.LineShippingTaxAmount ?? 0;
+                soItem.MiscAmount = coLine.LineGiftAmount ?? 0;
+                soItem.MiscTaxAmount = coLine.LineGiftTaxAmount ?? 0;
+                //soItem.ChargeAndAllowanceAmount
+                //soItem.ItemTotalAmount
+                //soItem.ShipAmount
+                //soItem.CancelledAmount
+                //soItem.OpenAmount
+                soItem.Stockable = true;
+                soItem.IsAr = true;
+                soItem.Taxable = coLine.LineItemTaxAmount.Value > 0;
+                soItem.Costable = true;
+                soItem.IsProfit = true;
+                //soItem.UnitCost
+                //soItem.AvgCost
+                //soItem.LotCost
+                soItem.LotInDate = _initNowUtc;
+                soItem.LotExpDate = _initNowUtc;
+                soItem.UpdateDateUtc = _dtNowUtc;
+                soItem.EnterBy = _userId;
+                //soItem.UpdateBy
+                //soItem.EnterDateUtc
+                //soItem.DigitBridgeGuid
+                soItem.CentralOrderLineUuid = dcLine.CentralOrderLineUuid;
+                soItem.DBChannelOrderLineRowID = dcLine.DBChannelOrderLineRowID;
+                soItem.OrderDCAssignmentLineUuid = dcLine.OrderDCAssignmentLineUuid;
+                soItem.OrderDCAssignmentLineNum = dcLine.OrderDCAssignmentLineNum;
 
                 soItem.SalesOrderItemsAttributes = new SalesOrderItemsAttributes();
                 soItem.SalesOrderItemsAttributes.RowNum = string.IsNullOrEmpty(soItem.SalesOrderItemsAttributes.JsonFields) ? 1 : 0; //1: not add, 0: add
 
-                soItemList.Add(soItem);
+                //soItemList.Add(soItem);
 
             }
 

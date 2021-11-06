@@ -457,7 +457,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return dbFactory.Find<Inventory>("WHERE InventoryUuid=@0", inventoryUuid.ToSqlParameter("InventoryUuid")).FirstOrDefault();
         }
 
-
         public Inventory GetInventory(InventoryData inventoryData, dynamic sourceData, SKUType skuType = SKUType.GeneralMerchandise)
         {
             var inventory = new Inventory();

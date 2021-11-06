@@ -1,4 +1,3 @@
-
     
 
 using System;
@@ -11,10 +10,8 @@ using DigitBridge.CommerceCentral.YoPoco;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
-    public partial class DCAssignmentData
+    public partial class InitNumbersData
     {
-        public string WarehouseCode { get; set; } = string.Empty;
-
 
     }
 }
