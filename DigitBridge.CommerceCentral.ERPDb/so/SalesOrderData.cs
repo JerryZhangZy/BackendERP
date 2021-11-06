@@ -162,6 +162,25 @@ AND OrderNumber = @2";
                 _OnAfterLoad(this);
             return true;
         }
+
+        public SalesOrderItems GetNewSalesOrderItems()
+        {
+            if (this.SalesOrderItems == null)
+                this.SalesOrderItems = new List<SalesOrderItems>();
+            var salesOrderItemData = SetDefaultSalesOrderItems(this.NewSalesOrderItems());
+            AddSalesOrderItems(salesOrderItemData);
+            return salesOrderItemData;
+        }
+
+        public SalesOrderItems SetDefaultSalesOrderItems(SalesOrderItems item)
+        {
+            item.IsAr = true;
+            item.Costable = true;
+            item.IsProfit = true;
+            item.Stockable = true;
+            return item;
+        }
+
     }
 }
 

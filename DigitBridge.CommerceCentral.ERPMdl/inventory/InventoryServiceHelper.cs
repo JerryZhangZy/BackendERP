@@ -314,6 +314,54 @@ AND (EXISTS (SELECT * FROM @SKU _SKU WHERE _SKU.item = COALESCE([SKU],'')))";
                 skus.ToParameter<string>("SKU"));
         }
 
+        public static async Task<long> GetInventoryUuidByDistributionCenterNumAsync(string sku, int distributionCenterNum, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT TOP 1 inv.InventoryUuid  
+FROM DistributionCenter dc 
+INNER JOIN Inventory inv ON (
+inv.WarehouseCode = dc.DistributionCenterCode 
+AND inv.sku=@sku 
+AND inv.MasterAccountNum=@masterAccountNum
+AND inv.ProfileNum=@pofileNum
+)
+WHERE dc.MasterAccountNum=@masterAccountNum
+AND dc.ProfileNum=@pofileNum
+AND dc.DistributionCenterNum=@distributionCenterNum
+";
+            var result = await SqlQuery.ExecuteScalarAsync<long>(sql, CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                sku.ToSqlParameter("sku"),
+                distributionCenterNum.ToSqlParameter("distributionCenterNum")
+            );
+            return result;
+        }
+
+        /// <summary>
+        /// Get WarehouseCode from CnC DistributionCenterNum
+        /// </summary>
+        /// <param name="distributionCenterNum"></param>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        /// <returns></returns>
+        public static async Task<string> GetWarehouseCodeByDistributionCenterNumAsync(int distributionCenterNum, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT TOP 1 dc.DistributionCenterCode  
+FROM DistributionCenter dc 
+WHERE dc.MasterAccountNum=@masterAccountNum
+AND dc.ProfileNum=@profileNum
+AND dc.DistributionCenterNum=@distributionCenterNum
+";
+            var result = await SqlQuery.ExecuteScalarAsync<string>(sql, CommandType.Text,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                distributionCenterNum.ToSqlParameter("distributionCenterNum")
+            );
+            return result;
+        }
+
         public static List<StringArray> ExistInventoryBySkuWithWarehouseCodes(List<StringArray> param, int masterAccountNum, int profileNum)
         {
             var rlist = new List<StringArray>(0);
