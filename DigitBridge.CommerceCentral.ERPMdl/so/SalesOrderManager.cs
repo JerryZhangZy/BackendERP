@@ -320,6 +320,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return await SalesOrderHelper.ExistOrderDCAssignmentNumAsync(orderDCAssignmentNum);
         }
 
+        protected async Task<string> GetWarehouseByDCAssignmentAsync(DCAssignmentData dcAssigmentData)
+        {
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await InventoryServiceHelper.GetWarehouseCodeByDistributionCenterNumAsync(
+                    dcAssigmentData.OrderDCAssignmentHeader.DistributionCenterNum,
+                    dcAssigmentData.OrderDCAssignmentHeader.MasterAccountNum,
+                    dcAssigmentData.OrderDCAssignmentHeader.ProfileNum);
+        }
+
         /// <summary>
         /// Create one sales order from one ChannelOrder and one DCAssignment.
         /// </summary>
@@ -336,14 +345,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             SalesOrderTransfer soTransfer = new SalesOrderTransfer(this, "");
-            var soData = soTransfer.FromChannelOrder(dcAssigmentData, coData);
+            dcAssigmentData.WarehouseCode = await GetWarehouseByDCAssignmentAsync(dcAssigmentData);
 
             var soSrv = new SalesOrderService(dbFactory);
 
             soSrv.DetachData(null);
             soSrv.Add();
 
-            soSrv.AttachData(soData);
+            var soData = soTransfer.FromChannelOrder(dcAssigmentData, coData, soSrv);
+
+            //soSrv.AttachData(soData);
             soSrv.Data.CheckIntegrity();
 
             if (await soSrv.SaveDataAsync())

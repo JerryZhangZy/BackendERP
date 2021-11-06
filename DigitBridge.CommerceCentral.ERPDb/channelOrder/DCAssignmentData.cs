@@ -13,6 +13,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class DCAssignmentData
     {
+        public string WarehouseCode { get; set; } = string.Empty;
+
 
     }
 }

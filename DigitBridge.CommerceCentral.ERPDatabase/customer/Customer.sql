@@ -19,6 +19,8 @@
 	[Phone4] VARCHAR(50) NOT NULL DEFAULT '', --Customer phone 4. <br> Title: Fax, Display: true, Editable: true
 	[Email] VARCHAR(200) NOT NULL DEFAULT '', --Customer email. <br> Title: Email, Display: true, Editable: true
 	[WebSite] VARCHAR(200) NOT NULL DEFAULT '', --Customer WebSite. <br> Title: WebSite, Display: true, Editable: true
+	[ChannelNum] INT NOT NULL DEFAULT 0, --(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
+	[ChannelAccountNum] INT NOT NULL DEFAULT 0, --(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
 
     [CustomerType] INT NULL DEFAULT 0, --Customer type. <br> Title: Type, Display: true, Editable: true
     [CustomerStatus] INT NULL DEFAULT 0, --Customer status. <br> Title: Status, Display: true, Editable: true
@@ -120,3 +122,12 @@ CREATE NONCLUSTERED INDEX [IX_Customer_A_R_D_Z] ON [dbo].[Customer]
 	[SourceCode] ASC
 ) 
 GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_ChannelNum_ChannelAccountNum')
+CREATE NONCLUSTERED INDEX [IX_Customer_ChannelNum_ChannelAccountNum] ON [dbo].[Customer]
+(
+	[ChannelNum] ASC, 
+	[ChannelAccountNum] ASC
+) 
+GO
+
