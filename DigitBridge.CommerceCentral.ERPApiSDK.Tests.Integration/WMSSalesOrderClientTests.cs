@@ -15,8 +15,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
 
-        private string _baseUrl = "http://localhost:7074/api/";
-        private string _code = "put online app key";
+        //private string _baseUrl = "http://localhost:7074/api/"; 
+        private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
+        private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
         protected const int MasterAccountNum = 10001;
         protected const int ProfileNum = 10001;
 
@@ -61,8 +62,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             Assert.True(client.ResopneData.SalesOrderOpenList != null, $"Count:{client.ResopneData.SalesOrderOpenListCount}, SalesOrderOpenList:no data.");
 
-            var wmsOrderList = JsonConvert.DeserializeObject<List<AddOrderHeaderModel>>(client.ResopneData.SalesOrderOpenList.ToString());
-            Assert.True(client.ResopneData.SalesOrderOpenListCount == wmsOrderList.Count, "Data and count not match.");
         }
     }
 }
