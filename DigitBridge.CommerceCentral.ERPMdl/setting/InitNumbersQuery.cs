@@ -23,28 +23,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected static string PREFIX = Helper.TableAllies;
 
         // Filter fields
-        //protected QueryFilter<DateTime> _OrderDateFrom = new QueryFilter<DateTime>("OrderDateFrom", "OrderDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
-        //public QueryFilter<DateTime> OrderDateFrom => _OrderDateFrom;
+        protected QueryFilter<string> _InitNumbersUuid = new QueryFilter<string>("InitNumbersUuid", "InitNumbersUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> InitNumbersUuid => _InitNumbersUuid;
 
-        //protected QueryFilter<DateTime> _OrderDateTo = new QueryFilter<DateTime>("OrderDateTo", "OrderDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
-        //public QueryFilter<DateTime> OrderDateTo => _OrderDateTo;
 
-        //protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty);
-        //public QueryFilter<string> CustomerCode => _CustomerCode;
+        protected QueryFilter<string> _CustomerUuid = new QueryFilter<string>("CustomerUuid", "CustomerUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> CustomerUuid => _CustomerUuid;
 
-        //protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
 
-        //protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
+        protected QueryFilter<int> _InActive = new QueryFilter<int>("InActive", "InActive", PREFIX, FilterBy.eq, 0);
+        public QueryFilter<int> InActive => _InActive;
+
+
+        protected QueryFilter<string> _Type = new QueryFilter<string>("Type", "Type", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> Type => _Type;
+
 
         public InitNumbersQuery() : base(PREFIX)
         {
-            //AddFilter(_OrderDateFrom);
-            //AddFilter(_OrderDateTo);
-            //AddFilter(_CustomerCode);
-            //AddFilter(_OrderStatus);
-            //AddFilter(_OrderType);
+            AddFilter(_InitNumbersUuid);
+            AddFilter(_CustomerUuid);
+            AddFilter(_InActive);
+            AddFilter(_Type);
+
         }
 
         public override void InitQueryFilter()

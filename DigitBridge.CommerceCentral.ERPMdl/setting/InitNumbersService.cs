@@ -12,10 +12,12 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
-
+using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using System.Xml.Serialization;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -33,7 +35,43 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddValidator(new InitNumbersServiceValidatorDefault(this, this.dbFactory));
             return this;
         }
+        [XmlIgnore, JsonIgnore]
+        protected InitNumbersList _initNumbersList;
+        [XmlIgnore, JsonIgnore]
+        public InitNumbersList initNumbersList
+        {
+            get
+            {
+                if (_initNumbersList is null)
+                    _initNumbersList = new InitNumbersList(dbFactory);
+                return _initNumbersList;
+            }
+        }
 
+
+
+        
+
+        public async Task<InitNumbersPayload> GetInitNumbersForCustomer(int masterAccountNum,int profileNum, string customerUuid)
+        {
+            var payload = new InitNumbersPayload()
+            {
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum
+            };
+            payload.LoadAll = true;
+            payload.Filter = new JObject()
+            {
+                {"CustomerUuid",  $"{customerUuid}"},
+            };
+           return await _initNumbersList.GetInitNumbersListAsync(payload);
+        }
+        public async Task<string>  GetInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid,string type)
+        {
+            return await InitNumbersHelper.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, type);
+            //this.GetDataById();
+        }
+ 
 
         /// <summary>
         /// Add new data from Dto object

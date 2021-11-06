@@ -50,6 +50,31 @@ AND OrderNumber = @number
             return true;
         }
 
+
+        public static async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid, string type)
+        {
+
+            var sql = $@"
+           
+begin tran
+declare @currentNumber int;
+declare @rowNumber int; 
+SELECT @rowNumber =RowNum from [dbo].[InitNumbers] where [MasterAccountNum]=@masterAccountNum and [ProfileNum]=@profileNum and [CustomerUuid]=@customerUuid and [Type]=@type;
+SELECT @currentNumber=Number FROM [dbo].[InitNumbers] with(rowlock,updlock)  WHERE  [RowNum]=@rowNumber;
+ UPDATE  [dbo].[InitNumbers] SET [Number]=[Number]+1  WHERE [RowNum]=@rowNumber ; 
+SELECT  [Prefix]+  cast(Number as varchar)+[Suffix] FROM [dbo].[InitNumbers]    WHERE  [RowNum]=@rowNumber;
+commit tran ;"
+;
+            var result = await SqlQuery.ExecuteScalarAsync<string>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                customerUuid.ToSqlParameter("customerUuid"),
+                type.ToSqlParameter("type")
+            );
+            return result ;
+ 
+        }
+
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
 /*

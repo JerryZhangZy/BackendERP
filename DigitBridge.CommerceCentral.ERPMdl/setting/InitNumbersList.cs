@@ -35,7 +35,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.RowNum()}, 
+{Helper.InitNumbersUuid()}, 
+{Helper.CustomerUuid()}, 
+{Helper.InActive()}, 
+{Helper.Type()}, 
+{Helper.Number()},
+{Helper.Prefix()},
+{Helper.Suffix()}, 
+{Helper.EnterDateUtc()}, 
+{Helper.UpdateDateUtc()}, 
+{Helper.EnterBy()}, 
+{Helper.UpdateBy()}, 
+{Helper.DigitBridgeGuid()}
 ";
             return this.SQL_Select;
         }
