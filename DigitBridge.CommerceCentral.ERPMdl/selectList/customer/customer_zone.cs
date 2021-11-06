@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.Zone, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"COALESCE(tbl.[Zone], '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -37,15 +37,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.customer
             this.SQL_Select = $@"
  
     SELECT 
-      tbl.Districtn AS [value],
+      tbl.[Zone] AS [value],
       '' AS[text],
         COUNT(1) AS [count] FROM
       [dbo].[Customer] tbl
    
-    WHERE COALESCE(tbl.Zone,'') != '' 
+    WHERE COALESCE(tbl.[Zone],'') != '' 
         AND {this.QueryObject.GetSQL()}
-    GROUP BY tbl.Zone
-ORDER BY tbl.Zone 
+    GROUP BY tbl.[Zone]
+ORDER BY tbl.[Zone]
 ";
             return this.SQL_Select;
         }
