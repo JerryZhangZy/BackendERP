@@ -105,7 +105,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         public static async Task<JsonNetResponse<InitNumbersPayload>> AddInitNumber(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "initNumbers")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
-            var payload = await req.GetParameters<InitNumbersPayload>(true);
+            var payload = await req.GetParameters<InitNumbersPayload>(true); 
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InitNumbersService(dataBaseFactory);
             payload.Success = await srv.AddAsync(payload);

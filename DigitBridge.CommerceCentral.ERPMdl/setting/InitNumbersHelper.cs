@@ -76,22 +76,7 @@ commit tran ;"
         }
 
 
-        public static async Task<bool> DeleteByInitNumbersUuidAsync( int masterAccountNum, int profileNum, string initNumbersUuid)
-        {
-
-            var sql = $@"
-            DELETE FROM InitNumbers
-            WHERE MasterAccountNum = @masterAccountNum
-            AND ProfileNum = @profileNum
-            AND InitNumbersUuid = @initNumbersUuid
-            ";
-            var result = await SqlQuery.ExecuteNonQueryAsync(sql,
-                masterAccountNum.ToSqlParameter("masterAccountNum"),
-                profileNum.ToSqlParameter("profileNum"),
-                initNumbersUuid.ToSqlParameter("initNumbersUuid")
-            );
-            return result > 0;
-        }
+ 
 
         public static async Task<long> GetRowNumByInitNumbersUuidAsync(int masterAccountNum, int profileNum, string initNumbersUuid)
         {

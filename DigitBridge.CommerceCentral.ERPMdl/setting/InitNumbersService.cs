@@ -50,9 +50,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual async Task<bool> GetByInitNumbersUuidAsync(int masterAccountNum, int profileNum, string initNumbersUuid)
         {
-
-           var rownum= await InitNumbersHelper.GetRowNumByInitNumbersUuidAsync(masterAccountNum, profileNum, initNumbersUuid);
-            GetData(rownum);
+                var rownum = await InitNumbersHelper.GetRowNumByInitNumbersUuidAsync(masterAccountNum, profileNum, initNumbersUuid);
+                GetData(rownum);
             return true;
         }
 
@@ -71,12 +70,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 {"CustomerUuid",  $"{customerUuid}"},
             };
-           return await _initNumbersList.GetInitNumbersListAsync(payload);
+                return await _initNumbersList.GetInitNumbersListAsync(payload);
         }
         public async Task<string>  GetInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid,string type)
         {
-            return await InitNumbersHelper.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, type);
-            //this.GetDataById();
+                return await InitNumbersHelper.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, type);
         }
  
 
@@ -350,14 +348,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> DeleteByInitNumbersUuidAsync(InitNumbersPayload payload, string initNumbersUuid)
         {
-            if (string.IsNullOrEmpty(initNumbersUuid))
-                return false;
-            //set delete mode
-            Delete();
-            //load data
-            var success = await InitNumbersHelper.DeleteByInitNumbersUuidAsync(payload.MasterAccountNum, payload.ProfileNum, initNumbersUuid);
-            success = success && DeleteData();
-            return success;
+                if (string.IsNullOrEmpty(initNumbersUuid))
+                    return false;
+                //set delete mode
+                Delete();
+                //load data
+                var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, initNumbersUuid);
+                success = success && DeleteData();
+                return success;
         }
     }
 }
