@@ -82,7 +82,7 @@
 //SettingForPoTransaction
 //SettingForApTransaction
 #>
-<#@ include file="SettingForVendor.ttinclude" #>
+<#@ include file="SettingForSystemCodes.ttinclude" #>
 <#
     var dtoSuf = "";
     
