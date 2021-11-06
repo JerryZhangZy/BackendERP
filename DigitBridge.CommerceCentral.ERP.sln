@@ -79,9 +79,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "postman", "postman", "{86B5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitBridge.CommerceCentral.ERP.Integration.Api", "DigitBridge.CommerceCentral.ERP.Integration.Api\DigitBridge.CommerceCentral.ERP.Integration.Api.csproj", "{96F28F2D-5698-41DE-8895-90E5B91154C5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wms connector", "wms connector", "{0C81319D-D070-418B-85A6-086CBD860606}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sales order", "sales order", "{8E011B21-57D4-4B00-94C7-24D6726E6CA2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wms sales order", "wms sales order", "{8E011B21-57D4-4B00-94C7-24D6726E6CA2}"
 	ProjectSection(SolutionItems) = preProject
 		payload\wms connector\salesorder\local.settings.json.txt = payload\wms connector\salesorder\local.settings.json.txt
 		payload\wms connector\salesorder\readme.txt = payload\wms connector\salesorder\readme.txt
@@ -90,10 +88,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sales order", "sales order"
 		payload\wms connector\salesorder\Sdk invoke unit test.png = payload\wms connector\salesorder\Sdk invoke unit test.png
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "invoice", "invoice", "{8E5F0520-03DB-44B0-AB63-A78F4C9229F3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "channel invoice", "channel invoice", "{8E5F0520-03DB-44B0-AB63-A78F4C9229F3}"
 	ProjectSection(SolutionItems) = preProject
 		payload\wms connector\invoice\invoice mapping.xlsx = payload\wms connector\invoice\invoice mapping.xlsx
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "connector", "connector", "{7F0AE32C-CADC-463E-AB2C-7C02CA495071}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -220,9 +220,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0DA7F585-F3DA-4506-8EED-8BAD611416BC} = {B98819AF-57E6-45BB-A147-CF6D6F6E615C}
 		{86B5841E-0CF6-4131-BBA7-D7F59EECD98B} = {B98819AF-57E6-45BB-A147-CF6D6F6E615C}
-		{0C81319D-D070-418B-85A6-086CBD860606} = {B98819AF-57E6-45BB-A147-CF6D6F6E615C}
-		{8E011B21-57D4-4B00-94C7-24D6726E6CA2} = {0C81319D-D070-418B-85A6-086CBD860606}
-		{8E5F0520-03DB-44B0-AB63-A78F4C9229F3} = {0C81319D-D070-418B-85A6-086CBD860606}
+		{8E011B21-57D4-4B00-94C7-24D6726E6CA2} = {7F0AE32C-CADC-463E-AB2C-7C02CA495071}
+		{8E5F0520-03DB-44B0-AB63-A78F4C9229F3} = {7F0AE32C-CADC-463E-AB2C-7C02CA495071}
+		{7F0AE32C-CADC-463E-AB2C-7C02CA495071} = {B98819AF-57E6-45BB-A147-CF6D6F6E615C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9341E990-605F-49D2-86E7-EEDD882E9D82}
