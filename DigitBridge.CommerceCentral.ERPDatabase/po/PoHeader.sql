@@ -16,8 +16,8 @@
 	[CancelDate] DATE NULL, --Usually it is related to shipping instruction. <br> Title: Cancel Date, Display: false, Editable: false
 
     [VendorUuid] VARCHAR(50) NULL DEFAULT '', --reference Vendor Unique Guid. <br> Display: false, Editable: false
-	[VendorNum] VARCHAR(50) NULL, --Vendor readable number.<br> DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique. <br> Display: false, Editable: false
-	[VendorName] NVARCHAR(100) NULL, --Vendor name. <br> Display: false, Editable: false
+	[VendorCode] VARCHAR(50) NULL, --Vendor readable number.<br> DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique. <br> Display: false, Editable: false
+	[VendorName] NVARCHAR(200) NULL, --Vendor name. <br> Display: false, Editable: false
 
 	[Currency] VARCHAR(10) NOT NULL DEFAULT '', --Currency code. <br> Title: Currency, Display: true, Editable: true
 	[SubTotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Sub total amount is sumary items amount. . <br> Title: Subtotal, Display: true, Editable: false
