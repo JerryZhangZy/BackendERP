@@ -12,13 +12,13 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 
-namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poHeader
+namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
 {
-    public partial class poHeader_vendorName : SelectListBase
+    public partial class po_vendorName : SelectListBase
     {
-        public override string Name => "poHeader_vendorName";
+        public override string Name => "po_vendorName";
 
-        public poHeader_vendorName(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public po_vendorName(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {

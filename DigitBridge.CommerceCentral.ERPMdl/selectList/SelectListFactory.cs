@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
-using DigitBridge.CommerceCentral.ERPMdl.selectList.poHeader;
-using DigitBridge.CommerceCentral.ERPMdl.selectList.poHeaderInfo;
+
 using DigitBridge.CommerceCentral.ERPMdl.selectList.customer;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using Hepler = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderHelper;
 using InfoHepler = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoHelper;
+using DigitBridge.CommerceCentral.ERPMdl.selectList.po;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -358,32 +358,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
             #region PO
-            if (payload.Name.EqualsIgnoreSpace("poHeader_poNum"))
-                return new poHeader_poNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("po_poNum"))
+                return new po_poNum(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("poHeader_vendorName"))
-                return new poHeader_poNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("po_vendorName"))
+                return new po_vendorName(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("poHeader_vendorNum"))
-                return new poHeader_vendorNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("po_vendorNum"))
+                return new po_vendorNum(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_centralOrderNum"))
-                return new poHeaderInfo_centralOrderNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("po_centralOrderNum"))
+                return new po_centralOrderNum(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_channelAccountNum"))
-                return new poHeaderInfo_channelAccountNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("po_channelAccountNum"))
+                return new po_channelAccountNum(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_channelNum"))
-                return new poHeaderInfo_channelNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("po_channelNum"))
+                return new po_channelNum(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_channelOrderID"))
-                return new poHeaderInfo_channelOrderID(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("po_channelOrderID"))
+                return new po_channelOrderID(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_customerPoNum"))
-                return new poHeaderInfo_customerPoNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("po_customerPoNum"))
+                return new po_customerPoNum(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("poHeaderInfo_refNum"))
-                return new poHeaderInfo_refNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("po_refNum"))
+                return new po_refNum(dbFactory);
 
 
             #endregion 
