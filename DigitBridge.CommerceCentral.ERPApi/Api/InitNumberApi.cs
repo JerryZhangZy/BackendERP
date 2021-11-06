@@ -96,7 +96,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiParameter(name: "initNumbersUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "initNumbersUuid", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InitNumberPayloadDelete))]
         public static async Task<JsonNetResponse<InitNumbersPayload>> DeleteByInitNumbersUuid(
-           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "apInvoices/{apInvoiceNumber}")] Microsoft.AspNetCore.Http.HttpRequest req,
+           [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "initNumbers/{initNumbersUuid}")] Microsoft.AspNetCore.Http.HttpRequest req,
            string initNumbersUuid)
         {
             var payload = await req.GetParameters<InitNumbersPayload>();
