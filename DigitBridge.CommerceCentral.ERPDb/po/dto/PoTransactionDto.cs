@@ -35,6 +35,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public DateTime? EnterDateUtc { get; set; }
         [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
+        
+        /// <summary>
+        /// reference Vendor Unique Guid
+        /// </summary>
+        [OpenApiPropertyDescription("reference VendorName")]
+        [StringLength(50, ErrorMessage = "The VendorName value cannot exceed 50 characters. ")]
+        public string VendorName { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasVendorName => VendorName != null;
 
         #region Properties - Generated 
 

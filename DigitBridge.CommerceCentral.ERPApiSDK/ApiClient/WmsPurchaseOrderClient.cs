@@ -23,6 +23,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
         public async Task<bool> QueryWmsPurchaseOrderListAsync(WmsQueryModel query)
         {
+            if (!SetAccount(query.MasterAccountNum, query.ProfileNum))
+                return false;
+
             var payload = new WmsPurchaseOrderPayload()
             {
                 Filter = new Dictionary<string, object>()
@@ -31,9 +34,19 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                     { "UpdateDateTo", query.UpdateDateTo }
                 }
             };
-            headers["MasterAccountNum"] = query.MasterAccountNum.ToString();
-            headers["ProfileNum"] = query.ProfileNum.ToString();
-            return await PostAsync(payload);
+            return await PostAsync(payload,FunctionUrl.GetPurchaseOrderList);
+        }
+        
+        public async Task<bool> CreatePoReceiveAsync(int masterAccountNum,int profileNum,PoHeader receive)
+        {
+            if (!SetAccount(masterAccountNum, profileNum))
+                return false;
+
+            var payload = new WmsPurchaseOrderPayload()
+            {
+                PoTransaction = new PoTransactionDataDto(receive)
+            };
+            return await PostAsync(payload,FunctionUrl.CreatePoReceive);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)

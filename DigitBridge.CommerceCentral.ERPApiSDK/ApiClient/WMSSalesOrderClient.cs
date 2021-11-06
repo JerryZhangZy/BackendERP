@@ -10,29 +10,39 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     public class WMSSalesOrderClient : ApiClientBase<WMSSalesOrderResponsePayload>
     {
-
+        /// <summary>
+        /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were not config in config file
+        /// Local config file is 'local.settings.json'
+        /// </summary>
         public WMSSalesOrderClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_BaseUrl)
         {
 
         }
+        /// <summary>
+        /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were config in config file
+        /// Local config file is 'local.settings.json'
+        /// </summary>
+        /// <param name="baseUrl"></param>
+        /// <param name="authCode"></param>
         public WMSSalesOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
 
-        public async Task<bool> GetSalesOrdersOpenListAsync(WMSSalesOrderRequestPayload requestPayload)
+        /// <summary>
+        /// Query open s/o.
+        /// When requestPayload is null,the default setting will be applied to query.
+        /// </summary>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        /// <param name="requestPayload"></param>
+        /// <returns></returns>
+        public async Task<bool> GetSalesOrdersOpenListAsync(int masterAccountNum, int profileNum, WMSSalesOrderRequestPayload requestPayload = null)
         {
-            if (!requestPayload.HasMasterAccountNum)
+            if (!SetAccount(masterAccountNum, profileNum))
             {
-                AddError("MasterAccountNum is invalid.");
                 return false;
             }
-            if (!requestPayload.HasProfileNum)
-            {
-                AddError("ProfileNum is invalid.");
-                return false;
-            }
-            MasterAccountNum = requestPayload.MasterAccountNum;
-            ProfileNum = requestPayload.ProfileNum;
+
             return await PostAsync(requestPayload, FunctionUrl.GetSalesOrderOpenList);
         }
 
@@ -49,7 +59,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
             if (!ResopneData.Success)
             {
-                this.Messages = this.Messages.Concat(ResopneData.Messages).ToList();
+                this.Messages.Add(ResopneData.Messages);
             }
 
             return ResopneData.Success;

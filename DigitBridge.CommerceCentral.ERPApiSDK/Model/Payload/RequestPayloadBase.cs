@@ -15,28 +15,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     public class RequestPayloadBase
     {
         /// <summary>
-        /// User MasterAccountNum
-        /// Required, from header
-        /// </summary>
-        [Required(ErrorMessage = "masterAccountNum is required")]
-        [Display(Name = "masterAccountNum")]
-        [DataMember(Name = "masterAccountNum")]
-        public int MasterAccountNum { get; set; }
-        [JsonIgnore] public virtual bool HasMasterAccountNum => MasterAccountNum > 0;
-        public bool ShouldSerializeMasterAccountNum() => HasMasterAccountNum;
-
-        /// <summary>
-        /// User ProfileNum
-        /// Required, from header
-        /// </summary>
-        [Required(ErrorMessage = "profileNum is required")]
-        [Display(Name = "profileNum")]
-        [DataMember(Name = "profileNum")]
-        public int ProfileNum { get; set; }
-        [JsonIgnore] public virtual bool HasProfileNum => ProfileNum > 0;
-        public bool ShouldSerializeProfileNum() => HasProfileNum;
-
-        /// <summary>
         /// Page size to load.
         /// Optional,
         /// Default value is 100.

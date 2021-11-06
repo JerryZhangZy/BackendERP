@@ -8,6 +8,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
     [Serializable]
     public class AddOrderHeaderModel
     {
+        public string SalesOrderUuid { get; set; }
         [Required]
         public string WarehouseCode { get; set; }
         public int WarehouseNum { get; set; }

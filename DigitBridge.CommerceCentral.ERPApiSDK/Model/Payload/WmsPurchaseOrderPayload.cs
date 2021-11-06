@@ -69,6 +69,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         [DataMember(Name = "$loadAll")]
         [JsonProperty("$loadAll")]
         public bool LoadAll { get; set; } = true;
+        
+        /// <summary>
+        /// (Request Data) PoReceive object to add.
+        /// (Response Data) PoReceive object which has been added.
+        /// </summary>
+        public PoTransactionDataDto PoTransaction { get; set; }
 
         /// <summary>
         /// Filter Json object.

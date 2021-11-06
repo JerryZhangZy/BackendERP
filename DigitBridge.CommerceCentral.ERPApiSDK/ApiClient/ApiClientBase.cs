@@ -8,6 +8,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using System.Xml.Serialization;
+using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
@@ -30,8 +31,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         protected readonly JsonSerializerSettings jsonSerializerSettings;
 
         protected Dictionary<string, string> headers;
-        protected int MasterAccountNum;
-        protected int ProfileNum;
+
         public T ResopneData;
 
         #endregion Member Variables
@@ -222,26 +222,35 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             //if (requiresToken)
             //    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetTokenAsync());
 
-            AddHeader(httpClient);
-
-            return httpClient;
-        }
-
-        private void AddHeader(HttpClient httpClient)
-        {
             foreach (var header in headers)
             {
                 httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
             }
 
-            var masterAccountNumKey = "masterAccountNum";
-            var profileNumKey = "profileNum";
+            return httpClient;
+        }
 
-            httpClient.DefaultRequestHeaders.Remove(masterAccountNumKey);
-            httpClient.DefaultRequestHeaders.Remove(profileNumKey);
+        public virtual Dictionary<string, string> AddToHeaders(Dictionary<string, string> disc)
+        {
+            headers = headers.MergeFrom<string, string>(disc);
+            return headers;
+        }
 
-            httpClient.DefaultRequestHeaders.Add(masterAccountNumKey, MasterAccountNum.ToString());
-            httpClient.DefaultRequestHeaders.Add(profileNumKey, ProfileNum.ToString());
+        protected virtual bool SetAccount(int masterAccountNum, int profileNum)
+        {
+            if (masterAccountNum.IsZero())
+            {
+                AddError("MasterAccountNum is invalid.");
+                return false;
+            }
+            if (profileNum.IsZero())
+            {
+                AddError("ProfileNum is invalid.");
+                return false;
+            }
+            headers["masterAccountNum"] = masterAccountNum.ToString();
+            headers["profileNum"] = profileNum.ToString();
+            return true;
         }
 
         #endregion Virtual Methods - Protected
@@ -268,7 +277,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public IList<MessageClass> AddFatal(string message, string code = null) =>
             Messages.Add(message, MessageLevel.Fatal, code);
         public IList<MessageClass> AddDebug(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Debug, code);
+            Messages.Add(message, MessageLevel.Debug, code); 
 
         #endregion Messages
     }

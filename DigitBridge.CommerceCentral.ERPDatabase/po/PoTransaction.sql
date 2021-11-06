@@ -19,6 +19,8 @@
     [Notes] NVARCHAR(500) NULL DEFAULT '', --Notes of Invoice Transaction
 
     [VendorUuid] VARCHAR(50) NULL DEFAULT '', --reference Vendor Unique Guid
+	[VendorCode] VARCHAR(50) NULL, --Vendor readable number, DatabaseNum + VendorCode is DigitBridgeVendorCode, which is global unique
+	[VendorName] NVARCHAR(200) NULL, --Vendor name
 	[VendorInvoiceNum] VARCHAR(50) NOT NULL DEFAULT '', --Vendor Invoice number
 	[VendorInvoiceDate] DATE NULL, --Vendor Invoice date
 	[DueDate] DATE NULL, --Balance Due date

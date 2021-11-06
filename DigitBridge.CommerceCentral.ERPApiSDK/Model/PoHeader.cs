@@ -12,6 +12,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         
         public string PoNum { get; set; }
         
+        public string PoUuid { get; set; }
+        
         public string VendorName { get; set; }
         
         public DateTime PoDate { get; set; }
@@ -38,6 +40,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public string SKU { get; set; }
         
         public string Title { get; set; }
+        public string PoUuid { get; set; }
+        
+        public string PoItemUuid { get; set; }
         
         public double PoPrice { get; set; }
         

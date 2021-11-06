@@ -34,8 +34,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 select 
-poh.RowNum as CentralPoNum,poh.DatabaseNum as CentralDatabaseNum,poh.PoNum as PoNumber,poh.VendorName,poh.PoDate,poh.CancelDate as CancelAfterDate,
-(select poit.SKU,poit.Price as PoPrice,CAST(poit.PoQty as INT) AS PoQty,poit.EtaShipDate,poit.Seq as Sequence,poit.PoItemUuid as OriginaLineId,poit.EnterDateUtc as EnterDate 
+pohi.DistributionCenterNum as CentralPoNum,poh.DatabaseNum as CentralDatabaseNum,poh.PoUuid as PoUuid,poh.PoNum as PoNumber,poh.VendorName,poh.PoDate,poh.CancelDate as CancelAfterDate,dc.DistributionCenterCode as WarehousCode,
+(select poit.PoUuid as PoUuid,poit.PoItemUuid as PoItemUuid,poit.SKU,poit.Price as PoPrice,CAST(poit.PoQty as INT) AS PoQty,poit.EtaShipDate,poit.Seq as Sequence,poit.PoItemUuid as OriginaLineId,poit.EnterDateUtc as EnterDate 
 from PoItems poit 
 WHERE poh.PoUuid=poit.PoUuid  FOR JSON PATH ) AS PoLineList
 ";
@@ -46,6 +46,8 @@ WHERE poh.PoUuid=poit.PoUuid  FOR JSON PATH ) AS PoLineList
         {
             this.SQL_From = $@"
 from PoHeader poh 
+left join PoHeaderInfo pohi on poh.PoUuid=pohi.PoUuid 
+left join DistributionCenter dc on pohi.WarehouseUuid=dc.DistributionCenterUuid
 ";
             return this.SQL_From;
         }

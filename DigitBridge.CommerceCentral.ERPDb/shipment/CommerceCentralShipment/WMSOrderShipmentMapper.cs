@@ -4,9 +4,36 @@ using System.Collections.Generic;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
-    public class InputOrderShipmentMapper
+    /// <summary>
+    /// Mapper wms shipment to erp shipment
+    /// </summary>
+    public class WMSOrderShipmentMapper
     {
-        public static OrderShipmentDataDto MapperToErpShipment(InputOrderShipmentType inputShipment)
+        /// <summary>
+        /// login MasterAccountNum
+        /// </summary>
+        protected int MasterAccountNum;
+        /// <summary>
+        /// login profile num
+        /// </summary>
+        protected int ProfileNum;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        public WMSOrderShipmentMapper(int masterAccountNum, int profileNum)
+        {
+            MasterAccountNum = masterAccountNum;
+            ProfileNum = profileNum;
+        }
+        /// <summary>
+        /// Mapper wms shipment to erp shipment
+        /// </summary>
+        /// <param name="inputShipment"></param>
+        /// <returns></returns>
+        public OrderShipmentDataDto MapperToErpShipment(InputOrderShipmentType inputShipment)
         {
             if (inputShipment is null)
                 return null;
@@ -20,13 +47,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return dataDto;
         }
 
-        protected static OrderShipmentHeaderDto Write(InputOrderShipmentHeaderType inputShipmentHeader)
+        /// <summary>
+        /// write header
+        /// </summary>
+        /// <param name="inputShipmentHeader"></param>
+        /// <returns></returns>
+        protected OrderShipmentHeaderDto Write(InputOrderShipmentHeaderType inputShipmentHeader)
         {
             if (inputShipmentHeader is null)
                 return null;
 
             var header = new OrderShipmentHeaderDto();
-
+            header.MasterAccountNum = MasterAccountNum;
+            header.ProfileNum = ProfileNum;
             header.ShipmentID = inputShipmentHeader.ShipmentID;
             header.OrderDCAssignmentNum = inputShipmentHeader.OrderDCAssignmentNum;
             header.CentralOrderNum = inputShipmentHeader.CentralOrderNum;
@@ -55,7 +88,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
             return header;
         }
-        protected static IList<OrderShipmentPackageDto> Write(List<InputOrderShipmentPackageItemsType> inputPackageItems)
+        /// <summary>
+        /// write package.
+        /// </summary>
+        /// <param name="inputPackageItems"></param>
+        /// <returns></returns>
+        protected IList<OrderShipmentPackageDto> Write(List<InputOrderShipmentPackageItemsType> inputPackageItems)
         {
             if (inputPackageItems is null || inputPackageItems.Count == 0)
                 return null;
@@ -66,7 +104,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             return packageItems;
         }
-        protected static OrderShipmentPackageDto Write(InputOrderShipmentPackageItemsType inputPackageItem)
+        /// <summary>
+        /// write package item
+        /// </summary>
+        /// <param name="inputPackageItem"></param>
+        /// <returns></returns>
+        protected OrderShipmentPackageDto Write(InputOrderShipmentPackageItemsType inputPackageItem)
         {
             if (inputPackageItem is null)
                 return null;
@@ -82,12 +125,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             return packageItem;
         }
-        protected static OrderShipmentShippedItemDto Write(InputOrderShipmentShippedItemType inputOrderShippedPackageItem)
+        /// <summary>
+        /// write package item.
+        /// </summary>
+        /// <param name="inputOrderShippedPackageItem"></param>
+        /// <returns></returns>
+        protected OrderShipmentShippedItemDto Write(InputOrderShipmentShippedItemType inputOrderShippedPackageItem)
         {
             if (inputOrderShippedPackageItem is null)
                 return null;
             var orderShippedPackageItem = new OrderShipmentShippedItemDto();
-
+            orderShippedPackageItem.MasterAccountNum = MasterAccountNum;
+            orderShippedPackageItem.ProfileNum = ProfileNum;
             //TODO column not exist in table 
             //orderShippedPackageItem.CentralOrderLineNum = inputOrderShippedPackageItem.CentralOrderLineNum;
 
@@ -104,12 +153,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
             orderShippedPackageItem.EnterDateUtc = inputOrderShippedPackageItem.EnterDateUtc;
             return orderShippedPackageItem;
         }
-        protected static OrderShipmentPackageDto Write(InputOrderShipmentPackageType inputShipmentPackage)
+        /// <summary>
+        /// write package item
+        /// </summary>
+        /// <param name="inputShipmentPackage"></param>
+        /// <returns></returns>
+        protected OrderShipmentPackageDto Write(InputOrderShipmentPackageType inputShipmentPackage)
         {
             if (inputShipmentPackage is null)
                 return null;
             var packageItem = new OrderShipmentPackageDto();
-
+            packageItem.MasterAccountNum = MasterAccountNum;
+            packageItem.ProfileNum = ProfileNum;
 
             packageItem.PackageID = inputShipmentPackage.PackageID;
             packageItem.PackageType = (int)inputShipmentPackage.PackageType;
@@ -129,8 +184,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
             return packageItem;
         }
-
-        protected static IList<OrderShipmentCanceledItemDto> Write(List<InputOrderShipmentCanceledItemType> inputCanceledItems)
+        /// <summary>
+        /// write canceled item.
+        /// </summary>
+        /// <param name="inputCanceledItems"></param>
+        /// <returns></returns>
+        protected IList<OrderShipmentCanceledItemDto> Write(List<InputOrderShipmentCanceledItemType> inputCanceledItems)
         {
             if (inputCanceledItems is null || inputCanceledItems.Count == 0)
                 return null;
@@ -143,12 +202,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return canceledItems;
         }
 
-        protected static OrderShipmentCanceledItemDto Write(InputOrderShipmentCanceledItemType inputCanceledItem)
+        /// <summary>
+        /// write canceled item
+        /// </summary>
+        /// <param name="inputCanceledItem"></param>
+        /// <returns></returns>
+        protected OrderShipmentCanceledItemDto Write(InputOrderShipmentCanceledItemType inputCanceledItem)
         {
             if (inputCanceledItem is null)
                 return null;
 
             var canceledItem = new OrderShipmentCanceledItemDto();
+            canceledItem.MasterAccountNum = MasterAccountNum;
+            canceledItem.ProfileNum = ProfileNum;
             //TODO column not exist in table 
             //canceledItem.CentralOrderLineNum = inputCanceledItem.CentralOrderLineNum ;
 

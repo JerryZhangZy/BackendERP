@@ -315,6 +315,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = await GetDataAsync(rowNum);
             return success && (await DeleteDataAsync());
         }
+
+        public async Task<Vendor> GetVendorByName(string vendorName)
+        {
+            return (await dbFactory.FindAsync<Vendor>("WHERE VendorName=@0",
+                vendorName.ToSqlParameter("VendorName"))).FirstOrDefault();
+        }
     }
 }
 

@@ -176,6 +176,25 @@ namespace DigitBridge.Base.Utility
             dict[key] = objValue;
             return objValue;
         }
+        public static TV SetData<TK, TV>(this Dictionary<TK, TV> dict, TK key, TV objValue)
+        {
+            if (key == null || string.IsNullOrEmpty(key.ToString()) || (dict == null))
+                return default;
+
+            dict[key] = objValue;
+            return objValue;
+        }
+        public static Dictionary<TK, TV> MergeFrom<TK, TV>(this Dictionary<TK, TV> target, Dictionary<TK, TV> source)
+        {
+            if (source == null)
+                return target;
+
+            foreach (var item in source)
+            {
+                target.SetData(item.Key, item.Value);
+            }
+            return target;
+        }
 
         public static T GetData<T>(this Dictionary<string, object> dict, string key)
         {
