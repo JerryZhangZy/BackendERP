@@ -185,7 +185,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     return (null);
                 }
 
-                SalesOrderItems soItem = soData.GetNewSalesOrderItems();
+                var soItem = soData.GetNewSalesOrderItems();
                 //soItem.SalesOrderItemsUuid = soLnUuid;
                 //soItem.SalesOrderUuid = _soUuid;
                 soItem.Seq = itemSeq++;
