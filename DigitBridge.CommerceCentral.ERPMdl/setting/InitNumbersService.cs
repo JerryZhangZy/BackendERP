@@ -334,6 +334,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
+
+
+        /// <summary>
+        /// Delete data by number
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> DeleteByInitNumbersUuidAsync(InitNumbersPayload payload, string initNumbersUuid)
+        {
+            if (string.IsNullOrEmpty(initNumbersUuid))
+                return false;
+            //set delete mode
+            Delete();
+            //load data
+            var success = await InitNumbersHelper.DeleteByInitNumbersUuidAsync(payload.MasterAccountNum, payload.ProfileNum, initNumbersUuid);
+            success = success && DeleteData();
+            return success;
+        }
     }
 }
 

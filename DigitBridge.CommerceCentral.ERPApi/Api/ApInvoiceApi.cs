@@ -171,7 +171,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiOperation(operationId: "ApInvociesSample", tags: new[] { "Sample" }, Summary = "Get new sample of Apinvoice")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadAdd))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ApInvoicePayloadAdd))]
         public static async Task<JsonNetResponse<ApInvoicePayloadAdd>> Sample_ApInvocies_Post(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/apInvoices")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
@@ -183,7 +183,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiOperation(operationId: "ApInvoiceFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of ApInvoice find")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadFind))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ApInvoicePayloadFind))]
         public static async Task<JsonNetResponse<ApInvoicePayloadFind>> Sample_ApInvocies_Find(
          [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/apInvoices/find")] Microsoft.AspNetCore.Http.HttpRequest req)
         {
