@@ -19,7 +19,10 @@ using DigitBridge.CommerceCentral.ERPApi.OpenApiModel;
 
 namespace DigitBridge.CommerceCentral.ERPApi.Api
 {
- 
+
+
+
+
     /// <summary>
     /// Process apInvoice
     /// </summary> 
@@ -27,6 +30,39 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
     public static class InitNumberApi
     {
 
+
+
+        /// <summary>
+        /// Get one  InitNumber
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="log"></param>
+        /// <param name="initNumbersUuid"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(GetInitNumber))]
+        [OpenApiOperation(operationId: "GetInitNumber", tags: new[] { "InitNumbers" }, Summary = "Get one InitNumber by initNumbersUuid")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "initNumbersUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "initNumbersUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InitNumberPayloadGetSingle))]
+        public static async Task<JsonNetResponse<InitNumbersPayload>> GetInitNumber(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "initNumbers/{initNumbersUuid}")] Microsoft.AspNetCore.Http.HttpRequest req,
+            ILogger log,
+            string initNumbersUuid)
+        {
+            var payload = await req.GetParameters<InitNumbersPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InitNumbersService(dataBaseFactory);
+            payload.Success = await srv.GetByInitNumbersUuidAsync(payload.MasterAccountNum,payload.ProfileNum, initNumbersUuid);
+            if (payload.Success)
+            {
+                payload.InitNumbers = srv.ToDto(srv.Data);
+            }
+            else
+                payload.Messages = srv.Messages;
+            return new JsonNetResponse<InitNumbersPayload>(payload);
+        }
 
         ///  Update InitNumber 
         /// </summary>
@@ -86,7 +122,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         /// Delete InitNumber 
         /// </summary>
         /// <param name="req"></param>
-        /// <param name="InitNumbersUuid"></param>
+        /// <param name="initNumbersUuid"></param>
         /// <returns></returns>
         [FunctionName(nameof(DeleteByInitNumbersUuid))]
         [OpenApiOperation(operationId: "DeleteByInitNumbersUuid", tags: new[] { "InitNumbers" }, Summary = "Delete one InitNumbers by InitNumbersUuid.")]

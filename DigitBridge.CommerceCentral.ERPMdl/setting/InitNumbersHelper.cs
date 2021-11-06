@@ -93,6 +93,24 @@ commit tran ;"
             return result > 0;
         }
 
+        public static async Task<long> GetRowNumByInitNumbersUuidAsync(int masterAccountNum, int profileNum, string initNumbersUuid)
+        {
+
+            var sql = $@"
+            SELECT RowNum FROM InitNumbers tbl
+            WHERE MasterAccountNum = @masterAccountNum
+            AND ProfileNum = @profileNum
+            AND InitNumbersUuid = @initNumbersUuid
+            ";
+            return await SqlQuery.ExecuteScalarAsync<long>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                initNumbersUuid.ToSqlParameter("initNumbersUuid")
+            );
+ 
+        }
+
+
         public static async Task<bool> ExistNumberAsync(string number, int masterAccountNum, int profileNum)
         {
 /*

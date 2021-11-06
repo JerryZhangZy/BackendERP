@@ -48,9 +48,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        public virtual async Task<bool> GetByInitNumbersUuidAsync(int masterAccountNum, int profileNum, string initNumbersUuid)
+        {
+
+           var rownum= await InitNumbersHelper.GetRowNumByInitNumbersUuidAsync(masterAccountNum, profileNum, initNumbersUuid);
+            GetData(rownum);
+            return true;
+        }
 
 
-        
+
 
         public async Task<InitNumbersPayload> GetInitNumbersForCustomer(int masterAccountNum,int profileNum, string customerUuid)
         {
