@@ -105,6 +105,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return SaveData();
         }
 
+        public Task<bool> GetSystemCodesBySystemCodesUuidAsync(SystemCodesPayload payload, string systemCodesCode)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual async Task<bool> AddAsync(SystemCodesPayload payload)
         {
             if (payload is null || !payload.HasSystemCodes)
@@ -153,6 +158,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return SaveData();
+        }
+
+        public Task<SystemCodesPayload> GetSystemCodessByUuidArrayAsync(SystemCodesPayload payload)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -209,6 +219,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return SaveData();
+        }
+
+        public Task<bool> DeleteByUuidAsync(SystemCodesPayload payload, string systemCodesCode)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
