@@ -32,8 +32,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// (Response Data) List result which load filter and paging.
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
-        //[JsonConverter(typeof(StringBuilderConverter))]
-        public string SalesOrderOpenList { get; set; } 
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder SalesOrderOpenList { get; set; }
 
         /// <summary>
         /// (Response Data) List result count which load filter and paging.
