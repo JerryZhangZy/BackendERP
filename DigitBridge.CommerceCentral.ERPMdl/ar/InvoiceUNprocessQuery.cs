@@ -11,20 +11,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public class InvoiceUnprocessQuery : QueryObject<InvoiceUnprocessQuery>
     {
         // Table prefix which use in this sql query 
-        protected static string PREFIX_INFO = InvoiceHeaderInfoHelper.TableAllies;
-        protected static string eventHelperTableAllies = "event";//TODO change to helper.
+        protected static string PREFIX = "event"; //TODO change to helper. 
 
 
-        protected QueryFilter<long> _ChannelNum = new QueryFilter<long>("ChannelNum", "ChannelNum", PREFIX_INFO, FilterBy.eq, 0);
-        public QueryFilter<long> ChannelNum => _ChannelNum;
+        protected QueryFilter<int> _ChannelNum = new QueryFilter<int>("ChannelNum", "ChannelNum", PREFIX, FilterBy.eq, 0);
+        public QueryFilter<int> ChannelNum => _ChannelNum;
 
-        protected QueryFilter<long> _ChannelAccountNum = new QueryFilter<long>("ChannelAccountNum", "ChannelAccountNum", PREFIX_INFO, FilterBy.eq, 0);
-        public QueryFilter<long> ChannelAccountNum => _ChannelAccountNum;
+        protected QueryFilter<int> _ChannelAccountNum = new QueryFilter<int>("ChannelAccountNum", "ChannelAccountNum", PREFIX, FilterBy.eq, 0);
+        public QueryFilter<int> ChannelAccountNum => _ChannelAccountNum;
 
-        protected QueryFilter<int> _EventProcessActionStatus = new QueryFilter<int>("EventProcessActionStatus", "ActionStatus", eventHelperTableAllies, FilterBy.eq, 0);
+        protected QueryFilter<int> _EventProcessActionStatus = new QueryFilter<int>("EventProcessActionStatus", "ActionStatus", PREFIX, FilterBy.eq, 0);
         public QueryFilter<int> EventProcessActionStatus => _EventProcessActionStatus;
 
-        public InvoiceUnprocessQuery() : base(eventHelperTableAllies)
+        public InvoiceUnprocessQuery() : base(PREFIX)
         {
             AddFilter(_ChannelNum);
             AddFilter(_ChannelAccountNum);
