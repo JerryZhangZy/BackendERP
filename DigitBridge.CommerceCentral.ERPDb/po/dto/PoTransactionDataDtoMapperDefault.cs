@@ -74,6 +74,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasDescription) data.Description = dto.Description;
 			if (dto.HasNotes) data.Notes = dto.Notes;
 			if (dto.HasVendorUuid) data.VendorUuid = dto.VendorUuid;
+			if (dto.HasVendorCode) data.VendorCode = dto.VendorCode;
+			if (dto.HasVendorName) data.VendorName = dto.VendorName;
 			if (dto.HasVendorInvoiceNum) data.VendorInvoiceNum = dto.VendorInvoiceNum;
 			if (dto.HasVendorInvoiceDate) data.VendorInvoiceDate = dto.VendorInvoiceDate;
 			if (dto.HasDueDate) data.DueDate = dto.DueDate;
@@ -230,6 +232,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.Description = data.Description;
 			dto.Notes = data.Notes;
 			dto.VendorUuid = data.VendorUuid;
+			dto.VendorCode = data.VendorCode;
+			dto.VendorName = data.VendorName;
 			dto.VendorInvoiceNum = data.VendorInvoiceNum;
 			dto.VendorInvoiceDate = data.VendorInvoiceDate;
 			dto.DueDate = data.DueDate;

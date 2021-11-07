@@ -78,8 +78,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("VendorUuid",SqlDbType.VarChar,IsDefault=true)]
         private string _vendorUuid;
 
-        [Column("VendorNum",SqlDbType.VarChar)]
-        private string _vendorNum;
+        [Column("VendorCode",SqlDbType.VarChar)]
+        private string _vendorCode;
 
         [Column("VendorName",SqlDbType.NVarChar)]
         private string _vendorName;
@@ -346,20 +346,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Vendor readable number, DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique
 		/// </summary>
-        public virtual string VendorNum
+        public virtual string VendorCode
         {
             get
             {
-				if (!AllowNull && _vendorNum is null) 
-					_vendorNum = String.Empty; 
-				return _vendorNum?.TrimEnd(); 
+				if (!AllowNull && _vendorCode is null) 
+					_vendorCode = String.Empty; 
+				return _vendorCode?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
 				{
-					_vendorNum = value.TruncateTo(50); 
-					OnPropertyChanged("VendorNum", value);
+					_vendorCode = value.TruncateTo(50); 
+					OnPropertyChanged("VendorCode", value);
 				}
             }
         }
@@ -379,7 +379,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_vendorName = value.TruncateTo(100); 
+					_vendorName = value.TruncateTo(200); 
 					OnPropertyChanged("VendorName", value);
 				}
             }
@@ -699,7 +699,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_apInvoiceDate = new DateTime().MinValueSql(); 
 			_apInvoiceTime = new TimeSpan().MinValueSql(); 
 			_vendorUuid = AllowNull ? (string)null : String.Empty; 
-			_vendorNum = AllowNull ? (string)null : String.Empty; 
+			_vendorCode = AllowNull ? (string)null : String.Empty; 
 			_vendorName = AllowNull ? (string)null : String.Empty; 
 			_vendorInvoiceNum = String.Empty; 
 			_vendorInvoiceDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
