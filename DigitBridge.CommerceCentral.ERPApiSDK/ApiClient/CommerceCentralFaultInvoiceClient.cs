@@ -66,7 +66,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 return false;
             }
 
-            return await PostAsync(faultInvoiceList, FunctionUrl.UpdateFaultInvoiceList);
+            return await PatchAsync(faultInvoiceList, FunctionUrl.UpdateFaultInvoiceList);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
