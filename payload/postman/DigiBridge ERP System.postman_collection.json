@@ -11851,6 +11851,236 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "SelectList",
+			"item": [
+				{
+					"name": "SelectList",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/poReceives?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"poReceives"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "initNumbers",
+			"item": [
+				{
+					"name": "/initNumbers/{initNumbersUuid}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/123/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								"123",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Load InitNumber list data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/123/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								"123",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add one InitNumber",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"initNumbers\": {\r\n    \"initNumbers\": {\r\n      \"initNumbersUuid\": \"\",\r\n      \"customerUuid\": \"14962e7a-95b4-0994-b016-f186a5c6001c\",\r\n      \"inActive\": true,\r\n      \"type\": \"Unde autem iure dist\",\r\n      \"number\": 45,\r\n      \"prefix\": \"Sed et aut officiis \",\r\n      \"suffix\": \"Cum commodi corrupti\"\r\n    }\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update one InitNumber",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"initNumbers\": {\r\n    \"initNumbers\": {\r\n      \"initNumbersUuid\": \"\",\r\n      \"customerUuid\": \"14962e7a-95b4-0994-b016-f186a5c6001c\",\r\n      \"inActive\": true,\r\n      \"type\": \"Unde autem iure dist\",\r\n      \"number\": 45,\r\n      \"prefix\": \"Sed et aut officiis \",\r\n      \"suffix\": \"Cum commodi corrupti\"\r\n    }\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete one InitNumbers by InitNumbersUuid.",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/123/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								"123",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
