@@ -70,7 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         #region async methods
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task GetInvoiceListAsync_Simple_Test()
+        public async Task GetInvoiceUnprocessListAsync_Simple_Test()
         {
             var payload = new InvoicePayload()
             {
@@ -88,13 +88,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task GetInvoiceListAsync_Full_Test()
+        public async Task GetInvoiceUnprocessListAsync_Full_Test()
         {
             // get event process from db.
-            //var eventProcess =
-            var invoice = await InvoiceDataTests.GetInvoiceFromDBAsync(this.DataBaseFactory);
-            var header = invoice.InvoiceHeader;
-            var headerInfo = invoice.InvoiceHeaderInfo;
+            var eventProcess = GetEventProcess();
+            var invoiceUuid = eventProcess["ProcessUuid"].ToString();
+            var invoice = await InvoiceDataTests.GetInvoiceFromDBAsync(this.DataBaseFactory, invoiceUuid);
+
+            Assert.True(invoice != null && invoice.InvoiceHeader.RowNum > 0, $"Invoice data not found for invoiceUuid:{invoiceUuid}");
+            var invoiceNumber = invoice.InvoiceHeader.InvoiceNumber;
 
             var payload = new InvoicePayload()
             {
@@ -104,21 +106,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             };
             var filters = new JObject()
             {
-                {"ChannelNum",  $"{headerInfo.ChannelNum}"},
-                {"ChannelAccountNum", $"{headerInfo.ChannelAccountNum}"},
+                //{"ChannelNum",  $"{headerInfo.ChannelNum}"},
+                //{"ChannelAccountNum", $"{headerInfo.ChannelAccountNum}"},
                 //{"EventProcessActionStatus", $"{headerInfo.ChannelAccountNum}"}, 
+                {"ChannelNum",  eventProcess["ChannelNum"].Value<int>()},
+                {"ChannelAccountNum", eventProcess["ChannelAccountNum"].Value<int>()},
+                {"EventProcessActionStatus", eventProcess["ActionStatus"].Value<int>()},
             };
 
             var filterList = filters.Properties();
             foreach (var filter in filterList)
             {
-                payload.Filter = GetInitFilter(filter);
-                await TestFilter(payload, header.RowNum);
+                //payload.Filter = GetInitFilter(filter);
+                payload.Filter = new JObject { filter };
+                await TestFilter(payload, invoiceNumber);
             }
 
             //test all
             payload.Filter = filters;
-            await TestFilter(payload, header.RowNum);
+            await TestFilter(payload, invoiceNumber);
         }
         private JObject GetInitFilter(JProperty currentFilter)
         {
@@ -136,7 +142,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             }
             return initFilters;
         }
-        private async Task TestFilter(InvoicePayload payload, long expectedRowNum)
+        private async Task TestFilter(InvoicePayload payload, string invoiceNumber)
         {
             var listService = new InvoiceUnprocessList(this.DataBaseFactory);
             await listService.GetInvoiceUnprocessListAsync(payload);
@@ -144,28 +150,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             //make sure query is correct.
             Assert.True(payload.Success, listService.Messages.ObjectToString());
 
-            //make sure InvoiceListCount is matched.
-            Assert.True(payload.InvoiceListCount >= 1, $"TestFilter error. filter data from record by rownum:{expectedRowNum},filter is :{payload.Filter}");
+            //make sure InvoiceUnprocessListCount is matched.
+            Assert.True(payload.InvoiceUnprocessListCount >= 1, $"TestFilter error. filter data from record by invoiceNumber:{invoiceNumber},filter is :{payload.Filter}");
 
-            var queryResult = JArray.Parse(payload.InvoiceList.ToString());
-            var rowNumMatchedCount = queryResult.Count(i => i.Value<long>("rowNum") == expectedRowNum);
+            var queryResult = JArray.Parse(payload.InvoiceUnprocessList.ToString());
+            var matchedCount = queryResult.Count(i => i.SelectToken("InvoiceHeader.InvoiceNumber").Value<string>() == invoiceNumber);
             //make sure result data is matched.
-            Assert.Equal(1, rowNumMatchedCount);
+            Assert.Equal(1, matchedCount);
         }
 
 
-//        private dynamic GetEventProcess()
-//        {
-//            var sql = $@"
-//SELECT TOP 1 rownum,ProcessUuid,ActionStatus,ChannelNum,ChannelAccountNum
-//FROM EventProcessERP ins  
-//WHERE [MasterAccountNum]={MasterAccountNum}
-//AND [ProfileNum]={ProfileNum}
-//AND ERPEventProcessType={(int)EventProcessTypeEnum.InvoiceToChanel}
-//order by ins.rownum desc
-//";
-//            var rownum = this.DataBaseFactory.;
-//        }
+        private JObject GetEventProcess()
+        {
+            var sql = $@"
+SELECT TOP 1 RowNum,ProcessUuid,ActionStatus,ChannelNum,ChannelAccountNum
+FROM EventProcessERP ins  
+WHERE [MasterAccountNum]={MasterAccountNum}
+AND [ProfileNum]={ProfileNum}
+AND ERPEventProcessType={(int)EventProcessTypeEnum.InvoiceToChanel}
+order by ins.rownum desc
+for json path
+";
+            var sb = new StringBuilder();
+            using (var trs = new ScopedTransaction(this.DataBaseFactory))
+            {
+                var result = SqlQuery.QueryJson(sb, sql, CommandType.Text);
+                Assert.True(result, "get event process error.");
+            }
+            Assert.True(!sb.ToString().IsZero(), "No EventProcess record found.");
+            var jArray = JArray.Parse(sb.ToString());
+            Assert.True(jArray.Count > 0, "No EventProcess record found.");
+            return jArray.FirstOrDefault() as JObject;
+        }
         #endregion async methods 
     }
 }
