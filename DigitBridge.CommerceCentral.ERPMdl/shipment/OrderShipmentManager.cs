@@ -240,9 +240,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (wmsShipment is null)
             {
-                AddError("Shipment data is empty.");
+                AddError("Shipment data cannot be empty.");
                 return response;
             }
+
+            if (wmsShipment.ShipmentHeader is null)
+            {
+                AddError("ShipmentHeader data cannot be empty.");
+                return response;
+            }
+
+            response.MainTrackingNumber = wmsShipment.ShipmentHeader.MainTrackingNumber;
 
             var mapper = new WMSOrderShipmentMapper(payload.MasterAccountNum, payload.ProfileNum);
             var erpShipment = mapper.MapperToErpShipment(wmsShipment);
@@ -280,6 +288,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<List<WmsOrderShipmentPayload>> CreateShipmentListAsync(OrderShipmentPayload payload, IList<InputOrderShipmentType> wmsShipments)
         {
             var resultList = new List<WmsOrderShipmentPayload>();
+            if (wmsShipments is null || wmsShipments.Count == 0)
+            {
+                AddError("shipment data is required.");
+                resultList.Add(new WmsOrderShipmentPayload()
+                {
+                    Messages = this.Messages,
+                });
+                return resultList;
+            }
             foreach (var shipment in wmsShipments)
             {
                 var shipmentPayload = new OrderShipmentPayload()

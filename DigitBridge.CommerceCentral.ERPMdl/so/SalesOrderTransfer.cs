@@ -168,9 +168,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return soHeaderInfo;
         }
 
-        private List<SalesOrderItems> ChannelOrderToSalesOrderLines(DCAssignmentData dcData, ChannelOrderData coData, SalesOrderData soData)
+        private IList<SalesOrderItems> ChannelOrderToSalesOrderLines(DCAssignmentData dcData, ChannelOrderData coData, SalesOrderData soData)
         {
-            var soItemList = soData.SalesOrderItems.ToList();
+            var soItemList = soData.SalesOrderItems;
 
             var coHeader = coData.OrderHeader;
             int itemSeq = 1;
