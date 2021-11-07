@@ -12,21 +12,21 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 
-namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poHeaderInfo
+namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
 {
  
-    public partial class poHeaderInfo_channelNum : SelectListBase
+    public partial class po_channelOrderID : SelectListBase
     {
-        public override string Name => "poHeaderInfo_channelNum";
+        public override string Name => "po_channelOrderID";
 
-        public poHeaderInfo_channelNum(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public po_channelOrderID(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $" tbl.ChannelNum LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"COALESCE(poh.ChannelOrderID, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -39,16 +39,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poHeaderInfo
             this.SQL_Select = $@"
  
     SELECT 
-      tbl.ChannelNum AS [value],
+      COALESCE(poh.ChannelOrderID,'') AS [value],
       '' AS[text],
         COUNT(1) AS [count] FROM
-      [dbo].[PoHeaderInfo] tbl
-   
-    WHERE  
-          {this.QueryObject.GetSQL()}
-    GROUP BY tbl.ChannelNum
-ORDER BY tbl.ChannelNum 
-";
+      [dbo].[PoHeaderInfo] poh
+   INNER JOIN PoHeader tbl ON tbl.PoUuid=poh.PoUuid
+    WHERE COALESCE(poh.ChannelOrderID,'') != '' 
+        AND {this.QueryObject.GetSQL()}
+    GROUP BY poh.ChannelOrderID
+ORDER BY poh.ChannelOrderID ";
             return this.SQL_Select;
         }
     }

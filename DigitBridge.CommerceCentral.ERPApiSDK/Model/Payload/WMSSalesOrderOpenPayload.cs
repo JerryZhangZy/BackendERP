@@ -29,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// (Response Data) List result which load filter and paging.
         /// </summary>   
         //[JsonConverter(typeof(StringBuilderConverter))]
-        public string SalesOrderOpenList { get; set; }
+        public IList<AddOrderHeaderModel> SalesOrderOpenList { get; set; }
 
         /// <summary>
         /// (Response Data) List result count which load filter and paging.
@@ -45,7 +45,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// </summary>
         [Display(Name = "success")]
         [DataMember(Name = "success")]
-        public bool Success { get; set; } = true;
+        public bool Success { get; set; }
 
         /// <summary>
         /// Message list for this request

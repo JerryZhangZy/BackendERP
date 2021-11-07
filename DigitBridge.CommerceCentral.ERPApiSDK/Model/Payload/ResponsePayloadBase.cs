@@ -21,7 +21,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// </summary>
         [Display(Name = "success")]
         [DataMember(Name = "success")]
-        public bool Success { get; set; } = true;
+        public bool Success { get; set; } = false;
 
         /// <summary>
         /// Message list for this request

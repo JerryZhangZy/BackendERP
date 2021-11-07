@@ -11,21 +11,21 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
-namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poHeaderInfo
+namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
 {
  
-    public partial class poHeaderInfo_customerPoNum : SelectListBase
+    public partial class po_customerPoNum : SelectListBase
     {
-        public override string Name => "poHeaderInfo_customerPoNum";
+        public override string Name => "po_customerPoNum";
 
-        public poHeaderInfo_customerPoNum(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public po_customerPoNum(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.CustomerPoNum, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"COALESCE(poh.CustomerPoNum, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -38,15 +38,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poHeaderInfo
             this.SQL_Select = $@"
  
     SELECT 
-      COALESCE(tbl.CustomerPoNum,'') AS [value],
+      COALESCE(poh.CustomerPoNum,'') AS [value],
       '' AS[text],
         COUNT(1) AS [count] FROM
-      [dbo].[PoHeader] tbl
-   
-    WHERE COALESCE(tbl.CustomerPoNum,'') != '' 
+      [dbo].[PoHeaderInfo] poh
+   INNER JOIN PoHeader tbl ON tbl.PoUuid=poh.PoUuid
+    WHERE COALESCE(poh.CustomerPoNum,'') != '' 
         AND {this.QueryObject.GetSQL()}
-    GROUP BY tbl.CustomerPoNum
-ORDER BY tbl.CustomerPoNum 
+    GROUP BY poh.CustomerPoNum
+ORDER BY poh.CustomerPoNum 
 ";
             return this.SQL_Select;
         }

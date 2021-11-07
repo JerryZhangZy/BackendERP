@@ -226,7 +226,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
         #region create invoice from orderShimentUuid 
-        
+
         /// <summary>
         /// Load OrderShipment and SalesOrder, create Invoice for each OrderShipment.
         /// </summary>
@@ -254,11 +254,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns>Success Create Invoice, Invoice UUID</returns>
         public async Task<(bool, string)> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData)
         {
-            var orderShimentUuid = shipmentData.UniqueId;
-            var salesOrderUuid = await GetSalesOrderUuid(shipmentData);
+            var mainTrackingNumber = shipmentData.OrderShipmentHeader.MainTrackingNumber;
+
+            var orderDCAssignmentNum = shipmentData.OrderShipmentHeader.OrderDCAssignmentNum;
+            if (orderDCAssignmentNum.IsZero())
+            {
+                AddError($"OrderDCAssignmentNum cannot be empty.");
+                return (false, null);
+            }
+            //Get Sale by uuid
+            var salesOrderUuid = await GetSalesOrderUuidAsync(orderDCAssignmentNum.Value);
+
             if (string.IsNullOrEmpty(salesOrderUuid))
             {
-                AddError($"SalesOrder not found for orderShimentUuid:{orderShimentUuid}.");
+                AddError($"SalesOrder not found for OrderShipment.");
                 return (false, null);
             }
 
@@ -289,19 +298,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return (success, invoiceUuid);
         }
-        protected async Task<string> GetSalesOrderUuid(OrderShipmentData shipmentData)
-        {
-            var orderShimentUuid = shipmentData.UniqueId;
-            //Get Sale by uuid
-            long orderDCAssignmentNum = shipmentData.OrderShipmentHeader.OrderDCAssignmentNum ?? 0;
-            if (orderDCAssignmentNum == 0)
-            {
-                AddError($"No OrderDCAssignmentNum of OrderShipment {orderShimentUuid}.");
-                return null;
-            }
-            var salesOrderUuid = await GetSalesOrderUuidAsync(orderDCAssignmentNum);
-            return salesOrderUuid;
-        }
+
         /// <summary>
         /// Get SalesOrderData by OrderDCAssignmentNum
         /// </summary>

@@ -12,21 +12,21 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 
-namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poHeaderInfo
+namespace DigitBridge.CommerceCentral.ERPMdl.selectList.po
 {
  
-    public partial class poHeaderInfo_channelOrderID : SelectListBase
+    public partial class po_channelAccountNum : SelectListBase
     {
-        public override string Name => "poHeaderInfo_channelOrderID";
+        public override string Name => "po_channelAccountNum";
 
-        public poHeaderInfo_channelOrderID(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public po_channelAccountNum(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.ChannelOrderID, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                   $"COALESCE(poh.ChannelAccountNum, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -39,16 +39,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.poHeaderInfo
             this.SQL_Select = $@"
  
     SELECT 
-      COALESCE(tbl.ChannelOrderID,'') AS [value],
+      COALESCE(poh.ChannelAccountNum,'') AS [value],
       '' AS[text],
         COUNT(1) AS [count] FROM
-      [dbo].[PoHeader] tbl
-   
-    WHERE COALESCE(tbl.ChannelOrderID,'') != '' 
+      [dbo].[PoHeaderInfo] poh
+   INNER JOIN PoHeader tbl ON tbl.PoUuid=poh.PoUuid
+    WHERE COALESCE(poh.ChannelAccountNum,'') != '' 
         AND {this.QueryObject.GetSQL()}
-    GROUP BY tbl.ChannelOrderID
-ORDER BY tbl.ChannelOrderID 
-";
+    GROUP BY poh.ChannelAccountNum
+ORDER BY poh.ChannelAccountNum ";
             return this.SQL_Select;
         }
     }

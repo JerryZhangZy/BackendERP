@@ -174,6 +174,7 @@ AND OrderNumber = @2";
 
         public SalesOrderItems SetDefaultSalesOrderItems(SalesOrderItems item)
         {
+            item.RowNum = 0;
             item.IsAr = true;
             item.Costable = true;
             item.IsProfit = true;

@@ -182,7 +182,7 @@ FOR JSON PATH
                     payload.SalesOrderOpenListCount = await CountAsync();
                 payload.Success = await ExcuteJsonAsync(sb);
                 if (payload.Success)
-                    payload.SalesOrderOpenList = sb.ToString();
+                    payload.SalesOrderOpenList = sb;
             }
             catch (Exception ex)
             {
