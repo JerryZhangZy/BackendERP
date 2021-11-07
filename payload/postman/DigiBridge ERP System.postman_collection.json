@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "eb388f85-d544-417a-b635-7492775e06dd",
+		"_postman_id": "e3d8cbc3-c529-4d68-9b61-d759845e85fe",
 		"name": "DigiBridge ERP System",
 		"description": "HTTP APIs that run on Azure Functions using OpenAPI specification.\n\nContact Support:\n Name: Jerry Zhang\n Email: jerry.zhang@DigitBridge.com",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -107,10 +107,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -236,10 +236,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -320,10 +320,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -410,10 +410,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -502,10 +502,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -592,10 +592,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -686,10 +686,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -780,10 +780,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				}
@@ -915,12 +915,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
+									"raw": "{\n    \"invoice\": {\n        \"invoiceHeader\": {\n            \"invoiceNumber\": \"Invoice{{NewCode}}\",\n            \"salesOrderUuid\": \"6efbba76-aa22-138f-f116-94feff7e926a\",\n            \"orderNumber\": \"5\",\n            \"invoiceType\": 54,\n            \"invoiceStatus\": 93,\n            \"invoiceDate\": \"{{dateto}}\",\n            \"invoiceTime\":\"{{dateto}}\",\n            \"customerUuid\": \"01ee8e99-9214-6dc1-c0f1-bd13d29e76d8\",\n            \"customerCode\": \"cumque\",\n            \"customerName\": \"Fay Gottlieb\",\n            \"terms\": \"vjfqowjhrb8osejkrfzrb7mjtrzqdyb84mlqwuvrhpqmkmu8u3\",\n            \"termsDays\": 31,\n            \"currency\": \"Qui mollit\",\n            \"subTotalAmount\": 825.13,\n            \"salesAmount\": 127.16,\n            \"totalAmount\": 795.91,\n            \"taxableAmount\": 5.19,\n            \"nonTaxableAmount\": 6.85,\n            \"taxRate\": 0.57,\n            \"taxAmount\": 179.18,\n            \"discountRate\": 0.79,\n            \"discountAmount\": 799.66,\n            \"shippingAmount\": 679.95,\n            \"shippingTaxAmount\": 930.99,\n            \"miscAmount\": 545.39,\n            \"miscTaxAmount\": 212.93,\n            \"chargeAndAllowanceAmount\": 279.22,\n            \"paidAmount\": 610.23,\n            \"creditAmount\": 481.74,\n            \"balance\": 997.93,\n            \"unitCost\": 968.75,\n            \"avgCost\": 200.18,\n            \"lotCost\": 917.76,\n            \"invoiceSourceCode\": \"facere\"\n        },\n        \"invoiceHeaderInfo\": {\n            \"invoiceUuid\": \"\",\n            \"centralFulfillmentNum\": 0,\n            \"orderShipmentNum\": 0,\n            \"shippingCarrier\": \"mk1og1ed9ibc6wxpz4xu5hi1iuyo0lcm0jde58auva9z7brx27\",\n            \"shippingClass\": \"yqpqs5205l2qdn6obmjjkru3yv7iu631msmlxar7c43pr5wlti\",\n            \"distributionCenterNum\": 1,\n            \"centralOrderNum\": 0,\n            \"channelNum\": 13,\n            \"channelAccountNum\": 39,\n            \"channelOrderID\": \"8b673971-a057-1934-c511-9fab70cf8ab1\",\n            \"secondaryChannelOrderID\": \"2039acae-17e7-9266-af66-a4eb82fbdf82\",\n            \"shippingAccount\": \"Nam beatae eos quam quo voluptatem molestias dolorem veniam et.\",\n            \"warehouseUuid\": \"{{WarehouseUuid}}\",\n            \"warehouseCode\": \"{{WarehouseCode}}\",\n            \"refNum\": \"Aut sit vel voluptas et non consequatur aperiam dignissimos et.\",\n            \"customerPoNum\": \"Ducimus sed ab aperiam qui blanditiis error non laborum.\",\n            \"endBuyerUserId\": \"4ab7f534-f04d-b0c9-4d3c-8055d4a31a9d\",\n            \"endBuyerName\": \"Winfield Cole\",\n            \"endBuyerEmail\": \"Mariah_Hickle95@gmail.com\",\n            \"shipToName\": \"Gordon Gutkowski\",\n            \"shipToFirstName\": \"Hester\",\n            \"shipToLastName\": \"Donnelly\",\n            \"shipToSuffix\": \"Jr.\",\n            \"shipToCompany\": \"Runte, Wuckert and Smith\",\n            \"shipToCompanyJobTitle\": \"Sequi laboriosam ullam laboriosam voluptatem officia aut assumenda.\",\n            \"shipToAttention\": \"Non quod eveniet eum aut.\",\n            \"shipToAddressLine1\": \"22770 Enoch Forks\",\n            \"shipToAddressLine2\": \"Apt. 275\",\n            \"shipToAddressLine3\": \"Temporibus ratione saepe fugit esse voluptate excepturi.\",\n            \"shipToCity\": \"Lulahaven\",\n            \"shipToState\": \"OK\",\n            \"shipToStateFullName\": \"Utah\",\n            \"shipToPostalCode\": \"63249-4995\",\n            \"shipToPostalCodeExt\": \"ducimus\",\n            \"shipToCounty\": \"Buckinghamshire\",\n            \"shipToCountry\": \"Monaco\",\n            \"shipToEmail\": \"Francesca25@yahoo.com\",\n            \"shipToDaytimePhone\": \"815.438.7956 x47453\",\n            \"shipToNightPhone\": \"285-533-5627 x1500\",\n            \"billToName\": \"Trace Kerluke\",\n            \"billToFirstName\": \"German\",\n            \"billToLastName\": \"Terry\",\n            \"billToSuffix\": \"DVM\",\n            \"billToCompany\": \"Jacobson - Dibbert\",\n            \"billToCompanyJobTitle\": \"Commodi porro hic saepe enim sint assumenda doloribus ipsum sed.\",\n            \"billToAttention\": \"Ut quia aliquid cum quidem laudantium placeat similique quaerat.\",\n            \"billToAddressLine1\": \"793 Velda Motorway\",\n            \"billToAddressLine2\": \"Suite 672\",\n            \"billToAddressLine3\": \"Iusto quas et voluptate odio numquam fugit atque impedit consequatur.\",\n            \"billToCity\": \"East Orlando\",\n            \"billToState\": \"RI\",\n            \"billToStateFullName\": \"California\",\n            \"billToPostalCode\": \"24889-2649\",\n            \"billToPostalCodeExt\": \"autem\",\n            \"billToCounty\": \"Borders\",\n            \"billToCountry\": \"Macao\",\n            \"billToEmail\": \"Haleigh_Lindgren@yahoo.com\",\n            \"billToDaytimePhone\": \"782.805.4796\",\n            \"billToNightPhone\": \"1-799-763-1949 x18340\"\n        },\n        \"invoiceHeaderAttributes\": {\n            \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n            \"invoiceUuid\": \"\",\n            \"fields\": {\n                \"ClassCode\": \"nl3agxre08w0fbd5b0ja\",\n                \"DepartmentCode\": \"mklp2dg3dl1etyvuoo70\",\n                \"ClassInt\": 94,\n                \"ClassDecimal\": 323.218\n            }\n        },\n        \"invoiceItems\": [\n            {\n                \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                \"seq\": 98,\n                \"invoiceItemType\": 7,\n                \"invoiceItemStatus\": 9,\n                \"itemDate\": \"2021-09-01T00:00:00+08:00\",\n                \"itemTime\": \"2021-09-06T06:08:21.3954802+08:00\",\n                \"shipDate\": \"2021-09-01T00:00:00+08:00\",\n                \"etaArrivalDate\": \"2021-09-01T00:00:00+08:00\",\n                \"sku\": \"Bacon\",\n                \"productUuid\": \"fbf74e0b-67e2-937a-71d9-5626c772483f\",\n                \"inventoryUuid\": \"4905b535-5428-94b0-e117-bc24ffe806ac\",\n                \"warehouseUuid\": \"{{WarehouseUuid}}\",\n                \"warehouseCode\": \"{{WarehouseCode}}\",\n                \"lotNum\": \"Consequuntur minima velit et aliquid.\",\n                \"description\": \"Rustic Frozen Gloves\",\n                \"notes\": \"Sed quos illo dignissimos corrupti quos id culpa.\",\n                \"currency\": \"Quidem hic\",\n                \"uom\": \"LB\",\n                \"packType\": \"EA\",\n                \"packQty\": 224.93,\n                \"orderPack\": 721.74,\n                \"shipPack\": 989.06,\n                \"cancelledPack\": 91.35,\n                \"openPack\": 25.36,\n                \"orderQty\": 48.23,\n                \"shipQty\": 458.74,\n                \"cancelledQty\": 643.43,\n                \"openQty\": 616.55,\n                \"priceRule\": \"3\",\n                \"price\": 639.66,\n                \"discountRate\": 0.57,\n                \"discountAmount\": 205.52,\n                \"discountPrice\": 632.3,\n                \"extAmount\": 286.53,\n                \"taxableAmount\": 255.8,\n                \"nonTaxableAmount\": 969.8,\n                \"taxRate\": 0.41,\n                \"taxAmount\": 296.35,\n                \"shippingAmount\": 819.21,\n                \"shippingTaxAmount\": 855.43,\n                \"miscAmount\": 946.7,\n                \"miscTaxAmount\": 609.34,\n                \"chargeAndAllowanceAmount\": 950.83,\n                \"itemTotalAmount\": 699.17,\n                \"orderAmount\": 811.17,\n                \"cancelledAmount\": 913.69,\n                \"openAmount\": 525.13,\n                \"stockable\": true,\n                \"isAr\": false,\n                \"taxable\": true,\n                \"costable\": false,\n                \"isProfit\": false,\n                \"unitCost\": 175.35,\n                \"avgCost\": 929.95,\n                \"lotCost\": 243.33,\n                \"lotInDate\": \"2021-09-01T00:00:00+08:00\",\n                \"lotExpDate\": \"2021-09-01T00:00:00+08:00\",\n                \"invoiceItemsAttributes\": {\n                    \"digitBridgeGuid\": \"00000000-0000-0000-0000-000000000000\",\n                    \"invoiceItemsUuid\": \"\",\n                    \"invoiceUuid\": \"cfa55900-a920-bd54-a92b-afbd2a0fec33\",\n                    \"fields\": {\n                        \"ClassCode\": \"2pfmtztyanecuu8nnvkq\",\n                        \"DepartmentCode\": \"yfr2lijrkdbnl8kh8grc\",\n                        \"ClassInt\": 93,\n                        \"ClassDecimal\": 446.4218\n                    }\n                }\n            }\n        ]\n    }\n}"
 								},
 								"url": {
 									"raw": "{{baseUrl}}/invoices?code={{code}}",
@@ -939,10 +934,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -1029,12 +1024,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"OrderShipmentUuid\":\"0f3bbb3c-2c5a-4f39-9bad-3249bd1bca33\",\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
+									"raw": "{\n    \"OrderShipmentUuid\":\"0f3bbb3c-2c5a-4f39-9bad-3249bd1bca33\",\n}"
 								},
 								"url": {
 									"raw": "http://localhost:7071/api//invoices/CreateInvoiceByOrderShipmentUuid?code={{code}}",
@@ -1058,10 +1048,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -1495,10 +1485,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -1589,10 +1579,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -1683,10 +1673,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				}
@@ -1822,10 +1812,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -2041,10 +2031,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -2383,10 +2373,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -2473,8 +2463,8 @@
 											"value": "{{CustomerCode}}"
 										},
 										{
-											"value": "{{InvoiceNumber}}",
-											"key": "invoiceNumber"
+											"key": "invoiceNumber",
+											"value": "{{InvoiceNumber}}"
 										}
 									]
 								}
@@ -2768,10 +2758,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -3474,10 +3464,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				}
@@ -3612,10 +3602,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -3702,10 +3692,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -4143,10 +4133,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -4237,10 +4227,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				}
@@ -4375,10 +4365,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -4933,10 +4923,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				}
@@ -5658,10 +5648,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -5765,10 +5755,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -5984,10 +5974,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				}
@@ -6218,10 +6208,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -6312,10 +6302,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				}
@@ -6426,10 +6416,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						},
@@ -6506,10 +6496,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						}
@@ -6589,10 +6579,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						},
@@ -6669,10 +6659,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						}
@@ -6752,10 +6742,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						},
@@ -6832,10 +6822,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						}
@@ -6915,10 +6905,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						},
@@ -6995,10 +6985,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						}
@@ -7078,10 +7068,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						},
@@ -7158,10 +7148,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						}
@@ -7241,10 +7231,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						},
@@ -7321,10 +7311,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						}
@@ -7404,10 +7394,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						},
@@ -7484,10 +7474,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						}
@@ -7567,10 +7557,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						},
@@ -7647,10 +7637,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						}
@@ -7732,10 +7722,10 @@
 											]
 										}
 									},
-									"_postman_previewlanguage": null,
-									"header": null,
+									"_postman_previewlanguage": "Text",
+									"header": [],
 									"cookie": [],
-									"body": null
+									"body": ""
 								}
 							]
 						}
@@ -7845,10 +7835,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -7951,10 +7941,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -8057,10 +8047,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -8153,10 +8143,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -8249,10 +8239,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -8355,10 +8345,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -8449,10 +8439,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -8555,10 +8545,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -8651,10 +8641,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -8761,10 +8751,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				}
@@ -8860,10 +8850,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -8954,10 +8944,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -9048,10 +9038,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -9142,10 +9132,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -9236,10 +9226,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -9330,10 +9320,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -9424,10 +9414,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -9518,10 +9508,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -9612,10 +9602,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -9837,10 +9827,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -10731,10 +10721,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -10833,10 +10823,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -10935,10 +10925,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -11037,10 +11027,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -11139,10 +11129,10 @@
 									]
 								}
 							},
-							"_postman_previewlanguage": null,
-							"header": null,
+							"_postman_previewlanguage": "Text",
+							"header": [],
 							"cookie": [],
-							"body": null
+							"body": ""
 						}
 					]
 				},
@@ -11663,6 +11653,197 @@
 								{
 									"key": "salesCode",
 									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "inventorySync",
+			"item": [
+				{
+					"name": "{{baseUrl}}/invoices?code={{code}}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "poreceive",
+			"item": [
+				{
+					"name": "Get po Receives by po number",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/poReceives?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"poReceives"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/poReceives/find",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/poReceives?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"poReceives"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get po receive by po number and trannum",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/poReceives?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"poReceives"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete one po receive",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/poReceives?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"poReceives"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add one po receive",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/poReceives?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"poReceives"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
 								}
 							]
 						}

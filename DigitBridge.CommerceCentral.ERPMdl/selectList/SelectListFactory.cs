@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using Hepler = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderHelper;
 using InfoHepler = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoHelper;
 using DigitBridge.CommerceCentral.ERPMdl.selectList.po;
+using DigitBridge.CommerceCentral.ERPMdl.selectList.vender;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -386,8 +387,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return new po_refNum(dbFactory);
 
 
-            #endregion 
+            #endregion
 
+
+
+            #region  vender
+
+            if (payload.Name.EqualsIgnoreSpace("vender_area"))
+                return new vender_area(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("vender_businessType"))
+                return new vender_businessType(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("vender_classCode"))
+                return new vender_classCode(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("vender_departmentCode"))
+                return new vender_departmentCode(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("vender_email"))
+                return new vender_email(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("vender_phone1"))
+                return new vender_phone1(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("vender_vendorCode"))
+                return new vender_vendorCode(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("vender_vendorName"))
+                return new vender_vendorName(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("vender_vendorStatus"))
+                return new vender_vendorStatus(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("vender_vendorType"))
+                return new vender_vendorType(dbFactory);
+
+ 
+            #endregion
             return null;
         }
     }
