@@ -4,9 +4,6 @@
         <AzureFunctionsVersion>V3</AzureFunctionsVersion>
     </PropertyGroup>
     <ItemGroup>
-      <Compile Remove="Api\ChannelInvoiceBroker.cs" />
-    </ItemGroup>
-    <ItemGroup>
         <PackageReference Include="DigitBridge.Log" Version="3.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
@@ -37,8 +34,5 @@
       <ProjectReference Include="..\DigitBridge.CommerceCentral.ApiCommon\DigitBridge.CommerceCentral.ApiCommon.csproj" />
       <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPApi\DigitBridge.CommerceCentral.ERPApi.csproj" />
       <ProjectReference Include="..\DigitBridge.CommerceCentral.ERPMdl\DigitBridge.CommerceCentral.ERPMdl.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="OpenApiModel" />
     </ItemGroup>
 </Project>

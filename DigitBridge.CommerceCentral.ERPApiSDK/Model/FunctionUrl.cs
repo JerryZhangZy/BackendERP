@@ -26,5 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         internal static string InventorySync = "/InventorySyncs";
 
         internal const string AddShipments = "shipments";
+
+        internal const string UnprocessList="invoices/list/unprocess";
     }
 }

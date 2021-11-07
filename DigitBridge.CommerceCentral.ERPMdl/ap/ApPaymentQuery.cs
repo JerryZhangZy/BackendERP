@@ -86,11 +86,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<long> _CentralOrderNum = new QueryFilter<long>("CentralOrderNum", "CentralOrderNum", ApInvoiceHeaderInfoHelper.TableAllies, FilterBy.eq, 0);
         public QueryFilter<long> CentralOrderNum => _CentralOrderNum;
 
-        protected QueryFilter<long> _ChannelNum = new QueryFilter<long>("ChannelNum", "ChannelNum", ApInvoiceHeaderInfoHelper.TableAllies, FilterBy.eq, 0);
-        public QueryFilter<long> ChannelNum => _ChannelNum;
+        protected QueryFilter<int> _ChannelNum = new QueryFilter<int>("ChannelNum", "ChannelNum", InvoiceHeaderInfoHelper.TableAllies, FilterBy.eq, 0);
+        public QueryFilter<int> ChannelNum => _ChannelNum;
 
-        protected QueryFilter<long> _ChannelAccountNum = new QueryFilter<long>("ChannelAccountNum", "ChannelAccountNum", ApInvoiceHeaderInfoHelper.TableAllies, FilterBy.eq, 0);
-        public QueryFilter<long> ChannelAccountNum => _ChannelAccountNum;
+        protected QueryFilter<int> _ChannelAccountNum = new QueryFilter<int>("ChannelAccountNum", "ChannelAccountNum", InvoiceHeaderInfoHelper.TableAllies, FilterBy.eq, 0);
+        public QueryFilter<int> ChannelAccountNum => _ChannelAccountNum;
 
         protected QueryFilter<string> _ChannelOrderID = new QueryFilter<string>("ChannelOrderID", "ChannelOrderID", ApInvoiceHeaderInfoHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> ChannelOrderID => _ChannelOrderID;
