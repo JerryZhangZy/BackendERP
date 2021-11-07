@@ -136,6 +136,10 @@
       <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForEventProcessERP.ttinclude">
+      <LastGenOutput>SettingForEventERP.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForVendor.ttinclude">
       <LastGenOutput>SettingForVendor.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
