@@ -350,18 +350,18 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(FaultInvoiceRequest[]), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(FaultInvoiceResponse[]))]
-        public static async Task<JsonNetResponse<IList<FaultInvoiceResponse>>> UpdateFaultInvoices(
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(FaultInvoiceRequestPayload[]), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(FaultInvoiceResponsePayload[]))]
+        public static async Task<JsonNetResponse<IList<FaultInvoiceResponsePayload>>> UpdateFaultInvoices(
             [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "invoices/fault/batchUpdate")]
             HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>();
-            var faultInvoiceList = await req.GetBodyObjectAsync<IList<FaultInvoiceRequest>>();
+            var faultInvoiceList = await req.GetBodyObjectAsync<IList<FaultInvoiceRequestPayload>>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InvoiceManager(dbFactory);
             var result = await svc.UpdateFaultInvoices(payload, faultInvoiceList);
-            return new JsonNetResponse<IList<FaultInvoiceResponse>>(result);
+            return new JsonNetResponse<IList<FaultInvoiceResponsePayload>>(result);
         }
 
         #endregion

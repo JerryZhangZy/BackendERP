@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace DigitBridge.CommerceCentral.ERPDb
+namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     /// <summary>
     /// Fault event proceess.

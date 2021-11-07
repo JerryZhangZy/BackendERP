@@ -357,9 +357,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="faultEventProcess"></param>
         /// <returns></returns>
-        public async Task<IList<FaultInvoiceResponse>> UpdateFaultInvoices(InvoicePayload payload, IList<FaultInvoiceRequest> faultInvoiceList)
+        public async Task<IList<FaultInvoiceResponsePayload>> UpdateFaultInvoices(InvoicePayload payload, IList<FaultInvoiceRequestPayload> faultInvoiceList)
         {
-            var responseList = new List<FaultInvoiceResponse>();
+            var responseList = new List<FaultInvoiceResponsePayload>();
             foreach (var faultInvoice in faultInvoiceList)
             {
                 //TODO set this info 
@@ -370,7 +370,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 //TODO invoke event process service to update this record.
                 var success = true;// update result.
-                var response = new FaultInvoiceResponse()
+                var response = new FaultInvoiceResponsePayload()
                 {
                     InvoiceUuid = faultInvoice.InvoiceUuid,
                     //Messages=
