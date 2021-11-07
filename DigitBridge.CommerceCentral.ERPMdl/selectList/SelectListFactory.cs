@@ -16,6 +16,7 @@ using Hepler = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderHelper;
 using InfoHepler = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoHelper;
 using DigitBridge.CommerceCentral.ERPMdl.selectList.po;
 using DigitBridge.CommerceCentral.ERPMdl.selectList.vender;
+using DigitBridge.CommerceCentral.ERPMdl.selectList.poReceive;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -423,8 +424,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload.Name.EqualsIgnoreSpace("vender_vendorType"))
                 return new vender_vendorType(dbFactory);
 
- 
+
             #endregion
+
+            #region poreceive
+
+            if (payload.Name.EqualsIgnoreSpace("poreceive_poNum"))
+                return new poreceive_poNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poreceive_transNum"))
+                return new poreceive_transNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poreceive_transStatus"))
+                return new poreceive_transStatus(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poreceive_transType"))
+                return new poreceive_transType(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poreceive_vendorCode"))
+                return new poreceive_vendorCode(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poreceive_vendorInvoiceNum"))
+                return new poreceive_vendorInvoiceNum(dbFactory);
+
+            if (payload.Name.EqualsIgnoreSpace("poreceive_vendorName"))
+                return new poreceive_vendorName(dbFactory);
+
+          
+ 
+
+            #endregion
+
+
             return null;
         }
     }
