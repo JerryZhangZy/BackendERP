@@ -12,7 +12,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     ///  Request payload object
     /// </summary>
     [Serializable()]
-    public class ChannelInvoiceRequestPayload : RequestPayloadBase
+    public class CommerceCentralInvoiceRequestPayload : RequestPayloadBase
     {
         // Add more parameters here
     }
@@ -21,7 +21,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     ///  Response payload object
     /// </summary>
     [Serializable()]
-    public class ChannelInvoiceResponsePayload : ChannelInvoiceRequestPayload, IResponsePayloadBase
+    public class CommerceCentralInvoiceResponsePayload : CommerceCentralInvoiceRequestPayload, IResponsePayloadBase
     {
         #region list service
 

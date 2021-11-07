@@ -10,18 +10,18 @@ using Xunit;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
-    public partial class ChannelInvoiceClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class CommerceCentralInvoiceClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
 
-        private string _baseUrl = "http://localhost:7074/api/";
-        //private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
+        //private string _baseUrl = "http://localhost:7074/api/";
+        private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
         private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
         protected const int MasterAccountNum = 10001;
         protected const int ProfileNum = 10001;
 
-        public ChannelInvoiceClientTests(TestFixture<StartupTest> fixture)
+        public CommerceCentralInvoiceClientTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -36,19 +36,19 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
 
         [Fact()]
-        public async Task GetSalesOrdersOpenListAsync_Simple_Test()
+        public async Task GetUnprocessedInvoicesAsync_Simple_Test()
         {
-            var client = new ChannelInvoiceClient(_baseUrl, _code);
+            var client = new CommerceCentralInvoiceClient(_baseUrl, _code);
             var success = await client.GetUnprocessedInvoicesAsync(MasterAccountNum, ProfileNum);
             Assert.True(success, client.Messages.ObjectToString());
         }
 
         [Fact()]
-        public async Task GetSalesOrdersOpenListAsync_Full_Test()
+        public async Task GetUnprocessedInvoicesAsync_Full_Test()
         {
-            var client = new ChannelInvoiceClient(_baseUrl, _code);
+            var client = new CommerceCentralInvoiceClient(_baseUrl, _code);
 
-            var payload = new ChannelInvoiceRequestPayload()
+            var payload = new CommerceCentralInvoiceRequestPayload()
             {
                 LoadAll = true,
             };
