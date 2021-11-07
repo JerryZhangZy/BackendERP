@@ -1,21 +1,16 @@
-using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPDb;
-using DigitBridge.CommerceCentral.ERPApiSDK;
 using DigitBridge.CommerceCentral.ERPMdl;
-using DigitBridge.Log;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+//using FaultInvoiceResponsePayload= DigitBridge.CommerceCentral.ERP.Integration.Api.
 
 namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 {
@@ -61,8 +56,8 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ERPDb.FaultInvoiceRequestPayload[]), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ERPApiSDK.FaultInvoiceResponsePayload[]))]
-        public static async Task<JsonNetResponse<IList<ERPApiSDK.FaultInvoiceResponsePayload>>> UpdateFaultInvoices(
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(FaultInvoiceResponsePayload[]))]
+        public static async Task<JsonNetResponse<IList<FaultInvoiceResponsePayload>>> UpdateFaultInvoices(
             [HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "invoices/fault/batchUpdate")]
             HttpRequest req)
         {
@@ -71,7 +66,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InvoiceManager(dbFactory);
             var result = await svc.UpdateFaultInvoices(payload, faultInvoiceList);
-            return new JsonNetResponse<IList<ERPApiSDK.FaultInvoiceResponsePayload>>(result);
+            return new JsonNetResponse<IList<FaultInvoiceResponsePayload>>(result);
         }
     }
 }
