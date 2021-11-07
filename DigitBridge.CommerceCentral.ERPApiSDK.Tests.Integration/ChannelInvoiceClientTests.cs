@@ -53,6 +53,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
                 LoadAll = true,
             };
 
+            //Add your filter here.
+            //payload.Filter = new JObject()
+            //{
+            //    {"eventProcessActionStatus","1"}
+            //};
+
             var success = await client.GetInvoiceUnprocessListAsync(MasterAccountNum, ProfileNum, payload);
 
             Assert.True(success, client.Messages.ObjectToString());
