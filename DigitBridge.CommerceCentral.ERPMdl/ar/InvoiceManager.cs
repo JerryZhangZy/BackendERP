@@ -18,6 +18,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -345,6 +346,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //set InvoiceNumber back to shipment.
             shipmentData.OrderShipmentHeader.InvoiceNumber = invoiceService.Data.InvoiceHeader.InvoiceNumber;
             return (true, invoiceService.Data.InvoiceHeader.InvoiceUuid);
+        }
+        #endregion
+
+        #region update fault invoice 
+
+        /// <summary>
+        /// Update fault invoice back to event process.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="faultEventProcess"></param>
+        /// <returns></returns>
+        public async Task<IList<FaultInvoiceResponse>> UpdateFaultInvoices(InvoicePayload payload, IList<FaultInvoiceRequest> faultInvoiceList)
+        {
+            var responseList = new List<FaultInvoiceResponse>();
+            foreach (var faultInvoice in faultInvoiceList)
+            {
+                //TODO set this info 
+                //faultInvoice.EventProcessType = EventProcessTypeEnum.InvoiceToChanel;
+                //faultInvoice.ActionStatus = EventProcessActionStatusEnum.Failed;
+                //faultInvoice.MasterAccountNum = payload.MasterAccountNum;
+                //faultInvoice.ProfileNum = payload.ProfileNum;
+
+                //TODO invoke event process service to update this record.
+                var success = true;// update result.
+                var response = new FaultInvoiceResponse()
+                {
+                    InvoiceUuid = faultInvoice.InvoiceUuid,
+                    //Messages=
+                    Success = success
+                };
+                responseList.Add(response);
+            }
+            return responseList;
         }
         #endregion
     }

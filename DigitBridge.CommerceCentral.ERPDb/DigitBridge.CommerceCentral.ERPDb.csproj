@@ -36,6 +36,7 @@
     <Folder Include="Attribute\" />
     <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="DTO\" />
+    <Folder Include="eventProcess\" />
     <Folder Include="po\" />
     <Folder Include="setting\dto\" />
     <Folder Include="vendor\dto\" />
