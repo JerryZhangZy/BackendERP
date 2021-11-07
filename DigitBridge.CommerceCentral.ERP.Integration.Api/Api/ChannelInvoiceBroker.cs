@@ -30,16 +30,16 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceUnprocessListPayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceUnprocessListPayloadFind))]
-        public static async Task<JsonNetResponse<InvoiceUnprocessListPayload>> GetInvoiceUnprocessList(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/find")] HttpRequest req)
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceUnprocessPayload), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceUnprocessPayload))]
+        public static async Task<JsonNetResponse<InvoiceUnprocessPayload>> GetInvoiceUnprocessList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices/find")] HttpRequest req)
         {
-            var payload = await req.GetParameters<InvoiceUnprocessListPayload>(true);
+            var payload = await req.GetParameters<InvoiceUnprocessPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new InvoiceUnprocessList(dataBaseFactory, new InvoiceQuery());
+            var srv = new InvoiceUnprocessList(dataBaseFactory, new InvoiceUnprocessQuery());
             await srv.GetInvoiceUnprocessListAsync(payload);
-            return new JsonNetResponse<InvoiceUnprocessListPayload>(payload);
+            return new JsonNetResponse<InvoiceUnprocessPayload>(payload);
         }
     }
 }

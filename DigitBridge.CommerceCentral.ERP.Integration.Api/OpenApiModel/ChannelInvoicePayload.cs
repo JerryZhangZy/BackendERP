@@ -21,7 +21,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
     /// Request Response payload for FIND API
     /// </summary>
     [Serializable()]
-    public class ChannelInvoicePayloadPayloadFind : FilterPayloadBase<ChannelInvoicePayloadFilter>
+    public class InvoiceUnprocessPayloadFind : FilterPayloadBase<ChannelInvoicePayloadFilter>
     {
         #region list service
 
@@ -29,61 +29,30 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         /// (Response Data) List result which load filter and paging.
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
-        public string ChannelInvoicePayload { get; set; }
+        public IList<Object> InvoiceUnprocessListPayload { get; set; }
 
         /// <summary>
         /// (Response Data) List result count which load filter and paging.
         /// </summary>
-        public int? ChannelInvoicePayloadCount { get; set; }
+        public int? InvoiceUnprocessListPayloadCount { get; set; }
 
         #endregion list service 
-         
+
     }
 
     public class ChannelInvoicePayloadFilter
     {
         public int ChannelNum { get; set; }
-
-        public string OrderNumberFrom { get; set; }
-
-        public string OrderNumberTo { get; set; }
-
-        public DateTime ShipDateFrom { get; set; }
-
-        public DateTime ShipDateTo { get; set; }
-
-        public DateTime OrderDateFrom { get; set; }
-
-        public DateTime OrderDateTo { get; set; }
-
-        public DateTime UpdateDateUtcFrom { get; set; }
-
-        public DateTime UpdateDateUtcTo { get; set; }
-
-        //public SalesOrderStatus OrderStatus { get; set; }
-
-        public int OrderType { get; set; }
-
-        public string CustomerCode { get; set; }
-        public string CustomerName { get; set; }
+        public int ChannelAccountNum { get; set; }
+        public int EventProcessActionStatus { get; set; }
 
         public static Faker<ChannelInvoicePayloadFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<ChannelInvoicePayloadFilter>()
-                .RuleFor(u => u.SalesOrderUuid, f => string.Empty)
-                .RuleFor(u => u.OrderNumberFrom, f => string.Empty)
-                .RuleFor(u => u.OrderNumberTo, f => string.Empty)
-                .RuleFor(u => u.ShipDateFrom, f => f.Date.Past(0).Date.AddDays(-30))
-                .RuleFor(u => u.ShipDateTo, f => f.Date.Past(0).Date)
-                .RuleFor(u => u.OrderDateFrom, f => f.Date.Past(0).Date.AddDays(-30))
-                .RuleFor(u => u.OrderDateTo, f => f.Date.Past(0).Date)
-                .RuleFor(u => u.UpdateDateUtcFrom, f => f.Date.Past(0).Date.AddDays(-30))
-                .RuleFor(u => u.UpdateDateUtcTo, f => f.Date.Past(0).Date)
-                .RuleFor(u => u.OrderType, f => (int)SalesOrderType.ChannelOrder)
-                .RuleFor(u => u.CustomerCode, f => string.Empty)
-                .RuleFor(u => u.CustomerName, f => string.Empty)
-                //.RuleFor(u => u.OrderStatus, f => (int)SalesOrderStatus.Open) 
+                .RuleFor(u => u.ChannelNum, f => f.Random.Int(1, 100))
+                .RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
+                .RuleFor(u => u.EventProcessActionStatus, f => (int)EventProcessActionStatusEnum.Default)
                 ;
             #endregion faker data rules
         }

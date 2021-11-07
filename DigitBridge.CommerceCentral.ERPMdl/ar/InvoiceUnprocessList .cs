@@ -41,13 +41,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {Helper.TableAllies}.InvoiceDate as '{header}.InvoiceDateUtc',
 {InfoHelper.TableAllies}.CentralOrderNum as '{header}.CentralOrderNum',
 {InfoHelper.TableAllies}.ChannelOrderID as '{header}.ChannelOrderID',
-{InfoHelper.TableAllies}.OrderDCAssignmentNum as '{header}.OrderDCAssignmentNum',
+--{InfoHelper.TableAllies}.OrderDCAssignmentNum as '{header}.OrderDCAssignmentNum',
 {InfoHelper.TableAllies}.OrderShipmentNum as '{header}.OrderShipmentNum',--need join
 --{InfoHelper.TableAllies}.ShipmentID as '{header}.ShipmentID',--need join
-{InfoHelper.TableAllies}.ShipDate as '{header}.ShipmentDateUtc',
+{Helper.TableAllies}.ShipDate as '{header}.ShipmentDateUtc',
 {InfoHelper.TableAllies}.ShippingCarrier as '{header}.ShippingCarrier',
 {InfoHelper.TableAllies}.ShippingClass as '{header}.ShippingClass',
-{InfoHelper.TableAllies}.ShippingCost as '{header}.ShippingCost',
+{Helper.TableAllies}.ShippingAmount as '{header}.ShippingCost',
 --{InfoHelper.TableAllies}.MainTrackingNumber as '{header}.MainTrackingNumber',--need join
 {Helper.TableAllies}.SubTotalAmount as '{header}.InvoiceAmount',
 {Helper.TableAllies}.TaxAmount as '{header}.InvoiceTaxAmount',
@@ -56,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {Helper.TableAllies}.TotalAmount as '{header}.TotalAmount',
 --{Helper.TableAllies}.InvoiceTermsType as '{header}.InvoiceTermsType',
 {Helper.TableAllies}.Terms as '{header}.InvoiceTermsDescrption',
-{Helper.TableAllies}.TermsDays as '{header}.InvoiceTermsDays',
+{Helper.TableAllies}.TermsDays as '{header}.InvoiceTermsDays'
 --{Helper.TableAllies}.DBChannelOrderHeaderRowID as '{header}.DBChannelOrderHeaderRowID',
 --{Helper.TableAllies}.EnterDateUtc as '{header}.EnterDateUtc' 
 ";
@@ -83,7 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {ItemHelper.TableAllies}.TaxAmount AS LineTaxAmount,
 {ItemHelper.TableAllies}.ChargeAndAllowanceAmount AS LineHandlingFee,
 {ItemHelper.TableAllies}.DiscountAmount AS LineDiscountAmount,
-{ItemHelper.TableAllies}.ItemTotalAmount AS LineAmount,
+{ItemHelper.TableAllies}.ItemTotalAmount AS LineAmount
 --{ItemHelper.TableAllies}.DBChannelOrderLineRowID AS DBChannelOrderLineRowID,
 --{ItemHelper.TableAllies}.ItemStatus AS ItemStatus,
 --{ItemHelper.TableAllies}.EnterDateUtc AS EnterDateUtc
@@ -97,7 +97,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 SELECT 
 {GetItem_Columns()}
 FROM { ItemHelper.TableName} { ItemHelper.TableAllies}
-WHERE { ItemHelper.TableAllies}.SalesOrderUuid = { Helper.TableAllies}.SalesOrderUuid 
+WHERE { ItemHelper.TableAllies}.InvoiceUuid = { Helper.TableAllies}.InvoiceUuid 
 FOR JSON PATH
 ) AS InvoiceItems";
             return columns;
