@@ -106,6 +106,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region MyRegion
         public string OrderShipmentUuid { get; set; }
         #endregion
+
+
+        #region unprocess list service
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder InvoiceUnprocessList { get; set; }
+        [JsonIgnore] public virtual bool HasInvoiceUnprocessList => InvoiceUnprocessList != null && InvoiceUnprocessList.Length > 0;
+        public bool ShouldSerializeInvoiceUnprocessList() => HasInvoiceUnprocessList;
+
+        /// <summary>
+        /// (Response Data) List result count which load filter and paging.
+        /// </summary>
+        public int InvoiceUnprocessListCount { get; set; }
+        [JsonIgnore] public virtual bool HasInvoiceUnprocessListCount => InvoiceUnprocessListCount > 0;
+        public bool ShouldSerializeInvoiceUnprocessListCount() => HasInvoiceUnprocessListCount;
+
+        #endregion list service 
     }
 }
 

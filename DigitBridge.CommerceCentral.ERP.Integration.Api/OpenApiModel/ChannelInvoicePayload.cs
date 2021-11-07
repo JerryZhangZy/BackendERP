@@ -21,7 +21,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
     /// Request Response payload for FIND API
     /// </summary>
     [Serializable()]
-    public class InvoiceUnprocessPayloadFind : FilterPayloadBase<ChannelInvoicePayloadFilter>
+    public class InvoiceUnprocessPayloadFind : FilterPayloadBase<InvoiceUnprocessPayloadFilter>
     {
         #region list service
 
@@ -38,18 +38,31 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 
         #endregion list service 
 
+        public static InvoiceUnprocessPayloadFind GetSampleData()
+        {
+            var data = new InvoiceUnprocessPayloadFind()
+            {
+                LoadAll = false,
+                Skip = 0,
+                Top = 20,
+                SortBy = "",
+                Filter = InvoiceUnprocessPayloadFilter.GetFaker().Generate()
+            };
+            return data;
+        }
+
     }
 
-    public class ChannelInvoicePayloadFilter
+    public class InvoiceUnprocessPayloadFilter
     {
         public int ChannelNum { get; set; }
         public int ChannelAccountNum { get; set; }
         public int EventProcessActionStatus { get; set; }
 
-        public static Faker<ChannelInvoicePayloadFilter> GetFaker()
+        public static Faker<InvoiceUnprocessPayloadFilter> GetFaker()
         {
             #region faker data rules
-            return new Faker<ChannelInvoicePayloadFilter>()
+            return new Faker<InvoiceUnprocessPayloadFilter>()
                 .RuleFor(u => u.ChannelNum, f => f.Random.Int(1, 100))
                 .RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
                 .RuleFor(u => u.EventProcessActionStatus, f => (int)EventProcessActionStatusEnum.Default)

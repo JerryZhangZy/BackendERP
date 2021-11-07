@@ -147,10 +147,10 @@ FOR JSON PATH
 
         #endregion override methods
 
-        public virtual void GetInvoiceUnprocessList(InvoiceUnprocessPayload payload)
+        public virtual void GetInvoiceUnprocessList(InvoicePayload payload)
         {
             if (payload == null)
-                payload = new InvoiceUnprocessPayload();
+                payload = new InvoicePayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
@@ -170,10 +170,10 @@ FOR JSON PATH
             }
         }
 
-        public virtual async Task GetInvoiceUnprocessListAsync(InvoiceUnprocessPayload payload)
+        public virtual async Task GetInvoiceUnprocessListAsync(InvoicePayload payload)
         {
             if (payload == null)
-                payload = new InvoiceUnprocessPayload();
+                payload = new InvoicePayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();

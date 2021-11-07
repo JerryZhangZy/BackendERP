@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 return false;
             }
 
-            return await PostAsync(requestPayload, FunctionUrl.GetSalesOrderOpenList);
+            return await PostAsync(requestPayload, FunctionUrl.UnprocessList);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
