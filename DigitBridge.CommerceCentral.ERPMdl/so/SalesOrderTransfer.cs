@@ -262,7 +262,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             }
 
-            return soItemList;
+            return soItemList.ToList();
         }
 
     }

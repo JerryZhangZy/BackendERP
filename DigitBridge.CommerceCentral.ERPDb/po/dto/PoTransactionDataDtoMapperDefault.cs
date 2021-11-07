@@ -166,9 +166,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			{
 				if (itemDto == null) continue;
 
-				var obj = itemDto.RowNum > 0
+				var obj = (itemDto.RowNum > 0
 					? lstOrig.Find(x => x.RowNum == itemDto.RowNum)
-					: lstOrig.Find(x => x.TransItemUuid == itemDto.TransItemUuid);
+					: lstOrig.Find(x => x.TransItemUuid == itemDto.TransItemUuid)) ?? lstOrig.Find(x => x.PoItemUuid == itemDto.PoItemUuid);
 				if (obj is null)
 					obj = new PoTransactionItems().SetAllowNull(false);
 				else
