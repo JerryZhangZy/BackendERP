@@ -147,7 +147,7 @@ FOR JSON PATH
 
         #endregion override methods
 
-        public virtual void GetInvoiceUnprocessList(InvoicePayload payload)
+        public virtual void GetUnprocessedInvoices(InvoicePayload payload)
         {
             if (payload == null)
                 payload = new InvoicePayload();
@@ -170,7 +170,7 @@ FOR JSON PATH
             }
         }
 
-        public virtual async Task GetInvoiceUnprocessListAsync(InvoicePayload payload)
+        public virtual async Task GetUnprocessedInvoicesAsync(InvoicePayload payload)
         {
             if (payload == null)
                 payload = new InvoicePayload();

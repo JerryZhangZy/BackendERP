@@ -39,7 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task GetSalesOrdersOpenListAsync_Simple_Test()
         {
             var client = new ChannelInvoiceClient(_baseUrl, _code);
-            var success = await client.GetInvoiceUnprocessListAsync(MasterAccountNum, ProfileNum);
+            var success = await client.GetUnprocessedInvoicesAsync(MasterAccountNum, ProfileNum);
             Assert.True(success, client.Messages.ObjectToString());
         }
 
@@ -59,7 +59,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             //    {"eventProcessActionStatus","1"}
             //};
 
-            var success = await client.GetInvoiceUnprocessListAsync(MasterAccountNum, ProfileNum, payload);
+            var success = await client.GetUnprocessedInvoicesAsync(MasterAccountNum, ProfileNum, payload);
 
             Assert.True(success, client.Messages.ObjectToString());
             Assert.True(client.ResopneData != null);

@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <param name="profileNum"></param>
         /// <param name="requestPayload"></param>
         /// <returns></returns>
-        public async Task<bool> GetInvoiceUnprocessListAsync(int masterAccountNum, int profileNum, ChannelInvoiceRequestPayload requestPayload = null)
+        public async Task<bool> GetUnprocessedInvoicesAsync(int masterAccountNum, int profileNum, ChannelInvoiceRequestPayload requestPayload = null)
         {
             if (!SetAccount(masterAccountNum, profileNum))
             {

@@ -314,20 +314,20 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <summary>
         /// Load InvoiceUnprocessList
         /// </summary>
-        [FunctionName(nameof(GetInvoiceUnprocessList))]
-        [OpenApiOperation(operationId: "GetInvoiceUnprocessList", tags: new[] { "Invoices" }, Summary = "Get invoice unprocess list")]
+        [FunctionName(nameof(GetUnprocessedInvoices))]
+        [OpenApiOperation(operationId: "GetUnprocessedInvoices", tags: new[] { "Invoices" }, Summary = "Get invoice unprocess list")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceUnprocessPayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceUnprocessPayloadFind))]
-        public static async Task<JsonNetResponse<InvoicePayload>> GetInvoiceUnprocessList(
+        public static async Task<JsonNetResponse<InvoicePayload>> GetUnprocessedInvoices(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices/list/unprocess")] HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoiceUnprocessList(dataBaseFactory, new InvoiceUnprocessQuery());
-            await srv.GetInvoiceUnprocessListAsync(payload);
+            await srv.GetUnprocessedInvoicesAsync(payload);
             return new JsonNetResponse<InvoicePayload>(payload);
         }
 
