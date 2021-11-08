@@ -55,9 +55,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task UpdateFaultInvoiceAsync_Simple_Test()
         {
             var client = new CommerceCentralFaultInvoiceClient(_baseUrl, _code);
+            var eventUuidJson = GetEventUuid().FirstOrDefault();
             var request = new FaultInvoiceRequestPayload()
             {
-                InvoiceUuid = GetInvoiceUuid().FirstOrDefault(),
+                EventUuid = GetEventUuid(eventUuidJson),
                 Message = new StringBuilder().Append("Run Test UpdateFaultInvoiceAsync_Simple_Test"),
             };
             var success = await client.UpdateFaultInvoiceAsync(MasterAccountNum, ProfileNum, request);
@@ -69,9 +70,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task UpdateFaultInvoiceAsync_Full_Test()
         {
             var client = new CommerceCentralFaultInvoiceClient(_baseUrl, _code);
+            var eventUuidJson = GetEventUuid().FirstOrDefault();
             var request = new FaultInvoiceRequestPayload()
             {
-                InvoiceUuid = GetInvoiceUuid().FirstOrDefault(),
+                EventUuid = GetEventUuid(eventUuidJson),
                 Message = new StringBuilder().Append("Run Test UpdateFaultInvoiceAsync_Full_Test"),
             };
 
@@ -85,8 +87,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task UpdateFaultInvoiceListAsync_Simple_Test()
         {
             var client = new CommerceCentralFaultInvoiceClient(_baseUrl, _code);
-            var shipmentList = GetFaultInvoiceList("UpdateFaultInvoiceListAsync_Simple_Test");
-            var success = await client.UpdateFaultInvoiceListAsync(MasterAccountNum, ProfileNum, shipmentList);
+            var faultInvoiceList = GetFaultInvoiceList("UpdateFaultInvoiceListAsync_Simple_Test");
+            var success = await client.UpdateFaultInvoiceListAsync(MasterAccountNum, ProfileNum, faultInvoiceList);
             Assert.True(client.ResopneData != null, $"SDK invoice failed. Error is {client.Messages.ObjectToString()}");
             //Assert.True(success, client.Messages.ObjectToString());
         }
@@ -95,8 +97,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task UpdateFaultInvoiceListAsync_Full_Test()
         {
             var client = new CommerceCentralFaultInvoiceClient(_baseUrl, _code);
-            var shipmentList = GetFaultInvoiceList("UpdateFaultInvoiceListAsync_Full_Test");
-            var success = await client.UpdateFaultInvoiceListAsync(MasterAccountNum, ProfileNum, shipmentList);
+            var faultInvoiceList = GetFaultInvoiceList("UpdateFaultInvoiceListAsync_Full_Test");
+            var success = await client.UpdateFaultInvoiceListAsync(MasterAccountNum, ProfileNum, faultInvoiceList);
             Assert.True(client.ResopneData != null, $"SDK invoice failed. Error is {client.Messages.ObjectToString()}");
             Assert.True(success, $"SDK invoice succeed.But call integration api failed. You can try CreateShipmentAsync_Test to test logic,Logic error is{client.Messages.ObjectToString()}");
         }
@@ -105,13 +107,14 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected List<FaultInvoiceRequestPayload> GetFaultInvoiceList(string error, int count = 2)
         {
             var list = new List<FaultInvoiceRequestPayload>();
-            var invoiceUuids = GetInvoiceUuid(count);
-            foreach (var invoiceUuid in invoiceUuids)
+            var eventUuids = GetEventUuid(count);
+            foreach (var eventUuidJson in eventUuids)
             {
+                var eventUuid = GetEventUuid(eventUuidJson);
                 var faultInvoiceRequest = new FaultInvoiceRequestPayload()
                 {
-                    InvoiceUuid = invoiceUuid,
-                    Message = new StringBuilder().Append(invoiceUuid + error)
+                    EventUuid = eventUuid,
+                    Message = new StringBuilder().Append(eventUuid + error)
                 };
                 list.Add(faultInvoiceRequest);
             }
@@ -119,11 +122,16 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             return list;
         }
 
+        private string GetEventUuid(string eventUuidJson)
+        {
 
-        private List<string> GetInvoiceUuid(int n = 1)
+            return JArray.Parse(eventUuidJson)[0]["EventUuid"].ToString();
+        }
+
+        private List<string> GetEventUuid(int n = 1)
         {
             var sql = $@"
-SELECT top {n} ProcessUuid 
+SELECT top {n} EventUuid 
 FROM EventProcessERP ins  
 WHERE [MasterAccountNum]={MasterAccountNum}
 AND [ProfileNum]={ProfileNum}
@@ -132,14 +140,14 @@ AND ActionStatus={(int)EventProcessActionStatusEnum.Default}
 order by ins.rownum desc
 for json path
 ";
-            var invoiceUuidList = new List<string>();
+            var eventUuidList = new List<string>();
             using (var trs = new ScopedTransaction(this.DataBaseFactory))
             {
-                invoiceUuidList = SqlQuery.Execute(sql,
-                        (string processUuid) => processUuid
+                eventUuidList = SqlQuery.Execute(sql,
+                        (string eventUuid) => eventUuid
                     );
-                Assert.True(invoiceUuidList.Count != 0, "No matched invoice uuid");
-                return invoiceUuidList;
+                Assert.True(eventUuidList.Count != 0, "No mathched event process data in database");
+                return eventUuidList;
             }
         }
     }

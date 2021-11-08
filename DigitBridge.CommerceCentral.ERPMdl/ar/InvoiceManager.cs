@@ -360,21 +360,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<IList<FaultInvoiceResponsePayload>> UpdateFaultInvoices(InvoicePayload payload, IList<FaultInvoiceRequestPayload> faultInvoiceList)
         {
             var responseList = new List<FaultInvoiceResponsePayload>();
+            var srv = new EventProcessERPService(dbFactory);
             foreach (var faultInvoice in faultInvoiceList)
             {
-                //TODO set this info 
-                //faultInvoice.EventProcessType = EventProcessTypeEnum.InvoiceToChanel;
-                //faultInvoice.ActionStatus = EventProcessActionStatusEnum.Failed;
-                //faultInvoice.MasterAccountNum = payload.MasterAccountNum;
-                //faultInvoice.ProfileNum = payload.ProfileNum;
+                var eventDto = new EventProcessERPDataDto()
+                {
+                    EventProcessERP = new EventProcessERPDto()
+                    {
+                        ERPEventProcessType = (int)EventProcessTypeEnum.InvoiceToChanel,
+                        ActionStatus = (int)EventProcessActionStatusEnum.Failed,
+                        MasterAccountNum = payload.MasterAccountNum,
+                        ProfileNum = payload.ProfileNum,
+                        EventUuid = faultInvoice.EventUuid,
+                        EventMessage = faultInvoice.Message.ToString(),
+                    }
+                };
+                var success = await srv.UpdateAsync(eventDto);
 
-                //TODO invoke event process service to update this record.
-                var success = true;// update result.
                 var response = new FaultInvoiceResponsePayload()
                 {
-                    InvoiceUuid = faultInvoice.InvoiceUuid,
-                    //Messages=
-                    Success = success
+                    EventUuid = faultInvoice.EventUuid,
+                    Messages = srv.Messages,
+                    Success = success,
                 };
                 responseList.Add(response);
             }

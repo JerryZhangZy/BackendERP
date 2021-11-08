@@ -13,9 +13,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     public class FaultInvoiceRequestPayload
     {
         /// <summary>
-        /// InvoiceUuid
+        /// EventUuid
         /// </summary>
-        public string InvoiceUuid { get; set; }
+        public string EventUuid { get; set; }
 
         /// <summary>
         /// Fault message.
@@ -28,8 +28,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     public class FaultInvoiceResponsePayload : ResponsePayloadBase
     {
         /// <summary>
-        /// InvoiceUuid
+        /// EventUuid
         /// </summary>
-        public string InvoiceUuid { get; set; }
+        public string EventUuid { get; set; }
     }
 }
