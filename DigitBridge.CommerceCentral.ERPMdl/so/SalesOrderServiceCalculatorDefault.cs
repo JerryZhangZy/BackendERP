@@ -417,7 +417,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.DiscountPrice = item.Price;
             if (!item.DiscountRate.IsZero())
             {
-                item.DiscountPrice = (item.Price * item.DiscountRate.ToRate()).ToPrice();
+                item.DiscountPrice = (item.Price * (1 - item.DiscountRate.ToRate())).ToPrice();
             }
             // use after discount price to calculate ext. amount
             item.ExtAmount = (item.DiscountPrice * item.OrderQty).ToAmount();

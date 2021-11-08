@@ -9,6 +9,7 @@
     [InActive] TINYINT NOT NULL DEFAULT 0, --Disable this record
 	[Type] VARCHAR(20) NOT NULL DEFAULT '', --InitNumber type, like Invoice#, S/O#, P/O# 
 	[Number] INT NOT NULL DEFAULT 0, --Init number, real number will be more than init number and not exist number  
+	[MaxNumber] INT NOT NULL DEFAULT 0, --The last assigned number, real number will be more than init number and not exist number  
 	[Prefix] VARCHAR(20) NOT NULL DEFAULT '', --Prefix append to Init number 
 	[Suffix] VARCHAR(20) NOT NULL DEFAULT '', --Suffix follow by Init number
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Radonly) Created Date time. <br> Title: Created At, Display: true, Editable: false
