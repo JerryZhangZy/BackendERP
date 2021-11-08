@@ -12,7 +12,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     ///  Request payload object
     /// </summary>
     [Serializable()]
-    public class WMSSalesOrderRequestPayload : RequestPayloadBase
+    public class ChannelInvoiceRequestPayload : RequestPayloadBase
     {
         // Add more parameters here
     }
@@ -21,7 +21,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     ///  Response payload object
     /// </summary>
     [Serializable()]
-    public class WMSSalesOrderResponsePayload : WMSSalesOrderRequestPayload, IResponsePayloadBase
+    public class ChannelInvoiceResponsePayload : ChannelInvoiceRequestPayload, IResponsePayloadBase
     {
         #region list service
 
@@ -29,12 +29,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// (Response Data) List result which load filter and paging.
         /// </summary>   
         //[JsonConverter(typeof(StringBuilderConverter))]
-        public IList<AddOrderHeaderModel> SalesOrderOpenList { get; set; }
+        public IList<OutputCentralOrderInvoiceType> InvoiceUnprocessList { get; set; }
 
         /// <summary>
         /// (Response Data) List result count which load filter and paging.
         /// </summary>
-        public int SalesOrderOpenListCount { get; set; }
+        public int InvoiceUnprocessListCount { get; set; }
 
         #endregion list service
 

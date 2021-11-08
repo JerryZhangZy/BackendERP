@@ -29,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         /// (Response Data) List result which load filter and paging.
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
-        public string SalesOrderOpenList { get; set; }
+        public IList<Object> SalesOrderOpenList { get; set; }
 
         /// <summary>
         /// (Response Data) List result count which load filter and paging.

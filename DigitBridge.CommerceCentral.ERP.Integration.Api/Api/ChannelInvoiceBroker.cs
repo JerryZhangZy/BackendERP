@@ -30,16 +30,28 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceUnprocessListPayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceUnprocessListPayloadFind))]
-        public static async Task<JsonNetResponse<InvoiceUnprocessListPayload>> GetInvoiceUnprocessList(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/find")] HttpRequest req)
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceUnprocessPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceUnprocessPayloadFind))]
+        public static async Task<JsonNetResponse<InvoicePayload>> GetInvoiceUnprocessList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices/list/unprocess")] HttpRequest req)
         {
-            var payload = await req.GetParameters<InvoiceUnprocessListPayload>(true);
+            var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new InvoiceUnprocessList(dataBaseFactory, new InvoiceQuery());
+            var srv = new InvoiceUnprocessList(dataBaseFactory, new InvoiceUnprocessQuery());
             await srv.GetInvoiceUnprocessListAsync(payload);
-            return new JsonNetResponse<InvoiceUnprocessListPayload>(payload);
+            return new JsonNetResponse<InvoicePayload>(payload);
+        }
+
+        [FunctionName(nameof(Sample_Invoice_Unprocess_Find))]
+        [OpenApiOperation(operationId: "Sample_Invoice_Unprocess_Find", tags: new[] { "Sample" }, Summary = "Get new sample of invoice unprocess find")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceUnprocessPayloadFind))]
+        public static async Task<JsonNetResponse<InvoiceUnprocessPayloadFind>> Sample_Invoice_Unprocess_Find(
+           [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/invoices/list/unprocess")] Microsoft.AspNetCore.Http.HttpRequest req)
+        {
+            return new JsonNetResponse<InvoiceUnprocessPayloadFind>(InvoiceUnprocessPayloadFind.GetSampleData());
         }
     }
 }
