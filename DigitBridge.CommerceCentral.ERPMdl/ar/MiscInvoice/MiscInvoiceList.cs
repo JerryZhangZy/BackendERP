@@ -35,7 +35,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.MiscInvoiceUuid()},
+{Helper.MiscInvoiceNumber()},
+{Helper.QboDocNumber()},
+{Helper.MiscInvoiceType()},
+{Helper.MiscInvoiceStatus()},
+{Helper.MiscInvoiceDate()},
+{Helper.CustomerCode()},
+{Helper.CustomerName()},
+{Helper.PaidBy()},
+{Helper.CheckNum()},
+{Helper.AuthCode()},
+{Helper.Currency()},
+{Helper.TotalAmount()},
+{Helper.PaidAmount()},
+{Helper.Balance()},
+{Helper.InvoiceSourceCode()},
 ";
             return this.SQL_Select;
         }
