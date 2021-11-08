@@ -360,7 +360,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var faultInvoiceList = await req.GetBodyObjectAsync<IList<FaultInvoiceRequestPayload>>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new InvoiceManager(dbFactory);
-            var result = await svc.UpdateFaultInvoices(payload, faultInvoiceList);
+            var result = await svc.UpdateFaultInvoicesAsync(payload, faultInvoiceList);
             return new JsonNetResponse<IList<FaultInvoiceResponsePayload>>(result);
         }
 

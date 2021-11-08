@@ -357,7 +357,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="faultEventProcess"></param>
         /// <returns></returns>
-        public async Task<IList<FaultInvoiceResponsePayload>> UpdateFaultInvoices(InvoicePayload payload, IList<FaultInvoiceRequestPayload> faultInvoiceList)
+        public async Task<IList<FaultInvoiceResponsePayload>> UpdateFaultInvoicesAsync(InvoicePayload payload, IList<FaultInvoiceRequestPayload> faultInvoiceList)
         {
             var responseList = new List<FaultInvoiceResponsePayload>();
             var srv = new EventProcessERPService(dbFactory);

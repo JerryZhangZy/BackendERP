@@ -103,7 +103,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             Assert.True(success, $"SDK invoice succeed.But call integration api failed. You can try CreateShipmentAsync_Test to test logic,Logic error is{client.Messages.ObjectToString()}");
         }
 
-
+        #region prepare data 
         protected List<FaultInvoiceRequestPayload> GetFaultInvoiceList(string error, int count = 2)
         {
             var list = new List<FaultInvoiceRequestPayload>();
@@ -150,5 +150,7 @@ for json path
                 return eventUuidList;
             }
         }
+
+        #endregion
     }
 }
