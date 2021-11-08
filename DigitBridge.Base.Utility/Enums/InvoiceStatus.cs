@@ -10,6 +10,7 @@ namespace DigitBridge.Base.Common
         Outstanding = 1,
         Paid = 2,
         Closed = 3,
+        Due = 100,
         Void = 255,
     }
 }

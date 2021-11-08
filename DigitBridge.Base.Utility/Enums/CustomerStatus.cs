@@ -7,9 +7,9 @@ namespace DigitBridge.Base.Common
     public enum CustomerStatus : int
     {
         Active = 0,
-        Inactive,
-        Hold,
-        Potential,
-        New
+        Inactive = 1,
+        Hold = 2,
+        Potential = 3,
+        New = 4
     }
 }

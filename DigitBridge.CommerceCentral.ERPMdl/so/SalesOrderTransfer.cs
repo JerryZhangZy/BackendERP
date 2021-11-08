@@ -98,7 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             soHeader.ProfileNum = coHeader.ProfileNum;
             //SalesOrderUuid
             soHeader.OrderNumber = coHeader.DatabaseNum + "-" + coHeader.CentralOrderNum + "-" + dcHeader.OrderDCAssignmentNum;
-            soHeader.OrderType = (int)SalesOrderType.ChannelOrder;
+            soHeader.OrderType = (int)SalesOrderType.EcommerceOrder;
             soHeader.OrderStatus = (int)SalesOrderStatus.New;
             soHeader.OrderDate = coHeader.OriginalOrderDateUtc;
             soHeader.OrderTime = coHeader.OriginalOrderDateUtc.TimeOfDay;
@@ -119,7 +119,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //TaxRate
             //TaxAmount
             //DiscountRate
-            soHeader.DiscountAmount = coHeader.PromotionAmount ?? 0;
+            soHeader.DiscountAmount = Math.Abs(coHeader.PromotionAmount.ToDecimal());
             soHeader.ShippingAmount = (coHeader.TotalShippingAmount ?? 0) * qtyRatio;
             soHeader.ShippingTaxAmount = (coHeader.TotalShippingTaxAmount ?? 0) * qtyRatio;
             //MiscAmount
@@ -189,7 +189,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //soItem.SalesOrderItemsUuid = soLnUuid;
                 //soItem.SalesOrderUuid = _soUuid;
                 soItem.Seq = itemSeq++;
-                soItem.OrderItemType = (int)SalesOrderType.ChannelOrder;
+                soItem.OrderItemType = (int)SalesOrderType.EcommerceOrder;
                 soItem.SalesOrderItemstatus = (int)SalesOrderStatus.New;
                 soItem.ItemDate = coHeader.OriginalOrderDateUtc;
                 soItem.ItemTime = coHeader.OriginalOrderDateUtc.TimeOfDay;
@@ -219,7 +219,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //soItem.PriceRule
                 soItem.Price = coLine.UnitDueSellerAmount; // coLine.UnitPrice ?? 0,
                 //soItem.DiscountRate
-                soItem.DiscountAmount = coLine.LinePromotionAmount ?? 0;
+                soItem.DiscountAmount = Math.Abs(coLine.LinePromotionAmount.ToDecimal());
                 //soItem.DiscountPrice
                 //soItem.ExtAmount
                 //soItem.TaxableAmount,

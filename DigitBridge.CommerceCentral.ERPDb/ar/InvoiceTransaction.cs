@@ -36,6 +36,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
         public decimal OriginalPaidAmount { get; set; }
+
+        public string CustomerCode { get; set; }
+
     }
 }
 

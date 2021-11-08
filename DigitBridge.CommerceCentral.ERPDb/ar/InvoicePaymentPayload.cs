@@ -57,7 +57,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
             };
         }
 
-
         #region multiple payment list
 
         /// <summary>
