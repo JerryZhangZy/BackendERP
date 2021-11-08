@@ -405,8 +405,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             CopyInvoiceHeaderToTrans();
 
-            //unpaid amount.
-            Data.InvoiceTransaction.TotalAmount = Data.InvoiceData.InvoiceHeader.Balance.IsZero() ? 0 : Data.InvoiceData.InvoiceHeader.Balance;
+            Data.InvoiceTransaction.CustomerCode = Data.InvoiceData.InvoiceHeader.CustomerCode;
+            ////unpaid amount
+            //Data.InvoiceTransaction.TotalAmount = Data.InvoiceData.InvoiceHeader.Balance.IsZero() ? 0 : Data.InvoiceData.InvoiceHeader.Balance;
 
             payload.InvoiceTransaction = this.ToDto().InvoiceTransaction;
 
@@ -419,17 +420,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 return false;
             }
-            if (payload.InvoiceList.ToString().IsZero())
-            {
-                AddError($"No outstanding invoice for vendorNum:{customerCode}");
-                return false;
-            }
+            //if (payload.InvoiceList.ToString().IsZero())
+            //{
+            //    AddError($"No outstanding invoice for customer:{customerCode}");
+            //    return false;
+            //}
 
-            var invoiceList = JsonConvert.DeserializeObject<List<InvoiceHeader>>(payload.InvoiceList.ToString());
+            //var invoiceList = JsonConvert.DeserializeObject<List<InvoiceHeader>>(payload.InvoiceList.ToString());
 
             NewData();
+            Data.InvoiceTransaction.CustomerCode = customerCode;
+
             // All unpaid amount.
-            Data.InvoiceTransaction.TotalAmount = invoiceList.Sum(i => i.Balance.IsZero() ? 0 : i.Balance);
+            //Data.InvoiceTransaction.TotalAmount = invoiceList.Sum(i => i.Balance.IsZero() ? 0 : i.Balance);
 
             payload.InvoiceTransaction = this.ToDto().InvoiceTransaction;
 

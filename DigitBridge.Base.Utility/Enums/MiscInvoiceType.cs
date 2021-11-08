@@ -6,7 +6,7 @@ namespace DigitBridge.Base.Common
 {
     public enum MiscInvoiceType : int
     {
-        Sales = 0,
-        ReturnCredit = 1,
+        Prepayment = 0,
+        Creadit = 1,
     }
 }
