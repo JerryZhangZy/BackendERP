@@ -12,7 +12,7 @@ using Microsoft.Data.SqlClient;
 using Helper = DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderHelper;
 using InfoHelper = DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderInfoHelper;
 using ItemHelper = DigitBridge.CommerceCentral.ERPDb.InvoiceItemsHelper;
-
+using EventHelper = DigitBridge.CommerceCentral.ERPDb.EventProcessERPHelper;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public class InvoiceUnprocessList : SqlQueryBuilder<InvoiceUnprocessQuery>
@@ -30,7 +30,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected string GetHeader_Columns()
         {
             var header = "InvoiceHeader";
-            var columns = $@" 
+            var columns = $@"
+{EventHelper.TableAllies}.EventUuid,
 --{Helper.TableAllies}.OrderInvoiceNum as '{header}.OrderInvoiceNum',
 {Helper.TableAllies}.DatabaseNum as '{header}.DatabaseNum',
 {Helper.TableAllies}.MasterAccountNum as '{header}.MasterAccountNum',
@@ -119,18 +120,16 @@ FOR JSON PATH
 
 
         protected override string GetSQL_from()
-        {
-            var eventHelperTableName = "EventProcessERP";
-            var eventHelperTableAllies = "event";
+        { 
             this.SQL_From = $@"
- FROM {eventHelperTableName} {eventHelperTableAllies}
+ FROM {EventHelper.TableName} {EventHelper.TableAllies}
  INNER JOIN {Helper.TableName} {Helper.TableAllies}  
-        on  {Helper.TableAllies}.MasterAccountNum={eventHelperTableAllies}.MasterAccountNum
-        and {Helper.TableAllies}.ProfileNum={eventHelperTableAllies}.ProfileNum
-        and {Helper.TableAllies}.InvoiceUuid={eventHelperTableAllies}.ProcessUuid
+        on  {Helper.TableAllies}.MasterAccountNum={EventHelper.TableAllies}.MasterAccountNum
+        and {Helper.TableAllies}.ProfileNum={EventHelper.TableAllies}.ProfileNum
+        and {Helper.TableAllies}.InvoiceUuid={EventHelper.TableAllies}.ProcessUuid
  LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.InvoiceUuid = {InfoHelper.TableAllies}.InvoiceUuid)
- LEFT JOIN @EventProcessTypeEnum eptEnum ON ({eventHelperTableAllies}.ERPEventProcessType = eptEnum.num)
- LEFT JOIN @EventProcessActionStatusEnum epasEnum ON ({eventHelperTableAllies}.ActionStatus = epasEnum.num)
+ LEFT JOIN @EventProcessTypeEnum eptEnum ON ({EventHelper.TableAllies}.ERPEventProcessType = eptEnum.num)
+ LEFT JOIN @EventProcessActionStatusEnum epasEnum ON ({EventHelper.TableAllies}.ActionStatus = epasEnum.num)
 ";
             return this.SQL_From;
         }
@@ -147,7 +146,7 @@ FOR JSON PATH
 
         #endregion override methods
 
-        public virtual void GetInvoiceUnprocessList(InvoicePayload payload)
+        public virtual void GetUnprocessedInvoices(InvoicePayload payload)
         {
             if (payload == null)
                 payload = new InvoicePayload();
@@ -170,7 +169,7 @@ FOR JSON PATH
             }
         }
 
-        public virtual async Task GetInvoiceUnprocessListAsync(InvoicePayload payload)
+        public virtual async Task GetUnprocessedInvoicesAsync(InvoicePayload payload)
         {
             if (payload == null)
                 payload = new InvoicePayload();

@@ -28,5 +28,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         internal const string AddShipments = "shipments";
 
         internal const string UnprocessList="invoices/list/unprocess";
+        internal const string UpdateFaultInvoiceList = "invoices/fault/batchUpdate";
     }
 }

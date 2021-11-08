@@ -77,12 +77,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProfileNum) data.ProfileNum = dto.ProfileNum.ToInt();
 			if (dto.HasApInvoiceUuid) data.ApInvoiceUuid = dto.ApInvoiceUuid;
 			if (dto.HasApInvoiceNum) data.ApInvoiceNum = dto.ApInvoiceNum;
+			if (dto.HasPoUuid) data.PoUuid = dto.PoUuid;
+			if (dto.HasPoNum) data.PoNum = dto.PoNum;
 			if (dto.HasApInvoiceType) data.ApInvoiceType = dto.ApInvoiceType;
 			if (dto.HasApInvoiceStatus) data.ApInvoiceStatus = dto.ApInvoiceStatus;
 			if (dto.HasApInvoiceDate) data.ApInvoiceDate = dto.ApInvoiceDate.ToDateTime();
 			if (dto.HasApInvoiceTime) data.ApInvoiceTime = dto.ApInvoiceTime.ToTimeSpan();
 			if (dto.HasVendorUuid) data.VendorUuid = dto.VendorUuid;
-			if (dto.HasVendorNum) data.VendorNum = dto.VendorNum;
+			if (dto.HasVendorCode) data.VendorCode = dto.VendorCode;
 			if (dto.HasVendorName) data.VendorName = dto.VendorName;
 			if (dto.HasVendorInvoiceNum) data.VendorInvoiceNum = dto.VendorInvoiceNum;
 			if (dto.HasVendorInvoiceDate) data.VendorInvoiceDate = dto.VendorInvoiceDate;
@@ -285,12 +287,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ProfileNum = data.ProfileNum;
 			dto.ApInvoiceUuid = data.ApInvoiceUuid;
 			dto.ApInvoiceNum = data.ApInvoiceNum;
+			dto.PoUuid = data.PoUuid;
+			dto.PoNum = data.PoNum;
 			dto.ApInvoiceType = data.ApInvoiceType;
 			dto.ApInvoiceStatus = data.ApInvoiceStatus;
 			dto.ApInvoiceDate = data.ApInvoiceDate;
 			dto.ApInvoiceTime = data.ApInvoiceTime.ToDateTime();
 			dto.VendorUuid = data.VendorUuid;
-			dto.VendorNum = data.VendorNum;
+			dto.VendorCode = data.VendorCode;
 			dto.VendorName = data.VendorName;
 			dto.VendorInvoiceNum = data.VendorInvoiceNum;
 			dto.VendorInvoiceDate = data.VendorInvoiceDate;
@@ -308,8 +312,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
-			dto.PoUuid = data.PoUuid;
-			dto.PoNum = data.PoNum;
+
 			#endregion read properties
 
 			return;
@@ -379,6 +382,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.RowNum = data.RowNum;
 			dto.ApInvoiceUuid = data.ApInvoiceUuid;
 			dto.Fields = data.Fields.ToJson();
+			dto.EnterDateUtc = data.EnterDateUtc;
+			dto.DigitBridgeGuid = data.DigitBridgeGuid;
 
 			#endregion read properties
 
