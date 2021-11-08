@@ -363,6 +363,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var srv = new EventProcessERPService(dbFactory);
             foreach (var faultInvoice in faultInvoiceList)
             {
+                srv.Messages = new List<MessageClass>();
                 var eventDto = new EventProcessERPDataDto()
                 {
                     EventProcessERP = new EventProcessERPDto()
