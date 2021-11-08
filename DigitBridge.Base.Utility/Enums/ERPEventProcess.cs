@@ -14,6 +14,7 @@ namespace DigitBridge.Base.Common
 
     public enum EventProcessTypeEnum : int
     {
-        InvoiceToChanel = 1
+        InvoiceToChanel = 1,
+        SalesOrderToWMS = 2
     }
 }

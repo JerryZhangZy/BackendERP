@@ -15,7 +15,7 @@ using ItemHelper = DigitBridge.CommerceCentral.ERPDb.InvoiceItemsHelper;
 using EventHelper = DigitBridge.CommerceCentral.ERPDb.EventProcessERPHelper;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class InvoiceUnprocessList : SqlQueryBuilder<InvoiceUnprocessQuery>
+    public class InvoiceUnprocessList : SqlQueryBuilderForEventProcess<InvoiceUnprocessQuery>
     {
         public InvoiceUnprocessList(IDataBaseFactory dbFactory) : base(dbFactory)
         {
@@ -120,7 +120,7 @@ FOR JSON PATH
 
 
         protected override string GetSQL_from()
-        { 
+        {
             this.SQL_From = $@"
  FROM {EventHelper.TableName} {EventHelper.TableAllies}
  INNER JOIN {Helper.TableName} {Helper.TableAllies}  
@@ -128,21 +128,19 @@ FOR JSON PATH
         and {Helper.TableAllies}.ProfileNum={EventHelper.TableAllies}.ProfileNum
         and {Helper.TableAllies}.InvoiceUuid={EventHelper.TableAllies}.ProcessUuid
  LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({Helper.TableAllies}.InvoiceUuid = {InfoHelper.TableAllies}.InvoiceUuid)
- LEFT JOIN @EventProcessTypeEnum eptEnum ON ({EventHelper.TableAllies}.ERPEventProcessType = eptEnum.num)
- LEFT JOIN @EventProcessActionStatusEnum epasEnum ON ({EventHelper.TableAllies}.ActionStatus = epasEnum.num)
 ";
             return this.SQL_From;
         }
 
-        public override SqlParameter[] GetSqlParameters()
-        {
-            var paramList = base.GetSqlParameters().ToList();
-            paramList.Add("@EventProcessActionStatusEnum".ToEnumParameter<InvoiceStatusEnum>());
-            paramList.Add("@EventProcessTypeEnum".ToEnumParameter<EventProcessTypeEnum>());
+        //public override SqlParameter[] GetSqlParameters()
+        //{
+        //    var paramList = base.GetSqlParameters().ToList();
+        //    paramList.Add("@EventProcessActionStatusEnum".ToEnumParameter<InvoiceStatusEnum>());
+        //    paramList.Add("@EventProcessTypeEnum".ToEnumParameter<EventProcessTypeEnum>());
 
-            return paramList.ToArray();
+        //    return paramList.ToArray();
 
-        }
+        //}
 
         #endregion override methods
 
@@ -156,7 +154,7 @@ FOR JSON PATH
             try
             {
                 payload.InvoiceUnprocessListCount = Count();
-                payload.Success = ExcuteJson(sb);
+                payload.Success = ExcuteJsonForQueryByLocked(sb, EventProcessTypeEnum.InvoiceToChanel);
                 if (payload.Success)
                     payload.InvoiceUnprocessList = sb;
             }
@@ -179,7 +177,7 @@ FOR JSON PATH
             try
             {
                 payload.InvoiceUnprocessListCount = await CountAsync();
-                payload.Success = await ExcuteJsonAsync(sb);
+                payload.Success = await ExcuteJsonForQueryByLockedAsync(sb, EventProcessTypeEnum.InvoiceToChanel);
                 if (payload.Success)
                     payload.InvoiceUnprocessList = sb;
             }
@@ -191,5 +189,7 @@ FOR JSON PATH
                 payload.Messages = this.Messages;
             }
         }
+
+
     }
 }
