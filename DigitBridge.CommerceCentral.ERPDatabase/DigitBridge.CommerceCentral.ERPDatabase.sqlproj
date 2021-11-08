@@ -54,7 +54,6 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="po" />
     <Folder Include="ar" />
     <Folder Include="ap" />
     <Folder Include="inventory" />
@@ -97,6 +96,7 @@
     <None Include="customer\CustomerAddress.sql" />
     <None Include="customer\CustomerAttributes.sql" />
     <None Include="customer\CustomerSku.sql" />
+    <None Include="po\PoTransaction_Update.sql" />
     <None Include="vendor\Vendor.sql" />
     <None Include="vendor\VendorAddress.sql" />
     <None Include="vendor\VendorAttributes.sql" />
