@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -11,12 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="ar\InvoiceManager.cs" />
-    <Compile Remove="selectList\SelectListService.cs" />
-    <Compile Remove="shipment\CommerceCentralShipment\AddCentralOrderShipment.cs" />
-    <Compile Remove="shipment\CommerceCentralShipment\CommerceCentralOrderShipmentInputType.cs" />
+	<Compile Remove="selectList\SelectListService.cs" />
+	<Compile Remove="shipment\CommerceCentralShipment\AddCentralOrderShipment.cs" />
+	<Compile Remove="shipment\CommerceCentralShipment\CommerceCentralOrderShipmentInputType.cs" />
   </ItemGroup>
-
+	
   <ItemGroup>
     <ProjectReference Include="..\DigitBridge.Base.Utility\DigitBridge.Base.Utility.csproj" />
     <ProjectReference Include="..\DigitBridge.CommerceCentral.AzureStorage\DigitBridge.CommerceCentral.AzureStorage.csproj" />
@@ -37,7 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="ar\InvoiceManager.cs" />
     <None Include="shipment\CommerceCentralShipment\AddCentralOrderShipment.cs" />
     <None Include="shipment\CommerceCentralShipment\CommerceCentralOrderShipmentInputType.cs" />
   </ItemGroup>
