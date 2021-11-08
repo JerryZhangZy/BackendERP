@@ -53,26 +53,62 @@ AND OrderNumber = @number
 
         public static async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid, string type)
         {
+            string sql = string.Empty;
+            switch (type)
+            {
+                case "so":
+                      sql = $@"SELECT TOP 1 * FROM (
+    SELECT t1.OrderNumber+1 AS number
+    FROM (SELECT CAST(OrderNumber AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t1
+    WHERE NOT EXISTS(
+		SELECT * 
+		FROM (SELECT CAST(OrderNumber AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t2 
+		WHERE t2.OrderNumber = t1.OrderNumber + 1
+	) 
+) ot
+WHERE ot.number > (SELECT   [Number]   FROM [dbo].[InitNumbers] WHERE [CustomerUuid]=@customerUuid AND [Type]=@type)
+ORDER BY ot.number
+";
 
-            var sql = $@"
-           
-begin tran
-declare @currentNumber int;
-declare @rowNumber int; 
-SELECT @rowNumber =RowNum from [dbo].[InitNumbers] where [MasterAccountNum]=@masterAccountNum and [ProfileNum]=@profileNum and [CustomerUuid]=@customerUuid and [Type]=@type;
-SELECT @currentNumber=Number FROM [dbo].[InitNumbers] with(rowlock,updlock)  WHERE  [RowNum]=@rowNumber;
- UPDATE  [dbo].[InitNumbers] SET [Number]=[Number]+1  WHERE [RowNum]=@rowNumber ; 
-SELECT  [Prefix]+  cast(Number as varchar)+[Suffix] FROM [dbo].[InitNumbers]    WHERE  [RowNum]=@rowNumber;
-commit tran ;"
+
+
+                    break;
+            }
+  
 ;
-            var result = await SqlQuery.ExecuteScalarAsync<string>(sql,
+            var numberResult = await SqlQuery.ExecuteScalarAsync<string>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"),
                 customerUuid.ToSqlParameter("customerUuid"),
                 type.ToSqlParameter("type")
             );
-            return result ;
- 
+            if (string.IsNullOrWhiteSpace(numberResult))
+            {
+
+            }
+
+
+
+            return null;
+            //            var sql = $@"
+
+            //begin tran
+            //declare @currentNumber int;
+            //declare @rowNumber int; 
+            //SELECT @rowNumber =RowNum from [dbo].[InitNumbers] where [MasterAccountNum]=@masterAccountNum and [ProfileNum]=@profileNum and [CustomerUuid]=@customerUuid and [Type]=@type;
+            //SELECT @currentNumber=Number FROM [dbo].[InitNumbers] with(rowlock,updlock)  WHERE  [RowNum]=@rowNumber;
+            // UPDATE  [dbo].[InitNumbers] SET [Number]=[Number]+1  WHERE [RowNum]=@rowNumber ; 
+            //SELECT  [Prefix]+  cast(Number as varchar)+[Suffix] FROM [dbo].[InitNumbers]    WHERE  [RowNum]=@rowNumber;
+            //commit tran ;"
+            //;
+            //            var result = await SqlQuery.ExecuteScalarAsync<string>(sql,
+            //                masterAccountNum.ToSqlParameter("masterAccountNum"),
+            //                profileNum.ToSqlParameter("profileNum"),
+            //                customerUuid.ToSqlParameter("customerUuid"),
+            //                type.ToSqlParameter("type")
+            //            );
+            //            return result ;
+
         }
 
 
