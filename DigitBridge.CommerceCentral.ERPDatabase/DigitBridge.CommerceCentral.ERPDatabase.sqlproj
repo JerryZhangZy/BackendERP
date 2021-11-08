@@ -71,6 +71,7 @@
     <Folder Include="event" />
     <Folder Include="setting" />
     <Folder Include="sql" />
+    <Folder Include="po\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -265,8 +266,8 @@
     <Build Include="channelOrder\OrderHeaderMarketplaceExt_Update.sql" />
     <None Include="setting\SystemSetting.sql" />
     <None Include="setting\InitNumbers.sql" />
-    <Build Include="sql\get_min_number.sql" />
+    <None Include="sql\get_min_number.sql" />
     <None Include="event\EventProcessERP.sql" />
-    <Build Include="sql\AddEventProcessFromInvocie.sql" />
+    <None Include="sql\AddEventProcessFromInvocie.sql" />
   </ItemGroup>
 </Project>
