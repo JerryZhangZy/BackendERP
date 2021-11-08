@@ -18,13 +18,13 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-namespace DigitBridge.CommerceCentral.ERP.Integration.Api
+namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
 {
     /// <summary>
     /// 
     /// </summary>
-    [ApiFilter(typeof(InventorySyncApi))]
-    public static class InventorySyncApi
+    [ApiFilter(typeof(WMSInventorySyncApi))]
+    public static class WMSInventorySyncApi
     {
         /// <summary>
         ///Sync Inventory

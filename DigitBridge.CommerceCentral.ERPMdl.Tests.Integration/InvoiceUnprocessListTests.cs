@@ -70,7 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         #region async methods
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task GetInvoiceUnprocessListAsync_Simple_Test()
+        public async Task GetUnprocessedInvoicesAsync_Simple_Test()
         {
             var payload = new InvoicePayload()
             {
@@ -80,7 +80,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             };
 
             var listService = new InvoiceUnprocessList(this.DataBaseFactory);
-            await listService.GetInvoiceUnprocessListAsync(payload);
+            await listService.GetUnprocessedInvoicesAsync(payload);
 
             //make sure query is correct.
             Assert.True(payload.Success, listService.Messages.ObjectToString());
@@ -88,7 +88,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task GetInvoiceUnprocessListAsync_Full_Test()
+        public async Task GetUnprocessedInvoicesAsync_Full_Test()
         {
             // get event process from db.
             var eventProcess = GetEventProcess();
@@ -145,7 +145,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         private async Task TestFilter(InvoicePayload payload, string invoiceNumber)
         {
             var listService = new InvoiceUnprocessList(this.DataBaseFactory);
-            await listService.GetInvoiceUnprocessListAsync(payload);
+            await listService.GetUnprocessedInvoicesAsync(payload);
 
             //make sure query is correct.
             Assert.True(payload.Success, listService.Messages.ObjectToString());

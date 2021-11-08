@@ -33,12 +33,12 @@ namespace DigitBridge.CommerceCentral.ERPApi.OpenApiModel
         /// (Response Data) ApInvoice object which has been added.
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) InitNumber object to add.")]
-        public InitNumbersDataDto InitNumber { get; set; }
+        public InitNumbersDataDto InitNumbers { get; set; }
 
         public static InitNumberPayloadAdd GetSampleData()
         {
             var data = new InitNumberPayloadAdd();
-            data.InitNumber = new InitNumbersDataDto().GetFakerData();
+            data.InitNumbers = new InitNumbersDataDto().GetFakerData();
             return data;
         }
     }
@@ -55,7 +55,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.OpenApiModel
         /// (Response Data) ApInvoice object which has been updated.
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) InitNumber object to update.")]
-        public InitNumbersDataDto InitNumber { get; set; }
+        public InitNumbersDataDto InitNumbers { get; set; }
     }
 
     /// <summary>

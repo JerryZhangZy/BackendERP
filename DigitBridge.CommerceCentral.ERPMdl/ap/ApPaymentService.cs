@@ -399,7 +399,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             payload.ApTransaction = this.ToDto().ApInvoiceTransaction;
 
-            return await LoadApInvoiceList(payload, Data.ApInvoiceData.ApInvoiceHeader.VendorNum);
+            return await LoadApInvoiceList(payload, Data.ApInvoiceData.ApInvoiceHeader.VendorCode);
         }
 
         public async Task<bool> NewPaymentByVendorNum(ApNewPaymentPayload payload, string vendorNum)

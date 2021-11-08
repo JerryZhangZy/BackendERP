@@ -135,13 +135,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class InitNumbersFilter
     {
-        //public string City { get; set; }
+        public string InitNumbersUuid { get; set; }
+        public string CustomerUuid { get; set; }
+        public string Type { get; set; }
 
         public static Faker<InitNumbersFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<InitNumbersFilter>()
-                //.RuleFor(u => u.City, f => "")
+                .RuleFor(u => u.InitNumbersUuid, f => "")
+                 .RuleFor(u => u.CustomerUuid, f => "")
+                  .RuleFor(u => u.Type, f => "")
                 ;
             #endregion faker data rules
         }
