@@ -267,5 +267,6 @@
     <None Include="setting\InitNumbers.sql" />
     <Build Include="sql\get_min_number.sql" />
     <None Include="event\EventProcessERP.sql" />
+    <Build Include="sql\AddEventProcessFromInvocie.sql" />
   </ItemGroup>
 </Project>
