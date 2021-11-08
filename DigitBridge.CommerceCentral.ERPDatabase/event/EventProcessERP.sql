@@ -32,6 +32,14 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_EventProcessERP] ON [dbo].[EventProcessERP]
 ) 
 GO
 
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EventProcessERP]') AND name = N'UI_ERPEventProcessType_ProcessUuid')
+CREATE UNIQUE NONCLUSTERED INDEX [UI_ERPEventProcessType_ProcessUuid] ON [dbo].[EventProcessERP]
+(
+	[ERPEventProcessType] ASC,
+	[ProcessUuid] ASC
+) 
+GO
+
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[EventProcessERP]') AND name = N'IX_EventProcessERP_ERPEventProcessType')
 CREATE NONCLUSTERED INDEX [IX_EventProcessERP_ERPEventProcessType] ON [dbo].[EventProcessERP]
 (
