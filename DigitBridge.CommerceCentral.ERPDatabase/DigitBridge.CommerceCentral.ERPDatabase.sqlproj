@@ -263,7 +263,7 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="channelOrder\OrderHeaderMerchantExt.sql" />
-    <Build Include="channelOrder\OrderHeaderMarketplaceExt_Update.sql" />
+    <None Include="channelOrder\OrderHeaderMarketplaceExt_Update.sql" />
     <None Include="setting\SystemSetting.sql" />
     <None Include="setting\InitNumbers.sql" />
     <None Include="sql\get_min_number.sql" />
