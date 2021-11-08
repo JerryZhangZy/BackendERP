@@ -76,7 +76,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
                 return await InitNumbersHelper.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, type);
         }
- 
+
+        public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string type, int currentNumber)
+        {
+            var payload = new InitNumbersPayload()
+            {
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum
+            };
+            payload.LoadAll = true;
+            payload.Filter = new JObject()
+            {
+                {"CustomerUuid",  $"{customerUuid}"},
+                 {"Type",  $"{type}"}
+            };
+            var initNumber= await _initNumbersList.GetInitNumbersListAsync(payload);
+            var updateDto = initNumber.InitNumberss[0];
+            updateDto.InitNumbers.CurrentNumber = currentNumber;
+            return await this.UpdateAsync(updateDto);
+        }
+
 
         /// <summary>
         /// Add new data from Dto object

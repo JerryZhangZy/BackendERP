@@ -74,6 +74,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        [XmlIgnore, JsonIgnore]
+        protected InitNumbersService _initNumbersService;
+        [XmlIgnore, JsonIgnore]
+        public InitNumbersService initNumbersService
+        {
+            get
+            {
+                if (_initNumbersService is null)
+                    _initNumbersService = new InitNumbersService(dbFactory);
+                return _initNumbersService;
+            }
+        }
+
+
         public async Task<byte[]> ExportAsync(ApInvoicePayload payload)
         {
             var rowNumList =await apInvoiceList.GetRowNumListAsync(payload);
@@ -175,6 +189,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddInfo($"File:{file.FileName},Read {readcount},Import Succ {addsucccount},Import Fail {errorcount}.");
             }
         }
+
+
+
+        public async Task<string> GetInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid)
+        {
+            return await initNumbersService.GetInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "apinvoice");
+        }
+
+        public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid,int currentNumber)
+        {
+            return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "apinvoice", currentNumber);
+        }
+
 
         #region DataBase
         [XmlIgnore, JsonIgnore]

@@ -59,19 +59,60 @@ AND OrderNumber = @number
                 case "so":
                       sql = $@"SELECT TOP 1 * FROM (
     SELECT t1.OrderNumber+1 AS number
-    FROM (SELECT CAST(OrderNumber AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t1
+    FROM (SELECT CAST(OrderNumber AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t1
     WHERE NOT EXISTS(
 		SELECT * 
-		FROM (SELECT CAST(OrderNumber AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t2 
+		FROM (SELECT CAST(OrderNumber AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t2 
 		WHERE t2.OrderNumber = t1.OrderNumber + 1
 	) 
 ) ot
 WHERE ot.number > (SELECT   [Number]   FROM [dbo].[InitNumbers] WHERE [CustomerUuid]=@customerUuid AND [Type]=@type)
-ORDER BY ot.number
-";
+ORDER BY ot.number";            
+                    break;
 
+                case "invoice":
 
+                    sql = $@"SELECT TOP 1 * FROM (
+    SELECT t1.InvoiceNumber+1 AS number
+    FROM (SELECT CAST(InvoiceNumber AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1) t1
+    WHERE NOT EXISTS(
+		SELECT * 
+		FROM (SELECT CAST(InvoiceNumber AS bigint) AS InvoiceNumber FROM InvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(InvoiceNumber) < 20 AND ISNUMERIC(InvoiceNumber) = 1) t2 
+		WHERE t2.InvoiceNumber = t1.InvoiceNumber + 1
+	) 
+) ot
+WHERE ot.number > (SELECT   [Number]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND [CustomerUuid]=@customerUuid AND [Type]=@type)
+ORDER BY ot.number";
 
+                    break;
+                case "shipment":
+                    break;
+                case "po":
+                    sql = $@"SELECT TOP 1 * FROM (
+    SELECT t1.PoNum+1 AS number
+    FROM (SELECT CAST(PoNum AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1) t1
+    WHERE NOT EXISTS(
+		SELECT * 
+		FROM (SELECT CAST(PoNum AS bigint) AS PoNum FROM PoHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(PoNum) < 20 AND ISNUMERIC(PoNum) = 1) t2 
+		WHERE t2.PoNum = t1.PoNum + 1
+	) 
+) ot
+WHERE ot.number > (SELECT   [Number]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND [CustomerUuid]=@customerUuid AND [Type]=@type)
+ORDER BY ot.number";
+
+                    break;
+                case "apinvoice":
+                    sql = $@"SELECT TOP 1 * FROM (
+    SELECT t1.ApInvoiceNum+1 AS number
+    FROM (SELECT CAST(ApInvoiceNum AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1) t1
+    WHERE NOT EXISTS(
+		SELECT * 
+		FROM (SELECT CAST(ApInvoiceNum AS bigint) AS ApInvoiceNum FROM ApInvoiceHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(ApInvoiceNum) < 20 AND ISNUMERIC(ApInvoiceNum) = 1) t2 
+		WHERE t2.ApInvoiceNum = t1.ApInvoiceNum + 1
+	) 
+) ot
+WHERE ot.number > (SELECT   [Number]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND [CustomerUuid]=@customerUuid AND [Type]=@type)
+ORDER BY ot.number";
                     break;
             }
   
@@ -82,32 +123,22 @@ ORDER BY ot.number
                 customerUuid.ToSqlParameter("customerUuid"),
                 type.ToSqlParameter("type")
             );
-            if (string.IsNullOrWhiteSpace(numberResult))
+            if (string.IsNullOrWhiteSpace(numberResult))//如果为Null 说明number 是带有前缀,如果带有前缀，则获取
             {
+                sql = $@"SELECT * FROM InitNumbers WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND [CustomerUuid]=@customerUuid AND [Type]=@type";
+                var initNumbers = await SqlQuery.ExecuteScalarAsync<InitNumbers>(sql,
+             masterAccountNum.ToSqlParameter("masterAccountNum"),
+             profileNum.ToSqlParameter("profileNum"),
+             customerUuid.ToSqlParameter("customerUuid"),
+             type.ToSqlParameter("type"));
+
+                return string.Concat(initNumbers.Prefix, initNumbers.CurrentNumber, initNumbers.Suffix);
 
             }
-
-
-
-            return null;
-            //            var sql = $@"
-
-            //begin tran
-            //declare @currentNumber int;
-            //declare @rowNumber int; 
-            //SELECT @rowNumber =RowNum from [dbo].[InitNumbers] where [MasterAccountNum]=@masterAccountNum and [ProfileNum]=@profileNum and [CustomerUuid]=@customerUuid and [Type]=@type;
-            //SELECT @currentNumber=Number FROM [dbo].[InitNumbers] with(rowlock,updlock)  WHERE  [RowNum]=@rowNumber;
-            // UPDATE  [dbo].[InitNumbers] SET [Number]=[Number]+1  WHERE [RowNum]=@rowNumber ; 
-            //SELECT  [Prefix]+  cast(Number as varchar)+[Suffix] FROM [dbo].[InitNumbers]    WHERE  [RowNum]=@rowNumber;
-            //commit tran ;"
-            //;
-            //            var result = await SqlQuery.ExecuteScalarAsync<string>(sql,
-            //                masterAccountNum.ToSqlParameter("masterAccountNum"),
-            //                profileNum.ToSqlParameter("profileNum"),
-            //                customerUuid.ToSqlParameter("customerUuid"),
-            //                type.ToSqlParameter("type")
-            //            );
-            //            return result ;
+            else //如果不为null，则直接返回
+            {
+                return numberResult;
+            }
 
         }
 

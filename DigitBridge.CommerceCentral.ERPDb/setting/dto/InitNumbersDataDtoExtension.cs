@@ -114,6 +114,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.CustomerUuid, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.InActive, f => f.Random.Bool())
 				.RuleFor(u => u.Type, f => f.Lorem.Sentence().TruncateTo(20))
+				.RuleFor(u => u.CurrentNumber, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.Number, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.Prefix, f => f.Lorem.Sentence().TruncateTo(20))
 				.RuleFor(u => u.Suffix, f => f.Lorem.Sentence().TruncateTo(20))
