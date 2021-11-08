@@ -15,18 +15,16 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
-using Helper = DigitBridge.CommerceCentral.ERPDb.VendorHelper;
-using VdrHelper = DigitBridge.CommerceCentral.ERPDb.VendorAddressHelper;
-using VtrHelper = DigitBridge.CommerceCentral.ERPDb.VendorAttributesHelper;
+using Helper = DigitBridge.CommerceCentral.ERPDb.SystemCodesHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class VendorList : SqlQueryBuilder<VendorQuery>
+    public class SystemCodesList : SqlQueryBuilder<SystemCodesQuery>
     {
-        public VendorList(IDataBaseFactory dbFactory) : base(dbFactory)
+        public SystemCodesList(IDataBaseFactory dbFactory) : base(dbFactory)
         {
         }
-        public VendorList(IDataBaseFactory dbFactory, VendorQuery queryObject)
+        public SystemCodesList(IDataBaseFactory dbFactory, SystemCodesQuery queryObject)
             : base(dbFactory, queryObject)
         {
         }
@@ -37,23 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.VendorUuid()},
-{Helper.VendorCode()},
-{Helper.VendorName()},
-{Helper.Contact()},
-{Helper.Phone1()},
-{Helper.Email()},
-{Helper.VendorType()},
-{Helper.VendorStatus()},
-{Helper.BusinessType()},
-{Helper.PriceRule()},
-{Helper.FirstDate()},
-{Helper.Currency()},
-{Helper.Priority()},
-{Helper.Area()},
-{Helper.TaxId()},
-{Helper.ClassCode()},
-{Helper.DepartmentCode()},
+{Helper.TableAllies}.*
 ";
             return this.SQL_Select;
         }
@@ -78,60 +60,60 @@ SELECT
         
         #endregion override methods
         
-        public virtual VendorPayload GetVendorList(VendorPayload payload)
+        public virtual SystemCodesPayload GetSystemCodesList(SystemCodesPayload payload)
         {
             if (payload == null)
-                payload = new VendorPayload();
+                payload = new SystemCodesPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.VendorListCount = Count();
+                payload.SystemCodesListCount = Count();
                 result = ExcuteJson(sb);
                 if (result)
-                    payload.VendorList = sb;
+                    payload.SystemCodesList = sb;
             }
             catch (Exception ex)
             {
-                payload.VendorListCount = 0;
-                payload.VendorList = null;
+                payload.SystemCodesListCount = 0;
+                payload.SystemCodesList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<VendorPayload> GetVendorListAsync(VendorPayload payload)
+        public virtual async Task<SystemCodesPayload> GetSystemCodesListAsync(SystemCodesPayload payload)
         {
             if (payload == null)
-                payload = new VendorPayload();
+                payload = new SystemCodesPayload();
 
             this.LoadRequestParameter(payload);
             StringBuilder sb = new StringBuilder();
             var result = false;
             try
             {
-                payload.VendorListCount = await CountAsync();
+                payload.SystemCodesListCount = await CountAsync();
                 result = await ExcuteJsonAsync(sb);
                 if (result)
-                    payload.VendorList = sb;
+                    payload.SystemCodesList = sb;
             }
             catch (Exception ex)
             {
-                payload.VendorListCount = 0;
-                payload.VendorList = null;
+                payload.SystemCodesListCount = 0;
+                payload.SystemCodesList = null;
                 return payload;
                 throw;
             }
             return payload;
         }
 
-        public virtual async Task<IList<long>> GetRowNumListAsync(VendorPayload payload)
+        public virtual async Task<IList<long>> GetRowNumListAsync(SystemCodesPayload payload)
         {
             if (payload == null)
-                payload = new VendorPayload();
+                payload = new SystemCodesPayload();
 
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
@@ -161,10 +143,10 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
             return rowNumList;
         }
 
-        public virtual IList<long> GetRowNumList(VendorPayload payload)
+        public virtual IList<long> GetRowNumList(SystemCodesPayload payload)
         {
             if (payload == null)
-                payload = new VendorPayload();
+                payload = new SystemCodesPayload();
 
             this.LoadRequestParameter(payload);
             var rowNumList = new List<long>();
@@ -191,49 +173,6 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
                 throw;
             }
             return rowNumList;
-        }
-
-        private string GetExportSql()
-        {
-            var sql = $@"
-select JSON_QUERY((SELECT * FROM Vendor i where i.RowNum={Helper.TableAllies}.RowNum FOR JSON PATH,WITHOUT_ARRAY_WRAPPER)) AS Vendor,
-(select {VdrHelper.TableAllies}.* from VendorAddress {VdrHelper.TableAllies} where {Helper.TableAllies}.VendorUuid={VdrHelper.TableAllies}.VendorUuid FOR JSON PATH ) as VendorAddress,
-JSON_QUERY((select * from VendorAttributes {VtrHelper.TableAllies} where {Helper.TableAllies}.VendorUuid={VtrHelper.TableAllies}.VendorUuid FOR JSON PATH ,WITHOUT_ARRAY_WRAPPER)) as VendorAttributes 
-from Vendor {Helper.TableAllies}
-";
-            return sql;
-        }
-        private string GetExportCommandText(VendorPayload payload)
-        {
-            this.LoadRequestParameter(payload);
-            return $@"
-{GetExportSql()}
-{GetSQL_where()}
-ORDER BY  {Helper.TableAllies}.RowNum  
-OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
-FOR JSON PATH
-";
-        }
-        public virtual async Task GetExportJsonListAsync(VendorPayload payload)
-        {
-            if (payload == null)
-                payload = new VendorPayload();
-
-            var sql = GetExportCommandText(payload);
-
-            try
-            {
-                payload.VendorListCount = await CountAsync();
-                StringBuilder sb = new StringBuilder();
-                var result = await ExcuteJsonAsync(sb, sql, GetSqlParameters().ToArray());
-                if (result)
-                    payload.VendorDataList = sb;
-            }
-            catch (Exception ex)
-            {
-                payload.VendorDataList = null;
-                throw;
-            }
         }
     }
 }
