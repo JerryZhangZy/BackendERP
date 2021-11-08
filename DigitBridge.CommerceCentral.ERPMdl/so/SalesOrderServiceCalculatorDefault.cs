@@ -399,6 +399,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (item.PackQty > 1)
             {
+                if (item.OrderPack < (item.ShipPack + item.CancelledPack))
+                    item.OrderPack = (item.ShipPack + item.CancelledPack);
+
                 item.OrderQty = item.OrderPack * item.PackQty;
                 item.ShipQty = item.ShipPack * item.PackQty;
                 item.CancelledQty = item.CancelledPack * item.PackQty;
@@ -406,6 +409,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
+                if (item.OrderQty < (item.ShipQty + item.CancelledQty))
+                    item.OrderQty = (item.ShipQty + item.CancelledQty);
+
                 item.OrderPack = item.OrderQty;
                 item.ShipPack = item.ShipQty;
                 item.CancelledPack = item.CancelledQty;
