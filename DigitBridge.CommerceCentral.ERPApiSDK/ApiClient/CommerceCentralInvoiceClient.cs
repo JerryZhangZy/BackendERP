@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
-    public class ChannelInvoiceClient : ApiClientBase<ChannelInvoiceResponsePayload>
+    public class CommerceCentralInvoiceClient : ApiClientBase<CommerceCentralInvoiceResponsePayload>
     {
         /// <summary>
         /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were not config in config file
         /// Local config file is 'local.settings.json'
         /// </summary>
-        public ChannelInvoiceClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_BaseUrl)
+        public CommerceCentralInvoiceClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_BaseUrl)
         {
 
         }
@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// </summary>
         /// <param name="baseUrl"></param>
         /// <param name="authCode"></param>
-        public ChannelInvoiceClient(string baseUrl, string authCode) : base(baseUrl, authCode)
+        public CommerceCentralInvoiceClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
 
@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <param name="profileNum"></param>
         /// <param name="requestPayload"></param>
         /// <returns></returns>
-        public async Task<bool> GetInvoiceUnprocessListAsync(int masterAccountNum, int profileNum, ChannelInvoiceRequestPayload requestPayload = null)
+        public async Task<bool> GetUnprocessedInvoicesAsync(int masterAccountNum, int profileNum, CommerceCentralInvoiceRequestPayload requestPayload = null)
         {
             if (!SetAccount(masterAccountNum, profileNum))
             {

@@ -9,6 +9,7 @@ namespace DigitBridge.Base.Common
     {
         Default = 0,
         Locked = 1,
+        Failed = 2,
     }
 
     public enum EventProcessTypeEnum : int
