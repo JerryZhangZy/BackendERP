@@ -378,6 +378,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             payload.MiscInvoices = result;
         }
+
+        public virtual async Task<bool> CheckNumberExistAsync(int masterAccountNum, int profileNum, string miscInvoiceNumber)
+        {
+            NewData();
+            if (string.IsNullOrEmpty(miscInvoiceNumber))
+            {
+                AddError($"Number is required.");
+                return false;
+            }
+            var success = _data.GetByNumber(masterAccountNum, profileNum, miscInvoiceNumber);
+            return success;
+        }
     }
 }
 
