@@ -94,9 +94,9 @@ channelAccount.ChannelAccountName as 'ChannelAccountName',
         }
         protected string GetItem_Columns()
         {
-            
 
-               var columns = $@"
+
+            var columns = $@"
 {ItemHelper.TableAllies}.SalesOrderItemsUuid as 'SalesOrderItemsUuid',
 {ItemHelper.TableAllies}.SKU as 'SKU',
 CAST({ ItemHelper.TableAllies}.OrderQty as INT) as 'OrderQty',
@@ -147,25 +147,28 @@ FOR JSON PATH
             this.SQL_From = $@"
  FROM {Helper.TableName} {Helper.TableAllies}
  LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({InfoHelper.TableAllies}.SalesOrderUuid = {Helper.TableAllies}.SalesOrderUuid)
- LEFT JOIN {InfoAttrHelper.TableName} {InfoAttrHelper.TableAllies} ON ({InfoAttrHelper.TableAllies}.SalesOrderUuid = {Helper.TableAllies}.SalesOrderUuid)
- LEFT JOIN @SalesOrderStatus ordst ON ({Helper.TableAllies}.OrderStatus = ordst.num)
- LEFT JOIN @SalesOrderType ordtp ON ({Helper.TableAllies}.OrderType = ordtp.num) 
  {SqlStringHelper.Join_Setting_Channel(masterAccountNum, profileNum, channelNum)}
  {SqlStringHelper.Join_Setting_ChannelAccount(masterAccountNum, profileNum, channelNum, channelAccountNum)}
 ";
             return this.SQL_From;
         }
 
-        public override SqlParameter[] GetSqlParameters()
+        //public override SqlParameter[] GetSqlParameters()
+        //{
+        //    var paramList = base.GetSqlParameters().ToList();
+        //    paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
+        //    paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
+
+        //    return paramList.ToArray();
+
+        //}
+
+        protected override string GetSQL_orderBy()
         {
-            var paramList = base.GetSqlParameters().ToList();
-            paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
-            paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
+            this.SQL_OrderBy = $" order by {Helper.TableAllies}.UpdateDateUtc ";
 
-            return paramList.ToArray();
-
+            return this.SQL_OrderBy;
         }
-
         #endregion override methods 
 
         public virtual async Task GetSalesOrdersOpenListAsync(SalesOrderOpenListPayload payload)
@@ -190,8 +193,9 @@ FOR JSON PATH
                 payload.SalesOrderOpenListCount = 0;
                 payload.SalesOrderOpenList = null;
                 AddError(ex.ObjectToString());
-                payload.Messages = this.Messages;
             }
+
+            payload.Messages.Add(this.Messages);
         }
     }
 }
