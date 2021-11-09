@@ -110,8 +110,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var eventUuids = GetLockedEventProcess(eventProcessType);
             if (eventUuids == null || eventUuids.Count == 0)
             {
-                AddInfo("ExcuteJsonForQueryByLocked->GetLockedEventProcess no matched data.");
-                return true;
+                AddInfo("No data locked.");
+                return false;
             }
 
             using (var trs = new ScopedTransaction(dbFactory))
@@ -128,8 +128,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var eventUuids = await GetLockedEventProcessAsync(eventProcessType);
             if (eventUuids == null || eventUuids.Count == 0)
             {
-                AddInfo("ExcuteJsonForQueryByLocked->ExcuteJsonForQueryByLockedAsync no matched data.");
-                return true;
+                AddInfo("No data locked.");
+                return false;
             }
 
             using (var trs = new ScopedTransaction(dbFactory))

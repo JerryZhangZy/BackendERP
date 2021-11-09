@@ -13,7 +13,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.ApiClient
     public class WMSInventorySyncClient   : ApiClientBase<ResponsePayloadBase>
     {
 
-        public WMSInventorySyncClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_BaseUrl)
+        public WMSInventorySyncClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
         {
 
         }

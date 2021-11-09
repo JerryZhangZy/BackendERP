@@ -6,10 +6,7 @@ namespace DigitBridge.Base.Common
 {
     public enum MiscInvoiceStatusEnum : int
     {
-        New = 0,
-        Outstanding = 1,
-        Paid = 2,
-        Closed = 3,
-        Void = 255,
+        Outstanding = 0,
+        Paid = 1,
     }
 }

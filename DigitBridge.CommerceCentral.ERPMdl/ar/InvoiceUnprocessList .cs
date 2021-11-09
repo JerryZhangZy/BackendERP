@@ -155,6 +155,7 @@ FOR JSON PATH
             {
                 payload.InvoiceUnprocessListCount = Count();
                 payload.Success = ExcuteJsonForQueryByLocked(sb, EventProcessTypeEnum.InvoiceToChanel);
+                payload.Messages = this.Messages;
                 if (payload.Success)
                     payload.InvoiceUnprocessList = sb;
             }
@@ -178,6 +179,7 @@ FOR JSON PATH
             {
                 payload.InvoiceUnprocessListCount = await CountAsync();
                 payload.Success = await ExcuteJsonForQueryByLockedAsync(sb, EventProcessTypeEnum.InvoiceToChanel);
+                payload.Messages = this.Messages;
                 if (payload.Success)
                     payload.InvoiceUnprocessList = sb;
             }
