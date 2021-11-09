@@ -38,7 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sb.AppendLine(SQL_From);
             sb.AppendLine(SQL_Where);
             //TODO set this condition to other place. eg. initfilter.
-            sb.AppendLine($"And {EventHelper.TableAllies}.ActionStatus={(int)EventProcessActionStatusEnum.Default}");
+            //sb.AppendLine($"And {EventHelper.TableAllies}.ActionStatus={(int)EventProcessActionStatusEnum.Default}");
             sb.AppendLine(SQL_OrderBy);
             if (!LoadAll)
                 sb.AppendLine(SQL_Paging);
