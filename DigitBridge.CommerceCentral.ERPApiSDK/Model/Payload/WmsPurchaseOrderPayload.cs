@@ -75,6 +75,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// (Response Data) PoReceive object which has been added.
         /// </summary>
         public PoTransactionDataDto PoTransaction { get; set; }
+        
+        /// <summary>
+        /// (Request Data) PoReceive object to add.
+        /// (Response Data) PoReceive object which has been added.
+        /// </summary>
+        public IList<PoTransactionDataDto> PoTransactions { get; set; }
 
         /// <summary>
         /// Filter Json object.
