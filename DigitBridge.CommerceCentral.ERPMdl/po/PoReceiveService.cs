@@ -137,19 +137,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             foreach (var dto in list)
             {
                 payload.PoTransaction = dto;
-                if (await ExistPoUuidAsync(dto.PoTransaction.PoUuid))
+                if (await base.AddAsync(payload))
                 {
-                    if (await base.UpdateAsync(payload))
-                    {
-                        payload.PoTransactions.Add(ToDto());
-                    }
-                }
-                else
-                {
-                    if (await base.AddAsync(payload))
-                    {
-                        payload.PoTransactions.Add(ToDto());
-                    }
+                    payload.PoTransactions.Add(ToDto());
                 }
             }
 
@@ -163,9 +153,86 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return base.Update(payload);
         }
 
-        public Task<bool> UpdateAsync(PoReceivePayload payload)
+        public async Task<bool> UpdateAsync(PoReceivePayload payload)
         {
-            return base.UpdateAsync(payload);
+            if (!payload.HasPoTransaction)
+            {
+                AddError("PoTransaction cannot be blank");
+                return false;
+            }
+
+            var transdata = payload.PoTransaction;
+            if(!transdata.HasPoTransaction||!transdata.HasPoTransactionItems)
+            {
+                AddError("PoTransaction cannot be blank");
+                return false;
+            }
+
+            if (transdata.PoTransaction.HasVendorUuid)
+            {
+                if (VendorService.GetDataById(transdata.PoTransaction.VendorUuid))
+                {
+                    var vendor = VendorService.Data;
+                    transdata.PoTransaction.VendorUuid = vendor.Vendor.VendorUuid;
+                    transdata.PoTransaction.VendorCode = vendor.Vendor.VendorCode;
+                    transdata.PoTransaction.VendorName = vendor.Vendor.VendorName;
+                }
+                else
+                {
+                    AddError("Vendor data no found");
+                    return false;
+                }
+            }
+            else if(transdata.PoTransaction.HasVendorCode)
+            {
+                var vendor = await VendorService.GetVendorByCodeAsync(transdata.PoTransaction.VendorCode);
+                if (vendor != null)
+                {
+                    transdata.PoTransaction.VendorUuid = vendor.VendorUuid;
+                    transdata.PoTransaction.VendorCode = vendor.VendorCode;
+                    transdata.PoTransaction.VendorName = vendor.VendorName;
+                }
+                else
+                {
+                    AddError("Vendor data no found");
+                    return false;
+                }
+            }
+            else if(transdata.PoTransaction.HasVendorName)
+            {
+                var vendor = await VendorService.GetVendorByNameAsync(transdata.PoTransaction.VendorName);
+                if (vendor != null)
+                {
+                    transdata.PoTransaction.VendorUuid = vendor.VendorUuid;
+                    transdata.PoTransaction.VendorCode = vendor.VendorCode;
+                    transdata.PoTransaction.VendorName = vendor.VendorName;
+                }
+                else
+                {
+                    AddError("Vendor data no found");
+                    return false;
+                }
+            }
+            else
+            {
+                AddError("Vendor info cannot be blank");
+                return false;
+            }
+            
+            var list = SplitPoTransaction(transdata);
+            payload.PoTransactions = new List<PoTransactionDataDto>();
+            foreach (var dto in list)
+            {
+                payload.PoTransaction = dto;
+                if (await base.UpdateAsync(payload))
+                {
+                    payload.PoTransactions.Add(ToDto());
+                }
+            }
+
+            payload.PoTransaction = null;
+            payload.Messages = Messages;
+            return true;
         }
 
         private InventoryLogService _inventoryLogService;
@@ -311,7 +378,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var totalDiscountAmount = dto.PoTransaction.DiscountAmount.ToAmount();
             foreach (var poUUid in poUUids)
             {
-                var poTransactionItems = dto.PoTransactionItems.Where(r => r.PoUuid==poUUid).ToList();
+                var poTransactionItems = dto.PoTransactionItems.Where(r => r.PoUuid==poUUid && r.TransQty > 0).ToList();
                 var currentQty = poTransactionItems.Sum(r => r.TransQty);
                 var potransaction = new PoTransactionDto()
                 {
