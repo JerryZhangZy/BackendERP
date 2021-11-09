@@ -194,8 +194,7 @@ FOR JSON PATH
                 payload.SalesOrderOpenList = null;
                 AddError(ex.ObjectToString());
             }
-
-            payload.Messages.Add(this.Messages);
+            payload.Messages = this.Messages;
         }
     }
 }

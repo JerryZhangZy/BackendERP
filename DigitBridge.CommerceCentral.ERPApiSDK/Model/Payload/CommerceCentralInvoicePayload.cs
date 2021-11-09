@@ -12,9 +12,18 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     ///  Request payload object
     /// </summary>
     [Serializable()]
-    public class CommerceCentralInvoiceRequestPayload : RequestPayloadBase
+    public class CommerceCentralInvoiceRequestPayload : FilterPayloadBase<InvoiceUnprocessPayloadFilter>
     {
         // Add more parameters here
+    }
+
+    [Serializable()]
+    public class InvoiceUnprocessPayloadFilter
+    {
+        public int? ChannelNum { get; set; }
+        public int? ChannelAccountNum { get; set; }
+
+        //public int EventProcessActionStatus { get; set; }
     }
 
     /// <summary>

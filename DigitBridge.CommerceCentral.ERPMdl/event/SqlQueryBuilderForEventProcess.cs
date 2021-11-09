@@ -34,7 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return string.Empty;
 
             var sb = new StringBuilder();
-            sb.AppendLine($"SELECT {EventHelper.TableAllies}.EventUuid ");
+            sb.AppendLine($"SELECT {EventHelper.TableAllies}.EventUuid into #EventUuidList");
             sb.AppendLine(SQL_From);
             sb.AppendLine(SQL_Where);
             //TODO set this condition to other place. eg. initfilter.
@@ -61,7 +61,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual async Task<List<string>> GetLockedEventProcessAsync(EventProcessTypeEnum eventProcessType)
         {
             var subQuery = GetCommandTextToLock();
-            var parameters = GetSqlParameters();
+            var parameters = GetSqlParameters(); 
             using (var tx = new ScopedTransaction(dbFactory))
             {
                 var result = await EventProcessERPHelper.LockEventProcessForQueryAsync(eventProcessType, subQuery, parameters);

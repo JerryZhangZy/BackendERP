@@ -187,9 +187,8 @@ FOR JSON PATH
                 payload.Success = false;
                 payload.InvoiceUnprocessListCount = 0;
                 AddError(ex.ObjectToString());
-                payload.Messages = this.Messages;
             }
-            payload.Messages.Add(this.Messages);
+            payload.Messages = this.Messages;
         }
 
 

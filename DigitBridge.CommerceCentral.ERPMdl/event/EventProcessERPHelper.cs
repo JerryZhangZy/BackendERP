@@ -235,16 +235,21 @@ AND ProfileNum = @profileNum";
         /// </summary>
         /// <param name="matchQuery"></param>
         /// <returns></returns>
-        public static async Task<List<string>> LockEventProcessForQueryAsync(EventProcessTypeEnum eventProcessType, string matchQuery, params IDataParameter[] parameters)
+        public static async Task<List<string>> LockEventProcessForQueryAsync(EventProcessTypeEnum eventProcessType, string queryEventUuids, params IDataParameter[] parameters)
         {
 
-            var sql = $@"
+            var sql = $@" 
+{queryEventUuids}
+
 UPDATE EventProcessERP 
 SET Actionstatus={(int)EventProcessActionStatusEnum.Locked}
 OUTPUT Inserted.EventUuid  
 where Actionstatus={(int)EventProcessActionStatusEnum.Default}
       AND ERPEventProcessType={(int)eventProcessType}
-      AND EventUuid in ({matchQuery})";
+      AND EventUuid in (select * from #EventUuidList)
+
+drop table #EventUuidList
+";
 
             var eventUuidList = await SqlQuery.ExecuteAsync(
                 sql,
@@ -258,16 +263,21 @@ where Actionstatus={(int)EventProcessActionStatusEnum.Default}
         /// </summary>
         /// <param name="matchQuery"></param>
         /// <returns></returns>
-        public static List<string> LockEventProcessForQuery(EventProcessTypeEnum eventProcessType, string matchQuery, params IDataParameter[] parameters)
+        public static List<string> LockEventProcessForQuery(EventProcessTypeEnum eventProcessType, string queryEventUuids, params IDataParameter[] parameters)
         {
 
-            var sql = $@"
+            var sql = $@" 
+{queryEventUuids}
+
 UPDATE EventProcessERP 
 SET Actionstatus={(int)EventProcessActionStatusEnum.Locked}
 OUTPUT Inserted.EventUuid  
 where Actionstatus={(int)EventProcessActionStatusEnum.Default}
       AND ERPEventProcessType={(int)eventProcessType}
-      AND EventUuid in ({matchQuery})";
+      AND EventUuid in (select * from #EventUuidList)
+
+drop table #EventUuidList
+";
 
             var eventUuidList = SqlQuery.Execute(
                 sql,
