@@ -34,10 +34,18 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiPropertyDescription("(Request and Response) PoReceive object to add.")]
         public PoTransactionDataDto PoTransaction { get; set; }
         
+        /// <summary>
+        /// (Request Data) PoReceive object to add.
+        /// (Response Data) PoReceive object which has been added.
+        /// </summary>
+        [OpenApiPropertyDescription("(Request and Response) Batch PoReceives object to add.")]
+        public IList<PoTransactionDataDto> PoTransactions { get; set; }
+        
         public static PoReceivePayloadAdd GetSampleData()
         {
             var data = new PoReceivePayloadAdd();
             data.PoTransaction = new PoTransactionDataDto().GetFakerData();
+            data.PoTransactions = new PoTransactionDataDto().GetFakerData(5);
             return data;
         }
     }

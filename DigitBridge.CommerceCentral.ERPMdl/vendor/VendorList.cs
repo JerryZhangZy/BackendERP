@@ -53,7 +53,7 @@ SELECT
 {Helper.Area()},
 {Helper.TaxId()},
 {Helper.ClassCode()},
-{Helper.DepartmentCode()},
+{Helper.DepartmentCode()}
 ";
             return this.SQL_Select;
         }
@@ -125,6 +125,7 @@ SELECT
                 return payload;
                 throw;
             }
+            payload.Success = result;
             return payload;
         }
 

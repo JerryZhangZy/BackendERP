@@ -50,7 +50,7 @@ SELECT
 {Helper.TotalAmount()},
 {Helper.PaidAmount()},
 {Helper.Balance()},
-{Helper.InvoiceSourceCode()},
+{Helper.InvoiceSourceCode()}
 ";
             return this.SQL_Select;
         }
