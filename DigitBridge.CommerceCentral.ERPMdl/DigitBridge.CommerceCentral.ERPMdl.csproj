@@ -32,7 +32,6 @@
     <Folder Include="customerInquiry\" />
     <Folder Include="companySummary\" />
     <Folder Include="warehouseTransfer\" />
-    <Folder Include="setting\" />
   </ItemGroup>
 
   <ItemGroup>

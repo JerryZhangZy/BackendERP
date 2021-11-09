@@ -1,18 +1,11 @@
-using DigitBridge.Base.Utility;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
-    /// <summary>
-    /// Request paging information
-    /// </summary>
-    [Serializable()]
-    public class RequestPayloadBase
+    public class FilterPayloadBase<T>
     {
         /// <summary>
         /// Page size to load.
@@ -26,7 +19,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         [DataMember(Name = "$top")]
         [JsonProperty("$top")]
         public int Top { get; set; } = 20;
-
 
         /// <summary>
         /// Records to skip.
@@ -82,6 +74,6 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         [Display(Name = "$filter")]
         [DataMember(Name = "$filter")]
         [JsonProperty("$filter")]
-        public JObject Filter { get; set; }
+        public virtual T Filter { get; set; }
     }
 }

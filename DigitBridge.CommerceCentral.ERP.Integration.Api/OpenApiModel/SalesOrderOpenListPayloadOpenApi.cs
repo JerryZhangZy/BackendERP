@@ -54,48 +54,13 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 
     public class SalesOrderOpenListFilter
     {
-        public string SalesOrderUuid { get; set; }
-
-        public string OrderNumberFrom { get; set; }
-
-        public string OrderNumberTo { get; set; }
-
-        public DateTime ShipDateFrom { get; set; }
-
-        public DateTime ShipDateTo { get; set; }
-
-        public DateTime OrderDateFrom { get; set; }
-
-        public DateTime OrderDateTo { get; set; }
-
-        public DateTime UpdateDateUtcFrom { get; set; }
-
-        public DateTime UpdateDateUtcTo { get; set; }
-
-        //public SalesOrderStatus OrderStatus { get; set; }
-
-        public int OrderType { get; set; }
-
-        public string CustomerCode { get; set; }
-        public string CustomerName { get; set; }
+        public DateTime? UpdateDateUtc { get; set; }
 
         public static Faker<SalesOrderOpenListFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<SalesOrderOpenListFilter>()
-                .RuleFor(u => u.SalesOrderUuid, f => string.Empty)
-                .RuleFor(u => u.OrderNumberFrom, f => string.Empty)
-                .RuleFor(u => u.OrderNumberTo, f => string.Empty)
-                .RuleFor(u => u.ShipDateFrom, f => f.Date.Past(0).Date.AddDays(-30))
-                .RuleFor(u => u.ShipDateTo, f => f.Date.Past(0).Date)
-                .RuleFor(u => u.OrderDateFrom, f => f.Date.Past(0).Date.AddDays(-30))
-                .RuleFor(u => u.OrderDateTo, f => f.Date.Past(0).Date)
-                .RuleFor(u => u.UpdateDateUtcFrom, f => f.Date.Past(0).Date.AddDays(-30))
-                .RuleFor(u => u.UpdateDateUtcTo, f => f.Date.Past(0).Date)
-                .RuleFor(u => u.OrderType, f => (int)SalesOrderType.EcommerceOrder)
-                .RuleFor(u => u.CustomerCode, f => string.Empty)
-                .RuleFor(u => u.CustomerName, f => string.Empty)
-                //.RuleFor(u => u.OrderStatus, f => (int)SalesOrderStatus.Open) 
+                .RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date.AddDays(-30))
                 ;
             #endregion faker data rules
         }

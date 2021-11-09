@@ -175,7 +175,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 {"ApInvoiceStatus",   header.ApInvoiceStatus },
                 //{"CustomerCode",  $"{header.CustomerCode}"},
                 {"VendorName",  $"{header.VendorName}"},
-                {"VendorCode",  $"{header.VendorCode}"},
+                {"VendorNumFrom",  $"{header.VendorCode}"},
+                {"VendorNumTo",  $"{header.VendorCode}"},
                 
                 //{"OrderShipmentNum",  $"{headerInfo.OrderShipmentNum}"},
                 {"ShippingCarrier", $"{headerInfo.ShippingCarrier}"},
