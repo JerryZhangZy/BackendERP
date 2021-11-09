@@ -36,10 +36,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Properties - Generated 
 
-		/// <summary>
-		/// (Readonly) Database Number. <br> Display: false, Editable: false.
-		/// </summary>
-		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
+        /// <summary>
+        /// (Readonly) Login user account. <br> Display: false, Editable: false.
+        /// </summary>
+        [OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public string CustomerCode { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCustomerCode => CustomerCode != null;
+
+        /// <summary>
+        /// (Readonly) Database Number. <br> Display: false, Editable: false.
+        /// </summary>
+        [OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

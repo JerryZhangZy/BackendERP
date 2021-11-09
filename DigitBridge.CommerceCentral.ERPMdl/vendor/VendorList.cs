@@ -125,6 +125,7 @@ SELECT
                 return payload;
                 throw;
             }
+            payload.Success = result;
             return payload;
         }
 

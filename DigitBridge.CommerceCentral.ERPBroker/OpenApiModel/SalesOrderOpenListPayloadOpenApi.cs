@@ -89,7 +89,7 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 .RuleFor(u => u.OrderDateFrom, f => f.Date.Past(0).Date.AddDays(-30))
                 .RuleFor(u => u.OrderDateTo, f => f.Date.Past(0).Date)
                 .RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date.AddDays(-30))
-                .RuleFor(u => u.OrderType, f => (int)SalesOrderType.ChannelOrder)
+                .RuleFor(u => u.OrderType, f => (int)SalesOrderType.EcommerceOrder)
                 .RuleFor(u => u.CustomerCode, f => string.Empty)
                 .RuleFor(u => u.CustomerName, f => string.Empty)
                 //.RuleFor(u => u.OrderStatus, f => (int)SalesOrderStatus.Open) 

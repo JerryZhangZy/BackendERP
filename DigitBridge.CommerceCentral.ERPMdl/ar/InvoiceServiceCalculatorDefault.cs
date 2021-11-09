@@ -430,6 +430,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (item.PackQty > 1)
             {
+                if (item.OrderPack < (item.ShipPack + item.CancelledPack))
+                    item.OrderPack = (item.ShipPack + item.CancelledPack);
                 item.OrderQty = item.OrderPack * item.PackQty;
                 item.ShipQty = item.ShipPack * item.PackQty;
                 item.CancelledQty = item.CancelledPack * item.PackQty;
@@ -437,6 +439,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else
             {
+                if (item.OrderQty < (item.ShipQty + item.CancelledQty))
+                    item.OrderQty = (item.ShipQty + item.CancelledQty);
                 item.OrderPack = item.OrderQty;
                 item.ShipPack = item.ShipQty;
                 item.CancelledPack = item.CancelledQty;
@@ -447,7 +451,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.DiscountPrice = item.Price;
             if (!item.DiscountRate.IsZero())
             {
-                item.DiscountPrice = (item.Price * item.DiscountRate.ToRate()).ToPrice();
+                item.DiscountPrice = (item.Price * (1 - item.DiscountRate.ToRate())).ToPrice();
             }
             // use after discount price to calculate ext. amount
             item.ExtAmount = (item.DiscountPrice * item.ShipQty).ToAmount();

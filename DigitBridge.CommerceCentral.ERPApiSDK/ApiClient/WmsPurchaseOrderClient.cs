@@ -48,6 +48,23 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             };
             return await PostAsync(payload,FunctionUrl.CreatePoReceive);
         }
+        
+        public async Task<bool> CreateBatchPoReceiveAsync(int masterAccountNum,int profileNum,IList<PoHeader> batchReceive)
+        {
+            if (!SetAccount(masterAccountNum, profileNum))
+                return false;
+            var poreceiveList = new List<PoTransactionDataDto>();
+            foreach (var receive in batchReceive)
+            {
+                poreceiveList.Add(new PoTransactionDataDto(receive));
+            }
+
+            var payload = new WmsPurchaseOrderPayload()
+            {
+                PoTransactions = poreceiveList
+            };
+            return await PostAsync(payload,FunctionUrl.CreateBatchPoReceive);
+        }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
         {

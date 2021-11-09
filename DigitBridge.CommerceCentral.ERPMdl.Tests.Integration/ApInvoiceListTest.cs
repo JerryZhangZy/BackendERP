@@ -83,7 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 {"ApInvoiceDateFrom",  $"{apInvoiceData.ApInvoiceHeader.ApInvoiceDate}"},
                 {"ApInvoiceDateTo",  $"{apInvoiceData.ApInvoiceHeader.ApInvoiceDate}"},
                 {"VendorUuid",  $"{apInvoiceData.ApInvoiceHeader.VendorUuid}"},
-                {"VendorCode",  $"{apInvoiceData.ApInvoiceHeader.VendorCode}"},
+                {"VendorNum",  $"{apInvoiceData.ApInvoiceHeader.VendorCode}"},
                 {"VendorName",  $"{apInvoiceData.ApInvoiceHeader.VendorName}"},
                 {"VendorInvoiceNum",  $"{apInvoiceData.ApInvoiceHeader.VendorInvoiceNum}"},
                 {"VendorInvoiceDateFrom",  $"{apInvoiceData.ApInvoiceHeader.VendorInvoiceDate}"},
