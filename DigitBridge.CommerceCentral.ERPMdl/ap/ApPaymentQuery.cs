@@ -65,10 +65,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected EnumQueryFilter<InvoiceStatusEnum> _InvoiceStatus = new EnumQueryFilter<InvoiceStatusEnum>("ApInvoiceStatus", "ApInvoiceStatus", ApInvoiceHeaderHelper.TableAllies, FilterBy.eq, 0);
         public EnumQueryFilter<InvoiceStatusEnum> InvoiceStatus => _InvoiceStatus;
 
-        protected QueryFilter<string> _VendorNumFrom = new QueryFilter<string>("VendorNumFrom", "VendorNum", ApInvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> VendorNumFrom => _VendorNumFrom;
-        protected QueryFilter<string> _VendorNumTo = new QueryFilter<string>("VendorNumTo", "VendorNum", ApInvoiceHeaderHelper.TableAllies, FilterBy.eq, string.Empty, isNVarChar: true);
-        public QueryFilter<string> VendorNumTo => _VendorNumTo;
+        protected QueryFilter<string> _VendorCode = new QueryFilter<string>("VendorCode", "VendorCode", PREFIX, FilterBy.eq, string.Empty);
+        public QueryFilter<string> VendorCode => _VendorCode;
 
         protected QueryFilter<string> _VendorName = new QueryFilter<string>("VendorName", "VendorName", ApInvoiceHeaderHelper.TableAllies, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorName => _VendorName;
@@ -134,8 +132,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_DueDateTo);
             AddFilter(_InvoiceType);
             AddFilter(_InvoiceStatus);
-            AddFilter(_VendorNumFrom);
-            AddFilter(_VendorNumTo);
+            AddFilter(_VendorCode);
             AddFilter(_VendorName);
 
             //AddFilter(_OrderShipmentNum);
