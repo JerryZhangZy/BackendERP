@@ -101,6 +101,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
             if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
+            if (dto.HasCustomerCode) data.CustomerCode = dto.CustomerCode;
+
             #endregion read properties
 
             data.CheckIntegrity();
@@ -287,6 +289,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.UpdateBy = data.UpdateBy;
             dto.EnterDateUtc = data.EnterDateUtc;
             dto.DigitBridgeGuid = data.DigitBridgeGuid;
+
+            dto.CustomerCode = data.CustomerCode;
 
             #endregion read properties
 

@@ -23,28 +23,56 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected static string PREFIX = Helper.TableAllies;
 
         // Filter fields
-        //protected QueryFilter<DateTime> _OrderDateFrom = new QueryFilter<DateTime>("OrderDateFrom", "OrderDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
-        //public QueryFilter<DateTime> OrderDateFrom => _OrderDateFrom;
+        protected QueryFilter<string> _VendorUuid = new QueryFilter<string>("VendorUuid", "VendorUuid", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorUuid => _VendorUuid;
 
-        //protected QueryFilter<DateTime> _OrderDateTo = new QueryFilter<DateTime>("OrderDateTo", "OrderDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
-        //public QueryFilter<DateTime> OrderDateTo => _OrderDateTo;
+        protected QueryFilter<string> _VendorCode = new QueryFilter<string>("VendorCode", "VendorCode", PREFIX, FilterBy.bw, string.Empty);
+        public QueryFilter<string> VendorCode => _VendorCode;
 
-        //protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty);
-        //public QueryFilter<string> CustomerCode => _CustomerCode;
+        protected QueryFilter<string> _VendorName = new QueryFilter<string>("VendorName", "VendorName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorName => _VendorName;
 
-        //protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
+        protected QueryFilter<string> _Phone1 = new QueryFilter<string>("Phone1", "Phone1", PREFIX, FilterBy.bw, string.Empty);
+        public QueryFilter<string> Phone1 => _Phone1;
 
-        //protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
+        protected QueryFilter<string> _Email = new QueryFilter<string>("Email", "Email", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> Email => _Email;
+
+        protected EnumQueryFilter<VendorType> _VendorType = new EnumQueryFilter<VendorType>("VendorType", "VendorType", PREFIX, FilterBy.eq, 0);
+        public EnumQueryFilter<VendorType> VendorType => _VendorType;
+
+        protected EnumQueryFilter<VendorStatus> _VendorStatus = new EnumQueryFilter<VendorStatus>("VendorStatus", "VendorStatus", PREFIX, FilterBy.eq, 0);
+        public EnumQueryFilter<VendorStatus> VendorStatus => _VendorStatus;
+
+        protected QueryFilter<string> _BusinessType = new QueryFilter<string>("BusinessType", "BusinessType", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> BusinessType => _BusinessType;
+
+        protected QueryFilter<string> _Priority = new QueryFilter<string>("Priority", "Priority", PREFIX, FilterBy.eq, string.Empty, isNVarChar: true);
+        public QueryFilter<string> Priority => _VendorUuid;
+
+        protected QueryFilter<string> _Area = new QueryFilter<string>("Area", "Area", PREFIX, FilterBy.bw, string.Empty);
+        public QueryFilter<string> Area => _Area;
+
+        protected QueryFilter<string> _ClassCode = new QueryFilter<string>("ClassCode", "ClassCode", PREFIX, FilterBy.bw, string.Empty);
+        public QueryFilter<string> ClassCode => _ClassCode;
+
+        protected QueryFilter<string> _DepartmentCode = new QueryFilter<string>("DepartmentCode", "DepartmentCode", PREFIX, FilterBy.bw, string.Empty);
+        public QueryFilter<string> DepartmentCode => _DepartmentCode;
 
         public VendorQuery() : base(PREFIX)
         {
-            //AddFilter(_OrderDateFrom);
-            //AddFilter(_OrderDateTo);
-            //AddFilter(_CustomerCode);
-            //AddFilter(_OrderStatus);
-            //AddFilter(_OrderType);
+            AddFilter(_VendorUuid);
+            AddFilter(_VendorCode);
+            AddFilter(_VendorName);
+            AddFilter(_Phone1);
+            AddFilter(_Email);
+            AddFilter(_VendorType);
+            AddFilter(_VendorStatus);
+            AddFilter(_BusinessType);
+            AddFilter(_Priority);
+            AddFilter(_Area);
+            AddFilter(_ClassCode);
+            AddFilter(_DepartmentCode);
         }
 
         public override void InitQueryFilter()

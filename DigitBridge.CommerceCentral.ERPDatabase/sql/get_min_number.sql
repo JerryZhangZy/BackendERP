@@ -29,7 +29,7 @@ SELECT TOP 1 * FROM (
 		WHERE t2.OrderNumber = t1.OrderNumber + 1
 	) 
 ) ot
-WHERE ot.number > 2021101311323675862
+WHERE ot.number > (SELECT ini.number FROM InitNumbers ini WHERE ini.type = 'SalesOrder' )
 ORDER BY ot.number
 
 

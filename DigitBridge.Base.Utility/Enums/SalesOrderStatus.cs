@@ -10,6 +10,7 @@ namespace DigitBridge.Base.Common
         Open = 1,
         Shipped = 2,
         Closed = 3,
+        Hold = 100,
         Cancelled = 255,
     }
 }

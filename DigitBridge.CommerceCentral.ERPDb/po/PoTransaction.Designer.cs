@@ -84,6 +84,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("VendorUuid",SqlDbType.VarChar,IsDefault=true)]
         private string _vendorUuid;
 
+        [Column("VendorCode",SqlDbType.VarChar)]
+        private string _vendorCode;
+
+        [Column("VendorName",SqlDbType.NVarChar)]
+        private string _vendorName;
+
         [Column("VendorInvoiceNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _vendorInvoiceNum;
 
@@ -393,6 +399,48 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				{
 					_vendorUuid = value.TruncateTo(50); 
 					OnPropertyChanged("VendorUuid", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// Vendor readable number, DatabaseNum + VendorCode is DigitBridgeVendorCode, which is global unique
+		/// </summary>
+        public virtual string VendorCode
+        {
+            get
+            {
+				if (!AllowNull && _vendorCode is null) 
+					_vendorCode = String.Empty; 
+				return _vendorCode?.TrimEnd(); 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_vendorCode = value.TruncateTo(50); 
+					OnPropertyChanged("VendorCode", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// Vendor name
+		/// </summary>
+        public virtual string VendorName
+        {
+            get
+            {
+				if (!AllowNull && _vendorName is null) 
+					_vendorName = String.Empty; 
+				return _vendorName?.TrimEnd(); 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_vendorName = value.TruncateTo(200); 
+					OnPropertyChanged("VendorName", value);
 				}
             }
         }
@@ -792,6 +840,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_description = AllowNull ? (string)null : String.Empty; 
 			_notes = AllowNull ? (string)null : String.Empty; 
 			_vendorUuid = AllowNull ? (string)null : String.Empty; 
+			_vendorCode = AllowNull ? (string)null : String.Empty; 
+			_vendorName = AllowNull ? (string)null : String.Empty; 
 			_vendorInvoiceNum = String.Empty; 
 			_vendorInvoiceDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_dueDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 

@@ -81,6 +81,57 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
+            if (transdata.PoTransaction.HasVendorUuid)
+            {
+                if (VendorService.GetDataById(transdata.PoTransaction.VendorUuid))
+                {
+                    var vendor = VendorService.Data;
+                    transdata.PoTransaction.VendorUuid = vendor.Vendor.VendorUuid;
+                    transdata.PoTransaction.VendorCode = vendor.Vendor.VendorCode;
+                    transdata.PoTransaction.VendorName = vendor.Vendor.VendorName;
+                }
+                else
+                {
+                    AddError("Vendor data no found");
+                    return false;
+                }
+            }
+            else if(transdata.PoTransaction.HasVendorCode)
+            {
+                var vendor = await VendorService.GetVendorByCodeAsync(transdata.PoTransaction.VendorCode);
+                if (vendor != null)
+                {
+                    transdata.PoTransaction.VendorUuid = vendor.VendorUuid;
+                    transdata.PoTransaction.VendorCode = vendor.VendorCode;
+                    transdata.PoTransaction.VendorName = vendor.VendorName;
+                }
+                else
+                {
+                    AddError("Vendor data no found");
+                    return false;
+                }
+            }
+            else if(transdata.PoTransaction.HasVendorName)
+            {
+                var vendor = await VendorService.GetVendorByNameAsync(transdata.PoTransaction.VendorName);
+                if (vendor != null)
+                {
+                    transdata.PoTransaction.VendorUuid = vendor.VendorUuid;
+                    transdata.PoTransaction.VendorCode = vendor.VendorCode;
+                    transdata.PoTransaction.VendorName = vendor.VendorName;
+                }
+                else
+                {
+                    AddError("Vendor data no found");
+                    return false;
+                }
+            }
+            else
+            {
+                AddError("Vendor info cannot be blank");
+                return false;
+            }
+            
             var list = SplitPoTransaction(transdata);
             payload.PoTransactions = new List<PoTransactionDataDto>();
             foreach (var dto in list)
@@ -235,6 +286,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await dbFactory.ExistsAsync<PoTransaction>("PoUuid=@0", poUuid.ToSqlParameter("@0"));
         }
 
+        private VendorService _vendorService;
+
+        protected VendorService VendorService
+        {
+            get
+            {
+                if (_vendorService == null)
+                    _vendorService = new VendorService(dbFactory);
+                return _vendorService;
+            }
+        }
+
         private IList<PoTransactionDataDto> SplitPoTransaction(PoTransactionDataDto dto)
         {
             var list = new List<PoTransactionDataDto>();
@@ -255,6 +318,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     PoUuid = poUUid,
                     ProfileNum = dto.PoTransaction.ProfileNum,
                     MasterAccountNum = dto.PoTransaction.MasterAccountNum,
+                    VendorCode = dto.PoTransaction.VendorCode,
+                    VendorName = dto.PoTransaction.VendorName,
+                    VendorUuid = dto.PoTransaction.VendorUuid,
                     DatabaseNum = dto.PoTransaction.DatabaseNum,
                     Currency = dto.PoTransaction.Currency,
                     ChargeAndAllowanceAmount = dto.PoTransaction.ChargeAndAllowanceAmount,
@@ -268,8 +334,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     TaxAmount = toalTaxAmount/totalQty*currentQty,
                     TransStatus = dto.PoTransaction.TransStatus,
                     TransType = dto.PoTransaction.TransType,
-                    VendorName = dto.PoTransaction.VendorName,
-                    VendorUuid = dto.PoTransaction.VendorUuid,
                     VendorInvoiceDate = dto.PoTransaction.VendorInvoiceDate,
                     VendorInvoiceNum = dto.PoTransaction.VendorInvoiceNum
                 };

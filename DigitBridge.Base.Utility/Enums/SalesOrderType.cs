@@ -9,7 +9,8 @@ namespace DigitBridge.Base.Common
     {
         [Description("Sales Order")] 
         Sales = 0,
-        ChannelOrder = 1,
+        EcommerceOrder = 1,
         DropShipOrder = 2,
+        Others = 3,
     }
 }
