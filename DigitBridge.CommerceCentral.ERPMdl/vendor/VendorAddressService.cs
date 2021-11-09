@@ -12,107 +12,33 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
-using System.Xml.Serialization;
-using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public partial class InitNumbersService
+    public partial class VendorAddressService
     {
 
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
         /// </summary>
-        public override InitNumbersService Init()
+        public override VendorAddressService Init()
         {
             base.Init();
-            SetDtoMapper(new InitNumbersDataDtoMapperDefault());
-            SetCalculator(new InitNumbersServiceCalculatorDefault(this,this.dbFactory));
-            AddValidator(new InitNumbersServiceValidatorDefault(this, this.dbFactory));
+            SetDtoMapper(new VendorAddressDataDtoMapperDefault());
+            SetCalculator(new VendorAddressServiceCalculatorDefault(this, this.dbFactory));
+            AddValidator(new VendorAddressServiceValidatorDefault(this, this.dbFactory));
             return this;
-        }
-        [XmlIgnore, JsonIgnore]
-        protected InitNumbersList _initNumbersList;
-        [XmlIgnore, JsonIgnore]
-        public InitNumbersList initNumbersList
-        {
-            get
-            {
-                if (_initNumbersList is null)
-                    _initNumbersList = new InitNumbersList(dbFactory);
-                return _initNumbersList;
-            }
-        }
-
-        public virtual async Task<bool> GetByInitNumbersUuidAsync(int masterAccountNum, int profileNum, string initNumbersUuid)
-        {
-                var rownum = await InitNumbersHelper.GetRowNumByInitNumbersUuidAsync(masterAccountNum, profileNum, initNumbersUuid);
-                GetData(rownum);
-            return true;
-        }
-
-
-
-
-        public async Task<InitNumbersPayload> GetInitNumbersForCustomer(int masterAccountNum,int profileNum, string customerUuid)
-        {
-            var payload = new InitNumbersPayload()
-            {
-                MasterAccountNum = masterAccountNum,
-                ProfileNum = profileNum
-            };
-            payload.LoadAll = true;
-            payload.Filter = new JObject()
-            {
-                {"CustomerUuid",  $"{customerUuid}"},
-            };
-                return await _initNumbersList.GetInitNumbersListAsync(payload);
-        }
-        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid,string type)
-        {
-            string minNumber = string.Empty;
-            using (var trx = new ScopedTransaction(dbFactory))
-            {
-                  minNumber = await InitNumbersHelper.GetMinNumberAsync(masterAccountNum, profileNum, customerUuid, type);
-            }
-   
-            var initNumbers =  InitNumbersHelper.GetInitNumbersAsync(dbFactory, masterAccountNum, profileNum, customerUuid, type);
-            if (string.IsNullOrWhiteSpace(minNumber))//如果为Null 说明number 是带有前缀,如果带有前缀，则获取
-            {
-
-                return string.Concat(initNumbers.prefix, initNumbers.currentNumber+1, initNumbers.suffix);
-
-            }
-            else //如果不为null，则直接返回
-            {
-                return string.Concat(initNumbers.prefix, minNumber, initNumbers.suffix);
-            }
- 
-
-        }
-
-        public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string type, string currentNumber)
-        {
-          
-
-              var initNumbers = InitNumbersHelper.GetInitNumbersAsync(dbFactory, masterAccountNum, profileNum, customerUuid, type);
-
-             GetData(initNumbers.rowNum);
- 
-            int currentNum = GetCurrentNumber(currentNumber, initNumbers.prefix, initNumbers.suffix);
-            _data.InitNumbers.CurrentNumber = currentNum;
-           return await _data.SaveAsync();
         }
 
 
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
-        public virtual bool Add(InitNumbersDataDto dto)
+        public virtual bool Add(VendorAddressDataDto dto)
         {
             if (dto is null) 
                 return false;
@@ -135,7 +61,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
-        public virtual async Task<bool> AddAsync(InitNumbersDataDto dto)
+        public virtual async Task<bool> AddAsync(VendorAddressDataDto dto)
         {
             if (dto is null)
                 return false;
@@ -155,9 +81,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
-        public virtual bool Add(InitNumbersPayload payload)
+        public virtual bool Add(VendorAddressPayload payload)
         {
-            if (payload is null || !payload.HasInitNumbers)
+            if (payload is null || !payload.HasVendorAddress)
                 return false;
 
             // set Add mode and clear data
@@ -166,11 +92,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!ValidateAccount(payload))
                 return false;
 
-            if (!Validate(payload.InitNumbers))
+            if (!Validate(payload.VendorAddress))
                 return false;
 
             // load data from dto
-            FromDto(payload.InitNumbers);
+            FromDto(payload.VendorAddress);
 
             // validate data for Add processing
             if (!Validate())
@@ -179,9 +105,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return SaveData();
         }
 
-        public virtual async Task<bool> AddAsync(InitNumbersPayload payload)
+        public virtual async Task<bool> AddAsync(VendorAddressPayload payload)
         {
-            if (payload is null || !payload.HasInitNumbers)
+            if (payload is null || !payload.HasVendorAddress)
                 return false;
 
             // set Add mode and clear data
@@ -190,11 +116,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.InitNumbers)))
+            if (!(await ValidateAsync(payload.VendorAddress)))
                 return false;
 
             // load data from dto
-            FromDto(payload.InitNumbers);
+            FromDto(payload.VendorAddress);
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -207,9 +133,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual bool Update(InitNumbersDataDto dto)
+        public virtual bool Update(VendorAddressDataDto dto)
         {
-            if (dto is null || !dto.HasInitNumbers)
+            if (dto is null || !dto.HasVendorAddress)
                 return false;
             //set edit mode before validate
             Edit();
@@ -217,7 +143,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // load data 
-            GetData(dto.InitNumbers.RowNum.ToLong());
+            GetData(dto.VendorAddress.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
@@ -233,9 +159,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual async Task<bool> UpdateAsync(InitNumbersDataDto dto)
+        public virtual async Task<bool> UpdateAsync(VendorAddressDataDto dto)
         {
-            if (dto is null || !dto.HasInitNumbers)
+            if (dto is null || !dto.HasVendorAddress)
                 return false;
             //set edit mode before validate
             Edit();
@@ -243,7 +169,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             // load data 
-            await GetDataAsync(dto.InitNumbers.RowNum.ToLong());
+            await GetDataAsync(dto.VendorAddress.RowNum.ToLong());
 
             // load data from dto
             FromDto(dto);
@@ -259,9 +185,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Payload object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual bool Update(InitNumbersPayload payload)
+        public virtual bool Update(VendorAddressPayload payload)
         {
-            if (payload is null || !payload.HasInitNumbers || payload.InitNumbers.InitNumbers.RowNum.ToLong() <= 0)
+            if (payload is null || !payload.HasVendorAddress || payload.VendorAddress.VendorAddress.RowNum.ToLong() <= 0)
                 return false;
             //set edit mode before validate
             Edit();
@@ -269,14 +195,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!ValidateAccount(payload))
                 return false;
 
-            if (!Validate(payload.InitNumbers))
+            if (!Validate(payload.VendorAddress))
                 return false;
 
             // load data 
-            GetData(payload.InitNumbers.InitNumbers.RowNum.ToLong());
+            GetData(payload.VendorAddress.VendorAddress.RowNum.ToLong());
 
             // load data from dto
-            FromDto(payload.InitNumbers);
+            FromDto(payload.VendorAddress);
 
             // validate data for Add processing
             if (!Validate())
@@ -289,23 +215,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        public virtual async Task<bool> UpdateAsync(InitNumbersPayload payload)
+        public virtual async Task<bool> UpdateAsync(VendorAddressPayload payload)
         {
-            if (payload is null || !payload.HasInitNumbers)
+            if (payload is null || !payload.HasVendorAddress)
                 return false;
             //set edit mode before validate
             Edit();
             if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.InitNumbers)))
+            if (!(await ValidateAsync(payload.VendorAddress)))
                 return false;
 
             // load data 
-            await GetDataAsync(payload.InitNumbers.InitNumbers.RowNum.ToLong());
+            await GetDataAsync(payload.VendorAddress.VendorAddress.RowNum.ToLong());
 
             // load data from dto
-            FromDto(payload.InitNumbers);
+            FromDto(payload.VendorAddress);
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -320,7 +246,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> GetDataAsync(InitNumbersPayload payload, string orderNumber)
+        public virtual async Task<bool> GetDataAsync(VendorAddressPayload payload, string orderNumber)
         {
             return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
         }
@@ -331,7 +257,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public virtual bool GetData(InitNumbersPayload payload, string orderNumber)
+        public virtual bool GetData(VendorAddressPayload payload, string orderNumber)
         {
             return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
         }
@@ -341,7 +267,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByNumberAsync(InitNumbersPayload payload, string orderNumber)
+        public virtual async Task<bool> DeleteByNumberAsync(VendorAddressPayload payload, string orderNumber)
         {
             if (string.IsNullOrEmpty(orderNumber))
                 return false;
@@ -358,7 +284,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public virtual bool DeleteByNumber(InitNumbersPayload payload, string orderNumber)
+        public virtual bool DeleteByNumber(VendorAddressPayload payload, string orderNumber)
         {
             if (string.IsNullOrEmpty(orderNumber))
                 return false;
@@ -369,41 +295,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
-
-
-
-        /// <summary>
-        /// Delete data by number
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> DeleteByInitNumbersUuidAsync(InitNumbersPayload payload, string initNumbersUuid)
+        public async Task<bool> DeleteByVendorAddressUuidAsync( string addressUuid)
         {
-                if (string.IsNullOrEmpty(initNumbersUuid))
-                    return false;
-                //set delete mode
-                Delete();
-                //load data
-                var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, initNumbersUuid);
-                success = success && DeleteData();
-                return success;
-        }
+            if (string.IsNullOrEmpty(addressUuid))
+                return false;
+            //set delete mode
+            Delete();
+            //load data
+            // using (var tx = new ScopedTransaction(dbFactory))
+            //{
+            var rownum = await VendorAddressHelper.GetRowNumByAddressUuidAsync(dbFactory, addressUuid);
 
-
-        private  int GetCurrentNumber(string fullStrNumber, string prefix, string suffix)
-        {
-            if (!string.IsNullOrWhiteSpace(prefix) &&fullStrNumber.StartsWith(prefix))
-            {
-                fullStrNumber = fullStrNumber.Remove(0, prefix.Length);
-            }
-
-            if (!string.IsNullOrWhiteSpace(suffix) && fullStrNumber.EndsWith(suffix))
-            {
-                fullStrNumber = fullStrNumber.Remove(fullStrNumber.Length - suffix.Length);
-            }
-
-            return int.Parse( fullStrNumber);
-
+            bool success =GetData(rownum);
+            success = success && DeleteData();
+            return success;
         }
     }
 }

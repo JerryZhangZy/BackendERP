@@ -23,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Request and Response payload object
     /// </summary>
     [Serializable()]
-    public class InitNumbersPayload : PayloadBase
+    public class VendorAddressPayload : PayloadBase
     {
         /// <summary>
         /// Delegate function to load request parameter to payload property.
@@ -32,7 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "InitNumbersUuids", val => InitNumbersUuids = val.Split(",").ToList() }
+                { "AddressUuids", val => AddressUuids = val.Split(",").ToList() }
             };
         }
 
@@ -40,21 +40,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region multiple Dto list
 
         /// <summary>
-        /// (Request Parameter) Array of uuid to load multiple InitNumbers dto data.
+        /// (Request Parameter) Array of uuid to load multiple VendorAddress dto data.
         /// </summary>
-        [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple InitNumbers dto data.")]
-        public IList<string> InitNumbersUuids { get; set; } = new List<string>();
+        [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple VendorAddress dto data.")]
+        public IList<string> AddressUuids { get; set; } = new List<string>();
         [JsonIgnore] 
-        public virtual bool HasInitNumbersUuids => InitNumbersUuids != null && InitNumbersUuids.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasInitNumbersUuids;
+        public virtual bool HasAddressUuids => AddressUuids != null && AddressUuids.Count > 0;
+        public bool ShouldSerializeSalesOrderUuids() => HasAddressUuids;
 
         /// <summary>
-        /// (Response Data) Array of InitNumbers entity object which load by uuid array.
+        /// (Response Data) Array of VendorAddress entity object which load by uuid array.
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) Array of entity object which load by uuid array.")]
-        public IList<InitNumbersDataDto> InitNumberss { get; set; }
-        [JsonIgnore] public virtual bool HasInitNumberss => InitNumberss != null && InitNumberss.Count > 0;
-        public bool ShouldSerializeInitNumberss() => HasInitNumberss;
+        public IList<VendorAddressDataDto> VendorAddresss { get; set; }
+        [JsonIgnore] public virtual bool HasVendorAddresss => VendorAddresss != null && VendorAddresss.Count > 0;
+        public bool ShouldSerializeVendorAddresss() => HasVendorAddresss;
 
         #endregion multiple Dto list
 
@@ -62,12 +62,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region single Dto object
 
         /// <summary>
-        /// (Request and Response Data) Single InitNumbers entity object which load by Number.
+        /// (Request and Response Data) Single VendorAddress entity object which load by Number.
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) Single entity object which load by Number.")]
-        public InitNumbersDataDto InitNumbers { get; set; }
-        [JsonIgnore] public virtual bool HasInitNumbers => InitNumbers != null;
-        public bool ShouldSerializeInitNumbers() => HasInitNumbers;
+        public VendorAddressDataDto VendorAddress { get; set; }
+        [JsonIgnore] public virtual bool HasVendorAddress => VendorAddress != null;
+        public bool ShouldSerializeVendorAddress() => HasVendorAddress;
 
         #endregion single Dto object
 
@@ -79,24 +79,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
         [JsonConverter(typeof(StringBuilderConverter))]
-        public StringBuilder InitNumbersList { get; set; }
-        [JsonIgnore] public virtual bool HasInitNumbersList => InitNumbersList != null && InitNumbersList.Length > 0;
-        public bool ShouldSerializeInitNumbersList() => HasInitNumbersList;
+        public StringBuilder VendorAddressList { get; set; }
+        [JsonIgnore] public virtual bool HasVendorAddressList => VendorAddressList != null && VendorAddressList.Length > 0;
+        public bool ShouldSerializeVendorAddressList() => HasVendorAddressList;
 
         /// <summary>
         /// (Response Data) List result count which load filter and paging.
         /// </summary>
-        public int InitNumbersListCount { get; set; }
-        [JsonIgnore] public virtual bool HasInitNumbersListCount => InitNumbersListCount > 0;
-        public bool ShouldSerializeInitNumbersListCount() => HasInitNumbersListCount;
+        public int VendorAddressListCount { get; set; }
+        [JsonIgnore] public virtual bool HasVendorAddressListCount => VendorAddressListCount > 0;
+        public bool ShouldSerializeVendorAddressListCount() => HasVendorAddressListCount;
 
         #endregion list service
-    }
-
-    [Serializable()]
-    public class InitNumbersSinglePayload:PayloadBase
-    {
-        public string CurrentNumber { get; set; }
     }
 }
 

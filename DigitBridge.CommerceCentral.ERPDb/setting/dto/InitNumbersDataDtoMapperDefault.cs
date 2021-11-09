@@ -60,6 +60,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasCustomerUuid) data.CustomerUuid = dto.CustomerUuid;
 			if (dto.HasInActive) data.InActive = dto.InActive.ToBool();
 			if (dto.HasType) data.Type = dto.Type;
+			if (dto.HasCurrentNumber) data.CurrentNumber = dto.CurrentNumber.ToInt();
 			if (dto.HasNumber) data.Number = dto.Number.ToInt();
 			if (dto.HasPrefix) data.Prefix = dto.Prefix;
 			if (dto.HasSuffix) data.Suffix = dto.Suffix;
@@ -111,6 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.CustomerUuid = data.CustomerUuid;
 			dto.InActive = data.InActive;
 			dto.Type = data.Type;
+			dto.CurrentNumber = data.CurrentNumber;
 			dto.Number = data.Number;
 			dto.Prefix = data.Prefix;
 			dto.Suffix = data.Suffix;
