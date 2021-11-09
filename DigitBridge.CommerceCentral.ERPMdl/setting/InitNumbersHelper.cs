@@ -84,8 +84,7 @@ WHERE ot.number > (SELECT   [Number]   FROM [dbo].[InitNumbers] WHERE [MasterAcc
 ORDER BY ot.number";
 
                     break;
-                case "shipment":
-                    break;
+
                 case "po":
                     sql = $@"SELECT TOP 1 * FROM (
     SELECT t1.PoNum+1 AS number
