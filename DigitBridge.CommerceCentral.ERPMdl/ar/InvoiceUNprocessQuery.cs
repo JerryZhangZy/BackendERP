@@ -5,13 +5,14 @@ using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
+using EventHelper = DigitBridge.CommerceCentral.ERPDb.EventProcessERPHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public class InvoiceUnprocessQuery : QueryObject<InvoiceUnprocessQuery>
     {
         // Table prefix which use in this sql query 
-        protected static string PREFIX = "event"; //TODO change to helper. 
+        protected static string PREFIX = EventHelper.TableAllies;
 
 
         protected QueryFilter<int> _ChannelNum = new QueryFilter<int>("ChannelNum", "ChannelNum", PREFIX, FilterBy.eq, 0);

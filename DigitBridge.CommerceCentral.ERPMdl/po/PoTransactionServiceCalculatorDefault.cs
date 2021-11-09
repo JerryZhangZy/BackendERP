@@ -110,6 +110,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null)
                 return false;
 
+            var now = DateTime.UtcNow;
+            var sum = data.PoTransaction;
+            if (sum.TransTime.IsZero()) sum.TransTime = now.TimeOfDay;
+            if (sum.TransDate.IsZero())
+            {
+                sum.TransDate = now.Date;
+                sum.TransTime = now.TimeOfDay;
+            }
+            sum.UpdateDateUtc = now;
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                //set default tran num  
+                if (sum.TransNum.IsZero())
+                {
+                    using (var tx = new ScopedTransaction(dbFactory))
+                    {
+                        sum.TransNum = PoTransactionHelper.GetTranSeqNum(sum.PoUuid, sum.ProfileNum.ToInt());
+                    }
+                }
+                //for Add mode, always reset uuid
+                sum.TransUuid = Guid.NewGuid().ToString();
+            }
+
             //TODO: add set default summary data logic
             /* This is generated sample code
             var sum = data.PoTransaction;

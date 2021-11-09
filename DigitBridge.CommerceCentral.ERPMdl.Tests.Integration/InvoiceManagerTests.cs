@@ -14,6 +14,8 @@ using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
 using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
+using Newtonsoft.Json.Linq;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -106,6 +108,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.False(string.IsNullOrEmpty(invoiceUuid));
         }
 
+        [Fact()]
+        public async Task UpdateFaultInvoicesAsync_Simple_Test()
+        {
+            var payload = new InvoicePayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+            }; 
+
+            var faultInvoiceList = GetFaultInvoiceList("UpdateFaultInvoicesAsync_Full_Test");
+            var managerService = new InvoiceManager(DataBaseFactory);
+            var result = await managerService.UpdateFaultInvoicesAsync(payload, faultInvoiceList);
+            Assert.True(result != null, managerService.Messages.ObjectToString());
+
+        }
+        [Fact()]
+        public async Task UpdateFaultInvoicesAsync_Full_Test()
+        {
+            var payload = new InvoicePayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+            };
+
+            var faultInvoiceList = GetFaultInvoiceList("UpdateFaultInvoicesAsync_Full_Test");
+            var managerService = new InvoiceManager(DataBaseFactory);
+            var result = await managerService.UpdateFaultInvoicesAsync(payload, faultInvoiceList);
+            Assert.True(result != null, managerService.Messages.ObjectToString());
+
+            var failedResult = result.Where(i => !i.Success);
+            Assert.True(failedResult.Count() == 0, failedResult.SelectMany(i => i.Messages).ObjectToString());
+        }
+
 
 
         [Fact()]
@@ -153,6 +188,56 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.True(success, salesorderService.Messages.ObjectToString());
 
         }
+        #endregion
+
+        #region prepare fault invoice data 
+        protected List<FaultInvoiceRequestPayload> GetFaultInvoiceList(string error, int count = 2)
+        {
+            var list = new List<FaultInvoiceRequestPayload>();
+            var eventUuids = GetEventUuid(count);
+            foreach (var eventUuidJson in eventUuids)
+            {
+                var eventUuid = GetEventUuid(eventUuidJson);
+                var faultInvoiceRequest = new FaultInvoiceRequestPayload()
+                {
+                    EventUuid = eventUuid,
+                    Message = new StringBuilder().Append(eventUuid + error)
+                };
+                list.Add(faultInvoiceRequest);
+            }
+
+            return list;
+        }
+
+        private string GetEventUuid(string eventUuidJson)
+        {
+
+            return JArray.Parse(eventUuidJson)[0]["EventUuid"].ToString();
+        }
+
+        private List<string> GetEventUuid(int n = 1)
+        {
+            var sql = $@"
+SELECT top {n} EventUuid 
+FROM EventProcessERP ins  
+WHERE [MasterAccountNum]={MasterAccountNum}
+AND [ProfileNum]={ProfileNum}
+AND ERPEventProcessType={(int)EventProcessTypeEnum.InvoiceToChanel}
+AND ActionStatus={(int)EventProcessActionStatusEnum.Default}
+order by ins.rownum desc
+for json path
+";
+            var eventUuidList = new List<string>();
+            using (var trs = new ScopedTransaction(this.DataBaseFactory))
+            {
+                eventUuidList = SqlQuery.Execute(sql,
+                        (string eventUuid) => eventUuid
+                    );
+                Assert.True(eventUuidList.Count != 0, "No mathched event process data in database");
+                return eventUuidList;
+            }
+        }
+
         #endregion
     }
 }

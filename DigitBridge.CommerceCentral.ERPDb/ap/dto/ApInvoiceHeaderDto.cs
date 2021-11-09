@@ -160,17 +160,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Vendor readable number, DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique
 		/// </summary>
 		[OpenApiPropertyDescription("Vendor readable number, DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique")]
-        [StringLength(50, ErrorMessage = "The VendorNum value cannot exceed 50 characters. ")]
-        public string VendorNum { get; set; }
+        [StringLength(50, ErrorMessage = "The VendorCode value cannot exceed 50 characters. ")]
+        public string VendorCode { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasVendorNum => VendorNum != null;
+        public bool HasVendorCode => VendorCode != null;
 
 		/// <summary>
 		/// Vendor name
 		/// </summary>
 		[OpenApiPropertyDescription("Vendor name")]
-        [StringLength(100, ErrorMessage = "The VendorName value cannot exceed 100 characters. ")]
+        [StringLength(200, ErrorMessage = "The VendorName value cannot exceed 200 characters. ")]
         public string VendorName { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]

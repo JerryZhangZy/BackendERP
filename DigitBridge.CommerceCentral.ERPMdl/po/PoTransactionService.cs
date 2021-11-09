@@ -430,6 +430,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
+        public async Task<int> GetRowNumByPoUuid(string poUuid)
+        {
+            return dbFactory.GetValue<PoHeader, int>("SELECT TOP 1 RowNum FROM PoTransaction WHERE PoUuid=@0",
+                poUuid.ToSqlParameter("@0"));
+        }
+
     }
 }
 

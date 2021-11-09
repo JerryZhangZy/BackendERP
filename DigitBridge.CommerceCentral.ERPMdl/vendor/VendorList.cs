@@ -37,7 +37,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.VendorUuid()},
+{Helper.VendorCode()},
+{Helper.VendorName()},
+{Helper.Contact()},
+{Helper.Phone1()},
+{Helper.Email()},
+{Helper.VendorType()},
+{Helper.VendorStatus()},
+{Helper.BusinessType()},
+{Helper.PriceRule()},
+{Helper.FirstDate()},
+{Helper.Currency()},
+{Helper.Priority()},
+{Helper.Area()},
+{Helper.TaxId()},
+{Helper.ClassCode()},
+{Helper.DepartmentCode()},
 ";
             return this.SQL_Select;
         }

@@ -18,6 +18,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -370,6 +371,47 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string currentNumber)
         {
                 return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "invoice", currentNumber);
+        }
+        #endregion
+
+        #region update fault invoice 
+
+        /// <summary>
+        /// Update fault invoice back to event process.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="faultEventProcess"></param>
+        /// <returns></returns>
+        public async Task<IList<FaultInvoiceResponsePayload>> UpdateFaultInvoicesAsync(InvoicePayload payload, IList<FaultInvoiceRequestPayload> faultInvoiceList)
+        {
+            var responseList = new List<FaultInvoiceResponsePayload>();
+            var srv = new EventProcessERPService(dbFactory);
+            foreach (var faultInvoice in faultInvoiceList)
+            {
+                srv.Messages = new List<MessageClass>();
+                var eventDto = new EventProcessERPDataDto()
+                {
+                    EventProcessERP = new EventProcessERPDto()
+                    {
+                        ERPEventProcessType = (int)EventProcessTypeEnum.InvoiceToChanel,
+                        ActionStatus = (int)EventProcessActionStatusEnum.Failed,
+                        MasterAccountNum = payload.MasterAccountNum,
+                        ProfileNum = payload.ProfileNum,
+                        EventUuid = faultInvoice.EventUuid,
+                        EventMessage = faultInvoice.Message.ToString(),
+                    }
+                };
+                var success = await srv.UpdateAsync(eventDto);
+
+                var response = new FaultInvoiceResponsePayload()
+                {
+                    EventUuid = faultInvoice.EventUuid,
+                    Messages = srv.Messages,
+                    Success = success,
+                };
+                responseList.Add(response);
+            }
+            return responseList;
         }
         #endregion
     }
