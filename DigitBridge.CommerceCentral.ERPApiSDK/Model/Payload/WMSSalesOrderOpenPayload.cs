@@ -12,9 +12,17 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     ///  Request payload object
     /// </summary>
     [Serializable()]
-    public class WMSSalesOrderRequestPayload : RequestPayloadBase
+    public class WMSSalesOrderRequestPayload : FilterPayloadBase<SalesOrderOpenListFilter>
     {
         // Add more parameters here
+    }
+
+    public class SalesOrderOpenListFilter
+    {
+        /// <summary>
+        /// Default value is the day of last month.
+        /// </summary>
+        public DateTime? UpdateDateUtc { get; set; }
     }
 
     /// <summary>
