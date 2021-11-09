@@ -145,7 +145,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <param name="req"></param>
         /// <returns></returns>
         [FunctionName(nameof(AddPoReceives))]
-        [OpenApiOperation(operationId: "AddPoReceives", tags: new[] { "Po Receives" }, Summary = "Add one po receive ")]
+        [OpenApiOperation(operationId: "AddPoReceives", tags: new[] { "Po Receives" }, Summary = "Add new PO Stock Receive ")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -157,6 +157,37 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<PoReceivePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new PoReceiveService(dataBaseFactory);
+            await srv.AddAsync(payload);
+            // payload.Success = await srv.AddAsync(payload);
+            // payload.Messages = srv.Messages;
+            // payload.PoTransaction = srv.ToDto();
+
+            //Directly return without waiting this result. 
+            //if (payload.Success)
+            // srv.AddQboPaymentEventAsync(payload.MasterAccountNum, payload.ProfileNum, payload.ApplyInvoices);
+
+            return new JsonNetResponse<PoReceivePayload>(payload);
+        }
+        
+        /// <summary>
+        /// Add po receive 
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(AddApPoReceives))]
+        [OpenApiOperation(operationId: "AddApPoReceives", tags: new[] { "Po Receives" }, Summary = "Add PO A/P Receive")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PoReceivePayloadAdd), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadAdd))]
+        public static async Task<JsonNetResponse<PoReceivePayload>> AddApPoReceives(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "poReceives/ap")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<PoReceivePayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new PoReceiveService(dataBaseFactory);
+            srv.SetFirstAPReceiveStatus(true);
             await srv.AddAsync(payload);
             // payload.Success = await srv.AddAsync(payload);
             // payload.Messages = srv.Messages;
@@ -308,6 +339,31 @@ namespace DigitBridge.CommerceCentral.ERPApi
         //     return new JsonNetResponse<PoReceivePayload>(payload);
         // }
         
+        /// <summary>
+        /// Get invoice new return by invoiceNumber
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="invoiceNumber"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(NewPoReceive))]
+        [OpenApiOperation(operationId: "NewPoReceive", tags: new[] { "Po Receives" }, Summary = "Get po new receive by poNum")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "PoNum", Description = "PoNum ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadGetSingle))]
+        public static async Task<JsonNetResponse<PoReceivePayload>> NewPoReceive(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "poReceives/newReceive/po/{poNum}")] HttpRequest req,
+            string poNum)
+        {
+            var payload = await req.GetParameters<PoReceivePayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new PoReceiveService(dataBaseFactory);
+            payload.Success = await srv.NewReceiveAsync(payload, poNum);
+            payload.Messages = srv.Messages;
+            payload.PoTransaction = payload.Success ? srv.ToDto() : null;
+            return new JsonNetResponse<PoReceivePayload>(payload);
+        }
     }
 }
 

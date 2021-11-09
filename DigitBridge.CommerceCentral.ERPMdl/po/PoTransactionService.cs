@@ -375,25 +375,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 NewData();
             Data.PurchaseOrderData = poData;
             Data.PoTransaction.PoUuid = poData.PoHeader.PoUuid;
-            if (Data.PoTransactionItems == null) return success;
+            // if (Data.PoTransactionItems == null) return success;
+            //
+            // foreach (var item in Data.PoTransactionItems)
+            // {
+            //     item.PoUuid = poData.PoHeader.PoUuid;
+            //     if (!item.RowNum.IsZero()) continue;
+            //     item.PoItemUuid = poData.PoItems.FirstOrDefault(i => i.SKU == item.SKU && i.WarehouseUuid == item.WarehouseUuid)?.PoItemUuid;
+            // }
 
-            foreach (var item in Data.PoTransactionItems)
-            {
-                item.PoUuid = poData.PoHeader.PoUuid;
-                if (!item.RowNum.IsZero()) continue;
-                item.PoItemUuid = poData.PoItems.FirstOrDefault(i => i.SKU == item.SKU && i.WarehouseUuid == item.WarehouseUuid)?.PoItemUuid;
-            }
-
-            var emptyItems = Data.PoTransactionItems.Where(r => r.PoItemUuid.IsZero()).ToList();
-
-            foreach (var emptyItem in emptyItems)
-            {
-                Data.PoTransactionItems.Remove(emptyItem);
-            }
-            if(!Data.PoTransactionItems.Any()){
-                AddError($"No Math PoTransactionItems");
-                return false;
-            }
+            // var emptyItems = Data.PoTransactionItems.Where(r => r.PoItemUuid.IsZero()).ToList();
+            //
+            // foreach (var emptyItem in emptyItems)
+            // {
+            //     Data.PoTransactionItems.Remove(emptyItem);
+            // }
+            // if(!Data.PoTransactionItems.Any()){
+            //     AddError($"No Math PoTransactionItems");
+            //     return false;
+            // }
 
             return success;
         }
@@ -434,6 +434,68 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             return dbFactory.GetValue<PoHeader, int>("SELECT TOP 1 RowNum FROM PoTransaction WHERE PoUuid=@0",
                 poUuid.ToSqlParameter("@0"));
+        }
+        
+        
+        #region copy invoice info to invoicereturn/invoicepayment for NewReturn/ NewPayment
+
+        protected void CopyPoHeaderToReceive()
+        {
+            var poHeader = Data.PurchaseOrderData.PoHeader;
+            Data.PoTransaction = new PoTransaction()
+            {
+                PoNum = poHeader.PoNum,
+                PoUuid = poHeader.PoUuid,
+                VendorName = poHeader.VendorName,
+                VendorCode = poHeader.VendorCode,
+                VendorUuid = poHeader.VendorUuid
+            };
+        }
+        protected void CopyPoItemsToReceiveItems()
+        {
+            var poTransactionItems = new List<PoTransactionItems>();
+            foreach (var item in Data.PurchaseOrderData.PoItems)
+            {
+                // Data.InvoiceReturnItems.
+                var poTransactionItem = new PoTransactionItems()
+                {
+                    PoUuid = item.PoUuid,
+                    PoItemUuid = item.PoItemUuid,
+                    TransQty = item.ReceivedQty,
+                    Description = item.Description,
+                    InventoryUuid = item.InventoryUuid,
+                    WarehouseUuid = item.WarehouseUuid,
+                    SKU = item.SKU,
+                    Notes = item.Notes,
+                    Price = item.Price,
+                    ProductUuid = item.ProductUuid,
+                    ItemType = item.PoItemType,
+                    TaxRate = item.TaxRate
+                };
+                poTransactionItems.Add(poTransactionItem);
+            }
+            Data.PoTransactionItems = poTransactionItems;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Load returned qty for each trans return item 
+        /// </summary>
+        /// <returns></returns>
+        protected virtual void LoadReceivedQty()
+        {
+            if (Data.PoTransactionItems == null || Data.PoTransactionItems.Count == 0)
+                return;
+
+            var receivetems = PoTransactionHelper.GetReceiveItemsByPoUuid(dbFactory, Data.PurchaseOrderData.UniqueId);
+            if (receivetems == null || receivetems.Count == 0)
+                return;
+
+            foreach (var item in this.Data.PoTransactionItems)
+            {
+                item.TransQty = receivetems.Where(i => i.sku == item.SKU && i.rowNum != item.RowNum).Sum(j => j.transQty).ToQty();//+ item.ReturnQty;
+            }
         }
 
     }
