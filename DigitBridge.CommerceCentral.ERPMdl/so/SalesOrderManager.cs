@@ -376,13 +376,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
 
-        public async Task<string> GetInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid)
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid)
         {
-            return await initNumbersService.GetInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "so");
+                return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, "so");
         }
-        public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid,int currentNumber)
+        public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string currentNumber)
         {
-            return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "so", currentNumber);
+                return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "so", currentNumber);
         }
         //public async Task<bool> CreateSalesOrdersAsync(IList<SalesOrderData> soDataList)
         //{

@@ -72,28 +72,40 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
                 return await _initNumbersList.GetInitNumbersListAsync(payload);
         }
-        public async Task<string>  GetInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid,string type)
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid,string type)
         {
-                return await InitNumbersHelper.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, type);
+            string minNumber = string.Empty;
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                  minNumber = await InitNumbersHelper.GetMinNumberAsync(masterAccountNum, profileNum, customerUuid, type);
+            }
+   
+            var initNumbers =  InitNumbersHelper.GetInitNumbersAsync(dbFactory, masterAccountNum, profileNum, customerUuid, type);
+            if (string.IsNullOrWhiteSpace(minNumber))//如果为Null 说明number 是带有前缀,如果带有前缀，则获取
+            {
+
+                return string.Concat(initNumbers.prefix, initNumbers.currentNumber+1, initNumbers.suffix);
+
+            }
+            else //如果不为null，则直接返回
+            {
+                return string.Concat(initNumbers.prefix, minNumber, initNumbers.suffix);
+            }
+ 
+
         }
 
-        public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string type, int currentNumber)
+        public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string type, string currentNumber)
         {
-            var payload = new InitNumbersPayload()
-            {
-                MasterAccountNum = masterAccountNum,
-                ProfileNum = profileNum
-            };
-            payload.LoadAll = true;
-            payload.Filter = new JObject()
-            {
-                {"CustomerUuid",  $"{customerUuid}"},
-                 {"Type",  $"{type}"}
-            };
-            var initNumber= await _initNumbersList.GetInitNumbersListAsync(payload);
-            var updateDto = initNumber.InitNumberss[0];
-            updateDto.InitNumbers.CurrentNumber = currentNumber;
-            return await this.UpdateAsync(updateDto);
+          
+
+              var initNumbers = InitNumbersHelper.GetInitNumbersAsync(dbFactory, masterAccountNum, profileNum, customerUuid, type);
+
+             GetData(initNumbers.rowNum);
+ 
+            int currentNum = GetCurrentNumber(currentNumber, initNumbers.prefix, initNumbers.suffix);
+            _data.InitNumbers.CurrentNumber = currentNum;
+           return await _data.SaveAsync();
         }
 
 
@@ -375,6 +387,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, initNumbersUuid);
                 success = success && DeleteData();
                 return success;
+        }
+
+
+        private  int GetCurrentNumber(string fullStrNumber, string prefix, string suffix)
+        {
+            if (!string.IsNullOrWhiteSpace(prefix) &&fullStrNumber.StartsWith(prefix))
+            {
+                fullStrNumber = fullStrNumber.Remove(0, prefix.Length);
+            }
+
+            if (!string.IsNullOrWhiteSpace(suffix) && fullStrNumber.EndsWith(suffix))
+            {
+                fullStrNumber = fullStrNumber.Remove(fullStrNumber.Length - suffix.Length);
+            }
+
+            return int.Parse( fullStrNumber);
+
         }
     }
 }

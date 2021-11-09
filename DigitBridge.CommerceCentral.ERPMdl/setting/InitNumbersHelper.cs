@@ -50,14 +50,13 @@ AND OrderNumber = @number
             return true;
         }
 
-
-        public static async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid, string type)
+        public static async Task<string> GetMinNumberAsync(int masterAccountNum, int profileNum, string customerUuid, string type)
         {
             string sql = string.Empty;
             switch (type)
             {
                 case "so":
-                      sql = $@"SELECT TOP 1 * FROM (
+                    sql = $@"SELECT TOP 1 * FROM (
     SELECT t1.OrderNumber+1 AS number
     FROM (SELECT CAST(OrderNumber AS bigint) AS OrderNumber FROM SalesOrderHeader WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND LEN(OrderNumber) < 20 AND ISNUMERIC(OrderNumber) = 1) t1
     WHERE NOT EXISTS(
@@ -67,7 +66,7 @@ AND OrderNumber = @number
 	) 
 ) ot
 WHERE ot.number > (SELECT   [Number]   FROM [dbo].[InitNumbers] WHERE [CustomerUuid]=@customerUuid AND [Type]=@type)
-ORDER BY ot.number";            
+ORDER BY ot.number";
                     break;
 
                 case "invoice":
@@ -114,36 +113,49 @@ ORDER BY ot.number";
 WHERE ot.number > (SELECT   [Number]   FROM [dbo].[InitNumbers] WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND [CustomerUuid]=@customerUuid AND [Type]=@type)
 ORDER BY ot.number";
                     break;
-            }
-  
-;
-            var numberResult = await SqlQuery.ExecuteScalarAsync<string>(sql,
+            };
+
+
+            return await SqlQuery.ExecuteScalarAsync<string>(sql,
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"),
                 customerUuid.ToSqlParameter("customerUuid"),
                 type.ToSqlParameter("type")
             );
-            if (string.IsNullOrWhiteSpace(numberResult))//如果为Null 说明number 是带有前缀,如果带有前缀，则获取
-            {
-                sql = $@"SELECT * FROM InitNumbers WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND [CustomerUuid]=@customerUuid AND [Type]=@type";
-                var initNumbers = await SqlQuery.ExecuteScalarAsync<InitNumbers>(sql,
-             masterAccountNum.ToSqlParameter("masterAccountNum"),
-             profileNum.ToSqlParameter("profileNum"),
-             customerUuid.ToSqlParameter("customerUuid"),
-             type.ToSqlParameter("type"));
+        }
 
-                return string.Concat(initNumbers.Prefix, initNumbers.CurrentNumber, initNumbers.Suffix);
 
-            }
-            else //如果不为null，则直接返回
+
+
+        //public static async Task<InitNumbers> GetInitNumbersAsync(int masterAccountNum, int profileNum, string customerUuid, string type)
+        //{
+
+        //    string sql = $@"SELECT * FROM InitNumbers WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND [CustomerUuid]=@customerUuid AND [Type]=@type";
+        //    return await SqlQuery.Execute<InitNumbers>(sql,
+        //  masterAccountNum.ToSqlParameter("masterAccountNum"),
+        //  profileNum.ToSqlParameter("profileNum"),
+        //  customerUuid.ToSqlParameter("customerUuid"),
+        //  type.ToSqlParameter("type"));
+
+        //}
+
+
+        public static (string number, int currentNumber, string prefix, string suffix,long rowNum) GetInitNumbersAsync(IDataBaseFactory dbFactory, int masterAccountNum, int profileNum, string customerUuid, string type)
+        {
+            using (var trx = new ScopedTransaction(dbFactory))
             {
-                return numberResult;
+
+                var sql = $@"SELECT number,currentNumber,prefix,suffix,rowNum FROM InitNumbers WHERE [MasterAccountNum]=@masterAccountNum AND    [ProfileNum]=@profileNum AND [CustomerUuid]=@customerUuid AND [Type]=@type";
+                return SqlQuery.Execute(sql, (string number, int currentNumber, string prefix, string suffix, long rowNum) => (number, currentNumber, prefix, suffix, rowNum), masterAccountNum.ToSqlParameter("masterAccountNum"),
+         profileNum.ToSqlParameter("profileNum"),
+         customerUuid.ToSqlParameter("customerUuid"),
+         type.ToSqlParameter("type"))[0];
             }
 
         }
 
 
- 
+
 
         public static async Task<long> GetRowNumByInitNumbersUuidAsync(int masterAccountNum, int profileNum, string initNumbersUuid)
         {

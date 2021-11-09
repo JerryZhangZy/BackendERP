@@ -192,14 +192,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
 
-        public async Task<string> GetInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid)
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid)
         {
-            return await initNumbersService.GetInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "po");
+                return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, "po");
         }
 
-        public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid,int currentNumber)
+        public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string currentNumber)
         {
-            return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "po", currentNumber);
+                return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "po", currentNumber);
         }
 
         #region DataBase
