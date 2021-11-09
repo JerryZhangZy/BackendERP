@@ -326,12 +326,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.TaxRate = sum.TaxRate.ToRate();
             sum.ChargeAndAllowanceAmount = 0;
 
+            var itemsOpenQty = new Dictionary<string, decimal>(
+                data.SalesOrderItems.Select(
+                    i => new KeyValuePair<string, decimal>(i.ProductUuid, i.OpenQty)));
+            inventoryService.UpdateOpenSoQtyFromSalesOrder(itemsOpenQty);
             foreach (var item in data.SalesOrderItems)
             {
                 if (item is null || item.IsEmpty)
                     continue;
                 //var inv = GetInventoryData(data,item.ProductUuid);
-
+                
                 CalculateDetail(item, data, processingMode);
                 if (item.IsAr)
                 {
@@ -378,7 +382,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //var prod = data.GetCache<ProductBasic>(ProductId);
             //var inv = data.GetCache<Inventory>(InventoryId);
             //var invCost = new ItemCostClass(inv);
-            var invCost = new ItemCostClass();
+            inventoryService.GetDataById(item.InventoryUuid);
+            var invCost = new ItemCostClass(inventoryService.Data.Inventory.SingleOrDefault());
+            //var invCost = new ItemCostClass();
 
             // format number var
             item.Price = item.Price.ToPrice();

@@ -17,6 +17,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using System.Text;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -581,6 +582,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         private async Task UpdateAvgCostAsync(ItemCostClass cost)
         {
             await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.AvgCost.ToSqlParameter("inventoryUuid"));
+        }
+
+        public void UpdateOpenSoQtyFromSalesOrder(Dictionary<string, decimal> data)
+        {
+            StringBuilder cmd = new StringBuilder();
+            foreach (var item in data)
+            {
+                cmd.AppendLine($"UPDATE Inventory SET OpenSoQty=OpenSoQty+{item.Value} WHERE InventoryUuid='{item.Key}'");
+                cmd.AppendLine("GO");
+            }
+            dbFactory.Db.Execute(cmd.ToString());
         }
     }
 }
