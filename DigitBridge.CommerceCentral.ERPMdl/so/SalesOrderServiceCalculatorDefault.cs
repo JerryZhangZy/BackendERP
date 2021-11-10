@@ -231,6 +231,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.UOM = inventory.UOM;
                 //if (string.IsNullOrEmpty(item.Currency))
                 //    item.Currency = inventory.Currency;
+
+                item.UnitCost = inventory.UnitCost;
+                item.AvgCost = inventory.AvgCost;
+                item.LotCost = inventory.AvgCost;
             }
 
 
@@ -257,6 +261,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             CalculateDetail(data, processingMode);
             CalculateSummary(data, processingMode);
+
             return true;
         }
         public virtual bool CalculateSummary(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -326,10 +331,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.TaxRate = sum.TaxRate.ToRate();
             sum.ChargeAndAllowanceAmount = 0;
 
-            var itemsOpenQty = new Dictionary<string, decimal>(
-                data.SalesOrderItems.Select(
-                    i => new KeyValuePair<string, decimal>(i.ProductUuid, i.OpenQty)));
-            inventoryService.UpdateOpenSoQtyFromSalesOrder(itemsOpenQty);
             foreach (var item in data.SalesOrderItems)
             {
                 if (item is null || item.IsEmpty)
@@ -380,10 +381,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //TODO need get inventory object and load inventory cost
             //var prod = data.GetCache<ProductBasic>(ProductId);
-            //var inv = data.GetCache<Inventory>(InventoryId);
-            //var invCost = new ItemCostClass(inv);
-            inventoryService.GetDataById(item.InventoryUuid);
-            var invCost = new ItemCostClass(inventoryService.Data.Inventory.SingleOrDefault());
+            var invData = GetInventoryData(data, item.SKU);
+            var inv = invData.Inventory.SingleOrDefault(i => i.WarehouseCode == item.WarehouseCode);
+            var invCost = new ItemCostClass(inv);
             //var invCost = new ItemCostClass();
 
             // format number var

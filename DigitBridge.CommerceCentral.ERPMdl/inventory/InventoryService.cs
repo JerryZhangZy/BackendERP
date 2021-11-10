@@ -584,14 +584,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.AvgCost.ToSqlParameter("inventoryUuid"));
         }
 
-        public void UpdateOpenSoQtyFromSalesOrder(Dictionary<string, decimal> data)
+        public void UpdateOpenSoQtyFromSalesOrderItem(string salesOrderUuid, bool isReturnBack = false)
         {
             StringBuilder cmd = new StringBuilder();
-            foreach (var item in data)
-            {
-                cmd.AppendLine($"UPDATE Inventory SET OpenSoQty=OpenSoQty+{item.Value} WHERE InventoryUuid='{item.Key}'");
-                cmd.AppendLine("GO");
-            }
+            string op = isReturnBack ? "-" : "+";
+            cmd.Append($"update inventory set opensoqty=inv.opensoqty{op}(coalesce(soi.orderqty,0)-coalesce(soi.shipqty,0)-coalesce(soi.cancelledqty,0)) ");
+            cmd.Append("from inventory inv, ");
+            cmd.Append($"(select sum(orderqty) as orderqty, sum(shipqty) as shipqty, sum(cancelledqty) as cancelledqty, inventoryuuid from salesorderitems where SalesOrderUuid='{salesOrderUuid}'  group by InventoryUuid) soi");
+            cmd.Append("where inv.inventoryuuid=soi.inventoryuuid");
+
             dbFactory.Db.Execute(cmd.ToString());
         }
     }
