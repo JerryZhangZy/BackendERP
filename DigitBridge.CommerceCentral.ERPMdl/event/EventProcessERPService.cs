@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -297,6 +298,106 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
+
+
+        #region batch update event process 
+        public virtual async Task<bool> UpdateActionStatusAsync(SyncResultPayload downloadResult)
+        {
+            //            var sql = $@"  
+            //update EventProcessERP 
+            //set ActionStatus =@ActionStatus_New
+            //from EventProcessERP
+            //JOIN @EventUuidList EventUuidList ON (EventUuidList.item = EventProcessERP.ProcessUuid) 
+            //Where EventProcessERP.ActionStatus=@ActionStatus_Original
+            //      AND ERPEventProcessType=@ERPEventProcessType
+            //      AND MasterAccountNum=@MasterAccountNum
+            //      AND ProfileNum=@ProfileNum
+            //";
+
+
+            //var result = await dbFactory.Db.ExecuteAsync(sql,
+            //     ((int)EventProcessActionStatusEnum.Default).ToParameter("@ActionStatus_Original"),
+            //     ((int)EventProcessActionStatusEnum.Downloaded).ToParameter("@ActionStatus_New"),
+            //     payload.MasterAccountNum.ToParameter("@MasterAccountNum"),
+            //     payload.ProfileNum.ToParameter("@ProfileNum"),
+            //     downloadResult.EventProcessType.ToParameter("@ERPEventProcessType"),
+            //     downloadResult.EventUuids.ToParameter<string>("@EventUuidList")
+            //     );
+
+            var sql = $@"  
+            update EventProcessERP 
+            set ActionStatus =@0
+            from EventProcessERP
+            JOIN @1 EventUuidList ON (EventUuidList.item = EventProcessERP.ProcessUuid) 
+            Where EventProcessERP.ActionStatus=@2
+                  AND ERPEventProcessType=@3
+                  --AND MasterAccountNum=@4
+                  --AND ProfileNum=@5
+            ";
+
+
+            var result = await dbFactory.Db.ExecuteAsync(sql,
+                ((int)EventProcessActionStatusEnum.Downloaded).ToParameter("@ActionStatus_New"),
+                downloadResult.EventUuids.ToParameter<string>("@EventUuidList"),
+                 ((int)EventProcessActionStatusEnum.Default).ToParameter("@ActionStatus_Original"),
+                 downloadResult.EventProcessType.ToParameter("@ERPEventProcessType")
+                 //payload.MasterAccountNum.ToParameter("@MasterAccountNum"),
+                 //payload.ProfileNum.ToParameter("@ProfileNum")
+                 );
+            //affect record equal the request data count.
+            var success = result == downloadResult.EventUuids.Count;
+            if (!success)
+            {
+                AddError($"Total record is {downloadResult.EventUuids.Count}, actual affect record is {result}");
+            }
+
+            return success;
+        }
+        //        public virtual async Task<bool> BatchUpdateFaultProcessAsync(IList<EventProcessRequestPayload> requestDatas, int eventProcessType)
+        //        {
+        //            var keys = requestDatas.OrderBy(i => i.EventUuid).Select(j => j.EventUuid).ToList();
+        //            var values = requestDatas.OrderBy(i => i.EventUuid).Select(j => j.Message.ToString()).ToList();
+        //            var xmlDatas = keys.ListToXml(values);
+
+        //            var sql = $@"
+        //DECLARE @updateDatas TABLE
+        // (
+        //  [EventUuid] [varchar](50)  NOT NULL,
+        //  [EventMessage] [nvarchar](300) NULL
+        // );
+
+        // INSERT @updateDatas (EventUuid ,EventMessage )
+        // SELECT  
+        // T.c.value(N'key[1]','varchar(50)') as EventUuid,
+        // T.c.value(N'value[1]','nvarchar(300)') as ErrorMessages
+        // FROM @xmlDatas.nodes('parameters/parameter') T(c);
+
+
+        //update EventProcessERP 
+        //set ActionStatus =@ActionStatus_New,
+        //    EventMessage =updateData.EventMessage
+        //from EventProcessERP
+        //JOIN @updateDatas updateData ON (updateData.EventUuid = EventProcessERP.EventUuid) 
+        //Where EventProcessERP.ActionStatus=@ActionStatus_Original
+        //      AND ERPEventProcessType=@ERPEventProcessType";
+
+        //            var result = await dbFactory.Db.ExecuteAsync(sql,
+        //                 ((int)EventProcessActionStatusEnum.Locked).ToParameter("@ActionStatus_Original"),
+        //                 ((int)EventProcessActionStatusEnum.Failed).ToParameter("@ActionStatus_New"),
+        //                 (eventProcessType).ToParameter("ERPEventProcessType"),
+        //                 xmlDatas.ToXmlParameter("@xmlDatas")
+        //                 );
+
+        //            //affect record equal the request data count.
+        //            var success = result == requestDatas.Count;
+        //            if (!success)
+        //            {
+        //                AddError($"Total record is {requestDatas.Count}, actual affect record is {result}");
+        //            }
+
+        //            return success;
+        //        }
+        #endregion
 
     }
 }

@@ -20,7 +20,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     public class SalesOrderOpenListFilter
     {
         /// <summary>
-        /// Default value is the day of last month.
+        /// WarehouseCode
+        /// </summary>
+        public string WarehouseCode { get; set; }
+
+        /// <summary>
+        ///  UpdateDateUtc
         /// </summary>
         public DateTime? UpdateDateUtc { get; set; }
     }
