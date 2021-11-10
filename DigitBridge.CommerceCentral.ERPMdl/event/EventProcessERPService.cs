@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -297,6 +298,55 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = success && DeleteData();
             return success;
         }
+
+
+        #region batch update event process 
+
+        public virtual async Task<bool> BatchUpdateFaultProcessAsync(IList<EventProcessRequestPayload> requestDatas, int eventProcessType)
+        {
+            var keys = requestDatas.OrderBy(i => i.EventUuid).Select(j => j.EventUuid).ToList();
+            var values = requestDatas.OrderBy(i => i.EventUuid).Select(j => j.Message.ToString()).ToList();
+            var xmlDatas = keys.ListToXml(values);
+
+            var sql = $@"
+DECLARE @updateDatas TABLE
+ (
+  [EventUuid] [varchar](50)  NOT NULL,
+  [EventMessage] [nvarchar](300) NULL
+ );
+
+ INSERT @updateDatas (EventUuid ,EventMessage )
+ SELECT  
+ T.c.value(N'key[1]','varchar(50)') as EventUuid,
+ T.c.value(N'value[1]','nvarchar(300)') as ErrorMessages
+ FROM @xmlDatas.nodes('parameters/parameter') T(c);
+  
+
+update EventProcessERP 
+set EventProcessERP.ActionStatus =@ActionStatus_New,
+    EventProcessERP.EventMessage =updateData.EventMessage
+from EventProcessERP
+JOIN @updateDatas updateData ON (updateData.EventUuid = EventProcessERP.EventUuid) 
+Where EventProcessERP.ActionStatus=@ActionStatus_Original
+      AND ERPEventProcessType=@ERPEventProcessType";
+
+            var result = await dbFactory.Db.ExecuteAsync(sql,
+                 ((int)EventProcessActionStatusEnum.Locked).ToParameter("@ActionStatus_Original"),
+                 ((int)EventProcessActionStatusEnum.Failed).ToParameter("@ActionStatus_New"),
+                 (eventProcessType).ToParameter("ERPEventProcessType"),
+                 xmlDatas.ToXmlParameter("@xmlDatas")
+                 );
+
+            //affect record equal the request data count.
+            var success = result == requestDatas.Count;
+            if (!success)
+            {
+                AddError($"Total record is {requestDatas.Count}, actual affect record is {result}");
+            }
+
+            return success;
+        }
+        #endregion
 
     }
 }

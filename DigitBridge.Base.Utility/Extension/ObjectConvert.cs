@@ -770,7 +770,7 @@ namespace DigitBridge.Base.Utility
             (input is null) ? (decimal)0 : input.ToDecimal().ToRate();
 
         public static decimal ToRate(this decimal input) =>
-          input <=0 ? 0 : (input > 1 ? 1 : Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero));
+          input <= 0 ? 0 : (input > 1 ? 1 : Math.Round(input, ObjectConvert.RateDecimalDigits + 2, MidpointRounding.AwayFromZero));
 
         public static double ToRate(this double? input) =>
             (input is null) ? (double)0 : input.ToDouble().ToRate();
@@ -830,23 +830,5 @@ namespace DigitBridge.Base.Utility
             (lst?.Any() != true)
                 ? new List<T>()
                 : lst.Select(x => x.ConvertObject<T>()).ToList();
-
-        /// <summary>
-        /// number list to xml
-        /// </summary>
-        /// <param name="numbers"></param>
-        /// <returns></returns>
-        public static string ListToXml(this IList<string> numbers)
-        {
-            StringBuilder sb = new StringBuilder("<parameters>");
-
-            foreach (var number in numbers)
-            {
-                sb.AppendFormat("<value>{0}</value>", number);
-            }
-            sb.Append("</parameters>");
-
-            return sb.ToString();
-        }
     }
 }
