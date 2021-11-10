@@ -155,46 +155,46 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				;
 			#endregion faker data rules
 		}
-		/// <summary>
-		/// Get faker object for CustomerAddressDto
-		/// </summary>
-		/// <param name="dto">CustomerAddressDto</param>
-		/// <returns>Faker object use to generate data</returns>
-		public static Faker<CustomerAddressDto> GetFaker(this CustomerAddressDto dto)
-		{
-			#region faker data rules
-			return new Faker<CustomerAddressDto>()
-				.RuleFor(u => u.AddressUuid, f => null)
-				.RuleFor(u => u.CustomerUuid, f =>null)
-				.RuleFor(u => u.AddressCode, f => f.Lorem.Word())
-				.RuleFor(u => u.AddressType, f => f.Random.Int(1, 100))
-				.RuleFor(u => u.Description, f => f.Commerce.ProductName())
-				.RuleFor(u => u.Name, f => f.Name.FullName())
-				.RuleFor(u => u.FirstName, f => f.Name.FirstName())
-				.RuleFor(u => u.LastName, f => f.Name.LastName())
-				.RuleFor(u => u.Suffix, f => f.Name.Suffix())
-				.RuleFor(u => u.Company, f => f.Company.CompanyName())
-				.RuleFor(u => u.CompanyJobTitle, f => f.Name.JobTitle())
-				.RuleFor(u => u.Attention, f => f.Lorem.Sentence().TruncateTo(100))
-				.RuleFor(u => u.AddressLine1, f => f.Address.StreetAddress())
-				.RuleFor(u => u.AddressLine2, f => f.Address.SecondaryAddress())
-				.RuleFor(u => u.AddressLine3, f => f.Address.SecondaryAddress())
-				.RuleFor(u => u.City, f => f.Address.City())
-				.RuleFor(u => u.State, f => f.Address.StateAbbr())
-				.RuleFor(u => u.StateFullName, f => f.Address.State())
-				.RuleFor(u => u.PostalCode, f => f.Address.ZipCode())
-				.RuleFor(u => u.PostalCodeExt, f => f.Address.ZipCode())
-				.RuleFor(u => u.County, f => f.Address.County())
-				.RuleFor(u => u.Country, f => f.Address.Country())
-				.RuleFor(u => u.Email, f => f.Internet.Email())
-				.RuleFor(u => u.DaytimePhone, f => f.Phone.PhoneNumber())
-				.RuleFor(u => u.NightPhone, f => f.Phone.PhoneNumber())
-				.RuleFor(u => u.UpdateDateUtc, f => null)
-				.RuleFor(u => u.EnterBy, f => null)
-				.RuleFor(u => u.UpdateBy, f => null)
-				;
-			#endregion faker data rules
-		}
+		///// <summary>
+		///// Get faker object for CustomerAddressDto
+		///// </summary>
+		///// <param name="dto">CustomerAddressDto</param>
+		///// <returns>Faker object use to generate data</returns>
+		//public static Faker<CustomerAddressDto> GetFaker(this CustomerAddressDto dto)
+		//{
+		//	#region faker data rules
+		//	return new Faker<CustomerAddressDto>()
+		//		.RuleFor(u => u.AddressUuid, f => null)
+		//		.RuleFor(u => u.CustomerUuid, f =>null)
+		//		.RuleFor(u => u.AddressCode, f => f.Lorem.Word())
+		//		.RuleFor(u => u.AddressType, f => f.Random.Int(1, 100))
+		//		.RuleFor(u => u.Description, f => f.Commerce.ProductName())
+		//		.RuleFor(u => u.Name, f => f.Name.FullName())
+		//		.RuleFor(u => u.FirstName, f => f.Name.FirstName())
+		//		.RuleFor(u => u.LastName, f => f.Name.LastName())
+		//		.RuleFor(u => u.Suffix, f => f.Name.Suffix())
+		//		.RuleFor(u => u.Company, f => f.Company.CompanyName())
+		//		.RuleFor(u => u.CompanyJobTitle, f => f.Name.JobTitle())
+		//		.RuleFor(u => u.Attention, f => f.Lorem.Sentence().TruncateTo(100))
+		//		.RuleFor(u => u.AddressLine1, f => f.Address.StreetAddress())
+		//		.RuleFor(u => u.AddressLine2, f => f.Address.SecondaryAddress())
+		//		.RuleFor(u => u.AddressLine3, f => f.Address.SecondaryAddress())
+		//		.RuleFor(u => u.City, f => f.Address.City())
+		//		.RuleFor(u => u.State, f => f.Address.StateAbbr())
+		//		.RuleFor(u => u.StateFullName, f => f.Address.State())
+		//		.RuleFor(u => u.PostalCode, f => f.Address.ZipCode())
+		//		.RuleFor(u => u.PostalCodeExt, f => f.Address.ZipCode())
+		//		.RuleFor(u => u.County, f => f.Address.County())
+		//		.RuleFor(u => u.Country, f => f.Address.Country())
+		//		.RuleFor(u => u.Email, f => f.Internet.Email())
+		//		.RuleFor(u => u.DaytimePhone, f => f.Phone.PhoneNumber())
+		//		.RuleFor(u => u.NightPhone, f => f.Phone.PhoneNumber())
+		//		.RuleFor(u => u.UpdateDateUtc, f => null)
+		//		.RuleFor(u => u.EnterBy, f => null)
+		//		.RuleFor(u => u.UpdateBy, f => null)
+		//		;
+		//	#endregion faker data rules
+		//}
 		/// <summary>
 		/// Get faker object for CustomerAttributesDto
 		/// </summary>

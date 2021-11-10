@@ -363,9 +363,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await vendorAddressService.UpdateAsync(payload);
         }
 
-        public async Task<bool> DeleteByVendorAddressUuidAsync( string addressUuid)
+        public async Task<bool> DeleteVendorAddressAsync(int masterAccountNum,int profileNum, string vendorCode, string addressCode)
         {
-            return await vendorAddressService.DeleteByVendorAddressUuidAsync(addressUuid);
+            string vendorUuid = string.Empty;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                long rowNum = await VendorServiceHelper.GetRowNumByVendorCodeAsync(vendorCode, masterAccountNum, profileNum);
+                if (GetData(rowNum))
+                {
+                    vendorUuid = this.Data.Vendor.VendorUuid;
+                }
+            }
+
+            return await vendorAddressService.DeleteByVendorAddressUuidAsync(vendorUuid, addressCode);
             
         }
 

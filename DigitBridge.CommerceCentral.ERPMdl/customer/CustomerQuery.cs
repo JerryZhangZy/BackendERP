@@ -12,7 +12,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     {
         // Table prefix which use in this sql query
         protected static string PREFIX = CustomerHelper.TableAllies;
-        protected static string PREFIX_ADDRESS = CustomerAddressHelper.TableAllies;
+        protected static string PREFIX_ADDRESS = DigitBridge.CommerceCentral.ERPDb.CustomerAddressHelper.TableAllies;
 
         // Filter fields
 

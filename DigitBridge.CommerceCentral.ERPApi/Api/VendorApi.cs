@@ -58,7 +58,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "VendorCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "VendorCode", Description = "VendorCode", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(VendorPayloadGetSingle))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ExistVendorCodePayload))]
         public static async Task<JsonNetResponse<ExistVendorCodePayload>> ExistVendorCode(
     [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "vendors/existvendorCode/{VendorCode}")] HttpRequest req,
     string VendorCode = null)
@@ -355,16 +355,19 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "addressUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "addressUuid", Description = "addressUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "vendorCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "vendorCode", Description = "vendorCode", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "addressCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "addressCode", Description = "addressCode", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(VendorAddressPayloadDelete), Description = "The OK response")]
         public static async Task<JsonNetResponse<VendorAddressPayload>> DeleteVendorAdress(
-    [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "vendors/address/{addressUuid}")] HttpRequest req,
-    string addressUuid)
+    [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "vendors/address/{vendorCode}/{addressCode}")] HttpRequest req,
+    string vendorCode,string addressCode)
         {
             var payload = await req.GetParameters<VendorAddressPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new VendorService(dataBaseFactory);
-            payload.Success = await srv.DeleteByVendorAddressUuidAsync(addressUuid);
+            payload.Success = await srv.DeleteVendorAddressAsync(payload.MasterAccountNum,payload.ProfileNum,vendorCode, addressCode);
+            if (payload.Success)
+                payload.VendorAddress = srv.ToVendorAddressDto();
             payload.Messages = srv.Messages;
             return new JsonNetResponse<VendorAddressPayload>(payload);
         }

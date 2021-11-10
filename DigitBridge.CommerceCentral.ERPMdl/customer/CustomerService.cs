@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using System.Xml.Serialization;
+using System.Text.Json.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -35,7 +37,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return this;
         }
 
-
+        protected CustomerAddressService _customerAddressService;
+        [XmlIgnore, JsonIgnore]
+        public CustomerAddressService customerAddressService
+        {
+            get
+            {
+                if (_customerAddressService is null)
+                    _customerAddressService = new CustomerAddressService(dbFactory);
+                return _customerAddressService;
+            }
+        }
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
@@ -319,6 +331,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             var success = await GetDataAsync(rowNum);
             return success && (await DeleteDataAsync());
+        }
+
+
+        public async Task<bool> AddCustomerAddressAsync(CustomerAddressPayload payload)
+        {
+            return await customerAddressService.AddAsync(payload);
+        }
+        public async Task<bool> UpdateCustomerAddressAsync(CustomerAddressPayload payload)
+        {
+            return await customerAddressService.UpdateAsync(payload);
+        }
+
+        public async Task<bool> DeleteCustomerAddressAsync(int masterAccountNum,int profileNum, string customerCode, string addressCode)
+        {
+            string customerUuid = string.Empty;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+               long rowNum = await CustomerServiceHelper.GetRowNumByCustomerCodeAsync(customerCode, masterAccountNum, profileNum);
+                if (GetData(rowNum))
+                {
+                    customerUuid = this.Data.Customer.CustomerUuid;
+                }
+            }
+            return await customerAddressService.DeleteCustomerAddressAsync(customerUuid, addressCode);
+
+        }
+      
+        public CustomerAddressDataDto ToCustomerAddressDto()
+        {
+
+            return customerAddressService.ToDto();
         }
     }
 }

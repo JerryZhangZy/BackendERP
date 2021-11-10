@@ -16,10 +16,10 @@ namespace DigitBridge.CommerceCentral.ERPApi.OpenApiModel
     public class VendorAddressPayloadAdd
     {
         /// <summary>
-        /// (Request Data) Vendor object to add.
-        /// (Response Data) Vendor object which has been added.
+        /// (Request Data) VendorAddress object to add.
+        /// (Response Data) VendorAddress object which has been added.
         /// </summary>
-        [OpenApiPropertyDescription("(Request and Response) Vendor object to add.")]
+        [OpenApiPropertyDescription("(Request and Response) VendorAddress object to add.")]
         public VendorAddressDataDto VendorAddress { get; set; }
 
         public static VendorAddressPayloadAdd GetSampleData()
@@ -42,10 +42,10 @@ namespace DigitBridge.CommerceCentral.ERPApi.OpenApiModel
     public class VendorAddressPayloadUpdate
     {
         /// <summary>
-        /// (Request Data) Vendor object to add.
-        /// (Response Data) Vendor object which has been added.
+        /// (Request Data) VendorAddress object to add.
+        /// (Response Data) VendorAddress object which has been added.
         /// </summary>
-        [OpenApiPropertyDescription("(Request and Response) Vendor object to add.")]
+        [OpenApiPropertyDescription("(Request and Response) VendorAddress object to add.")]
         public VendorAddressDataDto VendorAddress { get; set; }
 
         public static VendorAddressPayloadUpdate GetSampleData()
