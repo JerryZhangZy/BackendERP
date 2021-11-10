@@ -69,6 +69,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             _firstAPReceiveStatus = isAp;
         }
+        
         public bool Add(PoReceivePayload payload)
         {
             if (!payload.HasPoTransaction)
@@ -81,57 +82,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!transdata.HasPoTransaction || !transdata.HasPoTransactionItems)
             {
                 AddError("PoTransaction cannot be blank");
-                return false;
-            }
-
-            if (transdata.PoTransaction.HasVendorUuid)
-            {
-                if (VendorService.GetDataById(transdata.PoTransaction.VendorUuid))
-                {
-                    var vendor = VendorService.Data;
-                    transdata.PoTransaction.VendorUuid = vendor.Vendor.VendorUuid;
-                    transdata.PoTransaction.VendorCode = vendor.Vendor.VendorCode;
-                    transdata.PoTransaction.VendorName = vendor.Vendor.VendorName;
-                }
-                else
-                {
-                    AddError("Vendor data no found");
-                    return false;
-                }
-            }
-            else if (transdata.PoTransaction.HasVendorCode)
-            {
-                var vendor = VendorService.GetVendorByCode(transdata.PoTransaction.VendorCode);
-                if (vendor != null)
-                {
-                    transdata.PoTransaction.VendorUuid = vendor.VendorUuid;
-                    transdata.PoTransaction.VendorCode = vendor.VendorCode;
-                    transdata.PoTransaction.VendorName = vendor.VendorName;
-                }
-                else
-                {
-                    AddError("Vendor data no found");
-                    return false;
-                }
-            }
-            else if (transdata.PoTransaction.HasVendorName)
-            {
-                var vendor = VendorService.GetVendorByName(transdata.PoTransaction.VendorName);
-                if (vendor != null)
-                {
-                    transdata.PoTransaction.VendorUuid = vendor.VendorUuid;
-                    transdata.PoTransaction.VendorCode = vendor.VendorCode;
-                    transdata.PoTransaction.VendorName = vendor.VendorName;
-                }
-                else
-                {
-                    AddError("Vendor data no found");
-                    return false;
-                }
-            }
-            else
-            {
-                AddError("Vendor info cannot be blank");
                 return false;
             }
 
@@ -187,57 +137,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!transdata.HasPoTransaction || !transdata.HasPoTransactionItems)
             {
                 AddError("PoTransaction cannot be blank");
-                return false;
-            }
-
-            if (transdata.PoTransaction.HasVendorUuid)
-            {
-                if (VendorService.GetDataById(transdata.PoTransaction.VendorUuid))
-                {
-                    var vendor = VendorService.Data;
-                    transdata.PoTransaction.VendorUuid = vendor.Vendor.VendorUuid;
-                    transdata.PoTransaction.VendorCode = vendor.Vendor.VendorCode;
-                    transdata.PoTransaction.VendorName = vendor.Vendor.VendorName;
-                }
-                else
-                {
-                    AddError("Vendor data no found");
-                    return false;
-                }
-            }
-            else if (transdata.PoTransaction.HasVendorCode)
-            {
-                var vendor = await VendorService.GetVendorByCodeAsync(transdata.PoTransaction.VendorCode);
-                if (vendor != null)
-                {
-                    transdata.PoTransaction.VendorUuid = vendor.VendorUuid;
-                    transdata.PoTransaction.VendorCode = vendor.VendorCode;
-                    transdata.PoTransaction.VendorName = vendor.VendorName;
-                }
-                else
-                {
-                    AddError("Vendor data no found");
-                    return false;
-                }
-            }
-            else if (transdata.PoTransaction.HasVendorName)
-            {
-                var vendor = await VendorService.GetVendorByNameAsync(transdata.PoTransaction.VendorName);
-                if (vendor != null)
-                {
-                    transdata.PoTransaction.VendorUuid = vendor.VendorUuid;
-                    transdata.PoTransaction.VendorCode = vendor.VendorCode;
-                    transdata.PoTransaction.VendorName = vendor.VendorName;
-                }
-                else
-                {
-                    AddError("Vendor data no found");
-                    return false;
-                }
-            }
-            else
-            {
-                AddError("Vendor info cannot be blank");
                 return false;
             }
 
@@ -301,57 +200,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            if (transdata.PoTransaction.HasVendorUuid)
-            {
-                if (VendorService.GetDataById(transdata.PoTransaction.VendorUuid))
-                {
-                    var vendor = VendorService.Data;
-                    transdata.PoTransaction.VendorUuid = vendor.Vendor.VendorUuid;
-                    transdata.PoTransaction.VendorCode = vendor.Vendor.VendorCode;
-                    transdata.PoTransaction.VendorName = vendor.Vendor.VendorName;
-                }
-                else
-                {
-                    AddError("Vendor data no found");
-                    return false;
-                }
-            }
-            else if (transdata.PoTransaction.HasVendorCode)
-            {
-                var vendor = await VendorService.GetVendorByCodeAsync(transdata.PoTransaction.VendorCode);
-                if (vendor != null)
-                {
-                    transdata.PoTransaction.VendorUuid = vendor.VendorUuid;
-                    transdata.PoTransaction.VendorCode = vendor.VendorCode;
-                    transdata.PoTransaction.VendorName = vendor.VendorName;
-                }
-                else
-                {
-                    AddError("Vendor data no found");
-                    return false;
-                }
-            }
-            else if (transdata.PoTransaction.HasVendorName)
-            {
-                var vendor = await VendorService.GetVendorByNameAsync(transdata.PoTransaction.VendorName);
-                if (vendor != null)
-                {
-                    transdata.PoTransaction.VendorUuid = vendor.VendorUuid;
-                    transdata.PoTransaction.VendorCode = vendor.VendorCode;
-                    transdata.PoTransaction.VendorName = vendor.VendorName;
-                }
-                else
-                {
-                    AddError("Vendor data no found");
-                    return false;
-                }
-            }
-            else
-            {
-                AddError("Vendor info cannot be blank");
-                return false;
-            }
-
             var list = SplitPoTransaction(transdata);
             payload.PoTransactions = new List<PoTransactionDataDto>();
             foreach (var dto in list)
@@ -367,7 +215,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Messages = Messages;
             return true;
         }
-
+        
         private InventoryLogService _inventoryLogService;
 
         protected InventoryLogService InventoryLogService
@@ -452,6 +300,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 _data.PoTransactionItems.Clear();
                 await InventoryLogService.UpdateByPoReceiveAsync(_data);
+                await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
+                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);
                 return true;
             }
 
@@ -464,6 +314,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 _data.PoTransactionItems.Clear();
                 InventoryLogService.UpdateByPoReceive(_data);
+                PurchaseOrderService.UpdateByPoReceive(_data);
+                ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
                 return true;
             }
 
@@ -480,27 +332,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             CopyPoHeaderToReceive();
             CopyPoItemsToReceiveItems();
 
-            LoadReceivedQty();
-
             return true;
         }
-
-        public async Task<bool> ExistPoUuidAsync(string poUuid)
-        {
-            return await dbFactory.ExistsAsync<PoTransaction>("PoUuid=@0", poUuid.ToSqlParameter("@0"));
-        }
-
-        private VendorService _vendorService;
-
-        protected VendorService VendorService
-        {
-            get
-            {
-                if (_vendorService == null)
-                    _vendorService = new VendorService(dbFactory);
-                return _vendorService;
-            }
-        }
+        //
+        // public async Task<bool> ExistPoUuidAsync(string poUuid)
+        // {
+        //     return await dbFactory.ExistsAsync<PoTransaction>("PoUuid=@0", poUuid.ToSqlParameter("@0"));
+        // }
+        //
+        // private VendorService _vendorService;
+        //
+        // protected VendorService VendorService
+        // {
+        //     get
+        //     {
+        //         if (_vendorService == null)
+        //             _vendorService = new VendorService(dbFactory);
+        //         return _vendorService;
+        //     }
+        // }
 
         private IList<PoTransactionDataDto> SplitPoTransactions(IList<PoTransactionDataDto> dtolist)
         {
@@ -513,56 +363,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     continue;
                 }
 
-                if (transdata.PoTransaction.HasVendorUuid)
-                {
-                    if (VendorService.GetDataById(transdata.PoTransaction.VendorUuid))
-                    {
-                        var vendor = VendorService.Data;
-                        transdata.PoTransaction.VendorUuid = vendor.Vendor.VendorUuid;
-                        transdata.PoTransaction.VendorCode = vendor.Vendor.VendorCode;
-                        transdata.PoTransaction.VendorName = vendor.Vendor.VendorName;
-                    }
-                    else
-                    {
-                        AddError("Vendor data no found");
-                        continue;
-                    }
-                }
-                else if (transdata.PoTransaction.HasVendorCode)
-                {
-                    var vendor = VendorService.GetVendorByCode(transdata.PoTransaction.VendorCode);
-                    if (vendor != null)
-                    {
-                        transdata.PoTransaction.VendorUuid = vendor.VendorUuid;
-                        transdata.PoTransaction.VendorCode = vendor.VendorCode;
-                        transdata.PoTransaction.VendorName = vendor.VendorName;
-                    }
-                    else
-                    {
-                        AddError("Vendor data no found");
-                        continue;
-                    }
-                }
-                else if (transdata.PoTransaction.HasVendorName)
-                {
-                    var vendor = VendorService.GetVendorByName(transdata.PoTransaction.VendorName);
-                    if (vendor != null)
-                    {
-                        transdata.PoTransaction.VendorUuid = vendor.VendorUuid;
-                        transdata.PoTransaction.VendorCode = vendor.VendorCode;
-                        transdata.PoTransaction.VendorName = vendor.VendorName;
-                    }
-                    else
-                    {
-                        AddError("Vendor data no found");
-                        continue;
-                    }
-                }
-                else
-                {
-                    AddError("Vendor info cannot be blank");
-                    continue;
-                }
                 list.AddRange(SplitPoTransaction(transdata));
             }
             return list;
@@ -608,6 +408,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     VendorInvoiceDate = dto.PoTransaction.VendorInvoiceDate,
                     VendorInvoiceNum = dto.PoTransaction.VendorInvoiceNum
                 };
+                if (ProcessMode == ProcessingMode.Add)
+                {
+                    potransaction.TransStatus = _firstAPReceiveStatus ? (int)PoTransStatus.APReceive : (int)PoTransStatus.StockReceive;
+                }
                 list.Add(new PoTransactionDataDto()
                 {
                     PoTransaction = potransaction,

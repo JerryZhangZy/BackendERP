@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                dto.PoTransaction.TransType = (int)TransTypeEnum.Payment; 
+                // dto.PoTransaction.TransType = (int)TransTypeEnum.Payment; 
             }
             // payment shouldn't add any return item.
             return base.Validate(dto, processingMode);
@@ -76,10 +76,53 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (processingMode == ProcessingMode.Add)
             {
-                dto.PoTransaction.TransType = (int)TransTypeEnum.Payment;  
+                // dto.PoTransaction.TransType = (int)TransTypeEnum.Payment;  
             }
             // payment shouldn't add any return item.
             return await base.ValidateAsync(dto, processingMode);
+        }
+        protected override bool ValidateAdd(PoTransactionData data)
+        {
+            var isValid = base.ValidateAdd(data);
+            isValid = isValid && ValidReceivedQty(data.PoTransactionItems);
+            return isValid;
+        }
+        protected override async Task<bool> ValidateAddAsync(PoTransactionData data)
+        {
+            var isValid = await base.ValidateAddAsync(data);
+            isValid = isValid && ValidReceivedQty(data.PoTransactionItems);
+            return isValid;
+        }
+        protected override bool ValidateEdit(PoTransactionData data)
+        {
+            var isValid = base.ValidateEdit(data);
+            isValid = isValid && ValidReceivedQty(data.PoTransactionItems);
+            return isValid;
+        }
+        protected override async Task<bool> ValidateEditAsync(PoTransactionData data)
+        {
+            var isValid = await base.ValidateEditAsync(data);
+            isValid = isValid && ValidReceivedQty(data.PoTransactionItems);
+            return isValid;
+        }
+
+        private bool ValidReceivedQty(IList<PoTransactionItems> poReceiveItems)
+        {
+            var isValid = true;
+
+            if (poReceiveItems == null || poReceiveItems.Count == 0)
+                return isValid;
+
+            foreach (var item in poReceiveItems)
+            {
+                //return qty cannot > open qty
+                if (item.TransQty > item.OpenQty)
+                {
+                    isValid = false;
+                    AddError($"Receive item TransQty cannot greater than OpenQty. [Sku:{item.SKU},PoItemUuid:{item.PoUuid},TransQty:{item.TransQty},OpenQty:{item.OpenQty}]");
+                }
+            }
+            return isValid;
         }
     }
 }

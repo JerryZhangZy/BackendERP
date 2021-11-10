@@ -461,14 +461,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     PoUuid = item.PoUuid,
                     PoItemUuid = item.PoItemUuid,
-                    TransQty = item.ReceivedQty,
                     Description = item.Description,
+                    ProductUuid = item.ProductUuid,
                     InventoryUuid = item.InventoryUuid,
                     WarehouseUuid = item.WarehouseUuid,
                     SKU = item.SKU,
                     Notes = item.Notes,
                     Price = item.Price,
-                    ProductUuid = item.ProductUuid,
                     ItemType = item.PoItemType,
                     TaxRate = item.TaxRate
                 };
@@ -478,25 +477,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion
-
-        /// <summary>
-        /// Load returned qty for each trans return item 
-        /// </summary>
-        /// <returns></returns>
-        protected virtual void LoadReceivedQty()
-        {
-            if (Data.PoTransactionItems == null || Data.PoTransactionItems.Count == 0)
-                return;
-
-            var receivetems = PoTransactionHelper.GetReceiveItemsByPoUuid(dbFactory, Data.PurchaseOrderData.UniqueId);
-            if (receivetems == null || receivetems.Count == 0)
-                return;
-
-            foreach (var item in this.Data.PoTransactionItems)
-            {
-                item.TransQty = receivetems.Where(i => i.sku == item.SKU && i.rowNum != item.RowNum).Sum(j => j.transQty).ToQty();//+ item.ReturnQty;
-            }
-        }
 
     }
 }
