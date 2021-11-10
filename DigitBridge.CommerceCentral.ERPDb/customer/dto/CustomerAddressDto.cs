@@ -54,7 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// </summary>
 		[OpenApiPropertyDescription("Customer uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The CustomerUuid value cannot exceed 50 characters. ")]
-        [JsonIgnore, XmlIgnore]
+   
         public string CustomerUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]

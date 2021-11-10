@@ -26,16 +26,16 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a VendorAddressHelper SQL Helper Static Class.
+    /// Represents a CustomerAddressHelper SQL Helper Static Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public static class VendorAddressHelper
+    public static class CustomerAddressHelper
     {
         public static bool ExistNumber(string number, int masterAccountNum, int profileNum)
         {
 /*
             var sql = $@"
-SELECT COUNT(1) FROM VendorAddress tbl
+SELECT COUNT(1) FROM CustomerAddress tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND OrderNumber = @number
@@ -54,7 +54,7 @@ AND OrderNumber = @number
         {
 /*
             var sql = $@"
-SELECT COUNT(1) FROM VendorAddress tbl
+SELECT COUNT(1) FROM CustomerAddress tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND OrderNumber = @number
@@ -72,7 +72,7 @@ AND OrderNumber = @number
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM VendorAddress tbl
+SELECT COUNT(1) FROM CustomerAddress tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND AddressUuid = @uuid
@@ -88,7 +88,7 @@ AND AddressUuid = @uuid
         public static async Task<bool> ExistIdAsync(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM VendorAddress tbl
+SELECT COUNT(1) FROM CustomerAddress tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND AddressUuid = @uuid
@@ -104,7 +104,7 @@ AND AddressUuid = @uuid
         public static bool ExistRowNum(long rowNum, int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM VendorAddress tbl
+SELECT COUNT(1) FROM CustomerAddress tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND RowNum= @rowNum
@@ -120,11 +120,12 @@ AND RowNum= @rowNum
         public static async Task<bool> ExistRowNumAsync(long rowNum)
         {
             var sql = $@"
-SELECT COUNT(1) FROM VendorAddress tbl
+SELECT COUNT(1) FROM CustomerAddress tbl
 WHERE 
  RowNum= @rowNum
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+              
                 rowNum.ToSqlParameter("rowNum")
             );
             return result > 0;
@@ -133,7 +134,7 @@ WHERE
         public static List<long> GetRowNums(int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT RowNum FROM VendorAddress tbl
+SELECT RowNum FROM CustomerAddress tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum";
             return SqlQuery.Execute(sql, (long rowNum) => rowNum,
@@ -144,7 +145,7 @@ AND ProfileNum = @profileNum";
         public static async Task<List<long>> GetRowNumsAsync(int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT RowNum FROM VendorAddress tbl
+SELECT RowNum FROM CustomerAddress tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum";
             return await SqlQuery.ExecuteAsync(sql, (long rowNum) => rowNum,
@@ -155,7 +156,7 @@ AND ProfileNum = @profileNum";
         {
 /*
             var sql = $@"
-SELECT RowNum FROM VendorAddress tbl
+SELECT RowNum FROM CustomerAddress tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND OrderNumber = @number
@@ -173,7 +174,7 @@ AND OrderNumber = @number
         {
 /*
             var sql = $@"
-SELECT RowNum FROM VendorAddress tbl
+SELECT RowNum FROM CustomerAddress tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND OrderNumber = @number
@@ -191,7 +192,7 @@ AND OrderNumber = @number
         {
 /*
             var sql = $@"
-SELECT RowNum FROM VendorAddress tbl
+SELECT RowNum FROM CustomerAddress tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
@@ -210,7 +211,7 @@ AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
         {
 /*
             var sql = $@"
-SELECT RowNum FROM VendorAddress tbl
+SELECT RowNum FROM CustomerAddress tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
 AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
@@ -224,22 +225,24 @@ AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
 */
             return new List<long>();
         }
-        public static async Task<long> GetRowNumAsync(IDataBaseFactory dbFactory, string vendorUuid, string addressCode)
+        public static async Task<long> GetRowNumAsync(IDataBaseFactory dbFactory, string customerUuid, string addressCode)
         {
             using (var tx = new ScopedTransaction(dbFactory))
             {
                 var sql = $@"
-            SELECT RowNum FROM VendorAddress tbl
+            SELECT RowNum FROM CustomerAddress tbl
             WHERE 
-              VendorUuid = @vendorUuid
+              CustomerUuid = @customerUuid
 AND AddressCode=@addressCode
             ";
                 return await SqlQuery.ExecuteScalarAsync<long>(sql,
-                    vendorUuid.ToSqlParameter("vendorUuid"),
-                       addressCode.ToSqlParameter("addressCode")
+                    customerUuid.ToSqlParameter("customerUuid"),
+                    addressCode.ToSqlParameter("addressCode")
                 );
             }
         }
+
+     
     }
 }
 
