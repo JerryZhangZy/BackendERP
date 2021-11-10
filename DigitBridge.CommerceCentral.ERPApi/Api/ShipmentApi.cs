@@ -269,7 +269,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "orderShipmentNum", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "orderShipmentNum", Description = "Order shipment number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadGetSingle))]
         public static async Task<JsonNetResponse<OrderShipmentPayload>> CheckShipmentNumExist(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "customers/existorderShipmentNum/{orderShipmentNum}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "shipments/existorderShipmentNum/{orderShipmentNum}")] HttpRequest req,
             ILogger log, long orderShipmentNum)
         {
             var payload = await req.GetParameters<OrderShipmentPayload>();
