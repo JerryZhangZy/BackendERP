@@ -358,7 +358,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var sql = $@"
 update poh 
-set poh.TotalAmount=(select sum(pot.TotalAmount) from PoTransaction pot where poh.PoUuid=pot.PoUuid)
+set poh.TotalAmount=(select ISNULL(sum(pot.TotalAmount),0) from PoTransaction pot where poh.PoUuid=pot.PoUuid)
 from PoHeader poh 
 where poh.PoUuid=@0;
 ";
@@ -369,7 +369,7 @@ where poh.PoUuid=@0;
         {
             var sql = $@"
 update poh 
-set poh.TotalAmount=(select sum(pot.TotalAmount) from PoTransaction pot where poh.PoUuid=pot.PoUuid)
+set poh.TotalAmount=(select ISNULL(sum(pot.TotalAmount),0) from PoTransaction pot where poh.PoUuid=pot.PoUuid)
 from PoHeader poh 
 where poh.PoUuid=@0;
 ";
@@ -380,7 +380,7 @@ where poh.PoUuid=@0;
         {
             var sql = $@"
 update poi 
-set poi.ReceivedQty=(select sum(poti.TransQty) from PoTransactionItems poti where poti.PoItemUuid=poi.PoItemUuid)
+set poi.ReceivedQty=(select ISNULL(sum(poti.TransQty),0) from PoTransactionItems poti where poti.PoItemUuid=poi.PoItemUuid)
 from PoItems poi 
 where poi.PoUuid=@0;
 ";
@@ -391,7 +391,7 @@ where poi.PoUuid=@0;
         {
             var sql = $@"
 update poi 
-set poi.ReceivedQty=(select sum(poti.TransQty) from PoTransactionItems poti where poti.PoItemUuid=poi.PoItemUuid)
+set poi.ReceivedQty=(select ISNULL(sum(poti.TransQty),0) from PoTransactionItems poti where poti.PoItemUuid=poi.PoItemUuid)
 from PoItems poi 
 where poi.PoUuid=@0;
 ";

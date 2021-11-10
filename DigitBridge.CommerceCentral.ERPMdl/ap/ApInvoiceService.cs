@@ -367,7 +367,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             string poUuid)
         {
             var sql = $@"select 
-sum(TotalAmount) as TotalAmount,sum(MiscAmount) as MiscAmount,sum(ShippingAmount) as ShippingAmount
+ISNULL(sum(TotalAmount),0) as TotalAmount,ISNULL(sum(MiscAmount),0) as MiscAmount,ISNULL(sum(ShippingAmount),0) as ShippingAmount
 from PoTransaction
 where PoUuid=@0;";
             using (var tx = new ScopedTransaction(dbFactory))
