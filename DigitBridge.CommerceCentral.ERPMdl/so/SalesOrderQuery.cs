@@ -73,7 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _ChannelOrderID = new QueryFilter<string>("ChannelOrderID", "ChannelOrderID", PREFIX_INFO, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> ChannelOrderID => _ChannelOrderID;
 
-        protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", PREFIX_INFO, FilterBy.bw, string.Empty, isNVarChar: true);
+        protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", PREFIX_INFO, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> WarehouseCode => _WarehouseCode;
 
         protected QueryFilter<string> _RefNum = new QueryFilter<string>("RefNum", "RefNum", PREFIX_INFO, FilterBy.bw, string.Empty, isNVarChar: true);

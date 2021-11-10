@@ -339,58 +339,63 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data == null || data.PoTransaction == null)
                 return false;
             
-            Edit();
-            // load data 
-            if (!await GetDataByIdAsync(data.PoTransaction.PoUuid))
-            {
-                return false;
-            }
+            await UpdatePoHeaderByPoReceiveAsync(data.PoTransaction.PoUuid);
+            await UpdatePoItemsByPoReceiveAsync(data.PoTransaction.PoUuid);
 
-            // load data from po receive
-            LoadTransactionToData(data);
-
-            return await SaveDataAsync();
+            return true;
         }
         
         public virtual bool UpdateByPoReceive(PoTransactionData data)
         {
             if (data == null || data.PoTransaction == null)
                 return false;
-            
-            Edit();
-            // load data 
-            if (!GetDataById(data.PoTransaction.PoUuid))
-            {
-                return false;
-            }
-
-            // load data from po receive
-            LoadTransactionToData(data);
-
-            return SaveData();
+            UpdatePoHeaderByPoReceive(data.PoTransaction.PoUuid);
+            UpdatePoItemsByPoReceive(data.PoTransaction.PoUuid);
+            return true;
         }
-
-        private void LoadTransactionToData(PoTransactionData data)
+        
+        private void UpdatePoHeaderByPoReceive(string poUuid)
         {
-            var poHeader = Data.PoHeader;
-            poHeader.TotalAmount = data.PoTransaction.TotalAmount.ToAmount();
-            poHeader.Currency = data.PoTransaction.Currency;
-            poHeader.DiscountAmount = data.PoTransaction.DiscountAmount;
-            poHeader.DiscountRate = data.PoTransaction.DiscountRate;
-            poHeader.ShippingAmount = data.PoTransaction.ShippingAmount;
-            poHeader.ShippingTaxAmount = data.PoTransaction.ShippingTaxAmount;
-            poHeader.SubTotalAmount = data.PoTransaction.SubTotalAmount;
-            poHeader.MiscAmount = data.PoTransaction.MiscAmount;
-            poHeader.MiscTaxAmount = data.PoTransaction.MiscTaxAmount;
-            foreach (var transItem in data.PoTransactionItems)
-            {
-                var poItem = Data.PoItems.FirstOrDefault(r => r.PoItemUuid == transItem.PoItemUuid);
-                if(poItem==null)
-                    continue;
-                poItem.Price = transItem.Price;
-                poItem.ShippingAmount = transItem.ShippingAmount;
-                poItem.ReceivedQty = transItem.TransQty;
-            }
+            var sql = $@"
+update poh 
+set poh.TotalAmount=(select ISNULL(sum(pot.TotalAmount),0) from PoTransaction pot where poh.PoUuid=pot.PoUuid)
+from PoHeader poh 
+where poh.PoUuid=@0;
+";
+            dbFactory.Db.Execute(sql, poUuid.ToSqlParameter("PoUuid"));
+        }
+        
+        private async Task UpdatePoHeaderByPoReceiveAsync(string poUuid)
+        {
+            var sql = $@"
+update poh 
+set poh.TotalAmount=(select ISNULL(sum(pot.TotalAmount),0) from PoTransaction pot where poh.PoUuid=pot.PoUuid)
+from PoHeader poh 
+where poh.PoUuid=@0;
+";
+            await dbFactory.Db.ExecuteAsync(sql, poUuid.ToSqlParameter("PoUuid"));
+        }
+        
+        private void UpdatePoItemsByPoReceive(string poUuid)
+        {
+            var sql = $@"
+update poi 
+set poi.ReceivedQty=(select ISNULL(sum(poti.TransQty),0) from PoTransactionItems poti where poti.PoItemUuid=poi.PoItemUuid)
+from PoItems poi 
+where poi.PoUuid=@0;
+";
+            dbFactory.Db.Execute(sql, poUuid.ToSqlParameter("PoUuid"));
+        }
+        
+        private async Task UpdatePoItemsByPoReceiveAsync(string poUuid)
+        {
+            var sql = $@"
+update poi 
+set poi.ReceivedQty=(select ISNULL(sum(poti.TransQty),0) from PoTransactionItems poti where poti.PoItemUuid=poi.PoItemUuid)
+from PoItems poi 
+where poi.PoUuid=@0;
+";
+            await dbFactory.Db.ExecuteAsync(sql, poUuid.ToSqlParameter("PoUuid"));
         }
     }
 }

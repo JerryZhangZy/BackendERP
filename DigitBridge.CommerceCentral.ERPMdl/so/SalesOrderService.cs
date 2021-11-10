@@ -33,6 +33,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             SetDtoMapper(new SalesOrderDataDtoMapperDefault());
             SetCalculator(new SalesOrderServiceCalculatorDefault(this, this.dbFactory));
             AddValidator(new SalesOrderServiceValidatorDefault(this, this.dbFactory));
+
+            _data.OnBeforeSave(order => {
+                var inventoryService = new InventoryService(this.dbFactory);
+                inventoryService.UpdateOpenSoQtyFromSalesOrderItem(order.SalesOrderHeader.SalesOrderUuid, true);
+                return true;
+            });
+            _data.OnAfterSave(order => {
+                var inventoryService = new InventoryService(this.dbFactory);
+                inventoryService.UpdateOpenSoQtyFromSalesOrderItem(order.SalesOrderHeader.SalesOrderUuid, false);
+                return true;
+            });
+
             return this;
         }
 

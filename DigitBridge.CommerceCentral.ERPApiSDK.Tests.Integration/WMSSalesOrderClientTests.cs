@@ -50,7 +50,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             var payload = new WMSSalesOrderRequestPayload()
             {
-                LoadAll = true,
+                Top = 10,
                 Filter = new SalesOrderOpenListFilter()
                 {
                     UpdateDateUtc = DateTime.Today.AddDays(-1),

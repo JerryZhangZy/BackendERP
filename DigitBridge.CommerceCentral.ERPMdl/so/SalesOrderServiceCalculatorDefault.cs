@@ -231,6 +231,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.UOM = inventory.UOM;
                 //if (string.IsNullOrEmpty(item.Currency))
                 //    item.Currency = inventory.Currency;
+
+                item.UnitCost = inventory.UnitCost;
+                item.AvgCost = inventory.AvgCost;
+                item.LotCost = inventory.AvgCost;
             }
 
 
@@ -257,6 +261,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             CalculateDetail(data, processingMode);
             CalculateSummary(data, processingMode);
+
             return true;
         }
         public virtual bool CalculateSummary(SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -331,7 +336,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (item is null || item.IsEmpty)
                     continue;
                 //var inv = GetInventoryData(data,item.ProductUuid);
-
+                
                 CalculateDetail(item, data, processingMode);
                 if (item.IsAr)
                 {
@@ -376,9 +381,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //TODO need get inventory object and load inventory cost
             //var prod = data.GetCache<ProductBasic>(ProductId);
-            //var inv = data.GetCache<Inventory>(InventoryId);
-            //var invCost = new ItemCostClass(inv);
-            var invCost = new ItemCostClass();
+            var invData = GetInventoryData(data, item.SKU);
+            var inv = invData.Inventory.SingleOrDefault(i => i.WarehouseCode == item.WarehouseCode);
+            var invCost = new ItemCostClass(inv);
+            //var invCost = new ItemCostClass();
 
             // format number var
             item.Price = item.Price.ToPrice();

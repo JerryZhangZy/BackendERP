@@ -116,5 +116,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeCustomerSummary() => HasCustomerSummary;
         #endregion
     }
+
+    [Serializable()]
+    public class ExistCustomerCodePayload : PayloadBase
+    {
+        [OpenApiPropertyDescription("(Request Parameter) Does the   CustomerCode exist")]
+        public bool IsExistCustomerCode { get; set; }
+    }
 }
 

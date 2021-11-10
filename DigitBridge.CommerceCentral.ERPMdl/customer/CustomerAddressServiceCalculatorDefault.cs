@@ -24,28 +24,29 @@ using DigitBridge.CommerceCentral.ERPDb;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
-    /// Represents a default OrderShipmentService Calculator class.
+    /// Represents a default CustomerAddressService Calculator class.
     /// </summary>
-    public partial class OrderShipmentServiceCalculatorDefault : ICalculator<OrderShipmentData>
+    public partial class CustomerAddressServiceCalculatorDefault : ICalculator<CustomerAddressData>
     {
         protected IDataBaseFactory dbFactory { get; set; }
 
-        public OrderShipmentServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
+        public CustomerAddressServiceCalculatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory)
         {
             this.ServiceMessage = serviceMessage;
             this.dbFactory = dbFactory;
         }
 
-        public virtual void PrepareData(OrderShipmentData  data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual void PrepareData(CustomerAddressData  data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             //if(data==null||data.SalesOrderHeader==null)
             //    return;
             //if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
             //{
-            //    using var trx = new ScopedTransaction(dbFactory);
-            //    data.SalesOrderHeader.CustomerUuid = CustomerServiceHelper.GetCustomerUuidByCustomerCode(
-            //        data.SalesOrderHeader.CustomerCode, data.SalesOrderHeader.MasterAccountNum,
-            //        data.SalesOrderHeader.ProfileNum);
+            //    using(var trx = new ScopedTransaction(dbFactory)){
+            //      data.SalesOrderHeader.CustomerUuid = CustomerServiceHelper.GetCustomerUuidByCustomerCode(
+            //          data.SalesOrderHeader.CustomerCode, data.SalesOrderHeader.MasterAccountNum,
+            //          data.SalesOrderHeader.ProfileNum);
+            //  }
             //}
             //// get customer data
             //GetCustomerData(data,data.SalesOrderHeader.CustomerUuid);
@@ -55,12 +56,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //    var skuList = data.SalesOrderItems
             //        .Where(r => string.IsNullOrEmpty(r.ProductUuid) && !string.IsNullOrEmpty(r.SKU)).Select(r => r.SKU)
             //        .Distinct().ToList();
-            //    using var trx = new ScopedTransaction(dbFactory);
-            //    var list = InventoryServiceHelper.GetKeyInfoBySkus(skuList, data.SalesOrderHeader.MasterAccountNum,
-            //        data.SalesOrderHeader.ProfileNum);
-            //    foreach (var tuple in list)
-            //    {
-            //        data.SalesOrderItems.First(r => r.SKU == tuple.Item3).ProductUuid = tuple.Item2;
+            //    using(var trx = new ScopedTransaction(dbFactory)){
+            //      var list = InventoryServiceHelper.GetKeyInfoBySkus(skuList, data.SalesOrderHeader.MasterAccountNum,
+            //          data.SalesOrderHeader.ProfileNum);
+            //      foreach (var tuple in list)
+            //      {
+            //          data.SalesOrderItems.First(r => r.SKU == tuple.Item3).ProductUuid = tuple.Item2;
+            //      }
             //    }
 
             //    // get inventory data
@@ -96,21 +98,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion
 
-        public virtual bool SetDefault(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool SetDefault(CustomerAddressData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             SetDefaultSummary(data, processingMode);
             SetDefaultDetail(data, processingMode);
             return true;
         }
 
-        public virtual bool SetDefaultSummary(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool SetDefaultSummary(CustomerAddressData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
 
             //TODO: add set default summary data logic
             /* This is generated sample code
-            var sum = data.OrderShipmentHeader;
+            var sum = data.CustomerAddress;
             if (sum.InvoiceDate.IsZero()) sum.InvoiceDate = DateTime.Today;
             if (sum.InvoiceTime.IsZero()) sum.InvoiceTime = DateTime.Now.TimeOfDay;
 
@@ -122,7 +124,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        public virtual bool SetDefaultDetail(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool SetDefaultDetail(CustomerAddressData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
@@ -143,13 +145,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         //TODO: add set default for detail line logic
         /* This is generated sample code
-        protected virtual bool SetDefault(InvoiceItems item, OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        protected virtual bool SetDefault(InvoiceItems item, CustomerAddressData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;
 
             var setting = new ERPSetting();
-            var sum = data.OrderShipmentHeader;
+            var sum = data.CustomerAddress;
             //var prod = data.GetCache<ProductBasic>(ProductId);
             //var inv = data.GetCache<Inventory>(InventoryId);
             //var invCost = new ItemCostClass(inv);
@@ -177,7 +179,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         */
 
 
-        public virtual bool Calculate(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool Calculate(CustomerAddressData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             PrepareData(data);
             CalculateDetail(data, processingMode);
@@ -185,7 +187,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        public virtual bool CalculateSummary(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool CalculateSummary(CustomerAddressData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
@@ -233,21 +235,46 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        InventoryLogService logService;
-        public virtual bool CalculateDetail(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual bool CalculateDetail(CustomerAddressData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
 
-            if (logService == null) logService = new InventoryLogService(dbFactory);
-            logService.UpdateByShipment(data);
-            
+            //TODO: add calculate summary object logic
+            /* This is generated sample code
+
+            var sum = data.CustomerAddress;
+            sum.SubTotalAmount = 0;
+            sum.TaxableAmount = 0;
+            sum.NonTaxableAmount = 0;
+            sum.UnitCost = 0;
+            sum.AvgCost = 0;
+            sum.LotCost = 0;
+
+            foreach (var item in data.InvoiceItems)
+            {
+                if (item is null || item.IsEmpty)
+                    continue;
+                SetDefault(item, data, processingMode);
+                CalculateDetail(item, data, processingMode);
+                if (item.IsAr)
+                {
+                    sum.SubTotalAmount += item.ExtAmount;
+                    sum.TaxableAmount += item.TaxableAmount;
+                    sum.NonTaxableAmount += item.NonTaxableAmount;
+                }
+                sum.UnitCost += item.UnitCost;
+                sum.AvgCost += item.AvgCost;
+                sum.LotCost += item.LotCost;
+            }
+
+            */
             return true;
         }
 
         //TODO: add set default for detail line logic
         /* This is generated sample code
-        protected virtual bool CalculateDetail(InvoiceItems item, OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        protected virtual bool CalculateDetail(InvoiceItems item, CustomerAddressData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;

@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
+using DigitBridge.CommerceCentral.ERPApi.OpenApiModel;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPMdl;
 using DigitBridge.CommerceCentral.YoPoco;
@@ -22,6 +23,47 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [ApiFilter(typeof(CustomerApi))]
     public static class CustomerApi
     {
+
+
+        /// <summary>
+        /// ExistCustomerCode
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="CustomerCode"></param>
+        /// <returns></returns>
+
+        [FunctionName(nameof(ExistCustomerCode))]
+        [OpenApiOperation(operationId: "ExistCustomerCode", tags: new[] { "Customers" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "CustomerCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "CustomerCode", Description = "CustomerCode", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ExistCustomerCodePayload))]
+        public static async Task<JsonNetResponse<ExistCustomerCodePayload>> ExistCustomerCode(
+  [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "customers/existCustomerCode/{CustomerCode}")] HttpRequest req,
+  string CustomerCode = null)
+        {
+            var payload = await req.GetParameters<ExistCustomerCodePayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new CustomerService(dbFactory);
+
+            var spilterIndex = CustomerCode.IndexOf("-");
+            var customerCode = CustomerCode;
+            if (spilterIndex > 0 && customerCode.StartsWith(payload.ProfileNum.ToString()))
+            {
+                customerCode = CustomerCode.Substring(spilterIndex + 1);
+            }
+            if (await svc.GetCustomerByCustomerCodeAsync(new CustomerPayload() { MasterAccountNum = payload.MasterAccountNum, ProfileNum = payload.ProfileNum }, customerCode))
+                payload.IsExistCustomerCode = svc.ToDto() != null;
+            else
+                payload.Messages = svc.Messages;
+            return new JsonNetResponse<ExistCustomerCodePayload>(payload);
+
+        }
+
+
+
+
         [FunctionName(nameof(GetCustomer))]
         [OpenApiOperation(operationId: "GetCustomer", tags: new[] { "Customers" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -275,6 +317,121 @@ namespace DigitBridge.CommerceCentral.ERPApi
             await srv.GetCustomerSummaryAsync(payload);
             return new JsonNetResponse<CustomerPayload>(payload);
         }
+
+
+
+
+
+
+
+
+
+
+        /// <summary>
+        /// Add CustomerAdress
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(AddCustomerAdress))]
+        [OpenApiOperation(operationId: "AddCustomerAdress", tags: new[] { "Customers" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerAddressPayloadAdd), Description = "CustomerAddressDataDto")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerAddressPayloadAdd))]
+        public static async Task<JsonNetResponse<CustomerAddressPayload>> AddCustomerAdress(
+         [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "customers/address")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<CustomerAddressPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new CustomerService(dbFactory);
+            if (await svc.AddCustomerAddressAsync(payload))
+            {
+                payload.CustomerAddress = svc.ToCustomerAddressDto();
+            }
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<CustomerAddressPayload>(payload);
+        }
+
+        /// <summary>
+        /// CustomerAdress
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(UpdateCustomerAdress))]
+        [OpenApiOperation(operationId: "UpdateCustomerAdress", tags: new[] { "Customers" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CustomerAddressPayloadUpdate), Description = "CustomerAddressDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerAddressPayloadUpdate))]
+        public static async Task<JsonNetResponse<CustomerAddressPayload>> UpdateCustomerAdress(
+[HttpTrigger(AuthorizationLevel.Function, "PATCH", Route = "customers/address")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<CustomerAddressPayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new CustomerService(dbFactory);
+            if (await svc.UpdateCustomerAddressAsync(payload))
+                payload.CustomerAddress = svc.ToCustomerAddressDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<CustomerAddressPayload>(payload);
+        }
+
+
+        /// <summary>
+        /// DeleteCustomerAdress
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="addressUuid"></param>
+        /// <returns></returns>
+
+        [FunctionName(nameof(DeleteCustomerAdress))]
+        [OpenApiOperation(operationId: "DeleteCustomerAdress", tags: new[] { "Customers" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "customerCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "customerCode", Description = "customerCode", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "addressCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "addressCode", Description = "addressCode", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerAddressPayloadDelete), Description = "The OK response")]
+        public static async Task<JsonNetResponse<CustomerAddressPayload>> DeleteCustomerAdress(
+    [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "customers/address/{customerCode}/{addressCode}")] HttpRequest req,
+    string customerCode, string addressCode)
+        {
+            var payload = await req.GetParameters<CustomerAddressPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new CustomerService(dataBaseFactory);
+            payload.Success = await srv.DeleteCustomerAddressAsync(payload.MasterAccountNum,payload.ProfileNum,customerCode, addressCode);
+            if (payload.Success)
+                payload.CustomerAddress = srv.ToCustomerAddressDto();
+            payload.Messages = srv.Messages;
+            return new JsonNetResponse<CustomerAddressPayload>(payload);
+        }
+
+
+
+        /// <summary>
+        /// Add CustomerAddress Sample
+        /// </summary>
+        [FunctionName(nameof(Sample_CustomerAddress_Post))]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiOperation(operationId: "CustomerAddressSample", tags: new[] { "Sample" }, Summary = "Get new sample of Customer address")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CustomerAddressPayloadAdd))]
+        public static async Task<JsonNetResponse<CustomerAddressPayloadAdd>> Sample_CustomerAddress_Post(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/customerAddress")] HttpRequest req)
+        {
+            return new JsonNetResponse<CustomerAddressPayloadAdd>(CustomerAddressPayloadAdd.GetSampleData());
+        }
+
     }
 }
 

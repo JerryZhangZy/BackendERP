@@ -425,7 +425,23 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Children - Generated 
 
-        #endregion Children - Generated 
+        #endregion Children - Generated
+
+
+        /// <summary>
+        /// po item po Qty
+        /// </summary>
+        public virtual decimal PoQty { get; set; }
+
+        /// <summary>
+        /// Same po same PoItemUuid total returned qty
+        /// </summary>
+        public virtual decimal ReceivedQty { get; set; }
+
+        /// <summary>
+        /// OpenQty => po item po Qty - po item  total received qty;
+        /// </summary>
+        public virtual decimal OpenQty { get; set; }
 
     }
 }

@@ -93,7 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _LengthCode = new QueryFilter<string>("LengthCode", "LengthCode", PREFIX_DETAIL, FilterBy.bw, string.Empty);
         public QueryFilter<string> LengthCode => _LengthCode;
 
-        protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", PREFIX_DETAIL, FilterBy.bw, string.Empty);
+        protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", PREFIX_DETAIL, FilterBy.eq, string.Empty);
         public QueryFilter<string> WarehouseCode => _WarehouseCode;
 
         protected QueryFilter<string> _LotNum = new QueryFilter<string>("LotNum", "LotNum", PREFIX_DETAIL, FilterBy.bw, string.Empty);
