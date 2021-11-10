@@ -996,7 +996,7 @@ where inv.InventoryUuid=il.InventoryUuid
                         LogTime = DateTime.Now.TimeOfDay,
                         LogBy = "Shipments",
                         LogType = InventoyLogType.Shipment.ToString(),
-                        LogQty = item.ShippedQty,
+                        LogQty = -item.ShippedQty,
                         EnterBy = ""
                     };
                     if (inv != null)
