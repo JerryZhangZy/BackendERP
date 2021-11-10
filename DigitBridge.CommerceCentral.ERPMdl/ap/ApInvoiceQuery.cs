@@ -155,10 +155,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
-        /// get all ap invoice by vendorNum
+        /// get all ap invoice by VendorCode
         /// </summary>
-        /// <param name="vendorNum"></param>
-        public void InitForNewPaymet(string vendorNum)
+        /// <param name="vendorCode"></param>
+        public void InitForNewPaymet(string vendorCode)
         {
             _ApInvoiceStatus.FilterValue = (int)InvoiceStatusEnum.Outstanding;
 

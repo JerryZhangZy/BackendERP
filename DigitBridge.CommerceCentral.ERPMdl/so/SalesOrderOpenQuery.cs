@@ -50,7 +50,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             //_UpdateDateUtc.FilterValue = DateTime.Today.AddDays(-30);
             _OrderStatus.FilterValue = (int)SalesOrderStatus.Open;
-            _EventProcessActionStatus.FilterValue = (int)EventProcessActionStatusEnum.Default;
+            _EventProcessActionStatus.FilterValue = (int)EventProcessActionStatusEnum.Pending;
             _ERPEventProcessType.FilterValue = (int)EventProcessTypeEnum.SalesOrderToWMS;
         }
     }

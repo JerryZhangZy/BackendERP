@@ -35,8 +35,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public override void InitQueryFilter()
         {
-            _EventProcessActionStatus.FilterValue = (int)EventProcessActionStatusEnum.Default;
-            _ERPEventProcessType.FilterValue = (int)EventProcessTypeEnum.InvoiceToChanel;
+            _EventProcessActionStatus.FilterValue = (int)EventProcessActionStatusEnum.Pending;
+            _ERPEventProcessType.FilterValue = (int)EventProcessTypeEnum.InvoiceToCommerceCentral;
         }
     }
 }

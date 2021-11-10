@@ -37,8 +37,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected EnumQueryFilter<PoType> _PoType = new EnumQueryFilter<PoType>("PoType", "PoType", PREFIX, FilterBy.eq, -1);
         public EnumQueryFilter<PoType> PoType => _PoType;
 
-        protected QueryFilter<string> _VendorNum = new QueryFilter<string>("VendorNum", "VendorNum", PREFIX, FilterBy.eq, string.Empty);
-        public QueryFilter<string> VendorNum => _VendorNum;
+        protected QueryFilter<string> _VendorCode = new QueryFilter<string>("VendorCode", "VendorCode", PREFIX, FilterBy.eq, string.Empty);
+        public QueryFilter<string> VendorCode => _VendorCode;
 
         protected QueryFilter<string> _VendorName = new QueryFilter<string>("VendorName", "VendorName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorName => _VendorName;
@@ -53,7 +53,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_PoDateTo);
             AddFilter(_PoStatus);
             AddFilter(_PoType); 
-            AddFilter(_VendorNum);
+            AddFilter(_VendorCode);
             AddFilter(_VendorName);
             AddFilter(_PoNum);
         }

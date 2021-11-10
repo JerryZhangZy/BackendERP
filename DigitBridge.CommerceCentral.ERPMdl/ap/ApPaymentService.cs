@@ -402,15 +402,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await LoadApInvoiceList(payload, Data.ApInvoiceData.ApInvoiceHeader.VendorCode);
         }
 
-        public async Task<bool> NewPaymentByVendorNum(ApNewPaymentPayload payload, string vendorNum)
+        public async Task<bool> NewPaymentByVendorNum(ApNewPaymentPayload payload, string vendorCode)
         {
-            if (!await LoadApInvoiceList(payload, vendorNum))
+            if (!await LoadApInvoiceList(payload, vendorCode))
             {
                 return false;
             }
             if (payload.ApInvoiceList.ToString().IsZero())
             {
-                AddError($"No outstanding apInvoice for vendorNum:{vendorNum}");
+                AddError($"No outstanding apInvoice for VendorCode:{vendorCode}");
                 return false;
             }
 
@@ -425,7 +425,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        private async Task<bool> LoadApInvoiceList(ApNewPaymentPayload payload, string vendorNum)
+        private async Task<bool> LoadApInvoiceList(ApNewPaymentPayload payload, string vendorCode)
         {
             var apInvoicePayload = new ApInvoicePayload()
             {
@@ -435,7 +435,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
 
             var apInvoiceQuery = new ApInvoiceQuery();
-            apInvoiceQuery.InitForNewPaymet(vendorNum);
+            apInvoiceQuery.InitForNewPaymet(vendorCode);
 
             var srv = new ApInvoiceList(this.dbFactory, apInvoiceQuery);
             await srv.GetApInvoiceListAsync(apInvoicePayload);

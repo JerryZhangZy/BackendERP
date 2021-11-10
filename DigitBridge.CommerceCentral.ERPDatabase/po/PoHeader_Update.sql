@@ -10,5 +10,5 @@ END
 
 IF COL_LENGTH('PoHeader', 'VendorNum') IS NOT NULL					
 BEGIN
-    exec sp_rename 'PoHeader.VendorNum', VendorCode, 'COLUMN'
+    exec sp_rename 'PoHeader.VendorNum', 'VendorCode', 'COLUMN'
 END

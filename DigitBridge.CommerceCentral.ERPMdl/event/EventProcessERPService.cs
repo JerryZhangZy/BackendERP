@@ -299,6 +299,94 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
+        public async Task<bool> ExistProcessUuidAsync(int erpEventProcessType, string processUuid)
+        {
+            return await dbFactory.ExistsAsync<ApInvoiceHeader>("ERPEventProcessType=@0 AND ProcessUuid=@1"
+                , erpEventProcessType.ToSqlParameter("erpEventProcessType")
+                , processUuid.ToSqlParameter("processUuid")
+            );
+        }
+
+        public async Task<long> GetRowNumByProcessUuidAsync(int erpEventProcessType, string processUuid)
+        {
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await EventProcessERPHelper.GetRowNumByProcessUuidAsync(erpEventProcessType, processUuid);
+        }
+
+        public long GetRowNumByProcessUuid(int erpEventProcessType, string processUuid)
+        {
+            using (var trs = new ScopedTransaction(dbFactory))
+                return EventProcessERPHelper.GetRowNumByProcessUuid(erpEventProcessType, processUuid);
+        }
+
+        /// <summary>
+        /// Add new EventProcessERP
+        /// </summary>
+        public virtual async Task<bool> AddEventProcessERPAsync(EventProcessERP data) =>
+            await AddEventProcessERPAsync(new EventProcessERPData(this.dbFactory, data));
+
+        public virtual async Task<bool> AddEventProcessERPAsync(EventProcessERPData data)
+        {
+            if (data is null)
+                return false;
+
+            var rowNum = await GetRowNumByProcessUuidAsync(data.EventProcessERP.ERPEventProcessType, data.EventProcessERP.ProcessUuid);
+
+            // if ProcessUuid exist and not complete process, can resend this processUuid
+            if (rowNum > 0)
+            {
+                if (await EditAsync(rowNum))
+                {
+                    if (data.EventProcessERP.ProcessStatusEnum == EventProcessProcessStatusEnum.Pending)
+                    {
+                        data.EventProcessERP.ActionStatusEnum = EventProcessActionStatusEnum.Pending;
+                        data.EventProcessERP.LastUpdateDate = DateTime.Now;
+                        return await SaveDataAsync();
+                    }
+                }
+            }
+
+            Add();
+            data.EventProcessERP.LastUpdateDate = DateTime.Now;
+            data.EventProcessERP.EventUuid = Guid.NewGuid().ToString();
+            this.AttachData(data);
+            return await SaveDataAsync();
+        }
+
+        /// <summary>
+        /// Add new EventProcessERP
+        /// </summary>
+        public virtual bool AddEventProcessERP(EventProcessERP data) =>
+            AddEventProcessERP(new EventProcessERPData(this.dbFactory, data));
+
+        public virtual bool AddEventProcessERP(EventProcessERPData data)
+        {
+            if (data is null)
+                return false;
+
+            var rowNum = GetRowNumByProcessUuid(data.EventProcessERP.ERPEventProcessType, data.EventProcessERP.ProcessUuid);
+
+            // if ProcessUuid exist and not complete process, can resend this processUuid
+            if (rowNum > 0)
+            {
+                if (Edit(rowNum))
+                {
+                    if (data.EventProcessERP.ProcessStatusEnum == EventProcessProcessStatusEnum.Pending)
+                    {
+                        data.EventProcessERP.ActionStatusEnum = EventProcessActionStatusEnum.Pending;
+                        data.EventProcessERP.LastUpdateDate = DateTime.Now;
+                        return SaveData();
+                    }
+                }
+            }
+
+            Add();
+            data.EventProcessERP.LastUpdateDate = DateTime.Now;
+            data.EventProcessERP.EventUuid = Guid.NewGuid().ToString();
+            this.AttachData(data);
+            return SaveData();
+        }
+
 
         #region batch update event process 
         public virtual async Task<bool> UpdateActionStatusAsync(SyncResultPayload downloadResult)
@@ -339,7 +427,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var result = await dbFactory.Db.ExecuteAsync(sql,
                 ((int)EventProcessActionStatusEnum.Downloaded).ToParameter("@ActionStatus_New"),
                 downloadResult.EventUuids.ToParameter<string>("@EventUuidList"),
-                 ((int)EventProcessActionStatusEnum.Default).ToParameter("@ActionStatus_Original"),
+                 ((int)EventProcessActionStatusEnum.Pending).ToParameter("@ActionStatus_Original"),
                  downloadResult.EventProcessType.ToParameter("@ERPEventProcessType")
                  //payload.MasterAccountNum.ToParameter("@MasterAccountNum"),
                  //payload.ProfileNum.ToParameter("@ProfileNum")

@@ -51,6 +51,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ProfileNum",SqlDbType.Int,NotNull=true)]
         private int _profileNum;
 
+        [Column("EventUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _eventUuid;
+
         [Column("ChannelNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _channelNum;
 
@@ -69,17 +72,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ProcessData",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _processData;
 
-        [Column("ActionStatus",SqlDbType.Int,NotNull=true,IsDefault=true)]
-        private int _actionStatus;
-
-        [Column("ActionDateUtc",SqlDbType.DateTime,NotNull=true,IsDefault=true)]
-        private DateTime _actionDateUtc;
-
         [Column("EventMessage",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _eventMessage;
 
-        [Column("EventUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _eventUuid;
+        [Column("ActionStatus",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _actionStatus;
+
+        [Column("ActionDate",SqlDbType.DateTime,NotNull=true,IsDefault=true)]
+        private DateTime _actionDate;
+
+        [Column("ProcessStatus",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _processStatus;
+
+        [Column("ProcessDate",SqlDbType.DateTime,NotNull=true,IsDefault=true)]
+        private DateTime _processDate;
+
+        [Column("CloseStatus",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _closeStatus;
+
+        [Column("CloseDate",SqlDbType.DateTime,NotNull=true,IsDefault=true)]
+        private DateTime _closeDate;
+
+        [Column("LastUpdateDate",SqlDbType.DateTime,NotNull=true,IsDefault=true)]
+        private DateTime _lastUpdateDate;
 
         [Column("UpdateDateUtc",SqlDbType.DateTime,NotNull=true,IsDefault=true)]
         private DateTime _updateDateUtc;
@@ -145,6 +160,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_profileNum = value; 
 				OnPropertyChanged("ProfileNum", value);
+            }
+        }
+
+		/// <summary>
+		/// Event uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string EventUuid
+        {
+            get
+            {
+				return _eventUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_eventUuid = value.TruncateTo(50); 
+				OnPropertyChanged("EventUuid", value);
             }
         }
 
@@ -245,38 +276,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Action Status. <br> Title: Type, Display: true, Editable: false
-		/// </summary>
-        public virtual int ActionStatus
-        {
-            get
-            {
-				return _actionStatus; 
-            }
-            set
-            {
-				_actionStatus = value; 
-				OnPropertyChanged("ActionStatus", value);
-            }
-        }
-
-		/// <summary>
-		/// Action Date. <br> Title: Type, Display: true, Editable: false
-		/// </summary>
-        public virtual DateTime ActionDateUtc
-        {
-            get
-            {
-				return _actionDateUtc; 
-            }
-            set
-            {
-				_actionDateUtc = value.Date.ToSqlSafeValue(); 
-				OnPropertyChanged("ActionDateUtc", value);
-            }
-        }
-
-		/// <summary>
 		/// event message. <br> Display: false, Editable: false.
 		/// </summary>
         public virtual string EventMessage
@@ -293,18 +292,114 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Event uuid. <br> Display: false, Editable: false.
+		/// Download Acknowledge Status. <br> Title: Type, Display: true, Editable: false
 		/// </summary>
-        public virtual string EventUuid
+        public virtual int ActionStatus
         {
             get
             {
-				return _eventUuid?.TrimEnd(); 
+				return _actionStatus; 
             }
             set
             {
-				_eventUuid = value.TruncateTo(50); 
-				OnPropertyChanged("EventUuid", value);
+				_actionStatus = value; 
+				OnPropertyChanged("ActionStatus", value);
+            }
+        }
+
+		/// <summary>
+		/// Download Acknowledge Date. <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+        public virtual DateTime ActionDate
+        {
+            get
+            {
+				return _actionDate; 
+            }
+            set
+            {
+				_actionDate = value.Date.ToSqlSafeValue(); 
+				OnPropertyChanged("ActionDate", value);
+            }
+        }
+
+		/// <summary>
+		/// Process Status. <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+        public virtual int ProcessStatus
+        {
+            get
+            {
+				return _processStatus; 
+            }
+            set
+            {
+				_processStatus = value; 
+				OnPropertyChanged("ProcessStatus", value);
+            }
+        }
+
+		/// <summary>
+		/// Process Date. <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+        public virtual DateTime ProcessDate
+        {
+            get
+            {
+				return _processDate; 
+            }
+            set
+            {
+				_processDate = value.Date.ToSqlSafeValue(); 
+				OnPropertyChanged("ProcessDate", value);
+            }
+        }
+
+		/// <summary>
+		/// Close Status. <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+        public virtual int CloseStatus
+        {
+            get
+            {
+				return _closeStatus; 
+            }
+            set
+            {
+				_closeStatus = value; 
+				OnPropertyChanged("CloseStatus", value);
+            }
+        }
+
+		/// <summary>
+		/// Close Date. <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+        public virtual DateTime CloseDate
+        {
+            get
+            {
+				return _closeDate; 
+            }
+            set
+            {
+				_closeDate = value.Date.ToSqlSafeValue(); 
+				OnPropertyChanged("CloseDate", value);
+            }
+        }
+
+		/// <summary>
+		/// Close Date. <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+        public virtual DateTime LastUpdateDate
+        {
+            get
+            {
+				return _lastUpdateDate; 
+            }
+            set
+            {
+				_lastUpdateDate = value.Date.ToSqlSafeValue(); 
+				OnPropertyChanged("LastUpdateDate", value);
             }
         }
 
@@ -387,16 +482,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_databaseNum = default(int); 
 			_masterAccountNum = default(int); 
 			_profileNum = default(int); 
+			_eventUuid = String.Empty; 
 			_channelNum = default(int); 
 			_channelAccountNum = default(int); 
 			_eRPEventProcessType = default(int); 
 			_processSource = String.Empty; 
 			_processUuid = String.Empty; 
 			_processData = String.Empty; 
-			_actionStatus = default(int); 
-			_actionDateUtc = new DateTime().MinValueSql(); 
 			_eventMessage = String.Empty; 
-			_eventUuid = String.Empty; 
+			_actionStatus = default(int); 
+			_actionDate = new DateTime().MinValueSql(); 
+			_processStatus = default(int); 
+			_processDate = new DateTime().MinValueSql(); 
+			_closeStatus = default(int); 
+			_closeDate = new DateTime().MinValueSql(); 
+			_lastUpdateDate = new DateTime().MinValueSql(); 
 			_updateDateUtc = new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 

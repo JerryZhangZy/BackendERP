@@ -303,7 +303,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         /// <summary>
-        /// Get apinvoice new Payment by vendornum
+        /// Get apinvoice new Payment by VendorCode
         /// </summary>
         /// <param name="req"></param>
         /// <param name="customerCode"></param>
@@ -313,16 +313,16 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "vendorNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "vendorNum", Description = "vendorNum.", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "vendorCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "VendorCode", Description = "VendorCode.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ApNewPaymentPayload))]
         public static async Task<JsonNetResponse<ApNewPaymentPayload>> NewPaymentByVendorNum(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApPayments/newPayment/vendorNum/{vendorNum}")] HttpRequest req,
-            string vendorNum)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "ApPayments/newPayment/vendorNum/{vendorCode}")] HttpRequest req,
+            string vendorCode)
         {
             var payload = await req.GetParameters<ApNewPaymentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new ApPaymentService(dataBaseFactory);
-            payload.Success = await srv.NewPaymentByVendorNum(payload, vendorNum);
+            payload.Success = await srv.NewPaymentByVendorNum(payload, vendorCode);
             payload.Messages = srv.Messages;
             return new JsonNetResponse<ApNewPaymentPayload>(payload);
         }
