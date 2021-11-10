@@ -9,6 +9,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -53,6 +54,23 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
 
+        [FunctionName(nameof(GetListByOrderShipmentNumbers))]
+        [OpenApiOperation(operationId: "GetListByInvoiceNumbers", tags: new[] { "Invoices" }, Summary = "Get invoice list by invoice numbers")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login MasterAccountNum", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderShipmentNumbers", In = ParameterLocation.Query, Required = true, Type = typeof(IList<string>), Summary = "orderShipmentNumbers", Description = "Array of orderShipmentNumber.", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadGetMultiple), Description = "mulit invoice.")]
+        public static async Task<JsonNetResponse<OrderShipmentPayload>> GetListByOrderShipmentNumbers(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "shipments")] Microsoft.AspNetCore.Http.HttpRequest req)
+        {
+            var payload = await req.GetParameters<OrderShipmentPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new OrderShipmentService(dataBaseFactory);
+            await srv.GetListByOrderShipmentNumbersAsync(payload, payload.OrderShipmentNumbers);
+            return new JsonNetResponse<OrderShipmentPayload>(payload);
+        }
+
         /// <summary>
         /// Delete order shipment 
         /// </summary>
@@ -64,12 +82,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "rowNum", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "rowNum", Description = "rowNum. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderShipmentNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "OrderShipmentNum", Description = "orderShipmentNum", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadDelete))]
         public static async Task<JsonNetResponse<OrderShipmentPayload>> DeleteShipments(
            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "shipments/{orderShipmentNum}")]
             HttpRequest req,
-            long orderShipmentNum)
+            string orderShipmentNum)
         {
             var payload = await req.GetParameters<OrderShipmentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -233,6 +251,31 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new ShipmentSummaryInquiry(dataBaseFactory, new ShipmentSummaryQuery());
             await srv.ShipmentSummaryAsync(payload);
+            return new JsonNetResponse<OrderShipmentPayload>(payload);
+        }
+
+        /// <summary>
+        /// Check orderShipmentNum exist
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="log"></param>
+        /// <param name="orderShipmentNum"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(CheckShipmentNumExist))]
+        [OpenApiOperation(operationId: "CheckShipmentNumExist", tags: new[] { "Shipments" }, Summary = "Check orderShipmentNum exist")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderShipmentNum", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "orderShipmentNum", Description = "Order shipment number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadGetSingle))]
+        public static async Task<JsonNetResponse<OrderShipmentPayload>> CheckShipmentNumExist(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "shipments/existorderShipmentNum/{orderShipmentNum}")] HttpRequest req,
+            ILogger log, long orderShipmentNum)
+        {
+            var payload = await req.GetParameters<OrderShipmentPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new OrderShipmentService(dataBaseFactory);
+            payload.Success = await srv.GetDataAsync(payload, orderShipmentNum.ToString());
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
     }

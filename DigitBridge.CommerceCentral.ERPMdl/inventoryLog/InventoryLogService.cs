@@ -969,6 +969,12 @@ where inv.InventoryUuid=il.InventoryUuid
             return true;
         }
 
+        public async Task<bool> UpdateByDeleteShipmentAsync(string orderShipmentUuid)
+        {
+            await ClearInventoryLogByLogUuidAsync(orderShipmentUuid);
+            return true;
+        }
+
         private IList<InventoryLog> ConvertShipmentsToInventoryLogList(OrderShipmentHeader header,IList<OrderShipmentPackage> packages, long batchNum, string logUuid)
         {
             var list = new List<InventoryLog>();
@@ -996,7 +1002,7 @@ where inv.InventoryUuid=il.InventoryUuid
                         LogTime = DateTime.Now.TimeOfDay,
                         LogBy = "Shipments",
                         LogType = InventoyLogType.Shipment.ToString(),
-                        LogQty = item.ShippedQty,
+                        LogQty = -item.ShippedQty,
                         EnterBy = ""
                     };
                     if (inv != null)
