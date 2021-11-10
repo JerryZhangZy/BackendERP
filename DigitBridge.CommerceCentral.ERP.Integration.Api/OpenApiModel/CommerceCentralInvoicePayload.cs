@@ -55,9 +55,9 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 
     public class InvoiceUnprocessPayloadFilter
     {
-        public int ChannelNum { get; set; }
-        public int ChannelAccountNum { get; set; }
-        public int EventProcessActionStatus { get; set; }
+        public int? ChannelNum { get; set; }
+        public int? ChannelAccountNum { get; set; }
+        //public int EventProcessActionStatus { get; set; }
 
         public static Faker<InvoiceUnprocessPayloadFilter> GetFaker()
         {
@@ -65,7 +65,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             return new Faker<InvoiceUnprocessPayloadFilter>()
                 .RuleFor(u => u.ChannelNum, f => f.Random.Int(1, 100))
                 .RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
-                .RuleFor(u => u.EventProcessActionStatus, f => (int)EventProcessActionStatusEnum.Default)
+                //.RuleFor(u => u.EventProcessActionStatus, f => (int)EventProcessActionStatusEnum.Default)
                 ;
             #endregion faker data rules
         }

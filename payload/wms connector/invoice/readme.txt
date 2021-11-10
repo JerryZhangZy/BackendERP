@@ -2,6 +2,8 @@ Call api via Integration SDK
 
 1, Add reference to project DigitBridge.CommerceCentral.ERPApiSDK 
    Or install package 
+   Install-Package DigitBridge.CommerceCentral.ERPApiSDK -Version 1.0.0.1
+
 
 2, Copy setting from local.settings.json to your config file
 

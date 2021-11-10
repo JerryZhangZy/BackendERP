@@ -108,6 +108,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasType => Type != null;
 
 		/// <summary>
+		/// Init number,  Current maximum
+		/// </summary>
+		[OpenApiPropertyDescription("Init number,  Current maximum")]
+        public int? CurrentNumber { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCurrentNumber => CurrentNumber != null;
+
+		/// <summary>
 		/// Init number, real number will be more than init number and not exist number
 		/// </summary>
 		[OpenApiPropertyDescription("Init number, real number will be more than init number and not exist number")]

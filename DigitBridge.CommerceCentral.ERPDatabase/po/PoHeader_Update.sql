@@ -7,3 +7,8 @@ IF COL_LENGTH('PoHeader', 'NonTaxableAmount') IS NULL
 BEGIN					
     ALTER TABLE PoHeader ADD [NonTaxableAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
 END
+
+IF COL_LENGTH('PoHeader', 'VendorNum') IS NOT NULL					
+BEGIN
+    exec sp_rename 'PoHeader.VendorNum', VendorCode, 'COLUMN'
+END

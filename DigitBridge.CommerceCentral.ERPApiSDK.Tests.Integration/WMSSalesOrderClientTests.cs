@@ -51,6 +51,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             var payload = new WMSSalesOrderRequestPayload()
             {
                 LoadAll = true,
+                Filter = new SalesOrderOpenListFilter()
+                {
+                    UpdateDateUtc = DateTime.Today.AddDays(-1),
+                },
             };
 
             var success = await client.GetSalesOrdersOpenListAsync(MasterAccountNum, ProfileNum, payload);

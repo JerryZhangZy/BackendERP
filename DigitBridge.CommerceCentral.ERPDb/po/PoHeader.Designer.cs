@@ -81,8 +81,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("VendorUuid",SqlDbType.VarChar,IsDefault=true)]
         private string _vendorUuid;
 
-        [Column("VendorNum",SqlDbType.VarChar)]
-        private string _vendorNum;
+        [Column("VendorCode",SqlDbType.VarChar)]
+        private string _VendorCode;
 
         [Column("VendorName",SqlDbType.NVarChar)]
         private string _vendorName;
@@ -390,22 +390,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
-		/// Vendor readable number.<br> DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique. <br> Display: false, Editable: false
+		/// Vendor readable number.<br> DatabaseNum + VendorCode is DigitBridgeVendorCode, which is global unique. <br> Display: false, Editable: false
 		/// </summary>
-        public virtual string VendorNum
+        public virtual string VendorCode
         {
             get
             {
-				if (!AllowNull && _vendorNum is null) 
-					_vendorNum = String.Empty; 
-				return _vendorNum?.TrimEnd(); 
+				if (!AllowNull && _VendorCode is null) 
+					_VendorCode = String.Empty; 
+				return _VendorCode?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
 				{
-					_vendorNum = value.TruncateTo(50); 
-					OnPropertyChanged("VendorNum", value);
+					_VendorCode = value.TruncateTo(50); 
+					OnPropertyChanged("VendorCode", value);
 				}
             }
         }
@@ -810,7 +810,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_cancelDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_vendorUuid = AllowNull ? (string)null : String.Empty; 
-			_vendorNum = AllowNull ? (string)null : String.Empty; 
+			_VendorCode = AllowNull ? (string)null : String.Empty; 
 			_vendorName = AllowNull ? (string)null : String.Empty; 
 			_currency = String.Empty; 
 			_subTotalAmount = default(decimal); 

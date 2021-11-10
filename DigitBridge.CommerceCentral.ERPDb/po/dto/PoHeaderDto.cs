@@ -167,14 +167,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasVendorUuid => VendorUuid != null;
 
 		/// <summary>
-		/// Vendor readable number.<br> DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique. <br> Display: false, Editable: false
+		/// Vendor readable number.<br> DatabaseNum + VendorCode is DigitBridgeVendorCode, which is global unique. <br> Display: false, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Vendor readable number.<br> DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique. <br> Display: false, Editable: false")]
-        [StringLength(50, ErrorMessage = "The VendorNum value cannot exceed 50 characters. ")]
-        public string VendorNum { get; set; }
+		[OpenApiPropertyDescription("Vendor readable number.<br> DatabaseNum + VendorCode is DigitBridgeVendorCode, which is global unique. <br> Display: false, Editable: false")]
+        [StringLength(50, ErrorMessage = "The VendorCode value cannot exceed 50 characters. ")]
+        public string VendorCode { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasVendorNum => VendorNum != null;
+        public bool HasVendorCode => VendorCode != null;
 
 		/// <summary>
 		/// Vendor name. <br> Display: false, Editable: false

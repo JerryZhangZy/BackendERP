@@ -15,8 +15,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
 
-        //private string _baseUrl = "http://localhost:7074/api/";
-        private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
+        private string _baseUrl = "http://localhost:7074/api/";
+        //private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
         private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
         protected const int MasterAccountNum = 10001;
         protected const int ProfileNum = 10001;
@@ -50,14 +50,14 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             var payload = new CommerceCentralInvoiceRequestPayload()
             {
-                LoadAll = true,
+                //LoadAll = true,
             };
 
             //Add your filter here.
-            //payload.Filter = new JObject()
-            //{
-            //    {"eventProcessActionStatus","1"}
-            //};
+            payload.Filter = new InvoiceUnprocessPayloadFilter()
+            {
+                ChannelAccountNum = 10001,
+            };
 
             var success = await client.GetUnprocessedInvoicesAsync(MasterAccountNum, ProfileNum, payload);
 

@@ -8,6 +8,7 @@
     [CustomerUuid] VARCHAR(50) NOT NULL DEFAULT '', --Customer uuid. CustomerUuid = DEFAULT for system init number <br> Display: false, Editable: false.
     [InActive] TINYINT NOT NULL DEFAULT 0, --Disable this record
 	[Type] VARCHAR(20) NOT NULL DEFAULT '', --InitNumber type, like Invoice#, S/O#, P/O# 
+	[CurrentNumber] INT NOT NULL DEFAULT 0, --Init number,  Current maximum  
 	[Number] INT NOT NULL DEFAULT 0, --Init number, real number will be more than init number and not exist number  
 	[MaxNumber] INT NOT NULL DEFAULT 0, --The last assigned number, real number will be more than init number and not exist number  
 	[Prefix] VARCHAR(20) NOT NULL DEFAULT '', --Prefix append to Init number 

@@ -63,6 +63,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("Type",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _type;
 
+        [Column("CurrentNumber",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _currentNumber;
+
         [Column("Number",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _number;
 
@@ -204,6 +207,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Init number,  Current maximum
+		/// </summary>
+        public virtual int CurrentNumber
+        {
+            get
+            {
+				return _currentNumber; 
+            }
+            set
+            {
+				_currentNumber = value; 
+				OnPropertyChanged("CurrentNumber", value);
+            }
+        }
+
+		/// <summary>
 		/// Init number, real number will be more than init number and not exist number
 		/// </summary>
         public virtual int Number
@@ -339,6 +358,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_customerUuid = String.Empty; 
 			_inActive = default(byte); 
 			_type = String.Empty; 
+			_currentNumber = default(int); 
 			_number = default(int); 
 			_prefix = String.Empty; 
 			_suffix = String.Empty; 

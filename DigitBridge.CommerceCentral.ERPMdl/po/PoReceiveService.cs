@@ -11,6 +11,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class PoReceiveService : PoTransactionService, IPoReceiveService
     {
+        private bool _firstAPReceiveStatus = false;
+
         public PoReceiveService(IDataBaseFactory dbFactory) : base(dbFactory)
         {
         }
@@ -63,6 +65,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return base.DeleteByNumber(payload, poNumber, transNum);
         }
 
+        public void SetFirstAPReceiveStatus(bool isAp = false)
+        {
+            _firstAPReceiveStatus = isAp;
+        }
         public bool Add(PoReceivePayload payload)
         {
             if (!payload.HasPoTransaction)
@@ -410,26 +416,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
-        public int GetUnUpdateTransStatus()
-        {
-            return dbFactory.GetValue<ApInvoiceHeader, int>(
-                "SELECT TOP 1 TransStatus FROM PoTransaction WHERE TransUuid=@0",
-                Data.PoTransaction.TransUuid.ToSqlParameter("@0"));
-        }
-
-        public async Task<int> GetUnUpdateTransStatusAsync()
-        {
-            return dbFactory.GetValue<ApInvoiceHeader, int>(
-                "SELECT TOP 1 TransStatus FROM PoTransaction WHERE TransUuid=@0",
-                Data.PoTransaction.TransUuid.ToSqlParameter("@0"));
-        }
-
         public override async Task<bool> SaveDataAsync()
         {
-            if (Data.PoTransaction.RowNum.IsZero())
-                Data.FirstAPReceiveStatus = Data.PoTransaction.TransStatus == (int)PoTransStatus.APReceive;
-            else
-                Data.FirstAPReceiveStatus = await GetUnUpdateTransStatusAsync() != (int)PoTransStatus.APReceive;
+            Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
             if (await base.SaveDataAsync())
             {
                 await InventoryLogService.UpdateByPoReceiveAsync(_data);
@@ -444,10 +433,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public override bool SaveData()
         {
-            if (Data.PoTransaction.RowNum.IsZero())
-                Data.FirstAPReceiveStatus = Data.PoTransaction.TransStatus == (int)PoTransStatus.APReceive;
-            else
-                Data.FirstAPReceiveStatus = GetUnUpdateTransStatus() != (int)PoTransStatus.APReceive;
+            Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
             if (base.SaveData())
             {
                 InventoryLogService.UpdateByPoReceive(_data);
@@ -482,6 +468,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             return false;
+        }
+        
+        public async Task<bool> NewReceiveAsync(PoReceivePayload payload, string poNum)
+        {
+            NewData();
+
+            if (!LoadPurchaseOrderData(poNum, payload.ProfileNum, payload.MasterAccountNum))
+                return false;
+
+            CopyPoHeaderToReceive();
+            CopyPoItemsToReceiveItems();
+
+            LoadReceivedQty();
+
+            return true;
         }
 
         public async Task<bool> ExistPoUuidAsync(string poUuid)
