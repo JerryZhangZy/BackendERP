@@ -9,6 +9,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -50,6 +51,23 @@ namespace DigitBridge.CommerceCentral.ERPApi
             }
             else
                 payload.Messages = srv.Messages;
+            return new JsonNetResponse<OrderShipmentPayload>(payload);
+        }
+
+        [FunctionName(nameof(GetListByOrderShipmentNumbers))]
+        [OpenApiOperation(operationId: "GetListByInvoiceNumbers", tags: new[] { "Invoices" }, Summary = "Get invoice list by invoice numbers")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login MasterAccountNum", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderShipmentNumbers", In = ParameterLocation.Query, Required = true, Type = typeof(IList<string>), Summary = "orderShipmentNumbers", Description = "Array of orderShipmentNumber.", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadGetMultiple), Description = "mulit invoice.")]
+        public static async Task<JsonNetResponse<OrderShipmentPayload>> GetListByOrderShipmentNumbers(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "shipments")] Microsoft.AspNetCore.Http.HttpRequest req)
+        {
+            var payload = await req.GetParameters<OrderShipmentPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new OrderShipmentService(dataBaseFactory);
+            await srv.GetListByOrderShipmentNumbersAsync(payload, payload.OrderShipmentNumbers);
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
 

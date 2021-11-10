@@ -182,6 +182,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
+        public async Task GetListByOrderShipmentNumbersAsync(OrderShipmentPayload payload, IList<string> orderShipmentNumbers)
+        {
+            if (payload is null || !payload.HasOrderShipmentNumbers)
+            {
+                AddError("OrderShipmentNumbers is required.");
+                payload.Messages = this.Messages;
+                payload.Success = false;
+            }
+            //var rowNums = await new InvoiceList(dbFactory).GetRowNumListAsync(payload.InvoiceNumbers, payload.MasterAccountNum, payload.ProfileNum);
+
+            var result = new List<OrderShipmentDataDto>();
+            foreach (var orderShipmentNumber in payload.OrderShipmentNumbers)
+            {
+                if (!(await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderShipmentNumber.ToString())))
+                    continue;
+                result.Add(this.ToDto());
+                this.DetachData(this.Data);
+            }
+            payload.OrderShipments = result;
+        }
+
         /// <summary>
         /// Update data from Payload object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
