@@ -24,6 +24,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return (await dbFactory.FindAsync<PoTransactionItems>(sql)).ToList();
         }
 
+
+        /// <summary>
+        /// po item po Qty
+        /// </summary>
+        public virtual decimal PoQty => (this.Parent.PurchaseOrderData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == this.PoItemUuid)?.PoQty).ToQty();
+
+        /// <summary>
+        /// Same po same PoItemUuid total returned qty
+        /// </summary>
+        public virtual decimal ReceivedQty =>(this.Parent.PurchaseOrderData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == this.PoItemUuid)?.ReceivedQty).ToQty();
+
+        /// <summary>
+        /// OpenQty => po item po Qty - po item  total received qty;
+        /// </summary>
+        public virtual decimal OpenQty => PoQty - ReceivedQty;
     }
 }
 

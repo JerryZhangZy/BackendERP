@@ -41,12 +41,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        private DateTime now = DateTime.Now;
+        private DateTime now = DateTime.UtcNow;
 
         public virtual bool SetDefault(PoTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             SetDefaultSummary(data, processingMode);
-            //SetDefaultDetail(data, processingMode);
+            SetDefaultDetail(data, processingMode);
             return true;
         }
 
@@ -56,6 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null || sum == null)
                 return false;
 
+            var poHeader = data.PurchaseOrderData.PoHeader;
             if (sum.TransTime.IsZero()) sum.TransTime = now.TimeOfDay;
             if (sum.TransDate.IsZero())
             {
@@ -76,13 +77,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 //for Add mode, always reset uuid
                 sum.TransUuid = Guid.NewGuid().ToString();
+                if (sum.VendorUuid.IsZero())
+                {
+                    sum.VendorUuid = poHeader.VendorUuid;
+                    sum.VendorName = poHeader.VendorName;
+                    sum.VendorCode = poHeader.VendorCode;
+                }
+                if (sum.TransDate.IsZero())
+                {
+                    sum.TransDate = now.Date;
+                    sum.TransTime = now.TimeOfDay;
+                }
+
+                if (sum.Currency.IsZero()) sum.Currency = poHeader.Currency;
+                if (sum.PoNum.IsZero()) sum.PoNum = poHeader.PoNum;
+                if (sum.TaxRate.IsZero()) sum.TaxRate = poHeader.TaxRate;
+                if (sum.DiscountRate.IsZero()) sum.DiscountRate = poHeader.DiscountRate;
             }
 
             //Set default for po
             var poData = data.PurchaseOrderData;
             sum.PoUuid = poData.PoHeader.PoUuid;
             
-            sum.Currency = poData.PoHeader.Currency; 
             //sum.DiscountAmount = poData.PoHeader.DiscountAmount;
             //sum.DiscountRate = poData.PoHeader.DiscountRate;
             //sum.TaxableAmount = poData.PoHeader.TaxableAmount;
@@ -113,6 +129,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual bool SetDefaultDetail(PoTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
+            if (data is null || data.PoTransactionItems == null || data.PoTransactionItems.Count == 0)
+                return false;
+
+            //TODO: add set default for detail list logic
+            // This is generated sample code
+
+            foreach (var item in data.PoTransactionItems)
+            {
+                SetDefault(item, data, processingMode);
+            }
             return true;
         }
 
@@ -120,13 +146,58 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //This is generated sample code
         protected virtual bool SetDefault(PoTransactionItems item, PoTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
+            item.UpdateDateUtc = now;
+            if (item.ItemDate.IsZero())
+            {
+                item.ItemDate = now.Date;
+                item.ItemTime = now.TimeOfDay;
+            }
+
+            if (processingMode == ProcessingMode.Add)
+            {
+                //for Add mode, always reset uuid
+                item.TransItemUuid = Guid.NewGuid().ToString();
+            }
+
+            //Set default for invoice
+            var poData = data.PurchaseOrderData;
+            if (poData != null)
+            {
+                var poItem = poData.PoItems.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid);
+                if (poItem != null)
+                {
+                    item.PoUuid = poItem.PoUuid;
+                    item.WarehouseUuid = poItem.WarehouseUuid;
+                    item.Description = poItem.Description;
+                    item.InventoryUuid = item.InventoryUuid;
+                    item.Taxable = poItem.Taxable;
+                    item.LotNum = item.LotNum;
+                    item.Notes = item.Notes;
+
+                    item.ProductUuid = poItem.ProductUuid;
+                    item.TaxRate = poItem.TaxRate;
+                    item.SKU = poItem.SKU;
+                    item.Currency = poItem.Currency;
+
+                    item.Price = poItem.Price;
+                    item.DiscountRate = poItem.DiscountRate;
+                    //item.ReturnDiscountAmount = invoiceItem.DiscountAmount;// user can input this item.
+                    item.Price = poItem.Price;
+
+                    item.ShippingAmount = poItem.ShippingAmount;
+                    item.ShippingTaxAmount = poItem.ShippingTaxAmount;
+                    item.MiscAmount = poItem.MiscAmount;
+                    item.MiscTaxAmount = poItem.MiscTaxAmount;
+                    item.ChargeAndAllowanceAmount = poItem.ChargeAndAllowanceAmount;
+                }
+            }
             return true;
         }
 
         public virtual bool Calculate(PoTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            //PrepareData(data);
-            //CalculateDetail(data, processingMode);
+            PrepareData(data);
+            CalculateDetail(data, processingMode);
             CalculateSummary(data, processingMode);
             return true;
         }
@@ -139,17 +210,98 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //TODO: add calculate summary object logic
             //This is generated sample code
 
+            var sum = data.PoTransaction;
+
+            sum.ShippingAmount = sum.ShippingAmount.ToAmount();
+            sum.ShippingTaxAmount = sum.ShippingTaxAmount.ToAmount();
+            sum.TaxAmount = sum.TaxAmount.ToAmount();
+            sum.DiscountAmount = sum.DiscountAmount.ToAmount();
+            sum.MiscAmount = sum.MiscAmount.ToAmount();
+            sum.TotalAmount = sum.TotalAmount.ToAmount();
+            sum.SubTotalAmount = sum.SubTotalAmount.ToAmount();
+            sum.ChargeAndAllowanceAmount = sum.ChargeAndAllowanceAmount.ToAmount();
+            sum.MiscTaxAmount = sum.MiscTaxAmount.ToRate();
+            sum.TaxRate = sum.TaxRate.ToRate();
 
             return true;
         }
 
         public virtual bool CalculateDetail(PoTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
+            if (data is null)
+                return false;
+            //TODO: add calculate summary object logic
+            //This is generated sample code
+
+            var sum = data.PoTransaction;
+            //sum.SubTotalAmount = 0;
+            //sum.TaxableAmount = 0;
+            //sum.NonTaxableAmount = 0;
+            sum.SubTotalAmount = 0;
+            sum.TotalAmount = 0;
+            sum.TaxAmount = 0;
+            sum.DiscountAmount = 0;
+            sum.ShippingTaxAmount = 0;
+            sum.MiscTaxAmount = 0;
+            sum.TaxRate = sum.TaxRate.ToRate();
+
+            foreach (var item in data.PoTransactionItems)
+            {
+                if (item is null || item.IsEmpty)
+                    continue;
+                //var inv = GetInventoryData(data,item.ProductUuid);
+
+                CalculateDetail(item, data, processingMode);
+                if (item.IsAp)
+                {
+                    sum.SubTotalAmount += item.ExtAmount;
+                }
+            }
+
             return true;
         }
 
         protected virtual bool CalculateDetail(PoTransactionItems item, PoTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
+            if (item is null || item.IsEmpty)
+                return false;
+
+            //var setting = new ERPSetting();
+            //var sum = data.InvoiceTransaction;
+            ////var prod = data.GetCache<ProductBasic>(ProductId);
+            ////var inv = data.GetCache<Inventory>(InventoryId);
+            ////var invCost = new ItemCostClass(inv);
+            //var invCost = new ItemCostClass();
+
+            //item.Price = item.Price.ToPrice();
+            //item.ShippingAmount = item.ShippingAmount.ToAmount();
+            //item.MiscAmount = item.MiscAmount.ToAmount();
+            //item.ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount(); 
+            //item.StockQty = item.StockQty < 0 ? 0 : item.StockQty.ToQty();
+            //item.NonStockQty = item.NonStockQty < 0 ? 0 : item.StockQty.ToQty(); 
+            //item.ReceiveQty= item.StockQty + item.NonStockQty // Are they equal.?
+            item.TransQty = item.TransQty < 0 ? 0 : item.TransQty.ToQty();
+
+            //item.ExtAmount = item.ExtAmount + item.ReturnDiscountAmount;//TODO
+
+            //// when all item return then return the invoice item discount amount. 
+            //if (IsAllItemsReturned())
+            //{
+            //    item.ExtAmount = item.ExtAmount + item.ReturnDiscountAmount;
+            //}
+            //else
+            //{
+            //    // item.ReturnDiscountAmount defalut value is invoice item discount amount.
+            //    item.ReturnDiscountAmount = 0;
+            //}
+
+
+            //TODO copy from invoice item  or calculate by percent receivedQty/shipQty
+            //if (setting.TaxForShippingAndHandling)
+            //{
+            //    item.ShippingTaxAmount = (item.ShippingAmount * item.TaxRate).ToAmount();
+            //    item.MiscTaxAmount = (item.MiscAmount * item.TaxRate).ToAmount();
+            //}
             return true;
         }
 
