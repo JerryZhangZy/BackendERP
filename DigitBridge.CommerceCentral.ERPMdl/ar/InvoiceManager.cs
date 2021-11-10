@@ -394,7 +394,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     EventProcessERP = new EventProcessERPDto()
                     {
                         ERPEventProcessType = (int)EventProcessTypeEnum.InvoiceToChanel,
-                        ActionStatus = (int)EventProcessActionStatusEnum.Failed,
+                        //ProcessStatus = (int)EventProcessActionStatusEnum.Failed,
                         MasterAccountNum = payload.MasterAccountNum,
                         ProfileNum = payload.ProfileNum,
                         EventUuid = faultInvoice.EventUuid,

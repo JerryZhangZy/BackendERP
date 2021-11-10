@@ -14,7 +14,7 @@ using InfoHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoHelper;
 using InfoAttrHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributesHelper;
 using ItemHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsHelper;
 using ItemAttrHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesHelper;
-
+using EventHelper = DigitBridge.CommerceCentral.ERPDb.EventProcessERPHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -32,6 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected string GetHeader_Columns()
         {
             var columns = $@" 
+--{EventHelper.TableAllies}.EventUuid,
 {Helper.TableAllies}.SalesOrderUuid as 'SalesOrderUuid',
 {InfoHelper.TableAllies}.WarehouseCode as 'WarehouseCode',
 {Helper.TableAllies}.DatabaseNum as 'CentralDatabaseNum',
@@ -145,7 +146,11 @@ FOR JSON PATH
             var channelAccountNum = $"{InfoHelper.TableAllies}.ChannelAccountNum";
 
             this.SQL_From = $@"
- FROM {Helper.TableName} {Helper.TableAllies}
+ FROM {EventHelper.TableName} {EventHelper.TableAllies}
+ INNER JOIN {Helper.TableName} {Helper.TableAllies}  
+        on  {Helper.TableAllies}.MasterAccountNum={EventHelper.TableAllies}.MasterAccountNum
+        and {Helper.TableAllies}.ProfileNum={EventHelper.TableAllies}.ProfileNum
+        and {Helper.TableAllies}.SalesOrderUuid={EventHelper.TableAllies}.ProcessUuid
  LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({InfoHelper.TableAllies}.SalesOrderUuid = {Helper.TableAllies}.SalesOrderUuid)
  {SqlStringHelper.Join_Setting_Channel(masterAccountNum, profileNum, channelNum)}
  {SqlStringHelper.Join_Setting_ChannelAccount(masterAccountNum, profileNum, channelNum, channelAccountNum)}

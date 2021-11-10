@@ -7,9 +7,17 @@ namespace DigitBridge.Base.Common
 {
     public enum EventProcessActionStatusEnum : int
     {
+        [Description("Data Added or updated.")]
         Default = 0,
-        Locked = 1,
-        Failed = 2,
+
+        [Description("Data downloaded by consumer.")]
+        Downloaded = 1,
+
+        //Failed = 3,
+
+        [Obsolete]
+        [Description("This will be removed.")]
+        Locked = 4,
     }
 
     public enum EventProcessTypeEnum : int
