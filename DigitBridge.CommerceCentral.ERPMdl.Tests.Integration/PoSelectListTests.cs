@@ -109,18 +109,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
  
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task po_vendorNum_Test()
+        public async Task po_vendorCode_Test()
         {
             var payload = new SelectListPayload()
             {
                 MasterAccountNum = 10001,
                 ProfileNum = 10001,
                 LoadAll = false,
-                Name = "po_vendorNum",
+                Name = "po_vendorCode",
                 Term = "5",
                 Top = 20,
             };
-            using (var b = new Benchmark("po_vendorNum_Test"))
+            using (var b = new Benchmark("po_vendorCode_Test"))
             {
                 var factory = new SelectListFactory(dataBaseFactory);
                 var result = await factory.GetSelectListAsync(payload);

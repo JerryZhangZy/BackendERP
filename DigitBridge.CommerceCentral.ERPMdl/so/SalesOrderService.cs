@@ -36,6 +36,54 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return this;
         }
 
+        /// <summary>
+        /// Add to ActivityLog record for current data and processMode
+        /// Should Call this method after successful save, update, delete
+        /// </summary>
+        protected void AddActivityLogForCurrentData()
+        {
+            this.AddActivityLog(new ActivityLog(dbFactory)
+            {
+                Type = ActivityLogType.SalesOrder.ToInt(),
+                Action = this.ProcessMode.ToInt(),
+                LogSource = "SalesOrderService",
+
+                MasterAccountNum = this.Data.SalesOrderHeader.MasterAccountNum,
+                ProfileNum = this.Data.SalesOrderHeader.ProfileNum,
+                DatabaseNum = this.Data.SalesOrderHeader.DatabaseNum,
+                ProcessUuid = this.Data.SalesOrderHeader.SalesOrderUuid,
+                ProcessNumber = this.Data.SalesOrderHeader.OrderNumber,
+                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+
+                LogMessage = string.Empty
+            });
+        }
+
+        /// <summary>
+        /// Add to ActivityLog record for current data and processMode
+        /// Should Call this method after successful save, update, delete
+        /// </summary>
+        protected async Task AddActivityLogForCurrentDataAsync()
+        {
+            await this.AddActivityLogAsync(new ActivityLog(dbFactory)
+            {
+                Type = ActivityLogType.SalesOrder.ToInt(),
+                Action = this.ProcessMode.ToInt(),
+                LogSource = "SalesOrderService",
+
+                MasterAccountNum = this.Data.SalesOrderHeader.MasterAccountNum,
+                ProfileNum = this.Data.SalesOrderHeader.ProfileNum,
+                DatabaseNum = this.Data.SalesOrderHeader.DatabaseNum,
+                ProcessUuid = this.Data.SalesOrderHeader.SalesOrderUuid,
+                ProcessNumber = this.Data.SalesOrderHeader.OrderNumber,
+                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+
+                LogMessage = string.Empty
+
+            });
+        }
 
         /// <summary>
         /// Add new data from Dto object
@@ -57,7 +105,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            // Add to ActivityLog
+            if (rtn)
+                AddActivityLogForCurrentData();
+            return rtn;
+
         }
 
         /// <summary>
@@ -80,7 +133,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+
+            // Add to ActivityLog
+            if (rtn)
+                await AddActivityLogForCurrentDataAsync();
+            return rtn;
+
         }
 
         public virtual bool Add(SalesOrderPayload payload)
@@ -104,7 +163,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            // Add to ActivityLog
+            if (rtn)
+                AddActivityLogForCurrentData();
+            return rtn;
         }
 
         public virtual async Task<bool> AddAsync(SalesOrderPayload payload)
@@ -128,7 +191,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+
+            // Add to ActivityLog
+            if (rtn)
+                await AddActivityLogForCurrentDataAsync();
+            return rtn;
         }
 
         /// <summary>
@@ -154,7 +222,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn)
+                AddActivityLogForCurrentData();
+            return rtn;
+
         }
 
         /// <summary>
@@ -180,7 +252,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn)
+                await AddActivityLogForCurrentDataAsync();
+            return rtn;
+
         }
 
         /// <summary>
@@ -210,7 +286,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn)
+                AddActivityLogForCurrentData();
+            return rtn;
+
         }
 
         /// <summary>
@@ -239,7 +319,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn)
+                await AddActivityLogForCurrentDataAsync();
+            return rtn;
+
         }
         ///// <summary>
         ///// Get sale order with detail by orderNumber
@@ -285,8 +369,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             payload.SalesOrders = result;
         }
-
-
 
         ///// <summary>
         ///// Get sale order list by Uuid list
@@ -351,6 +433,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //load data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             success = success && DeleteData();
+
+            if (success)
+                await AddActivityLogForCurrentDataAsync();
+
             return success;
         }
 
@@ -368,6 +454,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //load data
             var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             success = success && DeleteData();
+            if (success)
+                AddActivityLogForCurrentData();
+
             return success;
         }
 

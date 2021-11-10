@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -296,6 +297,94 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             success = success && DeleteData();
             return success;
+        }
+
+        public async Task<bool> ExistProcessUuidAsync(int erpEventProcessType, string processUuid)
+        {
+            return await dbFactory.ExistsAsync<ApInvoiceHeader>("ERPEventProcessType=@0 AND ProcessUuid=@1"
+                , erpEventProcessType.ToSqlParameter("erpEventProcessType")
+                , processUuid.ToSqlParameter("processUuid")
+            );
+        }
+
+        public async Task<long> GetRowNumByProcessUuidAsync(int erpEventProcessType, string processUuid)
+        {
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await EventProcessERPHelper.GetRowNumByProcessUuidAsync(erpEventProcessType, processUuid);
+        }
+
+        public long GetRowNumByProcessUuid(int erpEventProcessType, string processUuid)
+        {
+            using (var trs = new ScopedTransaction(dbFactory))
+                return EventProcessERPHelper.GetRowNumByProcessUuid(erpEventProcessType, processUuid);
+        }
+
+        /// <summary>
+        /// Add new EventProcessERP
+        /// </summary>
+        public virtual async Task<bool> AddEventProcessERPAsync(EventProcessERP data) =>
+            await AddEventProcessERPAsync(new EventProcessERPData(this.dbFactory, data));
+
+        public virtual async Task<bool> AddEventProcessERPAsync(EventProcessERPData data)
+        {
+            if (data is null)
+                return false;
+
+            var rowNum = await GetRowNumByProcessUuidAsync(data.EventProcessERP.ERPEventProcessType, data.EventProcessERP.ProcessUuid);
+
+            // if ProcessUuid exist and not complete process, can resend this processUuid
+            if (rowNum > 0)
+            {
+                if (await EditAsync(rowNum))
+                {
+                    if (data.EventProcessERP.ProcessStatusEnum == EventProcessProcessStatusEnum.Pending)
+                    {
+                        data.EventProcessERP.ActionStatusEnum = EventProcessActionStatusEnum.Pending;
+                        data.EventProcessERP.LastUpdateDate = DateTime.Now;
+                        return await SaveDataAsync();
+                    }
+                }
+            }
+
+            Add();
+            data.EventProcessERP.LastUpdateDate = DateTime.Now;
+            data.EventProcessERP.EventUuid = Guid.NewGuid().ToString();
+            this.AttachData(data);
+            return await SaveDataAsync();
+        }
+
+        /// <summary>
+        /// Add new EventProcessERP
+        /// </summary>
+        public virtual bool AddEventProcessERP(EventProcessERP data) =>
+            AddEventProcessERP(new EventProcessERPData(this.dbFactory, data));
+
+        public virtual bool AddEventProcessERP(EventProcessERPData data)
+        {
+            if (data is null)
+                return false;
+
+            var rowNum = GetRowNumByProcessUuid(data.EventProcessERP.ERPEventProcessType, data.EventProcessERP.ProcessUuid);
+
+            // if ProcessUuid exist and not complete process, can resend this processUuid
+            if (rowNum > 0)
+            {
+                if (Edit(rowNum))
+                {
+                    if (data.EventProcessERP.ProcessStatusEnum == EventProcessProcessStatusEnum.Pending)
+                    {
+                        data.EventProcessERP.ActionStatusEnum = EventProcessActionStatusEnum.Pending;
+                        data.EventProcessERP.LastUpdateDate = DateTime.Now;
+                        return SaveData();
+                    }
+                }
+            }
+
+            Add();
+            data.EventProcessERP.LastUpdateDate = DateTime.Now;
+            data.EventProcessERP.EventUuid = Guid.NewGuid().ToString();
+            this.AttachData(data);
+            return SaveData();
         }
 
     }

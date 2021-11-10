@@ -343,9 +343,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
-		/// <summary>
-		/// Vendor readable number, DatabaseNum + VendorNum is DigitBridgeVendorNum, which is global unique
-		/// </summary>
+        /// <summary>
+        /// Vendor readable number, DatabaseNum + VendorCode is DigitBridgeVendorCode, which is global unique
+        /// </summary>
         public virtual string VendorCode
         {
             get

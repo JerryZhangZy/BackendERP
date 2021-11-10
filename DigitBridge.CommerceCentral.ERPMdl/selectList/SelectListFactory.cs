@@ -366,8 +366,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload.Name.EqualsIgnoreSpace("po_vendorName"))
                 return new po_vendorName(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("po_vendorNum"))
-                return new po_vendorNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("po_vendorCode"))
+                return new po_vendorCode(dbFactory);
 
             if (payload.Name.EqualsIgnoreSpace("po_centralOrderNum"))
                 return new po_centralOrderNum(dbFactory);

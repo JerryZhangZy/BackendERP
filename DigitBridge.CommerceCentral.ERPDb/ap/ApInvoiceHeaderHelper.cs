@@ -48,7 +48,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ApInvoiceDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ApInvoiceDate AS {name ?? "ApInvoiceDate".ToCamelCase(camelCase)} ";
         public static string ApInvoiceTime(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ApInvoiceTime AS {name ?? "ApInvoiceTime".ToCamelCase(camelCase)} ";
         public static string VendorUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorUuid) AS {name ?? "VendorUuid".ToCamelCase(camelCase)} ";
-        public static string VendorNum(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorNum) AS {name ?? "VendorNum".ToCamelCase(camelCase)} ";
+        public static string VendorCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorCode) AS {name ?? "VendorCode".ToCamelCase(camelCase)} ";
         public static string VendorName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorName) AS {name ?? "VendorName".ToCamelCase(camelCase)} ";
         public static string VendorInvoiceNum(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorInvoiceNum) AS {name ?? "VendorInvoiceNum".ToCamelCase(camelCase)} ";
         public static string VendorInvoiceDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.VendorInvoiceDate AS {name ?? "VendorInvoiceDate".ToCamelCase(camelCase)} ";
@@ -87,7 +87,7 @@ RTRIM({allies}ApInvoiceNum) AS ApInvoiceNum,
 {allies}ApInvoiceDate AS ApInvoiceDate,
 {allies}ApInvoiceTime AS ApInvoiceTime,
 RTRIM({allies}VendorUuid) AS VendorUuid,
-RTRIM({allies}VendorNum) AS VendorNum,
+RTRIM({allies}VendorCode) AS VendorCode,
 RTRIM({allies}VendorName) AS VendorName,
 RTRIM({allies}VendorInvoiceNum) AS VendorInvoiceNum,
 {allies}VendorInvoiceDate AS VendorInvoiceDate,

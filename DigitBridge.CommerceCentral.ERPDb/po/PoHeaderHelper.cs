@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string EtaArrivalDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EtaArrivalDate AS {name ?? "EtaArrivalDate".ToCamelCase(camelCase)} ";
         public static string CancelDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CancelDate AS {name ?? "CancelDate".ToCamelCase(camelCase)} ";
         public static string VendorUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorUuid) AS {name ?? "VendorUuid".ToCamelCase(camelCase)} ";
-        public static string VendorNum(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorNum) AS {name ?? "VendorNum".ToCamelCase(camelCase)} ";
+        public static string VendorCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorCode) AS {name ?? "VendorCode".ToCamelCase(camelCase)} ";
         public static string VendorName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorName) AS {name ?? "VendorName".ToCamelCase(camelCase)} ";
         public static string Currency(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Currency) AS {name ?? "Currency".ToCamelCase(camelCase)} ";
         public static string SubTotalAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.SubTotalAmount AS {name ?? "SubTotalAmount".ToCamelCase(camelCase)} ";
@@ -94,7 +94,7 @@ RTRIM({allies}PoNum) AS PoNum,
 {allies}EtaArrivalDate AS EtaArrivalDate,
 {allies}CancelDate AS CancelDate,
 RTRIM({allies}VendorUuid) AS VendorUuid,
-RTRIM({allies}VendorNum) AS VendorNum,
+RTRIM({allies}VendorCode) AS VendorCode,
 RTRIM({allies}VendorName) AS VendorName,
 RTRIM({allies}Currency) AS Currency,
 {allies}SubTotalAmount AS SubTotalAmount,

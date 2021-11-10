@@ -156,40 +156,32 @@ AND ProfileNum = @profileNum";
                 masterAccountNum.ToSqlParameter("masterAccountNum"),
                 profileNum.ToSqlParameter("profileNum"));
         }
-        public static long GetRowNumByNumber(string number, int masterAccountNum, int profileNum)
+
+
+        public static long GetRowNumByProcessUuid(int erpEventProcessType, string processUuid)
         {
-            /*
-                        var sql = $@"
-            SELECT RowNum FROM EventProcessERP tbl
-            WHERE MasterAccountNum = @masterAccountNum
-            AND ProfileNum = @profileNum
-            AND OrderNumber = @number
-            ";
-                        return SqlQuery.ExecuteScalar<long>(sql,
-                            masterAccountNum.ToSqlParameter("masterAccountNum"),
-                            profileNum.ToSqlParameter("profileNum"),
-                            number.ToSqlParameter("number")
-                        );
-            */
-            return 0;
+            var sql = $@"
+SELECT TOP 1 RowNum FROM EventProcessERP tbl
+WHERE ERPEventProcessType = @erpEventProcessType
+AND ProcessUuid = @processUuid
+";
+            return SqlQuery.ExecuteScalar<long>(sql,
+                erpEventProcessType.ToSqlParameter("erpEventProcessType"),
+                processUuid.ToSqlParameter("processUuid")
+            );
         }
 
-        public static async Task<long> GetRowNumByNumberAsync(string number, int masterAccountNum, int profileNum)
+        public static async Task<long> GetRowNumByProcessUuidAsync(int erpEventProcessType, string processUuid)
         {
-            /*
-                        var sql = $@"
-            SELECT RowNum FROM EventProcessERP tbl
-            WHERE MasterAccountNum = @masterAccountNum
-            AND ProfileNum = @profileNum
-            AND OrderNumber = @number
-            ";
-                        return await SqlQuery.ExecuteScalarAsync<long>(sql,
-                            masterAccountNum.ToSqlParameter("masterAccountNum"),
-                            profileNum.ToSqlParameter("profileNum"),
-                            number.ToSqlParameter("number")
-                        );
-            */
-            return 0;
+            var sql = $@"
+SELECT TOP 1 RowNum FROM EventProcessERP tbl
+WHERE ERPEventProcessType = @erpEventProcessType
+AND ProcessUuid = @processUuid
+";
+            return await SqlQuery.ExecuteScalarAsync<long>(sql,
+                erpEventProcessType.ToSqlParameter("erpEventProcessType"),
+                processUuid.ToSqlParameter("processUuid")
+            );
         }
 
         public static List<long> GetRowNumsByNums(IList<string> nums, int masterAccountNum, int profileNum)
@@ -242,9 +234,9 @@ AND ProfileNum = @profileNum";
 {queryEventUuids}
 
 UPDATE EventProcessERP 
-SET Actionstatus={(int)EventProcessActionStatusEnum.Locked}
+SET Actionstatus={(int)EventProcessActionStatusEnum.Downloaded}
 OUTPUT Inserted.EventUuid  
-where Actionstatus={(int)EventProcessActionStatusEnum.Default}
+where Actionstatus={(int)EventProcessActionStatusEnum.Pending}
       AND ERPEventProcessType={(int)eventProcessType}
       AND EventUuid in (select * from #EventUuidList)
 
@@ -270,9 +262,9 @@ drop table #EventUuidList
 {queryEventUuids}
 
 UPDATE EventProcessERP 
-SET Actionstatus={(int)EventProcessActionStatusEnum.Locked}
+SET Actionstatus={(int)EventProcessActionStatusEnum.Downloaded}
 OUTPUT Inserted.EventUuid  
-where Actionstatus={(int)EventProcessActionStatusEnum.Default}
+where Actionstatus={(int)EventProcessActionStatusEnum.Pending}
       AND ERPEventProcessType={(int)eventProcessType}
       AND EventUuid in (select * from #EventUuidList)
 

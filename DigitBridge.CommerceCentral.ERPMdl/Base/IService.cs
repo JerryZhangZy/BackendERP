@@ -19,6 +19,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         IDataBaseFactory dbFactory { get; }
         TService SetDataBaseFactory(IDataBaseFactory dbFactory);
 
+        IActivityLogService ActivityLogService { get; }
+        Task<bool> AddActivityLogAsync(ActivityLog data);
+        bool AddActivityLog(ActivityLog data);
+
         TEntity Data { get; }
         ProcessingMode ProcessMode { get; }
         void SetProcessMode(ProcessingMode mode);
