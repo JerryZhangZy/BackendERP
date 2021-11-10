@@ -16,7 +16,7 @@ namespace DigitBridge.Base.Common
         Success = 1,
         Failed = 2,
     }
-    public enum EventProcessCloseStatusEnum : int
+    public enum EventCloseStatusEnum : int
     {
         Open = 0,
         Closed = 1,

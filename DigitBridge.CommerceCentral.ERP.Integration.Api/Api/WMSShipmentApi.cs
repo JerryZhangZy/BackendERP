@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 {
-    [ApiFilter(typeof(WMSShipmentBroker))]
-    public static class WMSShipmentBroker
+    [ApiFilter(typeof(WMSShipmentApi))]
+    public static class WMSShipmentApi
     {
         //// <summary>
         /// Add Shipment list

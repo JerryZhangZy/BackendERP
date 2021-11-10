@@ -21,19 +21,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public EventProcessActionStatusEnum ActionStatusEnum 
         {
             get => ActionStatus.ToEnum<EventProcessActionStatusEnum>(EventProcessActionStatusEnum.Pending);
-            set => ActionStatus = value.ToInt();
+            set => ActionStatus = (int)value;
         }
 
         public EventProcessProcessStatusEnum ProcessStatusEnum
         {
             get => ProcessStatus.ToEnum<EventProcessProcessStatusEnum>(EventProcessProcessStatusEnum.Pending);
-            set => ProcessStatus = value.ToInt();
+            set => ProcessStatus = (int)value;
         }
 
-        public EventProcessCloseStatusEnum CloseStatusEnum
+        public EventCloseStatusEnum CloseStatusEnum
         {
-            get => CloseStatus.ToEnum<EventProcessCloseStatusEnum>(EventProcessCloseStatusEnum.Open);
-            set => CloseStatus = value.ToInt();
+            get => CloseStatus.ToEnum<EventCloseStatusEnum>(EventCloseStatusEnum.Open);
+            set => CloseStatus = (int)value;
         }
 
     }

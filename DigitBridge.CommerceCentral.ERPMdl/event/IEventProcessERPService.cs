@@ -38,12 +38,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         Task<bool> ExistProcessUuidAsync(int erpEventProcessType, string processUuid);
         Task<long> GetRowNumByProcessUuidAsync(int erpEventProcessType, string processUuid);
         long GetRowNumByProcessUuid(int erpEventProcessType, string processUuid);
+        Task<bool> GetByProcessUuidAsync(int erpEventProcessType, string processUuid);
+
         Task<bool> AddEventProcessERPAsync(EventProcessERP data);
         Task<bool> AddEventProcessERPAsync(EventProcessERPData data);
         bool AddEventProcessERP(EventProcessERP data);
         bool AddEventProcessERP(EventProcessERPData data);
 
-
+        Task<bool> UpdateActionStatusAsync(AcknowledgePayload ackPayload);
+        Task<bool> UpdateProcessStatusAsync(AcknowledgeProcessPayload ackPayload);
+        Task<bool> UpdateCloseStatusAsync(int erpEventProcessType, string processUuid, int closeStatus);
     }
 }
 
