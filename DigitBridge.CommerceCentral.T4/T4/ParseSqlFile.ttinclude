@@ -207,6 +207,7 @@
         public string Name { get; set; }
         public string Type { get; set; }
         public string DataType { get; set; }
+        public bool isSqlDateTime { get; set; }
         public string Length { get; set; }
         public int Decimals { get; set; }
         public bool Identity { get; set; }
@@ -1057,6 +1058,8 @@
                             Name = m.Groups[1].Value,
                             Type = ChangeToCSharpType(m.Groups[2].Value, !IsNotNull(text)),
                             DataType = "SqlDbType." + Enum.Parse(typeof(SqlDbType), m.Groups[2].Value, true).ToString(),
+                            //isSqlDateTime = string.Equals(m.Groups[2].Value, "datetime" , StringComparison.CurrentCultureIgnoreCase),
+                            isSqlDateTime = m.Groups[2].Value.ToString().ToLower().Contains("datetime"), 
                             Length = m.Groups[3].Value,
                             Identity = IsIdentity(text),
                             Null = !IsNotNull(text),

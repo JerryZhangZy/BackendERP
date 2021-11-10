@@ -155,13 +155,13 @@ foreach(var col in table.Columns)
                 else if (col.Type.ToLower() == "byte" && col.PropertyType.ToLower() == "bool")  
                     WriteLine($"{new String('\t',indent)}{col.privateName} = value ? (byte)1 : (byte)0; ");
                 else if (col.isDateTime && col.Null) {
-                    if (col.isDate)
+                    if (col.isDate && !col.isSqlDateTime)
                         WriteLine($"{new String('\t',indent)}{col.privateName} = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); ");
                     else
                         WriteLine($"{new String('\t',indent)}{col.privateName} = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); ");
                 }
                 else if (col.isDateTime && !col.Null){
-                    if (col.isDate)
+                    if (col.isDate && !col.isSqlDateTime)
                         WriteLine($"{new String('\t',indent)}{col.privateName} = value.Date.ToSqlSafeValue(); ");
                     else
                         WriteLine($"{new String('\t',indent)}{col.privateName} = value.ToSqlSafeValue(); ");

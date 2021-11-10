@@ -301,7 +301,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> ExistProcessUuidAsync(int erpEventProcessType, string processUuid)
         {
-            return await dbFactory.ExistsAsync<ApInvoiceHeader>("ERPEventProcessType=@0 AND ProcessUuid=@1"
+            return await dbFactory.ExistsAsync<EventProcessERP>("ERPEventProcessType=@0 AND ProcessUuid=@1"
                 , erpEventProcessType.ToSqlParameter("erpEventProcessType")
                 , processUuid.ToSqlParameter("processUuid")
             );
@@ -317,6 +317,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             using (var trs = new ScopedTransaction(dbFactory))
                 return EventProcessERPHelper.GetRowNumByProcessUuid(erpEventProcessType, processUuid);
+        }
+
+        public virtual async Task<bool> GetByProcessUuidAsync(int erpEventProcessType, string processUuid)
+        {
+            if (this.ProcessMode == ProcessingMode.Add) return false;
+            var rowNum = await GetRowNumByProcessUuidAsync(erpEventProcessType, processUuid);
+            if (rowNum == 0) return false;
+            return await GetDataAsync(rowNum);
         }
 
         /// <summary>
@@ -337,19 +345,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 if (await EditAsync(rowNum))
                 {
-                    if (data.EventProcessERP.ProcessStatusEnum == EventProcessProcessStatusEnum.Pending)
+                    if (this.Data.EventProcessERP.ProcessStatusEnum == EventProcessProcessStatusEnum.Pending)
                     {
-                        data.EventProcessERP.ActionStatusEnum = EventProcessActionStatusEnum.Pending;
-                        data.EventProcessERP.LastUpdateDate = DateTime.Now;
+                        this.Data.EventProcessERP.ActionStatusEnum = EventProcessActionStatusEnum.Pending;
+                        this.Data.EventProcessERP.LastUpdateDate = DateTime.Now;
                         return await SaveDataAsync();
                     }
                 }
             }
 
             Add();
-            data.EventProcessERP.LastUpdateDate = DateTime.Now;
-            data.EventProcessERP.EventUuid = Guid.NewGuid().ToString();
             this.AttachData(data);
+            this.Data.EventProcessERP.LastUpdateDate = DateTime.Now;
+            this.Data.EventProcessERP.EventUuid = Guid.NewGuid().ToString();
             return await SaveDataAsync();
         }
 
@@ -389,102 +397,84 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
         #region batch update event process 
-        public virtual async Task<bool> UpdateActionStatusAsync(SyncResultPayload downloadResult)
+        public virtual async Task<bool> UpdateActionStatusAsync(AcknowledgePayload ackPayload)
         {
-            //            var sql = $@"  
-            //update EventProcessERP 
-            //set ActionStatus =@ActionStatus_New
-            //from EventProcessERP
-            //JOIN @EventUuidList EventUuidList ON (EventUuidList.item = EventProcessERP.ProcessUuid) 
-            //Where EventProcessERP.ActionStatus=@ActionStatus_Original
-            //      AND ERPEventProcessType=@ERPEventProcessType
-            //      AND MasterAccountNum=@MasterAccountNum
-            //      AND ProfileNum=@ProfileNum
-            //";
-
-
-            //var result = await dbFactory.Db.ExecuteAsync(sql,
-            //     ((int)EventProcessActionStatusEnum.Default).ToParameter("@ActionStatus_Original"),
-            //     ((int)EventProcessActionStatusEnum.Downloaded).ToParameter("@ActionStatus_New"),
-            //     payload.MasterAccountNum.ToParameter("@MasterAccountNum"),
-            //     payload.ProfileNum.ToParameter("@ProfileNum"),
-            //     downloadResult.EventProcessType.ToParameter("@ERPEventProcessType"),
-            //     downloadResult.EventUuids.ToParameter<string>("@EventUuidList")
-            //     );
-
             var sql = $@"  
-            update EventProcessERP 
-            set ActionStatus =@0
-            from EventProcessERP
-            JOIN @1 EventUuidList ON (EventUuidList.item = EventProcessERP.ProcessUuid) 
-            Where EventProcessERP.ActionStatus=@2
-                  AND ERPEventProcessType=@3
+            UPDATE epe 
+            SET ActionStatus = @0, ActionDate = getdate()
+            FROM EventProcessERP epe
+            INNER JOIN @1 EventUuidList ON (EventUuidList.item = epe.ProcessUuid) 
+            WHERE epe.ActionStatus=@2
+                  AND epe.ERPEventProcessType=@3
                   --AND MasterAccountNum=@4
                   --AND ProfileNum=@5
             ";
 
-
             var result = await dbFactory.Db.ExecuteAsync(sql,
                 ((int)EventProcessActionStatusEnum.Downloaded).ToParameter("@ActionStatus_New"),
-                downloadResult.EventUuids.ToParameter<string>("@EventUuidList"),
+                ackPayload.ProcessUuids.ToParameter<string>("@EventUuidList"),
                  ((int)EventProcessActionStatusEnum.Pending).ToParameter("@ActionStatus_Original"),
-                 downloadResult.EventProcessType.ToParameter("@ERPEventProcessType")
+                 ((int)ackPayload.EventProcessType).ToParameter("@ERPEventProcessType")
                  //payload.MasterAccountNum.ToParameter("@MasterAccountNum"),
                  //payload.ProfileNum.ToParameter("@ProfileNum")
-                 );
+            );
             //affect record equal the request data count.
-            var success = result == downloadResult.EventUuids.Count;
+            var success = result == ackPayload.ProcessUuids.Count;
             if (!success)
             {
-                AddError($"Total record is {downloadResult.EventUuids.Count}, actual affect record is {result}");
+                AddError($"Total record is {ackPayload.ProcessUuids.Count}, actual affect record is {result}");
             }
 
             return success;
         }
-        //        public virtual async Task<bool> BatchUpdateFaultProcessAsync(IList<EventProcessRequestPayload> requestDatas, int eventProcessType)
-        //        {
-        //            var keys = requestDatas.OrderBy(i => i.EventUuid).Select(j => j.EventUuid).ToList();
-        //            var values = requestDatas.OrderBy(i => i.EventUuid).Select(j => j.Message.ToString()).ToList();
-        //            var xmlDatas = keys.ListToXml(values);
 
-        //            var sql = $@"
-        //DECLARE @updateDatas TABLE
-        // (
-        //  [EventUuid] [varchar](50)  NOT NULL,
-        //  [EventMessage] [nvarchar](300) NULL
-        // );
+        public virtual async Task<bool> UpdateProcessStatusAsync(AcknowledgeProcessPayload ackPayload)
+        {
+            if (ackPayload == null || !ackPayload.HasProcessResults)
+                return false;
+            var erpEventProcessType = (int)ackPayload.EventProcessType;
+            if (erpEventProcessType <= 0) return false;
 
-        // INSERT @updateDatas (EventUuid ,EventMessage )
-        // SELECT  
-        // T.c.value(N'key[1]','varchar(50)') as EventUuid,
-        // T.c.value(N'value[1]','nvarchar(300)') as ErrorMessages
-        // FROM @xmlDatas.nodes('parameters/parameter') T(c);
+            var success = true;
+            foreach (var result in ackPayload.ProcessResults)
+            {
+                if (result == null || string.IsNullOrEmpty(result.ProcessUuid)) continue;
+                // load by processUuid 
+                this.Edit();
+                if (!(await this.GetByProcessUuidAsync(erpEventProcessType, result.ProcessUuid))) continue;
 
+                // if event already closed, don't update process status 
+                if (this.Data.EventProcessERP.CloseStatusEnum == EventCloseStatusEnum.Closed) continue;
+                this.Data.EventProcessERP.ProcessStatus = result.ProcessStatus;
+                this.Data.EventProcessERP.ProcessDate = DateTime.Now;
+                this.Data.EventProcessERP.ProcessData = (result.ProcessData == null) ? string.Empty : result.ProcessData.ToString();
+                await this.SaveDataAsync();
+            }
+            return success;
+        }
 
-        //update EventProcessERP 
-        //set ActionStatus =@ActionStatus_New,
-        //    EventMessage =updateData.EventMessage
-        //from EventProcessERP
-        //JOIN @updateDatas updateData ON (updateData.EventUuid = EventProcessERP.EventUuid) 
-        //Where EventProcessERP.ActionStatus=@ActionStatus_Original
-        //      AND ERPEventProcessType=@ERPEventProcessType";
+        public virtual async Task<bool> UpdateCloseStatusAsync(int erpEventProcessType, string processUuid, int closeStatus)
+        {
+            var sql = $@"  
+            UPDATE epe 
+            SET CloseStatus = @0, CloseDate = getdate()
+            FROM EventProcessERP epe
+            WHERE epe.ProcessUuid=@1
+                AND epe.CloseStatus!=@2
+                AND epe.ERPEventProcessType=@3
+            ";
 
-        //            var result = await dbFactory.Db.ExecuteAsync(sql,
-        //                 ((int)EventProcessActionStatusEnum.Locked).ToParameter("@ActionStatus_Original"),
-        //                 ((int)EventProcessActionStatusEnum.Failed).ToParameter("@ActionStatus_New"),
-        //                 (eventProcessType).ToParameter("ERPEventProcessType"),
-        //                 xmlDatas.ToXmlParameter("@xmlDatas")
-        //                 );
+            var result = await dbFactory.Db.ExecuteAsync(sql,
+                closeStatus.ToParameter("@0"),
+                processUuid.ToParameter("@1"),
+                closeStatus.ToParameter("@2"),
+                erpEventProcessType.ToParameter("@3")
+            //payload.MasterAccountNum.ToParameter("@MasterAccountNum"),
+            //payload.ProfileNum.ToParameter("@ProfileNum")
+            );
+            return result > 0;
+        }
 
-        //            //affect record equal the request data count.
-        //            var success = result == requestDatas.Count;
-        //            if (!success)
-        //            {
-        //                AddError($"Total record is {requestDatas.Count}, actual affect record is {result}");
-        //            }
-
-        //            return success;
-        //        }
         #endregion
 
     }

@@ -1,5 +1,7 @@
 ﻿using DigitBridge.Base.Common;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -40,21 +42,46 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// <summary>
     /// Fault event proceess.
     /// </summary>
-    public class SyncResultPayload
+    public class AcknowledgePayload: PayloadBase
     {
         /// <summary>
-        /// EventUuid list
+        /// (Request Body Data) List of received EventUuid.
         /// </summary>
-        public IList<string> EventUuids { get; set; }
-
-        ///// <summary>
-        ///// ActionStatus
-        ///// </summary>
-        //public int ActionStatus { get; set; }
+        [OpenApiPropertyDescription("(Request Body Data) List of EventUuid which have been received.")]
+        public IList<string> ProcessUuids { get; set; }
+        [JsonIgnore] public virtual bool HasProcessUuids => ProcessUuids != null && ProcessUuids.Count > 0;
 
         /// <summary>
         /// EventProcessType 
         /// </summary>
-        public int EventProcessType { get; set; }
+        [JsonIgnore] 
+        public EventProcessTypeEnum EventProcessType { get; set; }
     }
+
+    public class ProcessResult
+    {
+        public string ProcessUuid { get; set; }
+        public int ProcessStatus { get; set; }
+        public JObject ProcessData { get; set; }
+    }
+
+    /// <summary>
+    /// Fault event proceess.
+    /// </summary>
+    public class AcknowledgeProcessPayload : PayloadBase
+    {
+        /// <summary>
+        /// (Request Body Data) List of received EventUuid.
+        /// </summary>
+        [OpenApiPropertyDescription("(Request Body Data) List of EventUuid which have been received.")]
+        public IList<ProcessResult> ProcessResults { get; set; }
+        [JsonIgnore] public virtual bool HasProcessResults => ProcessResults != null && ProcessResults.Count > 0;
+
+        /// <summary>
+        /// EventProcessType 
+        /// </summary>
+        [JsonIgnore]
+        public EventProcessTypeEnum EventProcessType { get; set; }
+    }
+
 }

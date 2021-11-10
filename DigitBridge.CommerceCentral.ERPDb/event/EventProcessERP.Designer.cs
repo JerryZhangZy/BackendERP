@@ -318,7 +318,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_actionDate = value.Date.ToSqlSafeValue(); 
+				_actionDate = value.ToSqlSafeValue(); 
 				OnPropertyChanged("ActionDate", value);
             }
         }
@@ -350,7 +350,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_processDate = value.Date.ToSqlSafeValue(); 
+				_processDate = value.ToSqlSafeValue(); 
 				OnPropertyChanged("ProcessDate", value);
             }
         }
@@ -382,7 +382,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_closeDate = value.Date.ToSqlSafeValue(); 
+				_closeDate = value.ToSqlSafeValue(); 
 				OnPropertyChanged("CloseDate", value);
             }
         }
@@ -398,7 +398,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_lastUpdateDate = value.Date.ToSqlSafeValue(); 
+				_lastUpdateDate = value.ToSqlSafeValue(); 
 				OnPropertyChanged("LastUpdateDate", value);
             }
         }
@@ -414,7 +414,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_updateDateUtc = value.Date.ToSqlSafeValue(); 
+				_updateDateUtc = value.ToSqlSafeValue(); 
 				OnPropertyChanged("UpdateDateUtc", value);
             }
         }

@@ -365,11 +365,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     ChannelNum = log.ChannelNum,
                     ChannelAccountNum = log.ChannelAccountNum,
-                    ERPEventProcessType = eventProcessType.ToInt(),
+                    ERPEventProcessType = (int)eventProcessType,
                     ProcessSource = string.Empty,
                     ProcessUuid = log.ProcessUuid,
                     ProcessData = string.Empty,
-                    ActionStatus = EventProcessActionStatusEnum.Pending.ToInt(),
+                    ActionStatus = (int)EventProcessActionStatusEnum.Pending,
                     EventMessage = string.Empty
                 });
             }
@@ -386,9 +386,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 this.EventProcessERPService.AddEventProcessERP(new EventProcessERP(this.dbFactory)
                 {
+                    MasterAccountNum = log.MasterAccountNum,
+                    ProfileNum = log.ProfileNum,
+                    DatabaseNum = log.DatabaseNum,
                     ChannelNum = log.ChannelNum,
                     ChannelAccountNum = log.ChannelAccountNum,
-                    ERPEventProcessType = eventProcessType.ToInt(),
+                    ERPEventProcessType = (int)eventProcessType,
                     ProcessSource = string.Empty,
                     ProcessUuid = log.ProcessUuid,
                     ProcessData = string.Empty,
@@ -396,7 +399,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     ActionDate = DateTime.Now,
                     ProcessStatusEnum = EventProcessProcessStatusEnum.Pending,
                     //ProcessDate = DateTime.Now,
-                    CloseStatusEnum = EventProcessCloseStatusEnum.Open,
+                    CloseStatusEnum = EventCloseStatusEnum.Open,
                     //CloseDate = DateTime.Now,
                     EventMessage = string.Empty
                 });

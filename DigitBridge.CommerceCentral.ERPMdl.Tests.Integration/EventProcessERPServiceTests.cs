@@ -20,6 +20,8 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
+using DigitBridge.Base.Common;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -274,6 +276,109 @@ FROM EventProcessERP ins
 
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}
+
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task AddEventProcessERPAsync_Test()
+        {
+
+            var data = new EventProcessERP(DataBaseFactory)
+            {
+                ChannelNum = 10001,
+                ChannelAccountNum = 101,
+                ERPEventProcessType = (int)EventProcessTypeEnum.SalesOrderToWMS,
+                ProcessSource = string.Empty,
+                ProcessUuid = "602e17ff-c31a-0b94-ccc3-833dc0809943",
+                ProcessData = string.Empty,
+                ActionStatus = EventProcessActionStatusEnum.Pending.ToInt(),
+                EventMessage = string.Empty
+            };
+
+            var srv = new EventProcessERPService(DataBaseFactory);
+            var result = (await srv.AddEventProcessERPAsync(data));
+            
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateActionStatusAsync_Test()
+        {
+
+            var data = new AcknowledgePayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                DatabaseNum = 1,
+
+                EventProcessType = EventProcessTypeEnum.SalesOrderToWMS,
+                ProcessUuids = new List<string>() 
+                {
+                    "602e17ff-c31a-0b94-ccc3-833dc0809943",
+                    "cb23e397-6205-0629-3df3-19a253223309"
+                },
+            };
+
+            var srv = new EventProcessERPService(DataBaseFactory);
+            var result = (await srv.UpdateActionStatusAsync(data));
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateProcessStatusAsync_Test()
+        {
+
+            var data = new AcknowledgeProcessPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                DatabaseNum = 1,
+
+                EventProcessType = EventProcessTypeEnum.SalesOrderToWMS,
+                ProcessResults = new List<ProcessResult>()
+                {
+                    new ProcessResult()
+                    {
+                        ProcessUuid = "602e17ff-c31a-0b94-ccc3-833dc0809943",
+                        ProcessStatus = 1,
+                        ProcessData = new JObject()
+                            {
+                                { "ClassCode", "WMS class code" },
+                                { "Message", "WMS message" },
+                                { "ProcessBy", "processor name" }
+                            }
+                    },
+                    new ProcessResult()
+                    {
+                        ProcessUuid = "cb23e397-6205-0629-3df3-19a253223309",
+                        ProcessStatus = 2,
+                        ProcessData = null
+                    }
+                },
+            };
+
+            var srv = new EventProcessERPService(DataBaseFactory);
+            var result = (await srv.UpdateProcessStatusAsync(data));
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateCloseStatusAsync_Test()
+        {
+            var eventProcessType = (int)EventProcessTypeEnum.SalesOrderToWMS;
+            var ProcessUuid = "602e17ff-c31a-0b94-ccc3-833dc0809943";
+            var closeStatus = (int)EventCloseStatusEnum.Closed;
+
+            var srv = new EventProcessERPService(DataBaseFactory);
+            var result = (await srv.UpdateCloseStatusAsync(eventProcessType, ProcessUuid, closeStatus));
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
     }
 }
