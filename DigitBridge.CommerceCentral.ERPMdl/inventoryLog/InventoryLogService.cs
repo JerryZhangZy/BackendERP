@@ -969,6 +969,12 @@ where inv.InventoryUuid=il.InventoryUuid
             return true;
         }
 
+        public async Task<bool> UpdateByDeleteShipmentAsync(string orderShipmentUuid)
+        {
+            await ClearInventoryLogByLogUuidAsync(orderShipmentUuid);
+            return true;
+        }
+
         private IList<InventoryLog> ConvertShipmentsToInventoryLogList(OrderShipmentHeader header,IList<OrderShipmentPackage> packages, long batchNum, string logUuid)
         {
             var list = new List<InventoryLog>();
