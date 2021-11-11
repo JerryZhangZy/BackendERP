@@ -424,7 +424,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             foreach (var item in data.Inventory)
             {
-                if (item.Instock > 0)
+                if (item.Instock > 0||item.QtyPerBox>0||item.QtyPerCase>0||item.QtyPerPallot>0||item.AvaQty>0)
                 {
                     AddError($" {data.ProductBasic.SKU}  in inventory exist any qty, cannot delete SKU");
                     IsValid = false;
