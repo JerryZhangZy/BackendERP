@@ -29,7 +29,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return base.Init();
         }
 
-
+        MiscInvoiceService _miscInvoiceService;
+        MiscInvoiceService MiscInvoiceService
+        {
+            get
+            {
+                if (_miscInvoiceService == null) _miscInvoiceService = new MiscInvoiceService(dbFactory);
+                return _miscInvoiceService;
+            }
+        }
         public async Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceUuid, string invoiceNumber, decimal amount)
         {
             Add();
@@ -86,8 +94,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"AddMiscPayment->SaveDataAsync error.");
                 return false;
             }
+            await MiscInvoiceService.PayAsync(miscInvoiceUuid, amount);
             return true;
         }
+
+        //Snowy:can't delete, don't know TransUuid or TransNumber
+        //public override async Task<bool> DeleteAsync(string id)
+        //{
+        //    if (await base.DeleteAsync(id))
+        //    {
+        //        await MiscInvoiceService.PayAsync(Data.MiscInvoiceTransaction.MiscInvoiceUuid, -Data.MiscInvoiceTransaction.TotalAmount);
+        //        return true;
+        //    }
+        //    return false;
+        //}
+        //public override bool Delete(string id)
+        //{
+        //    if (base.Delete(id))
+        //    {
+        //        MiscInvoiceService.PayAsync(Data.MiscInvoiceTransaction.MiscInvoiceUuid, -Data.MiscInvoiceTransaction.TotalAmount).Wait();
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
         /// <summary>
         /// Get misc invoice payment with detail and miscinvoiceheader by miscInvoiceNumber

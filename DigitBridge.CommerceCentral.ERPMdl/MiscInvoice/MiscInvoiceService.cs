@@ -336,28 +336,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
-        /// <summary>
-        /// Withdraw money from misc invoice(this method is for internal,no validate for uuid)
-        /// </summary>
-        public virtual async Task<bool> WithdrawAsync(string miscInvoiceUuid, decimal amount)
-        {
-            Edit();
+        ///// <summary>
+        ///// Withdraw money from misc invoice(this method is for internal,no validate for uuid)
+        ///// </summary>
+        //public virtual async Task<bool> WithdrawAsync(string miscInvoiceUuid, decimal amount)
+        //{
+        //    Edit();
 
-            if (!await GetDataByIdAsync(miscInvoiceUuid))
-            {
-                AddError($"Data not found for miscInvoiceUuid:{miscInvoiceUuid}");
-                return false;
-            }
-            Data.MiscInvoiceHeader.Balance = Data.MiscInvoiceHeader.Balance - amount;
+        //    if (!await GetDataByIdAsync(miscInvoiceUuid))
+        //    {
+        //        AddError($"Data not found for miscInvoiceUuid:{miscInvoiceUuid}");
+        //        return false;
+        //    }
+        //    Data.MiscInvoiceHeader.Balance = Data.MiscInvoiceHeader.Balance - amount;
 
-            if (!await SaveDataAsync())
-            {
-                AddError("WithdrawAsync->SaveDataAsync error.");
-                return false;
-            }
+        //    if (!await SaveDataAsync())
+        //    {
+        //        AddError("WithdrawAsync->SaveDataAsync error.");
+        //        return false;
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
         public virtual async Task GetListByMiscInvoiceNumbersAsync(MiscInvoicePayload payload)
         {
             if (payload is null || !payload.HasMiscInvoiceNumbers)
@@ -389,6 +389,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             var success = _data.GetByNumber(masterAccountNum, profileNum, miscInvoiceNumber);
             return success;
+        }
+
+        public async Task PayAsync(string uuid, decimal payAmount)
+        {
+            var sql = $"UPDATE MiscInvoiceHeader SET PaidAmount=PaidAmount+({payAmount}), Balance=Balance-({payAmount}) WHERE MiscInvoiceUuid='{uuid}'";
+            await dbFactory.Db.ExecuteAsync(sql);
+        }
+        public void Pay(string uuid, decimal payAmount)
+        {
+            var sql = $"UPDATE MiscInvoiceHeader SET PaidAmount=PaidAmount+({payAmount}), Balance=Balance-({payAmount}) WHERE MiscInvoiceUuid='{uuid}'";
+            dbFactory.Db.Execute(sql);
         }
     }
 }
