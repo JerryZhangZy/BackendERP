@@ -144,7 +144,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return isValid;
         }
 
-        public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
+        public virtual async Task<bool> ValidateAccountAsync(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)                                                                                                                                                                                            
         {
             var isValid = true;
             var pl = payload as InventoryPayload;
@@ -154,21 +154,44 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"ProductExt is required.");
                 return false;
             }
+           
+
 
             if (processingMode == ProcessingMode.Add)
             {
-                //For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+
+
+
+                //#region For Add mode is,set MasterAccountNum, ProfileNum and DatabaseNum from payload to dto
+
                 dto.ProductExt.MasterAccountNum = pl.MasterAccountNum;
                 dto.ProductExt.ProfileNum = pl.ProfileNum;
                 dto.ProductExt.DatabaseNum = pl.DatabaseNum;
+
+                dto.ProductBasic.MasterAccountNum = payload.MasterAccountNum;
+                dto.ProductBasic.ProfileNum = payload.ProfileNum;
+                dto.ProductBasic.DatabaseNum = payload.DatabaseNum;
+ 
+                dto.Inventory.ToList().ForEach(r =>
+                {
+                    r.MasterAccountNum = payload.MasterAccountNum;
+                    r.ProfileNum = payload.ProfileNum;
+                    r.DatabaseNum = payload.DatabaseNum;
+                });
+                //#endregion
+
+
+
                 if (dto.ProductExt.HasSKU)
                 {
                     using (var trx = new ScopedTransaction(dbFactory))
                     {
                         if (!await InventoryServiceHelper.ExistNumberAsync(dto.ProductExt.SKU, pl.MasterAccountNum, pl.ProfileNum))
                         {
-                            AddError($"ProductExt SKU:{dto.ProductExt.SKU} not found.");
-                            isValid = false;
+                            //dto.ProductBasic.ProductUuid = System.Guid.NewGuid().ToString();
+                            //dto.ProductExt.ProductUuid = dto.ProductBasic.ProductUuid;
+                            //AddError($"ProductExt SKU:{dto.ProductExt.SKU} not found.");
+                            //isValid = false;
                         }
                     }
 
@@ -395,6 +418,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"RowNum: {data.ProductBasic.RowNum} not found.");
                 return IsValid;
             }
+
+            #region  
+            #endregion
+
+            foreach (var item in data.Inventory)
+            {
+                if (item.Instock > 0)
+                {
+                    AddError($" {data.ProductBasic.SKU}  in inventory exist any qty, cannot delete SKU");
+                    IsValid = false;
+                    return IsValid;
+                }
+            }
             return true;
         }
 
@@ -478,6 +514,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
             }
             IsValid=isValid;
+
             return isValid;
         }
         #endregion
