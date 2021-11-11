@@ -394,35 +394,35 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             #region  vender
 
-            if (payload.Name.EqualsIgnoreSpace("vender_area"))
-                return new vender_area(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("vendor_area"))
+                return new vendor_area(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("vender_businessType"))
-                return new vender_businessType(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("vendor_businessType"))
+                return new vendor_businessType(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("vender_classCode"))
-                return new vender_classCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("vendor_classCode"))
+                return new vendor_classCode(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("vender_departmentCode"))
-                return new vender_departmentCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("vendor_departmentCode"))
+                return new vendor_departmentCode(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("vender_email"))
-                return new vender_email(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("vendor_email"))
+                return new vendor_email(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("vender_phone1"))
-                return new vender_phone1(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("vendor_phone1"))
+                return new vendor_phone1(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("vender_vendorCode"))
-                return new vender_vendorCode(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("vendor_vendorCode"))
+                return new vendor_vendorCode(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("vender_vendorName"))
-                return new vender_vendorName(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("vendor_vendorName"))
+                return new vendor_vendorName(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("vender_vendorStatus"))
-                return new vender_vendorStatus(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("vendor_vendorStatus"))
+                return new vendor_vendorStatus(dbFactory);
 
-            if (payload.Name.EqualsIgnoreSpace("vender_vendorType"))
-                return new vender_vendorType(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("vendor_vendorType"))
+                return new vendor_vendorType(dbFactory);
 
 
             #endregion
