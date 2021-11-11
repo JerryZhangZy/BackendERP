@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <param name="profileNum"></param>
         /// <param name="salesOrderUuids"></param>
         /// <returns></returns>
-        public async Task<bool> AckReceiveSalesOrders(int masterAccountNum, int profileNum, IList<string> salesOrderUuids)
+        public async Task<bool> AckReceiveSalesOrdersAsync(int masterAccountNum, int profileNum, IList<string> salesOrderUuids)
         {
             if (!SetAccount(masterAccountNum, profileNum))
             {

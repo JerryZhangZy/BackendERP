@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <param name="profileNum"></param>
         /// <param name="requestPayload"></param>
         /// <returns></returns>
-        public async Task<bool> AckProcessSalesOrders(int masterAccountNum, int profileNum, IList<ProcessResult> processResults)
+        public async Task<bool> AckProcessSalesOrdersAsync(int masterAccountNum, int profileNum, IList<ProcessResult> processResults)
         {
             if (!SetAccount(masterAccountNum, profileNum))
             {

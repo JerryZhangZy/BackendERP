@@ -43,7 +43,8 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             payload.EventProcessType = EventProcessTypeEnum.SalesOrderToWMS;
 
             var srv = new EventProcessERPService(dataBaseFactory);
-            await srv.UpdateActionStatusAsync(payload);
+            payload.Success = await srv.UpdateActionStatusAsync(payload);
+            payload.Messages = srv.Messages;
             return new JsonNetResponse<AcknowledgePayload>(payload);
         }
 
@@ -65,7 +66,8 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             payload.EventProcessType = EventProcessTypeEnum.SalesOrderToWMS;
 
             var srv = new EventProcessERPService(dataBaseFactory);
-            await srv.UpdateProcessStatusAsync(payload);
+            payload.Success = await srv.UpdateProcessStatusAsync(payload);
+            payload.Messages = srv.Messages;
             return new JsonNetResponse<AcknowledgeProcessPayload>(payload);
         }
     }
