@@ -114,7 +114,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     var invoiceTransaction = Data.InvoiceTransaction;
                     if (invoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
                     {
-                        payload.Success = await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.InvoiceUuid, invoiceTransaction.OriginalPaidAmount);
+                        payload.Success = await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.InvoiceUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.OriginalPaidAmount);
                         if (!payload.Success)
                         {
                             AddError("Add miscInvoice fail");

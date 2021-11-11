@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
 
-        public async Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceUuid, decimal amount)
+        public async Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceUuid, string invoiceNumber, decimal amount)
         {
             Add();
             if (miscInvoiceUuid.IsZero())
@@ -66,7 +66,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 TotalAmount = amount > header.Balance ? header.Balance : amount,
                 PaidBy = (int)PaidByAr.CreditMemo,
-                CheckNum = invoiceUuid,
+                CheckNum = invoiceNumber,
+                AuthCode = invoiceUuid,
                 TransDate = DateTime.Now,
                 TransTime = DateTime.Now.TimeOfDay,
                 TransType = (int)TransTypeEnum.Payment,
