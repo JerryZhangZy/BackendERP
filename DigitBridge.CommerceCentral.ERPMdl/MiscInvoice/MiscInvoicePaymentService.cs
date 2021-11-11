@@ -65,7 +65,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 Description = "Add misc payment trans for applying prepayment amount",
 
                 TotalAmount = amount > header.Balance ? header.Balance : amount,
-                PaidBy = (int)PaidByEnum.Prepayment,
+                PaidBy = (int)PaidByAr.CreditMemo,
                 CheckNum = invoiceUuid,
                 TransDate = DateTime.Now,
                 TransTime = DateTime.Now.TimeOfDay,

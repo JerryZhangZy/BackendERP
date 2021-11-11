@@ -101,7 +101,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 //add payment success. then pay invoice.
                 var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
-                if (!success)
+                if (success)
+                {
+                    if (paymentPayload.InvoiceTransaction.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+                    {
+
+                    }
+                }
+                else
                 {
                     payload.Success = false;
                     applyInvoice.Success = false;
@@ -570,7 +577,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 TaxRate = header.TaxRate,
 
                 TotalAmount = amount,
-                PaidBy = (int)PaidByEnum.Prepayment,
+                PaidBy = (int)PaidByAr.CreditMemo,
                 CheckNum = miscInvoiceUuid,
                 Description = "Add payment from prepayment",
             };

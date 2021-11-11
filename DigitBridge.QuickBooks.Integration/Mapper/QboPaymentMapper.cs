@@ -119,16 +119,16 @@ namespace DigitBridge.QuickBooks.Integration
             Line line;
             switch (tran.PaidBy)
             {
-                //case (int)PaidByEnum.Cash: 
+                //case (int)PaidByAr.Cash: 
                 //line = CashToQboLine(tran);
                 //    break;
-                case (int)PaidByEnum.Check:
+                case (int)PaidByAr.Check:
                     line = CheckToQboLine(tran);
                     break;
-                case (int)PaidByEnum.CreditCard:
+                case (int)PaidByAr.CreditCard:
                     line = CreditCardToQboLine(tran);
                     break;
-                //case (int)PaidByEnum.Expense:
+                //case (int)PaidByAr.Expense:
                 //    line = CashToQboLine(tran);
                 //break;
                 default:
@@ -195,13 +195,13 @@ namespace DigitBridge.QuickBooks.Integration
         {
             switch (paidBy)
             {
-                case (int)PaidByEnum.Cash:
+                case (int)PaidByAr.Cash:
                     return PaymentTypeEnum.Cash;
-                case (int)PaidByEnum.Check:
+                case (int)PaidByAr.Check:
                     return PaymentTypeEnum.Check;
-                case (int)PaidByEnum.CreditCard:
+                case (int)PaidByAr.CreditCard:
                     return PaymentTypeEnum.CreditCard;
-                case (int)PaidByEnum.Expense:
+                case (int)PaidByAr.ECheck:
                     return PaymentTypeEnum.Expense;
                 default:
                     return PaymentTypeEnum.Other;
@@ -211,11 +211,11 @@ namespace DigitBridge.QuickBooks.Integration
         {
             switch (paidBy)
             {
-                case (int)PaidByEnum.Cash:
+                case (int)PaidByAr.Cash:
                     return (int)PaymentMethodEnum.Cash;
-                case (int)PaidByEnum.Check:
+                case (int)PaidByAr.Check:
                     return (int)PaymentMethodEnum.Check;
-                case (int)PaidByEnum.CreditCard:
+                case (int)PaidByAr.CreditCard:
                     return (int)PaymentMethodEnum.OtherCreditCard;
                 default:
                     return (int)PaymentMethodEnum.Other;
