@@ -415,8 +415,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 ackPayload.ProcessUuids.ToParameter<string>("@EventUuidList"),
                  ((int)EventProcessActionStatusEnum.Pending).ToParameter("@ActionStatus_Original"),
                  ((int)ackPayload.EventProcessType).ToParameter("@ERPEventProcessType")
-                 //payload.MasterAccountNum.ToParameter("@MasterAccountNum"),
-                 //payload.ProfileNum.ToParameter("@ProfileNum")
+            //payload.MasterAccountNum.ToParameter("@MasterAccountNum"),
+            //payload.ProfileNum.ToParameter("@ProfileNum")
             );
             //affect record equal the request data count.
             var success = result == ackPayload.ProcessUuids.Count;
@@ -445,6 +445,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 // if event already closed, don't update process status 
                 if (this.Data.EventProcessERP.CloseStatusEnum == EventCloseStatusEnum.Closed) continue;
+
+                // if ActionStatus is still pending, ack receive salesorder.
+                if (this.Data.EventProcessERP.ActionStatus == (int)EventProcessActionStatusEnum.Pending)
+                {
+                    this.Data.EventProcessERP.ActionStatus = (int)EventProcessActionStatusEnum.Downloaded;
+                    this.Data.EventProcessERP.ActionDate = DateTime.Now;
+                }
+
+
                 this.Data.EventProcessERP.ProcessStatus = result.ProcessStatus;
                 this.Data.EventProcessERP.ProcessDate = DateTime.Now;
                 this.Data.EventProcessERP.ProcessData = (result.ProcessData == null) ? string.Empty : result.ProcessData.ToString();

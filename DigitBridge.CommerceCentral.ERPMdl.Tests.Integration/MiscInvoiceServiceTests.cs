@@ -328,24 +328,24 @@ FROM MiscInvoiceHeader ins
 
         }
 
-        [Fact()]
-        //[Fact(Skip = SkipReason)]
-        public async Task WithdrawAsync_Test()
-        {
-            var misInvoiceData = MiscInvoiceDataTests.SaveFakerMiscInvoice(DataBaseFactory);
+        //[Fact()]
+        ////[Fact(Skip = SkipReason)]
+        //public async Task WithdrawAsync_Test()
+        //{
+        //    var misInvoiceData = MiscInvoiceDataTests.SaveFakerMiscInvoice(DataBaseFactory);
 
-            var service = new MiscInvoiceService(DataBaseFactory);
-            var banlance = new Random().Next(1, 100);
-            var success = await service.WithdrawAsync(misInvoiceData.UniqueId, banlance);
-            Assert.True(success, service.Messages.ObjectToString());
+        //    var service = new MiscInvoiceService(DataBaseFactory);
+        //    var banlance = new Random().Next(1, 100);
+        //    var success = await service.WithdrawAsync(misInvoiceData.UniqueId, banlance);
+        //    Assert.True(success, service.Messages.ObjectToString());
 
 
-            var service_Get = new MiscInvoiceService(DataBaseFactory);
-            success = await service_Get.GetDataByIdAsync(misInvoiceData.UniqueId);
-            Assert.True(success, service_Get.Messages.ObjectToString());
+        //    var service_Get = new MiscInvoiceService(DataBaseFactory);
+        //    success = await service_Get.GetDataByIdAsync(misInvoiceData.UniqueId);
+        //    Assert.True(success, service_Get.Messages.ObjectToString());
 
-            //Assert.Equal(banlance, service_Get.Data.MiscInvoiceHeader.Balance);
-        }
+        //    //Assert.Equal(banlance, service_Get.Data.MiscInvoiceHeader.Balance);
+        //}
 
     }
 }
