@@ -28,6 +28,8 @@ namespace DigitBridge.Base.Common
         BouncedCheck = 72,
         ReturnCredit = 201,
         ReturnCash = 202,
-        Return = 203
+        Return = 203,
+
+        Expense = 30
     }
 }

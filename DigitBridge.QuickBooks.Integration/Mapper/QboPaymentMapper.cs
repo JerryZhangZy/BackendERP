@@ -201,7 +201,7 @@ namespace DigitBridge.QuickBooks.Integration
                     return PaymentTypeEnum.Check;
                 case (int)PaidByAr.CreditCard:
                     return PaymentTypeEnum.CreditCard;
-                case (int)PaidByAr.ECheck:
+                case (int)PaidByAr.Expense:
                     return PaymentTypeEnum.Expense;
                 default:
                     return PaymentTypeEnum.Other;

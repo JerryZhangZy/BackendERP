@@ -20,6 +20,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class InvoicePaymentService : InvoiceTransactionService, IInvoicePaymentService
     {
+        MiscInvoicePaymentService _miscServicePayment;
+        MiscInvoicePaymentService MiscPaymentService
+        {
+            get
+            {
+                if (_miscServicePayment == null) _miscServicePayment = new MiscInvoicePaymentService(dbFactory);
+                return _miscServicePayment;
+            }
+        }
         public InvoicePaymentService(IDataBaseFactory dbFactory) : base(dbFactory)
         {
         }
@@ -64,7 +73,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return (payments, Data.InvoiceData);
         }
 
-
         #region add multi payments
         public virtual async Task<bool> AddAsync(InvoicePaymentPayload payload)
         {
@@ -103,9 +111,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
                 if (success)
                 {
-                    if (paymentPayload.InvoiceTransaction.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+                    var invoiceTransaction = Data.InvoiceTransaction;
+                    if (invoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
                     {
-
+                        payload.Success = await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.InvoiceUuid, invoiceTransaction.OriginalPaidAmount);
+                        if (!payload.Success)
+                        {
+                            AddError("Add miscInvoice fail");
+                        }
                     }
                 }
                 else
