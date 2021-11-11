@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
-    public class WMSAckProcessSalesOrdersClient : ApiClientBase<AcknowledgeProcessPayload>
+    public class WMSAckProcessSalesOrderClient : ApiClientBase<AcknowledgeProcessPayload>
     {
         /// <summary>
         /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were not config in config file
         /// Local config file is 'local.settings.json'
         /// </summary>
-        public WMSAckProcessSalesOrdersClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
+        public WMSAckProcessSalesOrderClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
         {
 
         }
@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// </summary>
         /// <param name="baseUrl"></param>
         /// <param name="authCode"></param>
-        public WMSAckProcessSalesOrdersClient(string baseUrl, string authCode) : base(baseUrl, authCode)
+        public WMSAckProcessSalesOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
 
@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 ProcessResults = processResults
             };
 
-            return await PostAsync(requestPayload, FunctionUrl.GetSalesOrderOpenList);
+            return await PostAsync(requestPayload, FunctionUrl.AckProcessSalesOrders);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
