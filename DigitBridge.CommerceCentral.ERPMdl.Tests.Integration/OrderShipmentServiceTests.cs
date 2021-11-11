@@ -399,7 +399,7 @@ WHERE itm.cnt > 0
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
             };
-            success = await srv.DeleteByNumberAsync(payload, srv.Data.OrderShipmentHeader.OrderShipmentNum.ToString());
+            success = await srv.DeleteByNumberAsync(payload, srv.Data.OrderShipmentHeader.OrderShipmentNum);
 
             Assert.True(success, srv.Messages.ObjectToString());
 

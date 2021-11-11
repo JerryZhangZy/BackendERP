@@ -315,7 +315,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 TotalAmount = salesOrder.DepositAmount,
                 Currency = salesOrder.Currency,
                 CreditAmount = salesOrder.DepositAmount,
-                PaidBy = (int)PaidByEnum.Prepayment,
+                PaidBy = (int)PaidByAr.CreditMemo,
 
                 CustomerCode = salesOrder.CustomerCode,
                 CustomerName = salesOrder.CustomerName,
