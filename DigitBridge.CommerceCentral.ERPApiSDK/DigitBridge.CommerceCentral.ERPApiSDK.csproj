@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ApiClient\CommerceCentralFaultInvoiceClient.cs" />
     <Compile Remove="ApiClient\ErpEventClientHelper.cs" />
   </ItemGroup>
 
