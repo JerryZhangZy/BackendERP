@@ -15,18 +15,18 @@ using Microsoft.AspNetCore.Http;
 namespace DigitBridge.CommerceCentral.ERPMdl.selectList.vender
 {
  
-    public partial class vender_vendorType : SelectListBase
+    public partial class vendor_phone1 : SelectListBase
     {
-        public override string Name => "vender_vendorType";
+        public override string Name => "vendor_phone1";
 
-        public vender_vendorType(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public vendor_phone1(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.vendorType, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"COALESCE(tbl.Phone1, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -38,15 +38,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.vender
             this.SQL_Select = $@"
  
     SELECT 
-      tbl.vendorType AS [value],
+      tbl.Phone1 AS [value],
       '' AS[text],
         COUNT(1) AS [count] FROM
       [dbo].[Vendor] tbl
    
-    WHERE COALESCE(tbl.vendorType,'') != '' 
+    WHERE COALESCE(tbl.Phone1,'') != '' 
         AND {this.QueryObject.GetSQL()}
-    GROUP BY tbl.vendorType 
-ORDER BY tbl.vendorType 
+    GROUP BY tbl.Phone1 
+ORDER BY tbl.Phone1 
 ";
             return this.SQL_Select;
         }

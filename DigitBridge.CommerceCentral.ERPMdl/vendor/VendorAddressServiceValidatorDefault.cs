@@ -20,7 +20,7 @@ using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
-
+  
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     /// <summary>
@@ -355,7 +355,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 // This property should not be changed.
                 //dto.VendorAddress.MasterAccountNum = null;
                 //dto.VendorAddress.ProfileNum = null;
-                //dto.VendorAddress.DatabaseNum = null;
+                dto.VendorAddress.VendorUuid = null;
+                dto.VendorAddress.AddressUuid = null;
+                dto.VendorAddress.AddressCode = null;
                 dto.VendorAddress.AddressUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;
