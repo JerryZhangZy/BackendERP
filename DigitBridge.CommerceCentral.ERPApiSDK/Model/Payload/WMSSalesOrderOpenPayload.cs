@@ -24,10 +24,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// </summary>
         public string WarehouseCode { get; set; }
 
-        /// <summary>
-        ///  UpdateDateUtc
-        /// </summary>
-        public DateTime? UpdateDateUtc { get; set; }
+        ///// <summary>
+        /////  UpdateDateUtc
+        ///// </summary>
+        //public DateTime? UpdateDateUtc { get; set; }
     }
 
     /// <summary>
