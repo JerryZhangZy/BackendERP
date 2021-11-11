@@ -74,7 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPFuncApi
             var payload = await req.GetParameters<OrderShipmentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
-            payload.Success = await srv.DeleteByNumberAsync(payload, orderShipmentNum);
+            payload.Success = await srv.DeleteByNumberAsync(payload, orderShipmentNum.ToString());
             payload.Messages = srv.Messages;
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
