@@ -94,8 +94,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"AddMiscPayment->SaveDataAsync error.");
                 return false;
             }
+            AddActivityLogForCurrentData();
             await MiscInvoiceService.PayAsync(miscInvoiceUuid, amount);
             return true;
+        }
+        protected void AddActivityLogForCurrentData()
+        {
+            this.AddActivityLog(new ActivityLog(dbFactory)
+            {
+                Type = ActivityLogType.MiscInvoicePayment.ToInt(),
+                Action = this.ProcessMode.ToInt(),
+                LogSource = "MiscInvoicePaymentService",
+
+                MasterAccountNum = this.Data.MiscInvoiceTransaction.MasterAccountNum,
+                ProfileNum = this.Data.MiscInvoiceTransaction.ProfileNum,
+                DatabaseNum = this.Data.MiscInvoiceTransaction.DatabaseNum,
+                ProcessUuid = this.Data.MiscInvoiceTransaction.TransUuid,
+                ProcessNumber = this.Data.MiscInvoiceTransaction.TransNum.ToString(),
+                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                //ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+
+                LogMessage = string.Empty
+            });
         }
 
         //Snowy:can't delete, don't know TransUuid or TransNumber
