@@ -363,6 +363,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 await this.EventProcessERPService.AddEventProcessERPAsync(new EventProcessERP(this.dbFactory)
                 {
+                    MasterAccountNum = log.MasterAccountNum,
+                    ProfileNum = log.ProfileNum,
+                    DatabaseNum = log.DatabaseNum,
                     ChannelNum = log.ChannelNum,
                     ChannelAccountNum = log.ChannelAccountNum,
                     ERPEventProcessType = (int)eventProcessType,
