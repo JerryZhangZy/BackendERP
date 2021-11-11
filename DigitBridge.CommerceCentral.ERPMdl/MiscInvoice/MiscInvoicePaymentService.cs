@@ -29,7 +29,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return base.Init();
         }
 
-
+        MiscInvoiceService _miscInvoiceService;
+        MiscInvoiceService MiscInvoiceService
+        {
+            get
+            {
+                if (_miscInvoiceService == null) _miscInvoiceService = new MiscInvoiceService(dbFactory);
+                return _miscInvoiceService;
+            }
+        }
         public async Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceUuid, string invoiceNumber, decimal amount)
         {
             Add();
@@ -86,8 +94,49 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"AddMiscPayment->SaveDataAsync error.");
                 return false;
             }
+            AddActivityLogForCurrentData();
+            await MiscInvoiceService.PayAsync(miscInvoiceUuid, amount);
             return true;
         }
+        protected void AddActivityLogForCurrentData()
+        {
+            this.AddActivityLog(new ActivityLog(dbFactory)
+            {
+                Type = ActivityLogType.MiscInvoicePayment.ToInt(),
+                Action = this.ProcessMode.ToInt(),
+                LogSource = "MiscInvoicePaymentService",
+
+                MasterAccountNum = this.Data.MiscInvoiceTransaction.MasterAccountNum,
+                ProfileNum = this.Data.MiscInvoiceTransaction.ProfileNum,
+                DatabaseNum = this.Data.MiscInvoiceTransaction.DatabaseNum,
+                ProcessUuid = this.Data.MiscInvoiceTransaction.TransUuid,
+                ProcessNumber = this.Data.MiscInvoiceTransaction.TransNum.ToString(),
+                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                //ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+
+                LogMessage = string.Empty
+            });
+        }
+
+        //Snowy:can't delete, don't know TransUuid or TransNumber
+        //public override async Task<bool> DeleteAsync(string id)
+        //{
+        //    if (await base.DeleteAsync(id))
+        //    {
+        //        await MiscInvoiceService.PayAsync(Data.MiscInvoiceTransaction.MiscInvoiceUuid, -Data.MiscInvoiceTransaction.TotalAmount);
+        //        return true;
+        //    }
+        //    return false;
+        //}
+        //public override bool Delete(string id)
+        //{
+        //    if (base.Delete(id))
+        //    {
+        //        MiscInvoiceService.PayAsync(Data.MiscInvoiceTransaction.MiscInvoiceUuid, -Data.MiscInvoiceTransaction.TotalAmount).Wait();
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
         /// <summary>
         /// Get misc invoice payment with detail and miscinvoiceheader by miscInvoiceNumber

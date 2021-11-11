@@ -56,7 +56,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -79,7 +81,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         public virtual bool Add(MiscInvoicePayload payload)
@@ -103,7 +107,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         public virtual async Task<bool> AddAsync(MiscInvoicePayload payload)
@@ -127,7 +133,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -153,7 +161,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -179,7 +189,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -209,7 +221,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -238,7 +252,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync ();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -277,6 +293,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //load data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             success = success && DeleteData();
+            if (success)
+                AddActivityLogForCurrentData();
             return success;
         }
 
@@ -294,6 +312,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //load data
             var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             success = success && DeleteData();
+            if (success)
+                AddActivityLogForCurrentData();
             return success;
         }
 
@@ -333,31 +353,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //MiscInvoiceType
                 //CheckNum 
             };
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
-        /// <summary>
-        /// Withdraw money from misc invoice(this method is for internal,no validate for uuid)
-        /// </summary>
-        public virtual async Task<bool> WithdrawAsync(string miscInvoiceUuid, decimal amount)
-        {
-            Edit();
+        ///// <summary>
+        ///// Withdraw money from misc invoice(this method is for internal,no validate for uuid)
+        ///// </summary>
+        //public virtual async Task<bool> WithdrawAsync(string miscInvoiceUuid, decimal amount)
+        //{
+        //    Edit();
 
-            if (!await GetDataByIdAsync(miscInvoiceUuid))
-            {
-                AddError($"Data not found for miscInvoiceUuid:{miscInvoiceUuid}");
-                return false;
-            }
-            Data.MiscInvoiceHeader.Balance = Data.MiscInvoiceHeader.Balance - amount;
+        //    if (!await GetDataByIdAsync(miscInvoiceUuid))
+        //    {
+        //        AddError($"Data not found for miscInvoiceUuid:{miscInvoiceUuid}");
+        //        return false;
+        //    }
+        //    Data.MiscInvoiceHeader.Balance = Data.MiscInvoiceHeader.Balance - amount;
 
-            if (!await SaveDataAsync())
-            {
-                AddError("WithdrawAsync->SaveDataAsync error.");
-                return false;
-            }
+        //    if (!await SaveDataAsync())
+        //    {
+        //        AddError("WithdrawAsync->SaveDataAsync error.");
+        //        return false;
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
         public virtual async Task GetListByMiscInvoiceNumbersAsync(MiscInvoicePayload payload)
         {
             if (payload is null || !payload.HasMiscInvoiceNumbers)
@@ -389,6 +411,68 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             var success = _data.GetByNumber(masterAccountNum, profileNum, miscInvoiceNumber);
             return success;
+        }
+
+        public async Task PayAsync(string uuid, decimal payAmount)
+        {
+            var sql = $"UPDATE MiscInvoiceHeader SET PaidAmount=PaidAmount+({payAmount}), Balance=Balance-({payAmount}) WHERE MiscInvoiceUuid='{uuid}'";
+            await dbFactory.Db.ExecuteAsync(sql);
+            this.AddActivityLog(new ActivityLog(dbFactory)
+            {
+                Type = ActivityLogType.MiscInvoice.ToInt(),
+                Action = 1,
+                LogSource = "MiscInvoiceService",
+
+                //MasterAccountNum = this.Data.MiscInvoiceHeader.MasterAccountNum,
+                //ProfileNum = this.Data.MiscInvoiceHeader.ProfileNum,
+                //DatabaseNum = this.Data.MiscInvoiceHeader.DatabaseNum,
+                ProcessUuid = uuid,
+                //ProcessNumber = this.Data.MiscInvoiceHeader.MiscInvoiceNumber,
+                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                //ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+
+                LogMessage = $"Update MiscInvoiceHeader PaidAmount and Balance with payAmount {payAmount}"
+            });
+        }
+        public void Pay(string uuid, decimal payAmount)
+        {
+            var sql = $"UPDATE MiscInvoiceHeader SET PaidAmount=PaidAmount+({payAmount}), Balance=Balance-({payAmount}) WHERE MiscInvoiceUuid='{uuid}'";
+            dbFactory.Db.Execute(sql);
+            this.AddActivityLog(new ActivityLog(dbFactory)
+            {
+                Type = ActivityLogType.MiscInvoice.ToInt(),
+                Action = 1,
+                LogSource = "MiscInvoiceService",
+
+                //MasterAccountNum = this.Data.MiscInvoiceHeader.MasterAccountNum,
+                //ProfileNum = this.Data.MiscInvoiceHeader.ProfileNum,
+                //DatabaseNum = this.Data.MiscInvoiceHeader.DatabaseNum,
+                ProcessUuid = uuid,
+                //ProcessNumber = this.Data.MiscInvoiceHeader.MiscInvoiceNumber,
+                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                //ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+
+                LogMessage = $"Update MiscInvoiceHeader PaidAmount and Balance with payAmount {payAmount}"
+            });
+        }
+        protected void AddActivityLogForCurrentData()
+        {
+            this.AddActivityLog(new ActivityLog(dbFactory)
+            {
+                Type = ActivityLogType.MiscInvoice.ToInt(),
+                Action = this.ProcessMode.ToInt(),
+                LogSource = "MiscInvoiceService",
+
+                MasterAccountNum = this.Data.MiscInvoiceHeader.MasterAccountNum,
+                ProfileNum = this.Data.MiscInvoiceHeader.ProfileNum,
+                DatabaseNum = this.Data.MiscInvoiceHeader.DatabaseNum,
+                ProcessUuid = this.Data.MiscInvoiceHeader.MiscInvoiceUuid,
+                ProcessNumber = this.Data.MiscInvoiceHeader.MiscInvoiceNumber,
+                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                //ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+
+                LogMessage = string.Empty
+            });
         }
     }
 }
