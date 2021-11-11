@@ -34,18 +34,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             SetCalculator(new SalesOrderServiceCalculatorDefault(this, this.dbFactory));
             AddValidator(new SalesOrderServiceValidatorDefault(this, this.dbFactory));
 
-            _data.OnBeforeSave(order => {
-                var inventoryService = new InventoryService(this.dbFactory);
-                inventoryService.UpdateOpenSoQtyFromSalesOrderItem(order.SalesOrderHeader.SalesOrderUuid, true);
-                return true;
-            });
-            _data.OnAfterSave(order => {
-                var inventoryService = new InventoryService(this.dbFactory);
-                inventoryService.UpdateOpenSoQtyFromSalesOrderItem(order.SalesOrderHeader.SalesOrderUuid, false);
-                return true;
-            });
-
             return this;
+        }
+
+        protected bool UpdateInventoryOpenSoQty(string salesOrderUuid, bool isReturnback)
+        {
+            try
+            {
+                var inventoryService = new InventoryService(this.dbFactory);
+                inventoryService.UpdateOpenSoQtyFromSalesOrderItem(salesOrderUuid, isReturnback);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        protected async Task<bool> UpdateInventoryOpenSoQtyAsync(string salesOrderUuid, bool isReturnback)
+        {
+            try
+            {
+                var inventoryService = new InventoryService(this.dbFactory);
+                await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(salesOrderUuid, isReturnback);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -68,7 +87,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            UpdateInventoryOpenSoQty(dto.SalesOrderHeader.SalesOrderUuid, true);
+            var result = SaveData();
+            UpdateInventoryOpenSoQty(dto.SalesOrderHeader.SalesOrderUuid, false);
+
+            return result;
         }
 
         /// <summary>
@@ -91,7 +114,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            await UpdateInventoryOpenSoQtyAsync(dto.SalesOrderHeader.SalesOrderUuid, true);
+            var result = await SaveDataAsync();
+            await UpdateInventoryOpenSoQtyAsync(dto.SalesOrderHeader.SalesOrderUuid, false);
+
+            return result;
         }
 
         public virtual bool Add(SalesOrderPayload payload)
@@ -115,7 +142,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            UpdateInventoryOpenSoQty(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, true);
+            var result = SaveData();
+            UpdateInventoryOpenSoQty(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, false);
+
+            return result;
         }
 
         public virtual async Task<bool> AddAsync(SalesOrderPayload payload)
@@ -139,7 +170,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            await UpdateInventoryOpenSoQtyAsync(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, true);
+            var result = SaveData();
+            await UpdateInventoryOpenSoQtyAsync(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, false);
+
+            return result;
         }
 
         /// <summary>
@@ -165,7 +200,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            UpdateInventoryOpenSoQty(dto.SalesOrderHeader.SalesOrderUuid, true);
+            var result = SaveData();
+            UpdateInventoryOpenSoQty(dto.SalesOrderHeader.SalesOrderUuid, false);
+
+            return result;
         }
 
         /// <summary>
@@ -191,7 +230,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            await UpdateInventoryOpenSoQtyAsync(dto.SalesOrderHeader.SalesOrderUuid, true);
+            var result = await SaveDataAsync();
+            await UpdateInventoryOpenSoQtyAsync(dto.SalesOrderHeader.SalesOrderUuid, false);
+
+            return result;
         }
 
         /// <summary>
@@ -221,7 +264,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            UpdateInventoryOpenSoQty(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, true);
+            var result = SaveData();
+            UpdateInventoryOpenSoQty(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, false);
+
+            return result;
         }
 
         /// <summary>
@@ -250,7 +297,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            await UpdateInventoryOpenSoQtyAsync(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, true);
+            var result = SaveData();
+            await UpdateInventoryOpenSoQtyAsync(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, false);
+
+            return result;
         }
         ///// <summary>
         ///// Get sale order with detail by orderNumber
