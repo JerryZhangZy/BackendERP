@@ -1146,8 +1146,27 @@ where inv.InventoryUuid=il.InventoryUuid
             return list;
         }
         #endregion
-        
-        
+
+        //inventory update seems not inventory log
+        //protected void AddActivityLogForCurrentData()
+        //{
+        //    this.AddActivityLog(new ActivityLog(dbFactory)
+        //    {
+        //        Type = ActivityLogType.InventoryUpdate.ToInt(), 
+        //        Action = this.ProcessMode.ToInt(),
+        //        LogSource = "OrderShipmentService",
+
+        //        MasterAccountNum = this.Data.InventoryLog.MasterAccountNum,
+        //        ProfileNum = this.Data.InventoryLog.ProfileNum,
+        //        DatabaseNum = this.Data.InventoryLog.DatabaseNum,
+        //        ProcessUuid = this.Data.InventoryLog.InventoryLogUuid,
+        //        ProcessNumber = this.Data.InventoryLog.LogNumber,
+        //        ChannelNum = this.Data.InventoryLog.ChannelAccountNum,
+        //        ChannelAccountNum = this.Data.InventoryLog.ChannelAccountNum,
+
+        //        LogMessage = string.Empty
+        //    });
+        //}
     }
 }
 
