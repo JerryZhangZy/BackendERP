@@ -56,7 +56,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -79,7 +81,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         public virtual bool Add(MiscInvoicePayload payload)
@@ -103,7 +107,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         public virtual async Task<bool> AddAsync(MiscInvoicePayload payload)
@@ -127,7 +133,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -153,7 +161,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -179,7 +189,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -209,7 +221,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -238,7 +252,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync ();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -277,6 +293,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //load data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             success = success && DeleteData();
+            if (success)
+                AddActivityLogForCurrentData();
             return success;
         }
 
@@ -294,6 +312,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //load data
             var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             success = success && DeleteData();
+            if (success)
+                AddActivityLogForCurrentData();
             return success;
         }
 
@@ -333,7 +353,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //MiscInvoiceType
                 //CheckNum 
             };
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         ///// <summary>
@@ -400,6 +422,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var sql = $"UPDATE MiscInvoiceHeader SET PaidAmount=PaidAmount+({payAmount}), Balance=Balance-({payAmount}) WHERE MiscInvoiceUuid='{uuid}'";
             dbFactory.Db.Execute(sql);
+        }
+        protected void AddActivityLogForCurrentData()
+        {
+            this.AddActivityLog(new ActivityLog(dbFactory)
+            {
+                Type = ActivityLogType.SalesOrder.ToInt(),
+                Action = this.ProcessMode.ToInt(),
+                LogSource = "MiscInvoiceService",
+
+                MasterAccountNum = this.Data.MiscInvoiceHeader.MasterAccountNum,
+                ProfileNum = this.Data.MiscInvoiceHeader.ProfileNum,
+                DatabaseNum = this.Data.MiscInvoiceHeader.DatabaseNum,
+                ProcessUuid = this.Data.MiscInvoiceHeader.MiscInvoiceUuid,
+                ProcessNumber = this.Data.MiscInvoiceHeader.MiscInvoiceNumber,
+                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                //ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+
+                LogMessage = string.Empty
+            });
         }
     }
 }
