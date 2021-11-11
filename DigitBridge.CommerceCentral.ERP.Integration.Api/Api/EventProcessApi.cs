@@ -28,7 +28,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         /// this will set EventProcessERP ActionStatus = 1
         /// </summary>
         [FunctionName(nameof(AckReceiveSalesOrders))]
-        [OpenApiOperation(operationId: "AckReceiveSalesOrders", tags: new[] { "WMSSalesOrder" }, Summary = "Send received EventUuid list")]
+        [OpenApiOperation(operationId: "AckReceiveSalesOrders", tags: new[] { "WMSSalesOrders" }, Summary = "WMS ack downloaded salesorder result back to erp")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -49,7 +49,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 
 
         [FunctionName(nameof(AckProcessSalesOrders))]
-        [OpenApiOperation(operationId: "AckProcessSalesOrders", tags: new[] { "Eventprocesss" })]
+        [OpenApiOperation(operationId: "AckProcessSalesOrders", tags: new[] { "WMSSalesOrders" }, Summary = "WMS ack salesorder processresult back to erp")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
