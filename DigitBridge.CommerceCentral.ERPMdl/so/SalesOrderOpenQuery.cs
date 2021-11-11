@@ -21,8 +21,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<DateTime> _UpdateDateUtc = new QueryFilter<DateTime>("UpdateDateUtc", "UpdateDateUtc", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
         public QueryFilter<DateTime> UpdateDateUtc => _UpdateDateUtc;
 
-        protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
-        public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
+        //protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
+        //public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
 
 
         protected QueryFilter<string> _WarehouseCode = new QueryFilter<string>("WarehouseCode", "WarehouseCode", PREFIX_INFO, FilterBy.eq, string.Empty, isNVarChar: true);
@@ -49,7 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override void InitQueryFilter()
         {
             //_UpdateDateUtc.FilterValue = DateTime.Today.AddDays(-30);
-            _OrderStatus.FilterValue = (int)SalesOrderStatus.Open;
+            //_OrderStatus.FilterValue = (int)SalesOrderStatus.Open;
             _EventProcessActionStatus.FilterValue = (int)EventProcessActionStatusEnum.Pending;
             _ERPEventProcessType.FilterValue = (int)EventProcessTypeEnum.SalesOrderToWMS;
         }
