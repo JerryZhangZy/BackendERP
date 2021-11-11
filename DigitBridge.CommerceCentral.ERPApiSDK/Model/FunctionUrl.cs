@@ -31,5 +31,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         internal const string AddShipments = "wms/shipments";
 
         internal const string UnprocessList = "commercecentral/invoices/list/unprocess";
+        internal const string AckReceiveInvoices = "commercecentral/invoices/AckReceive";
+        internal const string AckProcessInvoices = "commercecentral/invoices/AckProcess";
+
     }
 }
