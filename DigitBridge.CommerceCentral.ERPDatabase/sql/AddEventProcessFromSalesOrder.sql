@@ -1,4 +1,4 @@
-insert into EventProcessERP (DatabaseNum,MasterAccountNum,ProfileNum,ChannelNum,ChannelAccountNum,ERPEventProcessType,processuuid,actionstatus,ActionDate,ProcessStatus,ActionDate,ProcessStatus)
+insert into EventProcessERP (DatabaseNum,MasterAccountNum,ProfileNum,ChannelNum,ChannelAccountNum,ERPEventProcessType,processuuid,actionstatus,ActionDate,ProcessStatus)
 select  
 header.DatabaseNum,
 header.MasterAccountNum,header.ProfileNum,
