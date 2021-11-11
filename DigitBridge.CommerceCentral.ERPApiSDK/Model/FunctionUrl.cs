@@ -18,7 +18,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         internal static string CreateSalesOrderByCentralOrder = "/addCreateSalesOrderByCentralOrder";
         internal static string CreateInvoiceByOrderShipment = "/addCreateInvoiceByOrderShipment";
 
-        internal const string GetSalesOrderOpenList = "salesOrders/find";
+        internal const string GetSalesOrderOpenList = "wms/salesOrders/find";
 
         internal const string GetPurchaseOrderList = "purchaseOrder/find";
         internal const string CreatePoReceive = "poReceives";
@@ -26,9 +26,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
         internal static string InventorySync = "/InventorySyncs";
 
-        internal const string AddShipments = "shipments";
+        internal const string AddShipments = "wms/shipments";
 
-        internal const string UnprocessList="invoices/list/unprocess";
-        internal const string UpdateFaultInvoiceList = "invoices/fault/batchUpdate";
+        internal const string UnprocessList= "commercecentral/invoices/list/unprocess"; 
     }
 }

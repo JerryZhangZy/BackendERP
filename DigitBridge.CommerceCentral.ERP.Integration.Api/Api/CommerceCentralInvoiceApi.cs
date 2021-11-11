@@ -14,21 +14,21 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 {
-    [ApiFilter(typeof(CommerceCentralInvoiceBroker))]
-    public static class CommerceCentralInvoiceBroker
+    [ApiFilter(typeof(CommerceCentralInvoiceApi))]
+    public static class CommerceCentralInvoiceApi
     {
         /// <summary>
         /// Get unprocessed invoices
         /// </summary>
         [FunctionName(nameof(GetUnprocessedInvoices))]
-        [OpenApiOperation(operationId: "GetUnprocessedInvoices", tags: new[] { "Invoices" }, Summary = "Get unprocessed invoices")]
+        [OpenApiOperation(operationId: "GetUnprocessedInvoices", tags: new[] { "CommerceCentralInvoices" }, Summary = "Get unprocessed invoices")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoiceUnprocessPayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceUnprocessPayloadFind))]
         public static async Task<JsonNetResponse<InvoicePayload>> GetUnprocessedInvoices(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "invoices/list/unprocess")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "commercecentral/invoices/list/unprocess")] HttpRequest req)
         {
             var payload = await req.GetParameters<InvoicePayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
