@@ -213,7 +213,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //Add mis payment
             var srv_MisPayment = new MiscInvoicePaymentService(dbFactory);
-            var success = await srv_MisPayment.AddMiscPayment(miscInvoiceUuid, invoiceUuid, amount);
+            var success = await srv_MisPayment.AddMiscPayment(miscInvoiceUuid, invoiceUuid, "", amount);
             if (!success)
             {
                 this.Messages = this.Messages.Concat(srv_MisPayment.Messages).ToList();

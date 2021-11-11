@@ -1679,6 +1679,42 @@
 							"body": ""
 						}
 					]
+				},
+				{
+					"name": "InvoiceNumberExist",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/invoices/existinvoiceNumber/{{invoiceNumber}}?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices",
+								"existinvoiceNumber",
+								"{{invoiceNumber}}"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"event": [
