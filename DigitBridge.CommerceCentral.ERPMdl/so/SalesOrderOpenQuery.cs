@@ -41,7 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             AddFilter(_UpdateDateUtc);
             AddFilter(_WarehouseCode);
-            AddFilter(_OrderStatus);
+            //AddFilter(_OrderStatus);
             AddFilter(_EventProcessActionStatus);
             AddFilter(_ERPEventProcessType);
         }
