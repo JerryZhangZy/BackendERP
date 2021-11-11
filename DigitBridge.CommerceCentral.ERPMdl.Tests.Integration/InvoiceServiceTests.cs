@@ -292,6 +292,25 @@ WHERE itm.cnt > 0
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}
 
+        [Fact]
+        public async Task InvoiceNumberExist_Test()
+        {
+            var srv = new InvoiceService(DataBaseFactory);
+            srv.Add();
+
+            var mapper = srv.DtoMapper;
+            var data = GetFakerData();
+            var dto = mapper.WriteDto(data, null);
+            dto.InvoiceHeader.InvoiceNumber = "test-invoice-number";
+            dto.InvoiceHeader.MasterAccountNum = 1001;
+            dto.InvoiceHeader.ProfileNum = 1000;
+            srv.Add(dto);
+
+            var result = await srv.ExistInvoiceNumber("test-invoice-number", 1001, 1000);
+
+            Assert.True(result);
+
+        }
     }
 }
 

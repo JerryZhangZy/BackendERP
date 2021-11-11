@@ -268,12 +268,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="orderShipmentNum"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByNumberAsync(OrderShipmentPayload payload, string orderShipmentNum)
+        public virtual async Task<bool> DeleteByNumberAsync(OrderShipmentPayload payload, long orderShipmentNum)
         {
+            if (orderShipmentNum.IsZero())
+            {
+                AddError("orderShipmentNum is invalid");
+                return false;
+            }
             //set delete mode
             Delete();
             //load data
-            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderShipmentNum);
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderShipmentNum.ToString());
             success = success && DeleteData();
             if (success)
             {
