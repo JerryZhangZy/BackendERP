@@ -72,7 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     #region Model
     public class OutputCentralOrderInvoiceHeaderType
     {
-        public string EventUuid;
+        public string InvoiceUuid;
         public long OrderInvoiceNum = 0;
         public int DatabaseNum = 0;
         public int MasterAccountNum = 0;

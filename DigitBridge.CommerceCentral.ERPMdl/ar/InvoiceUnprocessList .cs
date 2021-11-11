@@ -15,7 +15,7 @@ using ItemHelper = DigitBridge.CommerceCentral.ERPDb.InvoiceItemsHelper;
 using EventHelper = DigitBridge.CommerceCentral.ERPDb.EventProcessERPHelper;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class InvoiceUnprocessList : SqlQueryBuilderForEventProcess<InvoiceUnprocessQuery>
+    public class InvoiceUnprocessList : SqlQueryBuilder<InvoiceUnprocessQuery>
     {
         public InvoiceUnprocessList(IDataBaseFactory dbFactory) : base(dbFactory)
         {
@@ -31,7 +31,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var header = "InvoiceHeader";
             var columns = $@"
-{EventHelper.TableAllies}.EventUuid,
+--{EventHelper.TableAllies}.EventUuid,
+{Helper.TableAllies}.InvoiceUuid as '{header}.InvoiceUuid',
 --{Helper.TableAllies}.OrderInvoiceNum as '{header}.OrderInvoiceNum',
 {Helper.TableAllies}.DatabaseNum as '{header}.DatabaseNum',
 {Helper.TableAllies}.MasterAccountNum as '{header}.MasterAccountNum',
@@ -154,7 +155,7 @@ FOR JSON PATH
             try
             {
                 payload.InvoiceUnprocessListCount = Count();
-                payload.Success = ExcuteJsonForQueryByLocked(sb, EventProcessTypeEnum.InvoiceToCommerceCentral);
+                payload.Success = ExcuteJson(sb);
                 if (payload.Success)
                     payload.InvoiceUnprocessList = sb;
             }
@@ -178,7 +179,7 @@ FOR JSON PATH
             try
             {
                 payload.InvoiceUnprocessListCount = await CountAsync();
-                payload.Success = await ExcuteJsonForQueryByLockedAsync(sb, EventProcessTypeEnum.InvoiceToCommerceCentral);
+                payload.Success = await ExcuteJsonAsync(sb);
                 if (payload.Success)
                     payload.InvoiceUnprocessList = sb;
             }
@@ -190,7 +191,5 @@ FOR JSON PATH
             }
             payload.Messages = this.Messages;
         }
-
-
     }
 }
