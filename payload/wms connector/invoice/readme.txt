@@ -68,8 +68,7 @@ Call api via Integration SDK
     //client.ResopneData: ack result.
  
  
-7, Unit Test
-   Project:DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
+7, Test Project:DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
    Files:   
    CommerceCentralInvoiceClientTests
    CommerceCentralAckReceiveInvoiceClientTests
