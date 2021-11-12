@@ -362,6 +362,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             #region PO
             if (payload.Name.EqualsIgnoreSpace("po_poNum"))
                 return new po_poNum(dbFactory);
+            if (payload.Name.EqualsIgnoreSpace("po_vendorNum"))
+                return new po_vendorName(dbFactory);
 
             if (payload.Name.EqualsIgnoreSpace("po_vendorName"))
                 return new po_vendorName(dbFactory);

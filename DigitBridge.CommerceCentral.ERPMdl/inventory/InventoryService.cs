@@ -160,8 +160,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            if (!await SaveDataAsync())
+                return false;
+
+            #region
+
+            return (await dbFactory.Db.ExecuteAsync($@"UPDATE ProductExt   set CentralProductNum=(SELECT   pba.CentralProductNum 
+FROM ProductExt pex 
+INNER JOIN ProductBasic pba ON (pba.ProductUuid = pex.ProductUuid)
+WHERE
+pex.MasterAccountNum=@0 and pex.ProfileNum=@1
+and
+pba.MasterAccountNum=@0 and pba.ProfileNum=@1
+and   
+pex.ProductUuid = @2
+)
+where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
+     payload.MasterAccountNum.ToSqlParameter("@0"),
+     payload.MasterAccountNum.ToSqlParameter("@1"),
+     this.Data.ProductBasic.ProductUuid.ToSqlParameter("@2")
+
+     ) == 1);
+            #endregion
+
         }
+
+
 
         /// <summary>
         /// Add new data from Dto object
