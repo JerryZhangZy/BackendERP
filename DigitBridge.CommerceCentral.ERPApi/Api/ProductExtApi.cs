@@ -94,7 +94,10 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 payload.Skus.Add(sku);
             }
             else
+            {
+                payload.Success = false;
                 payload.Messages = svc.Messages;
+            }
             return new JsonNetResponse<InventoryPayload>(payload);
         }
         [FunctionName(nameof(AddProductExt))]
