@@ -92,7 +92,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wms sales order", "wms sale
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "channel invoice", "channel invoice", "{8E5F0520-03DB-44B0-AB63-A78F4C9229F3}"
 	ProjectSection(SolutionItems) = preProject
+		payload\wms connector\invoice\AddEventProcessFromInvocie.sql = payload\wms connector\invoice\AddEventProcessFromInvocie.sql
 		payload\wms connector\invoice\invoice mapping.xlsx = payload\wms connector\invoice\invoice mapping.xlsx
+		payload\wms connector\invoice\local.settings.json.txt = payload\wms connector\invoice\local.settings.json.txt
+		payload\wms connector\invoice\readme.txt = payload\wms connector\invoice\readme.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "connector", "connector", "{7F0AE32C-CADC-463E-AB2C-7C02CA495071}"

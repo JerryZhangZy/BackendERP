@@ -160,8 +160,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            if (!await SaveDataAsync())
+                return false;
+
+            #region
+
+            return (await dbFactory.Db.ExecuteAsync($@"UPDATE ProductExt   set CentralProductNum=(SELECT   pba.CentralProductNum 
+FROM ProductExt pex 
+INNER JOIN ProductBasic pba ON (pba.ProductUuid = pex.ProductUuid)
+WHERE
+pex.MasterAccountNum=@0 and pex.ProfileNum=@1
+and
+pba.MasterAccountNum=@0 and pba.ProfileNum=@1
+and   
+pex.ProductUuid = @2
+)
+where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
+     payload.MasterAccountNum.ToSqlParameter("@0"),
+     payload.MasterAccountNum.ToSqlParameter("@1"),
+     this.Data.ProductBasic.ProductUuid.ToSqlParameter("@2")
+
+     ) == 1);
+            #endregion
+
         }
+
+
 
         /// <summary>
         /// Add new data from Dto object
@@ -594,31 +618,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.AvgCost.ToSqlParameter("inventoryUuid"));
         }
 
-        public async Task<bool> UpdateOpenSoQtyFromSalesOrderItem(string salesOrderUuid, bool isReturnBack = false)
+        public void UpdateOpenSoQtyFromSalesOrderItem(string salesOrderUuid, bool isReturnBack = false)
         {
-            //StringBuilder cmd = new StringBuilder();
             string op = isReturnBack ? "-" : "+";
-            string cmd = $@"
-UPDATE inv 
-SET opensoqty=inv.opensoqty{op}(COALESCE(soi.orderqty,0)-COALESCE(soi.shipqty,0)-COALESCE(soi.cancelledqty,0))
-FROM inventory inv
-INNER JOIN (
-    SELECT SUM(orderqty) as orderqty, 
-           SUM(shipqty) as shipqty, 
-           SUM(cancelledqty) as cancelledqty, 
-           inventoryuuid 
-    FROM salesorderitems 
+            string command = $@"
+UPDATE inv SET opensoqty=inv.opensoqty{op}(COALESCE(soi.orderqty,0)-COALESCE(soi.shipqty,0)-COALESCE(soi.cancelledqty,0))
+FROM inventory inv INNER JOIN
+    (SELECT SUM(orderqty) as orderqty, 
+            SUM(shipqty) as shipqty, 
+            SUM(cancelledqty) as cancelledqty, 
+            inventoryuuid FROM salesorderitems 
     WHERE SalesOrderUuid='{salesOrderUuid}'  
-    GROUP BY InventoryUuid
-) soi
-ON (soi.InventoryUuid = inv.InventoryUuid)
+    GROUP BY InventoryUuid) soi
+ON inv.inventoryuuid=soi.inventoryuuid
 ";
-            //cmd.Append($"update inv set opensoqty=inv.opensoqty{op}(coalesce(soi.orderqty,0)-coalesce(soi.shipqty,0)-coalesce(soi.cancelledqty,0)) ");
-            //cmd.Append("from inventory inv, ");
-            //cmd.Append($"(select sum(orderqty) as orderqty, sum(shipqty) as shipqty, sum(cancelledqty) as cancelledqty, inventoryuuid from salesorderitems where SalesOrderUuid='{salesOrderUuid}'  group by InventoryUuid) soi");
-            //cmd.Append("where inv.inventoryuuid=soi.inventoryuuid");
-            var result = await dbFactory.Db.ExecuteAsync(cmd.ToString());
-            return result > 0;
+            dbFactory.Db.Execute(command.ToString());
+        }
+
+        public async Task UpdateOpenSoQtyFromSalesOrderItemAsync(string salesOrderUuid, bool isReturnBack = false)
+        {
+            string op = isReturnBack ? "-" : "+";
+            string command = $@"
+UPDATE inv SET opensoqty=inv.opensoqty{op}(COALESCE(soi.orderqty,0)-COALESCE(soi.shipqty,0)-COALESCE(soi.cancelledqty,0))
+FROM inventory inv INNER JOIN
+    (SELECT SUM(orderqty) as orderqty, 
+            SUM(shipqty) as shipqty, 
+            SUM(cancelledqty) as cancelledqty, 
+            inventoryuuid FROM salesorderitems 
+    WHERE SalesOrderUuid='{salesOrderUuid}'  
+    GROUP BY InventoryUuid) soi
+ON inv.inventoryuuid=soi.inventoryuuid
+";
+            await dbFactory.Db.ExecuteAsync(command.ToString());
         }
     }
 }
