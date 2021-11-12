@@ -70,9 +70,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "postman", "postman", "{86B5841E-0CF6-4131-BBA7-D7F59EECD98B}"
 	ProjectSection(SolutionItems) = preProject
 		payload\postman\Add data.postman_collection.json = payload\postman\Add data.postman_collection.json
+		DigitBridge.CommerceCentral.ERPDatabase\sql\AddEventProcessFromInvocie.sql = DigitBridge.CommerceCentral.ERPDatabase\sql\AddEventProcessFromInvocie.sql
 		payload\postman\Broker.postman_collection.json = payload\postman\Broker.postman_collection.json
 		payload\postman\DigiBridge ERP System.postman_collection.json = payload\postman\DigiBridge ERP System.postman_collection.json
 		payload\postman\DigitBridge ERP Event.postman_collection.json = payload\postman\DigitBridge ERP Event.postman_collection.json
+		payload\postman\erp-dev.postman_environment.json = payload\postman\erp-dev.postman_environment.json
+		payload\postman\erp-local.postman_environment.json = payload\postman\erp-local.postman_environment.json
 		payload\postman\Qbo.postman_collection.json = payload\postman\Qbo.postman_collection.json
 		payload\postman\WorkFlow.postman_collection.json = payload\postman\WorkFlow.postman_collection.json
 	EndProjectSection
@@ -90,7 +93,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wms sales order", "wms sale
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "channel invoice", "channel invoice", "{8E5F0520-03DB-44B0-AB63-A78F4C9229F3}"
 	ProjectSection(SolutionItems) = preProject
+		payload\wms connector\invoice\AddEventProcessFromInvocie.sql = payload\wms connector\invoice\AddEventProcessFromInvocie.sql
 		payload\wms connector\invoice\invoice mapping.xlsx = payload\wms connector\invoice\invoice mapping.xlsx
+		payload\wms connector\invoice\local.settings.json.txt = payload\wms connector\invoice\local.settings.json.txt
+		payload\wms connector\invoice\readme.txt = payload\wms connector\invoice\readme.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "connector", "connector", "{7F0AE32C-CADC-463E-AB2C-7C02CA495071}"
