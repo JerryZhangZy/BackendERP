@@ -26,4 +26,10 @@ namespace DigitBridge.Base.Common
         ApInvoicePayment = 17,
         Vendor = 18,
     }
+
+    public static class ActivityLogTypeExtensions
+    {
+        public static int ToInt(this ActivityLogType value) => (int)value;
+       
+    }
 }
