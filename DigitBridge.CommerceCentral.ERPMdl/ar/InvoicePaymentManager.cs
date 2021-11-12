@@ -213,7 +213,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //Add mis payment
             var srv_MisPayment = new MiscInvoicePaymentService(dbFactory);
-            var success = await srv_MisPayment.AddMiscPayment(miscInvoiceUuid, invoiceUuid, amount);
+            var success = await srv_MisPayment.AddMiscPayment(miscInvoiceUuid, invoiceUuid, "", amount);
             if (!success)
             {
                 this.Messages = this.Messages.Concat(srv_MisPayment.Messages).ToList();
@@ -225,14 +225,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var actualApplyAmount = misPaymentData.MiscInvoiceTransaction.TotalAmount;
 
 
+            //Snowy: already update paidAmount & balance in AddMiscPayment
             //update misc invoice set balance = originalbalance-actualApplyAmount;
-            var srv_MiscInvoice = new MiscInvoiceService(dbFactory);
-            success = await srv_MiscInvoice.WithdrawAsync(miscInvoiceUuid, actualApplyAmount);
-            if (!success)
-            {
-                this.Messages = this.Messages.Concat(srv_MiscInvoice.Messages).ToList();
-                return false;
-            }
+            //var srv_MiscInvoice = new MiscInvoiceService(dbFactory);
+            //success = await srv_MiscInvoice.WithdrawAsync(miscInvoiceUuid, actualApplyAmount);
+            //if (!success)
+            //{
+            //    this.Messages = this.Messages.Concat(srv_MiscInvoice.Messages).ToList();
+            //    return false;
+            //}
 
             //Add payment to invoice trans and pay invoice.
             var srv_payment = new InvoicePaymentService(dbFactory);

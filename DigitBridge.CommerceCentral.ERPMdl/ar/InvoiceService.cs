@@ -345,9 +345,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return SaveData();
             }
             return false;
-        } 
+        }
 
-        
+        public async Task<bool> ExistInvoiceNumber(string invoiceNum, int masterAccountNum, int profileNum)
+        {
+            return await InvoiceHelper.ExistNumberAsync(invoiceNum, masterAccountNum, profileNum);
+        }
+
+
         #region To qbo queue 
 
         private QboInvoiceClient _qboInvoiceClient;

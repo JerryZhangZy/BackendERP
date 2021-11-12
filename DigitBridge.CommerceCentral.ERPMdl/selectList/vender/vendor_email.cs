@@ -15,18 +15,18 @@ using Microsoft.AspNetCore.Http;
 namespace DigitBridge.CommerceCentral.ERPMdl.selectList.vender
 {
  
-    public partial class vender_departmentCode : SelectListBase
+    public partial class vendor_email : SelectListBase
     {
-        public override string Name => "vender_departmentCode";
+        public override string Name => "vendor_email";
 
-        public vender_departmentCode(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public vendor_email(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.departmentCode, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"COALESCE(tbl.email, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -38,15 +38,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.vender
             this.SQL_Select = $@"
  
     SELECT 
-      tbl.departmentCode AS [value],
+      tbl.email AS [value],
       '' AS[text],
         COUNT(1) AS [count] FROM
       [dbo].[Vendor] tbl
    
-    WHERE COALESCE(tbl.departmentCode,'') != '' 
+    WHERE COALESCE(tbl.email,'') != '' 
         AND {this.QueryObject.GetSQL()}
-    GROUP BY tbl.departmentCode 
-ORDER BY tbl.departmentCode 
+    GROUP BY tbl.email 
+ORDER BY tbl.email 
 ";
             return this.SQL_Select;
         }

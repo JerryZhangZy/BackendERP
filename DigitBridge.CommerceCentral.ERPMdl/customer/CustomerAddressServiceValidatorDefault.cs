@@ -398,6 +398,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //dto.CustomerAddress.MasterAccountNum = null;
                 //dto.CustomerAddress.ProfileNum = null;
                 //dto.CustomerAddress.DatabaseNum = null;
+                dto.CustomerAddress.CustomerUuid = null;
+                dto.CustomerAddress.AddressCode = null;
                 dto.CustomerAddress.AddressUuid = null;
                 // TODO 
                 //dto.SalesOrderHeader.OrderNumber = null;

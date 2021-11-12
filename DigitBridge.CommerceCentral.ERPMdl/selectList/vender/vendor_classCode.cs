@@ -15,18 +15,18 @@ using Microsoft.AspNetCore.Http;
 namespace DigitBridge.CommerceCentral.ERPMdl.selectList.vender
 {
  
-    public partial class vender_vendorStatus : SelectListBase
+    public partial class vendor_classCode : SelectListBase
     {
-        public override string Name => "vender_vendorStatus";
+        public override string Name => "vendor_classCode";
 
-        public vender_vendorStatus(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public vendor_classCode(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {
             this.QueryObject.LoadAll = false;
             if (!string.IsNullOrEmpty(this.QueryObject.Term.FilterValue))
                 this.QueryObject.SetTermSqlString(
-                    $"COALESCE(tbl.vendorStatus, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
+                    $"COALESCE(tbl.classCode, '') LIKE '{this.QueryObject.Term.FilterValue.ToSqlSafeString()}%' "
                 );
             else
                 this.QueryObject.SetTermSqlString(null);
@@ -38,15 +38,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.selectList.vender
             this.SQL_Select = $@"
  
     SELECT 
-      tbl.vendorStatus AS [value],
+      tbl.classCode AS [value],
       '' AS[text],
         COUNT(1) AS [count] FROM
       [dbo].[Vendor] tbl
    
-    WHERE COALESCE(tbl.vendorStatus,'') != '' 
+    WHERE COALESCE(tbl.classCode,'') != '' 
         AND {this.QueryObject.GetSQL()}
-    GROUP BY tbl.vendorStatus 
-ORDER BY tbl.vendorStatus 
+    GROUP BY tbl.classCode 
+ORDER BY tbl.classCode 
 ";
             return this.SQL_Select;
         }

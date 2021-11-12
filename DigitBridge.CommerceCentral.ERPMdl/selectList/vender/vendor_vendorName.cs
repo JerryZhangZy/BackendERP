@@ -15,11 +15,11 @@ using Microsoft.AspNetCore.Http;
 namespace DigitBridge.CommerceCentral.ERPMdl.selectList.vender
 {
  
-    public partial class vender_vendorName : SelectListBase
+    public partial class vendor_vendorName : SelectListBase
     {
-        public override string Name => "vender_vendorName";
+        public override string Name => "vendor_vendorName";
 
-        public vender_vendorName(IDataBaseFactory dbFactory) : base(dbFactory) { }
+        public vendor_vendorName(IDataBaseFactory dbFactory) : base(dbFactory) { }
 
         protected override void SetFilterSqlString()
         {
