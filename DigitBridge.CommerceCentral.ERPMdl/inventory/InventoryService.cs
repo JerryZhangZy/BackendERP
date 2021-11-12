@@ -594,7 +594,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.AvgCost.ToSqlParameter("inventoryUuid"));
         }
 
-        public async Task<bool> UpdateOpenSoQtyFromSalesOrderItem(string salesOrderUuid, bool isReturnBack = false)
+        public void UpdateOpenSoQtyFromSalesOrderItem(string salesOrderUuid, bool isReturnBack = false)
         {
             string op = isReturnBack ? "-" : "+";
             string command = $@"

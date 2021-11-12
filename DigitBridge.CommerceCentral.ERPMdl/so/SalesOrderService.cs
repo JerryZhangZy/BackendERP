@@ -65,7 +65,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 return false;
             }
-            return this;
         }
 
         /// <summary>
