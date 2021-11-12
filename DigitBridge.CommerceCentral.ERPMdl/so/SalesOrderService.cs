@@ -45,8 +45,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.AddActivityLog(new ActivityLog(dbFactory)
             {
-                Type = ActivityLogType.SalesOrder.ToInt(),
-                Action = this.ProcessMode.ToInt(),
+                Type = (int)ActivityLogType.SalesOrder,
+                Action = (int)this.ProcessMode,
                 LogSource = "SalesOrderService",
 
                 MasterAccountNum = this.Data.SalesOrderHeader.MasterAccountNum,
@@ -69,8 +69,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             await this.AddActivityLogAsync(new ActivityLog(dbFactory)
             {
-                Type = ActivityLogType.SalesOrder.ToInt(),
-                Action = this.ProcessMode.ToInt(),
+                Type = (int)ActivityLogType.SalesOrder,
+                Action = (int)this.ProcessMode,
                 LogSource = "SalesOrderService",
 
                 MasterAccountNum = this.Data.SalesOrderHeader.MasterAccountNum,

@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
-    public partial class WMSSalesOrderClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class WMSAckReceiveSalesOrderClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
@@ -22,7 +22,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected const int MasterAccountNum = 10001;
         protected const int ProfileNum = 10001;
 
-        public WMSSalesOrderClientTests(TestFixture<StartupTest> fixture)
+        public WMSAckReceiveSalesOrderClientTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -35,44 +35,49 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         {
         }
 
-
+        /// <summary>
+        /// Only test the api invocke successfully.
+        /// </summary>
+        /// <returns></returns>
         [Fact()]
-        public async Task GetSalesOrdersOpenListAsync_Simple_Test()
+        public async Task AckReceiveSalesOrdersAsync_Simple_Test()
         {
-            var client = new WMSSalesOrderClient(_baseUrl, _code);
-            var success = await client.GetSalesOrdersOpenListAsync(MasterAccountNum, ProfileNum);
-            Assert.True(success, client.Messages.ObjectToString());
+            var client = new WMSAckReceiveSalesOrderClient(_baseUrl, _code);
+            var salesorderUuids = new List<string>() { "15082ed6-b62f-4faf-9491-dc182d7bd4a9", "61F6B440-17B2-4A33-BD4F-27CD7C5C3F5D" };
+            var success = await client.AckReceiveSalesOrdersAsync(MasterAccountNum, ProfileNum, salesorderUuids);
+            Assert.True(client.ResopneData != null);
         }
 
         [Fact()]
-        public async Task GetSalesOrdersOpenListAsync_Full_Test()
+        public async Task AckReceiveSalesOrdersAsync_Full_Test()
+        {
+            var salesOrderUuids = await GetOpenSalesOrderUuids();
+
+            var client = new WMSAckReceiveSalesOrderClient(_baseUrl, _code);
+            var success = await client.AckReceiveSalesOrdersAsync(MasterAccountNum, ProfileNum, salesOrderUuids);
+            Assert.True(success, client.Messages.ObjectToString());
+            Assert.True(client.ResopneData != null);
+        }
+
+        public async Task<IList<string>> GetOpenSalesOrderUuids()
         {
             var client = new WMSSalesOrderClient(_baseUrl, _code);
 
             var payload = new WMSSalesOrderRequestPayload()
             {
-                LoadAll = true,
-                //Top = 10,
-                Filter = new SalesOrderOpenListFilter()
-                {
-                    //UpdateDateUtc = DateTime.Today.AddDays(-1),
-                    WarehouseCode = "Warehouse-NEW-0907-075130364"
-                },
+                LoadAll = false,
+                Top = 2,
             };
 
             var success = await client.GetSalesOrdersOpenListAsync(MasterAccountNum, ProfileNum, payload);
 
             Assert.True(success, client.Messages.ObjectToString());
-            Assert.True(client.ResopneData != null);
 
-            if (client.ResopneData.SalesOrderOpenListCount <= 0) return;
+            var salesOrderUuids = client?.ResopneData?.SalesOrderOpenList?.Select(i => i.SalesOrderUuid).ToList();
 
-            Assert.True(client.ResopneData.SalesOrderOpenList != null, $"Count:{client.ResopneData.SalesOrderOpenListCount}, SalesOrderOpenList:no data.");
+            Assert.True(salesOrderUuids != null, "no open salesorder.");
 
-            success = client.ResopneData.SalesOrderOpenList.Count(i => i.WarehouseCode == payload.Filter.WarehouseCode) == client.ResopneData.SalesOrderOpenListCount;
-
-            Assert.True(success, "Filter by WarehouseCode reuslt is not correct.");
-
+            return salesOrderUuids;
         }
     }
 }
