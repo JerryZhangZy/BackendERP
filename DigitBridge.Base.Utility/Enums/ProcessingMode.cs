@@ -16,4 +16,10 @@ namespace DigitBridge.Base.Common
         Post = 7,
         Exit = -1
     }
+
+    public static class ProcessingModeExtensions
+    {
+        public static int ToInt(this ProcessingMode value) => (int)value;
+
+    }
 }
