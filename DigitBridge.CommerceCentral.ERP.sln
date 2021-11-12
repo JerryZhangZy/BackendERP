@@ -73,6 +73,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "postman", "postman", "{86B5
 		payload\postman\Broker.postman_collection.json = payload\postman\Broker.postman_collection.json
 		payload\postman\DigiBridge ERP System.postman_collection.json = payload\postman\DigiBridge ERP System.postman_collection.json
 		payload\postman\DigitBridge ERP Event.postman_collection.json = payload\postman\DigitBridge ERP Event.postman_collection.json
+		payload\postman\erp-dev.postman_environment.json = payload\postman\erp-dev.postman_environment.json
+		payload\postman\erp-event-dev.postman_environment.json = payload\postman\erp-event-dev.postman_environment.json
 		payload\postman\Qbo.postman_collection.json = payload\postman\Qbo.postman_collection.json
 		payload\postman\WorkFlow.postman_collection.json = payload\postman\WorkFlow.postman_collection.json
 	EndProjectSection

@@ -1150,8 +1150,8 @@ where inv.InventoryUuid=il.InventoryUuid
         //{
         //    this.AddActivityLog(new ActivityLog(dbFactory)
         //    {
-        //        Type = ActivityLogType.InventoryUpdate.ToInt(), 
-        //        Action = this.ProcessMode.ToInt(),
+        //        Type = (int)ActivityLogType.InventoryUpdate, 
+        //        Action = (int)this.ProcessMode,
         //        LogSource = "OrderShipmentService",
 
         //        MasterAccountNum = this.Data.InventoryLog.MasterAccountNum,

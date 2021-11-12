@@ -427,8 +427,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.AddActivityLog(new ActivityLog(dbFactory)
             {
-                Type = ActivityLogType.MiscInvoice.ToInt(),
-                Action = this.ProcessMode.ToInt(),
+                Type = (int)ActivityLogType.MiscInvoice,
+                Action = (int)this.ProcessMode,
                 LogSource = "MiscInvoiceService",
 
                 MasterAccountNum = this.Data.MiscInvoiceHeader.MasterAccountNum,
