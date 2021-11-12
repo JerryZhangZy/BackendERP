@@ -441,16 +441,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (result == null || string.IsNullOrEmpty(result.ProcessUuid)) continue;
                 // load by processUuid 
                 this.Edit();
-                if (!(await this.GetByProcessUuidAsync(erpEventProcessType, result.ProcessUuid))) continue;
+                if (!(await this.GetByProcessUuidAsync(erpEventProcessType, result.ProcessUuid)))
+                {
+                    AddInfo($"Data not found. ProcessUuid is :{result.ProcessUuid}");
+                    continue;
+                }
 
                 // if event already closed, don't update process status 
-                if (this.Data.EventProcessERP.CloseStatusEnum == EventCloseStatusEnum.Closed) continue;
+                if (this.Data.EventProcessERP.CloseStatusEnum == EventCloseStatusEnum.Closed)
+                {
+                    AddInfo($"Data already closed. ProcessUuid is :{result.ProcessUuid} ");
+                    continue;
+                }
 
-                // if ActionStatus is still pending, ack receive salesorder.
+                // if ActionStatus is still pending, ack receive.
                 if (this.Data.EventProcessERP.ActionStatus == (int)EventProcessActionStatusEnum.Pending)
                 {
                     this.Data.EventProcessERP.ActionStatus = (int)EventProcessActionStatusEnum.Downloaded;
                     this.Data.EventProcessERP.ActionDate = DateTime.Now;
+                    AddInfo($"Due to data actionstatus is still pending, Do ack received also. ProcessUuid is :{result.ProcessUuid} ");
                 }
 
 
