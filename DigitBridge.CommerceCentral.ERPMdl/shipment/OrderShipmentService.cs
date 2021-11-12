@@ -319,8 +319,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.AddActivityLog(new ActivityLog(dbFactory)
             {
-                Type = ActivityLogType.Shipment.ToInt(),
-                Action = this.ProcessMode.ToInt(),
+                Type = (int)ActivityLogType.Shipment,
+                Action = (int)this.ProcessMode,
                 LogSource = "OrderShipmentService",
 
                 MasterAccountNum = this.Data.OrderShipmentHeader.MasterAccountNum,

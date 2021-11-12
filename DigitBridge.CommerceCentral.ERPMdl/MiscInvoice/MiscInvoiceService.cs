@@ -417,50 +417,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var sql = $"UPDATE MiscInvoiceHeader SET PaidAmount=PaidAmount+({payAmount}), Balance=Balance-({payAmount}) WHERE MiscInvoiceUuid='{uuid}'";
             await dbFactory.Db.ExecuteAsync(sql);
-            this.AddActivityLog(new ActivityLog(dbFactory)
-            {
-                Type = ActivityLogType.MiscInvoice.ToInt(),
-                Action = 1,
-                LogSource = "MiscInvoiceService",
-
-                //MasterAccountNum = this.Data.MiscInvoiceHeader.MasterAccountNum,
-                //ProfileNum = this.Data.MiscInvoiceHeader.ProfileNum,
-                //DatabaseNum = this.Data.MiscInvoiceHeader.DatabaseNum,
-                ProcessUuid = uuid,
-                //ProcessNumber = this.Data.MiscInvoiceHeader.MiscInvoiceNumber,
-                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
-                //ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
-
-                LogMessage = $"Update MiscInvoiceHeader PaidAmount and Balance with payAmount {payAmount}"
-            });
         }
         public void Pay(string uuid, decimal payAmount)
         {
             var sql = $"UPDATE MiscInvoiceHeader SET PaidAmount=PaidAmount+({payAmount}), Balance=Balance-({payAmount}) WHERE MiscInvoiceUuid='{uuid}'";
             dbFactory.Db.Execute(sql);
-            this.AddActivityLog(new ActivityLog(dbFactory)
-            {
-                Type = ActivityLogType.MiscInvoice.ToInt(),
-                Action = 1,
-                LogSource = "MiscInvoiceService",
-
-                //MasterAccountNum = this.Data.MiscInvoiceHeader.MasterAccountNum,
-                //ProfileNum = this.Data.MiscInvoiceHeader.ProfileNum,
-                //DatabaseNum = this.Data.MiscInvoiceHeader.DatabaseNum,
-                ProcessUuid = uuid,
-                //ProcessNumber = this.Data.MiscInvoiceHeader.MiscInvoiceNumber,
-                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
-                //ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
-
-                LogMessage = $"Update MiscInvoiceHeader PaidAmount and Balance with payAmount {payAmount}"
-            });
         }
         protected void AddActivityLogForCurrentData()
         {
             this.AddActivityLog(new ActivityLog(dbFactory)
             {
-                Type = ActivityLogType.MiscInvoice.ToInt(),
-                Action = this.ProcessMode.ToInt(),
+                Type = (int)ActivityLogType.MiscInvoice,
+                Action = (int)this.ProcessMode,
                 LogSource = "MiscInvoiceService",
 
                 MasterAccountNum = this.Data.MiscInvoiceHeader.MasterAccountNum,
