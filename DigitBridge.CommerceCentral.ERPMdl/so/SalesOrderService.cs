@@ -475,6 +475,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _ProcessMode = ProcessingMode.Edit;
             return await SaveDataAsync();
         }
+
+        public async Task<bool> ExistOrderNumber(int masterAccountNum, int profileNum, string orderNumber)
+        {
+            return await SalesOrderHelper.ExistNumberAsync(orderNumber, masterAccountNum, profileNum);
+        }
     }
 }
 
