@@ -176,6 +176,167 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+
+        public async Task<bool> NewWarehouse(InventoryNewWarehousePayload payload)
+        {
+
+            string sql = $@"SELECT * FROM DistributionCenter WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND  DistributionCenterCode=@2";
+           var distributionCenters= dbFactory.Db.Query<DistributionCenter>(sql,
+                payload.MasterAccountNum.ToSqlParameter("@0"),
+                payload.ProfileNum.ToSqlParameter("@1"),
+                payload.DistributionCenterCode.ToSqlParameter("@2")
+                ).ToList();
+            if (distributionCenters == null || distributionCenters.Count() == 0) return false;
+
+
+            #region  Add new warehouse to All SKU. sql
+            sql = $@"INSERT INTO [dbo].[Inventory]
+           (
+		   [DatabaseNum]
+           ,[MasterAccountNum]
+           ,[ProfileNum]
+           ,[ProductUuid]
+           ,[InventoryUuid]
+           ,[StyleCode]
+           ,[ColorPatternCode]
+           ,[SizeType]
+           ,[SizeCode]
+           ,[WidthCode]
+           ,[LengthCode]
+           ,[PriceRule]
+           ,[LeadTimeDay]
+           ,[PoSize]
+           ,[MinStock]
+           ,[SKU]
+           ,[WarehouseUuid]
+           ,[WarehouseCode]
+           ,[WarehouseName]
+           ,[LotNum]
+           ,[LotInDate]
+           ,[LotExpDate]
+           ,[LotDescription]
+           ,[LpnNum]
+           ,[LpnDescription]
+           ,[Notes]
+           ,[Currency]
+           ,[UOM]
+           ,[QtyPerPallot]
+           ,[QtyPerCase]
+           ,[QtyPerBox]
+           ,[PackType]
+           ,[PackQty]
+           ,[DefaultPackType]
+           ,[Instock]
+           ,[OnHand]
+           ,[OpenSoQty]
+           ,[OpenFulfillmentQty]
+           ,[AvaQty]
+           ,[OpenPoQty]
+           ,[OpenInTransitQty]
+           ,[OpenWipQty]
+           ,[ProjectedQty]
+           ,[BaseCost]
+           ,[TaxRate]
+           ,[TaxAmount]
+           ,[ShippingAmount]
+           ,[MiscAmount]
+           ,[ChargeAndAllowanceAmount]
+           ,[UnitCost]
+           ,[AvgCost]
+           ,[SalesCost]
+           ,[UpdateDateUtc]
+           ,[EnterBy]
+           ,[UpdateBy]
+
+		   )
+SELECT
+           prd.DatabaseNum
+           ,prd.MasterAccountNum
+           ,prd.ProfileNum
+           ,prd.ProductUuid
+           ,CAST(newid() AS NVARCHAR(50))
+           ,prd.SKU
+           ,''
+           ,''
+           ,''
+           ,''
+           ,''
+           ,''
+           ,0
+           ,100
+           ,1000
+           ,prd.SKU
+           ,COALESCE(@0, '')  
+           ,COALESCE(@1, '')
+           ,COALESCE(@2, '') --<WarehouseName, nvarchar(200),>
+           ,''
+           ,null
+           ,null
+           ,''
+           ,''
+           ,''
+           ,''
+           ,''
+           ,'EA'
+           ,1
+           ,1
+           ,1
+           ,1
+           ,1
+           ,0
+           ,COALESCE(0,0)	--<Instock, decimal(24,6),>
+           ,0
+           ,0
+           ,0
+           ,COALESCE(0,0)
+           ,0
+           ,0
+           ,0
+           ,COALESCE(0,0)
+           ,0
+           ,0
+           ,0
+           ,0
+           ,0
+           ,0
+           ,0
+           ,0
+           ,0
+           ,GETDATE()
+           ,'SYSTEM'
+           ,'SYSTEM'
+FROM ProductBasic prd
+where prd.ProductUuid != '' AND prd.MasterAccountNum=@3 AND prd.ProfileNum=@4
+AND NOT EXISTS (SELECT * FROM Inventory i WHERE i.ProductUuid = prd.ProductUuid)";
+            #endregion
+
+            if (await dbFactory.Db.ExecuteAsync(sql,
+                   distributionCenters[0].DistributionCenterUuid.ToSqlParameter("DistributionCenterUuid"),
+                     distributionCenters[0].DistributionCenterCode.ToSqlParameter("DistributionCenterCode"),
+                     distributionCenters[0].DistributionCenterName.ToSqlParameter("DistributionCenterName"),
+                     payload.MasterAccountNum.ToSqlParameter("MasterAccountNum"),
+                     payload.ProfileNum.ToSqlParameter("ProfileNum")
+                   ) == 0)
+                return false;
+
+            return true;
+        }
+
+        public async Task<bool> ExistSKU(ExistSKUPayload payload,string SKU)
+        {
+            string sql = $@"SELECT COUNT(*) FROM ProductExt WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND SKU=@2";
+            if (await dbFactory.Db.ExecuteScalarAsync<int>(sql,
+                   payload.MasterAccountNum.ToSqlParameter("MasterAccountNum"),
+                   payload.ProfileNum.ToSqlParameter("ProfileNum"),
+                   SKU.ToSqlParameter("SKU")
+                   ) == 0)
+                payload.IsExistSKU = false;
+               else
+                payload.IsExistSKU = true;
+
+            return true;
+        }
+
         #region DataBase
         [XmlIgnore, JsonIgnore]
         protected IDataBaseFactory _dbFactory;

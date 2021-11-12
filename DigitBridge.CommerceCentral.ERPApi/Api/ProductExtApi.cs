@@ -295,6 +295,80 @@ namespace DigitBridge.CommerceCentral.ERPApi
             await srv.GetProductSummaryAsync(payload);
             return new JsonNetResponse<InventoryPayload>(payload);
         }
+
+
+        /// <summary>
+        ///  Add new warehouse to All SKU.
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+
+        [FunctionName(nameof(NewWarehouse))]
+        [OpenApiOperation(operationId: "AddProductExt", tags: new[] { "ProductExts" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryNewWarehouseAdd), Description = "InventoryNewWarehouseAdd ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryNewWarehouseAdd))]
+        public static async Task<JsonNetResponse<InventoryNewWarehousePayload>> NewWarehouse(
+    [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "productExts/NewWarehouse")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryNewWarehousePayload>(true);
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new InventoryManager(dbFactory);
+            if (await svc.NewWarehouse(payload))
+            {
+                payload.Success = true;
+            }
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+            return new JsonNetResponse<InventoryNewWarehousePayload>(payload);
+        }
+
+
+
+        /// <summary>
+        /// ExistCustomerCode
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="CustomerCode"></param>
+        /// <returns></returns>
+
+        [FunctionName(nameof(ExistSKU))]
+        [OpenApiOperation(operationId: "ExistSKU", tags: new[] { "ProductExts" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "SKU", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "SKU", Description = "SKU", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ExistSKUPayload))]
+        public static async Task<JsonNetResponse<ExistSKUPayload>> ExistSKU(
+  [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "productExts/existSKU/{SKU}")] HttpRequest req,
+  string SKU = null)
+        {
+            var payload = await req.GetParameters<ExistSKUPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new InventoryManager(dbFactory);
+
+
+            if (await svc.ExistSKU(payload, SKU))
+            {
+                payload.Success = true;
+               
+            }
+            else
+            {
+                payload.Success = false;
+                payload.Messages = svc.Messages;
+            }
+            return new JsonNetResponse<ExistSKUPayload>(payload);
+
+        }
+
+
+
     }
 }
 
