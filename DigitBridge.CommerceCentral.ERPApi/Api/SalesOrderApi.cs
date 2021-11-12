@@ -23,6 +23,31 @@ namespace DigitBridge.CommerceCentral.ERPApi
     public static class SalesOrderApi
     {
         /// <summary>
+        /// exam an sales order number whether been used
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(CheckOrderNumberExist))]
+        [OpenApiOperation(operationId: "CheckOrderNumberExist", tags: new[] { "SalesOrders" }, Summary = "exam an sales order number whether been used")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "orderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "orderNumber", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadGetSingle))]
+        public static async Task<bool> CheckOrderNumberExist(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "salesOrders/existOrderNumber/{orderNumber}")] HttpRequest req,
+            string orderNumber)
+        {
+            int masterAccountNum = req.Headers["masterAccountNum"].ToInt();
+            int profileNum = req.Headers["profileNum"].ToInt();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(masterAccountNum);
+            var srv = new SalesOrderService(dataBaseFactory);
+
+            return await srv.ExistOrderNumber(masterAccountNum, profileNum, orderNumber);
+        }
+
+        /// <summary>
         /// Get one sales order by orderNumber
         /// </summary>
         /// <param name="req"></param>
