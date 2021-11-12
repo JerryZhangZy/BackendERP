@@ -49,12 +49,12 @@ Call api via Integration SDK
     var InvoiceUuids = new List<string>() { "15082ed6-b62f-4faf-9491-dc182d7bd4a9", "61F6B440-17B2-4A33-BD4F-27CD7C5C3F5D" };
     var success = await client.AckReceiveInvoicesAsync(MasterAccountNum, ProfileNum, InvoiceUuids);
     //client.Messages : get error message.
-	//client.ResopneData: ack result.
+    //client.ResopneData: ack result.
 	
 6, Ack process invoices
 
 
-    var client = new CommerceCentralAckProcessInvoiceClient(_baseUrl, _code);
+    var client = new CommerceCentralAckProcessInvoiceClient();
     var processResults = new List<ProcessResult>();
     var processResult = new ProcessResult()
     {
@@ -65,7 +65,13 @@ Call api via Integration SDK
     processResults.Add(processResult);
     var success = await client.AckProcessInvoicesAsync(MasterAccountNum, ProfileNum, processResults);
     //client.Messages : get error message.
-	//client.ResopneData: ack result.
+    //client.ResopneData: ack result.
  
  
-7, 
+7, Unit Test
+   Project:DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
+   Files:   
+   CommerceCentralInvoiceClientTests
+   CommerceCentralAckReceiveInvoiceClientTests
+   CommerceCentralAckProcessInvoiceClientTests 
+   
