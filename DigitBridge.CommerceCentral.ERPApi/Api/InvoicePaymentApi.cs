@@ -22,6 +22,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [ApiFilter(typeof(InvoicePaymentApi))]
     public static class InvoicePaymentApi
     {
+
+        [FunctionName(nameof(CreateInvoicePayments))]
+        [OpenApiOperation(operationId: "CreateInvoicePayments", tags: new[] { "Create invoice payments" }, Summary = "Get invoice payments by customer code")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "customerCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadGetSingle))]
+        public static async Task<JsonNetResponse<InvoicePaymentPayload>> CreateInvoicePayments(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoicePayments/customer/{customerCode}")] HttpRequest req,
+            string customerCode)
+        {
+            var payload = await req.GetParameters<InvoicePaymentPayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InvoicePaymentService(dataBaseFactory);
+            await srv.CreatePaymentForCustomerAsync(payload, customerCode);
+            return new JsonNetResponse<InvoicePaymentPayload>(payload);
+        }
+
         /// <summary>
         /// Get invoice payments by invoice num
         /// </summary>

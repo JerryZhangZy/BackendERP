@@ -37,6 +37,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public InvoiceHeaderDto InvoiceHeader { get; set; }
 
+        public string CustomerCode { get; set; }
+        public string CustomerName { get; set; }
+        public IList<InvoiceHeaderDto> InvoiceHeaders { get; set; } = new List<InvoiceHeaderDto>();
+
         #region summary service 
 
         [OpenApiPropertyDescription("(Response Data) summary result which load filter")]

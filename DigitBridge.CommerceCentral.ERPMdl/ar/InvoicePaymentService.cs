@@ -53,6 +53,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Messages = this.Messages;
         }
 
+        public async Task CreatePaymentForCustomerAsync(InvoicePaymentPayload payload, string customerCode)
+        {
+            var invoices = await GetInvoiceHeadersByCustomerAsync(payload.MasterAccountNum, payload.ProfileNum, customerCode);
+            payload.InvoiceHeaders = invoices;
+            payload.CustomerCode = customerCode;
+            payload.ApplyInvoices = invoices.Select(i => new ApplyInvoice { 
+                InvoiceNumber = i.InvoiceNumber,
+                InvoiceUuid = i.InvoiceUuid
+            }).ToList();
+
+            payload.Success = true;
+            payload.Messages = this.Messages;
+        }
+
         /// <summary>
         /// get payments and invoice data.
         /// </summary>
