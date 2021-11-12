@@ -7,14 +7,26 @@ namespace DigitBridge.Base.Common
 {
     public enum EventProcessActionStatusEnum : int
     {
-        Default = 0,
-        Locked = 1,
+        Pending = 0,
+        Downloaded = 1,
+    }
+    public enum EventProcessProcessStatusEnum : int
+    {
+        Pending = 0,
+        Success = 1,
         Failed = 2,
     }
+    public enum EventCloseStatusEnum : int
+    {
+        Open = 0,
+        Closed = 1,
+    }
+
 
     public enum EventProcessTypeEnum : int
     {
-        InvoiceToChanel = 1,
-        SalesOrderToWMS = 2
+        InvoiceToCommerceCentral = 1,
+        SalesOrderToWMS = 2,
+        PoToWMS = 3,
     }
 }

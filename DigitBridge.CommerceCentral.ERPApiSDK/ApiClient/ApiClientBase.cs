@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using System.Xml.Serialization;
 using System.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
@@ -50,8 +51,16 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             {
                 this.jsonSerializerSettings = new JsonSerializerSettings
                 {
-                    FloatParseHandling = FloatParseHandling.Decimal,
-                    Converters = new List<JsonConverter>() { new StringBuilderConverter() }
+                    NullValueHandling = NullValueHandling.Ignore,
+                    Formatting = Formatting.None,
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy
+                        {
+                            OverrideSpecifiedNames = false
+                        }
+                    },
+                    //Converters = new List<JsonConverter>() { new StringBuilderConverter() }
                 };
             }
 
@@ -185,7 +194,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <returns></returns>
         protected virtual HttpContent GetHttpContent(object data = null)
         {
-            var content = data == null ? string.Empty : JsonConvert.SerializeObject(data);
+            var content = data == null ? string.Empty : JsonConvert.SerializeObject(data,jsonSerializerSettings);
             return new StringContent(content, Encoding.UTF8, "application/json");
         }
         /// <summary>
@@ -277,7 +286,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public IList<MessageClass> AddFatal(string message, string code = null) =>
             Messages.Add(message, MessageLevel.Fatal, code);
         public IList<MessageClass> AddDebug(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Debug, code); 
+            Messages.Add(message, MessageLevel.Debug, code);
 
         #endregion Messages
     }

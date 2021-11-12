@@ -12,9 +12,22 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     ///  Request payload object
     /// </summary>
     [Serializable()]
-    public class WMSSalesOrderRequestPayload : RequestPayloadBase
+    public class WMSSalesOrderRequestPayload : FilterPayloadBase<SalesOrderOpenListFilter>
     {
         // Add more parameters here
+    }
+
+    public class SalesOrderOpenListFilter
+    {
+        /// <summary>
+        /// WarehouseCode
+        /// </summary>
+        public string WarehouseCode { get; set; }
+
+        ///// <summary>
+        /////  UpdateDateUtc
+        ///// </summary>
+        //public DateTime? UpdateDateUtc { get; set; }
     }
 
     /// <summary>

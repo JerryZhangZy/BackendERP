@@ -125,7 +125,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.EtaArrivalDate, f => f.Date.Past(0).Date)
 				.RuleFor(u => u.CancelDate, f => f.Date.Past(0).Date)
 				.RuleFor(u => u.VendorUuid, f => f.Random.Guid().ToString())
-				.RuleFor(u => u.VendorNum, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.VendorCode, f => f.Random.AlphaNumeric(50))
 				.RuleFor(u => u.VendorName, f => f.Company.CompanyName())
 				.RuleFor(u => u.Currency, f => "USD")
 				.RuleFor(u => u.SubTotalAmount, f => f.Random.Decimal(100, 1000, 2))

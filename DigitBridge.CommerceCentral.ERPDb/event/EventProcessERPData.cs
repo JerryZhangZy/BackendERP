@@ -12,6 +12,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class EventProcessERPData
     {
+        public EventProcessERPData(IDataBaseFactory dbFactory, EventProcessERP data) : base(dbFactory)
+        {
+            this.EventProcessERP = data;
+        }
 
     }
 }

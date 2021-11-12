@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -56,7 +57,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -79,7 +82,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         public virtual bool Add(OrderShipmentPayload payload)
@@ -103,7 +108,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         public virtual async Task<bool> AddAsync(OrderShipmentPayload payload)
@@ -127,7 +134,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -153,7 +162,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -179,7 +190,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
+        }
+
+        public async Task GetListByOrderShipmentNumbersAsync(OrderShipmentPayload payload, IList<string> orderShipmentNumbers)
+        {
+            if (payload is null || !payload.HasOrderShipmentNumbers)
+            {
+                AddError("OrderShipmentNumbers is required.");
+                payload.Messages = this.Messages;
+                payload.Success = false;
+            }
+            //var rowNums = await new InvoiceList(dbFactory).GetRowNumListAsync(payload.InvoiceNumbers, payload.MasterAccountNum, payload.ProfileNum);
+
+            var result = new List<OrderShipmentDataDto>();
+            foreach (var orderShipmentNumber in payload.OrderShipmentNumbers)
+            {
+                if (!(await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderShipmentNumber.ToString())))
+                    continue;
+                result.Add(this.ToDto());
+                this.DetachData(this.Data);
+            }
+            payload.OrderShipments = result;
         }
 
         /// <summary>
@@ -209,7 +243,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var rtn = SaveData();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
         /// <summary>
@@ -238,10 +274,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var rtn = await SaveDataAsync();
+            if (rtn) AddActivityLogForCurrentData();
+            return rtn;
         }
 
-
+        InventoryLogService logService;
         /// <summary>
         /// Delete order shipment by order shipment number
         /// </summary>
@@ -254,12 +292,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("orderShipmentNum is invalid");
                 return false;
             }
-
             //set delete mode
             Delete();
             //load data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderShipmentNum.ToString());
             success = success && DeleteData();
+            if (success)
+            {
+                if (logService == null) logService = new InventoryLogService(dbFactory);
+                await logService.UpdateByDeleteShipmentAsync(Data.OrderShipmentHeader.OrderShipmentUuid);
+                AddActivityLogForCurrentData();
+            }
             return success;
         }
 
@@ -271,6 +314,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool GetData(OrderShipmentPayload payload, string number)
         {
             return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, number);
+        }
+        protected void AddActivityLogForCurrentData()
+        {
+            this.AddActivityLog(new ActivityLog(dbFactory)
+            {
+                Type = ActivityLogType.Shipment.ToInt(),
+                Action = this.ProcessMode.ToInt(),
+                LogSource = "OrderShipmentService",
+
+                MasterAccountNum = this.Data.OrderShipmentHeader.MasterAccountNum,
+                ProfileNum = this.Data.OrderShipmentHeader.ProfileNum,
+                DatabaseNum = this.Data.OrderShipmentHeader.DatabaseNum,
+                ProcessUuid = this.Data.OrderShipmentHeader.OrderShipmentUuid,
+                ProcessNumber = this.Data.OrderShipmentHeader.OrderShipmentNum.ToString(),
+                ChannelNum = this.Data.OrderShipmentHeader.ChannelAccountNum,
+                ChannelAccountNum = this.Data.OrderShipmentHeader.ChannelAccountNum,
+
+                LogMessage = string.Empty
+            });
         }
     }
 }

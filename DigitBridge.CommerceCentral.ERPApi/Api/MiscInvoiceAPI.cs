@@ -270,6 +270,38 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<MiscInvoicePayload>(payload);
         }
 
+        /// <summary>
+        /// check miscInvoiceNumber exist
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="log"></param>
+        /// <param name="MiscInvoiceNumber"></param>
+        /// <returns></returns>
+        [FunctionName(nameof(CheckMiscInvoiceNumberExist))]
+        [OpenApiOperation(operationId: "CheckMiscInvoiceNumberExist", tags: new[] { "MiscInvoices" }, Summary = "Check MiscInvoiceNumber exist")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "MiscInvoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "MiscInvoiceNumber", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(MiscInvoicePayloadGetSingle))]
+        public static async Task<JsonNetResponse<MiscInvoicePayload>> CheckMiscInvoiceNumberExist(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "miscInvoice/miscInvoiceNumber/{miscInvoiceNumber}")] Microsoft.AspNetCore.Http.HttpRequest req,
+            ILogger log,
+            string miscInvoiceNumber)
+        {
+            var payload = await req.GetParameters<MiscInvoicePayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new MiscInvoiceService(dataBaseFactory);
+            payload.Success = await srv.CheckNumberExistAsync(payload.MasterAccountNum, payload.ProfileNum, miscInvoiceNumber);
+            if (payload.Success)
+            {
+                payload.MiscInvoiceNumbers = new string[] { miscInvoiceNumber };
+            }
+            else
+                payload.Messages = srv.Messages;
+            return new JsonNetResponse<MiscInvoicePayload>(payload);
+        }
+
     }
 }
 

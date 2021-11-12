@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using System.Xml.Serialization;
+using System.Text.Json.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -35,6 +37,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
 
+        protected VendorAddressService _vendorAddressService;
+        [XmlIgnore, JsonIgnore]
+        public VendorAddressService vendorAddressService
+        {
+            get
+            {
+                if (_vendorAddressService is null)
+                    _vendorAddressService = new VendorAddressService(dbFactory);
+                return _vendorAddressService;
+            }
+        }
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
@@ -128,7 +141,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return await SaveDataAsync();
         }
-
+    
         /// <summary>
         /// Update data from Dto object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
@@ -333,9 +346,46 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public Vendor GetVendorByCode(string vendorCode)
         {
+           
             return dbFactory.Find<Vendor>("WHERE VendorCode=@0",
                 vendorCode.ToSqlParameter("VendorCode")).FirstOrDefault();
         }
+
+
+
+        public async Task<bool> AddVendorAddressAsync(VendorAddressPayload payload)
+        {
+           return await vendorAddressService.AddAsync(payload);
+        }
+
+        public async Task<bool> UpdateVendorAddressAsync(VendorAddressPayload payload)
+        {
+            return await vendorAddressService.UpdateAsync(payload);
+        }
+
+        public async Task<bool> DeleteVendorAddressAsync(int masterAccountNum,int profileNum, string vendorCode, string addressCode)
+        {
+            string vendorUuid = string.Empty;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                long rowNum = await VendorServiceHelper.GetRowNumByVendorCodeAsync(vendorCode, masterAccountNum, profileNum);
+                if (GetData(rowNum))
+                {
+                    vendorUuid = this.Data.Vendor.VendorUuid;
+                }
+            }
+
+            return await vendorAddressService.DeleteByVendorAddressUuidAsync(vendorUuid, addressCode);
+            
+        }
+
+        public VendorAddressDataDto ToVendorAddressDto()
+        {
+
+           return vendorAddressService.ToDto();
+        }
+
+
     }
 }
 

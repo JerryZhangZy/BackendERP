@@ -270,5 +270,8 @@
     <None Include="event\EventProcessERP.sql" />
     <None Include="sql\AddEventProcessFromInvocie.sql" />
     <None Include="event\ActivityLog.sql" />
+    <None Include="sql\AddEventProcessFromSalesOrder.sql" />
+    <None Include="event\EventProcessERP_Update.sql" />
+    <Build Include="sql\CentralOrderTansferToSalesOrder.sql" />
   </ItemGroup>
 </Project>

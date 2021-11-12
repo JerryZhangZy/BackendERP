@@ -92,5 +92,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #endregion list service
     }
+
+    [Serializable()]
+    public class InitNumbersSinglePayload:PayloadBase
+    {
+        public string CurrentNumber { get; set; }
+    }
 }
 

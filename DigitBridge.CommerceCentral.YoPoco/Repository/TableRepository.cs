@@ -230,7 +230,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return;
         }
 
-        [XmlIgnore, JsonIgnore]
+        [XmlIgnore, JsonIgnore,IgnoreCompare]
         protected virtual IList<string> _IgnoreUpdate { get; private set; } = new List<string>();
         protected virtual bool IgnoreUpdate(string name) => !_IgnoreUpdate.Contains(name);
         public virtual void AddIgnoreUpdate(string name)

@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
 
 
     /// <summary>
-    /// Process apInvoice
+    /// Process InitNumberApi
     /// </summary> 
     [ApiFilter(typeof(InitNumberApi))]
     public static class InitNumberApi
@@ -63,6 +63,40 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
                 payload.Messages = srv.Messages;
             return new JsonNetResponse<InitNumbersPayload>(payload);
         }
+
+
+
+
+        /// <summary>
+        /// Get one  InitNumber
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="log"></param>
+        /// <param name="customerUuid"></param>
+        /// <param name="type">values[so,invoice,po,apinvoice]</param>
+        /// <returns></returns>
+        [FunctionName(nameof(GetNextNumber))]
+        [OpenApiOperation(operationId: "GetNextNumber", tags: new[] { "InitNumbers" }, Summary = "Get one NextNumber by customerUuid and type")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "customerUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "customerUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "type", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "type", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InitNumberPayloadGetSingle))]
+        public static async Task<JsonNetResponse<InitNumbersSinglePayload>> GetNextNumber(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "initNumbers/{customerUuid}/{type}")] Microsoft.AspNetCore.Http.HttpRequest req,
+            ILogger log,
+            string customerUuid,string type)
+        {
+            var payload = await req.GetParameters<InitNumbersSinglePayload>();
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InitNumbersService(dataBaseFactory);
+            payload.CurrentNumber = await srv.GetNextNumberAsync(payload.MasterAccountNum, payload.ProfileNum, customerUuid, type);
+            payload.Messages = srv.Messages;
+            return new JsonNetResponse<InitNumbersSinglePayload>(payload);
+        }
+
+
 
         ///  Update InitNumber 
         /// </summary>

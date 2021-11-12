@@ -15,7 +15,7 @@ using ItemHelper = DigitBridge.CommerceCentral.ERPDb.InvoiceItemsHelper;
 using EventHelper = DigitBridge.CommerceCentral.ERPDb.EventProcessERPHelper;
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class InvoiceUnprocessList : SqlQueryBuilderForEventProcess<InvoiceUnprocessQuery>
+    public class InvoiceUnprocessList : SqlQueryBuilder<InvoiceUnprocessQuery>
     {
         public InvoiceUnprocessList(IDataBaseFactory dbFactory) : base(dbFactory)
         {
@@ -31,7 +31,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var header = "InvoiceHeader";
             var columns = $@"
-{EventHelper.TableAllies}.EventUuid,
+--{EventHelper.TableAllies}.EventUuid,
+{Helper.TableAllies}.InvoiceUuid as '{header}.InvoiceUuid',
 --{Helper.TableAllies}.OrderInvoiceNum as '{header}.OrderInvoiceNum',
 {Helper.TableAllies}.DatabaseNum as '{header}.DatabaseNum',
 {Helper.TableAllies}.MasterAccountNum as '{header}.MasterAccountNum',
@@ -154,8 +155,7 @@ FOR JSON PATH
             try
             {
                 payload.InvoiceUnprocessListCount = Count();
-                payload.Success = ExcuteJsonForQueryByLocked(sb, EventProcessTypeEnum.InvoiceToChanel);
-                payload.Messages = this.Messages;
+                payload.Success = ExcuteJson(sb);
                 if (payload.Success)
                     payload.InvoiceUnprocessList = sb;
             }
@@ -166,6 +166,7 @@ FOR JSON PATH
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;
             }
+            payload.Messages.Add(this.Messages);
         }
 
         public virtual async Task GetUnprocessedInvoicesAsync(InvoicePayload payload)
@@ -178,8 +179,7 @@ FOR JSON PATH
             try
             {
                 payload.InvoiceUnprocessListCount = await CountAsync();
-                payload.Success = await ExcuteJsonForQueryByLockedAsync(sb, EventProcessTypeEnum.InvoiceToChanel);
-                payload.Messages = this.Messages;
+                payload.Success = await ExcuteJsonAsync(sb);
                 if (payload.Success)
                     payload.InvoiceUnprocessList = sb;
             }
@@ -188,10 +188,8 @@ FOR JSON PATH
                 payload.Success = false;
                 payload.InvoiceUnprocessListCount = 0;
                 AddError(ex.ObjectToString());
-                payload.Messages = this.Messages;
             }
+            payload.Messages = this.Messages;
         }
-
-
     }
 }

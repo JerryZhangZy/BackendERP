@@ -54,16 +54,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// </summary>
 		[OpenApiPropertyDescription("Customer uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The CustomerUuid value cannot exceed 50 characters. ")]
-        [JsonIgnore, XmlIgnore]
+   
         public string CustomerUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCustomerUuid => CustomerUuid != null;
 
 		/// <summary>
-		/// Address code, human readable. <br> Title: Address Code, Display: true, Editable: true.
+		/// Address code, human readable. <br> Title: Address Code, Display: true, Editable: false.
 		/// </summary>
-		[OpenApiPropertyDescription("Address code, human readable. <br> Title: Address Code, Display: true, Editable: true.")]
+		[OpenApiPropertyDescription("Address code, human readable. <br> Title: Address Code, Display: true, Editable: false.")]
         [StringLength(50, ErrorMessage = "The AddressCode value cannot exceed 50 characters. ")]
         public string AddressCode { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

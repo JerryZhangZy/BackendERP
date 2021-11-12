@@ -85,7 +85,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (dto.HasEtaArrivalDate) data.EtaArrivalDate = dto.EtaArrivalDate;
             if (dto.HasCancelDate) data.CancelDate = dto.CancelDate;
             if (dto.HasVendorUuid) data.VendorUuid = dto.VendorUuid;
-            if (dto.HasVendorNum) data.VendorNum = dto.VendorNum;
+            if (dto.HasVendorCode) data.VendorCode = dto.VendorCode;
             if (dto.HasVendorName) data.VendorName = dto.VendorName;
             if (dto.HasCurrency) data.Currency = dto.Currency;
             if (dto.HasSubTotalAmount) data.SubTotalAmount = dto.SubTotalAmount.ToDecimal();
@@ -461,7 +461,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (!data.CancelDate.IsZero())
                 dto.CancelDate = data.CancelDate;
             dto.VendorUuid = data.VendorUuid;
-            dto.VendorNum = data.VendorNum;
+            dto.VendorCode = data.VendorCode;
             dto.VendorName = data.VendorName;
             dto.Currency = data.Currency;
             dto.SubTotalAmount = data.SubTotalAmount;

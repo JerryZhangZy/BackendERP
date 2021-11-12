@@ -21,3 +21,7 @@ BEGIN
 	) 
 END	
  
+IF COL_LENGTH('ApInvoiceHeader', 'VendorNum') IS NOT NULL					
+BEGIN
+    exec sp_rename 'ApInvoiceHeader.VendorNum', 'VendorCode', 'COLUMN'
+END

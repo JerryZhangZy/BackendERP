@@ -130,7 +130,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var initFilters = new JObject()
             {
-                { "EventProcessActionStatus",(int)EventProcessActionStatusEnum.Default},
+                { "EventProcessActionStatus",(int)EventProcessActionStatusEnum.Pending},
             };
             if (initFilters.ContainsKey(currentFilter.Name))
             {
@@ -167,7 +167,7 @@ SELECT TOP 1 RowNum,ProcessUuid,ActionStatus,ChannelNum,ChannelAccountNum
 FROM EventProcessERP ins  
 WHERE [MasterAccountNum]={MasterAccountNum}
 AND [ProfileNum]={ProfileNum}
-AND ERPEventProcessType={(int)EventProcessTypeEnum.InvoiceToChanel}
+AND ERPEventProcessType={(int)EventProcessTypeEnum.InvoiceToCommerceCentral}
 order by ins.rownum desc
 for json path
 ";

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
+using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
@@ -15,8 +16,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
 
-        //private string _baseUrl = "http://localhost:7074/api/"; 
-        private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
+        private string _baseUrl = "http://localhost:7074/api/";
+        //private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
         private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
         protected const int MasterAccountNum = 10001;
         protected const int ProfileNum = 10001;
@@ -51,6 +52,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             var payload = new WMSSalesOrderRequestPayload()
             {
                 LoadAll = true,
+                //Top = 10,
+                Filter = new SalesOrderOpenListFilter()
+                {
+                    //UpdateDateUtc = DateTime.Today.AddDays(-1),
+                    WarehouseCode = "Warehouse-NEW-0907-075130364"
+                },
             };
 
             var success = await client.GetSalesOrdersOpenListAsync(MasterAccountNum, ProfileNum, payload);
@@ -61,6 +68,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             if (client.ResopneData.SalesOrderOpenListCount <= 0) return;
 
             Assert.True(client.ResopneData.SalesOrderOpenList != null, $"Count:{client.ResopneData.SalesOrderOpenListCount}, SalesOrderOpenList:no data.");
+
+            success = client.ResopneData.SalesOrderOpenList.Count(i => i.WarehouseCode == payload.Filter.WarehouseCode) == client.ResopneData.SalesOrderOpenListCount;
+
+            Assert.True(success, "Filter by WarehouseCode reuslt is not correct.");
 
         }
     }

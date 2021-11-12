@@ -75,6 +75,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+
+        [XmlIgnore, JsonIgnore]
+        protected InitNumbersService _initNumbersService;
+        [XmlIgnore, JsonIgnore]
+        public InitNumbersService initNumbersService
+        {
+            get
+            {
+                if (_initNumbersService is null)
+                    _initNumbersService = new InitNumbersService(dbFactory);
+                return _initNumbersService;
+            }
+        }
+
         public async Task<byte[]> ExportAsync(InvoicePayload payload)
         {
             var rowNumList = await invoiceList.GetRowNumListAsync(payload);
@@ -347,6 +361,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             shipmentData.OrderShipmentHeader.InvoiceNumber = invoiceService.Data.InvoiceHeader.InvoiceNumber;
             return (true, invoiceService.Data.InvoiceHeader.InvoiceUuid);
         }
+
+
+        public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid)
+        {
+                return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, "invoice");
+        }
+
+        public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string currentNumber)
+        {
+                return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "invoice", currentNumber);
+        }
         #endregion
 
         #region update fault invoice 
@@ -368,8 +393,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     EventProcessERP = new EventProcessERPDto()
                     {
-                        ERPEventProcessType = (int)EventProcessTypeEnum.InvoiceToChanel,
-                        ActionStatus = (int)EventProcessActionStatusEnum.Failed,
+                        ERPEventProcessType = (int)EventProcessTypeEnum.InvoiceToCommerceCentral,
+                        ProcessStatus = (int)EventProcessProcessStatusEnum.Failed,
                         MasterAccountNum = payload.MasterAccountNum,
                         ProfileNum = payload.ProfileNum,
                         EventUuid = faultInvoice.EventUuid,

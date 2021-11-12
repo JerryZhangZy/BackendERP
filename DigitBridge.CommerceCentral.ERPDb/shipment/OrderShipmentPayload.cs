@@ -33,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                { "OrderShipmentUuids", val => OrderShipmentUuids = val.Split(",").ToList() }
+                { "OrderShipmentNumbers", val => OrderShipmentNumbers = val.Split(",").ToList() }
             };
         }
 
@@ -44,10 +44,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// (Request Parameter) Array of uuid to load multiple OrderShipment dto data.
         /// </summary>
         [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple OrderShipment dto data.")]
-        public IList<string> OrderShipmentUuids { get; set; } = new List<string>();
+        public IList<string> OrderShipmentNumbers { get; set; } = new List<string>();
         [JsonIgnore] 
-        public virtual bool HasOrderShipmentUuids => OrderShipmentUuids != null && OrderShipmentUuids.Count > 0;
-        public bool ShouldSerializeShipmentUuids() => HasOrderShipmentUuids;
+        public virtual bool HasOrderShipmentNumbers => OrderShipmentNumbers != null && OrderShipmentNumbers.Count > 0;
+        //public bool ShouldSerializeShipmentUuids() => HasOrderShipmentNumbers;
 
         /// <summary>
         /// (Response Data) Array of OrderShipment entity object which load by uuid array.
@@ -99,6 +99,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonConverter(typeof(StringBuilderConverter))]
         public StringBuilder ShipmentSummary { get; set; }
         [JsonIgnore] public virtual bool HasShipmentSummary => ShipmentSummary != null;
+
         public bool ShouldSerializeShipmentSummary() => HasShipmentSummary;
         #endregion
     }

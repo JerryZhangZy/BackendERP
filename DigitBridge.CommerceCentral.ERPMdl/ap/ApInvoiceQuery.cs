@@ -59,8 +59,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public QueryFilter<string> VendorUuid => _VendorUuid;
 
 
-        protected QueryFilter<string> _VendorNum = new QueryFilter<string>("VendorNum", "VendorNum", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
-        public QueryFilter<string> VendorNum => _VendorNum;
+        protected QueryFilter<string> _VendorCode = new QueryFilter<string>("VendorCode", "VendorCode", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
+        public QueryFilter<string> VendorCode => _VendorCode;
 
         protected QueryFilter<string> _VendorName = new QueryFilter<string>("VendorName", "VendorName", PREFIX, FilterBy.bw, string.Empty, isNVarChar: true);
         public QueryFilter<string> VendorName => _VendorName;
@@ -121,7 +121,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ApInvoiceDateFrom);
             AddFilter(_ApInvoiceDateTo);
             AddFilter(_VendorUuid);
-            AddFilter(_VendorNum);
+            AddFilter(_VendorCode);
             AddFilter(_VendorName);
             AddFilter(_VendorInvoiceNum);
 
@@ -155,13 +155,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
-        /// get all ap invoice by vendorNum
+        /// get all ap invoice by VendorCode
         /// </summary>
-        /// <param name="vendorNum"></param>
-        public void InitForNewPaymet(string vendorNum)
+        /// <param name="vendorCode"></param>
+        public void InitForNewPaymet(string vendorCode)
         {
             _ApInvoiceStatus.FilterValue = (int)InvoiceStatusEnum.Outstanding;
-            _VendorNum.FilterValue = vendorNum;
 
             _ApInvoiceDateFrom.FilterValue = DateTime.Today.AddYears(-5);//TODO. this is a tmp begin date. make sure this logic.
             _ApInvoiceDateTo.FilterValue = DateTime.Today;

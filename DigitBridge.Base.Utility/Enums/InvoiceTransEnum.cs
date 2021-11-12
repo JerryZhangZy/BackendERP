@@ -14,14 +14,4 @@ namespace DigitBridge.Base.Common
         Trash = 5,
         UnPaid = 6
     }
-
-    public enum PaidByEnum : int
-    {
-        Cash = 0,
-        Check = 1,
-        CreditCard = 2,
-        Expense = 3,
-        Prepayment=4,
-        Other = 5 
-    }
 }

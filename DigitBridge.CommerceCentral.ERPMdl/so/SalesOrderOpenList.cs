@@ -14,7 +14,7 @@ using InfoHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoHelper;
 using InfoAttrHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttributesHelper;
 using ItemHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsHelper;
 using ItemAttrHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesHelper;
-
+using EventHelper = DigitBridge.CommerceCentral.ERPDb.EventProcessERPHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -32,6 +32,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected string GetHeader_Columns()
         {
             var columns = $@" 
+--{EventHelper.TableAllies}.EventUuid,
 {Helper.TableAllies}.SalesOrderUuid as 'SalesOrderUuid',
 {InfoHelper.TableAllies}.WarehouseCode as 'WarehouseCode',
 {Helper.TableAllies}.DatabaseNum as 'CentralDatabaseNum',
@@ -49,6 +50,8 @@ channelAccount.ChannelAccountName as 'ChannelAccountName',
 {Helper.TableAllies}.TaxAmount as 'TotalTaxAmount',
 {Helper.TableAllies}.ShippingAmount as 'TotalShippingAmount',
 {Helper.TableAllies}.ShippingTaxAmount as 'TotalShippingTaxAmount',
+{InfoHelper.TableAllies}.ShippingCarrier as 'RequestShippingCarrier',
+{InfoHelper.TableAllies}.ShippingClass as 'RequestShippingService',
 {InfoHelper.TableAllies}.ShipToName as 'ShipToName',
 {InfoHelper.TableAllies}.ShipToFirstName as 'ShipToFirstName',
 {InfoHelper.TableAllies}.ShipToLastName as 'ShipToLastName',
@@ -94,9 +97,9 @@ channelAccount.ChannelAccountName as 'ChannelAccountName',
         }
         protected string GetItem_Columns()
         {
-            
 
-               var columns = $@"
+
+            var columns = $@"
 {ItemHelper.TableAllies}.SalesOrderItemsUuid as 'SalesOrderItemsUuid',
 {ItemHelper.TableAllies}.SKU as 'SKU',
 CAST({ ItemHelper.TableAllies}.OrderQty as INT) as 'OrderQty',
@@ -145,27 +148,34 @@ FOR JSON PATH
             var channelAccountNum = $"{InfoHelper.TableAllies}.ChannelAccountNum";
 
             this.SQL_From = $@"
- FROM {Helper.TableName} {Helper.TableAllies}
+ FROM {EventHelper.TableName} {EventHelper.TableAllies}
+ INNER JOIN {Helper.TableName} {Helper.TableAllies}  
+        on  {Helper.TableAllies}.MasterAccountNum={EventHelper.TableAllies}.MasterAccountNum
+        and {Helper.TableAllies}.ProfileNum={EventHelper.TableAllies}.ProfileNum
+        and {Helper.TableAllies}.SalesOrderUuid={EventHelper.TableAllies}.ProcessUuid
  LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({InfoHelper.TableAllies}.SalesOrderUuid = {Helper.TableAllies}.SalesOrderUuid)
- LEFT JOIN {InfoAttrHelper.TableName} {InfoAttrHelper.TableAllies} ON ({InfoAttrHelper.TableAllies}.SalesOrderUuid = {Helper.TableAllies}.SalesOrderUuid)
- LEFT JOIN @SalesOrderStatus ordst ON ({Helper.TableAllies}.OrderStatus = ordst.num)
- LEFT JOIN @SalesOrderType ordtp ON ({Helper.TableAllies}.OrderType = ordtp.num) 
  {SqlStringHelper.Join_Setting_Channel(masterAccountNum, profileNum, channelNum)}
  {SqlStringHelper.Join_Setting_ChannelAccount(masterAccountNum, profileNum, channelNum, channelAccountNum)}
 ";
             return this.SQL_From;
         }
 
-        public override SqlParameter[] GetSqlParameters()
+        //public override SqlParameter[] GetSqlParameters()
+        //{
+        //    var paramList = base.GetSqlParameters().ToList();
+        //    paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
+        //    paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
+
+        //    return paramList.ToArray();
+
+        //}
+
+        protected override string GetSQL_orderBy()
         {
-            var paramList = base.GetSqlParameters().ToList();
-            paramList.Add("@SalesOrderStatus".ToEnumParameter<SalesOrderStatus>());
-            paramList.Add("@SalesOrderType".ToEnumParameter<SalesOrderType>());
+            this.SQL_OrderBy = $" order by {Helper.TableAllies}.UpdateDateUtc ";
 
-            return paramList.ToArray();
-
+            return this.SQL_OrderBy;
         }
-
         #endregion override methods 
 
         public virtual async Task GetSalesOrdersOpenListAsync(SalesOrderOpenListPayload payload)
@@ -190,8 +200,8 @@ FOR JSON PATH
                 payload.SalesOrderOpenListCount = 0;
                 payload.SalesOrderOpenList = null;
                 AddError(ex.ObjectToString());
-                payload.Messages = this.Messages;
             }
+            payload.Messages = this.Messages;
         }
     }
 }

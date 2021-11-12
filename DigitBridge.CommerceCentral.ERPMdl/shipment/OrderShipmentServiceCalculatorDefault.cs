@@ -233,40 +233,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
+        InventoryLogService logService;
         public virtual bool CalculateDetail(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
 
-            //TODO: add calculate summary object logic
-            /* This is generated sample code
-
-            var sum = data.OrderShipmentHeader;
-            sum.SubTotalAmount = 0;
-            sum.TaxableAmount = 0;
-            sum.NonTaxableAmount = 0;
-            sum.UnitCost = 0;
-            sum.AvgCost = 0;
-            sum.LotCost = 0;
-
-            foreach (var item in data.InvoiceItems)
-            {
-                if (item is null || item.IsEmpty)
-                    continue;
-                SetDefault(item, data, processingMode);
-                CalculateDetail(item, data, processingMode);
-                if (item.IsAr)
-                {
-                    sum.SubTotalAmount += item.ExtAmount;
-                    sum.TaxableAmount += item.TaxableAmount;
-                    sum.NonTaxableAmount += item.NonTaxableAmount;
-                }
-                sum.UnitCost += item.UnitCost;
-                sum.AvgCost += item.AvgCost;
-                sum.LotCost += item.LotCost;
-            }
-
-            */
+            if (logService == null) logService = new InventoryLogService(dbFactory);
+            logService.UpdateByShipment(data);
+            
             return true;
         }
 

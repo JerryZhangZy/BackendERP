@@ -45,7 +45,7 @@ SELECT
 {Helper.ApInvoiceTime()},
 
 {Helper.VendorUuid()}, 
-{Helper.VendorNum()}, 
+{Helper.VendorCode()}, 
 {Helper.VendorName()}, 
 {Helper.VendorInvoiceNum()}, 
 {Helper.VendorInvoiceDate()}, 

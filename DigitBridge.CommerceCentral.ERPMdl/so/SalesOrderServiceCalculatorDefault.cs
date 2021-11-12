@@ -148,7 +148,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 sum.OrderDate = now.Date;
                 sum.OrderTime = now.TimeOfDay;
             }
-            sum.UpdateDateUtc = now;
+            sum.UpdateDateUtc = now.Date.ToUniversalTime();
             //EnterBy
             //UpdateBy
             if (processingMode == ProcessingMode.Add)

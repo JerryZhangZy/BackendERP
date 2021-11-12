@@ -12,9 +12,18 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     ///  Request payload object
     /// </summary>
     [Serializable()]
-    public class CommerceCentralInvoiceRequestPayload : RequestPayloadBase
+    public class CommerceCentralInvoiceRequestPayload : FilterPayloadBase<InvoiceUnprocessPayloadFilter>
     {
         // Add more parameters here
+    }
+
+    [Serializable()]
+    public class InvoiceUnprocessPayloadFilter
+    {
+        public int? ChannelNum { get; set; }
+        public int? ChannelAccountNum { get; set; }
+
+        //public int EventProcessActionStatus { get; set; }
     }
 
     /// <summary>
@@ -63,7 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     #region Model
     public class OutputCentralOrderInvoiceHeaderType
     {
-        public string EventUuid;
+        public string InvoiceUuid;
         public long OrderInvoiceNum = 0;
         public int DatabaseNum = 0;
         public int MasterAccountNum = 0;

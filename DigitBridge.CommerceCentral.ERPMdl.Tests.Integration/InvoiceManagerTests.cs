@@ -140,6 +140,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var failedResult = result.Where(i => !i.Success);
             Assert.True(failedResult.Count() == 0, failedResult.SelectMany(i => i.Messages).ObjectToString());
         }
+
+
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetInitNumber_Test()
+        {
+            var srv = new InvoiceManager(DataBaseFactory);
+            string iniNumber = await srv.GetNextNumberAsync(10001, 10001, "eadf5c15-3702-ff74-7d68-5be78956ad45");
+            Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+        }
         #endregion async methods
 
         #region get faker data
@@ -211,8 +222,8 @@ SELECT top {n} EventUuid
 FROM EventProcessERP ins  
 WHERE [MasterAccountNum]={MasterAccountNum}
 AND [ProfileNum]={ProfileNum}
-AND ERPEventProcessType={(int)EventProcessTypeEnum.InvoiceToChanel}
-AND ActionStatus={(int)EventProcessActionStatusEnum.Default}
+AND ERPEventProcessType={(int)EventProcessTypeEnum.InvoiceToCommerceCentral}
+AND ActionStatus={(int)EventProcessActionStatusEnum.Pending}
 order by ins.rownum desc
 for json path
 ";

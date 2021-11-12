@@ -310,6 +310,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.UpdateBy = data.UpdateBy;
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+			
+			dto.PoQty = data.PoQty;
+			dto.ReceivedQty = data.ReceivedQty;
+			dto.OpenQty = data.OpenQty;
 
 			#endregion read properties
 

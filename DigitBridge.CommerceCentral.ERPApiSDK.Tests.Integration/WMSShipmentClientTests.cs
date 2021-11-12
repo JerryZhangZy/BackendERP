@@ -73,8 +73,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             var client = new WMSShipmentClient(_baseUrl, _code);
             var shipmentList = GetWmsShipmentList();
             var success = await client.AddShipmentListAsync(MasterAccountNum, ProfileNum, shipmentList);
-            Assert.True(client.ResopneData != null, $"SDK invoice failed. Error is {client.Messages.ObjectToString()}");
-            Assert.True(success, $"SDK invoice succeed.But call integration api failed. You can try CreateShipmentAsync_Test to test logic,Logic error is{client.Messages.ObjectToString()}");
+            Assert.True(client.ResopneData != null, $"SDK invoke failed. Error is {client.Messages.ObjectToString()}");
+            Assert.True(success, $"SDK invoke succeed.But call integration api failed. You can try CreateShipmentAsync_Test to test logic,Logic error is{client.Messages.ObjectToString()}");
         }
 
         protected List<InputOrderShipmentType> GetWmsShipmentList(int count = 10)

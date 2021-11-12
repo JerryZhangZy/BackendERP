@@ -92,10 +92,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (!(await ValidateAsync(dto)))
                 return false;
-
+            
             // load data from dto
             FromDto(dto);
-            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
+           // Data.AddIgnoreSave(InventoryData.ProductBasicTable);
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -145,11 +145,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             List();
             await GetDataBySkuAsync(payload.Inventory.ProductExt.SKU, payload.MasterAccountNum, payload.ProfileNum);
-            Data.AddIgnoreSave(InventoryData.ProductBasicTable);
+            //Data.AddIgnoreSave(InventoryData.ProductBasicTable);
             _ProcessMode = Base.Common.ProcessingMode.Add;
 
             // load data from dto
             FromDto(payload.Inventory);
+
+            //dto.ProductExt.ProfileNum = pl.ProfileNum;
+            //dto.ProductExt.DatabaseNum = pl.DatabaseNum;
+
+
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -380,7 +385,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 rowNum = await InventoryServiceHelper.GetRowNumBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
             }
+      
             var success = await GetDataAsync(rowNum);
+
+            if (!(await ValidateAsync()))
+                return false;
+
             return success && (await DeleteDataAsync());
         }
 
@@ -584,7 +594,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.AvgCost.ToSqlParameter("inventoryUuid"));
         }
 
-        public void UpdateOpenSoQtyFromSalesOrderItem(string salesOrderUuid, bool isReturnBack = false)
+        public async Task<bool> UpdateOpenSoQtyFromSalesOrderItem(string salesOrderUuid, bool isReturnBack = false)
         {
             string op = isReturnBack ? "-" : "+";
             string command = $@"

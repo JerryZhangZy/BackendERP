@@ -69,6 +69,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasProfileNum => ProfileNum != null;
 
 		/// <summary>
+		/// Event uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Event uuid. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The EventUuid value cannot exceed 50 characters. ")]
+        public string EventUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasEventUuid => EventUuid != null;
+
+		/// <summary>
 		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false")]
@@ -125,25 +135,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasProcessData => ProcessData != null;
 
 		/// <summary>
-		/// Action Status. <br> Title: Type, Display: true, Editable: false
-		/// </summary>
-		[OpenApiPropertyDescription("Action Status. <br> Title: Type, Display: true, Editable: false")]
-        public int? ActionStatus { get; set; }
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasActionStatus => ActionStatus != null;
-
-		/// <summary>
-		/// Action Date. <br> Title: Type, Display: true, Editable: false
-		/// </summary>
-		[OpenApiPropertyDescription("Action Date. <br> Title: Type, Display: true, Editable: false")]
-        [DataType(DataType.DateTime)]
-        public DateTime? ActionDateUtc { get; set; }
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
-        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasActionDateUtc => ActionDateUtc != null;
-
-		/// <summary>
 		/// event message. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("event message. <br> Display: false, Editable: false.")]
@@ -154,14 +145,71 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasEventMessage => EventMessage != null;
 
 		/// <summary>
-		/// Event uuid. <br> Display: false, Editable: false.
+		/// Download Acknowledge Status. <br> Title: Type, Display: true, Editable: false
 		/// </summary>
-		[OpenApiPropertyDescription("Event uuid. <br> Display: false, Editable: false.")]
-        [StringLength(50, ErrorMessage = "The EventUuid value cannot exceed 50 characters. ")]
-        public string EventUuid { get; set; }
+		[OpenApiPropertyDescription("Download Acknowledge Status. <br> Title: Type, Display: true, Editable: false")]
+        public int? ActionStatus { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
-        public bool HasEventUuid => EventUuid != null;
+        public bool HasActionStatus => ActionStatus != null;
+
+		/// <summary>
+		/// Download Acknowledge Date. <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Download Acknowledge Date. <br> Title: Type, Display: true, Editable: false")]
+        [DataType(DataType.DateTime)]
+        public DateTime? ActionDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasActionDate => ActionDate != null;
+
+		/// <summary>
+		/// Process Status. <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Process Status. <br> Title: Type, Display: true, Editable: false")]
+        public int? ProcessStatus { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasProcessStatus => ProcessStatus != null;
+
+		/// <summary>
+		/// Process Date. <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Process Date. <br> Title: Type, Display: true, Editable: false")]
+        [DataType(DataType.DateTime)]
+        public DateTime? ProcessDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasProcessDate => ProcessDate != null;
+
+		/// <summary>
+		/// Close Status. <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Close Status. <br> Title: Type, Display: true, Editable: false")]
+        public int? CloseStatus { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCloseStatus => CloseStatus != null;
+
+		/// <summary>
+		/// Close Date. <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Close Date. <br> Title: Type, Display: true, Editable: false")]
+        [DataType(DataType.DateTime)]
+        public DateTime? CloseDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasCloseDate => CloseDate != null;
+
+		/// <summary>
+		/// Close Date. <br> Title: Type, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Close Date. <br> Title: Type, Display: true, Editable: false")]
+        [DataType(DataType.DateTime)]
+        public DateTime? LastUpdateDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasLastUpdateDate => LastUpdateDate != null;
 
 		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false

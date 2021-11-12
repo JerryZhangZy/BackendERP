@@ -95,6 +95,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion DataBase
 
+        #region ActivityLog Service
+        [XmlIgnore, JsonIgnore]
+        protected IActivityLogService _ActivityLogService;
+
+        [XmlIgnore, JsonIgnore]
+        public IActivityLogService ActivityLogService
+        {
+            get
+            {
+                if (_ActivityLogService is null)
+                    _ActivityLogService = new ActivityLogService(this.dbFactory);
+                return _ActivityLogService;
+            }
+        }
+
+        public virtual async Task<bool> AddActivityLogAsync(ActivityLog data)
+        {
+            return await this.ActivityLogService.AddActivityLogAsync(new ActivityLogData(this.dbFactory, data));
+        }
+        public virtual bool AddActivityLog(ActivityLog data)
+        {
+            return this.ActivityLogService.AddActivityLog(new ActivityLogData(this.dbFactory, data));
+        }
+
+        #endregion ActivityLog Service
+
         #region Properties
         protected ProcessingMode _ProcessMode;
         /// <summary>

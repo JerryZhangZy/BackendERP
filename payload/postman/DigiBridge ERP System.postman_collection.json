@@ -1679,6 +1679,42 @@
 							"body": ""
 						}
 					]
+				},
+				{
+					"name": "InvoiceNumberExist",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"value": "{{masterAccountNum}}",
+								"type": "text"
+							},
+							{
+								"key": "profileNum",
+								"value": "{{profileNum}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/invoices/existinvoiceNumber/{{invoiceNumber}}?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"invoices",
+								"existinvoiceNumber",
+								"{{invoiceNumber}}"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"event": [
@@ -11931,6 +11967,42 @@
 					"response": []
 				},
 				{
+					"name": "Get one NextNumber by customerUuid and type",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/123/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								"123",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Load InitNumber list data",
 					"request": {
 						"method": "GET",
@@ -12046,6 +12118,507 @@
 				},
 				{
 					"name": "Delete one InitNumbers by InitNumbersUuid.",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/123/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								"123",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vendors",
+			"item": [
+				{
+					"name": "/vendors/{VendorCode}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/123/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								"123",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/vendors/finddata",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/123/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								"123",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/vendors/find",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/123/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								"123",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add one vendors",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"vendor\": {\r\n    \"vendor\": {\r\n      \"digit_supplier_id\": \"67f3c260-683c-af11-57e5-0e13bb40c7de\",\r\n      \"vendorUuid\": \"\",\r\n      \"vendorCode\": \"et\",\r\n      \"vendorName\": \"Herman - Wilderman\",\r\n      \"contact\": \"Quia voluptas aut numquam quisquam molestias.\",\r\n      \"phone1\": \"389-995-3321\",\r\n      \"phone2\": \"706.960.5999\",\r\n      \"phone3\": \"1-802-799-9960 x20689\",\r\n      \"phone4\": \"(885) 567-3793 x56068\",\r\n      \"email\": \"Darion10@yahoo.com\",\r\n      \"vendorType\": 86,\r\n      \"vendorStatus\": 73,\r\n      \"businessType\": \"meecj6exetp4si6fb2bcbmd8vz6ptdrt12rf6987b0xpzyubct\",\r\n      \"priceRule\": \"8\",\r\n      \"firstDate\": \"2021-11-09T00:00:00+08:00\",\r\n      \"currency\": \"Et velit r\",\r\n      \"taxRate\": 0.12,\r\n      \"discountRate\": 0.03,\r\n      \"shippingCarrier\": \"1v3qqq81t41apo9w5vc0eq2jnrf0so7mwwn3v3kmky7ng4acwk\",\r\n      \"shippingClass\": \"d4b3mbtj3yb885xeds0512bqfgif2jh338a3btababzlacp1p1\",\r\n      \"shippingAccount\": \"qibribskn5segkh840uu3khovq2pg3rgp1syrcpzaq54jvuf41\",\r\n      \"priority\": \"Soluta qui\",\r\n      \"area\": \"Voluptatem est neces\",\r\n      \"taxId\": \"f561fc7e-13fe-e65b-7087-695bc02de0fa\",\r\n      \"resaleLicense\": \"ed5zwmlev29u2mx4gxp7mlq67eolkgdcbmrnhwvmippb2ud4ld\",\r\n      \"classCode\": \"enim\",\r\n      \"departmentCode\": \"vel\",\r\n      \"creditAccount\": 0,\r\n      \"debitAccount\": 0\r\n    },\r\n    \"vendorAddress\": [\r\n      {\r\n        \"addressUuid\": \"\",\r\n        \"vendorUuid\": \"e70e2213-bcc5-2b82-10c0-32ef18e265af\",\r\n        \"addressCode\": \"rerum\",\r\n        \"addressType\": 29,\r\n        \"description\": \"Generic Rubber Car\",\r\n        \"name\": \"Predovic Group\",\r\n        \"firstName\": \"Hyatt, Casper and Hermann\",\r\n        \"lastName\": \"Littel Group\",\r\n        \"suffix\": \"75z6yxy0j4dohvam5bx8bqrb2nrw8tfge0m9pqkix92foe72mr\",\r\n        \"company\": \"Eaque fugit ullam soluta blanditiis qui nam dolores enim sequi.\",\r\n        \"companyJobTitle\": \"Omnis impedit cum.\",\r\n        \"attention\": \"Quaerat voluptatum incidunt ipsa ut esse facere in nemo eaque.\",\r\n        \"addressLine1\": \"62483 Nitzsche Locks\",\r\n        \"addressLine2\": \"Apt. 131\",\r\n        \"addressLine3\": \"Illo mollitia magnam consequatur aut excepturi commodi voluptas placeat.\",\r\n        \"city\": \"Lake Rodrickmouth\",\r\n        \"state\": \"Utah\",\r\n        \"stateFullName\": \"Green - Ratke\",\r\n        \"postalCode\": \"67004-8472\",\r\n        \"postalCodeExt\": \"at\",\r\n        \"county\": \"Sunt qui qui inventore sit.\",\r\n        \"country\": \"Suriname\",\r\n        \"email\": \"Jesus_Bartell@hotmail.com\",\r\n        \"daytimePhone\": \"1-647-987-5216\",\r\n        \"nightPhone\": \"1-770-513-9125\"\r\n      },\r\n      {\r\n        \"addressUuid\": \"\",\r\n        \"vendorUuid\": \"48bee629-fd59-3688-7849-417053244ea6\",\r\n        \"addressCode\": \"eos\",\r\n        \"addressType\": 60,\r\n        \"description\": \"Small Metal Towels\",\r\n        \"name\": \"Weimann Inc\",\r\n        \"firstName\": \"Olson - Jaskolski\",\r\n        \"lastName\": \"Ratke, Brown and Carroll\",\r\n        \"suffix\": \"bbt2qg52bkkbykkx8y39b2iya8044z81ok9tngdjziq40uzgvq\",\r\n        \"company\": \"At et vero autem.\",\r\n        \"companyJobTitle\": \"Temporibus vero voluptas corrupti.\",\r\n        \"attention\": \"Alias a ut sit non rerum.\",\r\n        \"addressLine1\": \"55283 Goldner Springs\",\r\n        \"addressLine2\": \"Apt. 942\",\r\n        \"addressLine3\": \"Enim reprehenderit illum autem velit qui assumenda.\",\r\n        \"city\": \"North Prestonchester\",\r\n        \"state\": \"Vermont\",\r\n        \"stateFullName\": \"Ziemann LLC\",\r\n        \"postalCode\": \"84251\",\r\n        \"postalCodeExt\": \"aut\",\r\n        \"county\": \"Iure veniam veritatis animi voluptatibus repudiandae.\",\r\n        \"country\": \"India\",\r\n        \"email\": \"Emmitt_Feil56@hotmail.com\",\r\n        \"daytimePhone\": \"1-986-237-4064 x229\",\r\n        \"nightPhone\": \"563.319.4032 x706\"\r\n      },\r\n      {\r\n        \"addressUuid\": \"\",\r\n        \"vendorUuid\": \"3c363596-de09-cc12-da39-b1f91dd26f7a\",\r\n        \"addressCode\": \"qui\",\r\n        \"addressType\": 35,\r\n        \"description\": \"Handmade Frozen Bacon\",\r\n        \"name\": \"Boyle - McClure\",\r\n        \"firstName\": \"Mann - Nikolaus\",\r\n        \"lastName\": \"Stoltenberg Group\",\r\n        \"suffix\": \"lt74kp1bz93q4tojtx4hrv24sga2npcrzls5m8emk9cgu3bawy\",\r\n        \"company\": \"Cumque aut commodi repellat quisquam voluptas vitae suscipit consequuntur.\",\r\n        \"companyJobTitle\": \"Delectus distinctio ullam recusandae nisi maxime.\",\r\n        \"attention\": \"Perferendis provident sint qui provident molestias recusandae.\",\r\n        \"addressLine1\": \"1016 Gleichner Ridges\",\r\n        \"addressLine2\": \"Suite 676\",\r\n        \"addressLine3\": \"Vitae vel omnis saepe veniam velit deserunt.\",\r\n        \"city\": \"Alveraport\",\r\n        \"state\": \"Montana\",\r\n        \"stateFullName\": \"Schowalter - Gleason\",\r\n        \"postalCode\": \"01144\",\r\n        \"postalCodeExt\": \"molestias\",\r\n        \"county\": \"Voluptatem illum quidem alias.\",\r\n        \"country\": \"Iran\",\r\n        \"email\": \"Wilburn56@hotmail.com\",\r\n        \"daytimePhone\": \"1-913-962-3384\",\r\n        \"nightPhone\": \"(837) 486-7431\"\r\n      }\r\n    ],\r\n    \"vendorAttributes\": {\r\n      \"vendorUuid\": \"\",\r\n      \"fields\": {\r\n        \"ClassCode\": \"3w8q9assmo8y8vb7ohx5\",\r\n        \"DepartmentCode\": \"3mp12aoozckt8xu1xmfy\",\r\n        \"ClassInt\": 53,\r\n        \"ClassDecimal\": 545.8159\r\n      }\r\n    }\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/vendors/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"vendors",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update one InitNumber",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"initNumbers\": {\r\n    \"initNumbers\": {\r\n      \"initNumbersUuid\": \"\",\r\n      \"customerUuid\": \"14962e7a-95b4-0994-b016-f186a5c6001c\",\r\n      \"inActive\": true,\r\n      \"type\": \"Unde autem iure dist\",\r\n      \"number\": 45,\r\n      \"prefix\": \"Sed et aut officiis \",\r\n      \"suffix\": \"Cum commodi corrupti\"\r\n    }\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete /vendors/{VendorCode}",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/123/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								"123",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vendors Address",
+			"item": [
+				{
+					"name": "/vendors/{VendorCode}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/vendors/address/123/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"vendors",
+								"address",
+								"123",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/vendors/existvendorCode/{VendorCode}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/vendors/existvendorCode/voluptas/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"vendors",
+								"existvendorCode",
+								"voluptas",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/vendors/finddata",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"vendorListCount\": 0,\r\n  \"$top\": 20,\r\n  \"$skip\": 0,\r\n  \"$count\": true,\r\n  \"$loadAll\": false,\r\n  \"$filter\": {\r\n    \"vendorCode\": \"voluptas\"\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/vendors/finddata?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"vendors",
+								"finddata"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/vendors/find",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"vendorListCount\": 0,\r\n  \"$top\": 20,\r\n  \"$skip\": 0,\r\n  \"$count\": true,\r\n  \"$loadAll\": false,\r\n  \"$filter\": {\r\n    \"vendorCode\": \"voluptas\"\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/vendors/find?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"vendors",
+								"find"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add one vendorsaddress",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"vendorAddress\": {\r\n    \"vendorAddress\": {\r\n      \"addressUuid\": \"\",\r\n      \"vendorUuid\": \"825912ec-dc62-4e62-a074-e08d88a9694e\",\r\n      \"addressCode\": \"aliquid\",\r\n      \"addressType\": 40,\r\n      \"description\": \"Refined Cotton Cheese\",\r\n      \"name\": \"Casper, Larson and Monahan\",\r\n      \"firstName\": \"Wolf, Waters and Tromp\",\r\n      \"lastName\": \"Jerde - Trantow\",\r\n      \"suffix\": \"jdtb8avod7bwp6kia77vreew2b6n81wio7bxguo2i50kh7sfcg\",\r\n      \"company\": \"Est voluptas unde eos dolores tenetur sint quaerat.\",\r\n      \"companyJobTitle\": \"Sed numquam laudantium sit enim aut et dolores pariatur rerum.\",\r\n      \"attention\": \"Ducimus non eos.\",\r\n      \"addressLine1\": \"8573 Rosalia Landing\",\r\n      \"addressLine2\": \"Suite 321\",\r\n      \"addressLine3\": \"Architecto consectetur reiciendis.\",\r\n      \"city\": \"Kimmouth\",\r\n      \"state\": \"West Virginia\",\r\n      \"stateFullName\": \"Parker LLC\",\r\n      \"postalCode\": \"69356\",\r\n      \"postalCodeExt\": \"qui\",\r\n      \"county\": \"Nesciunt consectetur velit provident.\",\r\n      \"country\": \"Russian Federation\",\r\n      \"email\": \"Jermain.Jacobs@gmail.com\",\r\n      \"daytimePhone\": \"(706) 914-6658 x71097\",\r\n      \"nightPhone\": \"721.963.1099 x548\"\r\n    }\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/vendors/address?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"vendors",
+								"address"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update one vendor address",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "masterAccountNum",
+								"type": "text",
+								"value": "{{masterAccountNum}}"
+							},
+							{
+								"key": "profileNum",
+								"type": "text",
+								"value": "[{\"key\":\"profileNum\",\"value\":\"{{profileNum}}\",\"type\":\"text\"}]"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"initNumbers\": {\r\n    \"initNumbers\": {\r\n      \"initNumbersUuid\": \"\",\r\n      \"customerUuid\": \"14962e7a-95b4-0994-b016-f186a5c6001c\",\r\n      \"inActive\": true,\r\n      \"type\": \"Unde autem iure dist\",\r\n      \"number\": 45,\r\n      \"prefix\": \"Sed et aut officiis \",\r\n      \"suffix\": \"Cum commodi corrupti\"\r\n    }\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/initNumbers/?code={{code}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"initNumbers",
+								""
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "{{code}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete /vendors/address/{addressUuid}",
 					"request": {
 						"method": "DELETE",
 						"header": [

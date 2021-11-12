@@ -234,7 +234,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new Faker<InvoiceUnprocessPayloadFilter>()
                 .RuleFor(u => u.ChannelNum, f => f.Random.Int(1, 100))
                 .RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
-                .RuleFor(u => u.EventProcessActionStatus, f => (int)EventProcessActionStatusEnum.Default)
+                .RuleFor(u => u.EventProcessActionStatus, f => (int)EventProcessActionStatusEnum.Pending)
                 ;
             #endregion faker data rules
         }

@@ -135,8 +135,8 @@ SELECT top {n} EventUuid
 FROM EventProcessERP ins  
 WHERE [MasterAccountNum]={MasterAccountNum}
 AND [ProfileNum]={ProfileNum}
-AND ERPEventProcessType={(int)EventProcessTypeEnum.InvoiceToChanel}
-AND ActionStatus={(int)EventProcessActionStatusEnum.Default}
+AND ERPEventProcessType={(int)EventProcessTypeEnum.InvoiceToCommerceCentral}
+AND ActionStatus={(int)EventProcessActionStatusEnum.Pending}
 order by ins.rownum desc
 for json path
 ";

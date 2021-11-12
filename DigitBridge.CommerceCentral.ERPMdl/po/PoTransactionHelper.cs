@@ -253,7 +253,20 @@ AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
 */
             return new List<long>();
         }
+        
+        public static List<(long rowNum, string poItemUuid, decimal transQty)> GetReceiveItemsByPoUuid(IDataBaseFactory dbFactory, string poUuid)
+        {
 
+            var sql = $@"
+SELECT RowNum,PoItemUuid,TransQty 
+FROM PoTransactionItems  
+where PoUuid = @poUuid
+";
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                return SqlQuery.Execute(sql, (long rowNum, string poItemUuid, decimal transQty) => (rowNum, poItemUuid, transQty), poUuid.ToSqlParameter("poUuid"));
+            }
+        }
     }
 }
 

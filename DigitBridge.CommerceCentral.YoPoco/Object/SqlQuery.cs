@@ -78,7 +78,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             using (var dbCommand = DataBaseFactory.CreateCommand(cmd, commandType, parameters))
             {
-               return dbCommand.ExecuteNonQuery();
+                return dbCommand.ExecuteNonQuery();
             }
         }
 
@@ -89,7 +89,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             using (var dbCommand = DataBaseFactory.CreateCommand(cmd, commandType, parameters))
             {
-               return await ((SqlCommand)dbCommand).ExecuteNonQueryAsync();
+                return await ((SqlCommand)dbCommand).ExecuteNonQueryAsync();
             }
         }
 
@@ -1082,7 +1082,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return sqlParam;
         }
 
-        public static SqlParameter ToStringArrayListParameters(this IEnumerable<StringArray> data,string name)
+        public static SqlParameter ToStringArrayListParameters(this IEnumerable<StringArray> data, string name)
         {
             SqlParameter sqlParam = new SqlParameter(name.ToParameterName(), SqlDbType.Structured);
             sqlParam.TypeName = "dbo.StringArrayListTableType";
@@ -1121,7 +1121,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             param.AddListParameters<T>(values);
             return param;
         }
-        public static SqlParameter ToEnumParameter<T>(this string name) where T: Enum
+        public static SqlParameter ToEnumParameter<T>(this string name) where T : Enum
         {
             SqlParameter param = new SqlParameter(name.ToParameterName(), SqlDbType.Structured);
             param.AddEnumListParameters<T>();
@@ -1135,15 +1135,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
             var t = typeof(T);
             if (t == typeof(string))
                 return new SqlParameter(name.ToParameterName(), isNvarchar ? SqlDbType.NVarChar : SqlDbType.VarChar, value.ToString().Length)
-                    {
-                        Value = value
-                    };
-            
+                {
+                    Value = value
+                };
+
             if (t == typeof(int))
                 return new SqlParameter(name.ToParameterName(), SqlDbType.Int, 4)
-                    { 
-                        Value = value
-                    };
+                {
+                    Value = value
+                };
 
             if (t == typeof(long))
                 return new SqlParameter(name.ToParameterName(), SqlDbType.BigInt)
@@ -1154,7 +1154,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (t == typeof(bool?) || t == typeof(bool))
                 return new SqlParameter(name.ToParameterName(), SqlDbType.TinyInt)
                 {
-                    Value = value.ToBool() ? 1 : 0 
+                    Value = value.ToBool() ? 1 : 0
                 };
 
             if (t == typeof(float))
@@ -1205,7 +1205,12 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 Value = dt
             };
         }
-
+        public static IDataParameter ToXmlParameter<T>(this T value, string name)
+        {
+            SqlParameter param = new SqlParameter(name.ToParameterName(), SqlDbType.Xml);
+            param.Value = value;
+            return param;
+        }
         public static IDataParameter ToParameter(this string value, string name, bool isNvarchar = false)
         {
             SqlParameter param = new SqlParameter(name.ToParameterName(), isNvarchar ? SqlDbType.NVarChar : SqlDbType.VarChar, value.Length);
@@ -1312,7 +1317,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         public static string ToSqlFieldName(this string name, string prefix, bool isStringType = true)
         {
-            if (string.IsNullOrEmpty(name)) 
+            if (string.IsNullOrEmpty(name))
                 return string.Empty;
 
             StringBuilder sb = new StringBuilder();

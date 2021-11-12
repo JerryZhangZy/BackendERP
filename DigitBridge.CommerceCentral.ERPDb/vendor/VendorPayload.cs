@@ -106,5 +106,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #endregion list service
     }
+
+    [Serializable()]
+    public class ExistVendorCodePayload : PayloadBase
+    {
+        [OpenApiPropertyDescription("(Request Parameter) Does the  VendorCode exist")]
+        public bool IsExistVendorCode { get; set; }
+    }
+
+
 }
 
