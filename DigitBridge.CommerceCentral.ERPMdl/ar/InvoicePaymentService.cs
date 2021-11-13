@@ -67,6 +67,89 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Messages = this.Messages;
         }
 
+        public async Task AddPaymentsForInvoicesAsync(InvoicePaymentPayload payload)
+        {
+            if (!payload.HasApplyInvoices)
+            {
+                AddError("ApplyInvoices  is required.");
+                payload.Success = false;
+                return;
+            }
+
+            var invoices = await GetInvoiceHeadersByCustomerAsync(payload.MasterAccountNum, payload.ProfileNum, payload.CustomerCode);
+            decimal sumOfAssignment = payload.ApplyInvoices.Sum(a => a.PaidAmount);
+            if (payload.ApplyInvoices.Any(i => string.IsNullOrEmpty(i.InvoiceNumber)))
+            {
+                AddError("ApplyInvoices.InvoiceNumber is required.");
+                payload.Success = false;
+                return;
+            }
+            if (sumOfAssignment != payload.TotalAmount)
+            {
+                AddError("The total payment amount not equals sum of paid for each invoices");
+                payload.Success = false;
+                return;
+            }
+
+            StringBuilder errorMessage = new StringBuilder();
+            int successCount = 0;
+            foreach (var applyInvoice in payload.ApplyInvoices)
+            {
+                var transaction = GenerateTransactionByInvoice(payload, applyInvoice.InvoiceUuid);
+                if (!await base.AddAsync(transaction))
+                {
+                    applyInvoice.Success = false;
+                    errorMessage.AppendLine($"Add payment failed for InvoiceNumber:{applyInvoice.InvoiceNumber} ");
+                    continue;
+                }
+                successCount++;
+
+                applyInvoice.TransUuid = transaction.InvoiceTransaction.TransUuid;
+
+                if (await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum))
+                {
+                    var invoiceTransaction = Data.InvoiceTransaction;
+                    if (invoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+                    {
+                        payload.Success = await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.InvoiceUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
+                        if (!payload.Success)
+                        {
+                            AddError("Add miscInvoice fail");
+                        }
+                    }
+                }
+                else
+                {
+                    payload.Success = false;
+                    applyInvoice.Success = false;
+                    AddError($"{applyInvoice.InvoiceNumber} is not applied.");
+                }
+            }
+
+            payload.Success = successCount > 0;
+            if (successCount != payload.ApplyInvoices.Count)
+                AddError(errorMessage.ToString());
+        }
+
+        private InvoiceTransactionDataDto GenerateTransactionByInvoice(InvoicePaymentPayload payload, string invoiceUuid)
+        {
+            var invoice = payload.InvoiceHeaders.FirstOrDefault(i => i.InvoiceUuid == invoiceUuid);
+            var result = new InvoiceTransactionDataDto 
+            { 
+                InvoiceTransaction = new InvoiceTransactionDto
+                { 
+                    InvoiceUuid = invoice.InvoiceUuid,
+                    InvoiceNumber = invoice.InvoiceNumber,
+                    CustomerCode = payload.CustomerCode,
+                    TransType = 1,
+                    ProfileNum = payload.ProfileNum,
+                    MasterAccountNum = payload.MasterAccountNum,
+                    TransTime = DateTime.UtcNow,
+                }
+            };
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// get payments and invoice data.
         /// </summary>

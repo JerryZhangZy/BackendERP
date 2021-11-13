@@ -39,6 +39,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public string CustomerCode { get; set; }
         public string CustomerName { get; set; }
+        public decimal TotalAmount { get; set; }
+        public int PaidBy { get; set; }
+        public string BankNum { get; set; }
+        public string CheckNum { get; set; }
+        public string AuthCode { get; set; }
         public IList<InvoiceHeaderDto> InvoiceHeaders { get; set; } = new List<InvoiceHeaderDto>();
 
         #region summary service 
