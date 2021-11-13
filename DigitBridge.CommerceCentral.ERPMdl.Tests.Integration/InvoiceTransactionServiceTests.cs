@@ -24,279 +24,76 @@ using Bogus;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
-    public partial class InvoiceTransactionServiceTests
+    public partial class InvoiceTransactionServiceTests 
     {
-
         [Fact()]
 		//[Fact(Skip = SkipReason)]
-		public void AddDto_Test()
+		public async Task LoadInvoiceByNumber_Test()
 		{
+            var masterAccountNum = 10001;
+            var profileNum = 10001;
+            var invoiceNumber = "aqaaec3me2s9qnekr2w7kldxa0y137f8it27iyvqk51xoc8cxc";
+            var invoiceUuid = "4aafd3be-18d2-5437-76a3-e2e0f407553a";
+
             var srv = new InvoiceTransactionService(DataBaseFactory);
-            srv.Add();
+            srv.List();
+            try
+            {
+                var result = await srv.LoadInvoiceAsync(invoiceNumber, profileNum, masterAccountNum);
 
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            
-
-            srv.Add(dto);
-
-            var id = dto.InvoiceTransaction.TransUuid;
-
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
-            //srvGet.Edit();
-            srvGet.GetDataById(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+                Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
 		}
 
         [Fact()]
 		//[Fact(Skip = SkipReason)]
-		public void UpdateDto_Test()
+		public async Task LoadInvoiceByUuidAsync_Test()
 		{
-            SaveData_Test();
-
-            var id = DataBaseFactory.GetValue<InvoiceTransaction, string>(@"
-SELECT TOP 1 ins.TransUuid 
-FROM InvoiceTransaction ins 
-INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
-WHERE itm.cnt > 0
-");
-
+            var masterAccountNum = 10001;
+            var profileNum = 10001;
+            var invoiceNumber = "aqaaec3me2s9qnekr2w7kldxa0y137f8it27iyvqk51xoc8cxc";
+            var invoiceUuid = "4aafd3be-18d2-5437-76a3-e2e0f407553a";
 
             var srv = new InvoiceTransactionService(DataBaseFactory);
-            srv.Edit(id);
-            var rowNum = srv.Data.InvoiceTransaction.RowNum;
+            srv.List();
 
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            dto.InvoiceTransaction.RowNum = rowNum;
-            dto.InvoiceTransaction.TransUuid = id;
+            var result = await srv.LoadInvoiceAsync(invoiceUuid);
 
-            srv.Clear();
-            srv.Update(dto);
-
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
-            srvGet.Edit();
-            srvGet.GetDataById(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
 
         [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public async Task AddDtoAsync_Test()
-		{
-            var srv = new InvoiceTransactionService(DataBaseFactory);
-            srv.Add();
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null); 
-
-            await srv.AddAsync(dto);
-
-            var id = dto.InvoiceTransaction.TransUuid;
-
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
-            srvGet.Edit();
-            await srvGet.GetDataByIdAsync(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
-
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public async Task UpdateDtoAsync_Test()
-		{
-            await SaveDataAsync_Test();
-
-            var id = await DataBaseFactory.GetValueAsync<InvoiceTransaction, string>(@"
-SELECT TOP 1 ins.TransUuid 
-FROM InvoiceTransaction ins 
-INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
-WHERE itm.cnt > 0
-");
-
+        //[Fact(Skip = SkipReason)]
+        public async Task LoadReturnedQtyAsync_Test()
+        {
+            var masterAccountNum = 10001;
+            var profileNum = 10001;
+            var invoiceNumber = "aqaaec3me2s9qnekr2w7kldxa0y137f8it27iyvqk51xoc8cxc";
+            var invoiceUuid = "4aafd3be-18d2-5437-76a3-e2e0f407553a";
 
             var srv = new InvoiceTransactionService(DataBaseFactory);
-            await srv.EditAsync(id);
-            var rowNum = srv.Data.InvoiceTransaction.RowNum;
+            srv.List();
 
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            dto.InvoiceTransaction.RowNum = rowNum;
-            dto.InvoiceTransaction.TransUuid = id;
+            try
+            {
+                using (var b = new Benchmark("LoadReturnedQtyAsync_Test"))
+                {
+                    var result = await srv.LoadInvoiceAsync(invoiceNumber, profileNum, masterAccountNum);
+                    result = await srv.LoadReturnedQtyAsync(srv.Data.InvoiceData);
+                }
 
-            srv.Clear();
-            await srv.UpdateAsync(dto);
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
 
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
-            //srvGet.Edit();
-            await srvGet.GetDataByIdAsync(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
-
-
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public void AddPayload_Test()
-		{
-            var srv = new InvoiceTransactionService(DataBaseFactory);
-            srv.Add();
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            
-
-            var payload = new InvoiceTransactionPayload();
-            payload.InvoiceTransaction = dto;
-            payload.MasterAccountNum = 1;
-            payload.ProfileNum = 1;
-            payload.DatabaseNum = 1;
-
-            srv.Add(payload);
-            var id = dto.InvoiceTransaction.TransUuid;
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
-            //srvGet.Edit();
-            srvGet.GetDataById(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
-
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public void UpdatePayload_Test()
-		{
-            SaveData_Test();
-
-            var id = DataBaseFactory.GetValue<InvoiceTransaction, string>(@"
-SELECT TOP 1 ins.TransUuid 
-FROM InvoiceTransaction ins 
-INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
-WHERE itm.cnt > 0
-");
-
-
-            var srv = new InvoiceTransactionService(DataBaseFactory);
-            srv.Edit(id);
-            var rowNum = srv.Data.InvoiceTransaction.RowNum;
-
-            var tranType = srv.Data.InvoiceTransaction.TransType;
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            dto.InvoiceTransaction.RowNum = rowNum;
-            dto.InvoiceTransaction.TransUuid = id;
-            dto.InvoiceTransaction.TransType = tranType;
-
-            var payload = new InvoiceTransactionPayload();
-            payload.InvoiceTransaction = dto;
-            payload.MasterAccountNum = srv.Data.InvoiceTransaction.MasterAccountNum;
-            payload.ProfileNum = srv.Data.InvoiceTransaction.ProfileNum;
-            payload.DatabaseNum = srv.Data.InvoiceTransaction.DatabaseNum;
-
-            srv.Clear();
-            srv.Update(payload);
-
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
-            srvGet.Edit();
-            srvGet.GetDataById(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
-
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public async Task AddPayloadAsync_Test()
-		{
-            var srv = new InvoiceTransactionService(DataBaseFactory);
-            srv.Add();
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            
-            var payload = new InvoiceTransactionPayload();
-            payload.InvoiceTransaction = dto;
-            payload.MasterAccountNum = 1;
-            payload.ProfileNum = 1;
-            payload.DatabaseNum = 1;
-
-            await srv.AddAsync(payload);
-
-            var id = dto.InvoiceTransaction.TransUuid;
-
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
-            srvGet.Edit();
-            await srvGet.GetDataByIdAsync(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
-
-        [Fact()]
-		//[Fact(Skip = SkipReason)]
-		public async Task UpdatePayloadAsync_Test()
-		{
-            await SaveDataAsync_Test();
-
-            var id = await DataBaseFactory.GetValueAsync<InvoiceTransaction, string>(@"
-SELECT TOP 1 ins.TransUuid 
-FROM InvoiceTransaction ins 
-INNER JOIN (
-    SELECT it.TransUuid, COUNT(1) AS cnt FROM InvoiceReturnItems it GROUP BY it.TransUuid
-) itm ON (itm.TransUuid = ins.TransUuid)
-WHERE itm.cnt > 0
-");
-
-
-            var srv = new InvoiceTransactionService(DataBaseFactory);
-            await srv.EditAsync(id);
-            var rowNum = srv.Data.InvoiceTransaction.RowNum;
-
-            var tranType = srv.Data.InvoiceTransaction.TransType;
-
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var dto = mapper.WriteDto(data, null);
-            dto.InvoiceTransaction.RowNum = rowNum;
-            dto.InvoiceTransaction.TransUuid = id;
-            dto.InvoiceTransaction.TransType = tranType;
-
-            var payload = new InvoiceTransactionPayload();
-            payload.InvoiceTransaction = dto;
-            payload.MasterAccountNum = srv.Data.InvoiceTransaction.MasterAccountNum;
-            payload.ProfileNum = srv.Data.InvoiceTransaction.ProfileNum;
-            payload.DatabaseNum = srv.Data.InvoiceTransaction.DatabaseNum;
-
-            srv.Clear();
-            await srv.UpdateAsync(payload);
-
-            var srvGet = new InvoiceTransactionService(DataBaseFactory);
-            //srvGet.Edit();
-            await srvGet.GetDataByIdAsync(id);
-            var result = srv.Data.Equals(srvGet.Data);
-
-			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
-		}
+        }
 
     }
 }

@@ -311,6 +311,25 @@ WHERE itm.cnt > 0
             Assert.True(result);
 
         }
+
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task NewReturnAsync_Test()
+        {
+            var payload = new InvoiceReturnPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+            };
+            var invoiceNumber = "aqaaec3me2s9qnekr2w7kldxa0y137f8it27iyvqk51xoc8cxc";
+
+            var srv = new InvoiceReturnService(DataBaseFactory);
+            var result = await srv.NewReturnAsync(payload, invoiceNumber);
+
+            Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
     }
 }
 

@@ -69,7 +69,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 payments = tranDatas.Select(i => i.InvoiceTransaction).ToList();
             }
-            LoadInvoice(invoiceNumber, profileNum, masterAccountNum);
+            await LoadInvoiceAsync(invoiceNumber, profileNum, masterAccountNum);
             return (payments, Data.InvoiceData);
         }
 
@@ -452,7 +452,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<bool> NewPaymentByInvoiceNumberAsync(InvoiceNewPaymentPayload payload, string invoiceNumber)
         {
             NewData();
-            if (!LoadInvoice(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum))
+            if (!(await LoadInvoiceAsync(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum)))
                 return false;
 
             CopyInvoiceHeaderToTrans();

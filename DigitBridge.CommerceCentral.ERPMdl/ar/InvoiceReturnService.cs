@@ -46,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task GetReturnsAsync(InvoiceReturnPayload payload, string invoiceNumber, int? transNum = null)
         {
             payload.InvoiceTransactions = await base.GetDtoListAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, TransTypeEnum.Return, transNum);
-            LoadInvoice(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum);
+            await LoadInvoiceAsync(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum);
             payload.InvoiceDataDto = this.ToDto().InvoiceDataDto;
             payload.Success = true;
         }
@@ -142,14 +142,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             NewData();
 
-            if (!LoadInvoice(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum))
+            if (!(await LoadInvoiceAsync(invoiceNumber, payload.ProfileNum, payload.MasterAccountNum)))
+            {
+                this.AddError($"Invoice Number: {invoiceNumber} not found.");
                 return false;
-
-
+            }
+            await LoadReturnedQtyAsync(this.Data.InvoiceData);
             CopyInvoiceHeaderToTrans();
             CopyInvoiceItemsToReturnItems();
-
-            LoadReturnedQty();
 
             return true;
         }

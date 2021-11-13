@@ -188,6 +188,36 @@ where InvoiceUuid=@inoviceUuid and TransType=@transType
                 return (await SqlQuery.ExecuteScalarAsync<decimal?>(sql, inoviceUuid.ToSqlParameter("inoviceUuid"), ((int)TransTypeEnum.Payment).ToSqlParameter("transType"))).ToAmount();
             }
         }
+
+        /// <summary>
+        /// Pass invoiceItemUuid list and load total returned qty from InvoiceReturnItems
+        /// </summary>
+        public static async Task<IDictionary<string, decimal>> GetInvoiceItemsReturnedQtyAsync(IList<string> invoiceItemUuids)
+        {
+            if (invoiceItemUuids == null || invoiceItemUuids.Count <= 0)
+                return null;
+            var result = new Dictionary<string, decimal>();
+
+            var sql = $@" 
+SELECT tbl.item AS InvoiceItemUuid, 
+COALESCE(sum.ReturnQty, 0) AS ReturnQty
+FROM @InvoiceItemUuidTable tbl 
+INNER JOIN (
+    SELECT InvoiceItemsUuid, SUM(COALESCE(ReturnQty,0)) AS ReturnQty
+    FROM InvoiceReturnItems
+    GROUP BY InvoiceItemsUuid 
+) sum ON (sum.InvoiceItemsUuid = tbl.item)
+";
+            await SqlQuery.ExecuteAsync<string, decimal, bool>(sql,
+                (string InvoiceItemUuid, decimal ReturnQty) => {
+                    result[InvoiceItemUuid] = ReturnQty;
+                    return true;
+                }
+                , invoiceItemUuids.ToParameter<string>("@InvoiceItemUuidTable")
+            );
+            return result;
+        }
+
     }
 }
 
