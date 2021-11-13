@@ -154,5 +154,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeMessages() => HasMessages;
 
         public virtual IDictionary<string, Action<string>> GetOtherParameters() => null; 
+
+
+        /// <summary>
+        /// Get new payload object and copy data from original payload,
+        /// This do not copy filter object
+        /// </summary>
+        /// <returns></returns>
+        public virtual T Clone<T>() where T: IPayload, new()
+        {
+            return new T()
+            {
+                MasterAccountNum = this.MasterAccountNum,
+                ProfileNum = this.ProfileNum,
+                DatabaseNum = this.DatabaseNum,
+                Top = this.Top,
+                Skip = this.Skip,
+                IsQueryTotalCount = this.IsQueryTotalCount,
+                SortBy = this.SortBy,
+                LoadAll = this.LoadAll
+            };
+        }
     }
 }
