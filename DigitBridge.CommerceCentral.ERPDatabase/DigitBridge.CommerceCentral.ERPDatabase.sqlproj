@@ -276,6 +276,6 @@
     <Build Include="sql\CentralOrderTansferToSalesOrder.sql" />
     <None Include="channel\Setting_Channel.sql" />
     <None Include="channel\Setting_ChannelAccount.sql" />
-    <Build Include="channel\setting_Channel_setting_ChannelAccount_table_and_data.sql" />
+    <None Include="channel\setting_Channel_setting_ChannelAccount_table_and_data.sql" />
   </ItemGroup>
 </Project>
