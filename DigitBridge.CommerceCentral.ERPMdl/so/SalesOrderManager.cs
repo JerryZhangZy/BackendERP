@@ -18,6 +18,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.CommerceCentral.ERPDb.so;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -384,6 +385,42 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
                 return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "so", currentNumber);
         }
+
+
+
+
+        public async Task CentralOrderReferenceAsync(CentralOrderReferencePayload centralOrderReferencePayload)
+        {
+
+            OrderShipmentPayload orderShipmentPayload = new OrderShipmentPayload() { MasterAccountNum = centralOrderReferencePayload.MasterAccountNum, ProfileNum = centralOrderReferencePayload.ProfileNum, Filter = new Newtonsoft.Json.Linq.JObject(), LoadAll = true };
+            orderShipmentPayload.Filter.Add("CentralOrderNum", centralOrderReferencePayload.CentralOrderNum);
+            var srv = new OrderShipmentList(dbFactory, new OrderShipmentQuery());
+            await srv.GetOrderShipmentListAsync(orderShipmentPayload);
+
+            centralOrderReferencePayload.ShipmentList = orderShipmentPayload.OrderShipmentList;
+
+
+
+            SalesOrderPayload salesOrderPayload = new SalesOrderPayload() { MasterAccountNum = centralOrderReferencePayload.MasterAccountNum, ProfileNum = centralOrderReferencePayload.ProfileNum, Filter = new Newtonsoft.Json.Linq.JObject(),LoadAll=true };
+            salesOrderPayload.Filter.Add("CentralOrderNum", centralOrderReferencePayload.CentralOrderNum);
+
+             var orderSrv = new SalesOrderList(dbFactory, new SalesOrderQuery());
+              await orderSrv.GetSalesOrderListAsync(salesOrderPayload);
+            centralOrderReferencePayload.SalesOrderList = salesOrderPayload.SalesOrderList;
+
+
+            InvoicePayload invoicePayload = new InvoicePayload() { MasterAccountNum = centralOrderReferencePayload.MasterAccountNum, ProfileNum = centralOrderReferencePayload.ProfileNum, Filter = new Newtonsoft.Json.Linq.JObject(), LoadAll = true };
+            invoicePayload.Filter.Add("CentralOrderNum", centralOrderReferencePayload.CentralOrderNum);
+
+            var invoiceSrv = new InvoiceList(dbFactory, new InvoiceQuery());
+            await invoiceSrv.GetInvoiceListAsync(invoicePayload);
+            centralOrderReferencePayload.InvoiceList = invoicePayload.InvoiceList;
+            centralOrderReferencePayload.Success = true;
+
+        }
+
+
+
         //public async Task<bool> CreateSalesOrdersAsync(IList<SalesOrderData> soDataList)
         //{
         //    if (soDataList == null || soDataList.Count == 0)
