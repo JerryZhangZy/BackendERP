@@ -72,6 +72,7 @@
     <Folder Include="setting" />
     <Folder Include="sql" />
     <Folder Include="po\" />
+    <Folder Include="channel" />
   </ItemGroup>
   <ItemGroup>
     <None Include="po\PoHeader.sql" />
@@ -273,5 +274,8 @@
     <None Include="sql\AddEventProcessFromSalesOrder.sql" />
     <None Include="event\EventProcessERP_Update.sql" />
     <Build Include="sql\CentralOrderTansferToSalesOrder.sql" />
+    <None Include="channel\Setting_Channel.sql" />
+    <None Include="channel\Setting_ChannelAccount.sql" />
+    <None Include="channel\setting_Channel_setting_ChannelAccount_table_and_data.sql" />
   </ItemGroup>
 </Project>

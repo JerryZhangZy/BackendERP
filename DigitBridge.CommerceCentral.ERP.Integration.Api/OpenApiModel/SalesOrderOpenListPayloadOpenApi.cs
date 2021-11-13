@@ -54,13 +54,14 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
 
     public class SalesOrderOpenListFilter
     {
-        public DateTime? UpdateDateUtc { get; set; }
-
+        //public DateTime? UpdateDateUtc { get; set; }
+        public string WarehouseCode { get; set; }
         public static Faker<SalesOrderOpenListFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<SalesOrderOpenListFilter>()
-                .RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date.AddDays(-30))
+                //.RuleFor(u => u.UpdateDateUtc, f => f.Date.Past(0).Date.AddDays(-30))
+                .RuleFor(u => u.WarehouseCode, f => string.Empty)
                 ;
             #endregion faker data rules
         }

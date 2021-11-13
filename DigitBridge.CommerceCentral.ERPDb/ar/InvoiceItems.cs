@@ -14,6 +14,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class InvoiceItems
     {
+        public decimal TotalReturnQty { get; set; } = 0;
 
     }
 }
