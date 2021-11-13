@@ -13,7 +13,6 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
-using DigitBridge.CommerceCentral.ERPDb.so;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
@@ -39,13 +38,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "centralOrderNumber", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "centralOrderNumber", Description = "centralOrderNumber. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CentralOrderReferencePayload))]
         public static async Task<JsonNetResponse<CentralOrderReferencePayload>> CentralOrderReference(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "centralOrders/{centralOrderNumber}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "centralOrders/Trace/{centralOrderNumber}")] HttpRequest req,
             long centralOrderNumber)
         {
             var payload = await req.GetParameters<CentralOrderReferencePayload>();
             payload.CentralOrderNum = centralOrderNumber;
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new SalesOrderManager(dataBaseFactory);
+            var srv = new ChannelOrderManager(dataBaseFactory);
             await srv.CentralOrderReferenceAsync(payload);
 
             return new JsonNetResponse<CentralOrderReferencePayload>(payload);
