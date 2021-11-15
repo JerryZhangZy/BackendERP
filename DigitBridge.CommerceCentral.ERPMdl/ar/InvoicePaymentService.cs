@@ -255,49 +255,57 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         protected InvoicePaymentPayload GetPayload(InvoiceTransaction originalTrans, ApplyInvoice applyInvoice)
         {
-            var trans = new InvoiceTransactionDto()
-            {
-                AuthCode = originalTrans.AuthCode,
-                BankAccountCode = originalTrans.BankAccountCode,
-                BankAccountUuid = originalTrans.BankAccountUuid,
-                CheckNum = originalTrans.CheckNum,
-                CreditAccount = originalTrans.CreditAccount,
-                Currency = originalTrans.Currency,
-                DebitAccount = originalTrans.DebitAccount,
-                ExchangeRate = originalTrans.ExchangeRate,
-                PaidBy = originalTrans.PaidBy,
+            var invoiceTransactionDto = new InvoiceTransactionDto();
+            var mapper = (base.DtoMapper as InvoiceTransactionDataDtoMapperDefault);
+            mapper.WriteInvoiceTransaction(originalTrans, invoiceTransactionDto);
+            invoiceTransactionDto.TotalAmount = applyInvoice.PaidAmount;
+            invoiceTransactionDto.InvoiceNumber = applyInvoice.InvoiceNumber;
+            invoiceTransactionDto.InvoiceUuid = applyInvoice.InvoiceUuid;
+            invoiceTransactionDto.RowNum = applyInvoice.TransRowNum;
 
-                TotalAmount = applyInvoice.PaidAmount,
+            //var trans = new InvoiceTransactionDto()
+            //{
+            //    AuthCode = originalTrans.AuthCode,
+            //    BankAccountCode = originalTrans.BankAccountCode,
+            //    BankAccountUuid = originalTrans.BankAccountUuid,
+            //    CheckNum = originalTrans.CheckNum,
+            //    CreditAccount = originalTrans.CreditAccount,
+            //    Currency = originalTrans.Currency,
+            //    DebitAccount = originalTrans.DebitAccount,
+            //    ExchangeRate = originalTrans.ExchangeRate,
+            //    PaidBy = originalTrans.PaidBy,
 
-                InvoiceNumber = applyInvoice.InvoiceNumber,
-                InvoiceUuid = applyInvoice.InvoiceUuid,
-                Description = originalTrans.Description,
-                Notes = originalTrans.Notes,
-                EnterBy = originalTrans.EnterBy,
-                TransDate = originalTrans.TransDate,
-                //TransTime = originalTrans.TransTime,
-                TaxRate = originalTrans.TaxRate,
-                TransSourceCode = originalTrans.TransSourceCode,
-                TransStatus = originalTrans.TransStatus,
-                MasterAccountNum = originalTrans.MasterAccountNum,
-                ProfileNum = originalTrans.ProfileNum,
-                RowNum = applyInvoice.TransRowNum
-            };
+            //    TotalAmount = applyInvoice.PaidAmount,
+
+            //    InvoiceNumber = applyInvoice.InvoiceNumber,
+            //    InvoiceUuid = applyInvoice.InvoiceUuid,
+            //    Description = originalTrans.Description,
+            //    Notes = originalTrans.Notes,
+            //    EnterBy = originalTrans.EnterBy,
+            //    TransDate = originalTrans.TransDate,
+            //    TransTime = originalTrans.TransTime.ToDateTime(),
+            //    TaxRate = originalTrans.TaxRate,
+            //    TransSourceCode = originalTrans.TransSourceCode,
+            //    TransStatus = originalTrans.TransStatus,
+            //    MasterAccountNum = originalTrans.MasterAccountNum,
+            //    ProfileNum = originalTrans.ProfileNum,
+            //    RowNum = applyInvoice.TransRowNum
+            //};
             using (var tx = new ScopedTransaction(dbFactory))
             {
-                trans.TransNum = InvoiceTransactionHelper.GetTranSeqNum(trans.InvoiceNumber, originalTrans.ProfileNum);
+                invoiceTransactionDto.TransNum = InvoiceTransactionHelper.GetTranSeqNum(invoiceTransactionDto.InvoiceNumber, originalTrans.ProfileNum);
             }
 
             var dataDto = new InvoiceTransactionDataDto()
             {
-                InvoiceTransaction = trans
+                InvoiceTransaction = invoiceTransactionDto
             };
             return new InvoicePaymentPayload()
             {
-                ProfileNum = trans.ProfileNum.Value,
-                MasterAccountNum = trans.MasterAccountNum.Value,
+                ProfileNum = invoiceTransactionDto.ProfileNum.Value,
+                MasterAccountNum = invoiceTransactionDto.MasterAccountNum.Value,
                 InvoiceTransaction = dataDto,
-                DatabaseNum = trans.DatabaseNum.Value,
+                DatabaseNum = invoiceTransactionDto.DatabaseNum.Value,
             };
         }
 
