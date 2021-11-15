@@ -114,7 +114,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (Data == null)
                 NewData();
             Data.InvoiceData = InvoiceService.Data;
-            Data.InvoiceTransaction.InvoiceUuid = InvoiceService.Data.InvoiceHeader.InvoiceUuid; 
+            Data.InvoiceTransaction.InvoiceUuid = InvoiceService.Data.InvoiceHeader.InvoiceUuid;
 
             return success;
         }
@@ -527,7 +527,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string invoiceNumber, TransTypeEnum transType, int transNum)
         {
             List();
-            var success = await base.GetByNumberAsync(masterAccountNum, profileNum, invoiceNumber + "_" + (int)transType + "_" + transNum);
+            var success = await base.GetByNumberAsync(masterAccountNum, profileNum, invoiceNumber, (int)transType, transNum);
             await LoadInvoiceAsync(invoiceNumber, profileNum, masterAccountNum);
             return success;
         }
@@ -544,7 +544,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //set delete mode
             Delete();
             //load data
-            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber + "_" + (int)transType + "_" + transNum);
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, (int)transType, transNum);
             success = success && DeleteData();
             return success;
         }
@@ -561,7 +561,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //set delete mode
             Delete();
             //load data
-            var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber + "_" + (int)transType + "_" + transNum);
+            var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, (int)transType, transNum);
             success = success && DeleteData();
             return success;
         }
