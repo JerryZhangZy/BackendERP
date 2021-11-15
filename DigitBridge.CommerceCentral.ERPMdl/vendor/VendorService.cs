@@ -18,6 +18,7 @@ using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using System.Xml.Serialization;
 using System.Text.Json.Serialization;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -48,6 +49,57 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _vendorAddressService;
             }
         }
+
+
+
+
+
+        /// <summary>
+        /// Add to ActivityLog record for current data and processMode
+        /// Should Call this method after successful save, update, delete
+        /// </summary>
+        protected void AddActivityLogForCurrentData()
+        {
+            this.AddActivityLog(new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.Vendor,
+                Action = (int)this.ProcessMode,
+                LogSource = "VendorService",
+
+                MasterAccountNum = this.Data.Vendor.MasterAccountNum,
+                ProfileNum = this.Data.Vendor.ProfileNum,
+                DatabaseNum = this.Data.Vendor.DatabaseNum,
+                ProcessUuid = this.Data.Vendor.VendorUuid,
+                ProcessNumber = this.Data.Vendor.VendorCode,
+ 
+                LogMessage = string.Empty
+            });
+        }
+
+        /// <summary>
+        /// Add to ActivityLog record for current data and processMode
+        /// Should Call this method after successful save, update, delete
+        /// </summary>
+        protected async Task AddActivityLogForCurrentDataAsync()
+        {
+            await this.AddActivityLogAsync(new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.Vendor,
+                Action = (int)this.ProcessMode,
+                LogSource = "VendorService",
+
+                MasterAccountNum = this.Data.Vendor.MasterAccountNum,
+                ProfileNum = this.Data.Vendor.ProfileNum,
+                DatabaseNum = this.Data.Vendor.DatabaseNum,
+                ProcessUuid = this.Data.Vendor.VendorUuid,
+                ProcessNumber = this.Data.Vendor.VendorCode,
+
+                LogMessage = string.Empty
+
+            }) ;
+        }
+
+
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
@@ -68,7 +120,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var result= SaveData();
+            if (result)
+                AddActivityLogForCurrentData();
+            return result;
         }
 
         /// <summary>
@@ -91,7 +146,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var result= await SaveDataAsync();
+            if (result)
+              await  AddActivityLogForCurrentDataAsync();
+            return result;
         }
 
         public virtual bool Add(VendorPayload payload)
@@ -115,7 +173,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var result= SaveData();
+            if (result)
+                AddActivityLogForCurrentData();
+            return result;
         }
 
         public virtual async Task<bool> AddAsync(VendorPayload payload)
@@ -139,7 +200,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var result= await SaveDataAsync();
+            if (result)
+              await  AddActivityLogForCurrentDataAsync();
+            return result;
+
         }
     
         /// <summary>
@@ -165,7 +230,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var result= SaveData();
+            if (result)
+                AddActivityLogForCurrentData();
+            return result;
         }
 
         /// <summary>
@@ -191,7 +259,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var result= await SaveDataAsync();
+            if (result)
+               await AddActivityLogForCurrentDataAsync();
+            return result;
         }
 
         /// <summary>
@@ -221,7 +292,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var result= SaveData();
+            if (result)
+                AddActivityLogForCurrentData();
+            return result;
         }
 
         /// <summary>
@@ -252,7 +326,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var result= await SaveDataAsync();
+            if (result)
+               await AddActivityLogForCurrentDataAsync();
+            return result;
         }
 
 
@@ -326,7 +403,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 rowNum = await VendorServiceHelper.GetRowNumByVendorCodeAsync(vendorCode, payload.MasterAccountNum, payload.ProfileNum);
             }
             var success = await GetDataAsync(rowNum);
-            return success && (await DeleteDataAsync());
+            if (success)
+            {
+                var result = await DeleteDataAsync();
+                if (result)
+                   await AddActivityLogForCurrentDataAsync();
+                return result;
+            }
+
+            return false;
+            
         }
 
         public async Task<Vendor> GetVendorByNameAsync(string vendorName)
