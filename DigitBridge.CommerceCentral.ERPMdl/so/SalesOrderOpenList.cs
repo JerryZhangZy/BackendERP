@@ -161,8 +161,8 @@ LEFT JOIN {ProdcutHelper.TableName} {ProdcutHelper.TableAllies}
       AND {ProdcutHelper.TableAllies}.SKU={ItemHelper.TableAllies}.SKU
       )
 
-LEFT JOIN {OrderLineHelper.TableName} {OrderLineHelper.TableAllies}
-     ON ( {OrderLineHelper.TableAllies}.CentralOrderLineUuid={Helper.TableAllies}.CentralOrderLineUuid)
+--LEFT JOIN {OrderLineHelper.TableName} {OrderLineHelper.TableAllies}
+--     ON ( {OrderLineHelper.TableAllies}.CentralOrderLineUuid={ItemHelper.TableAllies}.CentralOrderLineUuid)
 
 WHERE { ItemHelper.TableAllies}.SalesOrderUuid = { Helper.TableAllies}.SalesOrderUuid 
 FOR JSON PATH
