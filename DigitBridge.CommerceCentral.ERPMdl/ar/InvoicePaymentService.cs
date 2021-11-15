@@ -425,7 +425,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             Delete();
             //load data
-            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber + "_" + (int)TransTypeEnum.Payment + "_" + transNum);
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transNum);
             if (success && Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
             {
                 var invoiceTransaction = Data.InvoiceTransaction;
