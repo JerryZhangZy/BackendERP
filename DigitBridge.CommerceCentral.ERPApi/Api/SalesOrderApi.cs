@@ -191,6 +191,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// <summary>
         /// Load sales order list
         /// </summary>
+        [FunctionName(nameof(SalesOrdersListSummary))]
+        [OpenApiOperation(operationId: "SalesOrdersListSummary", tags: new[] { "SalesOrders" }, Summary = "Load sales order list summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind))]
+        public static async Task<JsonNetResponse<SalesOrderPayload>> SalesOrdersListSummary(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "salesOrders/find/summary")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<SalesOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new SalesOrderList(dataBaseFactory, new SalesOrderQuery());
+            await srv.GetSalesOrderListSummaryAsync(payload);
+            return new JsonNetResponse<SalesOrderPayload>(payload);
+        }
+
+        /// <summary>
+        /// Load sales order list
+        /// </summary>
         [FunctionName(nameof(SalesOrderDataList))]
         [OpenApiOperation(operationId: "SalesOrderDataList", tags: new[] { "SalesOrders" }, Summary = "Load sales order data list")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
