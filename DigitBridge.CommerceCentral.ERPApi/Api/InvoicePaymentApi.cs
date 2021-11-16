@@ -23,14 +23,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
     [ApiFilter(typeof(InvoicePaymentApi))]
     public static class InvoicePaymentApi
     {
-        [FunctionName(nameof(CheckInvoiceNumberExist))]
-        [OpenApiOperation(operationId: "CheckInvoiceNumberExist", tags: new[] { "Invoices" }, Summary = "exam an invoice number whether been used")]
+        [FunctionName(nameof(ExistCheckNumber))]
+        [OpenApiOperation(operationId: "ExistCheckNumber", tags: new[] { "Invoices" }, Summary = "exam an invoice number whether been used")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "checkNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePayloadGetSingle))]
-        public static async Task<bool> CheckInvoiceNumberExist(
+        public static async Task<bool> ExistCheckNumber(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoices/existinvoiceNumber/{invoiceNumber}")] HttpRequest req,
             string checkNumber)
         {
