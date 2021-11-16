@@ -70,6 +70,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeApplyInvoices() => HasApplyInvoices;
 
         #endregion
+
+
+
+        /// <summary>
+        /// (Response Data) List result count which load filter and paging.
+        /// </summary>
+        public int PoReceiveListCount { get; set; }
+        [JsonIgnore] public virtual bool HasPoReceiveListCount => PoReceiveListCount > 0;
+        public bool ShouldSerializePoReceiveListCount() => HasPoReceiveListCount;
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List summary result which load filter.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder PoReceiveListSummary { get; set; }
+        [JsonIgnore] public virtual bool HasPoReceiveListSummary => PoReceiveListSummary != null && PoReceiveListSummary.Length > 0;
+        public bool ShouldSerializePoReceiveListSummary() => HasPoReceiveListSummary;
+
+
     }
 }
 

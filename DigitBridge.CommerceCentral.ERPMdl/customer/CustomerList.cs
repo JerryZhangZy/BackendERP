@@ -109,7 +109,7 @@ LEFT JOIN @CustStatus st ON ({Helper.TableAllies}.CustomerStatus = st.num)
 
         #endregion override methods
 
-        public virtual async Task GetSalesOrderListSummaryAsync(CustomerPayload payload)
+        public virtual async Task GetCustomerListSummaryAsync(CustomerPayload payload)
         {
             if (payload == null)
                 payload = new CustomerPayload();
