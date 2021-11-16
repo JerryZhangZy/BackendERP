@@ -66,6 +66,25 @@ COALESCE(pst.text, '') ProcessStatusText,
             return this.SQL_Select;
         }
 
+
+
+        protected override string GetSQL_select_summary()
+        {
+            this.SQL_SelectSummary = $@"
+SELECT 
+COUNT(1) AS totalCount,
+SUM(CASE WHEN COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShipmentStatus, 0) = 0 THEN 1 ELSE 0 END) as pendingCount,
+SUM(CASE WHEN COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShipmentStatus, 0) = 1 THEN 1 ELSE 0 END) as shippedCount,
+SUM(CASE WHEN COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShipmentStatus, 0) = 2 THEN 1 ELSE 0 END) as partialShippedCount,
+SUM(CASE WHEN COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShipmentStatus, 0) = 3 THEN 1 ELSE 0 END) as cancelledCount,
+SUM(CASE WHEN COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShipmentStatus, 0) = 4 THEN 1 ELSE 0 END) as shippingCount,
+SUM(CASE WHEN COALESCE({OrderShipmentHeaderHelper.TableAllies}.ShipmentStatus, 0) = 5 THEN 1 ELSE 0 END) as canceledCount
+";
+            return this.SQL_SelectSummary;
+        }
+
+
+
         protected override string GetSQL_from()
         {
             var masterAccountNum = $"{OrderShipmentHeaderHelper.TableAllies}.MasterAccountNum";
@@ -97,6 +116,31 @@ COALESCE(pst.text, '') ProcessStatusText,
 
 
         #endregion override methods
+
+
+
+        public virtual async Task GetOrderShipmentListSummaryAsync(OrderShipmentPayload payload)
+        {
+            if (payload == null)
+                payload = new OrderShipmentPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.OrderShipmentListSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.OrderShipmentListCount = 0;
+                payload.OrderShipmentListSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
+
 
         public virtual void GetOrderShipmentList(OrderShipmentPayload payload)
         {

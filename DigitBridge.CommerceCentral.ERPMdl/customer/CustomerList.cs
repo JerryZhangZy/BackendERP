@@ -71,6 +71,21 @@ COALESCE(st.text, '') customerStatusText,
             return this.SQL_Select;
         }
 
+
+        protected override string GetSQL_select_summary()
+        {
+            this.SQL_SelectSummary = $@"
+SELECT 
+COUNT(1) AS totalCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.CustomerStatus, 0) = 0 THEN 1 ELSE 0 END) as activeCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.CustomerStatus, 0) = 1 THEN 1 ELSE 0 END) as inactiveCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.CustomerStatus, 0) = 2 THEN 1 ELSE 0 END) as holdCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.CustomerStatus, 0) = 3 THEN 1 ELSE 0 END) as potentialCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.CustomerStatus, 0) = 4 THEN 1 ELSE 0 END) as newCount
+";
+            return this.SQL_SelectSummary;
+        }
+
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
@@ -93,6 +108,28 @@ LEFT JOIN @CustStatus st ON ({Helper.TableAllies}.CustomerStatus = st.num)
         }
 
         #endregion override methods
+
+        public virtual async Task GetSalesOrderListSummaryAsync(CustomerPayload payload)
+        {
+            if (payload == null)
+                payload = new CustomerPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.CustomerListSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.CustomerListCount = 0;
+                payload.CustomerListSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
 
         public virtual void GetCustomerList(CustomerPayload payload)
         {
