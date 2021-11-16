@@ -91,7 +91,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeMiscInvoiceListCount() => HasMiscInvoiceListCount;
 
         /// <summary>
-        /// (Response Data) List result which load filter and paging.
+        /// (Response Data) List summary which load filter and paging.
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) List summary result which load filter.")]
         [JsonConverter(typeof(StringBuilderConverter))]

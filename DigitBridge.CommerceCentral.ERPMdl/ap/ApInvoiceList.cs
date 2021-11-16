@@ -200,5 +200,48 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
             }
             return rowNumList;
         }
+
+        protected override string GetSQL_select_summary()
+        {
+            SQL_SelectSummary = @$"
+SELECT 
+COUNT(1) AS totalCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.ApInvoiceStatus, 0) = 0 THEN 1 ELSE 0 END) as newCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.ApInvoiceStatus, 0) = 1 THEN 1 ELSE 0 END) as outstandingCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.ApInvoiceStatus, 0) = 2 THEN 1 ELSE 0 END) as paidCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.ApInvoiceStatus, 0) = 3 THEN 1 ELSE 0 END) as closedCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.ApInvoiceStatus, 0) = 100 THEN 1 ELSE 0 END) as dueCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.ApInvoiceStatus, 0) = 255 THEN 1 ELSE 0 END) as voidCount,
+SUM(COALESCE({Helper.TableAllies}.TotalAmount, 0)) AS totalAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.ApInvoiceStatus, 0) = 0 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as newAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.ApInvoiceStatus, 0) = 1 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as outstandingAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.ApInvoiceStatus, 0) = 2 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as paidAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.ApInvoiceStatus, 0) = 3 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as closedAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.ApInvoiceStatus, 0) = 100 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as dueAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.ApInvoiceStatus, 0) = 255 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as voidAmount
+";
+            return SQL_SelectSummary;
+        }
+        public virtual async Task GetApInvoiceListSummaryAsync(ApInvoicePayload payload)
+        {
+            if (payload == null)
+                payload = new ApInvoicePayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.ApInvoiceListSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.ApInvoiceListCount = 0;
+                payload.ApInvoiceListSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
     }
 }
