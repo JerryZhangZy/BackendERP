@@ -36,6 +36,50 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return this;
         }
 
+
+
+        /// <summary>
+        /// Add to ActivityLog record for current data and processMode
+        /// Should Call this method after successful save, update, delete
+        /// </summary>
+        protected void AddActivityLogForCurrentData()
+        {
+            this.AddActivityLog(new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.Inventory,
+                Action = (int)this.ProcessMode,
+                LogSource = "InventoryService",
+
+                MasterAccountNum = this.Data.ProductBasic.MasterAccountNum,
+                ProfileNum = this.Data.ProductBasic.ProfileNum,
+                DatabaseNum = this.Data.ProductBasic.DatabaseNum,
+                ProcessUuid = this.Data.ProductBasic.ProductUuid,
+
+                LogMessage = string.Empty
+            });
+        }
+
+        /// <summary>
+        /// Add to ActivityLog record for current data and processMode
+        /// Should Call this method after successful save, update, delete
+        /// </summary>
+        protected async Task AddActivityLogForCurrentDataAsync()
+        {
+            await this.AddActivityLogAsync(new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.Inventory,
+                Action = (int)this.ProcessMode,
+                LogSource = "InventoryService",
+
+                MasterAccountNum = this.Data.ProductBasic.MasterAccountNum,
+                ProfileNum = this.Data.ProductBasic.ProfileNum,
+                DatabaseNum = this.Data.ProductBasic.DatabaseNum,
+                ProcessUuid = this.Data.ProductBasic.ProductUuid,
+
+                LogMessage = string.Empty
+
+            });
+        }
         public virtual bool GetDataBySku(string sku, int masterAccountNum, int profileNum)
         {
             long rowNum = 0;
@@ -77,7 +121,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var result= SaveData();
+            if (result)
+                AddActivityLogForCurrentData();
+            return result;
         }
 
         /// <summary>
@@ -101,7 +148,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var result= await SaveDataAsync();
+            if (result)
+                await AddActivityLogForCurrentDataAsync();
+            return result;
         }
 
         public virtual bool Add(InventoryPayload payload)
@@ -126,7 +176,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var result= SaveData();
+            if (result)
+                AddActivityLogForCurrentData();
+            return result;
         }
 
         public virtual async Task<bool> AddAsync(InventoryPayload payload)
@@ -165,7 +218,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             #region
 
-            return (await dbFactory.Db.ExecuteAsync($@"UPDATE ProductExt   set CentralProductNum=(SELECT   pba.CentralProductNum 
+            var result= (await dbFactory.Db.ExecuteAsync($@"UPDATE ProductExt   set CentralProductNum=(SELECT   pba.CentralProductNum 
 FROM ProductExt pex 
 INNER JOIN ProductBasic pba ON (pba.ProductUuid = pex.ProductUuid)
 WHERE
@@ -181,6 +234,9 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
      this.Data.ProductBasic.ProductUuid.ToSqlParameter("@2")
 
      ) == 1);
+            if (result)
+                await AddActivityLogForCurrentDataAsync();
+            return result;
             #endregion
 
         }
@@ -212,7 +268,10 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var result= await SaveDataAsync();
+            if (result)
+                await AddActivityLogForCurrentDataAsync();
+            return result;
         }
 
 
@@ -264,7 +323,10 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var result= SaveData();
+            if (result)
+                AddActivityLogForCurrentData();
+            return result;
         }
 
         /// <summary>
@@ -313,7 +375,10 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var result= await SaveDataAsync();
+            if (result)
+                await AddActivityLogForCurrentDataAsync();
+            return result;
         }
 
         /// <summary>
@@ -353,7 +418,10 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var result= SaveData();
+            if (result)
+                AddActivityLogForCurrentData();
+            return result;
         }
 
         /// <summary>
@@ -393,7 +461,10 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var result= await SaveDataAsync();
+            if (result)
+                await AddActivityLogForCurrentDataAsync();
+            return result;
         }
 
         public async Task<bool> DeleteBySkuAsync(InventoryPayload payload, string sku)
@@ -414,8 +485,15 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
 
             if (!(await ValidateAsync()))
                 return false;
-
-            return success && (await DeleteDataAsync());
+            if (success)
+            {
+                var result = await DeleteDataAsync();
+                if (result)
+                    await AddActivityLogForCurrentDataAsync();
+                return result;
+            }
+            return success;
+            
         }
 
         public InventoryPayload GetInventoryBySkuArray(InventoryPayload payload)

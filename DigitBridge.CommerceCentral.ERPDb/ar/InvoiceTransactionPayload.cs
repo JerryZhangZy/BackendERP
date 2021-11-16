@@ -99,6 +99,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasInvoiceTransactionListCount => InvoiceTransactionListCount > 0;
         public bool ShouldSerializeInvoiceTransactionListCount() => HasInvoiceTransactionListCount;
 
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List summary result which load filter.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder InvoiceTransactionListSummary { get; set; }
+        [JsonIgnore] public virtual bool HasInvoiceTransactionListSummary => InvoiceTransactionListSummary != null && InvoiceTransactionListSummary.Length > 0;
+        public bool ShouldSerializeInvoiceTransactionListSummary() => HasInvoiceTransactionListSummary;
         #endregion list service
     }
 }

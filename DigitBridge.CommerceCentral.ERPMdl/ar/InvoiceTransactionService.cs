@@ -520,6 +520,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 new InvoiceDataDtoMapperDefault().WriteInvoiceHeader(invoiceHeader, dto);
             return dto;
         }
+        protected async Task<List<InvoiceHeaderDto>> GetInvoiceHeadersByCustomerAsync(int masterAccountNum, int profileNum, string customerCode)
+        {
+            var invoiceHeaders = await new InvoiceHeader(_dbFactory).GetByCustomerCodeAsync(customerCode, masterAccountNum, profileNum);
+            List<InvoiceHeaderDto> result = new List<InvoiceHeaderDto>();
+            var mapper = new InvoiceDataDtoMapperDefault();
+            invoiceHeaders.ForEach(invoice => {
+                var dto = new InvoiceHeaderDto();
+                if (invoiceHeaders.Any())
+                {
+                    mapper.WriteInvoiceHeader(invoice, dto);
+                    result.Add(dto);
+                }
+            });
+
+            return result;
+        }
         protected async Task<bool> GetByNumberAsync(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
         {
             return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transType, transNum);

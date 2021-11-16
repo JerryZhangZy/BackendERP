@@ -236,5 +236,40 @@ FOR JSON PATH
                 throw;
             }
         }
+
+        protected override string GetSQL_select_summary()
+        {
+            this.SQL_SelectSummary = $@"
+SELECT 
+COUNT(1) AS totalCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.VendorStatus, 0) = 0 THEN 1 ELSE 0 END) as activeCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.VendorStatus, 0) = 1 THEN 1 ELSE 0 END) as inactiveCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.VendorStatus, 0) = 2 THEN 1 ELSE 0 END) as holdCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.VendorStatus, 0) = 3 THEN 1 ELSE 0 END) as potentialCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.VendorStatus, 0) = 4 THEN 1 ELSE 0 END) as newCount
+";
+            return this.SQL_SelectSummary;
+        }
+        public virtual async Task GetVendorListSummaryAsync(VendorPayload payload)
+        {
+            if (payload == null)
+                payload = new VendorPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.VendorListSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.VendorListCount = 0;
+                payload.VendorListSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
     }
 }

@@ -44,6 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
             return await srv.ExistInvoiceNumber(invoiceNumber, masterAccountNum, profileNum);
         }
+
         /// <summary>
         /// Get one invoice
         /// </summary>

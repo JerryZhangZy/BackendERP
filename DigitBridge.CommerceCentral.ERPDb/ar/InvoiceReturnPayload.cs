@@ -52,6 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasInvoiceDataDto => InvoiceDataDto != null;
         public bool ShouldSerializeInvoiceDataDto() => HasInvoiceDataDto;
         #endregion
+
     }
 }
 
