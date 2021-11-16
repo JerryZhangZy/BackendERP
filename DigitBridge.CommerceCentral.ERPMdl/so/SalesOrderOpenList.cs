@@ -180,6 +180,32 @@ FOR JSON PATH
 ) AS OrderLineList";
             return columns;
         }
+
+        protected string GetOrderHeaderJson_Script()
+        {
+            var tableAllies_Json = "headerExt";
+            var columns = $@"
+(
+ select * from {OrderHeaderHelper.TableName} {tableAllies_Json} 
+ where {tableAllies_Json}.CentralOrderNum={OrderHeaderHelper.TableAllies}.CentralOrderNum
+ for json path
+--, WITHOUT_ARRAY_WRAPPER
+) as OrderHeaderJson
+";
+            return columns;
+        }
+        protected string GetOrderLineJson_Script()
+        {
+            var tableAllies_Json = "lineExt";
+            var columns = $@"
+(
+ select * from {OrderLineHelper.TableName} {tableAllies_Json} 
+ where {tableAllies_Json}.CentralOrderNum={OrderHeaderHelper.TableAllies}.CentralOrderNum
+ for json path
+) as OrderLineJson
+";
+            return columns;
+        }
         #endregion
 
         #region override methods
@@ -190,6 +216,8 @@ FOR JSON PATH
             SELECT 
              {GetHeader_Columns()}
             ,{GetItem_Script()} 
+            ,{GetOrderHeaderJson_Script()} 
+            ,{GetOrderLineJson_Script()}   
             ";
 
             return this.SQL_Select;
@@ -226,12 +254,12 @@ FOR JSON PATH
 
         //}
 
-        protected override string GetSQL_orderBy()
-        {
-            this.SQL_OrderBy = $" order by {Helper.TableAllies}.UpdateDateUtc ";
+        //protected override string GetSQL_orderBy()
+        //{
+        //    this.SQL_OrderBy = $" order by {Helper.TableAllies}.UpdateDateUtc ";
 
-            return this.SQL_OrderBy;
-        }
+        //    return this.SQL_OrderBy;
+        //}
         #endregion override methods 
 
         public virtual async Task GetSalesOrdersOpenListAsync(SalesOrderOpenListPayload payload)
