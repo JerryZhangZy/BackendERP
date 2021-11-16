@@ -106,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonConverter(typeof(StringBuilderConverter))]
         public StringBuilder InvoiceTransactionListSummary { get; set; }
         [JsonIgnore] public virtual bool HasInvoiceTransactionListSummary => InvoiceTransactionListSummary != null && InvoiceTransactionListSummary.Length > 0;
-        public bool ShouldSerializeInvoiceReturnListSummary() => HasInvoiceTransactionListSummary;
+        public bool ShouldSerializeInvoiceTransactionListSummary() => HasInvoiceTransactionListSummary;
         #endregion list service
     }
 }
