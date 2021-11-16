@@ -528,7 +528,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             invoiceHeaders.ForEach(invoice => {
                 var dto = new InvoiceHeaderDto();
                 if (invoiceHeaders.Any())
+                {
                     mapper.WriteInvoiceHeader(invoice, dto);
+                    result.Add(dto);
+                }
             });
 
             return result;

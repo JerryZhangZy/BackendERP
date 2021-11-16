@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "customerCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadGetSingle))]
         public static async Task<JsonNetResponse<InvoicePaymentPayload>> CreateInvoicePayments(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoicePayments/customer/{customerCode}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "invoicePayments/customer/{customerCode}")] HttpRequest req,
             string customerCode)
         {
             var payload = await req.GetParameters<InvoicePaymentPayload>();

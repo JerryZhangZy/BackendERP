@@ -115,9 +115,46 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 InvoiceNumber = i.InvoiceNumber,
                 InvoiceUuid = i.InvoiceUuid
             }).ToList();
+            payload.InvoiceTransactions = invoices.Select(i => GenerateTransByInvoiceHeader(i)).ToList();
 
             payload.Success = true;
             payload.Messages = this.Messages;
+        }
+
+        InvoiceTransactionDataDto GenerateTransByInvoiceHeader(InvoiceHeaderDto invoiceHeader)
+        {
+            var trans = new InvoiceTransactionDataDto
+            { 
+                InvoiceReturnItems = null,
+                InvoiceTransaction = new InvoiceTransactionDto
+                {
+                    DatabaseNum = invoiceHeader.DatabaseNum,
+                    MasterAccountNum = invoiceHeader.MasterAccountNum,
+                    ProfileNum = invoiceHeader.ProfileNum,
+
+                    Currency = invoiceHeader.Currency,
+                    ExchangeRate = 1,
+                    InvoiceNumber = invoiceHeader.InvoiceNumber,
+                    InvoiceUuid = invoiceHeader.InvoiceUuid,
+                    TaxRate = invoiceHeader.TaxRate,
+                    DiscountRate = invoiceHeader.DiscountRate,
+                    DiscountAmount = invoiceHeader.DiscountAmount,
+
+                    SubTotalAmount = invoiceHeader.SubTotalAmount,
+                    SalesAmount = invoiceHeader.SalesAmount,
+                    TotalAmount = 0,
+                    TaxableAmount = invoiceHeader.TaxableAmount,
+                    NonTaxableAmount = invoiceHeader.NonTaxableAmount,
+                    TaxAmount = invoiceHeader.TaxAmount,
+                    ShippingAmount = invoiceHeader.ShippingAmount,
+                    ShippingTaxAmount = invoiceHeader.ShippingTaxAmount,
+                    MiscAmount = invoiceHeader.MiscAmount,
+                    MiscTaxAmount = invoiceHeader.MiscTaxAmount,
+                    ChargeAndAllowanceAmount = invoiceHeader.ChargeAndAllowanceAmount
+                }
+            };
+
+            return trans;
         }
 
         public async Task AddPaymentsForInvoicesAsync(InvoicePaymentPayload payload)
@@ -149,6 +186,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 //var transaction = GenerateTransactionByInvoice(payload, applyInvoice.InvoiceUuid);
                 var transaction = payload.InvoiceTransactions.Single(t => t.InvoiceTransaction.TransUuid == applyInvoice.TransUuid);
+                transaction.InvoiceTransaction.MasterAccountNum = payload.MasterAccountNum;
+                transaction.InvoiceTransaction.ProfileNum = payload.ProfileNum;
                 if (!await base.AddAsync(transaction))
                 {
                     applyInvoice.Success = false;
