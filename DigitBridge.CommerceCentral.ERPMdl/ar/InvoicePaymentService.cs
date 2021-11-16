@@ -53,6 +53,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Messages = this.Messages;
         }
 
+        public async Task<bool> ExistCheckNumber(string number, int masterAccountNum, int profileNum)
+        {
+            return await InvoicePaymentHelper.ExistCheckNumberAsync(number, masterAccountNum, profileNum);
+        }
+
         public async Task CreatePaymentForCustomerAsync(InvoicePaymentPayload payload, string customerCode)
         {
             var invoices = await GetInvoiceHeadersByCustomerAsync(payload.MasterAccountNum, payload.ProfileNum, customerCode);
@@ -466,7 +471,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return payload.Success;
         }
 
-        public async virtual Task<bool> UpdateRefactor(InvoicePaymentPayload payload)
+        public async virtual Task<bool> UpdateInvoicePayments(InvoicePaymentPayload payload)
         {
             NewData();
             string checkNumOrAuthCode = payload.InvoiceTransaction.InvoiceTransaction.CheckNum ?? payload.InvoiceTransaction.InvoiceTransaction.AuthCode;
