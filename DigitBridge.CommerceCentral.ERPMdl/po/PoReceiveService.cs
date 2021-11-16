@@ -377,7 +377,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var totalShipmentAmount = dto.PoTransaction.ShippingAmount.ToAmount();
             var totalShipmentTaxAmount = dto.PoTransaction.ShippingTaxAmount.ToAmount();
             var totalMiscAmount = dto.PoTransaction.MiscAmount.ToAmount();
-            var totalMiscTaxAmount = dto.PoTransaction.MiscTaxAmount.ToAmount();
+            var totalMiscTaxAmount = dto.PoTransaction.MiscTaxAmount.ToAmount(); 
             var totalDiscountAmount = dto.PoTransaction.DiscountAmount.ToAmount();
             foreach (var poUUid in poUUids)
             {
@@ -386,6 +386,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var currentQty = poTransactionItems.Sum(r => r.TransQty);
                 var potransaction = new PoTransactionDto()
                 {
+                    RowNum= dto.PoTransaction.RowNum,
                     PoUuid = poUUid,
                     PoNum = dto.PoTransaction.PoNum,
                     ProfileNum = dto.PoTransaction.ProfileNum,
