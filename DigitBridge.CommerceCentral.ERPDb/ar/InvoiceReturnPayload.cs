@@ -52,6 +52,35 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasInvoiceDataDto => InvoiceDataDto != null;
         public bool ShouldSerializeInvoiceDataDto() => HasInvoiceDataDto;
         #endregion
+
+        #region list service
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder InvoiceReturnList { get; set; }
+
+        /// <summary>
+        /// (Response Data) List result count which load filter and paging.
+        /// </summary>
+        public int InvoiceReturnListCount { get; set; }
+        [JsonIgnore] public virtual bool HasInvoiceReturnListCount => InvoiceReturnListCount > 0;
+        public bool ShouldSerializeInvoiceReturnListCount() => HasInvoiceReturnListCount;
+
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List summary result which load filter.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder InvoiceReturnListSummary { get; set; }
+        [JsonIgnore] public virtual bool HasInvoiceReturnListSummary => InvoiceReturnListSummary != null && InvoiceReturnListSummary.Length > 0;
+        public bool ShouldSerializeInvoiceReturnListSummary() => HasInvoiceReturnListSummary;
+
+        #endregion list service
+
     }
 }
 
