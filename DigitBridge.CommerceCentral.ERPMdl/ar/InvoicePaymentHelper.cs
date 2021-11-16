@@ -32,7 +32,35 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// </summary>
     public static class InvoicePaymentHelper
     {
+        public static bool ExistCheckNumber(string number, int masterAccountNum, int profileNum)
+        {
 
+            var sql = $@"
+SELECT COUNT(1) FROM InvoiceTransaction
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND CheckNum = @number
+";
+            var result = SqlQuery.ExecuteScalar<int>(sql, masterAccountNum.ToSqlParameter("masterAccountNum"),
+                 profileNum.ToSqlParameter("profileNum"),
+                 number.ToSqlParameter("number"));
+            return result > 0;
+        }
+
+        public static async Task<bool> ExistCheckNumberAsync(string number, int masterAccountNum, int profileNum)
+        {
+
+            var sql = $@"
+SELECT COUNT(1) FROM InvoiceTransaction
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND CheckNum = @number
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql, masterAccountNum.ToSqlParameter("masterAccountNum"),
+                  profileNum.ToSqlParameter("profileNum"),
+                  number.ToSqlParameter("number"));
+            return result > 0;
+        }
     }
 }
 

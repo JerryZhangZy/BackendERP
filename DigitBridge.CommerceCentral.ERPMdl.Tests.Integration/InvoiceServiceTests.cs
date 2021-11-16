@@ -21,11 +21,23 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
+using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
     public partial class InvoiceServiceTests
     {
+        [Fact]
+        public void TestMethod()
+        {
+            var srv = new InvoiceService(DataBaseFactory);
+            srv.Add();
+
+            var mapper = srv.DtoMapper;
+            var data = GetFakerData();
+            var json = JsonConvert.SerializeObject(data);
+        }
+
 
         [Fact()]
 		//[Fact(Skip = SkipReason)]

@@ -26,7 +26,30 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 {
     public partial class InvoiceTransactionTests
     {
+        [Fact]
+        public async Task GetTransactionsByCheckNumOrAuthCode_Test()
+        {
+            var list = FakerData.Generate(10);
+            var InvoiceUuid = Guid.NewGuid().ToString();
 
+            list.ForEach(x => {
+                x.MasterAccountNum = 1001;
+                x.ProfileNum = 1000;
+                x.CheckNum = "test-check-number";
+            });
+            list.SetDataBaseFactory<InvoiceTransaction>(DataBaseFactory)
+                .Save<InvoiceTransaction>();
+
+            var data = new InvoiceTransaction();
+            data.SetDataBaseFactory(DataBaseFactory);
+            DataBaseFactory.Begin();
+            var result = await data.GetTransactionsByCheckNumOrAuthCode(1001, 1000, "test-check-number");
+            DataBaseFactory.Commit();
+            
+
+            Assert.NotEmpty(result);
+            Assert.All(result.Select(r => r.CheckNum), r => Assert.Equal("test-check-number", r));
+        }
     }
 }
 

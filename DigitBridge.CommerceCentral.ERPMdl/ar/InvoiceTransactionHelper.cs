@@ -66,6 +66,22 @@ AND TransNum = @number
             return result > 0;
         }
 
+        public static async Task<bool> ExistCheckNum(int masterAccountNum, int profileNum, string checkNum)
+        {
+            var sql = $@"
+SELECT COUNT(1) FROM InvoiceTransaction tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND CheckNum = @checkNum
+";
+            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                checkNum.ToSqlParameter("checkNum")
+            );
+            return result > 0;
+        }
+
         public static bool ExistId(string uuid, int masterAccountNum, int profileNum)
         {
             var sql = $@"

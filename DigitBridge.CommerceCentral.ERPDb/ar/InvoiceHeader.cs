@@ -24,6 +24,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return (await dbFactory.FindAsync<InvoiceHeader>($"SELECT TOP 1 * FROM InvoiceHeader where InvoiceNumber='{invoiceNumber}' and masterAccountNum={masterAccountNum} and profileNum={profileNum}")).FirstOrDefault();
         }
+
+        /// <summary>
+        /// get invoices of customer
+        /// </summary>
+        /// <param name="customerCode"></param>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        /// <returns></returns>
+        public async Task<List<InvoiceHeader>> GetByCustomerCodeAsync(string customerCode, int masterAccountNum, int profileNum)
+        {
+            return (await dbFactory.FindAsync<InvoiceHeader>($"SELECT * FROM InvoiceHeader where InvoiceStatus=1 and CustomerCode='{customerCode}' and masterAccountNum={masterAccountNum} and profileNum={profileNum}")).ToList();
+        }
     }
 }
 
