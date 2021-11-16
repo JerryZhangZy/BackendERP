@@ -96,8 +96,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiPropertyDescription("(Response Data) List summary result which load filter.")]
         [JsonConverter(typeof(StringBuilderConverter))]
         public StringBuilder MiscInvoiceListSummary { get; set; }
-        [JsonIgnore] public virtual bool HasMiscInvoiceSummaryListSummary => MiscInvoiceListSummary != null && MiscInvoiceListSummary.Length > 0;
-        public bool ShouldSerializeInventoryMiscInvoiceSummary() => HasMiscInvoiceSummaryListSummary;
+        [JsonIgnore] public virtual bool HasMiscInvoiceListSummary => MiscInvoiceListSummary != null && MiscInvoiceListSummary.Length > 0;
+        public bool ShouldSerializeMiscInvoiceListSummary() => HasMiscInvoiceListSummary;
         #endregion list service
 
         #region summary service 
