@@ -71,6 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string CategoryCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CategoryCode) AS {name ?? "CategoryCode".ToCamelCase(camelCase)} ";
         public static string GroupCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.GroupCode) AS {name ?? "GroupCode".ToCamelCase(camelCase)} ";
         public static string SubGroupCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SubGroupCode) AS {name ?? "SubGroupCode".ToCamelCase(camelCase)} ";
+        public static string ProductStatus(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProductStatus AS {name ?? "ProductStatus".ToCamelCase(camelCase)} ";
         public static string PriceRule(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.PriceRule) AS {name ?? "PriceRule".ToCamelCase(camelCase)} ";
         public static string Stockable(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Stockable AS {name ?? "Stockable".ToCamelCase(camelCase)} ";
         public static string IsAr(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.IsAr AS {name ?? "IsAr".ToCamelCase(camelCase)} ";
@@ -131,6 +132,7 @@ RTRIM({allies}CatalogPage) AS CatalogPage,
 RTRIM({allies}CategoryCode) AS CategoryCode,
 RTRIM({allies}GroupCode) AS GroupCode,
 RTRIM({allies}SubGroupCode) AS SubGroupCode,
+RTRIM({allies}ProductStatus) AS ProductStatus,
 RTRIM({allies}PriceRule) AS PriceRule,
 {allies}Stockable AS Stockable,
 {allies}IsAr AS IsAr,

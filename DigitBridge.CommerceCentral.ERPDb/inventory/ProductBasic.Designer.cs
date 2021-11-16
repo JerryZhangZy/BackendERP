@@ -66,7 +66,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private int _profileNum;
 
         [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _sKU;
+        private string _sku;
 
         [Column("FNSku",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _fNSku;
@@ -271,11 +271,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _sKU?.TrimEnd(); 
+				return _sku?.TrimEnd(); 
             }
             set
             {
-				_sKU = value.TruncateTo(100); 
+				_sku = value.TruncateTo(100); 
 				OnPropertyChanged("SKU", value);
             }
         }
@@ -947,7 +947,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_createDate = value.Date.ToSqlSafeValue(); 
+				_createDate = value.ToSqlSafeValue(); 
 				OnPropertyChanged("CreateDate", value);
             }
         }
@@ -963,7 +963,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_updateDate = value.Date.ToSqlSafeValue(); 
+				_updateDate = value.ToSqlSafeValue(); 
 				OnPropertyChanged("UpdateDate", value);
             }
         }
@@ -1049,7 +1049,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_databaseNum = default(int); 
 			_masterAccountNum = default(int); 
 			_profileNum = default(int); 
-			_sKU = String.Empty; 
+			_sku = String.Empty; 
 			_fNSku = String.Empty; 
 			_condition = default(byte); 
 			_brand = String.Empty; 

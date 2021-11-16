@@ -78,7 +78,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (!payload.HasInvoiceTransaction || payload.InvoiceTransaction.InvoiceTransaction is null)
             {
-                AddError("InvoiceTransaction is required.");
+                AddError("Payment information is required.");
                 return false;
             }
 
@@ -425,7 +425,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             Delete();
             //load data
-            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber + "_" + (int)TransTypeEnum.Payment + "_" + transNum);
+            var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transNum);
             if (success && Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
             {
                 var invoiceTransaction = Data.InvoiceTransaction;
@@ -463,12 +463,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             payload.InvoiceTransaction = this.ToDto().InvoiceTransaction;
 
-            return await LoadInvoiceList(payload, Data.InvoiceData.InvoiceHeader.CustomerCode);
+            return await LoadInvoiceListAsync(payload, Data.InvoiceData.InvoiceHeader.CustomerCode);
         }
 
         public async Task<bool> NewPaymentByCustomerCode(InvoiceNewPaymentPayload payload, string customerCode)
         {
-            if (!await LoadInvoiceList(payload, customerCode))
+            if (!await LoadInvoiceListAsync(payload, customerCode))
             {
                 return false;
             }
@@ -491,7 +491,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        private async Task<bool> LoadInvoiceList(InvoiceNewPaymentPayload payload, string customerCode)
+        private async Task<bool> LoadInvoiceListAsync(InvoiceNewPaymentPayload payload, string customerCode)
         {
             var invoicePayload = new InvoicePayload()
             {

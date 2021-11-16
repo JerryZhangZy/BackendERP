@@ -12,7 +12,10 @@ namespace DigitBridge.Base.Utility
         public override void WriteJson(JsonWriter writer, StringBuilder sb, JsonSerializer serializer)
         {
             if (sb == null || sb.Length == 0)
+            {
+                writer.WriteNull();
                 return;
+            }
             writer.WriteRawValue(sb.ToString());
         }
 

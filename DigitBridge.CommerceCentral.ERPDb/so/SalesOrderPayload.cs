@@ -95,10 +95,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasSalesOrderListCount => SalesOrderListCount > 0;
         public bool ShouldSerializeSalesOrderListCount() => HasSalesOrderListCount;
 
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List summary result which load filter.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder SalesOrderListSummary { get; set; }
+        [JsonIgnore] public virtual bool HasSalesOrderListSummary => SalesOrderListSummary != null && SalesOrderListSummary.Length > 0;
+        public bool ShouldSerializeSalesOrderListSummary() => HasSalesOrderListSummary;
+
         #endregion list service
 
         #region summary service 
-      
+
         [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
         [JsonConverter(typeof(StringBuilderConverter))]
         public StringBuilder SalesOrderSummary { get; set; }

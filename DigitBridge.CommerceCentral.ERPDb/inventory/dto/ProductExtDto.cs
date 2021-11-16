@@ -1,4 +1,3 @@
-
               
     
 
@@ -273,6 +272,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasSubGroupCode => SubGroupCode != null;
+
+		/// <summary>
+		/// Product status. <br> Title: Status, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Product status. <br> Title: Status, Display: true, Editable: true")]
+        public int? ProductStatus { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasProductStatus => ProductStatus != null;
 
 		/// <summary>
 		/// Product Default Price Rule. <br> Title: Price Rule, Display: true, Editable: true
