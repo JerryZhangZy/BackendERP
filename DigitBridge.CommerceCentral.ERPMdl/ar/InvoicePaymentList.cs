@@ -263,5 +263,54 @@ for json path;
             }
             return sb;
         }
+        protected override string GetSQL_select_summary()
+        {
+            this.SQL_SelectSummary = $@"
+SELECT 
+COUNT(1) AS totalCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransType, 0) = 1 THEN 1 ELSE 0 END) as paymentCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransType, 0) = 2 THEN 1 ELSE 0 END) as returnCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 0 THEN 1 ELSE 0 END) as draftCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 1 THEN 1 ELSE 0 END) as overdueCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 2 THEN 1 ELSE 0 END) as pendingCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 3 THEN 1 ELSE 0 END) as payableCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 4 THEN 1 ELSE 0 END) as paidCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 5 THEN 1 ELSE 0 END) as trashCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 6 THEN 1 ELSE 0 END) as unpaidCount,
+SUM(COALESCE({Helper.TableAllies}.TotalAmount, 0)) AS totalAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransType, 0) = 1 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as paymentAmounts,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransType, 0) = 2 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as returnAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 0 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as draftAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 1 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as overdueAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 2 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as pendingAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 3 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as payableAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 4 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as paidAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 5 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as trashAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 6 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as unpaidAmount
+";
+            return this.SQL_SelectSummary;
+        }
+
+        public virtual async Task GetInvoicePaymentListSummaryAsync(InvoicePaymentPayload payload)
+        {
+            if (payload == null)
+                payload = new InvoicePaymentPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.InvoiceTransactionListSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.InvoiceTransactionListCount = 0;
+                payload.InvoiceTransactionListSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
     }
 }

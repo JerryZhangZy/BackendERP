@@ -302,12 +302,12 @@ SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 6 THEN {Helper.Tab
             {
                 payload.Success = await ExcuteSummaryJsonAsync(sb);
                 if (payload.Success)
-                    payload.InvoiceReturnListSummary = sb;
+                    payload.InvoiceTransactionListSummary = sb;
             }
             catch (Exception ex)
             {
-                payload.InvoiceReturnListCount = 0;
-                payload.InvoiceReturnListSummary = null;
+                payload.InvoiceTransactionListCount = 0;
+                payload.InvoiceTransactionListSummary = null;
                 AddError(ex.ObjectToString());
                 payload.Messages = this.Messages;
             }
