@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -93,5 +94,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         //public DateTime EnterDate { get; set; }
         public int ShipmentCount { get; set; }
         public List<OrderLineModel> OrderLineList { get; set; }
+
+        public JArray OrderHeaderJson { get; set; }
+
+        public JArray OrderLineJson { get; set; }
     }
 }
