@@ -302,6 +302,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<MiscInvoicePayload>(payload);
         }
 
+        /// <summary>
+        /// Load MiscInvoices list
+        /// </summary>
+        [FunctionName(nameof(MiscInvoicesListSummary))]
+        [OpenApiOperation(operationId: "MiscInvoicesListSummary", tags: new[] { "MiscInvoices" }, Summary = "Load MiscInvoices list summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(MiscInvoicePayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(MiscInvoicePayloadFind))]
+        public static async Task<JsonNetResponse<MiscInvoicePayload>> MiscInvoicesListSummary(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "miscInvoices/find/summary")] Microsoft.AspNetCore.Http.HttpRequest req)
+        {
+            var payload = await req.GetParameters<MiscInvoicePayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new MiscInvoiceList(dataBaseFactory, new MiscInvoiceQuery());
+            await srv.GetMiscInvoiceListSummaryAsync(payload);
+            return new JsonNetResponse<MiscInvoicePayload>(payload);
+        }
     }
 }
 

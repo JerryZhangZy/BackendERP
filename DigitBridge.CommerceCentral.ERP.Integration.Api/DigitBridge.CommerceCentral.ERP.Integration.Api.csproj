@@ -4,6 +4,9 @@
         <AzureFunctionsVersion>V3</AzureFunctionsVersion>
     </PropertyGroup>
     <ItemGroup>
+      <None Remove="local - Copy %282%29.settings.json" />
+    </ItemGroup>
+    <ItemGroup>
         <PackageReference Include="DigitBridge.Log" Version="3.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />

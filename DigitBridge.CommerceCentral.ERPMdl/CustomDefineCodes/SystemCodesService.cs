@@ -221,9 +221,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return SaveData();
         }
 
-        public Task<bool> DeleteByUuidAsync(SystemCodesPayload payload, string systemCodesCode)
+        public async Task DeleteByUuidAsync(SystemCodesPayload payload, string systemCodesUuid)
         {
-            throw new NotImplementedException();
+            await dbFactory.Db.ExecuteAsync("DELETE SystemCodes WHERE SystemCodeUuid=@0", systemCodesUuid.ToSqlParameter("@0"));
         }
 
         /// <summary>

@@ -190,5 +190,41 @@ OFFSET {payload.FixedSkip} ROWS FETCH NEXT {payload.FixedTop} ROWS ONLY
             }
             return rowNumList;
         }
+
+        protected override string GetSQL_select_summary()
+        {
+            SQL_SelectSummary = @$"
+SELECT 
+COUNT(1) AS totalCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.MiscInvoiceStatus, 0) = 0 THEN 1 ELSE 0 END) as outstandingCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.MiscInvoiceStatus, 0) = 1 THEN 1 ELSE 0 END) as paidCount,
+SUM(COALESCE({Helper.TableAllies}.TotalAmount, 0)) AS totalAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.MiscInvoiceStatus, 0) = 0 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as outstandingAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.MiscInvoiceStatus, 0) = 1 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as paidAmount
+";
+            return SQL_SelectSummary;
+        }
+
+        public virtual async Task GetMiscInvoiceListSummaryAsync(MiscInvoicePayload payload)
+        {
+            if (payload == null)
+                payload = new MiscInvoicePayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.MiscInvoiceListSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.MiscInvoiceListCount = 0;
+                payload.MiscInvoiceListSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
     }
 }

@@ -90,6 +90,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasApInvoiceListCount => ApInvoiceListCount > 0;
         public bool ShouldSerializeApInvoiceListCount() => HasApInvoiceListCount;
 
+        /// <summary>
+        /// (Response Data) List summary which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List summary result which load filter.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder ApInvoiceListSummary { get; set; }
+        [JsonIgnore] public virtual bool HasApInvoiceListSummary => ApInvoiceListSummary != null && ApInvoiceListSummary.Length > 0;
+        public bool ShouldSerializeApInvoiceListSummary() => HasApInvoiceListSummary;
         #endregion list service
     }
 }

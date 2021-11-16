@@ -387,6 +387,23 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             return new JsonNetResponse<VendorAddressPayloadAdd>(VendorAddressPayloadAdd.GetSampleData());
         }
+
+        [FunctionName(nameof(VendorsListSummary))]
+        [OpenApiOperation(operationId: "VendorsListSummary", tags: new[] { "Vendors" }, Summary = "Load vendor list summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(VendorPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(VendorPayloadFind))]
+        public static async Task<JsonNetResponse<VendorPayload>> VendorsListSummary(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "vendors/find/summary")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<VendorPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new VendorList(dataBaseFactory, new VendorQuery());
+            await srv.GetVendorListSummaryAsync(payload);
+            return new JsonNetResponse<VendorPayload>(payload);
+        }
     }
 }
 

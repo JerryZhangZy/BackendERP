@@ -38,8 +38,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 return result;
             //TODO change to merge Dto children object
             //if (withHeaderText)
-            //    result.Add(dto.SalesOrderHeader.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
-            //result.Add(dto.SalesOrderHeader.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
+            //    result.Add(dto.SystemCodes.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
+            //result.Add(dto.SystemCodes.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
             return result;
         }
 

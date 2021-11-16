@@ -35,6 +35,28 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return (await dbFactory.FindAsync<InvoiceTransaction>(sql)).ToList();
         }
 
+        public virtual async Task<List<InvoiceTransaction>> GetTransactionsByCheckNumOrAuthCode(int masterAccountNum, int profileNum, string checkNumOrAuthCode)
+        {
+            string query = $@"
+SELECT RowNum FROM InvoiceTransaction
+WHERE MasterAccountNum={masterAccountNum} 
+    AND ProfileNum={profileNum}
+    AND (CheckNum='{checkNumOrAuthCode}' OR AuthCode='{checkNumOrAuthCode}')
+";
+            
+            var rowNums = dbFactory.Db.Query<int>(query).ToList();
+            List<InvoiceTransaction> result = new List<InvoiceTransaction>();
+            if (rowNums.Any())
+            {
+                rowNums.ForEach(r => {
+                    var trans = Get(dbFactory, r);
+                    result.Add(trans);
+                });
+            }
+
+            return result;
+        }
+
         public decimal OriginalPaidAmount { get; set; }
 
         public string CustomerCode { get; set; }
