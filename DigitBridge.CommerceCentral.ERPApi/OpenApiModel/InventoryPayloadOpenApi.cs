@@ -185,5 +185,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
     }
 
+    [Serializable()]
+    public class InventoryNewWarehouseAdd
+    { 
+        public string DistributionCenterCode { get; set; }
+    }
+
 }
 

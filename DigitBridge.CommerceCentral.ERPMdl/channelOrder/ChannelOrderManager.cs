@@ -223,5 +223,60 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Messages.Add(message, MessageLevel.Debug, code);
 
         #endregion Messages
+
+
+
+        public async Task CentralOrderReferenceAsync(CentralOrderReferencePayload centralOrderReferencePayload)
+        {
+            // load shipment list
+            // create payload to store list result
+            var orderShipmentPayload = centralOrderReferencePayload.Clone<OrderShipmentPayload>();
+            orderShipmentPayload.LoadAll = true;
+            // create query object and set filter
+            var orderShipmentListFilter = new OrderShipmentQuery();
+            orderShipmentListFilter.CentralOrderNum.FilterValue = centralOrderReferencePayload.CentralOrderNum;
+            orderShipmentListFilter.CentralOrderNum.FilterMode = FilterBy.eq;
+            orderShipmentListFilter.ShipDateFrom.Enable = false;
+            orderShipmentListFilter.ShipDateTo.Enable = false;
+            // create list service and excute sql query
+            var srv = new OrderShipmentList(dbFactory, orderShipmentListFilter);
+            await srv.GetOrderShipmentListAsync(orderShipmentPayload);
+            centralOrderReferencePayload.ShipmentList = orderShipmentPayload.OrderShipmentList;
+
+
+            // load shipment list
+            // create payload to store list result
+            var salesOrderPayload = centralOrderReferencePayload.Clone<SalesOrderPayload>();
+            salesOrderPayload.LoadAll = true;
+            // create query object and set filter
+            var salesOrderListFilter = new SalesOrderQuery();
+            salesOrderListFilter.CentralOrderNum.FilterValue = centralOrderReferencePayload.CentralOrderNum.ToString();
+            salesOrderListFilter.CentralOrderNum.FilterMode = FilterBy.eq;
+            salesOrderListFilter.OrderDateFrom.Enable = false;
+            salesOrderListFilter.OrderDateTo.Enable = false;
+            // create list service and excute sql query
+            var orderSrv = new SalesOrderList(dbFactory, salesOrderListFilter);
+            await orderSrv.GetSalesOrderListAsync(salesOrderPayload);
+            centralOrderReferencePayload.SalesOrderList = salesOrderPayload.SalesOrderList;
+
+
+            // load shipment list
+            // create payload to store list result
+            var invoicePayload = centralOrderReferencePayload.Clone<InvoicePayload>();
+            invoicePayload.LoadAll = true;
+            // create query object and set filter
+            var invoiceListFilter = new InvoiceQuery();
+            invoiceListFilter.CentralOrderNum.FilterValue = centralOrderReferencePayload.CentralOrderNum;
+            invoiceListFilter.CentralOrderNum.FilterMode = FilterBy.eq;
+            invoiceListFilter.InvoiceDateFrom.Enable = false;
+            invoiceListFilter.InvoiceDateTo.Enable = false;
+            invoiceListFilter.LoadAll = true;
+            // create list service and excute sql query
+            var invoiceSrv = new InvoiceList(dbFactory, invoiceListFilter);
+            await invoiceSrv.GetInvoiceListAsync(invoicePayload);
+            centralOrderReferencePayload.InvoiceList = invoicePayload.InvoiceList;
+
+            centralOrderReferencePayload.Success = true;
+        }
     }
 }

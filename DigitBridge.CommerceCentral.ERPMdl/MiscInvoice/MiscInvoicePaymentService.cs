@@ -102,8 +102,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.AddActivityLog(new ActivityLog(dbFactory)
             {
-                Type = ActivityLogType.MiscInvoicePayment.ToInt(),
-                Action = this.ProcessMode.ToInt(),
+                Type = (int)ActivityLogType.MiscInvoicePayment,
+                Action = (int)this.ProcessMode,
                 LogSource = "MiscInvoicePaymentService",
 
                 MasterAccountNum = this.Data.MiscInvoiceTransaction.MasterAccountNum,

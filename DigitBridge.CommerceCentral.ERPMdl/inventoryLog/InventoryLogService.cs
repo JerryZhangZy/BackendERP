@@ -978,61 +978,56 @@ where inv.InventoryUuid=il.InventoryUuid
         private IList<InventoryLog> ConvertShipmentsToInventoryLogList(OrderShipmentHeader header,IList<OrderShipmentPackage> packages, long batchNum, string logUuid)
         {
             var list = new List<InventoryLog>();
-            var warehouse = dbFactory.Get<DistributionCenter>(header.DistributionCenterNum.ToInt());
-            if (warehouse != null)
+            foreach (var package in packages)
             {
-                foreach (var package in packages)
+                var skus = package.OrderShipmentShippedItem.Select(r => r.SKU).Distinct().ToList();
+                var invList = InventoryService.GetInventoriesBySkus(skus, header.WarehouseCode);
+                foreach (var item in package.OrderShipmentShippedItem) 
                 {
-                    var skus = package.OrderShipmentShippedItem.Select(r => r.SKU).Distinct().ToList();
-                    var invList = InventoryService.GetInventoriesBySkus(skus, warehouse.DistributionCenterCode);
-                    foreach (var item in package.OrderShipmentShippedItem) 
+                    var inv = invList.FirstOrDefault(r => r.SKU == item.SKU);
+                    var line = new InventoryLog
                     {
-                        var inv = invList.FirstOrDefault(r => r.SKU == item.SKU);
-                        var line = new InventoryLog
-                        {
-                            DatabaseNum = header.DatabaseNum,
-                            MasterAccountNum = header.MasterAccountNum,
-                            ProfileNum = header.ProfileNum,
-                            InventoryLogUuid = Guid.NewGuid().ToString(),
-                            LogUuid = logUuid,
-                            SKU=item.SKU,
-                            WarehouseCode=warehouse.DistributionCenterCode,
-                            BatchNum = batchNum,
-                            LogNumber = header.OrderShipmentUuid,
-                            LogItemUuid =item.OrderShipmentShippedItemUuid,
-                            LogDate = DateTime.Today,
-                            LogTime = DateTime.Now.TimeOfDay,
-                            LogBy = "Shipments",
-                            LogType = InventoyLogType.Shipment.ToString(),
-                            LogQty = -item.ShippedQty,
-                            EnterBy = ""
-                        };
-                        if (inv != null)
-                        {
-                            line.InventoryUuid = inv.InventoryUuid;
-                            line.ProductUuid = inv.ProductUuid;
-                            line.SKU = inv.SKU;
-                            line.Description = inv.LpnDescription;
-                            line.WarehouseCode = inv.WarehouseCode;
-                            line.LotNum = inv.LotNum;
-                            line.LotInDate = inv.LotInDate;
-                            line.LotExpDate = inv.LotExpDate;
-                            line.StyleCode = inv.StyleCode;
-                            line.ColorPatternCode = inv.ColorPatternCode;
-                            line.SizeCode = inv.SizeCode;
-                            line.WidthCode = inv.WidthCode;
-                            line.LengthCode = inv.LengthCode;
-                            line.BeforeBaseCost = inv.BaseCost;
-                            line.BeforeUnitCost = inv.UnitCost;
-                            line.BeforeAvgCost = inv.AvgCost;
-                            line.BeforeInstock = inv.Instock;
-                            line.UOM = inv.UOM;
-
-                        }
-                        list.Add(line);
+                        DatabaseNum = header.DatabaseNum,
+                        MasterAccountNum = header.MasterAccountNum,
+                        ProfileNum = header.ProfileNum,
+                        InventoryLogUuid = Guid.NewGuid().ToString(),
+                        LogUuid = logUuid,
+                        SKU=item.SKU,
+                        WarehouseCode=header.WarehouseCode,
+                        BatchNum = batchNum,
+                        LogNumber = header.OrderShipmentUuid,
+                        LogItemUuid =item.OrderShipmentShippedItemUuid,
+                        LogDate = DateTime.Today,
+                        LogTime = DateTime.Now.TimeOfDay,
+                        LogBy = "Shipments",
+                        LogType = InventoyLogType.Shipment.ToString(),
+                        LogQty = -item.ShippedQty,
+                        EnterBy = ""
+                    };
+                    if (inv != null)
+                    {
+                        line.InventoryUuid = inv.InventoryUuid;
+                        line.ProductUuid = inv.ProductUuid;
+                        line.SKU = inv.SKU;
+                        line.Description = inv.LpnDescription;
+                        line.WarehouseCode = inv.WarehouseCode;
+                        line.LotNum = inv.LotNum;
+                        line.LotInDate = inv.LotInDate;
+                        line.LotExpDate = inv.LotExpDate;
+                        line.StyleCode = inv.StyleCode;
+                        line.ColorPatternCode = inv.ColorPatternCode;
+                        line.SizeCode = inv.SizeCode;
+                        line.WidthCode = inv.WidthCode;
+                        line.LengthCode = inv.LengthCode;
+                        line.BeforeBaseCost = inv.BaseCost;
+                        line.BeforeUnitCost = inv.UnitCost;
+                        line.BeforeAvgCost = inv.AvgCost;
+                        line.BeforeInstock = inv.Instock;
+                        line.UOM = inv.UOM;
                     }
+                    list.Add(line);
                 }
-            }//if warehouse != null
+            }
             return list;
         }
         #endregion
@@ -1155,8 +1150,8 @@ where inv.InventoryUuid=il.InventoryUuid
         //{
         //    this.AddActivityLog(new ActivityLog(dbFactory)
         //    {
-        //        Type = ActivityLogType.InventoryUpdate.ToInt(), 
-        //        Action = this.ProcessMode.ToInt(),
+        //        Type = (int)ActivityLogType.InventoryUpdate, 
+        //        Action = (int)this.ProcessMode,
         //        LogSource = "OrderShipmentService",
 
         //        MasterAccountNum = this.Data.InventoryLog.MasterAccountNum,

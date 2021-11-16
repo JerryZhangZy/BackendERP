@@ -618,9 +618,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		[JsonIgnore, XmlIgnore, IgnoreCompare]
 		[OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
 		public bool HasInvoiceItemsAttributes => InvoiceItemsAttributes != null;
-		
+
         #endregion Children - Generated 
 
+        #region properties
+        /// <summary>
+        /// Item Shipped Qty. <br> Title: Shipped Qty, Display: true, Editable: true
+        /// </summary>
+        [OpenApiPropertyDescription("Item Shipped Qty. <br> Title: Shipped Qty, Display: true, Editable: true")]
+        public decimal? TotalReturnQty { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasTotalReturnQty => TotalReturnQty != null;
+        #endregion properties
     }
 }
 

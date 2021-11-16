@@ -124,6 +124,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.True(success, "AddMiscPayment error:" + service.Messages.ObjectToString());
         }
 
+        [Fact()]
+        public async Task LoadInvoiceList_Test()
+        {
+            var payload = new InvoiceNewPaymentPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001
+            };
+            var customerCode = "5ac6d8df-7405-41fd-83df-ae2a23e6247d";
+
+            var service = new InvoicePaymentService(DataBaseFactory);
+            try
+            {
+                using (var b = new Benchmark("GetInvoiceItemsReturnedQtyAsync_Test"))
+                {
+                    //var success = await service.LoadInvoiceListAsync(payload, customerCode);
+                }
+
+                Assert.True(true, "AddMiscPayment error:" + service.Messages.ObjectToString());
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
         #endregion async methods
 
         #region invoice data prepare   

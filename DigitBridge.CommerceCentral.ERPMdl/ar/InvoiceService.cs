@@ -270,7 +270,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Invoices = result;
         }
         /// <summary>
-        ///  get data by number
+        ///  get InvoiceHeader data by number
         /// </summary>
         /// <param name="payload"></param>
         /// <param name="invoiceNumber"></param>
@@ -279,7 +279,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             return await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
         }
-
         /// <summary>
         /// get data by number
         /// </summary>
@@ -289,6 +288,42 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool GetByNumber(InvoicePayload payload, string invoiceNumber)
         {
             return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
+        }
+
+        /// <summary>
+        /// get full InvoiceData by number
+        /// </summary>
+        public virtual async Task<bool> GetDataByNumberAsync(int masterAccountNum, int profileNum, string number)
+        {
+            if (ProcessMode == ProcessingMode.Add)
+                return false;
+            if (Data is null)
+                NewData();
+
+            var rowNum = await Data.GetRowNumAsync(number, profileNum, masterAccountNum);
+
+            var success = await this.GetDataAsync(rowNum.ToLong());
+            if (!success)
+                AddError($"Data not found for number : {number}");
+            return success;
+        }
+
+        /// <summary>
+        /// get full InvoiceData by number
+        /// </summary>
+        public virtual bool GetDataByNumber(int masterAccountNum, int profileNum, string number)
+        {
+            if (ProcessMode == ProcessingMode.Add)
+                return false;
+            if (Data is null)
+                NewData();
+
+            var rowNum = Data.GetRowNum(number, profileNum, masterAccountNum);
+
+            var success = this.GetData(rowNum.ToLong());
+            if (!success)
+                AddError($"Data not found for number : {number}");
+            return success;
         }
 
         /// <summary>

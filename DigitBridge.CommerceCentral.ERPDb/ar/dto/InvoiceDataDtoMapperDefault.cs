@@ -288,6 +288,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
             if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
+            if (dto.HasTotalReturnQty) data.TotalReturnQty = dto.TotalReturnQty.ToDecimal();
             #endregion read properties
 
             #region read all grand children object
@@ -617,6 +618,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             dto.EnterDateUtc = data.EnterDateUtc;
             dto.DigitBridgeGuid = data.DigitBridgeGuid;
 
+            dto.TotalReturnQty = data.TotalReturnQty;
             #endregion read properties
 
             #region write all grand children object

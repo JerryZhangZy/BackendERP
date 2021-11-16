@@ -121,5 +121,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeProductSummary() => HasProductSummary;
         #endregion
     }
+    /// <summary>
+    /// Request and Response payload object
+    /// </summary>
+    [Serializable()]
+    public class InventoryNewWarehousePayload: PayloadBase
+    {
+        /// <summary>
+        /// DistributionCenterCode
+        /// </summary>
+        public string DistributionCenterCode { get; set; }
+    }
+
+    /// <summary>
+    ///  Request and Response payload object
+    /// </summary>
+    [Serializable()]
+    public class ExistSKUPayload : PayloadBase
+    {
+        /// <summary>
+        /// SKU is exists
+        /// </summary>
+        [OpenApiPropertyDescription("(Request Parameter) Does the   SKU exist")]
+        public bool IsExistSKU { get; set; }
+    }
 }
 
