@@ -277,5 +277,6 @@
     <None Include="channel\Setting_Channel.sql" />
     <None Include="channel\Setting_ChannelAccount.sql" />
     <None Include="channel\setting_Channel_setting_ChannelAccount_table_and_data.sql" />
+    <Build Include="sql\check salesorder logic..sql" />
   </ItemGroup>
 </Project>
