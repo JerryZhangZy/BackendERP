@@ -73,29 +73,27 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "SystemCodesUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "SystemCodesUuid", Description = "SystemCodesUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "SystemCodeName", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "SystemCodeName", Description = "SystemCodeName", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemCodesPayloadDelete), Description = "The OK response")]
         public static async Task<JsonNetResponse<SystemCodesPayload>> DeleteSystemCodes(
-            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "systemCodess/{SystemCodesUuid}")] HttpRequest req,
-            string SystemCodesUuid)
+            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "systemCodess/{SystemCodeName}")] HttpRequest req,
+            string SystemCodeName)
         {
             var payload = await req.GetParameters<SystemCodesPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new SystemCodesService(dbFactory);
-            var spilterIndex = SystemCodesUuid.IndexOf("-");
-            var systemCodesCode = SystemCodesUuid;
-            if (spilterIndex > 0 && systemCodesCode.StartsWith(payload.ProfileNum.ToString()))
+            //var spilterIndex = SystemCodesUuid.IndexOf("-");
+            //var systemCodesCode = SystemCodesUuid;
+            //if (spilterIndex > 0 && systemCodesCode.StartsWith(payload.ProfileNum.ToString()))
+            //{
+            //    systemCodesCode = SystemCodesUuid.Substring(spilterIndex + 1);
+            //}
+            //payload.SystemCodeUuids.Add(systemCodesCode);
+            if (await svc.DeleteByNumberAsync(payload, SystemCodeName))
             {
-                systemCodesCode = SystemCodesUuid.Substring(spilterIndex + 1);
+                payload.Success = true;
             }
-            payload.SystemCodeUuids.Add(systemCodesCode);
-            if (await svc.DeleteByUuidAsync(payload, systemCodesCode))
-                payload.SystemCodes = svc.ToDto();
-            else
-            {
-                payload.Messages = svc.Messages;
-                payload.Success = false;
-            }
+            payload.Messages = svc.Messages;
             return new JsonNetResponse<SystemCodesPayload>(payload);
         }
 

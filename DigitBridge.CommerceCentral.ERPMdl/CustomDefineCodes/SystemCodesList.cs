@@ -35,7 +35,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             this.SQL_Select = $@"
 SELECT 
-{Helper.TableAllies}.*
+{Helper.RowNum()},
+{Helper.SystemCodeUuid()},
+{Helper.SystemCodeName()},
+{Helper.Description()},
+{Helper.InActive()},
+{Helper.JsonFields()}
 ";
             return this.SQL_Select;
         }
@@ -102,6 +107,7 @@ SELECT
             }
             catch (Exception ex)
             {
+                payload.Success = false;
                 payload.SystemCodesListCount = 0;
                 payload.SystemCodesList = null;
                 return payload;
