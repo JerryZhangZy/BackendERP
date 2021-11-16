@@ -161,6 +161,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasCategoryCode) data.CategoryCode = dto.CategoryCode;
 			if (dto.HasGroupCode) data.GroupCode = dto.GroupCode;
 			if (dto.HasSubGroupCode) data.SubGroupCode = dto.SubGroupCode;
+			if (dto.HasProductStatus) data.ProductStatus = dto.ProductStatus.ToInt();
 			if (dto.HasPriceRule) data.PriceRule = dto.PriceRule;
 			if (dto.HasStockable) data.Stockable = dto.Stockable.ToBool();
 			if (dto.HasIsAr) data.IsAr = dto.IsAr.ToBool();
@@ -331,6 +332,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 			#endregion read properties
 
+			data.CheckIntegrity();
 			return;
 		}
 
@@ -470,6 +472,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.CategoryCode = data.CategoryCode;
 			dto.GroupCode = data.GroupCode;
 			dto.SubGroupCode = data.SubGroupCode;
+			dto.ProductStatus = data.ProductStatus;
 			dto.PriceRule = data.PriceRule;
 			dto.Stockable = data.Stockable;
 			dto.IsAr = data.IsAr;

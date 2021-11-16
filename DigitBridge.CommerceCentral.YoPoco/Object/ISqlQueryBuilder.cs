@@ -51,6 +51,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         int Count();
         Task<int> CountAsync();
 
+        Task<bool> ExcuteSummaryJsonAsync(StringBuilder sb);
+
     }
 
 }

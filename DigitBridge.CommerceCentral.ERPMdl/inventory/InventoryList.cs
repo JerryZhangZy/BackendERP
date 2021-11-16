@@ -145,6 +145,12 @@ FROM Inventory i WHERE {Helper.TableAllies}.ProductUuid=i.ProductUuid FOR JSON P
         }        
         */
 
+        protected override void AddDefaultOrderBy()
+        {
+            if (!QueryObject.HasOrderBy)
+                QueryObject.AddOrderBy("sku");
+        }
+
         protected override string GetSQL_select()
         {
             this.SQL_Select = $@"
@@ -157,6 +163,7 @@ SELECT
 {Helper.UPC()}, 
 {Helper.BundleType()}, 
 {Helper.ProductType()}, 
+{ExHelper.ProductStatus()},
 {ExHelper.ClassCode()},
 {ExHelper.SubClassCode()},
 {ExHelper.DepartmentCode()},
@@ -194,9 +201,31 @@ SELECT
 {InvHelper.OpenPoQty()},
 {InvHelper.OpenInTransitQty()},
 {InvHelper.OpenWipQty()},
-{InvHelper.ProjectedQty()}
+{InvHelper.ProjectedQty()},
+{InvHelper.MinStock()}
 ";
             return this.SQL_Select;
+        }
+
+        protected override string GetSQL_select_summary()
+        {
+            this.SQL_SelectSummary = $@"
+SELECT 
+COUNT(1) AS totalCount,
+SUM(CASE WHEN COALESCE({ExHelper.TableAllies}.ProductStatus, 0) = 0 THEN 1 ELSE 0 END) as activeCount,
+SUM(CASE WHEN COALESCE({ExHelper.TableAllies}.ProductStatus, 0) = 1 THEN 1 ELSE 0 END) as inactiveCount,
+SUM(CASE WHEN COALESCE({ExHelper.TableAllies}.ProductStatus, 0) = 2 THEN 1 ELSE 0 END) as discontinuedCount,
+SUM(CASE WHEN COALESCE({ExHelper.TableAllies}.ProductStatus, 0) = 3 THEN 1 ELSE 0 END) as closeoutCount,
+SUM(CASE WHEN COALESCE({ExHelper.TableAllies}.ProductStatus, 0) = 4 THEN 1 ELSE 0 END) as liquidationCount,
+SUM(CASE WHEN COALESCE({ExHelper.TableAllies}.ProductStatus, 0) = 5 THEN 1 ELSE 0 END) as prelimnryCount,
+SUM(CASE WHEN COALESCE({ExHelper.TableAllies}.ProductStatus, 0) = 1 THEN 1 ELSE 0 END) as newCount,
+SUM(CASE WHEN COALESCE({ExHelper.TableAllies}.ProductStatus, 0) = 12 THEN 1 ELSE 0 END) as promotionalCount,
+SUM(CASE WHEN COALESCE({ExHelper.TableAllies}.ProductStatus, 0) = 13 THEN 1 ELSE 0 END) as usedGoodCount,
+SUM(CASE WHEN COALESCE({ExHelper.TableAllies}.ProductStatus, 0) = 14 THEN 1 ELSE 0 END) as usedFairCount,
+SUM(CASE WHEN COALESCE({InvHelper.TableAllies}.Instock, 0) <= 0 THEN 1 ELSE 0 END) as outOfStockCount,
+SUM(CASE WHEN COALESCE({InvHelper.TableAllies}.Instock, 0) < COALESCE({InvHelper.TableAllies}.MinStock, 0) THEN 1 ELSE 0 END) as belowMinStockCount
+";
+            return this.SQL_SelectSummary;
         }
 
         protected override string GetSQL_from()
@@ -270,6 +299,30 @@ LEFT JOIN {InvHelper.TableName} {InvHelper.TableAllies} ON ({Helper.TableAllies}
             }
             return payload;
         }
+
+        public virtual async Task GetProductListSummaryAsync(InventoryPayload payload)
+        {
+            if (payload == null)
+                payload = new InventoryPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.InventoryListSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.InventoryListCount = 0;
+                payload.InventoryListSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
+
+
 
         public virtual async Task<IList<long>> GetRowNumListAsync(InventoryPayload payload)
         {

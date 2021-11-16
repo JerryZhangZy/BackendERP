@@ -201,17 +201,18 @@ namespace DigitBridge.CommerceCentral.YoPoco
             if (string.IsNullOrWhiteSpace(this.SQL_SelectSummary) ||
                 !this.HasSQL) return string.Empty;
 
-            var bk = QueryObject.LoadJson;
-            QueryObject.LoadJson = false;
-
             StringBuilder sb = new StringBuilder();
             sb.Clear();
-            sb.AppendFormat("{0} " +
-                "FROM ( {1} ) r "
-                , this.SQL_SelectSummary
-                , this.SQL_WithoutOrder
-            );
-            QueryObject.LoadJson = bk;
+            sb.AppendLine(SQL_SelectSummary);
+            sb.AppendLine(SQL_From);
+            sb.AppendLine(SQL_Where);
+            //sb.AppendFormat("{0} " +
+            //    "FROM ( {1} ) r "
+            //    , this.SQL_SelectSummary
+            //    , this.SQL_WithoutOrder
+            //);
+            if (this.LoadJson)
+                sb.AppendLine(" FOR JSON PATH ");
             return sb.ToString();
         }
 
@@ -380,6 +381,23 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
             return result;
         }
+
+        public virtual async Task<bool> ExcuteSummaryJsonAsync(StringBuilder sb)
+        {
+            var sql = GetCommandTextForSummary();
+            var param = GetSqlParameters();
+            var result = false;
+
+            using (var trs = new ScopedTransaction(dbFactory))
+            {
+                if (!param.Any())
+                    result = await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text);
+                else
+                    result = await SqlQuery.QueryJsonAsync(sb, sql, System.Data.CommandType.Text, param);
+            }
+            return result;
+        }
+
 
         #region Messages
 

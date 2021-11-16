@@ -28,6 +28,7 @@
     [GroupCode] VARCHAR(50) NOT NULL DEFAULT '', --Product Group. <br> Title: Group, Display: true, Editable: true
     [SubGroupCode] VARCHAR(50) NOT NULL DEFAULT '', --Product Sub Group. <br> Title: Sub Group, Display: true, Editable: true
 
+	[ProductStatus] INT NOT NULL DEFAULT 0, --Product status. <br> Title: Status, Display: true, Editable: true
 	[PriceRule] Varchar(50) NOT NULL DEFAULT '', --Product Default Price Rule. <br> Title: Price Rule, Display: true, Editable: true
 	[Stockable] TINYINT NOT NULL DEFAULT 1, --Product need calculate inventory instock qty. <br> Title: Stockable, Display: true, Editable: true
 	[IsAr] TINYINT NOT NULL DEFAULT 1, --Product need add to Invoice sales amount amount. <br> Title: A/R, Display: true, Editable: true
@@ -100,3 +101,10 @@ CREATE NONCLUSTERED INDEX [IX_IProductExt_S_C_S_W_L_W_L_L] ON [dbo].[ProductExt]
 	[SubGroupCode] ASC
 ) 
 GO
+
+CREATE NONCLUSTERED INDEX [IX_IProductExt_Status] ON [dbo].[ProductExt]
+(
+    [MasterAccountNum] ASC, 
+    [ProfileNum] ASC, 
+    [ProductStatus] ASC
+) 
