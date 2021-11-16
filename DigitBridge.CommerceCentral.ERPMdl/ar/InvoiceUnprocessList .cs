@@ -60,7 +60,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {Helper.TableAllies}.Terms as '{header}.InvoiceTermsDescrption',
 {Helper.TableAllies}.TermsDays as '{header}.InvoiceTermsDays'
 --{Helper.TableAllies}.DBChannelOrderHeaderRowID as '{header}.DBChannelOrderHeaderRowID',
---{Helper.TableAllies}.EnterDateUtc as '{header}.EnterDateUtc' 
+{Helper.TableAllies}.EnterDateUtc as '{header}.EnterDateUtc' 
 ";
             return columns;
         }
@@ -87,8 +87,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {ItemHelper.TableAllies}.DiscountAmount AS LineDiscountAmount,
 {ItemHelper.TableAllies}.ItemTotalAmount AS LineAmount
 --{ItemHelper.TableAllies}.DBChannelOrderLineRowID AS DBChannelOrderLineRowID,
---{ItemHelper.TableAllies}.ItemStatus AS ItemStatus,
---{ItemHelper.TableAllies}.EnterDateUtc AS EnterDateUtc
+{ItemHelper.TableAllies}.InvoiceItemStatus AS ItemStatus,
+{ItemHelper.TableAllies}.EnterDateUtc AS EnterDateUtc
 ";
             return columns;
         }
