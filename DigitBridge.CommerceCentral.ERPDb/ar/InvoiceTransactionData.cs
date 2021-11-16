@@ -84,12 +84,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             return datas;
         }
 
-        public override bool GetByNumber(int masterAccountNum, int profileNum, string number)
+        public override bool GetByNumber(int masterAccountNum, int profileNum, string number, int transType, int? transNum = null)
         {
-            var invoiceNumberAndTranNum = number.Split('_');
-            var invoiceNumber = invoiceNumberAndTranNum[0];
-            var transType = invoiceNumberAndTranNum[1];
-
             var sql = @"
 SELECT TOP 1 * FROM InvoiceTransaction
 WHERE MasterAccountNum = @0
@@ -102,14 +98,14 @@ AND TransType = @3
             {
                 new SqlParameter("@0",masterAccountNum),
                 new SqlParameter("@1",profileNum),
-                new SqlParameter("@2",invoiceNumber),
+                new SqlParameter("@2",number),
                 new SqlParameter("@3",transType)
             };
 
-            if (invoiceNumberAndTranNum.Length > 2)
+            if (transNum.HasValue)
             {
                 sql += " AND TransNum=@4";
-                paras.Add(new SqlParameter("@4", invoiceNumberAndTranNum[2].ToInt()));
+                paras.Add(new SqlParameter("@4", transNum.Value));
             }
 
             var obj = dbFactory.GetBy<InvoiceTransaction>(sql, paras.ToArray());
@@ -120,12 +116,8 @@ AND TransType = @3
                 _OnAfterLoad(this);
             return true;
         }
-        public override async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
+        public override async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number, int transType, int? transNum = null)
         {
-            var invoiceNumberAndTranNum = number.Split('_');
-            var invoiceNumber = invoiceNumberAndTranNum[0];
-            var transType = invoiceNumberAndTranNum[1];
-
             var sql = @"
 SELECT TOP 1 * FROM InvoiceTransaction
 WHERE MasterAccountNum = @0
@@ -138,17 +130,17 @@ AND TransType = @3
             {
                 new SqlParameter("@0",masterAccountNum),
                 new SqlParameter("@1",profileNum),
-                new SqlParameter("@2",invoiceNumber),
+                new SqlParameter("@2",number),
                 new SqlParameter("@3",transType)
             };
 
-            if (invoiceNumberAndTranNum.Length > 2)
+            if (transNum.HasValue)
             {
                 sql += " AND TransNum=@4";
-                paras.Add(new SqlParameter("@4", invoiceNumberAndTranNum[2].ToInt()));
+                paras.Add(new SqlParameter("@4", transNum.Value));
             }
 
-            var obj = await dbFactory.GetByAsync<InvoiceTransaction>(sql, paras.ToArray()); 
+            var obj = await dbFactory.GetByAsync<InvoiceTransaction>(sql, paras.ToArray());
             if (obj is null) return false;
             InvoiceTransaction = obj;
             await GetOthersAsync();

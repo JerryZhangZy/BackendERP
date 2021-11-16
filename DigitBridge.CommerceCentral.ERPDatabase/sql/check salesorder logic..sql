@@ -16,8 +16,7 @@ select
 uuid.CentralOrderUuid,
 uuid.SalesOrderUuid,
 abs(header.PromotionAmount) as headerDiscountAmount  
-,header.TotalShippingAmount as headerShippingAmount --(coHeader.TotalShippingAmount ?? 0) * qtyRatio;
-,header.TotalShippingAmount as headerShippingAmount --(coHeader.TotalShippingAmount ?? 0) * qtyRatio;
+,header.TotalShippingAmount as headerShippingAmount --(coHeader.TotalShippingAmount ?? 0) * qtyRatio; 
 ,header.TotalShippingTaxAmount as headerShippingTaxAmount --(coHeader.TotalShippingTaxAmount ?? 0) * qtyRatio;
 ,case when header.PaymentStatus=1 then header.TotalDueSellerAmount
       else 0 

@@ -74,6 +74,32 @@ COALESCE(channelAccount.ChannelAccountName, '') as channelAccountName,
             return this.SQL_Select;
         }
 
+        protected override string GetSQL_select_summary()
+        {
+            this.SQL_SelectSummary = $@"
+SELECT 
+COUNT(1) AS totalCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.OrderStatus, 0) = 0 THEN 1 ELSE 0 END) as newCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.OrderStatus, 0) = 1 THEN 1 ELSE 0 END) as openCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.OrderStatus, 0) = 2 THEN 1 ELSE 0 END) as approvedCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.OrderStatus, 0) = 3 THEN 1 ELSE 0 END) as processingCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.OrderStatus, 0) = 4 THEN 1 ELSE 0 END) as shippedCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.OrderStatus, 0) = 5 THEN 1 ELSE 0 END) as closedCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.OrderStatus, 0) = 100 THEN 1 ELSE 0 END) as holdCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.OrderStatus, 0) = 255 THEN 1 ELSE 0 END) as cancelledCount,
+SUM(COALESCE({Helper.TableAllies}.TotalAmount, 0)) AS totalAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TotalAmount, 0) = 0 THEN 1 ELSE 0 END) as newAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TotalAmount, 0) = 1 THEN 1 ELSE 0 END) as openAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TotalAmount, 0) = 2 THEN 1 ELSE 0 END) as approvedAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TotalAmount, 0) = 3 THEN 1 ELSE 0 END) as processingAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TotalAmount, 0) = 4 THEN 1 ELSE 0 END) as shippedAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TotalAmount, 0) = 5 THEN 1 ELSE 0 END) as closedAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TotalAmount, 0) = 100 THEN 1 ELSE 0 END) as holdAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TotalAmount, 0) = 255 THEN 1 ELSE 0 END) as cancelledAmount
+";
+            return this.SQL_SelectSummary;
+        }
+
         protected override string GetSQL_from()
         {
             var masterAccountNum = $"{Helper.TableAllies}.MasterAccountNum";
@@ -153,6 +179,30 @@ COALESCE(channelAccount.ChannelAccountName, '') as channelAccountName,
             }
         }
 
+        public virtual async Task GetSalesOrderListSummaryAsync(SalesOrderPayload payload)
+        {
+            if (payload == null)
+                payload = new SalesOrderPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.SalesOrderListSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.SalesOrderListCount = 0;
+                payload.SalesOrderListSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
+
+
+        // other list functions
         public virtual async Task<IList<SalesOrderData>> GetSalesOrderDatasAsync(SalesOrderQuery queryObject)
         {
             this.QueryObject = queryObject;

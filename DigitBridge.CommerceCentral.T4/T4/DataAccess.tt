@@ -83,7 +83,7 @@
 //SettingForApTransaction
 //SettingForEventProcessERP
 #>
-<#@ include file="SettingForEventProcessERP.ttinclude" #>
+<#@ include file="SettingForInventory.ttinclude" #>
 <#
     var dtoSuf = "";
     

@@ -1,5 +1,3 @@
-
-
               
     
 
@@ -61,6 +59,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.CategoryCode, f => f.Lorem.Word())
 					.RuleFor(u => u.GroupCode, f => f.Lorem.Word())
 					.RuleFor(u => u.SubGroupCode, f => f.Lorem.Word())
+					.RuleFor(u => u.ProductStatus, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.PriceRule, f => f.PickRandom(TestHelper.PriceRule))
 					.RuleFor(u => u.Stockable, f => f.Random.Bool())
 					.RuleFor(u => u.IsAr, f => f.Random.Bool())

@@ -8,8 +8,10 @@ namespace DigitBridge.Base.Common
     {
         New = 0,
         Open = 1,
-        Shipped = 2,
-        Closed = 3,
+        Approved = 2,
+        Processing = 3,
+        Shipped = 4,
+        Closed = 5,
         Hold = 100,
         Cancelled = 255,
     }

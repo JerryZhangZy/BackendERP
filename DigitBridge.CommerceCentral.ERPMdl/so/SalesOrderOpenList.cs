@@ -15,6 +15,7 @@ using InfoAttrHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderAttribu
 using ItemHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsHelper;
 using ItemAttrHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderItemsAttributesHelper;
 using EventHelper = DigitBridge.CommerceCentral.ERPDb.EventProcessERPHelper;
+using ProdcutHelper = DigitBridge.CommerceCentral.ERPDb.ProductBasicHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -50,6 +51,7 @@ channelAccount.ChannelAccountName as 'ChannelAccountName',
 {Helper.TableAllies}.TaxAmount as 'TotalTaxAmount',
 {Helper.TableAllies}.ShippingAmount as 'TotalShippingAmount',
 {Helper.TableAllies}.ShippingTaxAmount as 'TotalShippingTaxAmount',
+{Helper.TableAllies}.DiscountAmount as 'PromotionAmount',
 {InfoHelper.TableAllies}.ShippingCarrier as 'RequestShippingCarrier',
 {InfoHelper.TableAllies}.ShippingClass as 'RequestShippingService',
 {InfoHelper.TableAllies}.ShipToName as 'ShipToName',
@@ -97,8 +99,6 @@ channelAccount.ChannelAccountName as 'ChannelAccountName',
         }
         protected string GetItem_Columns()
         {
-
-
             var columns = $@"
 {ItemHelper.TableAllies}.SalesOrderItemsUuid as 'SalesOrderItemsUuid',
 {ItemHelper.TableAllies}.SKU as 'SKU',
@@ -113,13 +113,57 @@ CAST({ ItemHelper.TableAllies}.CancelledQty as INT) as 'CancelQty',
 ";
             return columns;
         }
+
+        protected string GetSkuItem_Columns()
+        {
+            var columns = $@"
+{ProdcutHelper.TableAllies}.CentralProductNum as 'CentralProductNum',
+{ProdcutHelper.TableAllies}.UPC as 'UPC',
+{ProdcutHelper.TableAllies}.ProductTitle as 'ItemTitle',
+{ProdcutHelper.TableAllies}.BundleType as 'BundleType'
+";
+            return columns;
+        }
+
+//        protected string GetOrderLineItem_Columns()
+//        {
+//            var columns = $@"
+//{OrderLineHelper.TableAllies}.DatabaseNum as 'CentralDatabaseNum',
+//{OrderLineHelper.TableAllies}.CentralOrderLineNum as 'CentralOrderLineNum',
+//{OrderLineHelper.TableAllies}.ChannelItemID as 'ChannelItemID',
+//{OrderLineHelper.TableAllies}.ItemTitle as 'ItemTitle',
+//{OrderLineHelper.TableAllies}.UnitPrice as 'UnitPrice',
+//{OrderLineHelper.TableAllies}.LineShippingDiscount as 'LineShippingDiscount',
+//{OrderLineHelper.TableAllies}.LineShippingDiscountTaxAmount as 'LineShippingDiscountTaxAmount',
+//{OrderLineHelper.TableAllies}.LineRecyclingFee as 'LineRecyclingFee',
+//{OrderLineHelper.TableAllies}.LineGiftMsg as 'LineGiftMsg',
+//{OrderLineHelper.TableAllies}.LineGiftNotes as 'LineGiftNotes',
+//{OrderLineHelper.TableAllies}.LineGiftAmount as 'LineGiftAmount',
+//{OrderLineHelper.TableAllies}.LineGiftTaxAmount as 'LineGiftTaxAmount',
+//{OrderLineHelper.TableAllies}.LinePromotionCodes as 'LinePromotionCodes',
+//{OrderLineHelper.TableAllies}.LinePromotionAmount as 'LinePromotionAmount',
+//{OrderLineHelper.TableAllies}.LinePromotionTaxAmount as 'LinePromotionTaxAmount' 
+//";
+//            return columns;
+//        }
+
         protected string GetItem_Script()
         {
             var columns = $@"
 ( 
 SELECT 
-{GetItem_Columns()}
+{GetItem_Columns()},
+{GetSkuItem_Columns()}
 FROM { ItemHelper.TableName} { ItemHelper.TableAllies}
+LEFT JOIN {ProdcutHelper.TableName} {ProdcutHelper.TableAllies}
+     ON ( {ProdcutHelper.TableAllies}.MasterAccountNum={Helper.TableAllies}.MasterAccountNum
+      AND {ProdcutHelper.TableAllies}.ProfileNum={Helper.TableAllies}.ProfileNum
+      AND {ProdcutHelper.TableAllies}.SKU={ItemHelper.TableAllies}.SKU
+      )
+
+--LEFT JOIN {OrderLineHelper.TableName} {OrderLineHelper.TableAllies}
+--     ON ( {OrderLineHelper.TableAllies}.CentralOrderLineUuid={ItemHelper.TableAllies}.CentralOrderLineUuid)
+
 WHERE { ItemHelper.TableAllies}.SalesOrderUuid = { Helper.TableAllies}.SalesOrderUuid 
 FOR JSON PATH
 ) AS OrderLineList";
