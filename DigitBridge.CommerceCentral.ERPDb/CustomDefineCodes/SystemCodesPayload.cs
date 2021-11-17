@@ -36,6 +36,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
             };
         }
 
+        /// <summary>
+        /// (Request and Response Data) SystemCodeName to load.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) SystemCodeName to load.")]
+        public string SystemCodeName { get; set; } = string.Empty;
 
         #region multiple Dto list
 
