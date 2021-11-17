@@ -304,13 +304,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.TaxRate = sum.TaxRate.ToRate();
 
             // if exist DiscountRate, calculate discount amount, otherwise use entry discount amount
-            if (!sum.DiscountRate.IsZero())
-                sum.DiscountAmount = (sum.SubTotalAmount * sum.DiscountRate.ToRate()).ToAmount();
-            else
-            {
-                sum.DiscountRate = 0;
+            //if (!sum.DiscountRate.IsZero())
+            //    sum.DiscountAmount = (sum.SubTotalAmount * sum.DiscountRate.ToRate()).ToAmount();
+            //else
+            //{
+            //    sum.DiscountRate = 0;
                 sum.DiscountAmount = sum.DiscountAmount.ToAmount();
-            }
+            //}
 
             // tax calculate should deduct discount from taxable amount
             //sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
