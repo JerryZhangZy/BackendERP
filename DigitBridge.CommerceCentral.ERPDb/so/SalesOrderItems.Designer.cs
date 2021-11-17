@@ -70,6 +70,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("EarliestShipDate",SqlDbType.Date)]
         private DateTime? _earliestShipDate;
 
+        [Column("LatestShipDate",SqlDbType.Date)]
+        private DateTime? _latestShipDate;
+
         [Column("SignatureFlag",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
         private byte _signatureFlag;
 
@@ -424,6 +427,27 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				{
 					_earliestShipDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
 					OnPropertyChanged("EarliestShipDate", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+        public virtual DateTime? LatestShipDate
+        {
+            get
+            {
+				if (!AllowNull && _latestShipDate is null) 
+					_latestShipDate = new DateTime().MinValueSql(); 
+				return _latestShipDate; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_latestShipDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("LatestShipDate", value);
 				}
             }
         }
@@ -1341,7 +1365,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		/// <summary>
 		/// (Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
-		/// </summary>
+        /// </summary>
         public virtual long OrderDCAssignmentLineNum
         {
             get
@@ -1460,6 +1484,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_shipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_earliestShipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_latestShipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_signatureFlag = default(byte); 
 			_sku = String.Empty; 
 			_productUuid = String.Empty; 
@@ -1566,6 +1591,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<SalesOrderItems>("WHERE SalesOrderUuid = @0 ", salesOrderUuid);
 		}
 
+		public override SalesOrderItems ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override SalesOrderItems ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

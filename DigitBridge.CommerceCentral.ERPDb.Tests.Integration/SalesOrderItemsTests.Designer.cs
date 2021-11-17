@@ -45,6 +45,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ShipDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EtaArrivalDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.EarliestShipDate, f => f.Date.Past(0).Date)
+					.RuleFor(u => u.LatestShipDate, f => f.Date.Past(0).Date)
 					.RuleFor(u => u.SignatureFlag, f => f.Random.Bool())
 					.RuleFor(u => u.SKU, f => f.Commerce.Product())
 					.RuleFor(u => u.ProductUuid, f => f.Random.Guid().ToString())

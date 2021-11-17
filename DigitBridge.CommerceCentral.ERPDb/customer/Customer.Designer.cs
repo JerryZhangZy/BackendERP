@@ -90,6 +90,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("WebSite",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _webSite;
 
+        [Column("ChannelNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _channelNum;
+
+        [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _channelAccountNum;
+
         [Column("CustomerType",SqlDbType.Int,IsDefault=true)]
         private int? _customerType;
 
@@ -437,6 +443,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_webSite = value.TruncateTo(200); 
 				OnPropertyChanged("WebSite", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
+		/// </summary>
+        public virtual int ChannelNum
+        {
+            get
+            {
+				return _channelNum; 
+            }
+            set
+            {
+				_channelNum = value; 
+				OnPropertyChanged("ChannelNum", value);
+            }
+        }
+
+		/// <summary>
+		/// (Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
+		/// </summary>
+        public virtual int ChannelAccountNum
+        {
+            get
+            {
+				return _channelAccountNum; 
+            }
+            set
+            {
+				_channelAccountNum = value; 
+				OnPropertyChanged("ChannelAccountNum", value);
             }
         }
 
@@ -875,7 +913,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -957,6 +995,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_phone4 = String.Empty; 
 			_email = String.Empty; 
 			_webSite = String.Empty; 
+			_channelNum = default(int); 
+			_channelAccountNum = default(int); 
 			_customerType = AllowNull ? (int?)null : default(int); 
 			_customerStatus = AllowNull ? (int?)null : default(int); 
 			_businessType = String.Empty; 
@@ -1013,6 +1053,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override Customer ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override Customer ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

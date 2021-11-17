@@ -1124,6 +1124,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override ProductBasic ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override ProductBasic ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

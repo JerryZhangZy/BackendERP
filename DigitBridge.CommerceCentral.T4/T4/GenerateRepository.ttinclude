@@ -684,29 +684,41 @@ if(table.HasForeignKey)
 #>
 
 <# // generate convert methods for json fields
-if (table.HasJsonColumns)
-{
-    foreach(var col in table.JsonColumns)
-    { 
+        
         indent = 2;
-
-        // convert from DB Json string
+        
         WriteLine($"{new String('\t',indent)}public override {table.Name} ConvertDbFieldsToData()");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}base.ConvertDbFieldsToData();");
+        // convert from DB Json string
+        if (table.HasJsonColumns)
+        {
+            foreach(var col in table.JsonColumns)
+            {  
         WriteLine($"{new String('\t',indent+1)}{col.jsonDictionaryName}.LoadFromValueString({col.propertyName});");
+            }
+        }
         WriteLine($"{new String('\t',indent+1)}return this;");
         WriteLine($"{new String('\t',indent)}}}");
 
-        // convert to DB Json string
+        
         WriteLine($"{new String('\t',indent)}public override {table.Name} ConvertDataFieldsToDb()");
         WriteLine($"{new String('\t',indent)}{{");
         WriteLine($"{new String('\t',indent+1)}base.ConvertDataFieldsToDb();");
+        // convert to DB Json string
+        if (table.HasJsonColumns)
+        {
+            foreach(var col in table.JsonColumns)
+            {  
         WriteLine($"{new String('\t',indent+1)}{col.propertyName} = {col.jsonDictionaryName}.ToValueString();");
+            }
+        }
+        if (table.HasUpdateDateUtcColumn)
+        { 
+        WriteLine($"{new String('\t',indent+1)}{table.UpdateDateUtcColumn.Name} =DateTime.UtcNow;");
+        }
         WriteLine($"{new String('\t',indent+1)}return this;");
-        WriteLine($"{new String('\t',indent)}}}");
-    }
-} 
+        WriteLine($"{new String('\t',indent)}}}"); 
 #>
 
         #endregion Methods - Generated 

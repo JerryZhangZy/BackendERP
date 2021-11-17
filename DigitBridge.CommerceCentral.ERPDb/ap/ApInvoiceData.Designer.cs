@@ -38,18 +38,18 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore]
         public new string UniqueId => ApInvoiceHeader.UniqueId;
         
-			 [JsonIgnore, XmlIgnore] 
-			public static string ApInvoiceHeaderTable ="ApInvoiceHeader ";
-			
-			 [JsonIgnore, XmlIgnore] 
-			public static string ApInvoiceHeaderInfoTable ="ApInvoiceHeaderInfo ";
-			
-			 [JsonIgnore, XmlIgnore] 
-			public static string ApInvoiceHeaderAttributesTable ="ApInvoiceHeaderAttributes ";
-			
-			 [JsonIgnore, XmlIgnore] 
-			public static string ApInvoiceItemsTable ="ApInvoiceItems ";
-			
+		 [JsonIgnore, XmlIgnore] 
+		public static string ApInvoiceHeaderTable ="ApInvoiceHeader ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string ApInvoiceHeaderInfoTable ="ApInvoiceHeaderInfo ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string ApInvoiceHeaderAttributesTable ="ApInvoiceHeaderAttributes ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string ApInvoiceItemsTable ="ApInvoiceItems ";
+		
         #region CRUD Methods
 
         public override bool Equals(ApInvoiceData other)
