@@ -101,6 +101,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasShipmentSummary => ShipmentSummary != null;
 
         public bool ShouldSerializeShipmentSummary() => HasShipmentSummary;
+
+
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List summary result which load filter.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder OrderShipmentListSummary { get; set; }
+        [JsonIgnore] public virtual bool HasOrderShipmentListSummary => OrderShipmentListSummary != null && OrderShipmentListSummary.Length > 0;
+        public bool ShouldSerializeOrderShipmentListSummary() => HasOrderShipmentListSummary;
         #endregion
     }
 }

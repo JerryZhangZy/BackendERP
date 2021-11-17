@@ -84,6 +84,20 @@ channelAccount.ChannelAccountName as channelAccountName,
             return this.SQL_Select;
         }
 
+        protected override string GetSQL_select_summary()
+        {
+            this.SQL_SelectSummary = $@"
+SELECT 
+COUNT(1) AS totalCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 0 THEN 1 ELSE 0 END) as newCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 1 THEN 1 ELSE 0 END) as outstandingCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 2 THEN 1 ELSE 0 END) as paidCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 3 THEN 1 ELSE 0 END) as closedCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 4 THEN 1 ELSE 0 END) as dueCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 5 THEN 1 ELSE 0 END) as voidCount";
+            return this.SQL_SelectSummary;
+        }
+
         protected override string GetSQL_from()
         {
             var masterAccountNum = $"{Helper.TableAllies}.MasterAccountNum";
@@ -113,6 +127,28 @@ channelAccount.ChannelAccountName as channelAccountName,
         }
 
         #endregion override methods
+
+        public virtual async Task GetInvoiceListSummaryAsync(InvoicePayload payload)
+        {
+            if (payload == null)
+                payload = new InvoicePayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.InvoiceListSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.InvoiceListCount = 0;
+                payload.InvoiceListSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
 
         public virtual void GetInvoiceList(InvoicePayload payload)
         {
@@ -251,6 +287,12 @@ AND @invoiceNumbers.exist('/parameters/value[text()=sql:column(''ins.InvoiceNumb
             );
             }
         }
+
+
+
+
+
+    
 
     }
 }

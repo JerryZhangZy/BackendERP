@@ -71,6 +71,21 @@ SELECT
 ";
             return this.SQL_Select;
         }
+        protected override string GetSQL_select_summary()
+        {
+            this.SQL_SelectSummary = $@"
+SELECT 
+COUNT(1) AS totalCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 0 THEN 1 ELSE 0 END) as draftCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 1 THEN 1 ELSE 0 END) as overdueCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 2 THEN 1 ELSE 0 END) as pendingCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 3 THEN 1 ELSE 0 END) as payableCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 4 THEN 1 ELSE 0 END) as paidCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 5 THEN 1 ELSE 0 END) as trashCount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 100 THEN 1 ELSE 0 END) as unPaidCount
+";
+            return this.SQL_SelectSummary;
+        }
 
         protected override string GetSQL_from()
         {
@@ -100,6 +115,29 @@ SELECT
         }
 
         #endregion override methods
+
+
+        public virtual async Task GetPoReceiveListSummaryAsync(PoReceivePayload payload)
+        {
+            if (payload == null)
+                payload = new PoReceivePayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.PoReceiveListSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.PoReceiveListCount = 0;
+                payload.PoReceiveListSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
 
         public virtual void GetPoReceiveList(PoTransactionPayload payload)
         {
