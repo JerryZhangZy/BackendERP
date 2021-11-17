@@ -49,23 +49,23 @@ channelAccount.ChannelAccountName as 'ChannelAccountName',
 {OrderHeaderHelper.TableAllies}.SellerPublicNote as 'SellerPublicNotes',
 {OrderHeaderHelper.TableAllies}.SellerPrivateNote as 'SellerPrivateNotes',
 {OrderHeaderHelper.TableAllies}.EndBuyerInstruction as 'EndBuyerInstruction',
+
 {Helper.TableAllies}.TotalAmount as 'TotalOrderAmount',
 {Helper.TableAllies}.TaxAmount as 'TotalTaxAmount',
 {Helper.TableAllies}.ShippingAmount as 'TotalShippingAmount',
 {Helper.TableAllies}.ShippingTaxAmount as 'TotalShippingTaxAmount',
-
 {OrderHeaderHelper.TableAllies}.TotalShippingDiscount as 'TotalShippingDiscount',
 {OrderHeaderHelper.TableAllies}.TotalShippingDiscountTaxAmount as 'TotalShippingDiscountTaxAmount',
 {OrderHeaderHelper.TableAllies}.TotalInsuranceAmount as 'TotalInsuranceAmount',
 {OrderHeaderHelper.TableAllies}.TotalGiftOptionAmount as 'TotalGiftOptionAmount',
 {OrderHeaderHelper.TableAllies}.TotalGiftOptionTaxAmount as 'TotalGiftOptionTaxAmount',
 {OrderHeaderHelper.TableAllies}.AdditionalCostOrDiscount as 'AdditionalCostOrDiscount',
-
 {Helper.TableAllies}.DiscountAmount as 'PromotionAmount',
+
 {Helper.TableAllies}.ShipDate as 'EstimatedShipDate',
 {Helper.TableAllies}.EarliestShipDate as 'EarliestShipDate',
---{Helper.TableAllies}.LatestShipDate as 'LatestShipDate',
---{Helper.TableAllies}.DeliverByDate as 'DeliverByDate',
+{Helper.TableAllies}.LatestShipDate as 'LatestShipDate',
+{Helper.TableAllies}.EtaArrivalDate as 'DeliverByDate',
 {Helper.TableAllies}.SignatureFlag as 'SignatureFlag', 
 
 {InfoHelper.TableAllies}.ShippingCarrier as 'RequestShippingCarrier',
