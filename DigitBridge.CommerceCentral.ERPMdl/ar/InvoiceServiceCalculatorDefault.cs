@@ -156,7 +156,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 sum.InvoiceDate = now.Date;
                 sum.InvoiceTime = now.TimeOfDay;
             }
-            sum.UpdateDateUtc = now;
 
             if (processingMode == ProcessingMode.Add)
             {
@@ -191,11 +190,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.DueDate = sum.InvoiceDate.AddDays(sum.TermsDays);
             //EnterBy
             //UpdateBy
-
-            if (data.InvoiceHeaderInfo != null)
-            {
-                data.InvoiceHeaderInfo.UpdateDateUtc = now;
-            }
+             
             return true;
         }
 
@@ -218,15 +213,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //TODO: add set default for detail line logic
         //This is generated sample code
         protected virtual bool SetDefault(InvoiceItems item, InvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            item.UpdateDateUtc = now;
+        { 
             if (item.ItemTime.IsZero()) item.ItemTime = now.TimeOfDay;
             if (item.ItemDate.IsZero())
             {
                 item.ItemDate = now.Date;
                 item.ItemTime = now.TimeOfDay;
-            }
-            item.UpdateDateUtc = now;
+            } 
 
             if (processingMode == ProcessingMode.Add)
             {

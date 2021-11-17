@@ -1198,7 +1198,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -1441,6 +1441,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<InvoiceItems>("WHERE InvoiceUuid = @0 ", invoiceUuid);
 		}
 
+		public override InvoiceItems ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override InvoiceItems ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }
