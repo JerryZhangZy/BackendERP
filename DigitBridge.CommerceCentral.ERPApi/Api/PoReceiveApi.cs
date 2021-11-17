@@ -385,7 +385,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "PoNum", Description = "PoNum ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadGetSingle))]
         public static async Task<JsonNetResponse<PoReceivePayload>> NewAllPoReceive(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "poReceives/newReceive/po")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "poReceives/newReceive/po")] HttpRequest req
             )
         {
             var payload = await req.GetParameters<PoReceivePayload>();

@@ -143,14 +143,29 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
     public class PoReceiveFilter
     {
-        //public string City { get; set; }
+        public string TransUuid { get; set; }
+        public long  TransNum { get; set; }
+        public string PoUuid { get; set; }
+
+        public string PoNumFrom { get; set; }
+        public string PoNumTo { get; set; }
+
+        public DateTime TransDateFrom { get; set; }
+
+        public DateTime TransDateTo { get; set; }
 
         public static Faker<PoReceiveFilter> GetFaker()
         {
             #region faker data rules
             return new Faker<PoReceiveFilter>()
-                //.RuleFor(u => u.City, f => "")
-                ;
+                    .RuleFor(u => u.TransUuid, f => string.Empty)
+                    .RuleFor(u => u.TransNum, f => 0)
+                    .RuleFor(u => u.PoUuid, f => string.Empty)
+                    .RuleFor(u => u.PoNumFrom, f => string.Empty)
+                    .RuleFor(u => u.PoNumTo, f => string.Empty)
+                    .RuleFor(u => u.TransDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
+                    .RuleFor(u => u.TransDateTo, f => f.Date.Past(0).Date.Date)
+;
             #endregion faker data rules
         }
     }
