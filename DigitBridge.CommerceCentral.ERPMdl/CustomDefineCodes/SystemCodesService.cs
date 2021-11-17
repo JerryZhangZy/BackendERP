@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.Base.Common;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -309,6 +311,128 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = GetByNumber(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
             success = success && DeleteData();
             return success;
+        }
+
+
+
+        /// <summary>
+        /// Load Dto by code name
+        /// If code name not exist, create new Dto object
+        /// </summary>
+        public virtual async Task<bool> GetByCodeNameAsync(SystemCodesPayload payload)
+        {
+            if (payload is null || string.IsNullOrEmpty(payload.SystemCodeName))
+                return false;
+
+            // get RowNum by SystemCodeName
+            var rowNum = await GetRowNumByCodeNameAsync(payload, payload.SystemCodeName);
+
+            // if not exist rowNum then add new record
+            if (rowNum == 0 || !(await GetDataAsync(rowNum)))
+            {
+                if (payload.SystemCodes == null)
+                    payload.SystemCodes = new SystemCodesDataDto();
+                payload.SystemCodes.SystemCodes = 
+                    GetNewSystemCode(payload.DatabaseNum, payload.MasterAccountNum, payload.ProfileNum, payload.SystemCodeName);
+                return true;
+            }
+            payload.SystemCodes = this.ToDto();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Update data from Dto object
+        /// This processing will load data by RowNum of Dto, and then use change data by Dto.
+        /// </summary>
+        public virtual async Task<bool> AddOrUpdateAsync(SystemCodesPayload payload)
+        {
+            if (payload is null || !payload.HasSystemCodes)
+                return false;
+
+            // get RowNum by SystemCodeName
+            var rowNum = await GetRowNumByCodeNameAsync(payload, payload.SystemCodes.SystemCodes.SystemCodeName);
+
+            // if not exist rowNum then add new record
+            if (rowNum == 0)
+            {
+                return await AddAsync(payload);
+            }
+            // if exist rowNum then update record
+            payload.SystemCodes.SystemCodes.RowNum = rowNum;
+            return await UpdateAsync(payload);
+        }
+
+        /// <summary>
+        /// Check SystemCodes record exist for code name 
+        /// </summary>
+        public virtual async Task<bool> ExistCodeNameAsync(SystemCodesPayload payload, string codeName)
+        {
+            if (string.IsNullOrEmpty(codeName))
+                return false;
+
+            return await dbFactory.ExistsAsync<SystemCodes>("MasterAccountNum=@0 AND ProfileNum=@1 AND SystemCodeName=@2"
+                , payload.MasterAccountNum.ToSqlParameter("masterAccountNum")
+                , payload.ProfileNum.ToSqlParameter("profileNum")
+                , codeName.ToSqlParameter("codeName")
+            );
+        }
+
+        /// <summary>
+        /// Get row num by code name
+        /// </summary>
+        public virtual async Task<long> GetRowNumByCodeNameAsync(SystemCodesPayload payload, string codeName)
+        {
+            if (string.IsNullOrEmpty(codeName))
+                return 0;
+
+            return (await dbFactory.GetValueAsync<SystemCodes, long?>(
+                "SELECT TOP 1 RowNum FROM SystemCodes WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND SystemCodeName=@2 ",
+                    payload.MasterAccountNum,
+                    payload.ProfileNum,
+                    codeName.TrimEnd()
+                )).ToLong();
+        }
+
+        /// <summary>
+        /// Check all defined code names, if not exist in systemCodes table, 
+        /// Create new systemCodes record for that code names.
+        /// </summary>
+        public virtual async Task<bool> InitSystemCodesAsync(SystemCodesPayload payload)
+        {
+            var codes = SystemCodeNames.GetList();
+
+            foreach (var codeName in codes)
+            {
+                if (string.IsNullOrEmpty(codeName)) continue;
+                if ((await ExistCodeNameAsync(payload, codeName))) continue;
+                var newPayload = payload.Clone<SystemCodesPayload>();
+                newPayload.SystemCodes = new SystemCodesDataDto();
+                newPayload.SystemCodes.SystemCodes = GetNewSystemCode(payload.DatabaseNum, payload.MasterAccountNum, payload.ProfileNum, codeName);
+                await AddAsync(newPayload);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Get new SystemCodesDto object for one code name
+        /// </summary>
+        public virtual SystemCodesDto GetNewSystemCode(int databaseNum, int masterAccountNum, int profileNum, string codeName)
+        {
+            if (string.IsNullOrEmpty(codeName)) return null;
+            return new SystemCodesDto()
+                {
+                    DatabaseNum = databaseNum,
+                    MasterAccountNum = masterAccountNum,
+                    ProfileNum = profileNum,
+                    SystemCodeUuid = Guid.NewGuid().ToString(),
+                    SystemCodeName = codeName,
+                    Description = codeName,
+                    InActive = false,
+                    EffectiveStart = null,
+                    EffectiveEnd = null,
+                    Fields = SystemCodeNames.GetNewCodeField(codeName),
+                };
         }
 
     }

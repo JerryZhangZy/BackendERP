@@ -35,6 +35,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         bool Update(SystemCodesDataDto dto);
         Task<bool> UpdateAsync(SystemCodesDataDto dto);
 
+
+        Task<bool> GetByCodeNameAsync(SystemCodesPayload payload);
+        Task<bool> AddOrUpdateAsync(SystemCodesPayload payload);
+        Task<bool> ExistCodeNameAsync(SystemCodesPayload payload, string codeName);
+        Task<long> GetRowNumByCodeNameAsync(SystemCodesPayload payload, string codeName);
+        Task<bool> InitSystemCodesAsync(SystemCodesPayload payload);
+        SystemCodesDto GetNewSystemCode(int databaseNum, int masterAccountNum, int profileNum, string codeName);
+
     }
 }
 

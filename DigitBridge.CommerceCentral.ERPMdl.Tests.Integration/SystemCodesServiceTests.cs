@@ -275,6 +275,61 @@ FROM SystemCodes ins
 			Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
 		}
 
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task InitSystemCodesAsync_Test()
+        {
+            var payload = new SystemCodesPayload()
+            {
+                DatabaseNum = 1,
+                MasterAccountNum = 10001,
+                ProfileNum = 10001
+            };
+            var srv = new SystemCodesService(DataBaseFactory);
+
+            try
+            {
+                using (var b = new Benchmark("GetInvoiceItemsReturnedQtyAsync_Test"))
+                {
+                    await srv.InitSystemCodesAsync(payload);
+
+                }
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task GetByCodeNameAsync_Test()
+        {
+            var payload = new SystemCodesPayload()
+            {
+                DatabaseNum = 1,
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                SystemCodeName = "ClassCode"
+            };
+            var srv = new SystemCodesService(DataBaseFactory);
+
+            try
+            {
+                using (var b = new Benchmark("GetInvoiceItemsReturnedQtyAsync_Test"))
+                {
+                    await srv.GetByCodeNameAsync(payload);
+                }
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
     }
 }
 
