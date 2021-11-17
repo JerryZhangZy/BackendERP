@@ -244,8 +244,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (Data.InvoiceTransaction.TransStatus == (int)InvoiceReturnStatus.Closed)
             {
-                result &= await InventoryLogService.ReceiveInvoiceTransactionReturnbackItem(payload.InvoiceTransaction, this.DtoMapper);
-                result &= await InvoiceService.ReceivedInvoiceTransactionReturnbackItem(payload.InvoiceTransaction);
+                InvoiceTransactionDataDto trans = new InvoiceTransactionDataDto();
+                this.DtoMapper.ReadDto(Data, trans);
+                result &= await InventoryLogService.ReceiveInvoiceTransactionReturnbackItem(Data);
+                result &= await InvoiceService.ReceivedInvoiceTransactionReturnbackItem(trans);
             }
 
             return result;
