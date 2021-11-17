@@ -387,8 +387,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         protected int lastPaidByBeforeUpdate;
         protected string lastAuthCodeBeforeUpdate;
-        protected string lastInvoiceUuidBeforeUpdate;
-        protected string lastInvoiceNumberBeforeUpdate;
+        protected string lastTransUuidBeforeUpdate;
         /// <summary>
         /// Update data from Payload object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
@@ -414,8 +413,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // Keep a copy of Original Paid Amount
             Data.InvoiceTransaction.OriginalPaidAmount = Data.InvoiceTransaction.TotalAmount;
-            lastInvoiceUuidBeforeUpdate = Data.InvoiceTransaction.InvoiceUuid;
-            lastInvoiceNumberBeforeUpdate = Data.InvoiceTransaction.InvoiceNumber;
+            lastTransUuidBeforeUpdate = Data.InvoiceTransaction.TransUuid;
             lastPaidByBeforeUpdate = Data.InvoiceTransaction.PaidBy;
             lastAuthCodeBeforeUpdate = Data.InvoiceTransaction.AuthCode;
 
@@ -463,8 +461,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // Keep a copy of Original Paid Amount
             Data.InvoiceTransaction.OriginalPaidAmount = Data.InvoiceTransaction.TotalAmount;
-            lastInvoiceUuidBeforeUpdate = Data.InvoiceTransaction.InvoiceUuid;
-            lastInvoiceNumberBeforeUpdate = Data.InvoiceTransaction.InvoiceNumber;
+            lastTransUuidBeforeUpdate = Data.InvoiceTransaction.InvoiceUuid;
             lastPaidByBeforeUpdate = Data.InvoiceTransaction.PaidBy;
             lastAuthCodeBeforeUpdate = Data.InvoiceTransaction.AuthCode;
 

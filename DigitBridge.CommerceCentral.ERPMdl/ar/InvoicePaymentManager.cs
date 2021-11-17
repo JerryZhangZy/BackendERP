@@ -195,7 +195,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> AddPaymentFromPrepayment(string miscInvoiceUuid, string invoiceUuid, decimal amount)
         {
-
+            //Snowy: throw not implement to avoid invalid transUuid as miscinvoicetransaction.authcode inject
+            throw new NotImplementedException();
             //no need to add payment.
             if (miscInvoiceUuid.IsZero())
                 return true;
@@ -213,7 +214,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //Add mis payment
             var srv_MisPayment = new MiscInvoicePaymentService(dbFactory);
-            var success = await srv_MisPayment.AddMiscPayment(miscInvoiceUuid, invoiceUuid, "", 0, amount) != 0;
+            //Snowy: TODO: use valid invoiceTransUuid and invoiceNumber
+            var success = await srv_MisPayment.AddMiscPayment(miscInvoiceUuid, "", "", amount);
             if (!success)
             {
                 this.Messages = this.Messages.Concat(srv_MisPayment.Messages).ToList();
