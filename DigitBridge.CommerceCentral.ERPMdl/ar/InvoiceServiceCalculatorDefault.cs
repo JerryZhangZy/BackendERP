@@ -316,7 +316,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
 
             var discountRate = sum.DiscountRate.ToRate();
-            sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate;
+            sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate) - sum.DiscountAmount) * sum.TaxRate;
             sum.TaxAmount = sum.TaxAmount.ToAmount();
 
             if (setting.TaxForShippingAndHandling)
