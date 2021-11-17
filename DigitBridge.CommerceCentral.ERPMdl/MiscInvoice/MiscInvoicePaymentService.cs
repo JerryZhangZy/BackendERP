@@ -38,22 +38,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _miscInvoiceService;
             }
         }
-        public async Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceUuid, string invoiceNumber, decimal amount)
+        public async Task<int> AddMiscPayment(string miscInvoiceUuid, string invoiceUuid, string invoiceNumber, int transNum, decimal amount)
         {
             Add();
             if (miscInvoiceUuid.IsZero())
             {
                 AddError($"miscInvoiceUuid is null");
-                return false;
+                return 0;
             }
 
             if (invoiceUuid.IsZero())
             {
                 AddError($"invoiceUuid is null");
-                return false;
+                return 0;
             }
             if (!await LoadMiscInvoiceAsync(miscInvoiceUuid))
-                return false;
+                return 0;
 
             var header = Data.MiscInvoiceData.MiscInvoiceHeader;
 
@@ -74,7 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 TotalAmount = amount > header.Balance ? header.Balance : amount,
                 PaidBy = (int)PaidByAr.CreditMemo,
-                CheckNum = invoiceNumber,
+                CheckNum = invoiceNumber + "-" + transNum,
                 AuthCode = invoiceUuid,
                 TransDate = DateTime.Now,
                 TransTime = DateTime.Now.TimeOfDay,
@@ -92,11 +92,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!await SaveDataAsync())
             {
                 AddError($"AddMiscPayment->SaveDataAsync error.");
-                return false;
+                return 0;
             }
             AddActivityLogForCurrentData();
             await MiscInvoiceService.PayAsync(miscInvoiceUuid, amount);
-            return true;
+            return Data.MiscInvoiceTransaction.TransNum;
         }
         protected void AddActivityLogForCurrentData()
         {

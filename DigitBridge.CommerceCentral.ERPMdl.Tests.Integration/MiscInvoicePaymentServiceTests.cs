@@ -66,9 +66,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var prepaymentAmount = new Random().Next();
             var service = new MiscInvoicePaymentService(DataBaseFactory);
 
-            var success = await service.AddMiscPayment(miscInvoiceData.UniqueId, invoiceData.UniqueId, invoiceData.InvoiceHeader.InvoiceNumber, prepaymentAmount);
+            var success = await service.AddMiscPayment(miscInvoiceData.UniqueId, invoiceData.UniqueId, invoiceData.InvoiceHeader.InvoiceNumber, 1, prepaymentAmount);
 
-            Assert.True(success, "AddMiscPayment error:" + service.Messages.ObjectToString());
+            Assert.True(success != 0, "AddMiscPayment error:" + service.Messages.ObjectToString());
         }
         #endregion async methods
          
