@@ -136,6 +136,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasEarliestShipDate => EarliestShipDate != null;
 
 		/// <summary>
+		/// Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true")]
+        [DataType(DataType.DateTime)]
+        public DateTime? LatestShipDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasLatestShipDate => LatestShipDate != null;
+
+		/// <summary>
 		/// Request Signature. <br> Title: Stockable, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Request Signature. <br> Title: Stockable, Display: true, Editable: true")]
@@ -661,8 +671,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		/// <summary>
 		/// (Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+   
+   CONSTRAINT
 		/// </summary>
-		[OpenApiPropertyDescription("(Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false")]
+		[OpenApiPropertyDescription("(Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
+   
+   CONSTRAINT")]
         public long? OrderDCAssignmentLineNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]

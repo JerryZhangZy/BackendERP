@@ -37,7 +37,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion 
 
-        public SalesOrderOpenQuery() : base(PREFIX)
+        public SalesOrderOpenQuery() : base(PREFIX_Event)
         {
             AddFilter(_UpdateDateUtc);
             AddFilter(_WarehouseCode);
