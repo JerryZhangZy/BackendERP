@@ -1,12 +1,3 @@
-
-
-
-
-
-              
-
-
-
               
     
 
@@ -56,6 +47,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ItemTime(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ItemTime AS {name ?? "ItemTime".ToCamelCase(camelCase)} ";
         public static string ShipDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShipDate AS {name ?? "ShipDate".ToCamelCase(camelCase)} ";
         public static string EtaArrivalDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EtaArrivalDate AS {name ?? "EtaArrivalDate".ToCamelCase(camelCase)} ";
+        public static string EarliestShipDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EarliestShipDate AS {name ?? "EarliestShipDate".ToCamelCase(camelCase)} ";
+        public static string SignatureFlag(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.SignatureFlag AS {name ?? "SignatureFlag".ToCamelCase(camelCase)} ";
         public static string SKU(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SKU) AS {name ?? "SKU".ToCamelCase(camelCase)} ";
         public static string ProductUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.ProductUuid) AS {name ?? "ProductUuid".ToCamelCase(camelCase)} ";
         public static string InventoryUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InventoryUuid) AS {name ?? "InventoryUuid".ToCamelCase(camelCase)} ";
@@ -105,11 +98,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string LotCost(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.LotCost AS {name ?? "LotCost".ToCamelCase(camelCase)} ";
         public static string LotInDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.LotInDate AS {name ?? "LotInDate".ToCamelCase(camelCase)} ";
         public static string LotExpDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.LotExpDate AS {name ?? "LotExpDate".ToCamelCase(camelCase)} ";
+        public static string CentralOrderLineUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CentralOrderLineUuid) AS {name ?? "CentralOrderLineUuid".ToCamelCase(camelCase)} ";
+        public static string DBChannelOrderLineRowID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.DBChannelOrderLineRowID) AS {name ?? "DBChannelOrderLineRowID".ToCamelCase(camelCase)} ";
+        public static string OrderDCAssignmentLineUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.OrderDCAssignmentLineUuid) AS {name ?? "OrderDCAssignmentLineUuid".ToCamelCase(camelCase)} ";
         public static string UpdateDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc".ToCamelCase(camelCase)} ";
         public static string EnterBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy".ToCamelCase(camelCase)} ";
         public static string UpdateBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.UpdateBy) AS {name ?? "UpdateBy".ToCamelCase(camelCase)} ";
         public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";
+        public static string OrderDCAssignmentLineNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.OrderDCAssignmentLineNum AS {name ?? "OrderDCAssignmentLineNum".ToCamelCase(camelCase)} ";
 
         #endregion - static SQL fileds statement
 
@@ -127,6 +124,8 @@ RTRIM({allies}SalesOrderUuid) AS SalesOrderUuid,
 {allies}ItemTime AS ItemTime,
 {allies}ShipDate AS ShipDate,
 {allies}EtaArrivalDate AS EtaArrivalDate,
+{allies}EarliestShipDate AS EarliestShipDate,
+{allies}SignatureFlag AS SignatureFlag,
 RTRIM({allies}SKU) AS SKU,
 RTRIM({allies}ProductUuid) AS ProductUuid,
 RTRIM({allies}InventoryUuid) AS InventoryUuid,
@@ -176,11 +175,15 @@ RTRIM({allies}PriceRule) AS PriceRule,
 {allies}LotCost AS LotCost,
 {allies}LotInDate AS LotInDate,
 {allies}LotExpDate AS LotExpDate,
+RTRIM({allies}CentralOrderLineUuid) AS CentralOrderLineUuid,
+RTRIM({allies}DBChannelOrderLineRowID) AS DBChannelOrderLineRowID,
+RTRIM({allies}OrderDCAssignmentLineUuid) AS OrderDCAssignmentLineUuid,
 {allies}UpdateDateUtc AS UpdateDateUtc,
 RTRIM({allies}EnterBy) AS EnterBy,
 RTRIM({allies}UpdateBy) AS UpdateBy,
 {allies}EnterDateUtc AS EnterDateUtc,
-{allies}DigitBridgeGuid AS DigitBridgeGuid
+{allies}DigitBridgeGuid AS DigitBridgeGuid,
+{allies}OrderDCAssignmentLineNum AS OrderDCAssignmentLineNum
 ";
         }
 

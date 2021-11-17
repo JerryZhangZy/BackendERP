@@ -15,6 +15,9 @@
 	[ShipDate] DATE NULL, --Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
 	[DueDate] DATE NULL, --(Ignore) Order due date. <br> Display: false, Editable: false
 	[BillDate] DATE NULL, --(Ignore) Order bill date. <br> Display: false, Editable: false
+	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer. <br> Title: Delivery Date, Display: true, Editable: true
+	[EarliestShipDate] DATE NULL, --Don't early than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+	[SignatureFlag] TINYINT NOT NULL DEFAULT 0, --Request Signature. <br> Title: Stockable, Display: true, Editable: true
 
 	[CustomerUuid] VARCHAR(50) NOT NULL, --Customer uuid, load from customer data. <br> Display: false, Editable: false
 	[CustomerCode] VARCHAR(50) NOT NULL DEFAULT '', --Customer number. use DatabaseNum-CustomerCode too load customer data. <br> Title: Customer Number, Display: true, Editable: true
