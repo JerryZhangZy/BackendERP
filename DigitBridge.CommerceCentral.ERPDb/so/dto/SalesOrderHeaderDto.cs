@@ -177,6 +177,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasEarliestShipDate => EarliestShipDate != null;
 
 		/// <summary>
+		/// Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true")]
+        [DataType(DataType.DateTime)]
+        public DateTime? LatestShipDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasLatestShipDate => LatestShipDate != null;
+
+		/// <summary>
 		/// Request Signature. <br> Title: Stockable, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Request Signature. <br> Title: Stockable, Display: true, Editable: true")]

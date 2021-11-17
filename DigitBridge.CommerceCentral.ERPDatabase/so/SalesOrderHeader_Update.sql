@@ -57,6 +57,12 @@ END
 IF COL_LENGTH('SalesOrderHeader', 'EarliestShipDate') IS NULL					
 BEGIN					
     ALTER TABLE SalesOrderHeader ADD [EarliestShipDate] DATE NULL
+END
+
+-- 11/17/20201 By junxian
+IF COL_LENGTH('SalesOrderHeader', 'LatestShipDate') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderHeader ADD [LatestShipDate] DATE NULL
 END	
 
 IF COL_LENGTH('SalesOrderHeader', 'SignatureFlag') IS NULL					

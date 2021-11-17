@@ -1131,6 +1131,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override ProductExt ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override ProductExt ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

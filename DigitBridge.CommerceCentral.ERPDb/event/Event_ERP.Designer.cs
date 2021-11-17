@@ -319,7 +319,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_updateDateUtc = value.Date.ToSqlSafeValue(); 
+				_updateDateUtc = value.ToSqlSafeValue(); 
 				OnPropertyChanged("UpdateDateUtc", value);
             }
         }
@@ -428,6 +428,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override Event_ERP ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override Event_ERP ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

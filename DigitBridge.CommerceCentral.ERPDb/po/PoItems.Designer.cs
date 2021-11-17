@@ -77,7 +77,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private string _inventoryUuid;
 
         [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _sKU;
+        private string _sku;
 
         [Column("Description",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _description;
@@ -406,11 +406,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _sKU?.TrimEnd(); 
+				return _sku?.TrimEnd(); 
             }
             set
             {
-				_sKU = value.TruncateTo(100); 
+				_sku = value.TruncateTo(100); 
 				OnPropertyChanged("SKU", value);
             }
         }
@@ -923,7 +923,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -1135,7 +1135,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_cancelDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_productUuid = String.Empty; 
 			_inventoryUuid = String.Empty; 
-			_sKU = String.Empty; 
+			_sku = String.Empty; 
 			_description = String.Empty; 
 			_notes = String.Empty; 
 			_itemTotalAmount = default(decimal); 
@@ -1205,6 +1205,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override PoItems ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override PoItems ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

@@ -113,8 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 sum.TransDate = now.Date;
                 sum.TransTime = now.TimeOfDay;
-            }
-            sum.UpdateDateUtc = now;
+            } 
 
             if (processingMode == ProcessingMode.Add)
             {
@@ -182,8 +181,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //TODO: add set default for detail line logic
         //This is generated sample code
         protected virtual bool SetDefault(InvoiceReturnItems item, InvoiceTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            item.UpdateDateUtc = now;
+        { 
             if (item.ReturnTime.IsZero()) item.ReturnTime = now.TimeOfDay;
             if (item.ReturnDate.IsZero())
             {

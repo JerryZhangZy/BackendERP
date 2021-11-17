@@ -34,6 +34,13 @@ BEGIN
     ALTER TABLE SalesOrderItems ADD [EarliestShipDate] DATE NULL
 END	
 
+-- 11/17/20201 By junxian
+IF COL_LENGTH('SalesOrderItems', 'LatestShipDate') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderItems ADD [LatestShipDate] DATE NULL
+END	
+
+
 IF COL_LENGTH('SalesOrderItems', 'SignatureFlag') IS NULL					
 BEGIN					
     ALTER TABLE SalesOrderItems ADD [SignatureFlag] TINYINT NOT NULL DEFAULT 0

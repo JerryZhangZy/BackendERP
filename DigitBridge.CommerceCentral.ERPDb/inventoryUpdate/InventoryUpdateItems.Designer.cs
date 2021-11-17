@@ -56,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private TimeSpan _itemTime;
 
         [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _sKU;
+        private string _sku;
 
         [Column("ProductUuid",SqlDbType.VarChar,NotNull=true)]
         private string _productUuid;
@@ -80,7 +80,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private string _notes;
 
         [Column("UOM",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _uOM;
+        private string _uom;
 
         [Column("PackType",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _packType;
@@ -229,11 +229,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _sKU?.TrimEnd(); 
+				return _sku?.TrimEnd(); 
             }
             set
             {
-				_sKU = value.TruncateTo(100); 
+				_sku = value.TruncateTo(100); 
 				OnPropertyChanged("SKU", value);
             }
         }
@@ -357,11 +357,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _uOM?.TrimEnd(); 
+				return _uom?.TrimEnd(); 
             }
             set
             {
-				_uOM = value.TruncateTo(50); 
+				_uom = value.TruncateTo(50); 
 				OnPropertyChanged("UOM", value);
             }
         }
@@ -599,7 +599,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -670,7 +670,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_seq = default(int); 
 			_itemDate = new DateTime().MinValueSql(); 
 			_itemTime = new TimeSpan().MinValueSql(); 
-			_sKU = String.Empty; 
+			_sku = String.Empty; 
 			_productUuid = String.Empty; 
 			_inventoryUuid = String.Empty; 
 			_warehouseUuid = String.Empty; 
@@ -678,7 +678,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_lotNum = String.Empty; 
 			_description = String.Empty; 
 			_notes = String.Empty; 
-			_uOM = String.Empty; 
+			_uom = String.Empty; 
 			_packType = String.Empty; 
 			_packQty = default(decimal); 
 			_updatePack = default(decimal); 
@@ -739,6 +739,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<InventoryUpdateItems>("WHERE InventoryUpdateUuid = @0 ", inventoryUpdateUuid);
 		}
 
+		public override InventoryUpdateItems ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override InventoryUpdateItems ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }
