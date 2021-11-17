@@ -1165,6 +1165,25 @@ where inv.InventoryUuid=il.InventoryUuid
         //        LogMessage = string.Empty
         //    });
         //}
+
+        public async Task<bool> ReceiveInvoiceTransactionReturnbackItem(InvoiceTransactionDataDto transaction, IDtoMapper<InvoiceTransactionData, InvoiceTransactionDataDto> mapper)
+        {
+            InvoiceTransactionDataDtoMapperDefault transMapper = mapper as InvoiceTransactionDataDtoMapperDefault;
+            InvoiceTransactionData transData = new InvoiceTransactionData();
+            InvoiceTransaction trans = new InvoiceTransaction();
+            transMapper.ReadDto(transData, transaction);
+            transMapper.ReadInvoiceTransaction(trans, transaction.InvoiceTransaction);
+
+            var inventoryLogs = ConvertInvoiceReturnItemsToInventoryLogList(trans, transData.InvoiceReturnItems, 0, trans.TransUuid);
+            foreach (var log in inventoryLogs)
+            {
+                await log.AddAsync();
+            }
+            
+            await UpdateByInvoiceReturnAsync(transData);
+
+            return await SaveDataAsync();
+        }
     }
 }
 

@@ -12,6 +12,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.ERPApiSDK;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -235,6 +236,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual async Task<bool> UpdateAsync(InvoiceReturnPayload payload)
         {
             return await base.UpdateAsync(payload);
+        }
+
+        protected async override Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
+        {
+            bool result = await base.UpdateAsync(payload);
+
+            if (Data.InvoiceTransaction.TransStatus == (int)InvoiceReturnStatus.Closed)
+            {
+                result &= await InventoryLogService.ReceiveInvoiceTransactionReturnbackItem(payload.InvoiceTransaction, this.DtoMapper);
+                result &= await InvoiceService.ReceivedInvoiceTransactionReturnbackItem(payload.InvoiceTransaction);
+            }
+
+            return result;
         }
 
         /// <summary>
