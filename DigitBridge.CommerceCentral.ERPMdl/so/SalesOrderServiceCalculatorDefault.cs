@@ -147,8 +147,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 sum.OrderDate = now.Date;
                 sum.OrderTime = now.TimeOfDay;
-            }
-            sum.UpdateDateUtc = now.Date.ToUniversalTime();
+            } 
             //EnterBy
             //UpdateBy
             if (processingMode == ProcessingMode.Add)
@@ -176,11 +175,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             // (int)( (SalesOrderStatus) sum.OrderStatus)
             sum.DueDate = sum.OrderDate.AddDays(sum.TermsDays);
-
-            if (data.SalesOrderHeaderInfo != null)
-            {
-                data.SalesOrderHeaderInfo.UpdateDateUtc = now;
-            }
+             
             return true;
         }
 
@@ -201,15 +196,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //TODO: add set default for detail line logic
         //This is generated sample code
         protected virtual bool SetDefault(SalesOrderItems item, SalesOrderData data, ProcessingMode processingMode = ProcessingMode.Edit)
-        {
-            item.UpdateDateUtc = now;
+        { 
             if (item.ItemTime.IsZero()) item.ItemTime = now.TimeOfDay;
             if (item.ItemDate.IsZero())
             {
                 item.ItemDate = now.Date;
                 item.ItemTime = now.TimeOfDay;
-            }
-            item.UpdateDateUtc = now;
+            } 
             if (processingMode == ProcessingMode.Add)
             {
                 item.SalesOrderItemsUuid = Guid.NewGuid().ToString();

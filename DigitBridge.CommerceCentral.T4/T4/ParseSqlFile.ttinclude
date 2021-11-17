@@ -59,9 +59,12 @@
         public string DtoName { get; set; }
         public List<SqlColumnInfo> Columns { get; set; }
         public List<SqlColumnInfo> JsonColumns { get; set; }
+        public SqlColumnInfo UpdateDateUtcColumn { get; set; }
         public string Text { get; set; }
         
         public bool HasJsonColumns { get { return JsonColumns != null && JsonColumns.Count > 0; } }
+
+        public bool HasUpdateDateUtcColumn { get { return UpdateDateUtcColumn != null; } }
 
         public string PrimaryKey { get; set; }
         public string UniqueKey { get; set; }
@@ -964,6 +967,7 @@
 
             table.Columns = GetSqlColumnInfo(content, table);
             table.JsonColumns = table.Columns.Where(x => x.isJson).ToList();
+            table.UpdateDateUtcColumn = table.Columns.Where(i => i.Name.ToLower() == "updatedateutc").FirstOrDefault();
             table.GetRandomProperties();
             return table;
         }

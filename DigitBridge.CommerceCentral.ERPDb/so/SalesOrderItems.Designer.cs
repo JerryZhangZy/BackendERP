@@ -1566,6 +1566,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<SalesOrderItems>("WHERE SalesOrderUuid = @0 ", salesOrderUuid);
 		}
 
+		public override SalesOrderItems ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override SalesOrderItems ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }
