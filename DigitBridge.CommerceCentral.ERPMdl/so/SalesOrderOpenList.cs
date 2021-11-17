@@ -61,8 +61,13 @@ channelAccount.ChannelAccountName as 'ChannelAccountName',
 {OrderHeaderHelper.TableAllies}.TotalGiftOptionTaxAmount as 'TotalGiftOptionTaxAmount',
 {OrderHeaderHelper.TableAllies}.AdditionalCostOrDiscount as 'AdditionalCostOrDiscount',
 
-
 {Helper.TableAllies}.DiscountAmount as 'PromotionAmount',
+{Helper.TableAllies}.ShipDate as 'EstimatedShipDate',
+{Helper.TableAllies}.EarliestShipDate as 'EarliestShipDate',
+--{Helper.TableAllies}.LatestShipDate as 'LatestShipDate',
+--{Helper.TableAllies}.DeliverByDate as 'DeliverByDate',
+{Helper.TableAllies}.SignatureFlag as 'SignatureFlag', 
+
 {InfoHelper.TableAllies}.ShippingCarrier as 'RequestShippingCarrier',
 {InfoHelper.TableAllies}.ShippingClass as 'RequestShippingService',
 {InfoHelper.TableAllies}.ShipToName as 'ShipToName',
