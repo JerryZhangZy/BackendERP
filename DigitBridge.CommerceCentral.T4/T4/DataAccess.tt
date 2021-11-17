@@ -83,7 +83,7 @@
 //SettingForApTransaction
 //SettingForEventProcessERP
 #>
-<#@ include file="SettingForApInvoice.ttinclude" #>
+<#@ include file="SettingForInventoryLog.ttinclude" #>
 <#
     var dtoSuf = "";
     

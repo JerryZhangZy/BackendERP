@@ -82,7 +82,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private string _vendorUuid;
 
         [Column("VendorCode",SqlDbType.VarChar)]
-        private string _VendorCode;
+        private string _vendorCode;
 
         [Column("VendorName",SqlDbType.NVarChar)]
         private string _vendorName;
@@ -396,15 +396,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _VendorCode is null) 
-					_VendorCode = String.Empty; 
-				return _VendorCode?.TrimEnd(); 
+				if (!AllowNull && _vendorCode is null) 
+					_vendorCode = String.Empty; 
+				return _vendorCode?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
 				{
-					_VendorCode = value.TruncateTo(50); 
+					_vendorCode = value.TruncateTo(50); 
 					OnPropertyChanged("VendorCode", value);
 				}
             }
@@ -425,7 +425,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_vendorName = value.TruncateTo(100); 
+					_vendorName = value.TruncateTo(200); 
 					OnPropertyChanged("VendorName", value);
 				}
             }
@@ -731,7 +731,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -810,7 +810,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_cancelDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_vendorUuid = AllowNull ? (string)null : String.Empty; 
-			_VendorCode = AllowNull ? (string)null : String.Empty; 
+			_vendorCode = AllowNull ? (string)null : String.Empty; 
 			_vendorName = AllowNull ? (string)null : String.Empty; 
 			_currency = String.Empty; 
 			_subTotalAmount = default(decimal); 
@@ -858,6 +858,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override PoHeader ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override PoHeader ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }
