@@ -315,7 +315,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // tax calculate should deduct discount from taxable amount
             //sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
 
-            var discountRate = sum.SubTotalAmount != 0 ? (sum.DiscountAmount / sum.SubTotalAmount) : 0;
+            var discountRate = sum.DiscountRate.ToRate();
             sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate;
             sum.TaxAmount = sum.TaxAmount.ToAmount();
 
