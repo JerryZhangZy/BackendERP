@@ -32,10 +32,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var srv = new InvoiceService(DataBaseFactory);
             srv.Add();
+            srv.Data.AddInvoiceItems(new InvoiceItems { 
+                
+            });
 
-            var mapper = srv.DtoMapper;
-            var data = GetFakerData();
-            var json = JsonConvert.SerializeObject(data);
+            bool result = srv.SaveData();
+
+            Assert.True(result);
         }
 
 

@@ -387,7 +387,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await InvoiceHelper.ExistNumberAsync(invoiceNum, masterAccountNum, profileNum);
         }
 
+        public async Task<bool> ReceivedInvoiceTransactionReturnbackItem(InvoiceTransactionDataDto transaction)
+        {
+            int masterAccountNum = transaction.InvoiceDataDto.InvoiceHeader.MasterAccountNum.ToInt();
+            int profileNum = transaction.InvoiceDataDto.InvoiceHeader.ProfileNum.ToInt();
+            string invoiceNumber = transaction.InvoiceDataDto.InvoiceHeader.InvoiceNumber;
+            await GetDataByNumberAsync(masterAccountNum, profileNum, invoiceNumber);
+            decimal returnAmount = 
+                transaction.InvoiceTransaction.TotalAmount.ToDecimal() - transaction.InvoiceTransaction.DiscountAmount.ToDecimal();
+            this.Data.InvoiceHeader.CreditAmount += returnAmount;
+            this.Data.InvoiceHeader.Balance -= returnAmount;
 
+            return await SaveDataAsync();
+        }
         #region To qbo queue 
 
         private QboInvoiceClient _qboInvoiceClient;
