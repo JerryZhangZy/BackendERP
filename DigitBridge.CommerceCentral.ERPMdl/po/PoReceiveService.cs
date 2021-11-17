@@ -338,7 +338,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return false;
         }
-        
+
+        /// <summary>
+        /// Create new P/O receive data for one P/O
+        /// This will load open P/O Items for one P/O
+        /// </summary>
         public async Task<bool> NewReceiveAsync(PoReceivePayload payload, string poNum)
         {
             NewData();
@@ -352,7 +356,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        public async Task<bool> NewAllReceiveAsync(PoReceivePayload payload)
+        /// <summary>
+        /// Create new P/O receive data for one vendor
+        /// This will load multiple Open P/O Items for one vendor
+        /// </summary>
+        public async Task<bool> NewReceiveForVendorAsync(PoReceivePayload payload)
         {
 
            List<string> poNums= dbFactory.Db.Query<string>($@"select  distinct ph.[PoNum] from [dbo].[PoHeader] ph  

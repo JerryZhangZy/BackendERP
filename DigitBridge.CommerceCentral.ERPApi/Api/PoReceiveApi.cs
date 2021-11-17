@@ -380,16 +380,17 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiOperation(operationId: "NewAllPoReceive", tags: new[] { "Po Receives" }, Summary = "Get po new receive by poNum")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]   
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "vendorCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "vendorCode", Description = "P/O receive for Vendor", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadGetSingle))]
         public static async Task<JsonNetResponse<PoReceivePayload>> NewAllPoReceive(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "poReceives/newAllPoReceive")] HttpRequest req
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "poReceives/newReceive/vendor/{vendorCode}")] HttpRequest req
             )
         {
             var payload = await req.GetParameters<PoReceivePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new PoReceiveService(dataBaseFactory);
-            payload.Success = await srv.NewAllReceiveAsync(payload);
+            payload.Success = await srv.NewReceiveForVendorAsync(payload);
             payload.Messages = srv.Messages;
  
             return new JsonNetResponse<PoReceivePayload>(payload);
