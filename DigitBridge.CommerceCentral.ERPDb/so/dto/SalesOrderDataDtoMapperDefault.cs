@@ -84,6 +84,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasShipDate) data.ShipDate = dto.ShipDate;
 			if (dto.HasDueDate) data.DueDate = dto.DueDate;
 			if (dto.HasBillDate) data.BillDate = dto.BillDate;
+			if (dto.HasEtaArrivalDate) data.EtaArrivalDate = dto.EtaArrivalDate;
+			if (dto.HasEarliestShipDate) data.EarliestShipDate = dto.EarliestShipDate;
+			if (dto.HasSignatureFlag) data.SignatureFlag = dto.SignatureFlag.ToBool();
 			if (dto.HasCustomerUuid) data.CustomerUuid = dto.CustomerUuid;
 			if (dto.HasCustomerCode) data.CustomerCode = dto.CustomerCode;
 			if (dto.HasCustomerName) data.CustomerName = dto.CustomerName;
@@ -235,6 +238,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasItemTime) data.ItemTime = dto.ItemTime.ToTimeSpan();
 			if (dto.HasShipDate) data.ShipDate = dto.ShipDate;
 			if (dto.HasEtaArrivalDate) data.EtaArrivalDate = dto.EtaArrivalDate;
+			if (dto.HasEarliestShipDate) data.EarliestShipDate = dto.EarliestShipDate;
+			if (dto.HasSignatureFlag) data.SignatureFlag = dto.SignatureFlag.ToBool();
 			if (dto.HasSKU) data.SKU = dto.SKU;
 			if (dto.HasProductUuid) data.ProductUuid = dto.ProductUuid;
 			if (dto.HasInventoryUuid) data.InventoryUuid = dto.InventoryUuid;
@@ -409,6 +414,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ShipDate = data.ShipDate;
 			dto.DueDate = data.DueDate;
 			dto.BillDate = data.BillDate;
+			dto.EtaArrivalDate = data.EtaArrivalDate;
+			dto.EarliestShipDate = data.EarliestShipDate;
+			dto.SignatureFlag = data.SignatureFlag;
 			dto.CustomerUuid = data.CustomerUuid;
 			dto.CustomerCode = data.CustomerCode;
 			dto.CustomerName = data.CustomerName;
@@ -563,6 +571,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ItemTime = data.ItemTime.ToDateTime();
 			dto.ShipDate = data.ShipDate;
 			dto.EtaArrivalDate = data.EtaArrivalDate;
+			dto.EarliestShipDate = data.EarliestShipDate;
+			dto.SignatureFlag = data.SignatureFlag;
 			dto.SKU = data.SKU;
 			dto.ProductUuid = data.ProductUuid;
 			dto.InventoryUuid = data.InventoryUuid;

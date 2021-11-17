@@ -11,6 +11,8 @@
 	[ItemTime] TIME NOT NULL, --(Ignore) Order time
 	[ShipDate] DATE NULL, --Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
 	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer. <br> Title: Delivery Date, Display: true, Editable: true
+	[EarliestShipDate] DATE NULL, --Don't early than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+	[SignatureFlag] TINYINT NOT NULL DEFAULT 0, --Request Signature. <br> Title: Stockable, Display: true, Editable: true
 
 	[SKU] Varchar(100) NOT NULL DEFAULT '', --Product SKU. <br> Title: SKU, Display: true, Editable: true
 	[ProductUuid] VARCHAR(50) NOT NULL, --(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false

@@ -67,6 +67,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("EtaArrivalDate",SqlDbType.Date)]
         private DateTime? _etaArrivalDate;
 
+        [Column("EarliestShipDate",SqlDbType.Date)]
+        private DateTime? _earliestShipDate;
+
+        [Column("SignatureFlag",SqlDbType.TinyInt,NotNull=true,IsDefault=true)]
+        private byte _signatureFlag;
+
         [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _sku;
 
@@ -398,6 +404,43 @@ namespace DigitBridge.CommerceCentral.ERPDb
 					_etaArrivalDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
 					OnPropertyChanged("EtaArrivalDate", value);
 				}
+            }
+        }
+
+		/// <summary>
+		/// Don't early than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+        public virtual DateTime? EarliestShipDate
+        {
+            get
+            {
+				if (!AllowNull && _earliestShipDate is null) 
+					_earliestShipDate = new DateTime().MinValueSql(); 
+				return _earliestShipDate; 
+            }
+            set
+            {
+				if (value != null || AllowNull) 
+				{
+					_earliestShipDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					OnPropertyChanged("EarliestShipDate", value);
+				}
+            }
+        }
+
+		/// <summary>
+		/// Request Signature. <br> Title: Stockable, Display: true, Editable: true
+		/// </summary>
+        public virtual bool SignatureFlag
+        {
+            get
+            {
+				return (_signatureFlag == 1); 
+            }
+            set
+            {
+				_signatureFlag = value ? (byte)1 : (byte)0; 
+				OnPropertyChanged("SignatureFlag", value);
             }
         }
 
@@ -1258,7 +1301,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -1298,7 +1341,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		/// <summary>
 		/// (Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
-        /// </summary>
+		/// </summary>
         public virtual long OrderDCAssignmentLineNum
         {
             get
@@ -1416,6 +1459,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_itemTime = new TimeSpan().MinValueSql(); 
 			_shipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_earliestShipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_signatureFlag = default(byte); 
 			_sku = String.Empty; 
 			_productUuid = String.Empty; 
 			_inventoryUuid = String.Empty; 
