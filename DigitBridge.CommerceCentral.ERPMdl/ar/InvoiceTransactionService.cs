@@ -461,7 +461,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // Keep a copy of Original Paid Amount
             Data.InvoiceTransaction.OriginalPaidAmount = Data.InvoiceTransaction.TotalAmount;
-            lastTransUuidBeforeUpdate = Data.InvoiceTransaction.InvoiceUuid;
+            lastTransUuidBeforeUpdate = Data.InvoiceTransaction.TransUuid;
             lastPaidByBeforeUpdate = Data.InvoiceTransaction.PaidBy;
             lastAuthCodeBeforeUpdate = Data.InvoiceTransaction.AuthCode;
 

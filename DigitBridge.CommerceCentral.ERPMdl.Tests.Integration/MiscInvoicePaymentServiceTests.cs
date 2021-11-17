@@ -68,7 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
             var success = await service.AddMiscPayment(miscInvoiceData.UniqueId, null, invoiceData.InvoiceHeader.InvoiceNumber, prepaymentAmount);
 
-            Assert.True(success != 0, "AddMiscPayment error:" + service.Messages.ObjectToString());
+            Assert.True(success, "AddMiscPayment error:" + service.Messages.ObjectToString());
         }
         #endregion async methods
          
