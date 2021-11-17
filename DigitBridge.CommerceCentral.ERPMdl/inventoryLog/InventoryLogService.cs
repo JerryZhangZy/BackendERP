@@ -1165,6 +1165,19 @@ where inv.InventoryUuid=il.InventoryUuid
         //        LogMessage = string.Empty
         //    });
         //}
+
+        public async Task<bool> ReceiveInvoiceTransactionReturnbackItem(InvoiceTransactionData transaction)
+        {
+            var inventoryLogs = ConvertInvoiceReturnItemsToInventoryLogList(transaction.InvoiceTransaction, transaction.InvoiceReturnItems, 0, trans.TransUuid);
+            foreach (var log in inventoryLogs)
+            {
+                await log.AddAsync();
+            }
+            
+            await UpdateByInvoiceReturnAsync(transaction);
+
+            return await SaveDataAsync();
+        }
     }
 }
 

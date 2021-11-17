@@ -9,6 +9,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public interface IMiscInvoicePaymentService : IService<MiscInvoiceTransactionService, MiscInvoiceTransactionData, MiscInvoiceTransactionDataDto>
     {
-        Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceUuid, string invoiceNumber, decimal amount);
+        Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceTransUuid, string invoiceNumber, decimal amount);
     }
 }

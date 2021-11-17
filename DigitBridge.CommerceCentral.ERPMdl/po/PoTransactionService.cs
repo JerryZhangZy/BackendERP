@@ -356,6 +356,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             LoadPurchaseOrderData(poNum, profileNum, masterAccountNum);
             return success;
         }
+
+        //protected async Task<bool> GetByTransNumAsync(PoTransactionPayload payload,  int transNum)
+        //{
+
+        //    List();
+
+        //   var poTransactions= dbFactory.Db.Query<PoTransaction>($@"");
+        //    foreach (var item in poTransactions)
+        //    {
+        //        NewData();
+        //        // var success = await Data.GetByTransNumAsync(payload.MasterAccountNum, payload.ProfileNum, transNum);
+        //        LoadPurchaseOrderData(item.PoNum, payload.ProfileNum, payload.MasterAccountNum);
+        //    }
+        //    return success;
+           
+        //}
+
         /// <summary>
         /// Load LoadPurchaseOrder data.
         /// </summary>
@@ -397,7 +414,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return success;
         }
-        
+
+       
+
         /// <summary>
         /// Delete invoice by invoice number
         /// </summary>

@@ -86,6 +86,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasBillDate) data.BillDate = dto.BillDate;
 			if (dto.HasEtaArrivalDate) data.EtaArrivalDate = dto.EtaArrivalDate;
 			if (dto.HasEarliestShipDate) data.EarliestShipDate = dto.EarliestShipDate;
+			if (dto.HasLatestShipDate) data.LatestShipDate = dto.LatestShipDate;
 			if (dto.HasSignatureFlag) data.SignatureFlag = dto.SignatureFlag.ToBool();
 			if (dto.HasCustomerUuid) data.CustomerUuid = dto.CustomerUuid;
 			if (dto.HasCustomerCode) data.CustomerCode = dto.CustomerCode;
@@ -239,6 +240,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasShipDate) data.ShipDate = dto.ShipDate;
 			if (dto.HasEtaArrivalDate) data.EtaArrivalDate = dto.EtaArrivalDate;
 			if (dto.HasEarliestShipDate) data.EarliestShipDate = dto.EarliestShipDate;
+			if (dto.HasLatestShipDate) data.LatestShipDate = dto.LatestShipDate;
 			if (dto.HasSignatureFlag) data.SignatureFlag = dto.SignatureFlag.ToBool();
 			if (dto.HasSKU) data.SKU = dto.SKU;
 			if (dto.HasProductUuid) data.ProductUuid = dto.ProductUuid;
@@ -416,6 +418,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.BillDate = data.BillDate;
 			dto.EtaArrivalDate = data.EtaArrivalDate;
 			dto.EarliestShipDate = data.EarliestShipDate;
+			dto.LatestShipDate = data.LatestShipDate;
 			dto.SignatureFlag = data.SignatureFlag;
 			dto.CustomerUuid = data.CustomerUuid;
 			dto.CustomerCode = data.CustomerCode;
@@ -572,6 +575,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ShipDate = data.ShipDate;
 			dto.EtaArrivalDate = data.EtaArrivalDate;
 			dto.EarliestShipDate = data.EarliestShipDate;
+			dto.LatestShipDate = data.LatestShipDate;
 			dto.SignatureFlag = data.SignatureFlag;
 			dto.SKU = data.SKU;
 			dto.ProductUuid = data.ProductUuid;

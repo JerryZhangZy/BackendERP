@@ -113,5 +113,35 @@ AND PoNum = @2
                 _OnAfterLoad(this);
             return true;
         }
+
+
+        public  async Task<bool> GetByTransNumAsync(int masterAccountNum, int profileNum, int transNum)
+        {
+           
+
+            var sql = @"
+SELECT TOP 1 * FROM PoTransaction
+WHERE MasterAccountNum = @0
+AND ProfileNum = @1
+AND TransNum = @2
+
+";
+            var paras = new List<SqlParameter>()
+            {
+                new SqlParameter("@0",masterAccountNum),
+                new SqlParameter("@1",profileNum),
+                new SqlParameter("@2",transNum),
+            };
+
+          
+
+            var obj = await dbFactory.GetByAsync<PoTransaction>(sql, paras.ToArray());
+            if (obj is null) return false;
+            PoTransaction = obj;
+            await GetOthersAsync();
+            if (_OnAfterLoad != null)
+                _OnAfterLoad(this);
+            return true;
+        }
     }
 }

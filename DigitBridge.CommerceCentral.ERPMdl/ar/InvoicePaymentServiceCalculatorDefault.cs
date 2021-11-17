@@ -61,8 +61,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 sum.TransDate = now.Date;
                 sum.TransTime = now.TimeOfDay;
-            }
-            sum.UpdateDateUtc = now;
+            } 
 
             if (processingMode == ProcessingMode.Add)
             {

@@ -37,6 +37,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public PoHeaderDto PoHeader { get; set; }
 
+
+
+
         #region summary service 
 
         [OpenApiPropertyDescription("(Response Data) summary result which load filter")]
