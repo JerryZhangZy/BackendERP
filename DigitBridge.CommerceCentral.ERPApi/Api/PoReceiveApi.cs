@@ -369,6 +369,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.PoTransaction = payload.Success ? srv.ToDto() : null;
             return new JsonNetResponse<PoReceivePayload>(payload);
         }
+
+
+
+
+        [FunctionName(nameof(PoReceiveListSummary))]
+        [OpenApiOperation(operationId: "PoReceiveListSummary", tags: new[] { "Po Receives" }, Summary = "Load Po Receives list summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PoReceivePayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadFind))]
+        public static async Task<JsonNetResponse<PoReceivePayload>> PoReceiveListSummary(
+     [HttpTrigger(AuthorizationLevel.Function, "post", Route = "poReceives/find/summary")] Microsoft.AspNetCore.Http.HttpRequest req)
+        {
+            var payload = await req.GetParameters<PoReceivePayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new PoReceiveList(dataBaseFactory, new PoReceiveQuery());
+            await srv.GetPoReceiveListSummaryAsync(payload);
+            return new JsonNetResponse<PoReceivePayload>(payload);
+        }
     }
 }
 

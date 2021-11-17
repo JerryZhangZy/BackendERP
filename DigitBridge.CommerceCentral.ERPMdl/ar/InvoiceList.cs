@@ -128,7 +128,7 @@ SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 5 THEN 1 ELSE 0 
 
         #endregion override methods
 
-        public virtual async Task GetSalesOrderListSummaryAsync(InvoicePayload payload)
+        public virtual async Task GetInvoiceListSummaryAsync(InvoicePayload payload)
         {
             if (payload == null)
                 payload = new InvoicePayload();

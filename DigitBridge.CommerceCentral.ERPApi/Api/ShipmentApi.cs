@@ -278,6 +278,26 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Success = await srv.GetDataAsync(payload, orderShipmentNum.ToString());
             return new JsonNetResponse<OrderShipmentPayload>(payload);
         }
+
+
+
+        [FunctionName(nameof(ShipmentListSummary))]
+        [OpenApiOperation(operationId: "ShipmentListSummary", tags: new[] { "Shipments" }, Summary = "Load Shipments list summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(OrderShipmentPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadFind))]
+        public static async Task<JsonNetResponse<OrderShipmentPayload>> ShipmentListSummary(
+         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "shipments/find/summary")] Microsoft.AspNetCore.Http.HttpRequest req)
+        {
+            var payload = await req.GetParameters<OrderShipmentPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new OrderShipmentList(dataBaseFactory, new OrderShipmentQuery());
+            await srv.GetOrderShipmentListSummaryAsync(payload);
+            return new JsonNetResponse<OrderShipmentPayload>(payload);
+        }
+
     }
 }
 
