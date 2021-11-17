@@ -68,6 +68,21 @@ channelAccount.ChannelAccountName as channelAccountName,
             return this.SQL_Select;
         }
 
+        protected override string GetSQL_select_summary()
+        {
+            this.SQL_SelectSummary = $@"
+SELECT 
+COUNT(1) AS totalCount,
+SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 0 THEN 1 ELSE 0 END) as newCount,
+SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 1 THEN 1 ELSE 0 END) as openCount,
+SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 2 THEN 1 ELSE 0 END) as shippedCount,
+SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 3 THEN 1 ELSE 0 END) as closedCount,
+SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 4 THEN 1 ELSE 0 END) as cancelledCount
+";
+            return this.SQL_SelectSummary;
+        }
+
+
         protected override string GetSQL_from()
         {
             var masterAccountNum = $"{PoHeaderHelper.TableAllies}.MasterAccountNum";
@@ -98,6 +113,31 @@ channelAccount.ChannelAccountName as channelAccountName,
 
 
         #endregion override methods
+
+
+        public virtual async Task GetPurchaseOrderListSummaryAsync(PurchaseOrderPayload payload)
+        {
+            if (payload == null)
+                payload = new PurchaseOrderPayload();
+
+            this.LoadRequestParameter(payload);
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                payload.Success = await ExcuteSummaryJsonAsync(sb);
+                if (payload.Success)
+                    payload.PurchaseOrderListSummary = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.PurchaseOrderListCount = 0;
+                payload.PurchaseOrderListSummary = null;
+                AddError(ex.ObjectToString());
+                payload.Messages = this.Messages;
+            }
+        }
+
+
 
         public virtual void GetPurchaseOrderList(PurchaseOrderPayload payload)
         {

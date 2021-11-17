@@ -230,6 +230,25 @@ namespace DigitBridge.CommerceCentral.ERPApi
             payload.Messages = svc.Messages;
             return payload;
         }
+
+
+
+        [FunctionName(nameof(PurchaseOrderListSummary))]
+        [OpenApiOperation(operationId: "PurchaseOrderListSummary", tags: new[] { "PurchaseOrders" }, Summary = "Load PurchaseOrders list summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadFind))]
+        public static async Task<JsonNetResponse<PurchaseOrderPayload>> PurchaseOrderListSummary(
+      [HttpTrigger(AuthorizationLevel.Function, "post", Route = "purchaseOrders/find/summary")] Microsoft.AspNetCore.Http.HttpRequest req)
+        {
+            var payload = await req.GetParameters<PurchaseOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new PurchaseOrderList(dataBaseFactory, new PurchaseOrderQuery());
+            await srv.GetPurchaseOrderListSummaryAsync(payload);
+            return new JsonNetResponse<PurchaseOrderPayload>(payload);
+        }
     }
 }
 

@@ -90,6 +90,19 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasPurchaseOrderListCount => PurchaseOrderListCount > 0;
         public bool ShouldSerializePurchaseOrderListCount() => HasPurchaseOrderListCount;
 
+
+
+
+        /// <summary>
+        /// (Response Data) List result which load filter and paging.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List summary result which load filter.")]
+        [JsonConverter(typeof(StringBuilderConverter))]
+        public StringBuilder PurchaseOrderListSummary { get; set; }
+        [JsonIgnore] public virtual bool HasPurchaseOrderListSummary => PurchaseOrderListSummary != null && PurchaseOrderListSummary.Length > 0;
+        public bool ShouldSerializePurchaseOrderListSummary() => HasPurchaseOrderListSummary;
+
+
         #endregion list service
     }
 }
