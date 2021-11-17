@@ -268,15 +268,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "orderShipmentNum", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "orderShipmentNum", Description = "Order shipment number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentPayloadGetSingle))]
-        public static async Task<JsonNetResponse<OrderShipmentPayload>> CheckShipmentNumExist(
+        public static async Task<bool> CheckShipmentNumExist(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "shipments/existorderShipmentNum/{orderShipmentNum}")] HttpRequest req,
             ILogger log, long orderShipmentNum)
         {
             var payload = await req.GetParameters<OrderShipmentPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new OrderShipmentService(dataBaseFactory);
-            payload.Success = await srv.GetDataAsync(payload, orderShipmentNum.ToString());
-            return new JsonNetResponse<OrderShipmentPayload>(payload);
+            return await srv.GetDataAsync(payload, orderShipmentNum.ToString());
         }
     }
 }
