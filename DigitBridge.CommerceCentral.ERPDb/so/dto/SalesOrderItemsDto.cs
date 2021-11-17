@@ -671,12 +671,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		/// <summary>
 		/// (Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
-   
-   CONSTRAINT
-		/// </summary>
-		[OpenApiPropertyDescription("(Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
-   
-   CONSTRAINT")]
+        /// </summary>
+		[OpenApiPropertyDescription("(Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false")]
         public long? OrderDCAssignmentLineNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
