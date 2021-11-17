@@ -303,21 +303,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             sum.ChargeAndAllowanceAmount = sum.ChargeAndAllowanceAmount.ToAmount();
             sum.TaxRate = sum.TaxRate.ToRate();
 
-            // if exist DiscountRate, calculate discount amount, otherwise use entry discount amount
-            //if (!sum.DiscountRate.IsZero())
-            //    sum.DiscountAmount = (sum.SubTotalAmount * sum.DiscountRate.ToRate()).ToAmount();
-            //else
-            //{
-            //    sum.DiscountRate = 0;
-                sum.DiscountAmount = sum.DiscountAmount.ToAmount();
-            //}
+            // We support both discount rate and discount amount
+            // if exist discount rate, it will apply to unit price and get after discount price
+            sum.DiscountAmount = sum.DiscountAmount.ToAmount();
+            var discountRateAmount = (decimal)0;
+            // if exist DiscountRate, calculate discount amount
+            if (!sum.DiscountRate.IsZero())
+                discountRateAmount = (sum.SubTotalAmount * sum.DiscountRate.ToRate()).ToAmount();
+            var totalDiscountAmount = discountRateAmount + sum.DiscountAmount;
 
+            //manual input max discount amount is SubTotalAmount
             // tax calculate should deduct discount from taxable amount
-            //sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
-
-            var discountRate = sum.DiscountRate.ToRate();
-            sum.TaxAmount = (sum.TaxableAmount * (1 - discountRate) - sum.DiscountAmount) * sum.TaxRate;
-            sum.TaxAmount = sum.TaxAmount.ToAmount();
+            var discountRate = sum.SubTotalAmount != 0 ? (totalDiscountAmount / sum.SubTotalAmount) : 0;
+            sum.TaxAmount = ((sum.TaxableAmount * (1 - discountRate)) * sum.TaxRate).ToAmount();
 
             if (setting.TaxForShippingAndHandling)
             {
