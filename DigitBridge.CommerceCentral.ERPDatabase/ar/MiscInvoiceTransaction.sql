@@ -63,3 +63,9 @@ CREATE UNIQUE NONCLUSTERED INDEX [UI_MiscInvoiceTransaction_TransNum] ON [dbo].[
 	[TransNum] ASC
 ) 
 GO
+
+CREATE NONCLUSTERED INDEX [IK_MiscInvoiceTransaction_AuthCode] ON [dbo].[MiscInvoiceTransaction]
+(
+	[AuthCode] ASC
+) 
+GO
