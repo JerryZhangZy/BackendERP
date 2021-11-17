@@ -24,7 +24,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     public static class InvoicePaymentApi
     {
         [FunctionName(nameof(ExistCheckNumber))]
-        [OpenApiOperation(operationId: "ExistCheckNumber", tags: new[] { "Invoices" }, Summary = "exam an invoice number whether been used")]
+        [OpenApiOperation(operationId: "ExistCheckNumber", tags: new[] { "Invoice payments" }, Summary = "exam an invoice number whether been used")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -44,7 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
 
         [FunctionName(nameof(CreateInvoicePayments))]
-        [OpenApiOperation(operationId: "CreateInvoicePayments", tags: new[] { "Create invoice payments" }, Summary = "Get invoice payments by customer code")]
+        [OpenApiOperation(operationId: "CreateInvoicePayments", tags: new[] { "Invoice payments" }, Summary = "Get invoice payments by customer code")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
@@ -437,7 +437,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         [FunctionName(nameof(InvoicePaymentsListSummary))]
-        [OpenApiOperation(operationId: "InvoicePaymentsListSummary", tags: new[] { "Invoice Payments" }, Summary = "Load invoice payments list summary")]
+        [OpenApiOperation(operationId: "InvoicePaymentsListSummary", tags: new[] { "Invoice payments" }, Summary = "Load invoice payments list summary")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
