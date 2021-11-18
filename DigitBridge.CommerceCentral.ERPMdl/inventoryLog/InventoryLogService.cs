@@ -1168,7 +1168,7 @@ where inv.InventoryUuid=il.InventoryUuid
 
         public async Task<bool> ReceiveInvoiceTransactionReturnbackItem(InvoiceTransactionData transaction)
         {
-            var inventoryLogs = ConvertInvoiceReturnItemsToInventoryLogList(transaction.InvoiceTransaction, transaction.InvoiceReturnItems, 0, trans.TransUuid);
+            var inventoryLogs = ConvertInvoiceReturnItemsToInventoryLogList(transaction.InvoiceTransaction, transaction.InvoiceReturnItems, 0, transaction.InvoiceTransaction.TransUuid);
             foreach (var log in inventoryLogs)
             {
                 await log.AddAsync();
