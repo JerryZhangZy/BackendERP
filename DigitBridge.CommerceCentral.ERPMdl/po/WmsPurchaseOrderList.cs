@@ -61,16 +61,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {ItemHelper.TableAllies}.SKU as 'SKU',
 
 {ItemHelper.TableAllies}.Price as 'PoPrice',
-{ItemHelper.TableAllies}.PoQty as 'PoQty',
---{ItemHelper.TableAllies}.QtyForOther as 'QtyForOther',
+CAST({ ItemHelper.TableAllies}.PoQty as INT) as 'PoQty',
+--CAST({ ItemHelper.TableAllies}.QtyForOther as INT) as 'QtyForOther',
 {ItemHelper.TableAllies}.EtaShipDate as 'LineRequestShipDate',
 {ItemHelper.TableAllies}.EtaArrivalDate as 'LineArrivalDueDate',
 {ItemHelper.TableAllies}.Notes as 'LinePublicNote',
 --{ItemHelper.TableAllies}.LinePrivateNote as 'LinePrivateNote',
 {ItemHelper.TableAllies}.Seq as 'Sequence',
 --{ItemHelper.TableAllies}.OriginaLineId as 'OriginaLineId',
-{ItemHelper.TableAllies}.ReceivedQty as 'HumanReceiveQty',
---{ItemHelper.TableAllies}.HumanAdjustQty as 'HumanAdjustQty',
+CAST({ ItemHelper.TableAllies}.ReceivedQty as INT) as 'HumanReceiveQty',
+--CAST({ ItemHelper.TableAllies}.HumanAdjustQty as INT) as 'HumanAdjustQty',
 {ItemHelper.TableAllies}.EnterDateUtc as 'EnterDate'
 ";
             return columns;
