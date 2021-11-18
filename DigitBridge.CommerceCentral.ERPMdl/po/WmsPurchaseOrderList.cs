@@ -15,6 +15,12 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Microsoft.Data.SqlClient;
+using Helper = DigitBridge.CommerceCentral.ERPDb.PoHeaderHelper;
+using InfoHelper = DigitBridge.CommerceCentral.ERPDb.PoHeaderInfoHelper;
+using ItemHelper = DigitBridge.CommerceCentral.ERPDb.PoItemsHelper;
+using ProdcutHelper = DigitBridge.CommerceCentral.ERPDb.ProductBasicHelper;
+using EventHelper = DigitBridge.CommerceCentral.ERPDb.EventProcessERPHelper;
+
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -28,31 +34,104 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
         }
 
+        #region get select columns
+        protected string GetHeader_Columns()
+        {
+            var columns = $@"
+{Helper.TableAllies}.PoUuid as 'PoUuid',
+{Helper.TableAllies}.DatabaseNum as 'DatabaseNum',
+{Helper.TableAllies}.PoNum as 'PoNumber',
+{Helper.TableAllies}.VendorName as 'VendorName',
+{Helper.TableAllies}.VendorCode as 'VendorCode',
+{Helper.TableAllies}.PoDate as 'PoDate',
+{Helper.TableAllies}.CancelDate as 'CancelAfterDate',
+--{Helper.TableAllies}.Terms as 'Terms',
+--{Helper.TableAllies}.WarehousCode as 'WarehousCode',
+{Helper.TableAllies}.EtaShipDate as 'RequestShipDate',
+{Helper.TableAllies}.EtaArrivalDate as 'ArrivalDueDate'
+--{Helper.TableAllies}.PublicNote as 'PublicNote',
+--{Helper.TableAllies}.PrivateNote as 'PrivateNote',
+";
+            return columns;
+        }
+        protected string GetItem_Columns()
+        {
+            var columns = $@"
+{ItemHelper.TableAllies}.PoItemUuid as 'PoItemUuid',
+{ItemHelper.TableAllies}.SKU as 'SKU',
+
+{ItemHelper.TableAllies}.Price as 'PoPrice',
+{ItemHelper.TableAllies}.PoQty as 'PoQty',
+--{ItemHelper.TableAllies}.QtyForOther as 'QtyForOther',
+{ItemHelper.TableAllies}.EtaShipDate as 'LineRequestShipDate',
+{ItemHelper.TableAllies}.EtaArrivalDate as 'LineArrivalDueDate',
+{ItemHelper.TableAllies}.Notes as 'LinePublicNote',
+--{ItemHelper.TableAllies}.LinePrivateNote as 'LinePrivateNote',
+{ItemHelper.TableAllies}.Seq as 'Sequence',
+--{ItemHelper.TableAllies}.OriginaLineId as 'OriginaLineId',
+{ItemHelper.TableAllies}.ReceivedQty as 'HumanReceiveQty',
+--{ItemHelper.TableAllies}.HumanAdjustQty as 'HumanAdjustQty',
+{ItemHelper.TableAllies}.EnterDateUtc as 'EnterDate'
+";
+            return columns;
+        }
+
+        protected string GetSkuItem_Columns()
+        {
+            var columns = $@"
+{ProdcutHelper.TableAllies}.ProductTitle as 'Title'
+";
+            return columns;
+        }
+        protected string GetItem_Script()
+        {
+            var columns = $@"
+( 
+SELECT 
+{GetItem_Columns()},
+{GetSkuItem_Columns()}
+FROM { ItemHelper.TableName} { ItemHelper.TableAllies}
+LEFT JOIN {ProdcutHelper.TableName} {ProdcutHelper.TableAllies}
+     ON ( {ProdcutHelper.TableAllies}.MasterAccountNum={Helper.TableAllies}.MasterAccountNum
+      AND {ProdcutHelper.TableAllies}.ProfileNum={Helper.TableAllies}.ProfileNum
+      AND {ProdcutHelper.TableAllies}.SKU={ItemHelper.TableAllies}.SKU
+      )
+
+WHERE { ItemHelper.TableAllies}.PoUuid = { Helper.TableAllies}.PoUuid 
+FOR JSON PATH
+) AS PoLineList";
+            return columns;
+        }
+
+        #endregion
+
         #region override methods
 
         protected override string GetSQL_select()
         {
             this.SQL_Select = $@"
-select 
-pohi.DistributionCenterNum as CentralPoNum,poh.DatabaseNum as CentralDatabaseNum,poh.PoUuid as PoUuid,poh.PoNum as PoNumber,poh.VendorName,poh.PoDate,poh.CancelDate as CancelAfterDate,dc.DistributionCenterCode as WarehousCode,
-(select poit.PoUuid as PoUuid,poit.PoItemUuid as PoItemUuid,poit.SKU,poit.Price as PoPrice,CAST(poit.PoQty as INT) AS PoQty,poit.EtaShipDate,poit.Seq as Sequence,poit.PoItemUuid as OriginaLineId,poit.EnterDateUtc as EnterDate 
-from PoItems poit 
-WHERE poh.PoUuid=poit.PoUuid  FOR JSON PATH ) AS PoLineList
-";
+            SELECT 
+             {GetHeader_Columns()}
+            ,{GetItem_Script()}    
+            ";
+
             return this.SQL_Select;
         }
 
         protected override string GetSQL_from()
         {
             this.SQL_From = $@"
-from PoHeader poh 
-left join PoHeaderInfo pohi on poh.PoUuid=pohi.PoUuid 
-left join DistributionCenter dc on pohi.WarehouseUuid=dc.DistributionCenterUuid
+ FROM {EventHelper.TableName} {EventHelper.TableAllies}
+ INNER JOIN {Helper.TableName} {Helper.TableAllies}  
+        on  {Helper.TableAllies}.MasterAccountNum={EventHelper.TableAllies}.MasterAccountNum
+        and {Helper.TableAllies}.ProfileNum={EventHelper.TableAllies}.ProfileNum
+        and {Helper.TableAllies}.PoUuid={EventHelper.TableAllies}.ProcessUuid
+ --LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({InfoHelper.TableAllies}.PoUuid = {Helper.TableAllies}.PoUuid)
 ";
             return this.SQL_From;
         }
 
-        #endregion override methods
+        #endregion override methods 
 
         public virtual void GetPurchaseOrderList(PurchaseOrderPayload payload)
         {
