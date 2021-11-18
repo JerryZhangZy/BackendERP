@@ -68,58 +68,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
         }
 
-        [FunctionName(nameof(DeleteSystemCodes))]
-        [OpenApiOperation(operationId: "DeleteSystemCodes", tags: new[] { "SystemCodess" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "SystemCodeName", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "SystemCodeName", Description = "SystemCodeName", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemCodesPayloadDelete), Description = "The OK response")]
-        public static async Task<JsonNetResponse<SystemCodesPayload>> DeleteSystemCodes(
-            [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "systemCodess/{SystemCodeName}")] HttpRequest req,
-            string SystemCodeName)
-        {
-            var payload = await req.GetParameters<SystemCodesPayload>();
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new SystemCodesService(dbFactory);
-            //var spilterIndex = SystemCodesUuid.IndexOf("-");
-            //var systemCodesCode = SystemCodesUuid;
-            //if (spilterIndex > 0 && systemCodesCode.StartsWith(payload.ProfileNum.ToString()))
-            //{
-            //    systemCodesCode = SystemCodesUuid.Substring(spilterIndex + 1);
-            //}
-            //payload.SystemCodeUuids.Add(systemCodesCode);
-            if (await svc.DeleteByNumberAsync(payload, SystemCodeName))
-            {
-                payload.Success = true;
-            }
-            payload.Messages = svc.Messages;
-            return new JsonNetResponse<SystemCodesPayload>(payload);
-        }
-
-        [FunctionName(nameof(AddSystemCodes))]
-        [OpenApiOperation(operationId: "AddSystemCodes", tags: new[] { "SystemCodess" })]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SystemCodesPayloadAdd), Description = "SystemCodesDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemCodesPayloadAdd))]
-        public static async Task<JsonNetResponse<SystemCodesPayload>> AddSystemCodes(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "systemCodess")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<SystemCodesPayload>(true);
-            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new SystemCodesService(dbFactory);
-            if (await svc.AddAsync(payload))
-                payload.SystemCodes = svc.ToDto();
-            else
-            {
-                payload.Messages = svc.Messages;
-                payload.Success = false;
-            }
-            return new JsonNetResponse<SystemCodesPayload>(payload);
-        }
-
         [FunctionName(nameof(UpdateSystemCodes))]
         [OpenApiOperation(operationId: "UpdateSystemCodes", tags: new[] { "SystemCodess" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -161,21 +109,6 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var srv = new SystemCodesList(dataBaseFactory, new SystemCodesQuery());
             await srv.GetSystemCodesListAsync(payload);
             return new JsonNetResponse<SystemCodesPayload>(payload);
-        }
-
-        /// <summary>
-        /// Add systemCodes
-        /// </summary>
-        [FunctionName(nameof(Sample_SystemCodes_Post))]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiOperation(operationId: "SystemCodesAddSample", tags: new[] { "Sample" }, Summary = "Get new sample of systemCodes")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemCodesPayloadAdd))]
-        public static async Task<JsonNetResponse<SystemCodesPayloadAdd>> Sample_SystemCodes_Post(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/systemCodess")] HttpRequest req)
-        {
-            return new JsonNetResponse<SystemCodesPayloadAdd>(SystemCodesPayloadAdd.GetSampleData());
         }
 
         /// <summary>
