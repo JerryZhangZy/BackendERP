@@ -689,7 +689,7 @@ where inv.InventoryUuid=il.InventoryUuid
             var list = new List<InventoryLog>();
             foreach (var item in detailItems)
             {
-                if (item.Stockable)
+                if (!item.Stockable)
                 {
                     if (item.StockQty > 0)
                     {
@@ -834,7 +834,7 @@ where inv.InventoryUuid=il.InventoryUuid
             var list = new List<InventoryLog>();
             foreach (var item in detailItems)
             {
-                if (item.Stockable)
+                if (!item.Stockable)
                 {
                     if (item.TransQty > 0)
                     {
