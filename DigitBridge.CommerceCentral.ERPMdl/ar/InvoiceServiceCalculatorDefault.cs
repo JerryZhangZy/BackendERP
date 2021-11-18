@@ -365,7 +365,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     continue;
                 SetDefault(item, data, processingMode);
                 CalculateDetail(item, data, processingMode);
-                if (item.IsAr)
+                if (!item.IsAr)
                 {
                     sum.SubTotalAmount += item.ExtAmount;
                     sum.TaxableAmount += item.TaxableAmount;
@@ -486,13 +486,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.UnitCost = invCost.UnitCost;
             item.AvgCost = invCost.AvgCost;
             item.LotCost = invCost.AvgCost;
-            if (!item.Costable)
+            if (item.Costable)
             {
                 item.UnitCost = 0;
                 item.AvgCost = 0;
                 item.LotCost = 0;
             }
-            else if (!item.IsProfit)
+            else if (item.IsProfit)
             {
                 item.UnitCost = item.ExtAmount;
                 item.AvgCost = item.ExtAmount;

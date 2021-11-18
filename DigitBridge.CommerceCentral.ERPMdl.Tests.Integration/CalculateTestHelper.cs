@@ -27,10 +27,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ShippingAmount = 10,
                 MiscAmount = 10,
                 ChargeAndAllowanceAmount = 10,
-                IsAr = true,
-                Taxable = false,
-                Costable = true,
-                IsProfit = true,
+                //IsAr = true,
+                //Taxable = false,
+                //Costable = true,
+                //IsProfit = true,
             };
             var result = new
             {
@@ -54,10 +54,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ShippingAmount = 100,
                 MiscAmount = 100,
                 ChargeAndAllowanceAmount = 10,
-                IsAr = true,//editable:false
-                Taxable = true,//editable:false
-                Costable = true,//editable:false
-                IsProfit = true,//editable:false 
             };
             var result = new
             {
@@ -85,10 +81,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ShippingAmount = 200,
                 MiscAmount = 200,
                 ChargeAndAllowanceAmount = 20,
-                IsAr = true,//editable:false
-                Taxable = true,//editable:false
-                Costable = true,//editable:false
-                IsProfit = true,//editable:false 
+                //IsAr = true,//editable:false
+                //Taxable = true,//editable:false
+                //Costable = true,//editable:false
+                //IsProfit = true,//editable:false 
 
             };
             var result = new
@@ -115,10 +111,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ShippingAmount = 300,
                 MiscAmount = 300,
                 ChargeAndAllowanceAmount = 30,
-                IsAr = true,//editable:false
-                Taxable = true,//editable:false
-                Costable = true,//editable:false
-                IsProfit = true,//editable:false  
+                //IsAr = true,//editable:false
+                //Taxable = true,//editable:false
+                //Costable = true,//editable:false
+                //IsProfit = true,//editable:false  
             };
             var result = new
             {
@@ -144,10 +140,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ShippingAmount = 400,
                 MiscAmount = 400,
                 ChargeAndAllowanceAmount = 40,
-                IsAr = true,//editable:false
-                Taxable = true,//editable:false
-                Costable = true,//editable:false
-                IsProfit = true,//editable:false 
+                //IsAr = true,//editable:false
+                //Taxable = true,//editable:false
+                //Costable = true,//editable:false
+                //IsProfit = true,//editable:false 
             };
             var result = new
             {
@@ -173,10 +169,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ShippingAmount = 500,
                 MiscAmount = 500,
                 ChargeAndAllowanceAmount = 50,
-                IsAr = false,//editable:false
-                Taxable = true,//editable:false
-                Costable = true,//editable:false
-                IsProfit = true,//editable:false
+                //IsAr = false,//editable:false
+                //Taxable = true,//editable:false
+                //Costable = true,//editable:false
+                //IsProfit = true,//editable:false
 
             };
             var result = new
@@ -207,10 +203,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ShippingAmount = 600,
                 MiscAmount = 600,
                 ChargeAndAllowanceAmount = 60,
-                IsAr = false,//editable:false
-                Taxable = false,//editable:false
-                Costable = true,//editable:false
-                IsProfit = true,//editable:false
+                //IsAr = false,//editable:false
+                //Taxable = false,//editable:false
+                //Costable = true,//editable:false
+                //IsProfit = true,//editable:false
 
             };
             var result = new
@@ -240,10 +236,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ShippingAmount = 11,
                 MiscAmount = 11,
                 ChargeAndAllowanceAmount = 11,
-                IsAr = true,//editable:false
-                Taxable = false,//editable:false
-                Costable = true,//editable:false
-                IsProfit = true,//editable:false
+                //IsAr = true,//editable:false
+                //Taxable = false,//editable:false
+                //Costable = true,//editable:false
+                //IsProfit = true,//editable:false
 
             };
             var result = new
@@ -275,10 +271,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ShippingAmount = 800,
                 MiscAmount = 800,
                 ChargeAndAllowanceAmount = 80,
-                IsAr = true,//editable:false
-                Taxable = true,//editable:false
-                Costable = false,//editable:false
-                IsProfit = true,//editable:false
+                //IsAr = true,//editable:false
+                //Taxable = true,//editable:false
+                //Costable = false,//editable:false
+                //IsProfit = true,//editable:false
 
             };
             var result = new
@@ -309,10 +305,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ShippingAmount = 900,
                 MiscAmount = 900,
                 ChargeAndAllowanceAmount = 90,
-                IsAr = true,//editable:false
-                Taxable = true,//editable:false
-                Costable = true,//editable:false
-                IsProfit = false,//editable:false
+                //IsAr = true,//editable:false
+                //Taxable = true,//editable:false
+                //Costable = true,//editable:false
+                //IsProfit = false,//editable:false
 
             };
             var result = new
@@ -343,10 +339,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ShippingAmount = 1000,
                 MiscAmount = 1000,
                 ChargeAndAllowanceAmount = 100,
-                IsAr = true,//editable:false
-                Taxable = true,//editable:false
-                Costable = true,//editable:false
-                IsProfit = false,//editable:false
+                //IsAr = true,//editable:false
+                //Taxable = true,//editable:false
+                //Costable = true,//editable:false
+                //IsProfit = false,//editable:false
 
             };
             var result = new
