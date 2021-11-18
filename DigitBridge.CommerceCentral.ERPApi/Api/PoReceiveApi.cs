@@ -390,7 +390,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<PoReceivePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new PoReceiveService(dataBaseFactory);
-            payload.Success = await srv.NewReceiveForVendorAsync(payload);
+            payload.Success = await srv.NewReceiveForVendorAsync(payload,vendorCode);
             payload.Messages = srv.Messages;
  
             return new JsonNetResponse<PoReceivePayload>(payload);
