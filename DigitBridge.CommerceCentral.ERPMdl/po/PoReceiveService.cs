@@ -232,7 +232,36 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Messages = Messages;
             return true;
         }
-        
+
+        public async Task<bool> ClosePoReceiveAsync(PoReceivePayload payload,int transNum)
+        {
+           
+
+            if(!await GetByNumberAsync(payload, transNum))
+            {
+                AddError("PoTransaction cannot be find");
+                return false;
+            }
+            //检查限制条件 --暂无
+            Edit();
+            base.Data.PoTransaction.TransStatus = (int)PoTransStatus.Closed;
+           
+            //Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
+            if (await base.SaveDataAsync())
+            {
+                await InventoryLogService.UpdateByPoReceiveAsync(_data);
+                //await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);
+                //await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
+                await InventoryService.UpdatAvgCostByPoReceiveAsync(_data);
+                return true;
+            }
+
+            return false;
+
+        }
+
+
+
         private InventoryLogService _inventoryLogService;
 
         protected InventoryLogService InventoryLogService
@@ -378,6 +407,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.PoTransactions = transactions;
             return true;
         }
+
+
+ 
 
 
         //
