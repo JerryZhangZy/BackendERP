@@ -19,122 +19,121 @@ using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPApi
 {
-    [ApiFilter(typeof(SystemCodesApi))]
-    public static class SystemCodesApi
+    [ApiFilter(typeof(SystemSettingApi))]
+    public static class SystemSettingApi
     {
-        [FunctionName(nameof(GetSystemCodes))]
-        [OpenApiOperation(operationId: "GetSystemCodes", tags: new[] { "SystemCodes" })]
+        [FunctionName(nameof(GetSystemSetting))]
+        [OpenApiOperation(operationId: "GetSystemSetting", tags: new[] { "SystemSetting" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "SystemCodeName", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "SystemCodeName", Description = "SystemCodeName", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemCodesPayloadGetSingle))]
-        public static async Task<JsonNetResponse<SystemCodesPayload>> GetSystemCodes(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "systemCodes/{SystemCodeName}")] HttpRequest req,
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemSettingPayloadGetSingle))]
+        public static async Task<JsonNetResponse<SystemSettingPayload>> GetSystemSetting(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "systemSettings/{SystemCodeName}")] HttpRequest req,
             string SystemCodeName)
         {
-            var payload = await req.GetParameters<SystemCodesPayload>();
+            var payload = await req.GetParameters<SystemSettingPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new SystemCodesService(dbFactory);
-            payload.SystemCodeName = SystemCodeName;
-            payload.Success = await svc.GetByCodeNameAsync(payload);
+            var svc = new SystemSettingService(dbFactory);
+            //payload.Success = await svc.GetByCodeNameAsync(payload);
             payload.Messages = svc.Messages;
-            return new JsonNetResponse<SystemCodesPayload>(payload);
+            return new JsonNetResponse<SystemSettingPayload>(payload);
 
         }
 
-        [FunctionName(nameof(UpdateSystemCodes))]
-        [OpenApiOperation(operationId: "UpdateSystemCodes", tags: new[] { "SystemCodes" })]
+        [FunctionName(nameof(UpdateSystemSetting))]
+        [OpenApiOperation(operationId: "UpdateSystemSetting", tags: new[] { "SystemSetting" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SystemCodesPayloadUpdate), Description = "SystemCodesDataDto ")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemCodesPayloadUpdate))]
-        public static async Task<JsonNetResponse<SystemCodesPayload>> UpdateSystemCodes(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "systemCodes")] HttpRequest req)
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SystemSettingPayloadUpdate), Description = "SystemSettingDataDto ")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemSettingPayloadUpdate))]
+        public static async Task<JsonNetResponse<SystemSettingPayload>> UpdateSystemSetting(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "systemSettings")] HttpRequest req)
         {
-            var payload = await req.GetParameters<SystemCodesPayload>(true);
+            var payload = await req.GetParameters<SystemSettingPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new SystemCodesService(dbFactory);
+            var svc = new SystemSettingService(dbFactory);
             if (await svc.AddOrUpdateAsync(payload))
-                payload.SystemCodes = svc.ToDto();
+                payload.SystemSetting = svc.ToDto();
             else
             {
                 payload.Messages = svc.Messages;
                 payload.Success = false;
             }
-            return new JsonNetResponse<SystemCodesPayload>(payload);
+            return new JsonNetResponse<SystemSettingPayload>(payload);
         }
 
         /// <summary>
-        /// Load systemCodes list
+        /// Load systemSetting list
         /// </summary>
-        [FunctionName(nameof(SystemCodesList))]
-        [OpenApiOperation(operationId: "SystemCodesList", tags: new[] { "SystemCodes" }, Summary = "Load systemCodes list data")]
+        [FunctionName(nameof(SystemSettingList))]
+        [OpenApiOperation(operationId: "SystemSettingList", tags: new[] { "SystemSetting" }, Summary = "Load systemSetting list data")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SystemCodesPayloadFind), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemCodesPayloadFind))]
-        public static async Task<JsonNetResponse<SystemCodesPayload>> SystemCodesList(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "systemCodes/find")] HttpRequest req)
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SystemSettingPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemSettingPayloadFind))]
+        public static async Task<JsonNetResponse<SystemSettingPayload>> SystemSettingList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "systemSettings/find")] HttpRequest req)
         {
-            var payload = await req.GetParameters<SystemCodesPayload>(true);
+            var payload = await req.GetParameters<SystemSettingPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new SystemCodesList(dataBaseFactory, new SystemCodesQuery());
-            await srv.GetSystemCodesListAsync(payload);
-            return new JsonNetResponse<SystemCodesPayload>(payload);
+            var srv = new SystemSettingList(dataBaseFactory, new SystemSettingQuery());
+            await srv.GetSystemSettingListAsync(payload);
+            return new JsonNetResponse<SystemSettingPayload>(payload);
         }
 
         /// <summary>
-        /// find systemCodes
+        /// find systemSetting
         /// </summary>
-        [FunctionName(nameof(Sample_SystemCodes_Find))]
+        [FunctionName(nameof(Sample_SystemSetting_Find))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiOperation(operationId: "SystemCodesFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of systemCodes find")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemCodesPayloadFind))]
-        public static async Task<JsonNetResponse<SystemCodesPayloadFind>> Sample_SystemCodes_Find(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/systemCodes/find")] HttpRequest req)
+        [OpenApiOperation(operationId: "SystemSettingFindSample", tags: new[] { "Sample" }, Summary = "Get new sample of systemSetting find")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemSettingPayloadFind))]
+        public static async Task<JsonNetResponse<SystemSettingPayloadFind>> Sample_SystemSetting_Find(
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "sample/POST/systemSettings/find")] HttpRequest req)
         {
-            return new JsonNetResponse<SystemCodesPayloadFind>(SystemCodesPayloadFind.GetSampleData());
+            return new JsonNetResponse<SystemSettingPayloadFind>(SystemSettingPayloadFind.GetSampleData());
         }
 
-        [FunctionName(nameof(ExportSystemCodes))]
-        [OpenApiOperation(operationId: "ExportSystemCodes", tags: new[] { "SystemCodes" })]
+        [FunctionName(nameof(ExportSystemSetting))]
+        [OpenApiOperation(operationId: "ExportSystemSetting", tags: new[] { "SystemSetting" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SystemCodesPayloadFind), Description = "Request Body in json format")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SystemSettingPayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/csv", bodyType: typeof(File))]
-        public static async Task<FileContentResult> ExportSystemCodes(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "systemCodes/export")] HttpRequest req)
+        public static async Task<FileContentResult> ExportSystemSetting(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "systemSettings/export")] HttpRequest req)
         {
-            var payload = await req.GetParameters<SystemCodesPayload>(true);
+            var payload = await req.GetParameters<SystemSettingPayload>(true);
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new SystemCodesManager(dbFactory);
+            var svc = new SystemSettingManager(dbFactory);
 
             var exportData = await svc.ExportAsync(payload);
             var downfile = new FileContentResult(exportData, "text/csv");
-            downfile.FileDownloadName = "export-systemCodes.csv";
+            downfile.FileDownloadName = "export-systemSetting.csv";
             return downfile;
         }
 
-        [FunctionName(nameof(ImportSystemCodes))]
-        [OpenApiOperation(operationId: "ImportSystemCodes", tags: new[] { "SystemCodes" })]
+        [FunctionName(nameof(ImportSystemSetting))]
+        [OpenApiOperation(operationId: "ImportSystemSetting", tags: new[] { "SystemSetting" })]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemCodesPayload))]
-        public static async Task<SystemCodesPayload> ImportSystemCodes(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "systemCodes/import")] HttpRequest req)
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemSettingPayload))]
+        public static async Task<SystemSettingPayload> ImportSystemSetting(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "systemSettings/import")] HttpRequest req)
         {
-            var payload = await req.GetParameters<SystemCodesPayload>();
+            var payload = await req.GetParameters<SystemSettingPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var files = req.Form.Files;
-            var svc = new SystemCodesManager(dbFactory);
+            var svc = new SystemSettingManager(dbFactory);
 
             await svc.ImportAsync(payload, files);
             payload.Success = true;

@@ -23,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Request and Response payload object
     /// </summary>
     [Serializable()]
-    public class SystemCodesPayload : PayloadBase
+    public class SystemSettingPayload : PayloadBase
     {
         /// <summary>
         /// Delegate function to load request parameter to payload property.
@@ -32,34 +32,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             return new Dictionary<string, Action<string>>
             {
-                //{ "SystemCodeName", val => SystemCodeUuids = val.Split(",").ToList() }
+                { "SystemSettingUuids", val => SystemSettingUuids = val.Split(",").ToList() }
             };
         }
 
-        /// <summary>
-        /// (Request and Response Data) SystemCodeName to load.
-        /// </summary>
-        [OpenApiPropertyDescription("(Response Data) SystemCodeName to load.")]
-        public string SystemCodeName { get; set; } = string.Empty;
 
         #region multiple Dto list
 
         /// <summary>
-        /// (Request Parameter) Array of uuid to load multiple SystemCodes dto data.
+        /// (Request Parameter) Array of uuid to load multiple SystemSetting dto data.
         /// </summary>
-        [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple SystemCodes dto data.")]
-        public IList<string> SystemCodeUuids { get; set; } = new List<string>();
+        [OpenApiPropertyDescription("(Request Parameter) Array of uuid to load multiple SystemSetting dto data.")]
+        public IList<string> SystemSettingUuids { get; set; } = new List<string>();
         [JsonIgnore] 
-        public virtual bool HasSystemCodeUuids => SystemCodeUuids != null && SystemCodeUuids.Count > 0;
-        public bool ShouldSerializeSalesOrderUuids() => HasSystemCodeUuids;
+        public virtual bool HasSystemSettingUuids => SystemSettingUuids != null && SystemSettingUuids.Count > 0;
+        public bool ShouldSerializeSalesOrderUuids() => HasSystemSettingUuids;
 
         /// <summary>
-        /// (Response Data) Array of SystemCodes entity object which load by uuid array.
+        /// (Response Data) Array of SystemSetting entity object which load by uuid array.
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) Array of entity object which load by uuid array.")]
-        public IList<SystemCodesDataDto> SystemCodess { get; set; }
-        [JsonIgnore] public virtual bool HasSystemCodess => SystemCodess != null && SystemCodess.Count > 0;
-        public bool ShouldSerializeSystemCodess() => HasSystemCodess;
+        public IList<SystemSettingDataDto> SystemSettings { get; set; }
+        [JsonIgnore] public virtual bool HasSystemSettings => SystemSettings != null && SystemSettings.Count > 0;
+        public bool ShouldSerializeSystemSettings() => HasSystemSettings;
 
         #endregion multiple Dto list
 
@@ -67,12 +62,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region single Dto object
 
         /// <summary>
-        /// (Request and Response Data) Single SystemCodes entity object which load by Number.
+        /// (Request and Response Data) Single SystemSetting entity object which load by Number.
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) Single entity object which load by Number.")]
-        public SystemCodesDataDto SystemCodes { get; set; }
-        [JsonIgnore] public virtual bool HasSystemCodes => SystemCodes != null;
-        public bool ShouldSerializeSystemCodes() => HasSystemCodes;
+        public SystemSettingDataDto SystemSetting { get; set; }
+        [JsonIgnore] public virtual bool HasSystemSetting => SystemSetting != null;
+        public bool ShouldSerializeSystemSetting() => HasSystemSetting;
 
         #endregion single Dto object
 
@@ -84,16 +79,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
         [JsonConverter(typeof(StringBuilderConverter))]
-        public StringBuilder SystemCodesList { get; set; }
-        [JsonIgnore] public virtual bool HasSystemCodesList => SystemCodesList != null && SystemCodesList.Length > 0;
-        public bool ShouldSerializeSystemCodesList() => HasSystemCodesList;
+        public StringBuilder SystemSettingList { get; set; }
+        [JsonIgnore] public virtual bool HasSystemSettingList => SystemSettingList != null && SystemSettingList.Length > 0;
+        public bool ShouldSerializeSystemSettingList() => HasSystemSettingList;
 
         /// <summary>
         /// (Response Data) List result count which load filter and paging.
         /// </summary>
-        public int SystemCodesListCount { get; set; }
-        [JsonIgnore] public virtual bool HasSystemCodesListCount => SystemCodesListCount > 0;
-        public bool ShouldSerializeSystemCodesListCount() => HasSystemCodesListCount;
+        public int SystemSettingListCount { get; set; }
+        [JsonIgnore] public virtual bool HasSystemSettingListCount => SystemSettingListCount > 0;
+        public bool ShouldSerializeSystemSettingListCount() => HasSystemSettingListCount;
 
         #endregion list service
     }

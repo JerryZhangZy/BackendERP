@@ -20,26 +20,26 @@ using DigitBridge.CommerceCentral.YoPoco;
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     /// <summary>
-    /// Represents a SystemCodesDataDtoMapperDefault Class.
+    /// Represents a SystemSettingDataDtoMapperDefault Class.
     /// NOTE: This class is generated from a T4 template Once - you you wanr re-generate it, you need delete cs file and generate again
     /// </summary>
-    public static class SystemCodesDataDtoExtension
+    public static class SystemSettingDataDtoExtension
     {
         /// <summary>
-        /// Merge SystemCodesDataDto header objects to one dynamic object
+        /// Merge SystemSettingDataDto header objects to one dynamic object
         /// </summary>
-        /// <param name="dto">SystemCodesDataDto object to merge data</param>
+        /// <param name="dto">SystemSettingDataDto object to merge data</param>
         /// <param name="withHeaderText">Add header text line at first</param>
         /// <returns>Single dynamic object include all properties of Dto header objects</returns>
-        public static IEnumerable<dynamic> MergeHeaderRecord(this SystemCodesDataDto dto, bool withHeaderText = false)
+        public static IEnumerable<dynamic> MergeHeaderRecord(this SystemSettingDataDto dto, bool withHeaderText = false)
         {
             var result = new List<dynamic>();
-            if(!dto.HasSystemCodes)
+            if(!dto.HasSystemSetting)
                 return result;
             //TODO change to merge Dto children object
             if (withHeaderText)
-                result.Add(dto.SystemCodes.MergeName(dto.SystemCodes));
-            result.Add(dto.SystemCodes.Merge(dto.SystemCodes));
+                result.Add(dto.SystemSetting.MergeName(dto.SystemSetting));
+            result.Add(dto.SystemSetting.Merge(dto.SystemSetting));
             return result;
         }
 
@@ -49,24 +49,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <param name="dto">SalesOrderDataDto object to merge data</param>
         /// <param name="withHeaderText">Add header text line at first</param>
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
-        public static IEnumerable<dynamic> MergeDetailRecord(this SystemCodesDataDto dto, bool withHeaderText = false)
+        public static IEnumerable<dynamic> MergeDetailRecord(this SystemSettingDataDto dto, bool withHeaderText = false)
         {
             return new List<dynamic>();
-            //TODO change to merge Dto children object
-            //var result = new List<dynamic>();
-            //if (!dto.HasSalesOrderItems) 
-            //    return result;
-            //
-            //var salesOrderItems = new SalesOrderItems() { SalesOrderItemsAttributes = new SalesOrderItemsAttributes()};
-            //
-            //if (withHeaderText)
-            //    result.Add(salesOrderItems.MergeName(salesOrderItems.SalesOrderItemsAttributes));
-            //
-            //foreach (var item in dto.SalesOrderItems)
-            //{
-            //    result.Add(item.Merge(item.SalesOrderItemsAttributes));
-            //}
-            //return result;
         }
 
 
@@ -76,10 +61,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <param name="dto">SalesOrderDataDto object</param>
         /// <param name="count">Generate multiple fake data</param>
         /// <returns>list for Fake data</returns>
-        public static IList<SystemCodesDataDto> GetFakerData(this SystemCodesDataDto dto, int count)
+        public static IList<SystemSettingDataDto> GetFakerData(this SystemSettingDataDto dto, int count)
         {
-            var obj = new SystemCodesDataDto();
-            var datas = new List<SystemCodesDataDto>();
+            var obj = new SystemSettingDataDto();
+            var datas = new List<SystemSettingDataDto>();
             for (int i = 0; i < count; i++)
                 datas.Add(obj.GetFakerData());
             return datas;
@@ -90,32 +75,28 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// </summary>
         /// <param name="dto">SalesOrderDataDto object</param>
         /// <returns>single Fake data</returns>
-        public static SystemCodesDataDto GetFakerData(this SystemCodesDataDto dto)
+        public static SystemSettingDataDto GetFakerData(this SystemSettingDataDto dto)
         {
-            var data = new SystemCodesDataDto();
-			data.SystemCodes = new SystemCodesDto().GetFaker().Generate();
+            var data = new SystemSettingDataDto();
+			data.SystemSetting = new SystemSettingDto().GetFaker().Generate();
             return data;
         }
 
 
 		/// <summary>
-		/// Get faker object for SystemCodesDto
+		/// Get faker object for SystemSettingDto
 		/// </summary>
-		/// <param name="dto">SystemCodesDto</param>
+		/// <param name="dto">SystemSettingDto</param>
 		/// <returns>Faker object use to generate data</returns>
-		public static Faker<SystemCodesDto> GetFaker(this SystemCodesDto dto)
+		public static Faker<SystemSettingDto> GetFaker(this SystemSettingDto dto)
 		{
 			#region faker data rules
-			return new Faker<SystemCodesDto>()
+			return new Faker<SystemSettingDto>()
 				.RuleFor(u => u.DatabaseNum, f => null)
 				.RuleFor(u => u.MasterAccountNum, f => null)
 				.RuleFor(u => u.ProfileNum, f => null)
-				.RuleFor(u => u.SystemCodeUuid, f => String.Empty)
-				.RuleFor(u => u.SystemCodeName, f => f.Company.CompanyName())
+				.RuleFor(u => u.SystemSettingUuid, f => String.Empty)
 				.RuleFor(u => u.Description, f => f.Commerce.ProductName())
-				.RuleFor(u => u.InActive, f => f.Random.Bool())
-				.RuleFor(u => u.EffectiveStart, f => f.Date.Past(0).Date)
-				.RuleFor(u => u.EffectiveEnd, f => f.Date.Past(0).Date)
 				.RuleFor(u => u.Fields, f => f.Random.JObject())
 				.RuleFor(u => u.UpdateDateUtc, f => null)
 				.RuleFor(u => u.EnterBy, f => null)

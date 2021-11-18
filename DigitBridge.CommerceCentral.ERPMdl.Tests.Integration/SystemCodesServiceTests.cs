@@ -330,6 +330,39 @@ FROM SystemCodes ins
             }
         }
 
+        [Fact]
+        public async Task AddOrUpdateAsync_Test()
+        {
+            var payload = new SystemCodesPayload()
+            {
+                DatabaseNum = 1,
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                SystemCodes = new SystemCodesDataDto()
+                {
+                    SystemCodes = new SystemCodesDto()
+                    {
+                        SystemCodeName = "Terms",
+                        Fields = new Newtonsoft.Json.Linq.JObject()
+                    }
+                }
+            };
+            var srv = new SystemCodesService(DataBaseFactory);
+
+            try
+            {
+                bool result;
+                using (var b = new Benchmark("GetInvoiceItemsReturnedQtyAsync_Test"))
+                {
+                    result = await srv.AddOrUpdateAsync(payload);
+                }
+                Assert.True(result, "AddOrUpdateAsync");
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
     }
 }
 
