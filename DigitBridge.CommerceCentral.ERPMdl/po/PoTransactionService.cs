@@ -352,7 +352,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string poNum, int transNum)
         {
             List();
-            var success = await base.GetByNumberAsync(masterAccountNum, profileNum, poNum + "_" + transNum);
+            var success = await base.GetByNumberAsync(masterAccountNum, profileNum, transNum.ToString());
             LoadPurchaseOrderData(poNum, profileNum, masterAccountNum);
             return success;
         }

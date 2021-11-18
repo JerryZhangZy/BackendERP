@@ -17,6 +17,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         IList<MessageClass> Messages { get; set; }
 
-        Task<bool> NewReceiveForVendorAsync(PoReceivePayload payload);
+        Task<bool> NewReceiveForVendorAsync(PoReceivePayload payload, string vendorCode);
     }
 }
