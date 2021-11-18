@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
-    public class WMSPurchaseOrderClient : ApiClientBase<WMSPurchaseOrderResponsePayload>
+    public class WMSAckReceivePurchaseOrderClient : ApiClientBase<AcknowledgePayload>
     {
         /// <summary>
         /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were not config in config file
         /// Local config file is 'local.settings.json'
         /// </summary>
-        public WMSPurchaseOrderClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
+        public WMSAckReceivePurchaseOrderClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
         {
 
         }
@@ -24,26 +24,28 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// </summary>
         /// <param name="baseUrl"></param>
         /// <param name="authCode"></param>
-        public WMSPurchaseOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
+        public WMSAckReceivePurchaseOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
 
         /// <summary>
-        /// Query open s/o.
-        /// When requestPayload is null,the default setting will be applied to query.
+        /// Wms data downloaded then send ack to erp.
         /// </summary>
         /// <param name="masterAccountNum"></param>
         /// <param name="profileNum"></param>
-        /// <param name="requestPayload"></param>
+        /// <param name="PurchaseOrderUuids"></param>
         /// <returns></returns>
-        public async Task<bool> GetPurchaseOrdersOpenListAsync(int masterAccountNum, int profileNum, WMSPurchaseOrderRequestPayload requestPayload = null)
+        public async Task<bool> AckReceivePurchaseOrdersAsync(int masterAccountNum, int profileNum, IList<string> PurchaseOrderUuids)
         {
             if (!SetAccount(masterAccountNum, profileNum))
             {
                 return false;
             }
-
-            return await PostAsync(requestPayload, FunctionUrl.GetPurchaseOrderList);
+            var payload = new AcknowledgePayload()
+            {
+                ProcessUuids = PurchaseOrderUuids
+            };
+            return await PostAsync(payload, FunctionUrl.AckReceivePurchaseOrders);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)

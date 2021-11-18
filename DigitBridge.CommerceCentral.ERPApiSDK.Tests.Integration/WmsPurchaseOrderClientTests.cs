@@ -1,155 +1,77 @@
+using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Bogus;
-using DigitBridge.Base.Utility;
 using Xunit;
+using System.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
-    public partial class WmsPurchaseOrderClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class WMSPurchaseOrderClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        protected const string SkipReason = "Debug TableUniversalTests Function";
-
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
 
         private string _baseUrl = "http://localhost:7074/api/";
-        private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
+        //private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
+        private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
+        protected int MasterAccountNum = 10001;
+        protected int ProfileNum = 10001;
 
-        public WmsPurchaseOrderClientTests(TestFixture<StartupTest> fixture)
+        public WMSPurchaseOrderClientTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
-
             InitForTest();
         }
         protected void InitForTest()
         {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
         }
-
-
-        [Fact()]
-        public async Task QueryData_Test()
-        {
-            var client = new WmsPurchaseOrderClient(_baseUrl, _code);
-            var query = new WmsQueryModel()
-            {
-                MasterAccountNum = 10001,
-                ProfileNum = 10001,
-                UpdateDateFrom = DateTime.Now.AddDays(-10),
-                UpdateDateTo = DateTime.Now
-            };
-            var result =await client.QueryWmsPurchaseOrderListAsync(query);
-            Assert.True(client.Data != null, "succ");
-            Assert.True(client.ResultTotalCount >0, "succ");
-            Assert.True(result, "succ");
-        }
-        
-        /// <summary>
-        /// Generate fake data for SalesOrderDataDto object
-        /// </summary>
-        /// <param name="dto">SalesOrderDataDto object</param>
-        /// <param name="count">Generate multiple fake data</param>
-        /// <returns>list for Fake data</returns>
-        public IList<PoHeader> GetFakerData(int count)
-        {
-            var obj = new PoHeader();
-            var datas = new List<PoHeader>();
-            for (int i = 0; i < count; i++)
-                datas.Add(GetFakerData());
-            return datas;
-        }
-
-        /// <summary>
-        /// Generate fake data for SalesOrderDataDto object
-        /// </summary>
-        /// <param name="dto">SalesOrderDataDto object</param>
-        /// <returns>single Fake data</returns>
-        public PoHeader GetFakerData()
-        {
-            var poheader= GetPoHeaderFaker().Generate();
-            poheader.PoLineList = GetPoLineFaker().Generate(3);
-            return poheader;
-        }
-        
-		/// <summary>
-		/// Get faker object for PoTransactionDto
-		/// </summary>
-		/// <param name="dto">PoTransactionDto</param>
-		/// <returns>Faker object use to generate data</returns>
-		public Faker<PoHeader> GetPoHeaderFaker()
-		{
-			#region faker data rules
-			return new Faker<PoHeader>()
-				.RuleFor(u => u.PoUuid, f => System.Guid.NewGuid().ToString())
-				.RuleFor(u => u.VendorName, f => f.Company.CompanyName())
-				.RuleFor(u => u.PoNum, f => f.Random.AlphaNumeric(50))
-				;
-			#endregion faker data rules
-		}
-		/// <summary>
-		/// Get faker object for PoTransactionDto
-		/// </summary>
-		/// <param name="dto">PoTransactionDto</param>
-		/// <returns>Faker object use to generate data</returns>
-		public Faker<PoLine> GetPoLineFaker()
-		{
-			#region faker data rules
-			return new Faker<PoLine>()
-                    .RuleFor(u=>u.SKU,f=>f.Commerce.Product())
-				.RuleFor(u => u.PoUuid, f => System.Guid.NewGuid().ToString())
-				.RuleFor(u => u.PoItemUuid, f => System.Guid.NewGuid().ToString())
-				.RuleFor(u => u.PoQty, f => f.Random.Int(5,2000))
-				;
-			#endregion faker data rules
-		}
-
-        [Fact()]
-        public async Task AddData_Test()
-        {
-            var client = new WmsPurchaseOrderClient(_baseUrl, _code);
-            var result =await client.CreatePoReceiveAsync(10001,10001,GetFakerData());
-            // Assert.True(client.Data != null, "succ");
-            Assert.True(result||client.Messages.Count>0, "succ");
-            Assert.True(result, "succ");
-        }
-        [Fact()]
-        public async Task AddBatchData_Test()
-        {
-            var client = new WmsPurchaseOrderClient(_baseUrl, _code);
-            var result =await client.CreateBatchPoReceiveAsync(10001,10001,GetFakerData(10));
-            Assert.True(result||client.Messages.Count>0, "succ");
-            Assert.True(result, "succ");
-        }
-        [Fact()]
-        public async Task QueryDataWithConfig_Test()
-        {
-            var client = new WmsPurchaseOrderClient();
-            var query = new WmsQueryModel()
-            {
-                MasterAccountNum = 10001,
-                ProfileNum = 10001,
-                UpdateDateFrom = DateTime.Now.AddDays(-10),
-                UpdateDateTo = DateTime.Now
-            };
-            var result =await client.QueryWmsPurchaseOrderListAsync(query);
-            Assert.True(client.Data != null, "succ");
-            Assert.True(client.ResultTotalCount >0, "succ");
-            Assert.True(result, "succ");
-        }
-
         public void Dispose()
         {
+        }
+
+
+        [Fact()]
+        public async Task GetPurchaseOrdersOpenListAsync_Simple_Test()
+        {
+            var client = new WMSPurchaseOrderClient(_baseUrl, _code);
+            var success = await client.GetPurchaseOrdersOpenListAsync(MasterAccountNum, ProfileNum);
+            Assert.True(success, client.Messages.ObjectToString());
+        }
+
+        [Fact()]
+        public async Task GetPurchaseOrdersOpenListAsync_Full_Test()
+        {
+            var client = new WMSPurchaseOrderClient(_baseUrl, _code);
+            var payload = new WMSPurchaseOrderRequestPayload()
+            {
+                //LoadAll = true,
+                Top = 10,
+                //Filter = new PurchaseOrderListFilter()
+                //{
+                //    //UpdateDateUtc = DateTime.Today.AddDays(-1),
+                //    WarehouseCode = "VBT001-1-3-4"
+                //},
+            };
+
+            var success = await client.GetPurchaseOrdersOpenListAsync(MasterAccountNum, ProfileNum, payload);
+
+            Assert.True(success, client.Messages.ObjectToString());
+            Assert.True(client.ResopneData != null);
+
+            if (client.ResopneData.PurchaseOrderListCount <= 0) return;
+
+            Assert.True(client.ResopneData.PurchaseOrderList != null, $"Count:{client.ResopneData.PurchaseOrderListCount}, PurchaseOrderList:no data.");
+
+            //success = client.ResopneData.PurchaseOrderList.Count(i => i.WarehouseCode == payload.Filter.WarehouseCode) == client.ResopneData.PurchaseOrderListCount;
+
+            //Assert.True(success, "Filter by WarehouseCode reuslt is not correct.");
+
         }
     }
 }
