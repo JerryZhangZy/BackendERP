@@ -296,6 +296,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
+        public virtual async Task<bool> AddOrUpdateAsync(SystemSettingPayload payload)
+        {
+            if (payload is null || !payload.HasSystemSetting)
+                return false;
+
+            // get RowNum by SystemCodeName
+            var rowNum = 0;//await GetRowNumByCodeNameAsync(payload, payload.SystemSetting.SystemSetting.SystemCodeName);
+
+            // if not exist rowNum then add new record
+            if (rowNum == 0)
+            {
+                return await AddAsync(payload);
+            }
+            // if exist rowNum then update record
+            payload.SystemSetting.SystemSetting.RowNum = rowNum;
+            return await UpdateAsync(payload);
+        }
     }
 }
 
