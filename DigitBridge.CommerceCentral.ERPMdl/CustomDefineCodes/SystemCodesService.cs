@@ -351,7 +351,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || !payload.HasSystemCodes)
                 return false;
 
-            if (!SystemCodeNames.GetList().Contains(payload.SystemCodeName))
+            if (!SystemCodeNames.GetList().Contains(payload.SystemCodes.SystemCodes.SystemCodeName))
             {
                 AddError("Invalid systemCodeName");
                 return false;
