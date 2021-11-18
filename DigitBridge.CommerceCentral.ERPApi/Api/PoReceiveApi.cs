@@ -63,13 +63,13 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "transNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "transNum", Description = "Transaction Num. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadGetSingle))]
         public static async Task<JsonNetResponse<PoReceivePayload>> GetPoReceive(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "poReceives/{poNum}/{transNum}")] HttpRequest req,
-            string poNum, int transNum)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "poReceives/{transNum}")] HttpRequest req,
+             int transNum)
         {
             var payload = await req.GetParameters<PoReceivePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new PoReceiveService(dataBaseFactory);
-            payload.Success = await srv.GetByNumberAsync(payload, poNum, transNum);
+            payload.Success = await srv.GetByNumberAsync(payload, transNum);
             if (payload.Success)
                 payload.PoTransaction = srv.ToDto();
             payload.Messages = srv.Messages;
@@ -89,18 +89,18 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "poNum", Description = "Po number. ", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "poNum", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "poNum", Description = "Po number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "transNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "transNum", Description = "Transaction Num. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadDelete))]
         public static async Task<JsonNetResponse<PoReceivePayload>> DeletePoReceives(
-           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "poReceives/{poNum}/{transNum}")]
+           [HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "poReceives/{transNum}")]
             HttpRequest req,
-            string poNum, int transNum)
+             int transNum)
         {
             var payload = await req.GetParameters<PoReceivePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new PoReceiveService(dataBaseFactory);
-            payload.Success = await srv.DeleteByNumberAsync(payload, poNum, transNum);
+            payload.Success = await srv.DeleteByNumberAsync(payload, transNum);
             payload.Messages = srv.Messages;
 
             //Directly return without waiting this result. 
@@ -395,6 +395,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
  
             return new JsonNetResponse<PoReceivePayload>(payload);
         }
+
+
+
+
+
 
 
 

@@ -50,16 +50,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> GetByNumberAsync(PoReceivePayload payload, int transNum)
         {
-            var poTransactions = dbFactory.Db.Query<PoTransaction>($@"SELET *FROM PoTransaction WHERE MasterAccountNum=@0 AND ProfileNum=@1 TransNum=@2",payload.MasterAccountNum.ToSqlParameter("MasterAccountNum"), payload.ProfileNum.ToSqlParameter("ProfileNum"), transNum.ToSqlParameter("transNum"));
-           var transactions = new List<PoTransactionDataDto>();
-            foreach (var item in poTransactions)
-            {
-                if (await base.GetByNumberAsync(payload, item.PoNum, transNum))
-                    transactions.Add(ToDto());
-            }
-
-            payload.PoTransactions = transactions;
-            return true;
+            var poTransactions = dbFactory.Db.Query<PoTransaction>($@"SELECT * FROM PoTransaction WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND TransNum=@2",payload.MasterAccountNum.ToSqlParameter("MasterAccountNum"), payload.ProfileNum.ToSqlParameter("ProfileNum"), transNum.ToSqlParameter("transNum")).ToList();
+            if ( poTransactions.Count == 0) {
+                this.Messages.Add(new MessageClass() {  Message= "transNum is not found" });
+                return false; }
+            return await base.GetByNumberAsync(payload, poTransactions[0].PoNum, transNum);
         }
 
         /// <summary>
@@ -67,9 +62,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="poNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByNumberAsync(PoReceivePayload payload, string poNumber, int transNum)
+        public virtual async Task<bool> DeleteByNumberAsync(PoReceivePayload payload, int transNum)
         {
-            return await base.DeleteByNumberAsync(payload, poNumber, transNum);
+            return await base.DeleteByNumberAsync(payload, transNum.ToString());
         }
 
         /// <summary>
@@ -81,6 +76,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             return base.DeleteByNumber(payload, poNumber, transNum);
         }
+
+        //public virtual async Task<bool> DeleteByNumberAsync(PoReceivePayload payload,  int transNum)
+        //{
+        //    return await base.DeleteByNumberAsync(payload, transNum);
+        //}
 
         public void SetFirstAPReceiveStatus(bool isAp = false)
         {
