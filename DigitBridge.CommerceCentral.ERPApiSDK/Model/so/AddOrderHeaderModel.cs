@@ -42,10 +42,10 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public decimal TotalGiftOptionTaxAmount { get; set; }
         public decimal AdditionalCostOrDiscount { get; set; }
         public decimal PromotionAmount { get; set; }
-        public DateTime EstimatedShipDate { get; set; }
-        public DateTime EarliestShipDate { get; set; }
-        public DateTime LatestShipDate { get; set; }
-        public DateTime DeliverByDate { get; set; }
+        public DateTime? EstimatedShipDate { get; set; }
+        public DateTime? EarliestShipDate { get; set; }
+        public DateTime? LatestShipDate { get; set; }
+        public DateTime? DeliverByDate { get; set; }
         public string RequestShippingCarrier { get; set; }
         public string RequestShippingService { get; set; }
         public string MappedShippingCarrier { get; set; }

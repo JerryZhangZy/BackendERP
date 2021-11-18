@@ -25,8 +25,10 @@ namespace DigitBridge.Base.Utility
         public const string Terms = "Terms";
         public const string BusinessType = "BusinessType";
 
-        public static List<string> GetList() => 
-            new List<string>()
+        private static List<string> _list;
+        public static List<string> GetList()
+        {
+            if (_list == null) _list = new List<string>()
                 {
                     ColorPatternCode,
                     SizeType,
@@ -45,6 +47,8 @@ namespace DigitBridge.Base.Utility
                     Terms,
                     BusinessType,
                 };
+            return _list;
+        }
 
         public static JObject GetNewCodeField(string codeName)
         {
