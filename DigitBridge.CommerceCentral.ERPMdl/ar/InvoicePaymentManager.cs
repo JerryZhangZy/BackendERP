@@ -195,9 +195,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> AddPaymentFromPrepayment(string miscInvoiceUuid, string invoiceUuid, decimal amount)
         {
-            //Snowy: throw not implement to avoid invalid transUuid as miscinvoicetransaction.authcode inject
-            throw new NotImplementedException();
-            //no need to add payment.
             if (miscInvoiceUuid.IsZero())
                 return true;
 
@@ -212,37 +209,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            //Add mis payment
             var srv_MisPayment = new MiscInvoicePaymentService(dbFactory);
-            //Snowy: TODO: use valid invoiceTransUuid and invoiceNumber
-            var success = await srv_MisPayment.AddMiscPayment(miscInvoiceUuid, "", "", amount);
-            if (!success)
-            {
-                this.Messages = this.Messages.Concat(srv_MisPayment.Messages).ToList();
-                return false;
-            }
 
-            var misPaymentData = srv_MisPayment.Data;
-
-            var actualApplyAmount = misPaymentData.MiscInvoiceTransaction.TotalAmount;
-
-
-            //Snowy: already update paidAmount & balance in AddMiscPayment
-            //update misc invoice set balance = originalbalance-actualApplyAmount;
-            //var srv_MiscInvoice = new MiscInvoiceService(dbFactory);
-            //success = await srv_MiscInvoice.WithdrawAsync(miscInvoiceUuid, actualApplyAmount);
-            //if (!success)
-            //{
-            //    this.Messages = this.Messages.Concat(srv_MiscInvoice.Messages).ToList();
-            //    return false;
-            //}
+            var actualApplyAmount = await srv_MisPayment.GetCanApplyAmount(miscInvoiceUuid, amount);
 
             //Add payment to invoice trans and pay invoice.
             var srv_payment = new InvoicePaymentService(dbFactory);
-            success = await srv_payment.AddPaymentAndPayInvoiceForPrepaymentAsync(miscInvoiceUuid, invoiceUuid, actualApplyAmount);
+            var success = await srv_payment.AddPrepaymentAsync(invoiceUuid, actualApplyAmount, miscInvoiceUuid);
             if (!success)
             {
                 this.Messages = this.Messages.Concat(srv_payment.Messages).ToList();
+                return false;
+            }
+            var paymentData = srv_payment.Data.InvoiceTransaction;
+
+            //Add mis payment
+            success = await srv_MisPayment.AddMiscPayment(miscInvoiceUuid, paymentData.TransUuid, paymentData.InvoiceNumber, actualApplyAmount);
+            if (!success)
+            {
+                this.Messages = this.Messages.Concat(srv_MisPayment.Messages).ToList();
                 return false;
             }
 

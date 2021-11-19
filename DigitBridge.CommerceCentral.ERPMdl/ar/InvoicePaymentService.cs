@@ -859,8 +859,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         #endregion
 
-        #region Add payment for prepayment
-        public async Task<bool> AddPaymentAndPayInvoiceForPrepaymentAsync(string miscInvoiceUuid, string invoiceUuid, decimal amount)
+        #region Add payment and payInvoice for prepayment  
+        /// <summary>
+        /// Add payment and payInvoice for prepayment  
+        /// </summary>
+        /// <param name="miscInvoiceUuid"></param>
+        /// <param name="invoiceUuid"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        public async Task<bool> AddPrepaymentAsync(string invoiceUuid, decimal amount, string miscInvoiceUuid)
         {
             Add();
             if (miscInvoiceUuid.IsZero())
@@ -874,10 +881,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"invoiceUuid is null");
                 return false;
             }
+
             if (!await LoadInvoiceAsync(invoiceUuid))
             {
                 return false;
             }
+
             var header = Data.InvoiceData.InvoiceHeader;
             Data.InvoiceTransaction = new InvoiceTransaction()
             {
@@ -909,7 +918,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = await SaveDataAsync();
             if (!success)
             {
-                AddError("AddPaymentAndPayInvoiceForPrepaymentAsync->SaveDataAsync error.");
+                AddError("AddPrepaymentAsync->SaveDataAsync error.");
                 return false;
             }
 
@@ -918,7 +927,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             success = await PayInvoiceAsync(trans.InvoiceNumber, trans.MasterAccountNum, trans.ProfileNum, trans.TotalAmount);
             if (!success)
             {
-                AddError($"AddPaymentAndPayInvoiceForPrepaymentAsync->PayInvoiceAsync error.");
+                AddError($"AddPrepaymentAsync->PayInvoiceAsync error.");
                 return false;
             }
 

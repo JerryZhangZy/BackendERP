@@ -177,6 +177,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var miscInvoiceMapper = new MiscInvoiceDataDtoMapperDefault();
             payload.MiscInvoiceDataDto = miscInvoiceMapper.WriteDto(Data.MiscInvoiceData, null);
         }
+
+        /// <summary>
+        /// Get actual amount that can pay to invoice.
+        /// </summary>
+        /// <param name="miscInvoiceUuid"></param>
+        /// <param name="expectedAmount"></param>
+        /// <returns></returns>
+        public virtual async Task<decimal> GetCanApplyAmount(string miscInvoiceUuid, decimal expectedAmount)
+        {
+            if (!await LoadMiscInvoiceAsync(miscInvoiceUuid))
+                return 0;
+
+            var miscInvoiceBalance = this.Data.MiscInvoiceData.MiscInvoiceHeader.Balance;
+
+            return miscInvoiceBalance > expectedAmount ? expectedAmount : miscInvoiceBalance;
+
+        }
     }
 }
 
