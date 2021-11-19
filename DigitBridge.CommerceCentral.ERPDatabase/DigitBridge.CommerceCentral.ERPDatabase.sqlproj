@@ -279,5 +279,6 @@
     <None Include="channel\setting_Channel_setting_ChannelAccount_table_and_data.sql" />
     <None Include="sql\check salesorder logic..sql" />
     <None Include="sql\AddEventProcessFromPurchaseOrder.sql" />
+    <None Include="po\PoHeaderInfo_Update.sql" />
   </ItemGroup>
 </Project>
