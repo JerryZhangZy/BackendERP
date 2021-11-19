@@ -33,8 +33,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public override void InitQueryFilter()
         {
-            _OrderDateFrom.FilterValue = new DateTime(DateTime.Today.Year, 1, 1);
-            _OrderDateTo.FilterValue = DateTime.Today;
+            _OrderDateFrom.FilterValue = new DateTime(DateTime.UtcNow.Date.Year, 1, 1);
+            _OrderDateTo.FilterValue = DateTime.UtcNow.Date;
             LoadAll = true;
         }
         public override string GetOrderBySql(string prefix = null)

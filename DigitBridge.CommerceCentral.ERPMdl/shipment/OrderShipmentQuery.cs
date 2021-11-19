@@ -83,8 +83,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public override void InitQueryFilter()
         {
-            _ShipDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            _ShipDateTo.FilterValue = DateTime.Today;
+            _ShipDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
+            _ShipDateTo.FilterValue = DateTime.UtcNow.Date;
         }
 
     }

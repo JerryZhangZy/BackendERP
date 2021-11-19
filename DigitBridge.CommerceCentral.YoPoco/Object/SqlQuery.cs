@@ -42,7 +42,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
     {
         public static readonly DateTime _SqlMinDateTime = new DateTime(1753, 1, 1);
         public static readonly DateTime _AppMinDateTime = new DateTime(1900, 1, 1);
-        public static readonly DateTime _AppMaxDateTime = DateTime.Now.AddYears(100);
+        public static readonly DateTime _AppMaxDateTime = DateTime.UtcNow.AddYears(100);
 
         public static SerializationBinder SerializationBinder { get; set; }
 

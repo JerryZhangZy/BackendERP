@@ -23,7 +23,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public static string Generate()
         {
 
-            return DateTime.Now.ToString("yyyyMMddHHmmssfffff");
+            return DateTime.UtcNow.ToString("yyyyMMddHHmmssfffff");
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public static long GenerateLong()
         {
             //long.MaxValue 9223372036854775807
-            return long.Parse(DateTime.Now.ToString("yyyyMMddHHmmssfffff"));
+            return long.Parse(DateTime.UtcNow.ToString("yyyyMMddHHmmssfffff"));
         }
 
         ///// <summary>
@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //public static long GenerateInt()
         //{
         //    //int.MaxValue 2147483647
-        //    return long.Parse(DateTime.Now.ToString("yyyyMMddHHmmssfffff"));
+        //    return long.Parse(DateTime.UtcNow.ToString("yyyyMMddHHmmssfffff"));
         //}
     }
 }

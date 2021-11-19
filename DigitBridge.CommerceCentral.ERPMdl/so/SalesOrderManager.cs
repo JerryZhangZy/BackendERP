@@ -436,7 +436,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 newCustomer.Customer.CustomerName = $"Customer Account for Channel {data.SalesOrderHeaderInfo.ChannelNum}, Channel Account {data.SalesOrderHeaderInfo.ChannelAccountNum}";
                 newCustomer.Customer.CustomerType = (int)CustomerType.Channel;
                 newCustomer.Customer.CustomerStatus = (int)CustomerStatus.Active;
-                newCustomer.Customer.FirstDate = DateTime.Today;
+                newCustomer.Customer.FirstDate = DateTime.UtcNow.Date;
                 newCustomer.Customer.ChannelNum = data.SalesOrderHeaderInfo.ChannelNum;
                 newCustomer.Customer.ChannelAccountNum = data.SalesOrderHeaderInfo.ChannelAccountNum;
                 newCustomer.AddCustomerAddress(new CustomerAddress()

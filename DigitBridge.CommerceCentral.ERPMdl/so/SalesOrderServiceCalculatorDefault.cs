@@ -49,7 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return;
         }
 
-        private DateTime now = DateTime.Now;
+        private DateTime now = DateTime.UtcNow;
 
         #region Service Property
 

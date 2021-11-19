@@ -219,12 +219,12 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
             try
             {
                 // Check if the refresh token is too old, offical set life = 100 days
-                if ((DateTime.Now.ToUniversalTime() - _qboConnectionInfo.LastRefreshTokUpdate.ForceToDateTime()).TotalDays > 80)
+                if ((DateTime.UtcNow - _qboConnectionInfo.LastRefreshTokUpdate.ForceToDateTime()).TotalDays > 80)
                 {
                     await UpdateRefreshTokenAsync();
                 }
                 // Check if the access token is too old, offical set life = 1 hr
-                if ((DateTime.Now.ToUniversalTime() - _qboConnectionInfo.LastAccessTokUpdate.ForceToDateTime()).TotalHours >= 0.75)
+                if ((DateTime.UtcNow - _qboConnectionInfo.LastAccessTokUpdate.ForceToDateTime()).TotalHours >= 0.75)
                 {
                     await RefreshAccessTokenAsync();
                 }
@@ -278,7 +278,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                     _qboConnectionInfo.AccessToken = tokenResp.AccessToken;
                     ConnectToDataServiceAsync(); // reconnect to data service after token refreshing
                     // Update time to be insert into DB table (UTC)
-                    _qboConnectionInfo.LastAccessTokUpdate = DateTime.Now.ToUniversalTime();
+                    _qboConnectionInfo.LastAccessTokUpdate = DateTime.UtcNow;
                     // Flag tokens as updated
                     _qboConnectionTokenStatus.AccessTokenStatus = ConnectionTokenStatus.Updated;
 
@@ -286,7 +286,7 @@ namespace DigitBridge.QuickBooks.Integration.Mdl.Qbo
                     {
                         _qboConnectionInfo.RefreshToken = tokenResp.RefreshToken;
                         // Update time to be inserted into DB table(UTC)
-                        _qboConnectionInfo.LastRefreshTokUpdate = DateTime.Now.ToUniversalTime();
+                        _qboConnectionInfo.LastRefreshTokUpdate = DateTime.UtcNow;
                         // Flag tokens as updated
                         _qboConnectionTokenStatus.RefreshTokenStatus = ConnectionTokenStatus.Updated;
                     }

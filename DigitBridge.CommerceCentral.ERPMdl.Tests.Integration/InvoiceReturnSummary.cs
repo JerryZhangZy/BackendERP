@@ -55,7 +55,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             payload.ProfileNum = 10001;
             //payload.Filter = new JObject()
             //{
-            //    { "OrderDateFrom",  DateTime.Today.AddDays(-30) },
+            //    { "OrderDateFrom",  DateTime.UtcNow.Date.AddDays(-30) },
             //    { "OrderStatus",  "11,18,86" }
             //};
 
@@ -84,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             payload.ProfileNum = 10001;
             //payload.Filter = new JObject()
             //{
-            //    { "OrderDateFrom",  DateTime.Today.AddDays(-30) },
+            //    { "OrderDateFrom",  DateTime.UtcNow.Date.AddDays(-30) },
             //    { "OrderStatus",  "11,18,86" }
             //};
 

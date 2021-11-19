@@ -35,8 +35,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public override void InitQueryFilter()
         { 
-            _MiscInvoiceDateFrom.FilterValue = new DateTime(DateTime.Today.Year, 1, 1);
-            _MiscInvoiceDateTo.FilterValue = DateTime.Today;
+            _MiscInvoiceDateFrom.FilterValue = new DateTime(DateTime.UtcNow.Date.Year, 1, 1);
+            _MiscInvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
             LoadAll = true;
         }
         public override string GetOrderBySql(string prefix = null)

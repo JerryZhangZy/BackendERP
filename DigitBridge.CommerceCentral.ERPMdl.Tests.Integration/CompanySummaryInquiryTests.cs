@@ -68,8 +68,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 {
                     MasterAccountNum = 10001,
                     ProfileNum = 10001,
-                    DateFrom = new DateTime(DateTime.Today.Year, 1, 1),
-                    DateTo = DateTime.Today
+                    DateFrom = new DateTime(DateTime.UtcNow.Date.Year, 1, 1),
+                    DateTo = DateTime.UtcNow.Date
                 }
             };
             await srv.GetCompaySummaryAsync(payload);

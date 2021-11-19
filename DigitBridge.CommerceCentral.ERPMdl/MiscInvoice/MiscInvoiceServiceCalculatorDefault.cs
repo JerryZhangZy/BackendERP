@@ -138,7 +138,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null)
                 return false;
 
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var sum = data.MiscInvoiceHeader;
 
             if (sum.MiscInvoiceTime.IsZero()) sum.MiscInvoiceTime = now.TimeOfDay;

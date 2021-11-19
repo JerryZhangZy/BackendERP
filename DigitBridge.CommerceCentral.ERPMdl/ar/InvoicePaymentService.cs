@@ -917,8 +917,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 MasterAccountNum = header.MasterAccountNum,
                 DatabaseNum = header.DatabaseNum,
 
-                TransDate = DateTime.Now,
-                TransTime = DateTime.Now.TimeOfDay,
+                TransDate = DateTime.UtcNow,
+                TransTime = DateTime.UtcNow.TimeOfDay,
                 TransType = (int)TransTypeEnum.Payment,
                 TransStatus = (int)TransStatus.Paid,
 

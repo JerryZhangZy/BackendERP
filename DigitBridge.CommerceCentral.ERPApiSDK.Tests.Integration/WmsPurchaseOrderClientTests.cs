@@ -54,7 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
                 Top = 10,
                 //Filter = new PurchaseOrderListFilter()
                 //{
-                //    //UpdateDateUtc = DateTime.Today.AddDays(-1),
+                //    //UpdateDateUtc = DateTime.UtcNow.Date.AddDays(-1),
                 //    WarehouseCode = "VBT001-1-3-4"
                 //},
             };

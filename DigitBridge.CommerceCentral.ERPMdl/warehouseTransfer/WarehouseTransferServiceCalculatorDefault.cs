@@ -204,9 +204,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //TODO: add set default summary data logic
             //This is generated sample code
            var sum = data.WarehouseTransferHeader;
-            if (sum.TransferDate.IsZero()) sum.TransferDate = DateTime.Today;
-            if (sum.TransferTime.IsZero()) sum.TransferTime = DateTime.Now.TimeOfDay;
-            sum.UpdateDateUtc = DateTime.Now;
+            if (sum.TransferDate.IsZero()) sum.TransferDate = DateTime.UtcNow.Date;
+            if (sum.TransferTime.IsZero()) sum.TransferTime = DateTime.UtcNow.TimeOfDay;
+            sum.UpdateDateUtc = DateTime.UtcNow;
             if (string.IsNullOrEmpty(sum.BatchNumber)) sum.BatchNumber = NumberGenerate.Generate();
             //UpdateDateUtc
             //EnterBy
@@ -249,8 +249,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var inv = GetInventory(data, item.ProductUuid, item.FromInventoryUuid);
             if (inv != null)
             {
-                if (item.ItemDate.IsZero()) item.ItemDate = DateTime.Today;
-                if (item.ItemTime.IsZero()) item.ItemTime = DateTime.Now.TimeOfDay;
+                if (item.ItemDate.IsZero()) item.ItemDate = DateTime.UtcNow.Date;
+                if (item.ItemTime.IsZero()) item.ItemTime = DateTime.UtcNow.TimeOfDay;
                 item.LotNum = inv.LotNum;
                 if (item.Description.IsZero()) item.Description = inv.LotDescription;
                 if (item.Notes.IsZero()) item.Notes = inv.Notes;

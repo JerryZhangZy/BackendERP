@@ -148,8 +148,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //TODO: add set default summary data logic
            var sum = data.InventoryUpdateHeader;
-            if (sum.UpdateDate.IsZero()) sum.UpdateDate = DateTime.Today;
-            if (sum.UpdateTime.IsZero()) sum.UpdateTime = DateTime.Now.TimeOfDay;
+            if (sum.UpdateDate.IsZero()) sum.UpdateDate = DateTime.UtcNow.Date;
+            if (sum.UpdateTime.IsZero()) sum.UpdateTime = DateTime.UtcNow.TimeOfDay;
 
             if (string.IsNullOrEmpty(sum.BatchNumber)) sum.BatchNumber = NumberGenerate.Generate();
             //UpdateDateUtc
@@ -194,8 +194,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var invCost = new ItemCostClass();
             var prod = GetInventoryData(data, item.ProductUuid);
             var inv = GetInventory(data, item.ProductUuid, item.InventoryUuid);
-            if (item.ItemDate.IsZero()) item.ItemDate = DateTime.Today;
-            if (item.ItemTime.IsZero()) item.ItemTime = DateTime.Now.TimeOfDay;
+            if (item.ItemDate.IsZero()) item.ItemDate = DateTime.UtcNow.Date;
+            if (item.ItemTime.IsZero()) item.ItemTime = DateTime.UtcNow.TimeOfDay;
             item.LotNum = inv.LotNum;
             if (item.Description.IsZero()) item.Description = inv.LotDescription;
             if (item.Notes.IsZero()) item.Notes = inv.Notes;
