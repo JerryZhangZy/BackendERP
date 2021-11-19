@@ -45,11 +45,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {Helper.TableAllies}.VendorCode as 'VendorCode',
 {Helper.TableAllies}.PoDate as 'PoDate',
 {Helper.TableAllies}.CancelDate as 'CancelAfterDate',
---{Helper.TableAllies}.Terms as 'Terms',
---{Helper.TableAllies}.WarehousCode as 'WarehousCode',
+{Helper.TableAllies}.Terms as 'Terms',
+{InfoHelper.TableAllies}.WarehousCode as 'WarehousCode',
 {Helper.TableAllies}.EtaShipDate as 'RequestShipDate',
 {Helper.TableAllies}.EtaArrivalDate as 'ArrivalDueDate'
---{Helper.TableAllies}.PublicNote as 'PublicNote',
+{InfoHelper.TableAllies}.Notes as 'PublicNote',
 --{Helper.TableAllies}.PrivateNote as 'PrivateNote',
 ";
             return columns;
@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 {ItemHelper.TableAllies}.Price as 'PoPrice',
 CAST({ ItemHelper.TableAllies}.PoQty as INT) as 'PoQty',
---CAST({ ItemHelper.TableAllies}.QtyForOther as INT) as 'QtyForOther',
+CAST({ ItemHelper.TableAllies}.QtyForOther as INT) as 'QtyForOther',
 {ItemHelper.TableAllies}.EtaShipDate as 'LineRequestShipDate',
 {ItemHelper.TableAllies}.EtaArrivalDate as 'LineArrivalDueDate',
 {ItemHelper.TableAllies}.Notes as 'LinePublicNote',
