@@ -113,13 +113,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         [Fact()]
         public async Task AddPaymentAndPayInvoiceForPrepaymentAsync_Test()
-         {
+        {
             var miscInvoiceData = MiscInvoiceDataTests.SaveFakerMiscInvoice(DataBaseFactory);
             var invoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(DataBaseFactory);
             var prepaymentAmount = new Random().Next();
             var service = new InvoicePaymentService(DataBaseFactory);
 
-            var success = await service.AddPaymentAndPayInvoiceForPrepaymentAsync(miscInvoiceData.UniqueId, invoiceData.UniqueId, prepaymentAmount);
+            var success = await service.AddPrepaymentAsync(invoiceData.UniqueId, prepaymentAmount, miscInvoiceData.UniqueId);
 
             Assert.True(success, "AddMiscPayment error:" + service.Messages.ObjectToString());
         }
@@ -211,7 +211,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             Assert.True(queryPayload.InvoiceTransactions.Count > 0, $"no payment trans in db for invoice {invoiceNumber}");
 
             return queryPayload.InvoiceTransactions.OrderByDescending(i => i.InvoiceTransaction.TransNum).FirstOrDefault().InvoiceTransaction.RowNum.ToLong();
-        } 
+        }
         #endregion
     }
 }
