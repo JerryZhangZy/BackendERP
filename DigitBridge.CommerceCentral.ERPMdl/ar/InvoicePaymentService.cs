@@ -571,6 +571,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             NewData();
             var invoiceTransactions = await Data.InvoiceTransaction.GetTransactionsByCheckNumOrAuthCode(payload.MasterAccountNum, payload.ProfileNum, checkNumOrAuthcode);
             List<InvoiceTransactionDataDto> respTransList = new List<InvoiceTransactionDataDto>();
+            payload.Success = false;
+
             foreach (var applyInvoice in payload.ApplyInvoices)
             {
                 InvoiceTransactionDto invoiceTransactionDto = new InvoiceTransactionDto();
@@ -598,12 +600,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     this.AddActivityLogForCurrentData();
                     var invoiceTransaction = Data.InvoiceTransaction;
                     if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
-                        payload.Success = payload.Success && await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, invoiceTransaction.OriginalPaidAmount);
-                    if (payload.Success)
-                        if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
-                        {
-                            payload.Success = payload.Success && await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
-                        }
+                        payload.Success = payload.Success && 
+                            await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, invoiceTransaction.OriginalPaidAmount);
+                    if (payload.Success && Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+                        payload.Success = payload.Success && 
+                            await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
 
                     mapper.WriteInvoiceTransaction(Data.InvoiceTransaction, invoiceTransactionDto);
                     respTransList.Add(new InvoiceTransactionDataDto { 
@@ -619,8 +620,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     continue;
                 }
 
-                applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
-
                 //update payment success. then pay invoice.
                 var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
                 if (!success)
@@ -629,10 +628,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     applyInvoice.Success = false;
                     AddError($"{applyInvoice.InvoiceNumber} is not applied.");
                 }
+                applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
+                applyInvoice.TransRowNum = Data.InvoiceTransaction.RowNum;
+                applyInvoice.Success = success;
                 payload.InvoiceHeaders.Add(invoiceHeadDto);
             }
             payload.InvoiceTransactions = respTransList;
-            payload.Success = true;
 
             return payload.Success;
         }
