@@ -37,9 +37,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             if(!dto.HasSystemCodes)
                 return result;
             //TODO change to merge Dto children object
-            //if (withHeaderText)
-            //    result.Add(dto.SystemCodes.MergeName(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
-            //result.Add(dto.SystemCodes.Merge(dto.SalesOrderHeaderInfo, dto.SalesOrderHeaderAttributes));
+            if (withHeaderText)
+                result.Add(dto.SystemCodes.MergeName(dto.SystemCodes));
+            result.Add(dto.SystemCodes.Merge(dto.SystemCodes));
             return result;
         }
 
@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
         public static IEnumerable<dynamic> MergeDetailRecord(this SystemCodesDataDto dto, bool withHeaderText = false)
         {
-            return null;
+            return new List<dynamic>();
             //TODO change to merge Dto children object
             //var result = new List<dynamic>();
             //if (!dto.HasSalesOrderItems) 

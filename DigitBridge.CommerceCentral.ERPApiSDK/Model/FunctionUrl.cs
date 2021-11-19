@@ -22,9 +22,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         internal const string AckReceiveSalesOrders = "wms/salesOrders/AckReceive";
         internal const string AckProcessSalesOrders = "wms/salesOrders/AckProcess";
 
-        internal const string GetPurchaseOrderList = "purchaseOrder/find";
-        internal const string CreatePoReceive = "poReceives";
-        internal const string CreateBatchPoReceive = "poReceives/batch";
+        internal const string GetPurchaseOrderList = "wms/purchaseOrders/find";
+        internal const string AckReceivePurchaseOrders = "wms/purchaseOrders/AckReceive";
+        internal const string AckProcessPurchaseOrders = "wms/purchaseOrders/AckProcess";
 
         internal static string InventorySync = "/InventorySyncs";
 

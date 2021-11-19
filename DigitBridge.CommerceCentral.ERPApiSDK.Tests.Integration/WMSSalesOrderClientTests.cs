@@ -53,12 +53,12 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             var payload = new WMSSalesOrderRequestPayload()
             {
                 //LoadAll = true,
-                Top = 1,
-                //Filter = new SalesOrderOpenListFilter()
-                //{
-                //    //UpdateDateUtc = DateTime.Today.AddDays(-1),
-                //    WarehouseCode = "VBT001-1-3-4"
-                //},
+                Top = 10,
+                Filter = new SalesOrderOpenListFilter()
+                {
+                    //UpdateDateUtc = DateTime.Today.AddDays(-1),
+                    WarehouseCode = "VBT001-1-3-4"
+                },
             };
 
             var success = await client.GetSalesOrdersOpenListAsync(MasterAccountNum, ProfileNum, payload);

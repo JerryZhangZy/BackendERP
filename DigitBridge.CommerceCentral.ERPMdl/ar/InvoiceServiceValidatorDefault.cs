@@ -190,13 +190,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
                 {
                     IsValid = false;
-                    AddError($"InvoiceItems.SKU cannot be empty.");
+                    AddError($"Item SKU cannot be empty.");
                     return IsValid;
                 }
                 if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
                     IsValid = false;
-                    AddError($"InvoiceItems.WarehouseCode cannot be empty.");
+                    AddError($"WarehouseCode cannot be empty.");
                     return IsValid;
                 }
             }
@@ -221,7 +221,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (InvoiceHelper.ExistNumber(data.InvoiceHeader.InvoiceNumber, data.InvoiceHeader.ProfileNum.ToInt()))
                     {
                         IsValid = false;
-                        AddError("InvoiceHeader.InvoiceNumber exist.");
+                        AddError("InvoiceNumber exist.");
                         return IsValid;
                     }
                 }
@@ -310,13 +310,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.SKU)) > 0)
                 {
                     IsValid = false;
-                    AddError($"InvoiceItems.SKU cannot be empty.");
+                    AddError($"Item SKU cannot be empty.");
                     return IsValid;
                 }
                 if (data.InvoiceItems.Count(i => string.IsNullOrEmpty(i.WarehouseCode)) > 0)
                 {
                     IsValid = false;
-                    AddError($"InvoiceItems.WarehouseCode cannot be empty.");
+                    AddError($"Item WarehouseCode cannot be empty.");
                     return IsValid;
                 }
             }
@@ -342,7 +342,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (await InvoiceHelper.ExistNumberAsync(data.InvoiceHeader.InvoiceNumber, data.InvoiceHeader.ProfileNum.ToInt()))
                     {
                         IsValid = false;
-                        AddError("InvoiceHeader.InvoiceNumber exist.");
+                        AddError("InvoiceNumber exist.");
                         return IsValid;
                     }
                 }
@@ -417,7 +417,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (dto.InvoiceHeader.RowNum.IsZero())
                 {
                     isValid = false;
-                    AddError("InvoiceHeader.RowNum is required.");
+                    AddError("RowNum is required.");
                 }
                 // This property should not be changed.
                 dto.InvoiceHeader.MasterAccountNum = null;
@@ -462,7 +462,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (dto.InvoiceHeader.RowNum.IsZero())
                 {
                     isValid = false;
-                    AddError("InvoiceHeader.RowNum is required.");
+                    AddError("RowNum is required.");
                 }
                 // This property should not be changed.
                 dto.InvoiceHeader.MasterAccountNum = null;

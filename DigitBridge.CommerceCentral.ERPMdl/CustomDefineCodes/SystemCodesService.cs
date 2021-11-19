@@ -223,11 +223,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return SaveData();
         }
 
-        public async Task DeleteByUuidAsync(SystemCodesPayload payload, string systemCodesUuid)
-        {
-            await dbFactory.Db.ExecuteAsync("DELETE SystemCodes WHERE SystemCodeUuid=@0", systemCodesUuid.ToSqlParameter("@0"));
-        }
-
         /// <summary>
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
@@ -324,6 +319,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (payload is null || string.IsNullOrEmpty(payload.SystemCodeName))
                 return false;
 
+            if (!SystemCodeNames.GetList().Contains(payload.SystemCodeName))
+            {
+                AddError("Invalid systemCodeName");
+                return false;
+            }
+
             // get RowNum by SystemCodeName
             var rowNum = await GetRowNumByCodeNameAsync(payload, payload.SystemCodeName);
 
@@ -349,6 +350,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (payload is null || !payload.HasSystemCodes)
                 return false;
+
+            if (!SystemCodeNames.GetList().Contains(payload.SystemCodes.SystemCodes.SystemCodeName))
+            {
+                AddError("Invalid systemCodeName");
+                return false;
+            }
 
             // get RowNum by SystemCodeName
             var rowNum = await GetRowNumByCodeNameAsync(payload, payload.SystemCodes.SystemCodes.SystemCodeName);

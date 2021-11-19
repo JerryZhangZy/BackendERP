@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using DigitBridge.Base.Common;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPApi;
 using DigitBridge.CommerceCentral.ERPDb;
@@ -20,14 +22,14 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
         /// Get purchase order list by criteria.
         /// </summary>
         [FunctionName(nameof(PurchaseOrderList))]
-        [OpenApiOperation(operationId: "PurchaseOrderList", tags: new[] { "PurchaseOrders" }, Summary = "Get purchase order list by criteria.")]
+        [OpenApiOperation(operationId: "PurchaseOrderList", tags: new[] { "WMSPurchaseOrders" }, Summary = "Get purchase order list by criteria.")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadFind), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PurchaseOrderPayloadFind))]
         public static async Task<JsonNetResponse<PurchaseOrderPayload>> PurchaseOrderList(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "purchaseOrders/find")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "wms/purchaseOrders/find")] HttpRequest req)
         {
             var payload = await req.GetParameters<PurchaseOrderPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
@@ -35,62 +37,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
             await srv.GetPurchaseOrderListAsync(payload);
             return new JsonNetResponse<PurchaseOrderPayload>(payload);
         }
-        /// <summary>
-        /// Add po receive 
-        /// </summary>
-        /// <param name="req"></param>
-        /// <returns></returns>
-        [FunctionName(nameof(AddPoReceives))]
-        [OpenApiOperation(operationId: "AddPoReceives", tags: new[] { "PoReceives" }, Summary = "Add po receives ")]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PoReceivePayloadAdd), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadAdd))]
-        public static async Task<JsonNetResponse<PoReceivePayload>> AddPoReceives(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "poReceives")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<PoReceivePayload>(true);
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new PoReceiveService(dataBaseFactory);
-            await srv.AddAsync(payload);
-            // payload.Messages = srv.Messages;
-            // payload.PoTransaction = srv.ToDto();
 
-            //Directly return without waiting this result. 
-            //if (payload.Success)
-            // srv.AddQboPaymentEventAsync(payload.MasterAccountNum, payload.ProfileNum, payload.ApplyInvoices);
-
-            return new JsonNetResponse<PoReceivePayload>(payload);
-        }
-        /// <summary>
-        /// Add po receive 
-        /// </summary>
-        /// <param name="req"></param>
-        /// <returns></returns>
-        [FunctionName(nameof(AddBatchPoReceives))]
-        [OpenApiOperation(operationId: "AddBatchPoReceives", tags: new[] { "PoReceives" }, Summary = "Add batch po receives ")]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PoReceivePayloadAdd), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadAdd))]
-        public static async Task<JsonNetResponse<PoReceivePayload>> AddBatchPoReceives(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "poReceives/batch")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<PoReceivePayload>(true);
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new PoReceiveService(dataBaseFactory);
-            await srv.AddListAsync(payload);
-            // payload.Messages = srv.Messages;
-            // payload.PoTransaction = srv.ToDto();
-
-            //Directly return without waiting this result. 
-            //if (payload.Success)
-            // srv.AddQboPaymentEventAsync(payload.MasterAccountNum, payload.ProfileNum, payload.ApplyInvoices);
-
-            return new JsonNetResponse<PoReceivePayload>(payload);
-        }
-
+        
     }
 }

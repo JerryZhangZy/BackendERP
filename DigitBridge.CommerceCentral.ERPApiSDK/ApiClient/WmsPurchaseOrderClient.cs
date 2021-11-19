@@ -1,79 +1,54 @@
-﻿using DigitBridge.Base.Common;
-using DigitBridge.Base.Utility;
+﻿using DigitBridge.Base.Utility;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
-    public class WmsPurchaseOrderClient : ApiClientBase<WmsPurchaseOrderPayload>
+    public class WMSPurchaseOrderClient : ApiClientBase<WMSPurchaseOrderResponsePayload>
     {
-        public WmsPurchaseOrderClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
-        { }
-        public WmsPurchaseOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
-        { }
-
-        public IList<PoHeader> Data { get; set; }
-        
-        public int ResultTotalCount { get; set; }
-
-        public async Task<bool> QueryWmsPurchaseOrderListAsync(WmsQueryModel query)
+        /// <summary>
+        /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were not config in config file
+        /// Local config file is 'local.settings.json'
+        /// </summary>
+        public WMSPurchaseOrderClient() : base(ConfigUtil.ERP_Integration_Api_BaseUrl, ConfigUtil.ERP_Integration_Api_AuthCode)
         {
-            if (!SetAccount(query.MasterAccountNum, query.ProfileNum))
-                return false;
 
-            var payload = new WmsPurchaseOrderPayload()
-            {
-                Filter = new Dictionary<string, object>()
-                {
-                    { "UpdateDateFrom", query.UpdateDateFrom },
-                    { "UpdateDateTo", query.UpdateDateTo }
-                }
-            };
-            return await PostAsync(payload,FunctionUrl.GetPurchaseOrderList);
         }
-        
-        public async Task<bool> CreatePoReceiveAsync(int masterAccountNum,int profileNum,PoHeader receive)
+        /// <summary>
+        /// "ERP_Integration_Api_BaseUrl" and "ERP_Integration_Api_AuthCode" were config in config file
+        /// Local config file is 'local.settings.json'
+        /// </summary>
+        /// <param name="baseUrl"></param>
+        /// <param name="authCode"></param>
+        public WMSPurchaseOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
+        { }
+
+
+        /// <summary>
+        /// Query open s/o.
+        /// When requestPayload is null,the default setting will be applied to query.
+        /// </summary>
+        /// <param name="masterAccountNum"></param>
+        /// <param name="profileNum"></param>
+        /// <param name="requestPayload"></param>
+        /// <returns></returns>
+        public async Task<bool> GetPurchaseOrdersOpenListAsync(int masterAccountNum, int profileNum, WMSPurchaseOrderRequestPayload requestPayload = null)
         {
             if (!SetAccount(masterAccountNum, profileNum))
-                return false;
-
-            var payload = new WmsPurchaseOrderPayload()
             {
-                PoTransaction = new PoTransactionDataDto(receive)
-            };
-            return await PostAsync(payload,FunctionUrl.CreatePoReceive);
-        }
-        
-        public async Task<bool> CreateBatchPoReceiveAsync(int masterAccountNum,int profileNum,IList<PoHeader> batchReceive)
-        {
-            if (!SetAccount(masterAccountNum, profileNum))
                 return false;
-            var poreceiveList = new List<PoTransactionDataDto>();
-            foreach (var receive in batchReceive)
-            {
-                poreceiveList.Add(new PoTransactionDataDto(receive));
             }
 
-            var payload = new WmsPurchaseOrderPayload()
-            {
-                PoTransactions = poreceiveList
-            };
-            return await PostAsync(payload,FunctionUrl.CreateBatchPoReceive);
+            return await PostAsync(requestPayload, FunctionUrl.GetPurchaseOrderList);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
         {
             if (ResopneData == null)
-            {
-                AddError("Call event api has no resopne.");
-                return false;
-            }
-            if (ResopneData.PurchaseOrderList == null)
             {
                 //Maybe the api throw exception.
                 var exception = JsonConvert.DeserializeObject<Exception>(responseData, jsonSerializerSettings);
@@ -81,15 +56,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                     AddError(exception.ObjectToString());
                 return false;
             }
-            Data = ResopneData.PurchaseOrderList;
-            ResultTotalCount = ResopneData.PurchaseOrderListCount;
-            
-            var success = ResopneData.Success;
-            if (!success)
+
+            if (!ResopneData.Success)
             {
-                this.Messages = this.Messages.Concat(ResopneData.Messages).ToList();
+                this.Messages.Add(ResopneData.Messages);
             }
-            return success;
+
+            return ResopneData.Success;
         }
     }
 }

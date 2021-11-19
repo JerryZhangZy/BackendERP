@@ -23,6 +23,7 @@ namespace DigitBridge.Base.Common
     public enum PoTransStatus : int
     {
         StockReceive=1,
-        APReceive
+        APReceive=2,
+        Closed=3
     }
 }
