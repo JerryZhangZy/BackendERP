@@ -334,6 +334,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 LogMessage = string.Empty
             });
         }
+
+        public bool MarkShipmentTransferredToInvoice(string ordershipmentUuid)
+        {
+            Edit();
+            if (GetDataById(ordershipmentUuid))
+            {
+                Data.OrderShipmentHeader.ProcessStatus = OrderShipmentProcessStatusEnum.Transferred.ToInt();
+                Data.OrderShipmentHeader.ProcessDateUtc = DateTime.UtcNow;
+                return SaveData();
+            }
+            return false;
+        }
+
+        public async Task<bool> MarkShipmentTransferredToInvoiceAsync(string ordershipmentUuid)
+        {
+            Edit();
+            if (GetDataById(ordershipmentUuid))
+            {
+                if (Data.OrderShipmentHeader.ProcessStatus == (int)OrderShipmentProcessStatusEnum.Default)
+                {
+                    Data.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Transferred;
+                    Data.OrderShipmentHeader.ProcessDateUtc = DateTime.UtcNow;
+                    return await SaveDataAsync();
+                }
+                return true;
+            }
+            return false;
+        }
     }
 }
 
