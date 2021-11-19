@@ -27,10 +27,7 @@
     [RowNum]      BIGINT NOT NULL,
     [CentralOrderUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder
     [OrderDCAssignmentUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder
- CONSTRAINT [PK_OrderDCAssignmentHeader] PRIMARY KEY CLUSTERED 
-(
-	[OrderDCAssignmentNum] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+	CONSTRAINT [PK_OrderDCAssignmentHeader] PRIMARY KEY CLUSTERED ([OrderDCAssignmentNum] ASC)
 ) ON [PRIMARY]
 GO
 

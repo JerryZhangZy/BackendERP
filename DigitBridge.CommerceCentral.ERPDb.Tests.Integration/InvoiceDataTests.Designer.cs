@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 			InvoiceData.InvoiceHeader = InvoiceHeaderTests.GetFakerData().Generate(); 
 			InvoiceData.InvoiceHeaderInfo = InvoiceHeaderInfoTests.GetFakerData().Generate(); 
 			InvoiceData.InvoiceHeaderAttributes = InvoiceHeaderAttributesTests.GetFakerData().Generate(); 
-			InvoiceData.InvoiceItems = InvoiceItemsTests.GetFakerData().Generate(ItemCount); 
+			InvoiceData.InvoiceItems = InvoiceItemsTests.GetFakerData().Generate(10); 
 			foreach (var ln in InvoiceData.InvoiceItems) 
 				ln.InvoiceItemsAttributes = InvoiceItemsAttributesTests.GetFakerData().Generate(); 
 			return InvoiceData; 

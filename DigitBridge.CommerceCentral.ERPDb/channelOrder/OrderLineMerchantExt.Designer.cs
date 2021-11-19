@@ -995,7 +995,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_expectedShipDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_expectedShipDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("ExpectedShipDateUtc", value);
 				}
             }
@@ -1128,7 +1128,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_holdUntilDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_holdUntilDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("HoldUntilDateUtc", value);
 				}
             }
@@ -1149,7 +1149,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_requiredShipDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_requiredShipDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("RequiredShipDateUtc", value);
 				}
             }
@@ -1170,7 +1170,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_requiredDeliveryDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_requiredDeliveryDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("RequiredDeliveryDateUtc", value);
 				}
             }
@@ -1191,7 +1191,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_customerRequestedArrivalDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_customerRequestedArrivalDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("CustomerRequestedArrivalDateUtc", value);
 				}
             }
@@ -1563,6 +1563,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<OrderLineMerchantExt>("WHERE CentralOrderLineUuid = @0 ", centralOrderLineUuid);
 		}
 
+		public override OrderLineMerchantExt ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override OrderLineMerchantExt ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

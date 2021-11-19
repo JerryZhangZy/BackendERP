@@ -147,6 +147,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ChargeAndAllowanceAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _chargeAndAllowanceAmount;
 
+        [Column("ChannelAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _channelAmount;
+
         [Column("PaidAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _paidAmount;
 
@@ -763,6 +766,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// (Readonly) Amount from Channel Order. <br> Display: false, Editable: false
+		/// </summary>
+        public virtual decimal ChannelAmount
+        {
+            get
+            {
+				return _channelAmount; 
+            }
+            set
+            {
+				_channelAmount = value; 
+				OnPropertyChanged("ChannelAmount", value);
+            }
+        }
+
+		/// <summary>
 		/// Total Paid amount. <br> Display: true, Editable: false
 		/// </summary>
         public virtual decimal PaidAmount
@@ -990,6 +1009,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_miscAmount = default(decimal); 
 			_miscTaxAmount = default(decimal); 
 			_chargeAndAllowanceAmount = default(decimal); 
+			_channelAmount = default(decimal); 
 			_paidAmount = default(decimal); 
 			_creditAmount = default(decimal); 
 			_balance = default(decimal); 

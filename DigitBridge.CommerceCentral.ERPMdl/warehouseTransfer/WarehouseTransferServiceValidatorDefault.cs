@@ -20,7 +20,6 @@ using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
-using DigitBridge.Base.Utility.Model;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {

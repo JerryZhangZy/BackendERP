@@ -381,6 +381,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasChargeAndAllowanceAmount => ChargeAndAllowanceAmount != null;
 
 		/// <summary>
+		/// (Readonly) Amount from Channel Order. <br> Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Amount from Channel Order. <br> Display: false, Editable: false")]
+        public decimal? ChannelAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasChannelAmount => ChannelAmount != null;
+
+		/// <summary>
 		/// (Ignore) Total Paid amount. <br> Display: false, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("(Ignore) Total Paid amount. <br> Display: false, Editable: false")]

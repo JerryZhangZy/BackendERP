@@ -12,6 +12,8 @@ namespace DigitBridge.Base.Utility
     /// </summary>
     public class ObjectConvert
     {
+        public static DateTime SystemMinDatatime = new DateTime(1800, 12, 28);
+
         public static DateTime MinDatatime = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
         public static DateTime MaxDatatime = (DateTime)System.Data.SqlTypes.SqlDateTime.MaxValue;
 
@@ -685,7 +687,7 @@ namespace DigitBridge.Base.Utility
 
         public static bool IsZero(this string input) => string.IsNullOrEmpty(input);
 
-        public static bool IsZero(this DateTime input) => input <= ObjectConvert.MinDatatime;
+        public static bool IsZero(this DateTime input) => input <= ObjectConvert.SystemMinDatatime;
         public static bool IsZero(this DateTime? input) => (input is null) ? true : input.ToDateTime().IsZero();
 
         public static bool IsZero(this TimeSpan input) => input < ObjectConvert.MinTime || input > ObjectConvert.MaxTime;

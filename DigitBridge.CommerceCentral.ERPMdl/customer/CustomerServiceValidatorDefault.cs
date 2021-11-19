@@ -200,6 +200,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 IsValid = false;
                 AddError($"RowNum: {data.Customer.RowNum} is duplicate.");
             }
+            if (data.Customer.MasterAccountNum == 0 || data.Customer.ProfileNum == 0)
+            {
+                IsValid = false;
+                AddError($"MasterAccountNum and ProfileNum are required.");
+            }
             ValidateAddData(data);
             return IsValid;
 
@@ -208,7 +213,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var dbFactory = data.dbFactory;
             #region Valid Customer
-            if (string.IsNullOrEmpty(data.Customer.CustomerCode) || dbFactory.Db.ExecuteScalar<int>($"SELECT COUNT(1) FROM Customer WHERE CustomerCode='{data.Customer.CustomerCode}'") > 0)
+            if (string.IsNullOrEmpty(data.Customer.CustomerCode) ||
+                dbFactory.Db.ExecuteScalar<int>(
+                    $"SELECT COUNT(1) FROM Customer WHERE CustomerCode=@0 AND MasterAccountNum = @1 AND ProfileNum = @2", 
+                    data.Customer.CustomerCode,
+                    data.Customer.MasterAccountNum,
+                    data.Customer.ProfileNum) > 0
+            )
             {
                 IsValid = false;
                 AddError($"CustomerCode required and must be unique.");
@@ -216,18 +227,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             #endregion
 
             #region Valid CustomerAddress
-            if (data.CustomerAddress != null && data.CustomerAddress.Count > 0)
-            {
-                var addressList = data.CustomerAddress.ToList();
-                foreach (var addr in data.CustomerAddress)
-                {
-                    if (string.IsNullOrEmpty(addr.AddressCode) || addressList.Count(r => r.AddressCode == addr.AddressCode) > 1)
-                    {
-                        IsValid = false;
-                        AddError($"CustomerAddress.AddressCode required must be unique.");
-                    }
-                }
-            }
             #endregion
             return IsValid;
         }
@@ -247,6 +246,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 IsValid = false;
                 AddError($"RowNum: {data.Customer.RowNum} not found.");
                 return IsValid;
+            }
+            if (data.Customer.MasterAccountNum == 0 || data.Customer.ProfileNum == 0)
+            {
+                IsValid = false;
+                AddError($"MasterAccountNum and ProfileNum are required.");
             }
             return true;
         }
@@ -295,10 +299,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected virtual async Task<bool> ValidateAllModeAsync(CustomerData data)
         {
             var dbFactory = data.dbFactory;
-            if (string.IsNullOrEmpty(data.Customer.CustomerUuid))
+            if (string.IsNullOrEmpty(data.Customer.CustomerCode))
             {
                 IsValid = false;
-                AddError($"Unique Id cannot be empty.");
+                AddError($"Customer Code cannot be empty.");
                 return IsValid;
             }
             //if (string.IsNullOrEmpty(data.Customer.CustomerUuid))
