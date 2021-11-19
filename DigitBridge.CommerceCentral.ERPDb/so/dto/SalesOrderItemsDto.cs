@@ -126,6 +126,35 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasEtaArrivalDate => EtaArrivalDate != null;
 
 		/// <summary>
+		/// Don't early than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Don't early than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true")]
+        [DataType(DataType.DateTime)]
+        public DateTime? EarliestShipDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasEarliestShipDate => EarliestShipDate != null;
+
+		/// <summary>
+		/// Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true")]
+        [DataType(DataType.DateTime)]
+        public DateTime? LatestShipDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasLatestShipDate => LatestShipDate != null;
+
+		/// <summary>
+		/// Request Signature. <br> Title: Stockable, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Request Signature. <br> Title: Stockable, Display: true, Editable: true")]
+        public bool? SignatureFlag { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSignatureFlag => SignatureFlag != null;
+
+		/// <summary>
 		/// Product SKU. <br> Title: SKU, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Product SKU. <br> Title: SKU, Display: true, Editable: true")]
@@ -642,7 +671,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 		/// <summary>
 		/// (Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false
-		/// </summary>
+        /// </summary>
 		[OpenApiPropertyDescription("(Readonly) Link to OrderDCAssignmentLineNum in OrderDCAssignmentLine. <br> Title: OrderDCAssignmentLineNum, Display: false, Editable: false")]
         public long? OrderDCAssignmentLineNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

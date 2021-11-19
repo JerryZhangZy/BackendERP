@@ -46,3 +46,26 @@ CREATE NONCLUSTERED INDEX [IX_SalesOrderHeader_CustomerUuid_CustomerCode] ON [db
 	[CustomerCode] ASC
 ) 
 GO
+
+
+-- 11/16/20201 By Jerry
+IF COL_LENGTH('SalesOrderHeader', 'EtaArrivalDate') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderHeader ADD [EtaArrivalDate] DATE NULL
+END	
+
+IF COL_LENGTH('SalesOrderHeader', 'EarliestShipDate') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderHeader ADD [EarliestShipDate] DATE NULL
+END
+
+-- 11/17/20201 By junxian
+IF COL_LENGTH('SalesOrderHeader', 'LatestShipDate') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderHeader ADD [LatestShipDate] DATE NULL
+END	
+
+IF COL_LENGTH('SalesOrderHeader', 'SignatureFlag') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderHeader ADD [SignatureFlag] TINYINT NOT NULL DEFAULT 0
+END	

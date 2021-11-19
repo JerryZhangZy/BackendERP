@@ -16,5 +16,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         Task<bool> UpdateAsync(PoReceivePayload payload);
 
         IList<MessageClass> Messages { get; set; }
+
+        Task<bool> NewReceiveForVendorAsync(PoReceivePayload payload);
     }
 }

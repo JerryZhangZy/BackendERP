@@ -187,6 +187,28 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         /// <summary>
+        /// Load inventory list summary
+        /// </summary>
+        [FunctionName(nameof(ProductExListSummary))]
+        [OpenApiOperation(operationId: "ProductExListSummary", tags: new[] { "ProductExts" }, Summary = "Load productex list summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InventoryPayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InventoryPayloadFind))]
+        public static async Task<JsonNetResponse<InventoryPayload>> ProductExListSummary(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "productExts/find/summary")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<InventoryPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new InventoryList(dataBaseFactory, new InventoryQuery());
+            await srv.GetProductListSummaryAsync(payload);
+            return new JsonNetResponse<InventoryPayload>(payload);
+        }
+
+
+
+        /// <summary>
         /// Load customer list
         /// </summary>
         [FunctionName(nameof(ProductDataList))]

@@ -284,7 +284,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "MiscInvoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "MiscInvoiceNumber", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(MiscInvoicePayloadGetSingle))]
-        public static async Task<JsonNetResponse<MiscInvoicePayload>> CheckMiscInvoiceNumberExist(
+        public static async Task<bool> CheckMiscInvoiceNumberExist(
             [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "miscInvoice/miscInvoiceNumber/{miscInvoiceNumber}")] Microsoft.AspNetCore.Http.HttpRequest req,
             ILogger log,
             string miscInvoiceNumber)
@@ -292,16 +292,28 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<MiscInvoicePayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new MiscInvoiceService(dataBaseFactory);
-            payload.Success = await srv.CheckNumberExistAsync(payload.MasterAccountNum, payload.ProfileNum, miscInvoiceNumber);
-            if (payload.Success)
-            {
-                payload.MiscInvoiceNumbers = new string[] { miscInvoiceNumber };
-            }
-            else
-                payload.Messages = srv.Messages;
-            return new JsonNetResponse<MiscInvoicePayload>(payload);
+            return await srv.GetDataAsync(payload, miscInvoiceNumber);
         }
 
+        /// <summary>
+        /// Load MiscInvoices list
+        /// </summary>
+        [FunctionName(nameof(MiscInvoicesListSummary))]
+        [OpenApiOperation(operationId: "MiscInvoicesListSummary", tags: new[] { "MiscInvoices" }, Summary = "Load MiscInvoices list summary")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(MiscInvoicePayloadFind), Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(MiscInvoicePayloadFind))]
+        public static async Task<JsonNetResponse<MiscInvoicePayload>> MiscInvoicesListSummary(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "miscInvoices/find/summary")] Microsoft.AspNetCore.Http.HttpRequest req)
+        {
+            var payload = await req.GetParameters<MiscInvoicePayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new MiscInvoiceList(dataBaseFactory, new MiscInvoiceQuery());
+            await srv.GetMiscInvoiceListSummaryAsync(payload);
+            return new JsonNetResponse<MiscInvoicePayload>(payload);
+        }
     }
 }
 

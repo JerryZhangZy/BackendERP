@@ -88,7 +88,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private decimal _minStock;
 
         [Column("SKU",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _sKU;
+        private string _sku;
 
         [Column("WarehouseUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _warehouseUuid;
@@ -124,7 +124,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private string _currency;
 
         [Column("UOM",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
-        private string _uOM;
+        private string _uom;
 
         [Column("QtyPerPallot",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _qtyPerPallot;
@@ -466,11 +466,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _sKU?.TrimEnd(); 
+				return _sku?.TrimEnd(); 
             }
             set
             {
-				_sKU = value.TruncateTo(100); 
+				_sku = value.TruncateTo(100); 
 				OnPropertyChanged("SKU", value);
             }
         }
@@ -668,11 +668,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				return _uOM?.TrimEnd(); 
+				return _uom?.TrimEnd(); 
             }
             set
             {
-				_uOM = value.TruncateTo(50); 
+				_uom = value.TruncateTo(50); 
 				OnPropertyChanged("UOM", value);
             }
         }
@@ -1101,7 +1101,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UpdateDateUtc", value);
 				}
             }
@@ -1249,7 +1249,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_leadTimeDay = default(int); 
 			_poSize = default(decimal); 
 			_minStock = default(decimal); 
-			_sKU = String.Empty; 
+			_sku = String.Empty; 
 			_warehouseUuid = String.Empty; 
 			_warehouseCode = String.Empty; 
 			_warehouseName = String.Empty; 
@@ -1261,7 +1261,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_lpnDescription = String.Empty; 
 			_notes = String.Empty; 
 			_currency = String.Empty; 
-			_uOM = String.Empty; 
+			_uom = String.Empty; 
 			_qtyPerPallot = default(decimal); 
 			_qtyPerCase = default(decimal); 
 			_qtyPerBox = default(decimal); 
@@ -1354,6 +1354,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<Inventory>("WHERE WarehouseUuid = @0 ", warehouseUuid);
 		}
 
+		public override Inventory ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override Inventory ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

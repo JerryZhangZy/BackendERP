@@ -6,8 +6,11 @@
 
   <ItemGroup>
     <Compile Remove="ApiClient\**" />
+    <Compile Remove="CustomDefineCodes\dto\**" />
     <EmbeddedResource Remove="ApiClient\**" />
+    <EmbeddedResource Remove="CustomDefineCodes\dto\**" />
     <None Remove="ApiClient\**" />
+    <None Remove="CustomDefineCodes\dto\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CustomDefineCodes\dto\" />
     <Folder Include="inventoryUpdate\" />
     <Folder Include="event\" />
     <Folder Include="shipmentInquiry\" />

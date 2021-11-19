@@ -589,6 +589,15 @@ namespace DigitBridge.CommerceCentral.YoPoco
             return (TEntity)this;
         }
 
+        public virtual TEntity Clone()
+        {
+            var newData = new TEntity();
+            newData.Clear();
+            newData?.CopyFrom((TEntity)this);
+            newData.ClearMetaData();
+            return newData;
+        }
+
         #endregion Interface Definition
 
     }

@@ -38,7 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _miscInvoiceService;
             }
         }
-        public async Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceUuid, string invoiceNumber, decimal amount)
+        public async Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceTransUuid, string invoiceNumber, decimal amount)
         {
             Add();
             if (miscInvoiceUuid.IsZero())
@@ -47,9 +47,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            if (invoiceUuid.IsZero())
+            if (invoiceTransUuid.IsZero())
             {
-                AddError($"invoiceUuid is null");
+                AddError($"invoiceTransUuid is null");
                 return false;
             }
             if (!await LoadMiscInvoiceAsync(miscInvoiceUuid))
@@ -75,7 +75,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 TotalAmount = amount > header.Balance ? header.Balance : amount,
                 PaidBy = (int)PaidByAr.CreditMemo,
                 CheckNum = invoiceNumber,
-                AuthCode = invoiceUuid,
+                AuthCode = invoiceTransUuid,
                 TransDate = DateTime.Now,
                 TransTime = DateTime.Now.TimeOfDay,
                 TransType = (int)TransTypeEnum.Payment,
@@ -97,6 +97,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddActivityLogForCurrentData();
             await MiscInvoiceService.PayAsync(miscInvoiceUuid, amount);
             return true;
+        }
+        public async Task<bool> DeleteMiscPayment(string miscInvoiceUuid, string invoiceTransUuid, decimal amount)
+        {
+            if (string.IsNullOrEmpty(invoiceTransUuid))
+            {
+                AddError("invoiceTransUuid is null or empty");
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    await dbFactory.Db.ExecuteAsync($"DELETE MiscInvoiceTransaction WHERE AuthCode='{invoiceTransUuid}'");
+                }
+                catch
+                {
+                    AddError($"Delete MiscInvoiceTransaction with AuthCode '{invoiceTransUuid}' failed");
+                }
+                await MiscInvoiceService.PayAsync(miscInvoiceUuid, -amount);
+                return true;
+            }
         }
         protected void AddActivityLogForCurrentData()
         {

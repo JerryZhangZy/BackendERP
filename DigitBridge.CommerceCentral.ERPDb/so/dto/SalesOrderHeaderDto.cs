@@ -1,4 +1,3 @@
-
               
     
 
@@ -30,8 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class SalesOrderHeaderDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -39,8 +41,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// (Readonly) Database Number. <br> Display: false, Editable: false.
 		/// </summary>
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
 		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -49,8 +51,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// (Readonly) Login user account. <br> Display: false, Editable: false.
 		/// </summary>
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
 		[OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -59,8 +61,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// (Readonly) Login user profile. <br> Display: false, Editable: false.
 		/// </summary>
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
 		[OpenApiPropertyDescription("(Readonly) Login user profile. <br> Display: false, Editable: false.")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -153,6 +155,45 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBillDate => BillDate != null;
+
+		/// <summary>
+		/// Estimated date when item arrival to buyer. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Estimated date when item arrival to buyer. <br> Title: Delivery Date, Display: true, Editable: true")]
+        [DataType(DataType.DateTime)]
+        public DateTime? EtaArrivalDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasEtaArrivalDate => EtaArrivalDate != null;
+
+		/// <summary>
+		/// Don't early than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Don't early than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true")]
+        [DataType(DataType.DateTime)]
+        public DateTime? EarliestShipDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasEarliestShipDate => EarliestShipDate != null;
+
+		/// <summary>
+		/// Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Don't late than this date to ship. <br> Title: Delivery Date, Display: true, Editable: true")]
+        [DataType(DataType.DateTime)]
+        public DateTime? LatestShipDate { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasLatestShipDate => LatestShipDate != null;
+
+		/// <summary>
+		/// Request Signature. <br> Title: Stockable, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Request Signature. <br> Title: Stockable, Display: true, Editable: true")]
+        public bool? SignatureFlag { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSignatureFlag => SignatureFlag != null;
 
 		/// <summary>
 		/// Customer uuid, load from customer data. <br> Display: false, Editable: false
@@ -403,7 +444,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderSourceCode => OrderSourceCode != null;
 
-        /// <summary>
+		/// <summary>
 		/// (Ignore) Deposit Amount. <br> Display: true, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("(Ignore) Deposit Amount. <br> Display: true, Editable: false")]
@@ -412,21 +453,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasDepositAmount => DepositAmount != null;
 
-        /// <summary>
-        /// Misc Invoice Uuid. <br> Display: true, Editable: false.
-        /// </summary>
-        [OpenApiPropertyDescription("Misc Invoice Uuid. <br> Display: true, Editable: false.")]
+		/// <summary>
+		/// Misc Invoice Uuid. <br> Display: true, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Misc Invoice Uuid. <br> Display: true, Editable: false.")]
         [StringLength(50, ErrorMessage = "The MiscInvoiceUuid value cannot exceed 50 characters. ")]
         public string MiscInvoiceUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasMiscInvoiceUuid => MiscInvoiceUuid != null;
 
-
-        /// <summary>
-        /// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
-        /// </summary>
-        [OpenApiPropertyDescription("(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false")]
+		/// <summary>
+		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false")]
         [DataType(DataType.DateTime)]
         public DateTime? UpdateDateUtc { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

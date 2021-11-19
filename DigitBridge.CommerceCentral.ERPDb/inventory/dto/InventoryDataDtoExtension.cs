@@ -35,8 +35,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             var result = new List<dynamic>();
 			if (!dto.HasProductBasic)
-				return result;
-			//TODO change to merge Dto children object
+                return result;
+            //TODO change to merge Dto children object
 			if (withHeaderText)
                 result.Add(dto.ProductBasic.MergeName(dto.ProductExt, dto.ProductExtAttributes));
             result.Add(dto.ProductBasic.Merge(dto.ProductExt, dto.ProductExtAttributes));
@@ -52,7 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static IEnumerable<dynamic> MergeDetailRecord(this InventoryDataDto dto, bool withHeaderText = false)
         {
 			//return null;
-			//TODO change to merge Dto children object
+            //TODO change to merge Dto children object
 			var result = new List<dynamic>();
 			if (!dto.HasInventory)
 				return result;

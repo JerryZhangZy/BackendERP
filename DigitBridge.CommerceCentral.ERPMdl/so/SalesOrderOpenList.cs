@@ -46,12 +46,28 @@ channelAccount.ChannelAccountName as 'ChannelAccountName',
 {Helper.TableAllies}.OrderNumber as 'SellerOrderId',
 {Helper.TableAllies}.Currency as 'Currency',
 {Helper.TableAllies}.OrderDate as 'OriginalOrderDate',
-{InfoHelper.TableAllies}.Notes as 'SellerPrivateNotes',
+{OrderHeaderHelper.TableAllies}.SellerPublicNote as 'SellerPublicNotes',
+{OrderHeaderHelper.TableAllies}.SellerPrivateNote as 'SellerPrivateNotes',
+{OrderHeaderHelper.TableAllies}.EndBuyerInstruction as 'EndBuyerInstruction',
+
 {Helper.TableAllies}.TotalAmount as 'TotalOrderAmount',
 {Helper.TableAllies}.TaxAmount as 'TotalTaxAmount',
 {Helper.TableAllies}.ShippingAmount as 'TotalShippingAmount',
 {Helper.TableAllies}.ShippingTaxAmount as 'TotalShippingTaxAmount',
+{OrderHeaderHelper.TableAllies}.TotalShippingDiscount as 'TotalShippingDiscount',
+{OrderHeaderHelper.TableAllies}.TotalShippingDiscountTaxAmount as 'TotalShippingDiscountTaxAmount',
+{OrderHeaderHelper.TableAllies}.TotalInsuranceAmount as 'TotalInsuranceAmount',
+{OrderHeaderHelper.TableAllies}.TotalGiftOptionAmount as 'TotalGiftOptionAmount',
+{OrderHeaderHelper.TableAllies}.TotalGiftOptionTaxAmount as 'TotalGiftOptionTaxAmount',
+{OrderHeaderHelper.TableAllies}.AdditionalCostOrDiscount as 'AdditionalCostOrDiscount',
 {Helper.TableAllies}.DiscountAmount as 'PromotionAmount',
+
+{Helper.TableAllies}.ShipDate as 'EstimatedShipDate',
+{Helper.TableAllies}.EarliestShipDate as 'EarliestShipDate',
+{Helper.TableAllies}.LatestShipDate as 'LatestShipDate',
+{Helper.TableAllies}.EtaArrivalDate as 'DeliverByDate',
+{Helper.TableAllies}.SignatureFlag as 'SignatureFlag', 
+
 {InfoHelper.TableAllies}.ShippingCarrier as 'RequestShippingCarrier',
 {InfoHelper.TableAllies}.ShippingClass as 'RequestShippingService',
 {InfoHelper.TableAllies}.ShipToName as 'ShipToName',
@@ -109,7 +125,11 @@ CAST({ ItemHelper.TableAllies}.CancelledQty as INT) as 'CancelQty',
 {ItemHelper.TableAllies}.TaxAmount as 'LineItemTaxAmount',
 {ItemHelper.TableAllies}.ShippingAmount as 'LineShippingAmount',
 {ItemHelper.TableAllies}.ShippingTaxAmount as 'LineShippingTaxAmount',
-{ItemHelper.TableAllies}.ItemDate as 'EnterDate'
+{ItemHelper.TableAllies}.MiscAmount as 'LineGiftAmount',
+{ItemHelper.TableAllies}.MiscTaxAmount as 'LineGiftTaxAmount',
+{ItemHelper.TableAllies}.DiscountAmount as 'LinePromotionAmount',
+--{ItemHelper.TableAllies}.BundleItemFulfilmentLineNum as 'BundleItemFulfilmentLineNum',
+{ItemHelper.TableAllies}.EnterDateUtc as 'EnterDate' 
 ";
             return columns;
         }
@@ -125,27 +145,22 @@ CAST({ ItemHelper.TableAllies}.CancelledQty as INT) as 'CancelQty',
             return columns;
         }
 
-//        protected string GetOrderLineItem_Columns()
-//        {
-//            var columns = $@"
-//{OrderLineHelper.TableAllies}.DatabaseNum as 'CentralDatabaseNum',
-//{OrderLineHelper.TableAllies}.CentralOrderLineNum as 'CentralOrderLineNum',
-//{OrderLineHelper.TableAllies}.ChannelItemID as 'ChannelItemID',
-//{OrderLineHelper.TableAllies}.ItemTitle as 'ItemTitle',
-//{OrderLineHelper.TableAllies}.UnitPrice as 'UnitPrice',
-//{OrderLineHelper.TableAllies}.LineShippingDiscount as 'LineShippingDiscount',
-//{OrderLineHelper.TableAllies}.LineShippingDiscountTaxAmount as 'LineShippingDiscountTaxAmount',
-//{OrderLineHelper.TableAllies}.LineRecyclingFee as 'LineRecyclingFee',
-//{OrderLineHelper.TableAllies}.LineGiftMsg as 'LineGiftMsg',
-//{OrderLineHelper.TableAllies}.LineGiftNotes as 'LineGiftNotes',
-//{OrderLineHelper.TableAllies}.LineGiftAmount as 'LineGiftAmount',
-//{OrderLineHelper.TableAllies}.LineGiftTaxAmount as 'LineGiftTaxAmount',
-//{OrderLineHelper.TableAllies}.LinePromotionCodes as 'LinePromotionCodes',
-//{OrderLineHelper.TableAllies}.LinePromotionAmount as 'LinePromotionAmount',
-//{OrderLineHelper.TableAllies}.LinePromotionTaxAmount as 'LinePromotionTaxAmount' 
-//";
-//            return columns;
-//        }
+        protected string GetOrderLineItem_Columns()
+        {
+            var columns = $@"
+{OrderLineHelper.TableAllies}.DatabaseNum as 'CentralDatabaseNum',
+{OrderLineHelper.TableAllies}.CentralOrderLineNum as 'CentralOrderLineNum',
+{OrderLineHelper.TableAllies}.ChannelItemID as 'ChannelItemID',
+{OrderLineHelper.TableAllies}.LineShippingDiscount as 'LineShippingDiscount',
+{OrderLineHelper.TableAllies}.LineShippingDiscountTaxAmount as 'LineShippingDiscountTaxAmount',
+{OrderLineHelper.TableAllies}.LineRecyclingFee as 'LineRecyclingFee',
+{OrderLineHelper.TableAllies}.LineGiftMsg as 'LineGiftMsg',
+{OrderLineHelper.TableAllies}.LineGiftNotes as 'LineGiftNotes',
+{OrderLineHelper.TableAllies}.LinePromotionCodes as 'LinePromotionCodes',
+{OrderLineHelper.TableAllies}.LinePromotionTaxAmount as 'LinePromotionTaxAmount' 
+";
+            return columns;
+        }
 
         protected string GetItem_Script()
         {
@@ -153,7 +168,8 @@ CAST({ ItemHelper.TableAllies}.CancelledQty as INT) as 'CancelQty',
 ( 
 SELECT 
 {GetItem_Columns()},
-{GetSkuItem_Columns()}
+{GetSkuItem_Columns()},
+{GetOrderLineItem_Columns()}
 FROM { ItemHelper.TableName} { ItemHelper.TableAllies}
 LEFT JOIN {ProdcutHelper.TableName} {ProdcutHelper.TableAllies}
      ON ( {ProdcutHelper.TableAllies}.MasterAccountNum={Helper.TableAllies}.MasterAccountNum
@@ -161,12 +177,38 @@ LEFT JOIN {ProdcutHelper.TableName} {ProdcutHelper.TableAllies}
       AND {ProdcutHelper.TableAllies}.SKU={ItemHelper.TableAllies}.SKU
       )
 
---LEFT JOIN {OrderLineHelper.TableName} {OrderLineHelper.TableAllies}
---     ON ( {OrderLineHelper.TableAllies}.CentralOrderLineUuid={ItemHelper.TableAllies}.CentralOrderLineUuid)
+LEFT JOIN {OrderLineHelper.TableName} {OrderLineHelper.TableAllies}
+     ON ( {OrderLineHelper.TableAllies}.CentralOrderLineUuid={ItemHelper.TableAllies}.CentralOrderLineUuid)
 
 WHERE { ItemHelper.TableAllies}.SalesOrderUuid = { Helper.TableAllies}.SalesOrderUuid 
 FOR JSON PATH
 ) AS OrderLineList";
+            return columns;
+        }
+
+        protected string GetOrderHeaderJson_Script()
+        {
+            var tableAllies_Json = "headerExt";
+            var columns = $@"
+(
+ select * from {OrderHeaderHelper.TableName} {tableAllies_Json} 
+ where {tableAllies_Json}.CentralOrderNum={OrderHeaderHelper.TableAllies}.CentralOrderNum
+ for json path
+--, WITHOUT_ARRAY_WRAPPER
+) as OrderHeaderJson
+";
+            return columns;
+        }
+        protected string GetOrderLineJson_Script()
+        {
+            var tableAllies_Json = "lineExt";
+            var columns = $@"
+(
+ select * from {OrderLineHelper.TableName} {tableAllies_Json} 
+ where {tableAllies_Json}.CentralOrderNum={OrderHeaderHelper.TableAllies}.CentralOrderNum
+ for json path
+) as OrderLineJson
+";
             return columns;
         }
         #endregion
@@ -179,6 +221,8 @@ FOR JSON PATH
             SELECT 
              {GetHeader_Columns()}
             ,{GetItem_Script()} 
+            ,{GetOrderHeaderJson_Script()} 
+            ,{GetOrderLineJson_Script()}   
             ";
 
             return this.SQL_Select;
@@ -198,6 +242,7 @@ FOR JSON PATH
         and {Helper.TableAllies}.ProfileNum={EventHelper.TableAllies}.ProfileNum
         and {Helper.TableAllies}.SalesOrderUuid={EventHelper.TableAllies}.ProcessUuid
  LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({InfoHelper.TableAllies}.SalesOrderUuid = {Helper.TableAllies}.SalesOrderUuid)
+ LEFT JOIN {OrderHeaderHelper.TableName} {OrderHeaderHelper.TableAllies} ON ({OrderHeaderHelper.TableAllies}.CentralOrderNum = {InfoHelper.TableAllies}.CentralOrderNum)
  {SqlStringHelper.Join_Setting_Channel(masterAccountNum, profileNum, channelNum)}
  {SqlStringHelper.Join_Setting_ChannelAccount(masterAccountNum, profileNum, channelNum, channelAccountNum)}
 ";
@@ -214,12 +259,12 @@ FOR JSON PATH
 
         //}
 
-        protected override string GetSQL_orderBy()
-        {
-            this.SQL_OrderBy = $" order by {Helper.TableAllies}.UpdateDateUtc ";
+        //protected override string GetSQL_orderBy()
+        //{
+        //    this.SQL_OrderBy = $" order by {Helper.TableAllies}.UpdateDateUtc ";
 
-            return this.SQL_OrderBy;
-        }
+        //    return this.SQL_OrderBy;
+        //}
         #endregion override methods 
 
         public virtual async Task GetSalesOrdersOpenListAsync(SalesOrderOpenListPayload payload)

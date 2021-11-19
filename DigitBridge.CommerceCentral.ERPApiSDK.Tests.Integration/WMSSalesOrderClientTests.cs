@@ -16,11 +16,11 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
 
-        private string _baseUrl = "http://localhost:7074/api/";
-        //private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
+        //private string _baseUrl = "http://localhost:7074/api/";
+        private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net/api/";
         private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
-        protected const int MasterAccountNum = 10001;
-        protected const int ProfileNum = 10001;
+        protected int MasterAccountNum = 10001;
+        protected int ProfileNum = 10001;
 
         public WMSSalesOrderClientTests(TestFixture<StartupTest> fixture)
         {
@@ -48,16 +48,17 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task GetSalesOrdersOpenListAsync_Full_Test()
         {
             var client = new WMSSalesOrderClient(_baseUrl, _code);
-
+            MasterAccountNum = 10002;
+            ProfileNum = 10003;
             var payload = new WMSSalesOrderRequestPayload()
             {
-                LoadAll = true,
-                //Top = 10,
-                Filter = new SalesOrderOpenListFilter()
-                {
-                    //UpdateDateUtc = DateTime.Today.AddDays(-1),
-                    WarehouseCode = "Warehouse-NEW-0907-075130364"
-                },
+                //LoadAll = true,
+                Top = 1,
+                //Filter = new SalesOrderOpenListFilter()
+                //{
+                //    //UpdateDateUtc = DateTime.Today.AddDays(-1),
+                //    WarehouseCode = "VBT001-1-3-4"
+                //},
             };
 
             var success = await client.GetSalesOrdersOpenListAsync(MasterAccountNum, ProfileNum, payload);

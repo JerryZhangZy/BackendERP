@@ -151,7 +151,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
         public string WarehouseID { get; set; }
 
-        public string ShipmentType { get; set; }
+        public int ShipmentType { get; set; }
 
         public string MainTrackingNumber { get; set; }
 
@@ -170,7 +170,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
                 .RuleFor(u => u.ChannelOrderID, f =>string.Empty)
                 .RuleFor(u => u.ShipmentID, f => string.Empty)
                 .RuleFor(u => u.WarehouseID, f => string.Empty)
-                .RuleFor(u => u.ShipmentType, f =>string.Empty)
+                .RuleFor(u => u.ShipmentType, f =>0)
                 .RuleFor(u => u.MainTrackingNumber, f => string.Empty)
                 .RuleFor(u => u.MainReturnTrackingNumber, f => string.Empty)
                 .RuleFor(u => u.ProcessStatus, f =>string.Empty)

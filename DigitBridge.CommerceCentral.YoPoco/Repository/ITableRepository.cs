@@ -58,6 +58,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         TEntity CopyFrom(TEntity other);
         TEntity CopyFrom(TEntity other, IEnumerable<string> ignoreColumns);
         TEntity Clear();
+        TEntity Clone();
 
         TEntity ConvertDbFieldsToData();
         TEntity ConvertDataFieldsToDb();

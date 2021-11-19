@@ -528,6 +528,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override EventProcessERP ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override EventProcessERP ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			UpdateDateUtc =DateTime.UtcNow;
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

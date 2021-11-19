@@ -117,7 +117,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //AvgCost
             //LotCost
             invoiceHeader.InvoiceSourceCode = "OrderShipmentUuid:" + osHeader.OrderShipmentUuid;
-            invoiceHeader.UpdateDateUtc = _dtNowUtc;
+             
             invoiceHeader.EnterBy = _userId;
             //UpdateBy
             //EnterDateUtc
@@ -228,8 +228,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         //AvgCost
                         //LotCost
                         //LotInDate
-                        //LotExpDate
-                        UpdateDateUtc = _dtNowUtc,
+                        //LotExpDate 
                         EnterBy = _userId,
                         //UpdateBy
                         //EnterDateUtc
