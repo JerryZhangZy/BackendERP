@@ -634,8 +634,11 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
 
         public async Task<bool> UpdatAvgCostByPoReceiveAsync(PoTransactionData data)
         {
-            if (data == null || data.PoTransaction == null||!data.FirstAPReceiveStatus)
+            //if (data == null || data.PoTransaction == null||!data.FirstAPReceiveStatus)
+            //    return false;
+            if (data == null || data.PoTransaction == null )
                 return false;
+
             var header = data.PoTransaction;
             if (data.PoTransactionItems == null || data.PoTransactionItems.Count == 0)
             {

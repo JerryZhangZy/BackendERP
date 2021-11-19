@@ -343,9 +343,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         #endregion
 
-        public async Task<int> GetRowNumByPoUuidAsync(string poUuid)
+        public async Task<int?> GetRowNumByPoUuidAsync(string poUuid)
         {
-            return await dbFactory.GetValueAsync<ApInvoiceHeader,int>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE PoUuid=@0",poUuid.ToSqlParameter("@0"));
+           return dbFactory.Db.ExecuteScalar<int?>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE PoUuid=@0", poUuid.ToSqlParameter("@0"));
+
+           // return await dbFactory.GetValueAsync<ApInvoiceHeader,int>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE PoUuid=@0",poUuid.ToSqlParameter("@0"));
         }
         
         public int GetRowNumByPoUuid(string poUuid)
@@ -369,25 +371,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var sql = $@"select 
 ISNULL(sum(TotalAmount),0) as TotalAmount,ISNULL(sum(MiscAmount),0) as MiscAmount,ISNULL(sum(ShippingAmount),0) as ShippingAmount
 from PoTransaction
-where PoUuid=@0;";
+where PoUuid=@0";
             using (var tx = new ScopedTransaction(dbFactory))
             {
-                return SqlQuery.Execute(sql, (decimal totalAmount, decimal miscAmount, decimal shippingAmount) => (totalAmount, miscAmount, shippingAmount), poUuid.ToSqlParameter("poUuid")).First();
+                return SqlQuery.Execute(sql, (decimal totalAmount, decimal miscAmount, decimal shippingAmount) => (totalAmount, miscAmount, shippingAmount), poUuid.ToSqlParameter("0")).First();
             }
         }
         
-        public async Task<bool> CreateOrUpdateApInvoiceByPoReceiveAsync(PoTransactionData data)
+        public async Task<bool> CreateOrUpdateApInvoiceByPoReceiveAsync(int masterAccountNum,int profileNum, PoTransactionData data)
         {
             if (data == null || data.PoTransaction == null)
                 return false;
             var header = data.PoTransaction;
-            if (header.TransStatus != (int)PoTransStatus.APReceive)
-                return false;
+            //if (header.TransStatus != (int)PoTransStatus.APReceive)
+            //    return false;
             var poUuid = data.PoTransaction.PoUuid;
             Edit();
             var rowNum = await GetRowNumByPoUuidAsync(poUuid);
             var summary = GetSummaryAmountByPoUuid(poUuid);
-            if (await GetDataAsync(rowNum))
+            if (rowNum!=null&& await GetDataAsync(rowNum.Value))
             {
                 //Update;
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ReceiveItemTotalAmount)
@@ -402,13 +404,21 @@ where PoUuid=@0;";
                 NewData();
                 Data.ApInvoiceHeader = new ApInvoiceHeader()
                 {
+                    ApInvoiceUuid=System.Guid.NewGuid().ToString(),
                     ApInvoiceDate = DateTime.Today,
                     ApInvoiceTime = DateTime.Now.TimeOfDay,
                     ApInvoiceType = 0, //PoReceive
                     TotalAmount = header.TotalAmount,
                     VendorUuid = header.VendorUuid,
                     VendorInvoiceNum = header.VendorInvoiceNum,
-                    VendorInvoiceDate = header.VendorInvoiceDate
+                    VendorInvoiceDate = header.VendorInvoiceDate,
+                    MasterAccountNum= masterAccountNum,
+                    ProfileNum= profileNum,
+                    PoUuid= header.PoUuid,
+                    PoNum=header.PoNum,
+                    VendorCode=header.VendorCode,
+                    VendorName=header.VendorName,
+                        
                 };
                 Data.ApInvoiceItems = new List<ApInvoiceItems>();
                 Data.AddApInvoiceItems(new ApInvoiceItems()

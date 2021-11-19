@@ -54,7 +54,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if ( poTransactions.Count == 0) {
                 this.Messages.Add(new MessageClass() {  Message= "transNum is not found" });
                 return false; }
-            return await base.GetByNumberAsync(payload, poTransactions[0].PoNum, transNum);
+            return await base.GetByNumberAsync(payload.MasterAccountNum,payload.ProfileNum , transNum.ToString());
         }
 
         /// <summary>
@@ -235,21 +235,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> ClosePoReceiveAsync(PoReceivePayload payload,int transNum)
         {
-           
 
-            if(!await GetByNumberAsync(payload, transNum))
+            Edit();
+            if (!await GetByNumberAsync(payload, transNum))
             {
                 AddError("PoTransaction cannot be find");
                 return false;
             }
+            
+            if (!LoadPurchaseOrderData(_data.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
+                return false;
+
             //检查限制条件 --暂无
-            Edit();
+
             base.Data.PoTransaction.TransStatus = (int)PoTransStatus.Closed;
            
             //Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
             if (await base.SaveDataAsync())
             {
-                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);
+                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(payload.MasterAccountNum, payload.ProfileNum,_data);
                 await InventoryService.UpdatAvgCostByPoReceiveAsync(_data);
                 return true;
             }
@@ -345,7 +349,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 _data.PoTransactionItems.Clear();
                 await InventoryLogService.UpdateByPoReceiveAsync(_data);
                 await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
-                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);
+                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data.PoTransaction.MasterAccountNum,_data.PoTransaction.ProfileNum,_data);
                 return true;
             }
 
@@ -392,7 +396,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
            List<string> poNums= dbFactory.Db.Query<string>($@"select  distinct ph.[PoNum] from [dbo].[PoHeader] ph  
                   LEFT JOIN  [dbo].[PoItems] poi on ph.PoUuid=poi.PoUuid 
-                  where   and ph.MasterAccountNum=@0 AND  ph.ProfileNum=@1 AND (poi.PoQty-poi.ReceivedQty-poi.CancelledQty)>0 AND ph.VendorCode=@2",
+                  where    ph.MasterAccountNum=@0 AND  ph.ProfileNum=@1 AND (poi.PoQty-poi.ReceivedQty-poi.CancelledQty)>0 AND ph.VendorCode=@2",
                   payload.MasterAccountNum.ToSqlParameter("MasterAccountNum"), payload.ProfileNum.ToSqlParameter("ProfileNum"), vendorCode.ToSqlParameter("VendorCode")).ToList();
 
             var transactions = new List<PoTransactionDataDto>();
