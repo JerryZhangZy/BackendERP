@@ -27,16 +27,14 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "SystemCodeName", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "SystemCodeName", Description = "SystemCodeName", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SystemSettingPayloadGetSingle))]
         public static async Task<JsonNetResponse<SystemSettingPayload>> GetSystemSetting(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "systemSettings/{SystemCodeName}")] HttpRequest req,
-            string SystemCodeName)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "systemSettings")] HttpRequest req)
         {
             var payload = await req.GetParameters<SystemSettingPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new SystemSettingService(dbFactory);
-            //payload.Success = await svc.GetByCodeNameAsync(payload);
+            payload.Success = await svc.GetAsync(payload);
             payload.Messages = svc.Messages;
             return new JsonNetResponse<SystemSettingPayload>(payload);
 

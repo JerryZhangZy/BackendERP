@@ -268,21 +268,7 @@ for json path;
             this.SQL_SelectSummary = $@"
 SELECT 
 COUNT(1) AS totalCount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 0 THEN 1 ELSE 0 END) as draftCount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 1 THEN 1 ELSE 0 END) as overdueCount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 2 THEN 1 ELSE 0 END) as pendingCount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 3 THEN 1 ELSE 0 END) as payableCount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 4 THEN 1 ELSE 0 END) as paidCount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 5 THEN 1 ELSE 0 END) as trashCount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 6 THEN 1 ELSE 0 END) as unpaidCount,
-SUM(COALESCE({Helper.TableAllies}.TotalAmount, 0)) AS totalAmount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 0 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as draftAmount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 1 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as overdueAmount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 2 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as pendingAmount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 3 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as payableAmount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 4 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as paidAmount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 5 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as trashAmount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.TransStatus, 0) = 6 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as unpaidAmount
+SUM(COALESCE({Helper.TableAllies}.TotalAmount, 0)) AS totalAmount
 ";
             return this.SQL_SelectSummary;
         }
