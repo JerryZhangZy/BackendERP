@@ -287,10 +287,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var addressList = data.Inventory.ToList();
                 foreach (var inv in data.Inventory)
                 {
-                    if (string.IsNullOrEmpty(inv.InventoryUuid) || addressList.Count(r => r.InventoryUuid == inv.InventoryUuid) > 1)
+                    if (string.IsNullOrEmpty(inv.InventoryUuid) || data.Inventory.Count(r => r.InventoryUuid == inv.InventoryUuid) > 1)
                     {
                         IsValid = false;
-                        AddError($"Inventory.InventoryUuid cannot be empty and must be unique.");
+                        AddError($"InventoryUuid cannot be empty and must be unique.");
                     }
                 }
             }
@@ -360,19 +360,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         protected virtual async Task<bool> ValidateAllModeAsync(InventoryData data)
         {
-            //var dbFactory = data.dbFactory;
-            //if (string.IsNullOrEmpty(data.ProductBasic.ProductUuid))
-            //{
-            //    IsValid = false;
-            //    AddError($"Unique Id cannot be empty.");
-            //    return IsValid;
-            //}
-            //if (string.IsNullOrEmpty(data.ProductBasic.CustomerUuid))
-            //{
-            //    IsValid = false;
-            //    AddError($"Customer cannot be empty.");
-            //    return IsValid;
-            //}
+            if (string.IsNullOrEmpty(data.ProductBasic.ProductUuid))
+            {
+                IsValid = false;
+                AddError($"Unique Id cannot be empty.");
+                return IsValid;
+            }
+            if (string.IsNullOrEmpty(data.ProductBasic.SKU))
+            {
+                IsValid = false;
+                AddError($"SKU cannot be empty.");
+                return IsValid;
+            }
             return true;
 
         }

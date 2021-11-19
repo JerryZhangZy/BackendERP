@@ -192,6 +192,103 @@ WHERE itm.cnt > 0
             Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task AddNewProductAsync_Test()
+        {
+            var payload = new ProductBasic()
+            {
+                MasterAccountNum = 1011,
+                ProfileNum = 1011,
+                DatabaseNum = 1,
+                SKU = "AUTO_ADDED_NEW_SKU_003",
+                UPC = "876520000124",
+                ProductTitle = "New SKU 003 added automatically. ",
+            };
+
+            var srv = new InventoryService(DataBaseFactory);
+            try
+            {
+                using (var b = new Benchmark("AddNewProductAsync_Test"))
+                {
+                    await srv.AddNewProductAsync(payload);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task AddInventoryForExistProductAsync_Test()
+        {
+            var productUuid = "eb85e6a5-dd32-46bd-b982-b2a181353d15";
+
+            var srv = new InventoryService(DataBaseFactory);
+            await srv.EditAsync(productUuid);
+            var data = srv.Data;
+            srv.DetachData(null);
+
+            try
+            {
+                using (var b = new Benchmark("AddNewProductAsync_Test"))
+                {
+                    await srv.AddInventoryForExistProductAsync(data);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task FindNotExistSkuWarehouseAsync_Test()
+        {
+            var lst = new List<InventoryFindClass>()
+            {
+                new InventoryFindClass()
+                {
+                    SKU = "AUTO_ADDED_NEW_SKU_002",
+                    WarehouseCode = "W001",
+                },
+                new InventoryFindClass()
+                {
+                    SKU = "AUTO_ADDED_NEW_SKU_002",
+                    WarehouseCode = "W002",
+                },
+                new InventoryFindClass()
+                {
+                    SKU = "AUTO_ADDED_NEW_SKU_002",
+                    WarehouseCode = "W003",
+                },
+            };
+
+            var srv = new InventoryService(DataBaseFactory);
+            IList<InventoryFindClass> result = null;
+            try
+            {
+                using (var b = new Benchmark("FindNotExistSkuWarehouseAsync_Test"))
+                {
+                    result = await srv.FindNotExistSkuWarehouseAsync(lst, 1011, 1011);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
         
         //[Fact()]
         //public void RandomRepeatReadInventoryWithCache_Test()

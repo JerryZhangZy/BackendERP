@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DigitBridge.Base.Utility.Model
+namespace DigitBridge.Base.Utility
 {
     public class StringArray
     {

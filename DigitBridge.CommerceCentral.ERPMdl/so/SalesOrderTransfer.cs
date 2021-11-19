@@ -81,7 +81,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             soData.SalesOrderHeaderAttributes = ChannelOrderToSalesOrderHeaderAttributes();
 
-            soData.SalesOrderHeaderInfo = ChannelOrderToSalesOrderHeaderInfo(dcData.OrderDCAssignmentHeader, coData.OrderHeader);
+            soData.SalesOrderHeaderInfo = ChannelOrderToSalesOrderHeaderInfo(dcData, coData.OrderHeader);
 
             soData.SalesOrderItems = ChannelOrderToSalesOrderLines(dcData, coData, soData);
 
@@ -149,19 +149,36 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return soHeaderAttributes;
         }
 
-        private SalesOrderHeaderInfo ChannelOrderToSalesOrderHeaderInfo(OrderDCAssignmentHeader dcHeader, OrderHeader coHeader)
+        private SalesOrderHeaderInfo ChannelOrderToSalesOrderHeaderInfo(DCAssignmentData dcData, OrderHeader coHeader)
         {
+            var dcHeader = dcData.OrderDCAssignmentHeader;
             string coHeaderJson = coHeader.ObjectToString();
             var soHeaderInfo = JsonConvert.DeserializeObject<SalesOrderHeaderInfo>(coHeaderJson);
+
             //soHeaderInfo.SalesOrderUuid = _soUuid;
             soHeaderInfo.RowNum = 0;
+            soHeaderInfo.CentralOrderNum = dcHeader.CentralOrderNum;
+            soHeaderInfo.CentralOrderUuid = dcHeader.CentralOrderUuid;
+            soHeaderInfo.ChannelNum = dcHeader.ChannelNum;
+            soHeaderInfo.ChannelAccountNum = dcHeader.ChannelAccountNum;
+            soHeaderInfo.ChannelOrderID = dcHeader.ChannelOrderID;
+            soHeaderInfo.SecondaryChannelOrderID = coHeader.SecondaryChannelOrderID;
+            soHeaderInfo.ChannelOrderID = dcHeader.ChannelOrderID;
+
             soHeaderInfo.CentralFulfillmentNum = dcHeader.OrderDCAssignmentNum;
             soHeaderInfo.DistributionCenterNum = dcHeader.DistributionCenterNum;
-            soHeaderInfo.WarehouseCode = dcHeader.SellerWarehouseID;
+            soHeaderInfo.WarehouseCode = dcData.WarehouseCode;
 
             soHeaderInfo.ShippingCarrier = coHeader.RequestedShippingCarrier;
             soHeaderInfo.ShippingClass = coHeader.RequestedShippingClass;
             soHeaderInfo.EndBuyerName = coHeader.BillToName;
+
+            var sb = new StringBuilder();
+            if (string.IsNullOrEmpty(coHeader.SellerPublicNote))
+                sb.AppendLine(coHeader.SellerPublicNote);
+            if (string.IsNullOrEmpty(coHeader.SellerPrivateNote))
+                sb.AppendLine(coHeader.SellerPrivateNote);
+            soHeaderInfo.Notes = sb.ToString();
 
             soHeaderInfo.UpdateDateUtc = _dtNowUtc;
 

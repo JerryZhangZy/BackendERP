@@ -18,6 +18,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -35,6 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             SetDataBaseFactory(dbFactory);
         }
 
+        #region Service Property
         [XmlIgnore, JsonIgnore]
         protected SalesOrderService _salesOrderService;
         [XmlIgnore, JsonIgnore]
@@ -99,7 +101,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
-        
+        private CustomerService _customerService;
+        public CustomerService customerService
+        {
+            get
+            {
+                if (_customerService is null)
+                    _customerService = new CustomerService(dbFactory);
+                return _customerService;
+            }
+        }
+
+        private InventoryService _inventoryService;
+        public InventoryService inventoryService
+        {
+            get
+            {
+                if (_inventoryService is null)
+                    _inventoryService = new InventoryService(dbFactory);
+                return _inventoryService;
+            }
+        }
+
+        #endregion
+
 
         public async Task<byte[]> ExportAsync(SalesOrderPayload payload)
         {
@@ -365,14 +390,115 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             soSrv.DetachData(null);
             soSrv.Add();
 
+            // create SalesOrderData from DCAssignmentData and ChannelOrderData
             var soData = soTransfer.FromChannelOrder(dcAssigmentData, coData, soSrv);
 
-            //soSrv.AttachData(soData);
+            // load customer
+            await CheckCustomerAsync(soSrv);
+
+            // check sku and warehouse exist, otherwise add new SKU and Warehouse
+            await CheckInventoryAsync(soSrv);
+
             soSrv.Data.CheckIntegrity();
 
             if (await soSrv.SaveDataAsync())
                 return soSrv.Data;
             return null;
+        }
+
+        protected async Task<bool> CheckCustomerAsync(SalesOrderService service)
+        {
+            if (service == null || service.Data == null)
+                return false;
+
+            var data = service.Data;
+            if (!string.IsNullOrEmpty(data.SalesOrderHeader.CustomerCode))
+                return true;
+
+            var find = new CustomerFindClass()
+            {
+                MasterAccountNum = data.SalesOrderHeader.MasterAccountNum,
+                ProfileNum = data.SalesOrderHeader.ProfileNum,
+                ChannelNum = data.SalesOrderHeaderInfo.ChannelNum,
+                ChannelAccountNum = data.SalesOrderHeaderInfo.ChannelAccountNum
+            };
+
+            // if channel customer not exist, add new customer for this channel
+            if (!(await customerService.GetCustomerByCustomerFindAsync(find)))
+            {
+                customerService.NewData();
+                var newCustomer = customerService.Data;
+                newCustomer.Customer.MasterAccountNum = data.SalesOrderHeader.MasterAccountNum;
+                newCustomer.Customer.ProfileNum = data.SalesOrderHeader.ProfileNum;
+                newCustomer.Customer.DatabaseNum = data.SalesOrderHeader.DatabaseNum;
+                newCustomer.Customer.CustomerUuid = Guid.NewGuid().ToString();
+                newCustomer.Customer.CustomerCode = $"Channel_{data.SalesOrderHeaderInfo.ChannelNum}_{data.SalesOrderHeaderInfo.ChannelAccountNum}";
+                newCustomer.Customer.CustomerName = $"Customer Account for Channel {data.SalesOrderHeaderInfo.ChannelNum}, Channel Account {data.SalesOrderHeaderInfo.ChannelAccountNum}";
+                newCustomer.Customer.CustomerType = (int)CustomerType.Channel;
+                newCustomer.Customer.CustomerStatus = (int)CustomerStatus.Active;
+                newCustomer.Customer.FirstDate = DateTime.Today;
+                newCustomer.Customer.ChannelNum = data.SalesOrderHeaderInfo.ChannelNum;
+                newCustomer.Customer.ChannelAccountNum = data.SalesOrderHeaderInfo.ChannelAccountNum;
+                newCustomer.AddCustomerAddress(new CustomerAddress()
+                {
+                    AddressCode = AddressCodeType.Ship,
+                    Name = data.SalesOrderHeaderInfo.ShipToName,
+                    Company = data.SalesOrderHeaderInfo.ShipToCompany,
+                    AddressLine1 = data.SalesOrderHeaderInfo.ShipToAddressLine1,
+                    AddressLine2 = data.SalesOrderHeaderInfo.ShipToAddressLine2,
+                    AddressLine3 = data.SalesOrderHeaderInfo.ShipToAddressLine3,
+                    City = data.SalesOrderHeaderInfo.ShipToCity,
+                    State = data.SalesOrderHeaderInfo.ShipToState,
+                    StateFullName = data.SalesOrderHeaderInfo.ShipToStateFullName,
+                    PostalCode = data.SalesOrderHeaderInfo.ShipToPostalCode,
+                    PostalCodeExt = data.SalesOrderHeaderInfo.ShipToPostalCodeExt,
+                    County = data.SalesOrderHeaderInfo.ShipToCounty,
+                    Country = data.SalesOrderHeaderInfo.ShipToCountry,
+                    Email = data.SalesOrderHeaderInfo.ShipToEmail,
+                    DaytimePhone = data.SalesOrderHeaderInfo.ShipToDaytimePhone,
+                    NightPhone = data.SalesOrderHeaderInfo.ShipToNightPhone,
+                });
+                await customerService.AddCustomerAsync(newCustomer);
+            }
+
+            data.SalesOrderHeader.CustomerUuid = customerService.Data.Customer.CustomerUuid;
+            data.SalesOrderHeader.CustomerCode = customerService.Data.Customer.CustomerCode;
+            data.SalesOrderHeader.CustomerName = customerService.Data.Customer.CustomerName;
+            return true;
+        }
+
+
+        protected async Task<bool> CheckInventoryAsync(SalesOrderService service)
+        {
+            if (service == null || service.Data == null || service.Data.SalesOrderItems == null || service.Data.SalesOrderItems.Count == 0)
+                return false;
+
+            var data = service.Data;
+            var header = data.SalesOrderHeader;
+            var masterAccountNum = data.SalesOrderHeader.MasterAccountNum;
+            var profileNum = data.SalesOrderHeader.ProfileNum;
+            var find = data.SalesOrderItems.Select(x => new InventoryFindClass() { SKU = x.SKU, WarehouseCode = x.WarehouseCode }).ToList();
+            var notExistSkus = await inventoryService.FindNotExistSkuWarehouseAsync(find, masterAccountNum, profileNum);
+            if (notExistSkus == null || notExistSkus.Count == 0)
+                return false;
+
+            var rtn = false;
+            foreach (var item in data.SalesOrderItems)
+            {
+                if (string.IsNullOrEmpty(item.SKU)) continue;
+                if (notExistSkus.FindBySkuWarehouse(item.SKU, item.WarehouseCode) != null)
+                {
+                    await inventoryService.AddNewProductOrInventoryAsync(new ProductBasic()
+                    {
+                        DatabaseNum = header.DatabaseNum,
+                        MasterAccountNum = header.MasterAccountNum,
+                        ProfileNum = header.ProfileNum,
+                        SKU = item.SKU,
+                    });
+                    rtn = true;
+                }
+            }
+            return rtn;
         }
 
 

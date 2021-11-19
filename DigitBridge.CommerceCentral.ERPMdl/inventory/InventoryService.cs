@@ -18,11 +18,26 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using System.Text;
+using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class InventoryService
     {
+
+        protected WarehouseService _warehouseService;
+        [XmlIgnore, JsonIgnore]
+        public WarehouseService warehouseService
+        {
+            get
+            {
+                if (_warehouseService is null)
+                    _warehouseService = new WarehouseService(dbFactory);
+                return _warehouseService;
+            }
+        }
+
 
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
@@ -729,6 +744,263 @@ ON inv.inventoryuuid=soi.inventoryuuid
 ";
             await dbFactory.Db.ExecuteAsync(command.ToString());
         }
+
+
+        public virtual async Task<IList<InventoryFindClass>> FindNotExistSkuWarehouseAsync(IList<InventoryFindClass> list, int masterAccountNum, int profileNum)
+        {
+            if (list == null || list.Count == 0)
+                return null;
+            IList<InventoryFindClass> result = null;
+            using (var trx = new ScopedTransaction(dbFactory))
+            {
+                result = await InventoryServiceHelper.FindNotExistSkuWarehouseAsync(list, masterAccountNum, profileNum);
+            }
+            return result;
+        }
+
+
+        /// <summary>
+        /// Get row num by CustomerFindClass 
+        /// </summary>
+        public virtual async Task<long> GetRowNumByProductFindAsync(ProductFindClass find)
+        {
+            if (find == null)
+                return 0;
+
+            var sql = $@"
+                SELECT  
+                COALESCE(
+                    (SELECT TOP 1 CentralProductNum FROM ProductBasic WHERE CentralProductNum=@2 AND MasterAccountNum=@0 AND ProfileNum=@1 ),
+                    (SELECT TOP 1 CentralProductNum FROM ProductBasic WHERE ProductUuid=@3 AND MasterAccountNum=@0 AND ProfileNum=@1 ),
+                    (SELECT TOP 1 CentralProductNum FROM ProductBasic WHERE SKU=@4 AND MasterAccountNum=@0 AND ProfileNum=@1 ),
+                    (SELECT TOP 1 CentralProductNum FROM ProductBasic WHERE UPC=@5 AND MasterAccountNum=@0 AND ProfileNum=@1 ),
+                    0
+                )
+            ";
+            return (await dbFactory.GetValueAsync<Customer, long?>(
+                    sql,
+                    find.MasterAccountNum,      //0
+                    find.ProfileNum,            //1
+                    find.CentralProductNum,     //2
+                    find.ProductUuid,           //3
+                    find.SKU,                   //4
+                    find.UPC                    //5
+                )).ToLong();
+        }
+
+        /// <summary>
+        /// Get CustomerData by CustomerFindClass
+        /// </summary>
+        public async Task<bool> GetInventoryByProductFindAsync(ProductFindClass find)
+        {
+            if (find == null)
+                return false;
+
+            List();
+            var rowNum = await GetRowNumByProductFindAsync(find);
+            if (rowNum == 0)
+                return false;
+            return await GetDataAsync(rowNum);
+        }
+
+        /// <summary>
+        /// Add new SKU
+        /// This will add productBasic first
+        /// And then add ProductExt and Inventory.
+        /// </summary>
+        public async Task<bool> AddNewProductOrInventoryAsync(ProductBasic productBasic)
+        {
+            if (productBasic == null || string.IsNullOrEmpty(productBasic.SKU))
+                return false;
+
+            var rowNum = await this.GetRowNumByProductFindAsync(new ProductFindClass()
+            {
+                MasterAccountNum = productBasic.MasterAccountNum,
+                ProfileNum = productBasic.ProfileNum,
+                SKU = productBasic.SKU,
+            });
+
+            if (rowNum == 0)
+                return await AddNewProductAsync(productBasic);
+
+            if (!(await EditAsync(rowNum)))
+                return false;
+
+            var data = this.Data;
+            this.DetachData(null);
+            return await AddInventoryForExistProductAsync(data);
+        }
+
+        /// <summary>
+        /// Add new SKU
+        /// This will add productBasic first
+        /// And then add ProductExt and Inventory.
+        /// </summary>
+        public async Task<bool> AddNewProductAsync(ProductBasic productBasic)
+        {
+            if (productBasic == null || string.IsNullOrEmpty(productBasic.SKU))
+                return false;
+
+            // first Add ProductBasic table
+            Add();
+            NewData();
+            var uuid = Guid.NewGuid().ToString();
+            this.Data.ProductBasic = productBasic;
+            this.Data.ProductBasic.ProductUuid = uuid;
+
+            var result = await SaveDataAsync();
+            if (!result) return false;
+            await AddActivityLogForCurrentDataAsync();
+
+            if (!(await EditAsync(uuid)))
+                return false;
+
+            var data = this.Data;
+            this.DetachData(null);
+
+            return await AddInventoryForExistProductAsync(data);
+        }
+
+        /// <summary>
+        /// If Exist ProductBasic but not exist ProductExt or Inventory for all warehouse
+        /// This will add ProductExt and Inventory for all warehouse. 
+        /// </summary>
+        public async Task<bool> AddInventoryForExistProductAsync(InventoryData data)
+        {
+            if (data == null || data.ProductBasic == null || string.IsNullOrEmpty(data.ProductBasic.SKU))
+                return false;
+
+            // check and add ProductExt record
+            var changed = await CreateProductExtAsync(data);
+
+            // check inventory has all warehouse records
+            changed = await CreateInventoryAsync(data);
+
+            if (!changed)
+                return true;
+
+            Edit();
+            this.AttachData(data);
+
+            // validate data for Add processing
+            if (!(await ValidateAsync()))
+                return false;
+
+            var result = await SaveDataAsync();
+            if (result)
+                await AddActivityLogForCurrentDataAsync();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Check ProductExt, if Not exist ProductExt then create new ProductExt from ProductBasic
+        /// </summary>
+        protected async Task<bool> CreateProductExtAsync(InventoryData data)
+        {
+            if (data == null || data.ProductBasic == null || string.IsNullOrEmpty(data.ProductBasic.SKU))
+                return false;
+
+            // check and add ProductExt record
+            if (data.ProductExt == null || string.IsNullOrEmpty(data.ProductExt.SKU))
+            {
+                data.ProductExt = data.NewProductExt();
+                data.ProductExt.DatabaseNum = data.ProductBasic.DatabaseNum;
+                data.ProductExt.MasterAccountNum = data.ProductBasic.MasterAccountNum;
+                data.ProductExt.ProfileNum = data.ProductBasic.ProfileNum;
+                data.ProductExt.ProductUuid = data.ProductBasic.ProductUuid;
+                data.ProductExt.CentralProductNum = data.ProductBasic.CentralProductNum;
+                data.ProductExt.SKU = data.ProductBasic.SKU;
+                data.ProductExt.StyleCode = data.ProductBasic.SKU;
+                data.ProductExt.Taxable = true;
+                data.ProductExt.IsAp = false;
+                data.ProductExt.IsAr = false;
+                data.ProductExt.Costable = false;
+                data.ProductExt.Stockable = false;
+                data.ProductExt.IsProfit = false;
+                data.ProductExt.Release = false;
+                data.ProductExt.UOM = "EA";
+                data.ProductExt.QtyPerPallot = 1;
+                data.ProductExt.QtyPerCase = 1;
+                data.ProductExt.QtyPerBox = 1;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Check Exist Inventory for all warehouse, if Not then create new Inventory from All warehouse
+        /// </summary>
+        protected async Task<bool> CreateInventoryAsync(InventoryData data)
+        {
+            if (data == null || data.ProductBasic == null || string.IsNullOrEmpty(data.ProductBasic.SKU))
+                return false;
+
+            // check inventory has all warehouse records
+            var allWhs = await warehouseService.GetWarehouseList(data.ProductBasic.MasterAccountNum, data.ProductBasic.ProfileNum);
+            if (allWhs == null || allWhs.Count <= 0) return false;
+
+            var rtn = false;
+            foreach (var whs in allWhs)
+            {
+                if (string.IsNullOrEmpty(whs.DistributionCenterCode)) continue;
+                // add new inventory record for not exist WarehouseCode
+                if (data.Inventory == null || data.Inventory.Count <= 0 || data.Inventory.FindByWarehouseCode(whs.DistributionCenterCode) == null)
+                {
+                    data.AddInventory(new Inventory()
+                    {
+                        DatabaseNum = data.ProductBasic.DatabaseNum,
+                        MasterAccountNum = data.ProductBasic.MasterAccountNum,
+                        ProfileNum = data.ProductBasic.ProfileNum,
+                        ProductUuid = data.ProductBasic.ProductUuid,
+                        InventoryUuid = Guid.NewGuid().ToString(),
+
+                        StyleCode = data.ProductExt.StyleCode,
+                        ColorPatternCode = data.ProductExt.ColorPatternCode,
+                        SizeType = data.ProductExt.SizeType,
+                        SizeCode = data.ProductExt.SizeCode,
+                        WidthCode = data.ProductExt.WidthCode,
+                        LengthCode = data.ProductExt.LengthCode,
+                        PriceRule = data.ProductExt.PriceRule,
+                        LeadTimeDay = data.ProductExt.LeadTimeDay,
+                        PoSize = data.ProductExt.PoSize,
+                        MinStock = data.ProductExt.MinStock,
+                        SKU = data.ProductExt.SKU,
+                        Currency = data.ProductExt.Currency,
+                        UOM = data.ProductExt.UOM,
+                        QtyPerPallot = data.ProductExt.QtyPerPallot,
+                        QtyPerCase = data.ProductExt.QtyPerCase,
+                        QtyPerBox = data.ProductExt.QtyPerBox,
+                        PackType = data.ProductExt.PackType,
+                        PackQty = data.ProductExt.PackQty,
+                        Instock = 0,
+                        OnHand = 0,
+                        OpenSoQty = 0,
+                        OpenFulfillmentQty = 0,
+                        AvaQty = 0,
+                        OpenPoQty = 0,
+                        OpenInTransitQty = 0,
+                        OpenWipQty = 0,
+                        ProjectedQty = 0,
+                        BaseCost = 0,
+                        TaxRate = 0,
+                        TaxAmount = 0,
+                        MiscAmount = 0,
+                        ChargeAndAllowanceAmount = 0,
+                        UnitCost = 0,
+                        AvgCost = 0,
+                        SalesCost = data.ProductBasic.MSRP,
+
+                        WarehouseUuid = whs.DistributionCenterUuid,
+                        WarehouseCode = whs.DistributionCenterCode,
+                        WarehouseName = whs.DistributionCenterName,
+                    });
+                    rtn = true;
+                }
+            }
+            return rtn;
+        }
+
     }
 }
 

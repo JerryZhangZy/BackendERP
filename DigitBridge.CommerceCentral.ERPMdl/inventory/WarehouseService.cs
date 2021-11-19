@@ -323,6 +323,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await GetDataAsync(rowNum);
         }
 
+
+        public async Task<IList<DistributionCenter>> GetWarehouseList(int masterAccountNum, int profileNum)
+        {
+            return (await dbFactory.FindAsync<DistributionCenter>("WHERE MasterAccountNum=@0 AND ProfileNum=@1", masterAccountNum, profileNum))
+                .ToList();
+        }
+
     }
 }
 

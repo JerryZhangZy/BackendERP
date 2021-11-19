@@ -416,7 +416,105 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
+        /// <summary>
+        /// Get row num by channel and channel account
+        /// </summary>
+        public virtual async Task<long> GetRowNumByChannelAsync(int channelNum, int channelAccountNum, int masterAccountNum, int profileNum)
+        {
+            return (await dbFactory.GetValueAsync<Customer, long?>(
+                "SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND ChannelNum=@2 AND ChannelAccountNum=@3",
+                    masterAccountNum,
+                    profileNum,
+                    channelNum,
+                    channelAccountNum
+                )).ToLong();
+        }
 
+        /// <summary>
+        /// Get CustomerData by channel and channel account
+        /// </summary>
+        public async Task<bool> GetCustomerByChannelAsync(int channelNum, int channelAccountNum, int masterAccountNum, int profileNum)
+        {
+            List();
+            var rowNum = await GetRowNumByChannelAsync(channelNum, channelAccountNum, masterAccountNum, profileNum);
+            if (rowNum == 0)
+                return false;
+            return await GetDataAsync(rowNum);
+        }
+
+        /// <summary>
+        /// Get row num by CustomerFindClass 
+        /// </summary>
+        public virtual async Task<long> GetRowNumByCustomerFindAsync(CustomerFindClass find)
+        {
+            if (find == null)
+                return 0;
+
+            var sql = $@"
+                SELECT  
+                COALESCE(
+                    (SELECT TOP 1 RowNum FROM Customer WHERE CustomerUuid=@4),
+                    (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND CustomerCode=@5),
+                    (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND ChannelNum=@2 AND ChannelAccountNum=@3),
+                    (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND Phone1=@7 AND CustomerName=@6),
+                    (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND Email=@8 AND CustomerName=@6),
+                    0
+                )
+            ";
+            return (await dbFactory.GetValueAsync<Customer, long?>(
+                    sql,
+                    find.MasterAccountNum,      //0
+                    find.ProfileNum,            //1
+                    find.ChannelNum,            //2
+                    find.ChannelAccountNum,     //3
+                    find.CustomerUuid,          //4
+                    find.CustomerCode,          //5
+                    find.CustomerName,          //6
+                    find.Phone1,                //7
+                    find.Email                  //8
+                )).ToLong();
+        }
+
+        /// <summary>
+        /// Get CustomerData by CustomerFindClass
+        /// </summary>
+        public async Task<bool> GetCustomerByCustomerFindAsync(CustomerFindClass find)
+        {
+            if (find == null)
+                return false;
+
+            List();
+            var rowNum = await GetRowNumByCustomerFindAsync(find);
+            if (rowNum == 0)
+                return false;
+            return await GetDataAsync(rowNum);
+        }
+
+        /// <summary>
+        /// Get CustomerData by CustomerFindClass
+        /// </summary>
+        public async Task<bool> AddCustomerAsync(CustomerData data)
+        {
+            if (data == null)
+                return false;
+
+            // set Add mode and clear data
+            Add();
+            this.AttachData(data);
+
+            // validate data for Add processing
+            if (!(await ValidateAsync()))
+                return false;
+
+            var result = await SaveDataAsync();
+            if (result)
+                await AddActivityLogForCurrentDataAsync();
+
+            return result;
+        }
+
+
+        #region customer Address
         public async Task<bool> AddCustomerAddressAsync(CustomerAddressPayload payload)
         {
             return await customerAddressService.AddAsync(payload);
@@ -446,6 +544,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return customerAddressService.ToDto();
         }
+        #endregion customer Address
+
     }
 }
 

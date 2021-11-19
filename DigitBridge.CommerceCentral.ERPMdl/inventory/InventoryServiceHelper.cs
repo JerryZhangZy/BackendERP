@@ -23,7 +23,6 @@ using Newtonsoft.Json;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
-using DigitBridge.Base.Utility.Model;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -418,6 +417,42 @@ SELECT SKU,WarehouseCode,InventoryUuid,ProductUuid FROM Inventory inv WHERE Exis
                 (string sku, string warehouseCode, string inventoryUuid, string productUuid) => new StringArray() { Item0 = sku, Item1 = warehouseCode, Item2 = inventoryUuid, Item3 = productUuid },
                 sqlParameters);
         }
+
+        public static async Task<IList<InventoryFindClass>> FindNotExistSkuWarehouseAsync(IList<InventoryFindClass> list, int masterAccountNum, int profileNum)
+        {
+            if (list == null || list.Count == 0)
+                return null;
+            var result = new List<InventoryFindClass>();
+            var arrList = list.ToStringArray();
+
+            var sql = $@" 
+SELECT 
+tbl.item0 AS sku,
+tbl.item1 AS warehouseCode
+FROM @SKUTable tbl
+LEFT JOIN Inventory inv 
+ON (inv.MasterAccountNum = @masterAccountNum AND inv.ProfileNum = @profileNum AND inv.SKU = tbl.item0 AND inv.WarehouseCode = tbl.item1)
+LEFT JOIN ProductBasic prd 
+ON (prd.MasterAccountNum = @masterAccountNum AND prd.ProfileNum = @profileNum AND prd.SKU = tbl.item0)
+WHERE inv.SKU IS NULL OR prd.SKU IS NULL
+";
+            var sqlParameters = new IDataParameter[3]
+            {
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                arrList.ToStringArrayListParameters("SKUTable")
+            };
+            await SqlQuery.ExecuteAsync<string, string, bool>(
+                sql,
+                (string sku, string warehouseCode) 
+                => {
+                        result.Add(new InventoryFindClass() { SKU = sku, WarehouseCode = warehouseCode });
+                        return true;
+                    },
+                sqlParameters);
+            return result;
+        }
+
 
         public static async Task<List<StringArray>> GetInventoryKeyInfoBySkuWithWarehouseCodesAsync(List<StringArray> param, int masterAccountNum, int profileNum)
         {

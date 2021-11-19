@@ -1,5 +1,4 @@
 using DigitBridge.Base.Utility;
-using DigitBridge.Base.Utility.Model;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using System;

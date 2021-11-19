@@ -110,6 +110,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         #endregion sync methods
 
         #region async methods
+        [Fact]
+        public async Task CreateSalesOrderByChannelOrderIdAsync_Test()
+        {
+            var uuids = new List<string> {
+                "29c75212-d16d-4b9a-be9d-acb3408f94bf"
+            };
+            
+            SalesOrderManager soManager = new SalesOrderManager(DataBaseFactory);
+            bool result = true;
+            List<string> salesOrderNums = new List<string>();
+
+            try
+            {
+                foreach (var uuid in uuids)
+                {
+                    using (var b = new Benchmark("FindNotExistSkuWarehouseAsync_Test"))
+                    {
+                        (result, salesOrderNums) = await soManager.CreateSalesOrderByChannelOrderIdAsync(uuid);
+                    }
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+
+        }
+
+
         #endregion async methods
 
     }
