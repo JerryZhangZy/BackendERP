@@ -100,9 +100,8 @@
     [DCAssignmentDateUtc] DATETIME NULL, 
 
     [CentralOrderUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))),
-    [RowNum]      BIGINT NOT NULL DEFAULT 0,
-    [TotalDueSellerAmount]      MONEY NOT NULL DEFAULT 0,
-
+    [RowNum] BIGINT NOT NULL DEFAULT 0,
+    [TotalDueSellerAmount] MONEY NOT NULL DEFAULT 0,
     CONSTRAINT [PK_OrderHeader] PRIMARY KEY CLUSTERED ([CentralOrderNum])
 ) ON [PRIMARY]
 GO
@@ -134,8 +133,7 @@ GO
 CREATE UNIQUE NONCLUSTERED INDEX [UI_OrderHeader_ChannelAccountNum_ChannelNum_ChannelOrderID] ON [dbo].[OrderHeader]
 (
 	[ChannelNum] ASC,
-	[ChannelAccountNum] ASC,
-	[ChannelOrderID] ASC
+	[ChannelAccountNum] ASC,	[ChannelOrderID] ASC
 )WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
 GO
 

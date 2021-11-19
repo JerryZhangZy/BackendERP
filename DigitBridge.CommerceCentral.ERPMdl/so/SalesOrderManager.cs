@@ -464,6 +464,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             data.SalesOrderHeader.CustomerUuid = customerService.Data.Customer.CustomerUuid;
             data.SalesOrderHeader.CustomerCode = customerService.Data.Customer.CustomerCode;
             data.SalesOrderHeader.CustomerName = customerService.Data.Customer.CustomerName;
+            data.SalesOrderHeader.Terms = customerService.Data.Customer.Terms;
+            data.SalesOrderHeader.TermsDays = customerService.Data.Customer.TermsDays;
             return true;
         }
 

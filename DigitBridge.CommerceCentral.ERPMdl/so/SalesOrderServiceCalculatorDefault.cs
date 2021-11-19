@@ -91,8 +91,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var key = data.SalesOrderHeader.MasterAccountNum + "_" + data.SalesOrderHeader.ProfileNum + '_' + sku;
             return data.GetCache(key, () =>
             {
-                inventoryService.GetByNumber(data.SalesOrderHeader.MasterAccountNum, data.SalesOrderHeader.ProfileNum, sku);
-                return inventoryService.Data;
+                if (inventoryService.GetByNumber(data.SalesOrderHeader.MasterAccountNum, data.SalesOrderHeader.ProfileNum, sku))
+                    return inventoryService.Data;
+                return null;
             });
         }
         /// <summary>
@@ -106,8 +107,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var key = data.SalesOrderHeader.MasterAccountNum + "_" + data.SalesOrderHeader.ProfileNum + '_' + inventoryUuid;
             return data.GetCache(key, () =>
             {
-                inventoryService.GetDataById(inventoryUuid);
-                return inventoryService.Data;
+                if (inventoryService.GetDataById(inventoryUuid))
+                    return inventoryService.Data;
+                return null;
             });
         }
         /// <summary>
@@ -121,8 +123,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var key = data.SalesOrderHeader.MasterAccountNum + "_" + data.SalesOrderHeader.ProfileNum + '_' + customerCode;
             return data.GetCache(key, () =>
             {
-                customerService.GetByNumber(data.SalesOrderHeader.MasterAccountNum, data.SalesOrderHeader.ProfileNum, customerCode);
-                return customerService.Data;
+                if (customerService.GetByNumber(data.SalesOrderHeader.MasterAccountNum, data.SalesOrderHeader.ProfileNum, customerCode))
+                    return customerService.Data;
+                return null;
             });
         }
         #endregion
@@ -213,23 +216,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // currency priority: user input > customer > Sku
             //if (string.IsNullOrEmpty(item.Currency))
             //    item.Currency = data.SalesOrderHeader.Currency;
-            if (inventoryData != null)
-            {
-                item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
-                var inventory = inventoryService.GetInventory(inventoryData, item);
-                item.InventoryUuid = inventory.InventoryUuid;
-                item.WarehouseCode = inventory.WarehouseCode;
-                item.WarehouseUuid = inventory.WarehouseUuid;
-                item.LotNum = inventory.LotNum;
-                item.UOM = inventory.UOM;
-                //if (string.IsNullOrEmpty(item.Currency))
-                //    item.Currency = inventory.Currency;
+            if (inventoryData == null)
+                return false;
 
-                item.UnitCost = inventory.UnitCost;
-                item.AvgCost = inventory.AvgCost;
-                item.LotCost = inventory.AvgCost;
-            }
+            item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
+            item.UOM = inventoryData.ProductExt?.UOM;
 
+            var inventory = inventoryData.FindInventoryByWarhouse(item.WarehouseCode);
+            if (inventory == null)
+                return false;
+
+            if (!string.IsNullOrEmpty(inventory.InventoryUuid)) item.InventoryUuid = inventory.InventoryUuid;
+            if (!string.IsNullOrEmpty(inventory.WarehouseCode)) item.WarehouseCode = inventory.WarehouseCode;
+            if (!string.IsNullOrEmpty(inventory.WarehouseUuid)) item.WarehouseUuid = inventory.WarehouseUuid;
+
+            if (!string.IsNullOrEmpty(inventory.LotNum)) item.LotNum = inventory.LotNum;
+            //if (string.IsNullOrEmpty(item.Currency))
+            //    item.Currency = inventory.Currency;
 
             //var setting = new ERPSetting();
             //var sum = data.SalesOrderHeader;
@@ -373,11 +376,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var sum = data.SalesOrderHeader;
 
             //TODO need get inventory object and load inventory cost
-            //var prod = data.GetCache<ProductBasic>(ProductId);
             var invData = GetInventoryData(data, item.SKU);
-            var inv = invData.Inventory.SingleOrDefault(i => i.WarehouseCode == item.WarehouseCode);
+            var inv = (invData == null) ? null : invData.FindInventoryByWarhouse(item.WarehouseCode);
             var invCost = new ItemCostClass(inv);
-            //var invCost = new ItemCostClass();
 
             // format number var
             item.Price = item.Price.ToPrice();

@@ -42,6 +42,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		public static string OrderHeaderTable ="OrderHeader ";
 		
 		 [JsonIgnore, XmlIgnore] 
+		public static string OrderHeaderMerchantExtTable ="OrderHeaderMerchantExt ";
+		
+		 [JsonIgnore, XmlIgnore] 
 		public static string OrderLineTable ="OrderLine ";
 		
 		 [JsonIgnore, XmlIgnore] 
@@ -62,6 +65,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				return false; 
 			if (OrderHeader != null && other.OrderHeader != null && !OrderHeader.Equals(other.OrderHeader)) 
 				return false; 
+			if (OrderHeaderMerchantExt == null && other.OrderHeaderMerchantExt != null || OrderHeaderMerchantExt != null && other.OrderHeaderMerchantExt == null) 
+				return false; 
+			if (OrderHeaderMerchantExt != null && other.OrderHeaderMerchantExt != null && !OrderHeaderMerchantExt.Equals(other.OrderHeaderMerchantExt)) 
+				return false; 
 			if (OrderLine == null && other.OrderLine != null || OrderLine != null && other.OrderLine == null) 
 				return false; 
 			if (OrderLine != null && other.OrderLine != null && !OrderLine.EqualsList(other.OrderLine)) 
@@ -78,6 +85,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
 			if (OrderHeader is null) return this; 
 			OrderHeader.CheckIntegrity(); 
+			CheckIntegrityOrderHeaderMerchantExt(); 
 			CheckIntegrityOrderLine(); 
 			CheckIntegrityOrderLineMerchantExt(); 
 			CheckIntegrityOthers(); 
@@ -88,6 +96,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public override void Clear()
         {
 			OrderHeader?.Clear(); 
+			OrderHeaderMerchantExt?.Clear(); 
 			OrderLine = new List<OrderLine>(); 
 			ClearOrderLineDeleted(); 
 			OrderLineMerchantExt = new List<OrderLineMerchantExt>(); 
@@ -101,6 +110,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             Clear();
 			OrderHeader = NewOrderHeader(); 
+			OrderHeaderMerchantExt = NewOrderHeaderMerchantExt(); 
 			OrderLine = new List<OrderLine>(); 
 			AddOrderLine(NewOrderLine()); 
 			OrderLine.ToList().ForEach(x => x?.NewChildren()); 
@@ -111,6 +121,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public virtual void CopyFrom(ChannelOrderData data)
         {
 			CopyOrderHeaderFrom(data); 
+			CopyOrderHeaderMerchantExtFrom(data); 
 			CopyOrderLineFrom(data); 
             CheckIntegrity();
             return;
@@ -122,6 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			newData.New(); 
 			newData?.CopyFrom(this); 
 			newData.OrderHeader.ClearMetaData(); 
+			newData.OrderHeaderMerchantExt.ClearMetaData(); 
 			newData.OrderLine.ClearMetaData(); 
 			newData.OrderLineMerchantExt.ClearMetaData(); 
             newData.CheckIntegrity();
@@ -154,6 +166,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             
 			if (string.IsNullOrEmpty(OrderHeader.CentralOrderUuid)) return; 
+			OrderHeaderMerchantExt = GetOrderHeaderMerchantExtByCentralOrderUuid(OrderHeader.CentralOrderUuid); 
 			OrderLine = GetOrderLineByCentralOrderUuid(OrderHeader.CentralOrderUuid); 
 			OrderLineMerchantExt = GetOrderLineMerchantExtByCentralOrderUuid(OrderHeader.CentralOrderUuid); 
         }
@@ -170,6 +183,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			{
 				OrderHeader.SetDataBaseFactory(dbFactory);
 				if (!OrderHeader.Save()) return false;
+			}
+
+			 if (NeedSave(OrderHeaderMerchantExtTable))
+			{
+				if (OrderHeaderMerchantExt != null) 
+					OrderHeaderMerchantExt.SetDataBaseFactory(dbFactory)?.Save();
 			}
 
 			 if (NeedSave(OrderLineTable))
@@ -215,6 +234,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			{
 				OrderHeader.SetDataBaseFactory(dbFactory); 
 				if (OrderHeader.Delete() <= 0) return false; 
+			}
+			 if (NeedDelete(OrderHeaderMerchantExtTable))
+			{
+				if (OrderHeaderMerchantExt != null) 
+					OrderHeaderMerchantExt?.SetDataBaseFactory(dbFactory)?.Delete(); 
 			}
 			 if (NeedDelete(OrderLineTable))
 			{
@@ -267,6 +291,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             
 			if (string.IsNullOrEmpty(OrderHeader.CentralOrderUuid)) return; 
+			OrderHeaderMerchantExt = await GetOrderHeaderMerchantExtByCentralOrderUuidAsync(OrderHeader.CentralOrderUuid); 
 			OrderLine = await GetOrderLineByCentralOrderUuidAsync(OrderHeader.CentralOrderUuid); 
 			OrderLineMerchantExt = await GetOrderLineMerchantExtByCentralOrderUuidAsync(OrderHeader.CentralOrderUuid); 
         }
@@ -284,6 +309,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				OrderHeader.SetDataBaseFactory(dbFactory); 
 				if (!(await OrderHeader.SaveAsync())) return false; 
 			}
+			 if (NeedSave(OrderHeaderMerchantExtTable))
+			{
+				if (OrderHeaderMerchantExt != null) 
+					await OrderHeaderMerchantExt.SetDataBaseFactory(dbFactory).SaveAsync(); 
+			}
+
 			 if (NeedSave(OrderLineTable))
 			{
 				if (OrderLine != null) 
@@ -326,6 +357,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			{
 			OrderHeader.SetDataBaseFactory(dbFactory); 
 			if ((await OrderHeader.DeleteAsync()) <= 0) return false; 
+			}
+			 if (NeedDelete(OrderHeaderMerchantExtTable))
+			{
+				if (OrderHeaderMerchantExt != null) 
+					await OrderHeaderMerchantExt.SetDataBaseFactory(dbFactory).DeleteAsync(); 
 			}
 			 if (NeedDelete(OrderLineTable))
 			{
@@ -399,6 +435,62 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
 
         #endregion OrderHeader - Generated 
+
+        #region OrderHeaderMerchantExt - Generated 
+    
+
+        // one to one children
+        protected OrderHeaderMerchantExt _OrderHeaderMerchantExt;
+
+        public virtual OrderHeaderMerchantExt OrderHeaderMerchantExt 
+        { 
+            get => _OrderHeaderMerchantExt;
+            set => _OrderHeaderMerchantExt = value?.SetParent(this); 
+        }
+
+        public virtual void CopyOrderHeaderMerchantExtFrom(ChannelOrderData data) => 
+            OrderHeaderMerchantExt?.CopyFrom(data.OrderHeaderMerchantExt, new string[] {"CentralOrderUuid"});
+
+        public virtual OrderHeaderMerchantExt NewOrderHeaderMerchantExt() => new OrderHeaderMerchantExt(dbFactory).SetParent(this);
+
+        public virtual OrderHeaderMerchantExt GetOrderHeaderMerchantExt(long RowNum) =>
+            (RowNum <= 0) ? null : dbFactory.Get<OrderHeaderMerchantExt>(RowNum);
+
+        public virtual OrderHeaderMerchantExt GetOrderHeaderMerchantExtByCentralOrderUuid(string CentralOrderUuid) =>
+            (string.IsNullOrEmpty(CentralOrderUuid)) ? null : dbFactory.GetById<OrderHeaderMerchantExt>(CentralOrderUuid);
+
+        public virtual bool SaveOrderHeaderMerchantExt(OrderHeaderMerchantExt data) =>
+            (data is null) ? false : data.Save();
+
+        public virtual int DeleteOrderHeaderMerchantExt(OrderHeaderMerchantExt data) =>
+            (data is null) ? 0 : data.Delete();
+
+        public virtual async Task<OrderHeaderMerchantExt> GetOrderHeaderMerchantExtAsync(long RowNum) =>
+            (RowNum <= 0) ? null : await dbFactory.GetAsync<OrderHeaderMerchantExt>(RowNum);
+
+        public virtual async Task<OrderHeaderMerchantExt> GetOrderHeaderMerchantExtByCentralOrderUuidAsync(string CentralOrderUuid) =>
+            (string.IsNullOrEmpty(CentralOrderUuid)) ? null : await dbFactory.GetByIdAsync<OrderHeaderMerchantExt>(CentralOrderUuid);
+
+        public virtual async Task<bool> SaveOrderHeaderMerchantExtAsync(OrderHeaderMerchantExt data) =>
+            (data is null) ? false : await data.SaveAsync();
+
+        public virtual async Task<int> DeleteOrderHeaderMerchantExtAsync(OrderHeaderMerchantExt data) =>
+            (data is null) ? 0 : await data.DeleteAsync();
+
+        public virtual OrderHeaderMerchantExt CheckIntegrityOrderHeaderMerchantExt()
+        {
+            if (OrderHeaderMerchantExt is null || OrderHeader is null) 
+                return OrderHeaderMerchantExt;
+            OrderHeaderMerchantExt.SetParent(this);
+            if (OrderHeaderMerchantExt.CentralOrderUuid != OrderHeader.CentralOrderUuid)
+                OrderHeaderMerchantExt.CentralOrderUuid = OrderHeader.CentralOrderUuid;
+            OrderHeaderMerchantExt.CheckIntegrity();
+            return OrderHeaderMerchantExt;
+        }
+
+
+
+        #endregion OrderHeaderMerchantExt - Generated 
 
         #region OrderLine - Generated 
         // One to many children

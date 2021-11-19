@@ -1,4 +1,3 @@
-
               
     
 
@@ -30,8 +29,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class OrderHeaderDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
@@ -40,6 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Database Number. Required, Title: Database Number, Display: false, Editable: false--
 		/// </summary>
 		[OpenApiPropertyDescription("Database Number. Required, Title: Database Number, Display: false, Editable: false--")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -58,6 +61,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// 
 		/// </summary>
 		[OpenApiPropertyDescription("")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? MasterAccountNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -67,6 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// 
 		/// </summary>
 		[OpenApiPropertyDescription("")]
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? ProfileNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -970,6 +975,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCentralOrderUuid => CentralOrderUuid != null;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
+        public decimal? TotalDueSellerAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasTotalDueSellerAmount => TotalDueSellerAmount != null;
 
 
 

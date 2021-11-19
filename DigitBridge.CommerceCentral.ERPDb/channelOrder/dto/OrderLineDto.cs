@@ -370,6 +370,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasCentralOrderLineUuid => CentralOrderLineUuid != null;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[OpenApiPropertyDescription("")]
+        public decimal? UnitDueSellerAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasUnitDueSellerAmount => UnitDueSellerAmount != null;
+
 
 
         #endregion Properties - Generated 

@@ -69,3 +69,9 @@ IF COL_LENGTH('SalesOrderHeader', 'SignatureFlag') IS NULL
 BEGIN					
     ALTER TABLE SalesOrderHeader ADD [SignatureFlag] TINYINT NOT NULL DEFAULT 0
 END	
+
+IF COL_LENGTH('SalesOrderHeader', 'ChannelAmount') IS NULL					
+BEGIN					
+    ALTER TABLE SalesOrderHeader ADD [ChannelAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END	
+

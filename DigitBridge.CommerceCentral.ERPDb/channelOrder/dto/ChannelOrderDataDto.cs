@@ -28,6 +28,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderHeader => OrderHeader != null;
 
+        public OrderHeaderMerchantExtDto OrderHeaderMerchantExt { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        public bool HasOrderHeaderMerchantExt => OrderHeaderMerchantExt != null;
+
         public IList<OrderLineDto> OrderLine { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public bool HasOrderLine => OrderLine != null;

@@ -1,4 +1,3 @@
-
     
 
 //-------------------------------------------------------------------------
@@ -132,6 +131,101 @@ AND CentralOrderNum= @rowNum
                 rowNum.ToSqlParameter("rowNum")
             );
             return result > 0;
+        }
+        
+        public static List<long> GetRowNums(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT CentralOrderNum FROM OrderHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+            return SqlQuery.Execute(sql, (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"));
+        }
+
+        public static async Task<List<long>> GetRowNumsAsync(int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT CentralOrderNum FROM OrderHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum";
+            return await SqlQuery.ExecuteAsync(sql, (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"));
+        }
+        public static long GetRowNumByNumber(string number, int masterAccountNum, int profileNum)
+        {
+/*
+            var sql = $@"
+SELECT CentralOrderNum FROM OrderHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND OrderNumber = @number
+";
+            return SqlQuery.ExecuteScalar<long>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+*/
+            return 0;
+        }
+
+        public static async Task<long> GetRowNumByNumberAsync(string number, int masterAccountNum, int profileNum)
+        {
+/*
+            var sql = $@"
+SELECT CentralOrderNum FROM OrderHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND OrderNumber = @number
+";
+            return await SqlQuery.ExecuteScalarAsync<long>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                number.ToSqlParameter("number")
+            );
+*/
+            return 0;
+        }
+
+        public static List<long> GetRowNumsByNums(IList<string> nums, int masterAccountNum, int profileNum)
+        {
+/*
+            var sql = $@"
+SELECT CentralOrderNum FROM OrderHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
+
+            return SqlQuery.Execute(
+                sql,
+                (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                nums.ToParameter<string>("nums"));
+*/
+            return new List<long>();
+        }
+
+        public static async Task<List<long>> GetRowNumsByNumsAsync(IList<string> nums, int masterAccountNum, int profileNum)
+        {
+/*
+            var sql = $@"
+SELECT CentralOrderNum FROM OrderHeader tbl
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND (EXISTS (SELECT * FROM @nums _num WHERE _num.item = COALESCE([SKU],'')))";
+
+            return await SqlQuery.ExecuteAsync(
+                sql,
+                (long rowNum) => rowNum,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                nums.ToParameter<string>("nums"));
+*/
+            return new List<long>();
         }
 
     }

@@ -62,7 +62,15 @@ AND SKU = @2";
             if (_OnAfterLoad != null)
                 _OnAfterLoad(this);
             return true;
-        } 
+        }
+
+        public virtual Inventory FindInventoryByWarhouse(string warehouseCode)
+        {
+            if (this.Inventory == null || this.Inventory.Count == 0)
+                return null;
+            return this.Inventory.FindByWarehouseCode(warehouseCode);
+        }
+
     }
 }
 

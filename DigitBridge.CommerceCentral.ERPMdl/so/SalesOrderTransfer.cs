@@ -77,21 +77,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             decimal qtyRatio = dcQty / coQty;
 
-            soData.SalesOrderHeader = ChannelOrderToSalesOrderHeader(dcData.OrderDCAssignmentHeader, coData.OrderHeader, qtyRatio);
+            soData.SalesOrderHeader = ChannelOrderToSalesOrderHeader(dcData, coData, qtyRatio);
 
             soData.SalesOrderHeaderAttributes = ChannelOrderToSalesOrderHeaderAttributes();
 
-            soData.SalesOrderHeaderInfo = ChannelOrderToSalesOrderHeaderInfo(dcData, coData.OrderHeader);
+            soData.SalesOrderHeaderInfo = ChannelOrderToSalesOrderHeaderInfo(dcData, coData);
 
             soData.SalesOrderItems = ChannelOrderToSalesOrderLines(dcData, coData, soData);
 
             return soData;
         }
 
-        private SalesOrderHeader ChannelOrderToSalesOrderHeader(OrderDCAssignmentHeader dcHeader
-            , OrderHeader coHeader
-            , decimal qtyRatio)
+        private SalesOrderHeader ChannelOrderToSalesOrderHeader(DCAssignmentData dcData, ChannelOrderData coData, decimal qtyRatio)
         {
+            var dcHeader = dcData.OrderDCAssignmentHeader;
+            var coHeader = coData.OrderHeader;
+
             var soHeader = new SalesOrderHeader();
             soHeader.DatabaseNum = coHeader.DatabaseNum;
             soHeader.MasterAccountNum = coHeader.MasterAccountNum;
@@ -102,7 +103,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             soHeader.OrderStatus = (int)SalesOrderStatus.New;
             soHeader.OrderDate = coHeader.OriginalOrderDateUtc;
             soHeader.OrderTime = coHeader.OriginalOrderDateUtc.TimeOfDay;
-            soHeader.ShipDate = _initNowUtc;
+            soHeader.ShipDate = coHeader.EstimatedShipDateUtc.IsZero() ? _dtNowUtc : coHeader.EstimatedShipDateUtc;
+            soHeader.EtaArrivalDate = coHeader.DeliverByDateUtc;
             soHeader.DueDate = _initNowUtc;
             soHeader.BillDate = _initNowUtc;
             //CustomerUuid
@@ -125,6 +127,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //MiscAmount
             //MiscTaxAmount
             //ChargeAndAllowanceAmount
+            soHeader.ChannelAmount = coHeader.TotalDueSellerAmount;
             soHeader.PaidAmount = (coHeader.PaymentStatus) ? coHeader.TotalDueSellerAmount : 0;
             //CreditAmount
             //Balance
@@ -135,10 +138,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             soHeader.OrderSourceCode = "OrderDCAssignmentNum:" + dcHeader.OrderDCAssignmentNum;
             soHeader.UpdateDateUtc = _dtNowUtc;
             soHeader.EnterBy = _userId;
+            soHeader.SignatureFlag = !string.IsNullOrEmpty(coHeader.SignatureFlag);
             //UpdateBy
             //EnterDateUtc
             //DigitBridgeGuid
-            soHeader.ShipDate = _initNowUtc;
             return soHeader;
         }
 
@@ -149,9 +152,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return soHeaderAttributes;
         }
 
-        private SalesOrderHeaderInfo ChannelOrderToSalesOrderHeaderInfo(DCAssignmentData dcData, OrderHeader coHeader)
+        private SalesOrderHeaderInfo ChannelOrderToSalesOrderHeaderInfo(DCAssignmentData dcData, ChannelOrderData coData)
         {
             var dcHeader = dcData.OrderDCAssignmentHeader;
+            var coHeader = coData.OrderHeader;
             string coHeaderJson = coHeader.ObjectToString();
             var soHeaderInfo = JsonConvert.DeserializeObject<SalesOrderHeaderInfo>(coHeaderJson);
 

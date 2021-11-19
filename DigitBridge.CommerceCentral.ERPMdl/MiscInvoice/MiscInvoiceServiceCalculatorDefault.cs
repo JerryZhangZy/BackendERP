@@ -127,8 +127,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var key = header.MasterAccountNum + "_" + header.ProfileNum + '_' + customerCode;
             return data.GetCache(key, () =>
             {
-                customerService.GetByNumber(header.MasterAccountNum, header.ProfileNum, customerCode);
-                return customerService.Data;
+                if (customerService.GetByNumber(header.MasterAccountNum, header.ProfileNum, customerCode))
+                    return customerService.Data;
+                return null;
             });
         }
 

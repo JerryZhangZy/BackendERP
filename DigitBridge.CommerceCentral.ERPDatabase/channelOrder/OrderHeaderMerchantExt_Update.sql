@@ -10,6 +10,23 @@ BEGIN
 	) 
 END					
 
+
+IF COL_LENGTH('OrderHeaderMerchantExt', 'UpdateDateUtc') IS NULL					
+BEGIN					
+    ALTER TABLE OrderHeaderMerchantExt ADD [UpdateDateUtc] DATETIME NULL
+END					
+
+IF COL_LENGTH('OrderHeaderMerchantExt', 'EnterBy') IS NULL					
+BEGIN					
+    ALTER TABLE OrderHeaderMerchantExt ADD [EnterBy] Varchar(100) NOT NULL DEFAULT ''
+END					
+
+IF COL_LENGTH('OrderHeaderMerchantExt', 'UpdateBy') IS NULL					
+BEGIN					
+    ALTER TABLE OrderHeaderMerchantExt ADD [UpdateBy] Varchar(100) NOT NULL DEFAULT ''
+END					
+
+
 /*
     UPDATE spp
     SET spp.CentralOrderUuid = sph.CentralOrderUuid

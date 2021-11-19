@@ -52,6 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string BillDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.BillDate AS {name ?? "BillDate".ToCamelCase(camelCase)} ";
         public static string EtaArrivalDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EtaArrivalDate AS {name ?? "EtaArrivalDate".ToCamelCase(camelCase)} ";
         public static string EarliestShipDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EarliestShipDate AS {name ?? "EarliestShipDate".ToCamelCase(camelCase)} ";
+        public static string LatestShipDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.LatestShipDate AS {name ?? "LatestShipDate".ToCamelCase(camelCase)} ";
         public static string SignatureFlag(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.SignatureFlag AS {name ?? "SignatureFlag".ToCamelCase(camelCase)} ";
         public static string CustomerUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CustomerUuid) AS {name ?? "CustomerUuid".ToCamelCase(camelCase)} ";
         public static string CustomerCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CustomerCode) AS {name ?? "CustomerCode".ToCamelCase(camelCase)} ";
@@ -73,6 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string MiscAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MiscAmount AS {name ?? "MiscAmount".ToCamelCase(camelCase)} ";
         public static string MiscTaxAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MiscTaxAmount AS {name ?? "MiscTaxAmount".ToCamelCase(camelCase)} ";
         public static string ChargeAndAllowanceAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChargeAndAllowanceAmount AS {name ?? "ChargeAndAllowanceAmount".ToCamelCase(camelCase)} ";
+        public static string ChannelAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelAmount AS {name ?? "ChannelAmount".ToCamelCase(camelCase)} ";
         public static string PaidAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.PaidAmount AS {name ?? "PaidAmount".ToCamelCase(camelCase)} ";
         public static string CreditAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CreditAmount AS {name ?? "CreditAmount".ToCamelCase(camelCase)} ";
         public static string Balance(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Balance AS {name ?? "Balance".ToCamelCase(camelCase)} ";
@@ -109,6 +111,7 @@ RTRIM({allies}OrderNumber) AS OrderNumber,
 {allies}BillDate AS BillDate,
 {allies}EtaArrivalDate AS EtaArrivalDate,
 {allies}EarliestShipDate AS EarliestShipDate,
+{allies}LatestShipDate AS LatestShipDate,
 {allies}SignatureFlag AS SignatureFlag,
 RTRIM({allies}CustomerUuid) AS CustomerUuid,
 RTRIM({allies}CustomerCode) AS CustomerCode,
@@ -130,6 +133,7 @@ RTRIM({allies}Currency) AS Currency,
 {allies}MiscAmount AS MiscAmount,
 {allies}MiscTaxAmount AS MiscTaxAmount,
 {allies}ChargeAndAllowanceAmount AS ChargeAndAllowanceAmount,
+{allies}ChannelAmount AS ChannelAmount,
 {allies}PaidAmount AS PaidAmount,
 {allies}CreditAmount AS CreditAmount,
 {allies}Balance AS Balance,
