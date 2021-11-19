@@ -249,9 +249,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
             if (await base.SaveDataAsync())
             {
-                await InventoryLogService.UpdateByPoReceiveAsync(_data);
-                //await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);
-                //await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
+                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);
                 await InventoryService.UpdatAvgCostByPoReceiveAsync(_data);
                 return true;
             }
@@ -316,9 +314,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (await base.SaveDataAsync())
             {
                 await InventoryLogService.UpdateByPoReceiveAsync(_data);
-                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);//close
+               // await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);//close
                 await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
-                await InventoryService.UpdatAvgCostByPoReceiveAsync(_data);//close
+               // await InventoryService.UpdatAvgCostByPoReceiveAsync(_data);//close
                 return true;
             }
 
@@ -331,9 +329,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (base.SaveData())
             {
                 InventoryLogService.UpdateByPoReceive(_data);
-                ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
+               // ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
                 PurchaseOrderService.UpdateByPoReceive(_data);
-                InventoryService.UpdatAvgCostByPoReceive(_data);
+               // InventoryService.UpdatAvgCostByPoReceive(_data);
                 return true;
             }
 
