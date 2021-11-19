@@ -17,10 +17,11 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public DateTime? LineRequestShipDate { get; set; }
         public DateTime? LineArrivalDueDate { get; set; }
         public string LinePublicNote { get; set; }
-        public string LinePrivateNote { get; set; }
+        public string WarehouseCode { get; set; }
+        //public string LinePrivateNote { get; set; }
         public int Sequence { get; set; }
         public int HumanReceiveQty { get; set; }
-        public int HumanAdjustQty { get; set; }
+        //public int HumanAdjustQty { get; set; }
         public DateTime EnterDate { get; set; }
     }
 }
