@@ -811,8 +811,8 @@ where inv.InventoryUuid=il.InventoryUuid
             if (data == null || data.PoTransaction == null)
                 return false;
             var header = data.PoTransaction;
-            if(header.TransStatus!=(int)PoTransStatus.StockReceive&&header.TransStatus!=(int)PoTransStatus.APReceive)
-                return false;
+            //if(header.TransStatus!=(int)PoTransStatus.StockReceive&&header.TransStatus!=(int)PoTransStatus.APReceive)
+            //    return false;
             var logUuid = data.PoTransaction.PoUuid;
             await ClearInventoryLogByLogUuidAsync(logUuid);
             //if remove all items or delete inventoryupdate

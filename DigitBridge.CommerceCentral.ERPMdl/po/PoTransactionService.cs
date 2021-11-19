@@ -488,8 +488,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     Notes = item.Notes,
                     Price = item.Price,
                     ItemType = item.PoItemType,
-                    TaxRate = item.TaxRate
+                    TaxRate = item.TaxRate 
                 };
+                
                 poTransactionItems.Add(poTransactionItem);
             }
             Data.PoTransactionItems = poTransactionItems;
