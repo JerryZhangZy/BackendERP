@@ -615,8 +615,8 @@ namespace DigitBridge.Base.Utility
         public static TimeSpan ToTimeSpan(this object input) => (input is null) ? ObjectConvert.MinTime : ((DateTime)input).TimeOfDay;
         public static TimeSpan ToTimeSpan(this DateTime? input) => (input is null) ? ObjectConvert.MinTime : ((DateTime)input).TimeOfDay;
         public static TimeSpan ToTimeSpan(this TimeSpan? input) => (input is null) ? ObjectConvert.MinTime : (TimeSpan)input;
-        public static DateTime ToDateTime(this TimeSpan? input) => (input is null) ? DateTime.Today : DateTime.Today + (TimeSpan)input;
-        public static DateTime ToDateTime(this TimeSpan input) => DateTime.Today + input;
+        public static DateTime ToDateTime(this TimeSpan? input) => (input is null) ? DateTime.UtcNow.Date : DateTime.UtcNow.Date + (TimeSpan)input;
+        public static DateTime ToDateTime(this TimeSpan input) => DateTime.UtcNow.Date + input;
 
         public static int ToInt(this int? input) => (input is null) ? default(int) : (int)input;
         public static int ToInt(this string input) =>

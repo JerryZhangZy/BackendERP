@@ -49,8 +49,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public override void InitQueryFilter()
         {
-            _ActionDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            _ActionDateTo.FilterValue = DateTime.Today;
+            _ActionDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
+            _ActionDateTo.FilterValue = DateTime.UtcNow.Date;
         }
     }
 }

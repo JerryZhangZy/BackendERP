@@ -72,8 +72,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 MasterAccountNum=payload.MasterAccountNum,
                 ProfileNum=payload.ProfileNum,
-                DateFrom = new DateTime(DateTime.Today.Year, 1, 1),
-                DateTo = DateTime.Today
+                DateFrom = new DateTime(DateTime.UtcNow.Date.Year, 1, 1),
+                DateTo = DateTime.UtcNow.Date
             };
         }
     }

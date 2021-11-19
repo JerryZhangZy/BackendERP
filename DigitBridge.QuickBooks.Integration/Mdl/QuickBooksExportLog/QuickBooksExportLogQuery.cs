@@ -44,8 +44,8 @@ namespace DigitBridge.QuickBooks.Integration
 
         public override void InitQueryFilter()
         {
-            _LogDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            _LogDateTo.FilterValue = DateTime.Today.AddDays(7);
+            _LogDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
+            _LogDateTo.FilterValue = DateTime.UtcNow.Date.AddDays(7);
         }
     }
 }

@@ -91,8 +91,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             //payload.Filter = new JObject()
             //{
             //    { "OrderStatus",(int)SalesOrderStatus.Open},
-            //    { "UpdateDateUtcFrom",DateTime.Now.AddMonths(-6).Date},
-            //    { "UpdateDateUtcTo",DateTime.Now.AddDays(1).Date},
+            //    { "UpdateDateUtcFrom",DateTime.UtcNow.AddMonths(-6).Date},
+            //    { "UpdateDateUtcTo",DateTime.UtcNow.AddDays(1).Date},
             //};
 
             using (var b = new Benchmark("GetSalesOrdersOpenListAsync_Test"))
@@ -170,8 +170,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var initFilters = new JObject()
             {
                 { "OrderStatus",(int)SalesOrderStatus.Open},
-                { "UpdateDateUtcFrom",DateTime.Now.AddYears(-1).Date},
-                { "UpdateDateUtcTo",DateTime.Now.AddDays(1).Date},
+                { "UpdateDateUtcFrom",DateTime.UtcNow.AddYears(-1).Date},
+                { "UpdateDateUtcTo",DateTime.UtcNow.AddDays(1).Date},
             };
             if (initFilters.ContainsKey(currentFilter.Name))
             {
@@ -214,8 +214,8 @@ FROM SalesOrderHeader ins
 WHERE MasterAccountNum={MasterAccountNum}
 AND ProfileNum={ProfileNum} 
 AND OrderStatus={(int)SalesOrderStatus.Open}
-AND UpdateDateUtc >= '{DateTime.Now.AddYears(-1).Date}'
-AND UpdateDateUtc <= '{DateTime.Now.AddDays(1).Date}'
+AND UpdateDateUtc >= '{DateTime.UtcNow.AddYears(-1).Date}'
+AND UpdateDateUtc <= '{DateTime.UtcNow.AddDays(1).Date}'
 order by ins.rownum desc
 ";
 

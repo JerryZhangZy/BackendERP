@@ -98,7 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion
         
-        private DateTime now = DateTime.Now;
+        private DateTime now = DateTime.UtcNow;
 
         public virtual bool SetDefault(ApInvoiceData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {

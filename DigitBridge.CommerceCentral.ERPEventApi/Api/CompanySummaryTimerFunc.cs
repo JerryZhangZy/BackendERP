@@ -14,7 +14,7 @@ namespace DigitBridge.CommerceCentral.ERPEventApi.Api
         [FunctionName("CompanySummaryTimerFunc")]
         public static async Task Run([TimerTrigger("0 */30 * * * *")]TimerInfo myTimer, ILogger log)
         {
-            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
+            log.LogInformation($"C# Timer trigger function executed at: {DateTime.UtcNow}");
             var payloadList =await GenerateAllDefaultCompanySummaryPayload();
             var srv = new Mdl.CompanySummaryService();
             foreach(var payload in payloadList)

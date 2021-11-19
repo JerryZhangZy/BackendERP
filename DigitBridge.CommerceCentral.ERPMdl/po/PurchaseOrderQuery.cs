@@ -60,8 +60,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public override void InitQueryFilter()
         {
-            _PoDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            _PoDateTo.FilterValue = DateTime.Today.AddDays(7);
+            _PoDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
+            _PoDateTo.FilterValue = DateTime.UtcNow.Date.AddDays(7);
         }
     }
 }

@@ -346,8 +346,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 MiscInvoiceNumber = NumberGenerate.Generate(),
                 MiscInvoiceUuid = Guid.NewGuid().ToString(),
-                MiscInvoiceDate = DateTime.Now,
-                MiscInvoiceTime = DateTime.Now.TimeOfDay,
+                MiscInvoiceDate = DateTime.UtcNow,
+                MiscInvoiceTime = DateTime.UtcNow.TimeOfDay,
 
                 //MiscInvoiceStatus
                 //MiscInvoiceType

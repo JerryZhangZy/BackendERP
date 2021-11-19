@@ -405,8 +405,8 @@ where PoUuid=@0";
                 Data.ApInvoiceHeader = new ApInvoiceHeader()
                 {
                     ApInvoiceUuid=System.Guid.NewGuid().ToString(),
-                    ApInvoiceDate = DateTime.Today,
-                    ApInvoiceTime = DateTime.Now.TimeOfDay,
+                    ApInvoiceDate = DateTime.UtcNow.Date,
+                    ApInvoiceTime = DateTime.UtcNow.TimeOfDay,
                     ApInvoiceType = 0, //PoReceive
                     TotalAmount = header.TotalAmount,
                     VendorUuid = header.VendorUuid,
@@ -469,8 +469,8 @@ where PoUuid=@0";
                 NewData();
                 Data.ApInvoiceHeader = new ApInvoiceHeader()
                 {
-                    ApInvoiceDate = DateTime.Today,
-                    ApInvoiceTime = DateTime.Now.TimeOfDay,
+                    ApInvoiceDate = DateTime.UtcNow.Date,
+                    ApInvoiceTime = DateTime.UtcNow.TimeOfDay,
                     ApInvoiceType = 0, //PoReceive
                     TotalAmount = header.TotalAmount,
                     VendorUuid = header.VendorUuid,

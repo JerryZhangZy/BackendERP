@@ -95,8 +95,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public override void InitQueryFilter()
         {
-            _MiscInvoiceDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            _MiscInvoiceDateTo.FilterValue = DateTime.Today;
+            _MiscInvoiceDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
+            _MiscInvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
         }
 
         public void InitForNewPaymet(string customerCode)
@@ -104,8 +104,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _MiscInvoiceStatus.FilterValue = (int)MiscInvoiceStatusEnum.Outstanding;
             _CustomerCode.FilterValue = customerCode;
 
-            _MiscInvoiceDateFrom.FilterValue = DateTime.Today.AddYears(-5);//TODO. this is a tmp begin date. make sure this logic.
-            _MiscInvoiceDateTo.FilterValue = DateTime.Today;
+            _MiscInvoiceDateFrom.FilterValue = DateTime.UtcNow.Date.AddYears(-5);//TODO. this is a tmp begin date. make sure this logic.
+            _MiscInvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
         }
     }
 }
