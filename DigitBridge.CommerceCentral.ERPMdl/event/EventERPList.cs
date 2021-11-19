@@ -121,6 +121,35 @@ COALESCE(ordtp.text, '') erpEventTypeText,
             return payload;
         }
 
+        public virtual async Task<EventERPPayload> GetEventERPList_CentralOrderTransferAsync(EventERPPayload payload)
+        {
+            if (payload == null)
+                payload = new EventERPPayload();
+
+            this.LoadRequestParameter(payload);
+            if (this.QueryObject == null)
+                this.QueryObject = new EventERPQuery();
+            this.QueryObject.ErpEventType.FilterValue = (int)ErpEventType.CentralOrderToSalesOrder;
+
+            StringBuilder sb = new StringBuilder();
+            var result = false;
+            try
+            {
+                payload.EventERPListCount = await CountAsync();
+                result = await ExcuteJsonAsync(sb);
+                if (result)
+                    payload.EventERPList = sb;
+            }
+            catch (Exception ex)
+            {
+                payload.EventERPListCount = 0;
+                payload.EventERPList = null;
+                return payload;
+                throw;
+            }
+            return payload;
+        }
+
         public virtual async Task<IList<long>> GetRowNumListAsync(EventERPPayload payload)
         {
             if (payload == null)
