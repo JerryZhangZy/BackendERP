@@ -106,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AcknowledgeProcessPayload), Description = "Sales Order Process Result")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AcknowledgeProcessPayload), Description = "Invoice Process Result")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(AcknowledgeProcessPayload))]
         public static async Task<JsonNetResponse<AcknowledgeProcessPayload>> AckProcessInvoices(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "commercecentral/invoices/AckProcess")]
@@ -116,6 +116,58 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
 
             payload.EventProcessType = EventProcessTypeEnum.InvoiceToCommerceCentral;
+
+            var srv = new EventProcessERPService(dataBaseFactory);
+            payload.Success = await srv.UpdateProcessStatusAsync(payload);
+            payload.Messages = srv.Messages;
+            return new JsonNetResponse<AcknowledgeProcessPayload>(payload);
+        }
+
+        #endregion
+
+        #region wms ack purchase order back to erp
+
+        /// <summary>
+        /// sales order list receive acknowledge API
+        /// this will set EventProcessERP ActionStatus = 1
+        /// </summary>
+        [FunctionName(nameof(AckReceivePurchaseOrder))]
+        [OpenApiOperation(operationId: "AckReceivePurchaseOrder", tags: new[] { "WMSPurchaseOrders" }, Summary = "wms ack downloaded purchase order result back to erp")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AcknowledgePayload), Description = "Array of Received ProcessUuid")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(IList<string>))]
+        public static async Task<JsonNetResponse<AcknowledgePayload>> AckReceivePurchaseOrder(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "wms/purchaseOrders/AckReceive")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<AcknowledgePayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+
+            payload.EventProcessType = EventProcessTypeEnum.PoToWMS;
+
+            var srv = new EventProcessERPService(dataBaseFactory);
+            payload.Success = await srv.UpdateActionStatusAsync(payload);
+            payload.Messages = srv.Messages;
+            return new JsonNetResponse<AcknowledgePayload>(payload);
+        }
+
+
+        [FunctionName(nameof(AckProcessPurchaseOrder))]
+        [OpenApiOperation(operationId: "AckProcessPurchaseOrder", tags: new[] { "WMSPurchaseOrders" }, Summary = "wms ack purchase order process result back to erp")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AcknowledgeProcessPayload), Description = "WMS purchase order Process Result")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(AcknowledgeProcessPayload))]
+        public static async Task<JsonNetResponse<AcknowledgeProcessPayload>> AckProcessPurchaseOrder(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "wms/purchaseOrders/AckProcess")]
+            HttpRequest req)
+        {
+            var payload = await req.GetParameters<AcknowledgeProcessPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+
+            payload.EventProcessType = EventProcessTypeEnum.PoToWMS;
 
             var srv = new EventProcessERPService(dataBaseFactory);
             payload.Success = await srv.UpdateProcessStatusAsync(payload);

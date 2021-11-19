@@ -105,6 +105,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "issues", "issues", "{EF7FE3
 		payload\issues\Issue Salesorderitem missing.xls = payload\issues\Issue Salesorderitem missing.xls
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wms purchase order", "wms purchase order", "{87E361FA-AB95-4D41-9D05-9F628F22A32F}"
+	ProjectSection(SolutionItems) = preProject
+		payload\wms connector\purchase order\purchase order mapping.xlsx = payload\wms connector\purchase order\purchase order mapping.xlsx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -234,6 +239,7 @@ Global
 		{8E5F0520-03DB-44B0-AB63-A78F4C9229F3} = {7F0AE32C-CADC-463E-AB2C-7C02CA495071}
 		{7F0AE32C-CADC-463E-AB2C-7C02CA495071} = {B98819AF-57E6-45BB-A147-CF6D6F6E615C}
 		{EF7FE3AA-F03A-4FA4-BBFA-F64FF3B7E5F9} = {B98819AF-57E6-45BB-A147-CF6D6F6E615C}
+		{87E361FA-AB95-4D41-9D05-9F628F22A32F} = {7F0AE32C-CADC-463E-AB2C-7C02CA495071}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9341E990-605F-49D2-86E7-EEDD882E9D82}
