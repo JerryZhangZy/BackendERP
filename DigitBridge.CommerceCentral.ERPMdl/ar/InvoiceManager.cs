@@ -267,20 +267,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="centralOrderUuid"></param>
         /// <returns>Success Create Invoice, Invoice UUID</returns>
-        public async Task<(bool, string)> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData)
+        public async Task<(bool, string)> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData, string salesOrderUuid = null)
         {
             var mainTrackingNumber = shipmentData.OrderShipmentHeader.MainTrackingNumber;
 
-            var orderDCAssignmentNum = shipmentData.OrderShipmentHeader.OrderDCAssignmentNum;
-            if (orderDCAssignmentNum.IsZero())
+            if (salesOrderUuid.IsZero())
             {
-                AddError($"OrderDCAssignmentNum cannot be empty.");
-                return (false, null);
+                var orderDCAssignmentNum = shipmentData.OrderShipmentHeader.OrderDCAssignmentNum;
+                if (orderDCAssignmentNum.IsZero())
+                {
+                    AddError($"OrderDCAssignmentNum cannot be empty.");
+                    return (false, null);
+                }
+                //Get Sale by uuid
+                salesOrderUuid = await GetSalesOrderUuidAsync(orderDCAssignmentNum.Value);
             }
-            //Get Sale by uuid
-            var salesOrderUuid = await GetSalesOrderUuidAsync(orderDCAssignmentNum.Value);
-
-            if (string.IsNullOrEmpty(salesOrderUuid))
+            if (salesOrderUuid.IsZero())
             {
                 AddError($"SalesOrder not found for OrderShipment.");
                 return (false, null);
@@ -365,12 +367,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid)
         {
-                return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, "invoice");
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, "invoice");
         }
 
         public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string currentNumber)
         {
-                return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "invoice", currentNumber);
+            return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "invoice", currentNumber);
         }
         #endregion
 
