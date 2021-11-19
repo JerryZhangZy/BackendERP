@@ -393,7 +393,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             int profileNum = transaction.InvoiceDataDto.InvoiceHeader.ProfileNum.ToInt();
             string invoiceNumber = transaction.InvoiceDataDto.InvoiceHeader.InvoiceNumber;
             await GetDataByNumberAsync(masterAccountNum, profileNum, invoiceNumber);
-            decimal returnAmount = 
+            decimal returnAmount =
                 transaction.InvoiceTransaction.TotalAmount.ToDecimal() - transaction.InvoiceTransaction.DiscountAmount.ToDecimal();
             this.Data.InvoiceHeader.CreditAmount += returnAmount;
             this.Data.InvoiceHeader.Balance -= returnAmount;
@@ -443,6 +443,46 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
             return await qboInvoiceClient.SendVoidQboInvoiceAsync(eventDto);
             //return await ErpEventClientHelper.AddEventERPAsync(eventDto, "/addQuicksBooksInvoiceVoid");
+        }
+
+        #endregion
+
+        #region Pay invoice
+
+        public async Task<bool> PayInvoiceAsync(InvoiceTransaction trans)
+        {
+            var changedPaidAmount = trans.TotalAmount - trans.OriginalPaidAmount;
+            var sql = $@"
+update InvoiceHeader set PaidAmount=PaidAmount+@0,Balance=Balance-@0
+where InvoiceNumber=@1 
+and MasterAccountNum=@2 
+and ProfileNum=@3
+";
+            var result = await dbFactory.Db.ExecuteAsync(sql,
+                    changedPaidAmount.ToSqlParameter("@0"),
+                    trans.InvoiceNumber.ToSqlParameter("@1"),
+                    trans.MasterAccountNum.ToSqlParameter("@2"),
+                    trans.ProfileNum.ToSqlParameter("@3")
+                    );
+            return result > 0;
+        }
+
+        public bool PayInvoice(InvoiceTransaction trans)
+        {
+            var changedPaidAmount = trans.TotalAmount - trans.OriginalPaidAmount;
+            var sql = $@"
+update InvoiceHeader set PaidAmount=PaidAmount+@0,Balance=Balance-@0
+where InvoiceNumber=@1 
+and MasterAccountNum=@2 
+and ProfileNum=@3
+";
+            var result = dbFactory.Db.Execute(sql,
+                    changedPaidAmount.ToSqlParameter("@0"),
+                    trans.InvoiceNumber.ToSqlParameter("@1"),
+                    trans.MasterAccountNum.ToSqlParameter("@2"),
+                    trans.ProfileNum.ToSqlParameter("@3")
+                    );
+            return result > 0;
         }
 
         #endregion

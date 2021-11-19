@@ -52,15 +52,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        private bool IsInvoiceLoaded = false;
+
         /// <summary>
         /// Load Original InvoiceData.
         /// </summary>
         public async Task<bool> LoadInvoiceAsync(string invoiceNumber, int profileNum, int masterAccountNum)
         {
+            if (IsInvoiceLoaded) return true;
+
             // load invoice data
-            //var invoiceData = new InvoiceData(dbFactory);
-            //var success = invoiceData.GetByNumber(masterAccountNum, profileNum, invoiceNumber);
-            //if (!success) return success;
             InvoiceService.List();
             var success = await InvoiceService.GetDataByNumberAsync(masterAccountNum, profileNum, invoiceNumber);
             if (!success) return false;
@@ -69,6 +70,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 NewData();
             Data.InvoiceData = InvoiceService.Data;
             Data.InvoiceTransaction.InvoiceUuid = Data.InvoiceData.InvoiceHeader.InvoiceUuid;
+
+            IsInvoiceLoaded = true;
+
             return success;
         }
 
@@ -77,10 +81,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         public bool LoadInvoice(string invoiceNumber, int profileNum, int masterAccountNum)
         {
+            if (IsInvoiceLoaded) return true;
+
             // load invoice data
-            //var invoiceData = new InvoiceData(dbFactory);
-            //var success = invoiceData.GetByNumber(masterAccountNum, profileNum, invoiceNumber);
-            //if (!success) return success;
             InvoiceService.List();
             var success = InvoiceService.GetDataByNumber(masterAccountNum, profileNum, invoiceNumber);
             if (!success) return false;
@@ -89,6 +92,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 NewData();
             Data.InvoiceData = InvoiceService.Data;
             Data.InvoiceTransaction.InvoiceUuid = Data.InvoiceData.InvoiceHeader.InvoiceUuid;
+
+            IsInvoiceLoaded = true;
+
+            return success;
+        }
+
+        /// <summary>
+        /// Load Invoice data.
+        /// </summary>
+        /// <param name="invoiceUuid"></param>
+        public bool LoadInvoice(string invoiceUuid)
+        {
+            if (IsInvoiceLoaded) return true;
+
+            // load invoice data
+            InvoiceService.List();
+            var success = InvoiceService.GetDataById(invoiceUuid);
+            if (!success) return false;
+
+            if (Data == null)
+                NewData();
+            Data.InvoiceData = InvoiceService.Data;
+            Data.InvoiceTransaction.InvoiceUuid = InvoiceService.Data.InvoiceHeader.InvoiceUuid;
+
+            IsInvoiceLoaded = true;
+
             return success;
         }
 
@@ -98,27 +127,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="invoiceUuid"></param>
         public async Task<bool> LoadInvoiceAsync(string invoiceUuid)
         {
-            // load invoice data
-            //var invoiceData = new InvoiceData(dbFactory);
-            //var success = await invoiceData.GetByIdAsync(invoiceUuid);
+            if (IsInvoiceLoaded) return true;
 
+            // load invoice data
             InvoiceService.List();
             var success = await InvoiceService.GetDataByIdAsync(invoiceUuid);
             if (!success) return false;
-            if (!success)
-            {
-                AddError($"Data not found for invoiceUuid:{invoiceUuid}");
-                return success;
-            }
 
             if (Data == null)
                 NewData();
             Data.InvoiceData = InvoiceService.Data;
             Data.InvoiceTransaction.InvoiceUuid = InvoiceService.Data.InvoiceHeader.InvoiceUuid;
 
+            IsInvoiceLoaded = true;
+
             return success;
         }
         #endregion load original invoice
+
+        #region Load Return qty
 
         /// <summary>
         /// Load returned qty for each trans return item 
@@ -172,6 +199,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return await InvoiceTransactionHelper.GetInvoiceItemsReturnedQtyAsync(invoiceItemUuids);
         }
 
+        #endregion
+
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
@@ -196,7 +225,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             //Load returned qty for each trans return item 
-            LoadReturnedQty();
+            if (dto.InvoiceTransaction.TransType == (int)TransTypeEnum.Return)
+                LoadReturnedQty();
 
             // validate data for Add processing
             if (!Validate())
@@ -228,8 +258,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await LoadInvoiceAsync(dto.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.Value, dto.InvoiceTransaction.MasterAccountNum.Value)))
                 return false;
 
-            //Load returned qty for each trans return item 
-            LoadReturnedQty();
+            //Load returned qty for each trans return item
+            if (dto.InvoiceTransaction.TransType == (int)TransTypeEnum.Return)
+                LoadReturnedQty();
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -246,24 +277,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
+            var transDataDto = payload.InvoiceTransaction;
+
             // set Add mode and clear data
             Add();
 
             if (!ValidateAccount(payload))
                 return false;
 
-            if (!Validate(payload.InvoiceTransaction))
+            if (!Validate(transDataDto))
                 return false;
 
             // load data from dto
-            FromDto(payload.InvoiceTransaction);
+            FromDto(transDataDto);
 
             //load invoice data.
-            if (!LoadInvoice(payload.InvoiceTransaction.InvoiceTransaction.InvoiceNumber, payload.ProfileNum, payload.MasterAccountNum))
+            if (!LoadInvoice(transDataDto.InvoiceTransaction.InvoiceNumber, payload.ProfileNum, payload.MasterAccountNum))
                 return false;
 
             //Load returned qty for each trans return item 
-            LoadReturnedQty();
+            if (transDataDto.InvoiceTransaction.TransType == (int)TransTypeEnum.Return)
+                LoadReturnedQty();
 
             // validate data for Add processing
             if (!Validate())
@@ -280,6 +314,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
+            var transDataDto = payload.InvoiceTransaction;
 
             // set Add mode and clear data
             Add();
@@ -287,18 +322,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAccountAsync(payload)))
                 return false;
 
-            if (!(await ValidateAsync(payload.InvoiceTransaction)))
+            if (!(await ValidateAsync(transDataDto)))
                 return false;
 
             // load data from dto
-            FromDto(payload.InvoiceTransaction);
+            FromDto(transDataDto);
 
             //load invoice data.
-            if (!(await LoadInvoiceAsync(payload.InvoiceTransaction.InvoiceTransaction.InvoiceNumber, payload.ProfileNum, payload.MasterAccountNum)))
+            if (!(await LoadInvoiceAsync(transDataDto.InvoiceTransaction.InvoiceNumber, payload.ProfileNum, payload.MasterAccountNum)))
                 return false;
 
-            //Load returned qty for each trans return item 
-            LoadReturnedQty();
+            //Load returned qty for each trans return item
+            if (transDataDto.InvoiceTransaction.TransType == (int)TransTypeEnum.Return)
+                LoadReturnedQty();
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -328,6 +364,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // Keep a copy of Original Paid Amount
             Data.InvoiceTransaction.OriginalPaidAmount = Data.InvoiceTransaction.TotalAmount;
+            lastTransUuidBeforeUpdate = Data.InvoiceTransaction.TransUuid;
+            lastPaidByBeforeUpdate = Data.InvoiceTransaction.PaidBy;
+            lastAuthCodeBeforeUpdate = Data.InvoiceTransaction.AuthCode;
 
             // load data from dto
             FromDto(dto);
@@ -336,8 +375,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!LoadInvoice(Data.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.Value, dto.InvoiceTransaction.MasterAccountNum.Value))
                 return false;
 
-            //Load returned qty for each trans return item 
-            LoadReturnedQty();
+            //Load returned qty for each trans return item
+            if (Data.InvoiceTransaction.TransType == (int)TransTypeEnum.Return)
+                LoadReturnedQty();
 
             // validate data for Add processing
             if (!Validate())
@@ -367,6 +407,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // Keep a copy of Original Paid Amount
             Data.InvoiceTransaction.OriginalPaidAmount = Data.InvoiceTransaction.TotalAmount;
+            lastTransUuidBeforeUpdate = Data.InvoiceTransaction.TransUuid;
+            lastPaidByBeforeUpdate = Data.InvoiceTransaction.PaidBy;
+            lastAuthCodeBeforeUpdate = Data.InvoiceTransaction.AuthCode;
 
             // load data from dto
             FromDto(dto);
@@ -376,7 +419,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             //Load returned qty for each trans return item 
-            LoadReturnedQty();
+            if (Data.InvoiceTransaction.TransType == (int)TransTypeEnum.Return)
+                LoadReturnedQty();
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -425,7 +469,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             //Load returned qty for each trans return item 
-            LoadReturnedQty();
+            if (Data.InvoiceTransaction.TransType == (int)TransTypeEnum.Return)
+                LoadReturnedQty();
 
             // validate data for Add processing
             if (!Validate())
@@ -473,7 +518,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             //Load returned qty for each trans return item 
-            LoadReturnedQty();
+            if (Data.InvoiceTransaction.TransType == (int)TransTypeEnum.Return)
+                LoadReturnedQty();
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -522,7 +568,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var invoiceHeaders = await new InvoiceHeader(_dbFactory).GetByCustomerCodeAsync(customerCode, masterAccountNum, profileNum);
             List<InvoiceHeaderDto> result = new List<InvoiceHeaderDto>();
             var mapper = new InvoiceDataDtoMapperDefault();
-            invoiceHeaders.ForEach(invoice => {
+            invoiceHeaders.ForEach(invoice =>
+            {
                 var dto = new InvoiceHeaderDto();
                 if (invoiceHeaders.Any())
                 {

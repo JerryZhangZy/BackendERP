@@ -111,7 +111,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var invoices = await GetInvoiceHeadersByCustomerAsync(payload.MasterAccountNum, payload.ProfileNum, customerCode);
             payload.InvoiceHeaders = invoices;
-            payload.ApplyInvoices = invoices.Select(i => new ApplyInvoice { 
+            payload.ApplyInvoices = invoices.Select(i => new ApplyInvoice
+            {
                 InvoiceNumber = i.InvoiceNumber,
                 InvoiceUuid = i.InvoiceUuid
             }).ToList();
@@ -124,7 +125,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         InvoiceTransactionDataDto GenerateTransByInvoiceHeader(InvoiceHeaderDto invoiceHeader)
         {
             var trans = new InvoiceTransactionDataDto
-            { 
+            {
                 InvoiceReturnItems = null,
                 InvoiceTransaction = new InvoiceTransactionDto
                 {
@@ -199,7 +200,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 applyInvoice.TransUuid = transaction.InvoiceTransaction.TransUuid;
 
-                if (await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum))
+                if (await InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction))
                 {
                     var invoiceTransaction = Data.InvoiceTransaction;
                     if (invoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
@@ -265,8 +266,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             foreach (var applyInvoice in payload.ApplyInvoices)
             {
-                var paymentPayload = GetPayload(payload, applyInvoice);
-                if (!await base.AddAsync(paymentPayload))
+                var paymentDataDto = GetPaymentDataDto(payload, applyInvoice);
+                if (!await base.AddAsync(paymentDataDto))
                 {
                     payload.Success = false;
                     applyInvoice.Success = false;
@@ -277,7 +278,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
 
                 //add payment success. then pay invoice.
-                var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
+                var trans = Data.InvoiceTransaction;
+                var success = await this.InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction);
                 if (success)
                 {
                     var invoiceTransaction = Data.InvoiceTransaction;
@@ -323,8 +325,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             foreach (var applyInvoice in payload.ApplyInvoices)
             {
-                var paymentPayload = GetPayload(payload, applyInvoice);
-                if (!base.Add(paymentPayload))
+                var paymentDataDto = GetPaymentDataDto(payload, applyInvoice);
+                if (!base.Add(paymentDataDto))
                 {
                     payload.Success = false;
                     applyInvoice.Success = false;
@@ -335,7 +337,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
 
                 //add payment success. then pay invoice.
-                var success = PayInvoice(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
+                var trans = Data.InvoiceTransaction;
+                var success = this.InvoiceService.PayInvoice(Data.InvoiceTransaction);
                 if (!success)
                 {
                     payload.Success = false;
@@ -403,6 +406,49 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
         }
 
+        protected InvoiceTransactionDataDto GetPaymentDataDto(InvoicePaymentPayload payload, ApplyInvoice applyInvoice)
+        {
+            var originalTrans = payload.InvoiceTransaction.InvoiceTransaction;
+            var trans = new InvoiceTransactionDto()
+            {
+                AuthCode = originalTrans.AuthCode,
+                BankAccountCode = originalTrans.BankAccountCode,
+                BankAccountUuid = originalTrans.BankAccountUuid,
+                CheckNum = originalTrans.CheckNum,
+                CreditAccount = originalTrans.CreditAccount,
+                Currency = originalTrans.Currency,
+                DebitAccount = originalTrans.DebitAccount,
+                ExchangeRate = originalTrans.ExchangeRate,
+                PaidBy = originalTrans.PaidBy,
+
+                TotalAmount = applyInvoice.PaidAmount,
+
+                InvoiceNumber = applyInvoice.InvoiceNumber,
+                InvoiceUuid = applyInvoice.InvoiceUuid,
+                Description = originalTrans.Description,
+                Notes = originalTrans.Notes,
+                EnterBy = originalTrans.EnterBy,
+                TransDate = originalTrans.TransDate,
+                TransTime = originalTrans.TransTime,
+                TaxRate = originalTrans.TaxRate,
+                TransSourceCode = originalTrans.TransSourceCode,
+                TransStatus = originalTrans.TransStatus,
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                DatabaseNum = payload.DatabaseNum,
+                RowNum = applyInvoice.TransRowNum
+            };
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                trans.TransNum = InvoiceTransactionHelper.GetTranSeqNum(trans.InvoiceNumber, payload.ProfileNum);
+            }
+
+            return new InvoiceTransactionDataDto()
+            {
+                InvoiceTransaction = trans
+            };
+        }
+
         protected InvoicePaymentPayload GetPayload(InvoicePaymentPayload payload, ApplyInvoice applyInvoice)
         {
             var originalTrans = payload.InvoiceTransaction.InvoiceTransaction;
@@ -432,6 +478,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 TransStatus = originalTrans.TransStatus,
                 MasterAccountNum = payload.MasterAccountNum,
                 ProfileNum = payload.ProfileNum,
+                DatabaseNum = payload.DatabaseNum,
                 RowNum = applyInvoice.TransRowNum
             };
             using (var tx = new ScopedTransaction(dbFactory))
@@ -469,24 +516,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             };
         }
 
-        protected async Task<bool> PayInvoiceAsync(ApplyInvoice applyInvoice, int masterAccountNum, int profileNum)
-        {
-            var changedPaidAmount = applyInvoice.PaidAmount - Data.InvoiceTransaction.OriginalPaidAmount;
-            using (var trs = new ScopedTransaction(dbFactory))
-                return await InvoiceHelper.PayInvoiceAsync(applyInvoice.InvoiceNumber, changedPaidAmount, masterAccountNum, profileNum);
-        }
-        protected async Task<bool> PayInvoiceAsync(string invoiceNumber, int masterAccountNum, int profileNum, decimal paidAmount)
-        {
-            using (var trs = new ScopedTransaction(dbFactory))
-                return await InvoiceHelper.PayInvoiceAsync(invoiceNumber, paidAmount, masterAccountNum, profileNum);
-        }
-
-        protected bool PayInvoice(ApplyInvoice applyInvoice, int masterAccountNum, int profileNum)
-        {
-            var changedPaidAmount = applyInvoice.PaidAmount - Data.InvoiceTransaction.OriginalPaidAmount;
-            using (var trs = new ScopedTransaction(dbFactory))
-                return InvoiceHelper.PayInvoice(applyInvoice.InvoiceNumber, changedPaidAmount, masterAccountNum, profileNum);
-        }
         #endregion
 
         #region update multi payments
@@ -549,7 +578,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
 
                 //update payment success. then pay invoice.
-                var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
+                var success = await this.InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction);
                 if (!success)
                 {
                     payload.Success = false;
@@ -594,7 +623,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
 
                 //update payment success. then pay invoice.
-                var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
+                var success = await this.InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction);
                 if (!success)
                 {
                     payload.Success = false;
@@ -664,7 +693,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
 
                 //update payment success. then pay invoice.
-                var success = PayInvoice(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
+                var success = this.InvoiceService.PayInvoice(Data.InvoiceTransaction);
                 if (!success)
                 {
                     payload.Success = false;
@@ -922,9 +951,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            var trans = Data.InvoiceTransaction;
             //add payment success. then pay invoice.
-            success = await PayInvoiceAsync(trans.InvoiceNumber, trans.MasterAccountNum, trans.ProfileNum, trans.TotalAmount);
+            success = await this.InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction);
             if (!success)
             {
                 AddError($"AddPrepaymentAsync->PayInvoiceAsync error.");
