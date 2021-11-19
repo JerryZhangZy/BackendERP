@@ -94,7 +94,15 @@ SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 1 THEN 1 ELSE 0 
 SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 2 THEN 1 ELSE 0 END) as paidCount,
 SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 3 THEN 1 ELSE 0 END) as closedCount,
 SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 4 THEN 1 ELSE 0 END) as dueCount,
-SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 5 THEN 1 ELSE 0 END) as voidCount";
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 5 THEN 1 ELSE 0 END) as voidCount,
+SUM(COALESCE({Helper.TableAllies}.TotalAmount, 0)) AS totalAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 0 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as newAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 1 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as outstandingAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 2 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as paidAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 3 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as closedAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 4 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as dueAmount,
+SUM(CASE WHEN COALESCE({Helper.TableAllies}.InvoiceStatus, 0) = 5 THEN {Helper.TableAllies}.TotalAmount ELSE 0 END) as voidAmount
+";
             return this.SQL_SelectSummary;
         }
 

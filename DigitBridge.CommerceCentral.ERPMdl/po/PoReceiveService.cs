@@ -316,9 +316,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (await base.SaveDataAsync())
             {
                 await InventoryLogService.UpdateByPoReceiveAsync(_data);
-                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);
+                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);//close
                 await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
-                await InventoryService.UpdatAvgCostByPoReceiveAsync(_data);
+                await InventoryService.UpdatAvgCostByPoReceiveAsync(_data);//close
                 return true;
             }
 
