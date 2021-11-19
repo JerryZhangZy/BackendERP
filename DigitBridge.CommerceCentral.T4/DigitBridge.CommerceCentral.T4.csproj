@@ -136,6 +136,10 @@
       <LastGenOutput>GenerateServiceValidator.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="T4\SettingForSystemSetting.ttinclude">
+      <LastGenOutput>SettingForSystemCodes.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\SettingForSystemCodes.ttinclude">
       <LastGenOutput>SettingForSystemCodes.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -373,6 +377,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateRepository.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateServiceCalculator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServiceCalculator.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructureDto - Copy.cs">
       <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -447,11 +456,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>SettingForSalesOrder.ttinclude</DependentUpon>
-    </Compile>
-    <Compile Update="T4\SettingForSystemCodes.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingForSystemCodes.ttinclude</DependentUpon>
     </Compile>
   </ItemGroup>
 

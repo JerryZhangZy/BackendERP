@@ -331,7 +331,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //var inv = GetInventoryData(data,item.ProductUuid);
                 
                 CalculateDetail(item, data, processingMode);
-                if (item.IsAr)
+                if (!item.IsAr)
                 {
                     sum.SubTotalAmount += item.ExtAmount;
                     sum.TaxableAmount += item.TaxableAmount;
@@ -477,13 +477,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             // some item maybe not calculate cost or profilt
-            if (!item.Costable)
+            if (item.Costable)
             {
                 item.UnitCost = 0;
                 item.AvgCost = 0;
                 item.LotCost = 0;
             }
-            else if (!item.IsProfit)
+            else if (item.IsProfit)
             {
                 item.UnitCost = item.ExtAmount;
                 item.AvgCost = item.ExtAmount;

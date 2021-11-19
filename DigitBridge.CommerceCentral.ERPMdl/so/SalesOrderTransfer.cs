@@ -235,11 +235,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //soItem.ShipAmount
                 //soItem.CancelledAmount
                 //soItem.OpenAmount
-                soItem.Stockable = true;
-                soItem.IsAr = true;
+                //soItem.Stockable = true;
+                //soItem.IsAr = true;
                 soItem.Taxable = coLine.LineItemTaxAmount.Value > 0;
-                soItem.Costable = true;
-                soItem.IsProfit = true;
+                //soItem.Costable = true;
+                //soItem.IsProfit = true;
                 //soItem.UnitCost
                 //soItem.AvgCost
                 //soItem.LotCost
