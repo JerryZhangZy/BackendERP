@@ -94,6 +94,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("PoQty",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _poQty;
 
+        [Column("QtyForOther",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _qtyForOther;
+
         [Column("ReceivedQty",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _receivedQty;
 
@@ -492,6 +495,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_poQty = value; 
 				OnPropertyChanged("PoQty", value);
+            }
+        }
+
+		/// <summary>
+		/// (Ignore) Item P/O Qty.
+		/// </summary>
+        public virtual decimal QtyForOther
+        {
+            get
+            {
+				return _qtyForOther; 
+            }
+            set
+            {
+				_qtyForOther = value; 
+				OnPropertyChanged("QtyForOther", value);
             }
         }
 
@@ -1141,6 +1160,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_itemTotalAmount = default(decimal); 
 			_currency = String.Empty; 
 			_poQty = default(decimal); 
+			_qtyForOther = default(decimal); 
 			_receivedQty = default(decimal); 
 			_cancelledQty = default(decimal); 
 			_priceRule = String.Empty; 
