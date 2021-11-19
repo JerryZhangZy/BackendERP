@@ -215,7 +215,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //Add payment to invoice trans and pay invoice.
             var srv_payment = new InvoicePaymentService(dbFactory);
-            var success = await srv_payment.AddPrepaymentAsync(invoiceUuid, actualApplyAmount, miscInvoiceUuid);
+            var success = await srv_payment.AddAsync(invoiceUuid, actualApplyAmount, miscInvoiceUuid);
             if (!success)
             {
                 this.Messages = this.Messages.Concat(srv_payment.Messages).ToList();

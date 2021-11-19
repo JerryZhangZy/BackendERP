@@ -201,6 +201,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion
 
+        #region Add transaction
+
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
@@ -232,7 +234,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            if (!SaveData())
+            {
+                AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
+                return false;
+            }
+
+            //save trans success. then pay invoice. 
+            if (!InvoiceService.PayInvoice(Data.InvoiceTransaction))
+            {
+                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -266,7 +281,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            if (!await SaveDataAsync())
+            {
+                AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
+                return false;
+            }
+
+            //save trans success. then pay invoice. 
+            if (!await InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction))
+            {
+                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
+                return false;
+            }
+
+            return true;
         }
 
         protected virtual bool Add(InvoiceTransactionPayload payload)
@@ -303,7 +331,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            if (!SaveData())
+            {
+                AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
+                return false;
+            }
+
+            //save trans success. then pay invoice. 
+            if (!InvoiceService.PayInvoice(Data.InvoiceTransaction))
+            {
+                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
+                return false;
+            }
+
+            return true;
         }
 
         protected virtual async Task<bool> AddAsync(InvoiceTransactionPayload payload)
@@ -340,8 +381,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            if (!await SaveDataAsync())
+            {
+                AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
+                return false;
+            }
+
+            //save trans success. then pay invoice. 
+            if (!await InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction))
+            {
+                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
+                return false;
+            }
+
+            return true;
         }
+
+        #endregion
+
+        #region update transaction 
 
         /// <summary>
         /// Update data from Dto object.
@@ -383,7 +441,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            if (!SaveData())
+            {
+                AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
+                return false;
+            }
+
+            //save trans success. then pay invoice. 
+            if (!InvoiceService.PayInvoice(Data.InvoiceTransaction))
+            {
+                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -426,7 +497,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            if (!await SaveDataAsync())
+            {
+                AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
+                return false;
+            }
+
+            //save trans success. then pay invoice. 
+            if (!await InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction))
+            {
+                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
+                return false;
+            }
+
+            return true;
         }
 
         protected int lastPaidByBeforeUpdate;
@@ -476,7 +560,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            if (!SaveData())
+            {
+                AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
+                return false;
+            }
+
+            //save trans success. then pay invoice. 
+            if (!InvoiceService.PayInvoice(Data.InvoiceTransaction))
+            {
+                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -525,8 +622,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            if (!await SaveDataAsync())
+            {
+                AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
+                return false;
+            }
+
+            //save trans success. then pay invoice. 
+            if (!await InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction))
+            {
+                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
+                return false;
+            }
+
+            return true;
         }
+
+        #endregion
 
         #region get by invoice number 
         protected virtual async Task<List<InvoiceTransactionData>> GetDataListAsync(int masterAccountNum, int profileNum, string invoiceNumber, TransTypeEnum transType, int? transNum = null)

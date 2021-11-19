@@ -308,10 +308,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!success)
                 return (false, null);
 
-            var soHeader = salesorderService.Data.SalesOrderHeader;
-
-            var paymentManager = new InvoicePaymentManager(dbFactory);
-            success = await paymentManager.AddPaymentFromPrepayment(soHeader.MiscInvoiceUuid, invoiceUuid, soHeader.DepositAmount);
+            var soHeader = salesorderService.Data.SalesOrderHeader; 
+            if (!soHeader.DepositAmount.IsZero() && !soHeader.MiscInvoiceUuid.IsZero())
+            {
+                var paymentService = new InvoicePaymentService(dbFactory);
+                success = await paymentService.AddAsync(invoiceUuid, soHeader.DepositAmount, soHeader.MiscInvoiceUuid);
+            }
 
             return (success, invoiceUuid);
         }

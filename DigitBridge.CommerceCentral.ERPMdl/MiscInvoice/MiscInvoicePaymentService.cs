@@ -191,7 +191,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var miscInvoiceBalance = this.Data.MiscInvoiceData.MiscInvoiceHeader.Balance;
 
-            return miscInvoiceBalance > expectedAmount ? expectedAmount : miscInvoiceBalance;
+            return expectedAmount > miscInvoiceBalance ? miscInvoiceBalance : expectedAmount;
 
         }
     }

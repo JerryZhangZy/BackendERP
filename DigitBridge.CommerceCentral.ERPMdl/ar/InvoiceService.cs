@@ -451,7 +451,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> PayInvoiceAsync(InvoiceTransaction trans)
         {
-            var changedPaidAmount = trans.TotalAmount - trans.OriginalPaidAmount;
+            var changedPaidAmount = trans.TransType == (int)TransTypeEnum.Payment
+                ? trans.TotalAmount - trans.OriginalPaidAmount
+                : trans.OriginalPaidAmount - trans.TotalAmount;
+
             var sql = $@"
 update InvoiceHeader set PaidAmount=PaidAmount+@0,Balance=Balance-@0
 where InvoiceNumber=@1 
@@ -469,7 +472,10 @@ and ProfileNum=@3
 
         public bool PayInvoice(InvoiceTransaction trans)
         {
-            var changedPaidAmount = trans.TotalAmount - trans.OriginalPaidAmount;
+            var changedPaidAmount = trans.TransType == (int)TransTypeEnum.Payment
+                ? trans.TotalAmount - trans.OriginalPaidAmount
+                : trans.OriginalPaidAmount - trans.TotalAmount;
+
             var sql = $@"
 update InvoiceHeader set PaidAmount=PaidAmount+@0,Balance=Balance-@0
 where InvoiceNumber=@1 
