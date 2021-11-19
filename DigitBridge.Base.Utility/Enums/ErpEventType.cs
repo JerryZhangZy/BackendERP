@@ -15,23 +15,27 @@ namespace DigitBridge.Base.Common
     {
         [Description("CentralOrder To SalesOrder")]
         CentralOrderToSalesOrder = 1,
+
         [Description("Shipment To Invoice")]
-        ShipmentToInvoice, 
+        ShipmentToInvoice = 2,
 
         [Description("Erp invoice QuickBooks Invoice")]
-        InvoiceToQboInvoice,
+        InvoiceToQboInvoice = 3,
+
         [Description("Void QuickBooks Invoice")]
-        VoidQboInvoice,
+        VoidQboInvoice = 4,
 
         [Description("Erp payment to QuickBooks Payment")]
-        InvoicePaymentToQboPayment,
+        InvoicePaymentToQboPayment = 5,
+
         [Description("Void QuickBooks Payment")]
-        DeleteQboPayment,
+        DeleteQboPayment = 6,
 
         [Description("Erp return to QuickBooks Refund")]
-        InvoiceRetrunToQboRefund,
+        InvoiceRetrunToQboRefund = 7,
+
         [Description("Void QuickBooks Refund")] 
-        DeleteQboRefund
+        DeleteQboRefund = 8
     } 
     public static class ErpEventQueueName
     {
