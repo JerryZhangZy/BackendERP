@@ -296,13 +296,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
+        public virtual async Task<long> GetRowNumAsync(SystemSettingPayload payload)
+        {
+            return (await dbFactory.GetValueAsync<SystemCodes, long?>(
+                "SELECT TOP 1 RowNum FROM SystemSetting WHERE MasterAccountNum=@0 AND ProfileNum=@1",
+                    payload.MasterAccountNum,
+                    payload.ProfileNum
+                )).ToLong();
+        }
         public virtual async Task<bool> AddOrUpdateAsync(SystemSettingPayload payload)
         {
             if (payload is null || !payload.HasSystemSetting)
                 return false;
 
             // get RowNum by SystemCodeName
-            var rowNum = 0;//await GetRowNumByCodeNameAsync(payload, payload.SystemSetting.SystemSetting.SystemCodeName);
+            var rowNum = await GetRowNumAsync(payload);
 
             // if not exist rowNum then add new record
             if (rowNum == 0)
@@ -312,6 +320,40 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // if exist rowNum then update record
             payload.SystemSetting.SystemSetting.RowNum = rowNum;
             return await UpdateAsync(payload);
+        }
+
+        public virtual SystemSettingDto GetNewSystemSetting(int databaseNum, int masterAccountNum, int profileNum)
+        {
+            return new SystemSettingDto()
+            {
+                DatabaseNum = databaseNum,
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
+                SystemSettingUuid = Guid.NewGuid().ToString(),
+                Fields = new Newtonsoft.Json.Linq.JObject()
+            };
+        }
+
+        public virtual async Task<bool> GetAsync(SystemSettingPayload payload)
+        {
+            if (payload is null)
+                return false;
+
+            // get RowNum by SystemSettingName
+            var rowNum = await GetRowNumAsync(payload);
+
+            // if not exist rowNum then add new record
+            if (rowNum == 0 || !(await GetDataAsync(rowNum)))
+            {
+                if (payload.SystemSetting == null)
+                    payload.SystemSetting = new SystemSettingDataDto();
+                payload.SystemSetting.SystemSetting =
+                    GetNewSystemSetting(payload.DatabaseNum, payload.MasterAccountNum, payload.ProfileNum);
+                return true;
+            }
+            payload.SystemSetting = this.ToDto();
+
+            return true;
         }
     }
 }

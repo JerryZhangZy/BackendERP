@@ -25,7 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPApi.Api
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SelectListPayload), Description = "CustomerDataDto ")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SelectListPayloadInput), Description = "select list")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SelectListPayload))]
         public static async Task<JsonNetResponse<SelectListPayload>> SelectList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "dataEntryCode/selectList")] HttpRequest req,
