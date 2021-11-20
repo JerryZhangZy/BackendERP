@@ -312,16 +312,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Load misc invoice
 
-        private bool IsMiscInvoiceLoaded = false;
-
         /// <summary>
         /// Load MiscInvoice data.
         /// </summary>
         /// <param name="miscInvoiceUuid"></param>
         protected bool LoadMiscInvoice(string miscInvoiceUuid)
         {
-            if (IsMiscInvoiceLoaded) return true;
-
             // load miscinvoice data
             var miscInvoiceData = new MiscInvoiceData(dbFactory);
             var success = miscInvoiceData.GetById(miscInvoiceUuid);
@@ -335,8 +331,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 NewData();
             Data.MiscInvoiceData = miscInvoiceData;
             Data.MiscInvoiceTransaction.MiscInvoiceUuid = miscInvoiceData.MiscInvoiceHeader.MiscInvoiceUuid;
-           
-            IsMiscInvoiceLoaded = true;
 
             return success;
         }
@@ -347,8 +341,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="miscInvoiceUuid"></param>
         protected async Task<bool> LoadMiscInvoiceAsync(string miscInvoiceUuid)
         {
-            if (IsMiscInvoiceLoaded) return true;
-
             // load miscinvoice data
             var miscInvoiceData = new MiscInvoiceData(dbFactory);
             var success = await miscInvoiceData.GetByIdAsync(miscInvoiceUuid);
@@ -363,8 +355,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Data.MiscInvoiceData = miscInvoiceData;
             Data.MiscInvoiceTransaction.MiscInvoiceUuid = miscInvoiceData.MiscInvoiceHeader.MiscInvoiceUuid;
 
-            IsMiscInvoiceLoaded = true;
-
             return success;
         }
 
@@ -377,8 +367,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         protected bool LoadMiscInvoice(int masterAccountNum, int profileNum, string miscInvoiceNumber)
         {
-            if (IsMiscInvoiceLoaded) return true;
-
             // load miscinvoice data
             var miscInvoiceData = new MiscInvoiceData(dbFactory);
             var success = miscInvoiceData.GetByNumber(masterAccountNum, profileNum, miscInvoiceNumber);
@@ -393,8 +381,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Data.MiscInvoiceData = miscInvoiceData;
             Data.MiscInvoiceTransaction.MiscInvoiceUuid = miscInvoiceData.MiscInvoiceHeader.MiscInvoiceUuid;
 
-            IsMiscInvoiceLoaded = true;
-
             return success;
         }
 
@@ -407,8 +393,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         protected async Task<bool> LoadMiscInvoiceAsync(int masterAccountNum, int profileNum, string miscInvoiceNumber)
         {
-            if (IsMiscInvoiceLoaded) return true;
-
             // load miscinvoice data
             var miscInvoiceData = new MiscInvoiceData(dbFactory);
             var success = await miscInvoiceData.GetByNumberAsync(masterAccountNum, profileNum, miscInvoiceNumber);
@@ -422,8 +406,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 NewData();
             Data.MiscInvoiceData = miscInvoiceData;
             Data.MiscInvoiceTransaction.MiscInvoiceUuid = miscInvoiceData.MiscInvoiceHeader.MiscInvoiceUuid;
-
-            IsMiscInvoiceLoaded = true;
 
             return success;
         }

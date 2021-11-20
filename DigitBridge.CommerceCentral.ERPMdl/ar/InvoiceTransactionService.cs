@@ -50,17 +50,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     _invoiceService = new InvoiceService(dbFactory);
                 return _invoiceService;
             }
-        }
-
-        private bool IsInvoiceLoaded = false;
+        } 
 
         /// <summary>
         /// Load Original InvoiceData.
         /// </summary>
         public async Task<bool> LoadInvoiceAsync(string invoiceNumber, int profileNum, int masterAccountNum)
-        {
-            if (IsInvoiceLoaded) return true;
-
+        { 
             // load invoice data
             InvoiceService.List();
             var success = await InvoiceService.GetDataByNumberAsync(masterAccountNum, profileNum, invoiceNumber);
@@ -70,9 +66,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 NewData();
             Data.InvoiceData = InvoiceService.Data;
             Data.InvoiceTransaction.InvoiceUuid = Data.InvoiceData.InvoiceHeader.InvoiceUuid;
-
-            IsInvoiceLoaded = true;
-
+ 
             return success;
         }
 
@@ -80,9 +74,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Load Original InvoiceData.
         /// </summary>
         public bool LoadInvoice(string invoiceNumber, int profileNum, int masterAccountNum)
-        {
-            if (IsInvoiceLoaded) return true;
-
+        { 
             // load invoice data
             InvoiceService.List();
             var success = InvoiceService.GetDataByNumber(masterAccountNum, profileNum, invoiceNumber);
@@ -92,9 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 NewData();
             Data.InvoiceData = InvoiceService.Data;
             Data.InvoiceTransaction.InvoiceUuid = Data.InvoiceData.InvoiceHeader.InvoiceUuid;
-
-            IsInvoiceLoaded = true;
-
+             
             return success;
         }
 
@@ -103,9 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceUuid"></param>
         public bool LoadInvoice(string invoiceUuid)
-        {
-            if (IsInvoiceLoaded) return true;
-
+        { 
             // load invoice data
             InvoiceService.List();
             var success = InvoiceService.GetDataById(invoiceUuid);
@@ -115,9 +103,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 NewData();
             Data.InvoiceData = InvoiceService.Data;
             Data.InvoiceTransaction.InvoiceUuid = InvoiceService.Data.InvoiceHeader.InvoiceUuid;
-
-            IsInvoiceLoaded = true;
-
+             
             return success;
         }
 
@@ -126,9 +112,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceUuid"></param>
         public async Task<bool> LoadInvoiceAsync(string invoiceUuid)
-        {
-            if (IsInvoiceLoaded) return true;
-
+        { 
             // load invoice data
             InvoiceService.List();
             var success = await InvoiceService.GetDataByIdAsync(invoiceUuid);
@@ -138,9 +122,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 NewData();
             Data.InvoiceData = InvoiceService.Data;
             Data.InvoiceTransaction.InvoiceUuid = InvoiceService.Data.InvoiceHeader.InvoiceUuid;
-
-            IsInvoiceLoaded = true;
-
+             
             return success;
         }
         #endregion load original invoice
@@ -532,7 +514,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             FromDto(dto);
 
             //load invoice data.
-            if (!(await LoadInvoiceAsync(Data.InvoiceTransaction.InvoiceNumber, dto.InvoiceTransaction.ProfileNum.Value, dto.InvoiceTransaction.MasterAccountNum.Value)))
+            if (!(await LoadInvoiceAsync(Data.InvoiceTransaction.InvoiceNumber, Data.InvoiceTransaction.ProfileNum, Data.InvoiceTransaction.MasterAccountNum)))
                 return false;
 
             //Load returned qty for each trans return item 
