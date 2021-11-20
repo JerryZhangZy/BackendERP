@@ -281,7 +281,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var orderDCAssignmentNum = shipmentData.OrderShipmentHeader.OrderDCAssignmentNum;
                 if (orderDCAssignmentNum.IsZero())
                 {
-                    AddError($"OrderDCAssignmentNum cannot be empty.");
+                    AddError($"Both salesOrderUuid and OrderDCAssignmentNum are empty. OrderShipmentUuid:{orderShipmentUuid}");
                     return (false, null);
                 }
                 //Get Sale by uuid
@@ -313,7 +313,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!success)
                 return (false, null);
 
-            var soHeader = salesorderService.Data.SalesOrderHeader; 
+            var soHeader = salesorderService.Data.SalesOrderHeader;
             if (!soHeader.DepositAmount.IsZero() && !soHeader.MiscInvoiceUuid.IsZero())
             {
                 var paymentService = new InvoicePaymentService(dbFactory);
