@@ -192,7 +192,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (!await base.AddAsync(transaction))
                 {
                     applyInvoice.Success = false;
-                    AddError($"Add payment failed for InvoiceNumber:{applyInvoice.InvoiceNumber} ");
                     continue;
                 }
                 this.AddActivityLogForCurrentData();
@@ -200,24 +199,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 applyInvoice.TransUuid = transaction.InvoiceTransaction.TransUuid;
 
-                if (await InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction))
-                {
-                    var invoiceTransaction = Data.InvoiceTransaction;
-                    if (invoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
-                    {
-                        payload.Success = await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
-                        if (!payload.Success)
-                        {
-                            AddError("Add miscInvoice fail");
-                        }
-                    }
-                }
-                else
-                {
-                    payload.Success = false;
-                    applyInvoice.Success = false;
-                    AddError($"{applyInvoice.InvoiceNumber} is not applied.");
-                }
+                await AddMiscPaymentAsync();
             }
 
             payload.Success = successCount > 0;
@@ -276,15 +258,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 this.AddActivityLogForCurrentData();
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
 
-                var invoiceTransaction = Data.InvoiceTransaction;
-                if (invoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
-                {
-                    payload.Success = await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
-                    if (!payload.Success)
-                    {
-                        AddError("Add miscInvoice fail");
-                    }
-                }
+                await AddMiscPaymentAsync();
             }
 
             return payload.Success;
@@ -321,65 +295,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 this.AddActivityLogForCurrentData();
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
+
+                var invoiceTransaction = Data.InvoiceTransaction;
+                if (invoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+                {
+                    AddMiscPayment();
+                }
             }
 
             return payload.Success;
-        }
-
-        protected InvoicePaymentPayload GetPayload(InvoiceTransaction originalTrans, ApplyInvoice applyInvoice)
-        {
-            var invoiceTransactionDto = new InvoiceTransactionDto();
-            var mapper = (base.DtoMapper as InvoiceTransactionDataDtoMapperDefault);
-            mapper.WriteInvoiceTransaction(originalTrans, invoiceTransactionDto);
-            invoiceTransactionDto.TotalAmount = applyInvoice.PaidAmount;
-            invoiceTransactionDto.InvoiceNumber = applyInvoice.InvoiceNumber;
-            invoiceTransactionDto.InvoiceUuid = applyInvoice.InvoiceUuid;
-            invoiceTransactionDto.RowNum = applyInvoice.TransRowNum;
-
-            //var trans = new InvoiceTransactionDto()
-            //{
-            //    AuthCode = originalTrans.AuthCode,
-            //    BankAccountCode = originalTrans.BankAccountCode,
-            //    BankAccountUuid = originalTrans.BankAccountUuid,
-            //    CheckNum = originalTrans.CheckNum,
-            //    CreditAccount = originalTrans.CreditAccount,
-            //    Currency = originalTrans.Currency,
-            //    DebitAccount = originalTrans.DebitAccount,
-            //    ExchangeRate = originalTrans.ExchangeRate,
-            //    PaidBy = originalTrans.PaidBy,
-
-            //    TotalAmount = applyInvoice.PaidAmount,
-
-            //    InvoiceNumber = applyInvoice.InvoiceNumber,
-            //    InvoiceUuid = applyInvoice.InvoiceUuid,
-            //    Description = originalTrans.Description,
-            //    Notes = originalTrans.Notes,
-            //    EnterBy = originalTrans.EnterBy,
-            //    TransDate = originalTrans.TransDate,
-            //    TransTime = originalTrans.TransTime.ToDateTime(),
-            //    TaxRate = originalTrans.TaxRate,
-            //    TransSourceCode = originalTrans.TransSourceCode,
-            //    TransStatus = originalTrans.TransStatus,
-            //    MasterAccountNum = originalTrans.MasterAccountNum,
-            //    ProfileNum = originalTrans.ProfileNum,
-            //    RowNum = applyInvoice.TransRowNum
-            //};
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                invoiceTransactionDto.TransNum = InvoiceTransactionHelper.GetTranSeqNum(invoiceTransactionDto.InvoiceNumber, originalTrans.ProfileNum);
-            }
-
-            var dataDto = new InvoiceTransactionDataDto()
-            {
-                InvoiceTransaction = invoiceTransactionDto
-            };
-            return new InvoicePaymentPayload()
-            {
-                ProfileNum = invoiceTransactionDto.ProfileNum.Value,
-                MasterAccountNum = invoiceTransactionDto.MasterAccountNum.Value,
-                InvoiceTransaction = dataDto,
-                DatabaseNum = invoiceTransactionDto.DatabaseNum.Value,
-            };
         }
 
         protected InvoiceTransactionDataDto GetPaymentDataDto(InvoicePaymentPayload payload, ApplyInvoice applyInvoice)
@@ -484,14 +408,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (await base.UpdateAsync(paymentDataDto))
                 {
                     this.AddActivityLogForCurrentData();
-                    var invoiceTransaction = Data.InvoiceTransaction;
-                    if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
-                        payload.Success = payload.Success && await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, invoiceTransaction.OriginalPaidAmount);
-                    if (payload.Success)
-                        if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
-                        {
-                            payload.Success = payload.Success && await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
-                        }
+
+                    await UpdateMiscPaymentAsync();
                 }
                 else
                 {
@@ -544,16 +462,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (await base.UpdateAsync(updatePayload))
                 {
                     this.AddActivityLogForCurrentData();
-                    var invoiceTransaction = Data.InvoiceTransaction;
-                    if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
-                        payload.Success = payload.Success && 
-                            await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, invoiceTransaction.OriginalPaidAmount);
-                    if (payload.Success && Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
-                        payload.Success = payload.Success && 
-                            await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
+
+                    await UpdateMiscPaymentAsync();
 
                     mapper.WriteInvoiceTransaction(Data.InvoiceTransaction, invoiceTransactionDto);
-                    respTransList.Add(new InvoiceTransactionDataDto { 
+                    respTransList.Add(new InvoiceTransactionDataDto
+                    {
                         InvoiceTransaction = invoiceTransactionDto,
                         InvoiceDataDto = new InvoiceDataDto { InvoiceHeader = invoiceHeadDto }
                     });
@@ -562,12 +476,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     payload.Success = false;
                     applyInvoice.Success = false;
-                    AddError($"Update payment failed for InvoiceNumber:{applyInvoice.InvoiceNumber} ");
                     continue;
                 }
-                
+
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
-                applyInvoice.TransRowNum = Data.InvoiceTransaction.RowNum; 
+                applyInvoice.TransRowNum = Data.InvoiceTransaction.RowNum;
                 payload.InvoiceHeaders.Add(invoiceHeadDto);
             }
             payload.InvoiceTransactions = respTransList;
@@ -610,28 +523,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             foreach (var applyInvoice in payload.ApplyInvoices)
             {
                 var paymentDataDto = GetPaymentDataDto(payload, applyInvoice);
-                if (base.Update(paymentDataDto))
-                {
-                    this.AddActivityLogForCurrentData();
-                    var invoiceTransaction = Data.InvoiceTransaction;
-                    if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
-                        payload.Success = payload.Success && MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, invoiceTransaction.OriginalPaidAmount).Result;
-                    if (payload.Success)
-                        if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
-                        {
-                            payload.Success = payload.Success && MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount).Result;
-                        }
-                }
-                else
+                if (!base.Update(paymentDataDto))
                 {
                     payload.Success = false;
                     applyInvoice.Success = false;
-                    AddError($"Update payment failed for InvoiceNumber:{applyInvoice.InvoiceNumber} ");
                     continue;
                 }
 
-                applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
+                this.AddActivityLogForCurrentData();
 
+                UpdateMiscPayment();
+
+                applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
+                applyInvoice.TransRowNum = Data.InvoiceTransaction.RowNum;
             }
 
             return payload.Success;
@@ -753,8 +657,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion
 
-
-
         #region To qbo queue 
 
         private QboPaymentClient _qboPaymentClient;
@@ -822,7 +724,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Handle prepayment for auto transfer invoice from shipment.
 
-        protected InvoiceTransactionDataDto GetPaymentDataDto(decimal amount, string miscInvoiceUuid)
+        protected InvoiceTransactionDataDto GetPaymentDataDto(string miscInvoiceUuid, decimal amount)
         {
             var header = Data.InvoiceData.InvoiceHeader;
             var trans = new InvoiceTransactionDto()
@@ -841,7 +743,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 TotalAmount = amount,
                 PaidBy = (int)PaidByAr.CreditMemo,
-                CheckNum = miscInvoiceUuid,
+                CheckNum = miscInvoiceUuid,//TODO
+                AuthCode = miscInvoiceUuid,
                 Description = "Add payment from prepayment",
             };
 
@@ -892,7 +795,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (actualApplyAmount.IsZero())
             {
                 AddError($"Misc invoice balance is zero.");
-                return false;
+                return true;// this will not affect the transfer flow.
             }
 
             if (!await LoadInvoiceAsync(invoiceUuid))
@@ -900,24 +803,93 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            var paymentDataDto = GetPaymentDataDto(actualApplyAmount, miscInvoiceUuid);
+            var paymentDataDto = GetPaymentDataDto(miscInvoiceUuid, actualApplyAmount);
             // add payment and pay invoice.
             if (!await base.AddAsync(paymentDataDto))
             {
                 return false;
             }
 
+            return await AddMiscPaymentAsync();
+        }
+
+        #endregion
+
+        #region Save misc payment
+
+        protected async Task<bool> AddMiscPaymentAsync()
+        {
             var paymentData = Data.InvoiceTransaction;
+
+            if (paymentData.PaidBy != (int)PaidByAr.CreditMemo)
+                return true;
+
             //Add mis payment and withdraw from misinvoice
-            if (!await MiscPaymentService.AddMiscPayment(miscInvoiceUuid, paymentData.TransUuid, paymentData.InvoiceNumber, actualApplyAmount))
+            if (!await MiscPaymentService.AddMiscPayment(paymentData.AuthCode, paymentData.TransUuid, paymentData.InvoiceNumber, paymentData.TotalAmount))
             {
-                this.Messages = this.Messages.Concat(MiscPaymentService.Messages).ToList();
+                this.Messages.Add(MiscPaymentService.Messages);
                 return false;
             }
-
             return true;
         }
 
+        //TODO need MiscPaymentService provide sync method
+        protected bool AddMiscPayment()
+        {
+            throw new Exception("Please Add sync AddMiscPayment to MiscPaymentService");
+
+            //var paymentData = Data.InvoiceTransaction;
+
+            //if (paymentData.PaidBy != (int)PaidByAr.CreditMemo)
+            //    return true;
+
+            ////Add mis payment and withdraw from misinvoice
+            //if (!await MiscPaymentService.AddMiscPayment(paymentData.AuthCode, paymentData.TransUuid, paymentData.InvoiceNumber, paymentData.TotalAmount))
+            //{
+            //    this.Messages.Add(MiscPaymentService.Messages);
+            //    return false;
+            //}
+            //return true;
+        }
+
+
+        protected async Task<bool> UpdateMiscPaymentAsync()
+        {
+            var success = true;
+            //original paydby is creditmemo then delete mispayment.
+            if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
+            {
+                success = await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, Data.InvoiceTransaction.OriginalPaidAmount);
+            }
+
+            //new paydby is creditmemo then add miscpayment
+            if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+            {
+                success = success && await AddMiscPaymentAsync();
+            }
+
+            return success;
+        }
+
+        //TODO need MiscPaymentService provide sync method
+        protected bool UpdateMiscPayment()
+        {
+            throw new Exception("Please Add sync UpdateMiscPayment to MiscPaymentService");
+            //var success = true;
+            ////original paydby is creditmemo then delete mispayment.
+            //if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
+            //{
+            //    success = await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, Data.InvoiceTransaction.OriginalPaidAmount);
+            //}
+
+            ////new paydby is creditmemo then add miscpayment
+            //if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+            //{
+            //    success = success && await AddMiscPaymentAsync();
+            //}
+
+            //return success;
+        }
         #endregion
     }
 }
