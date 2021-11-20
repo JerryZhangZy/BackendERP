@@ -36,6 +36,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         bool Update(CustomerDataDto dto);
         Task<bool> UpdateAsync(CustomerDataDto dto);
 
+        Task<long> GetRowNumByChannelAsync(int channelNum, int channelAccountNum, int masterAccountNum, int profileNum);
+        Task<bool> GetCustomerByChannelAsync(int channelNum, int channelAccountNum, int masterAccountNum, int profileNum);
+
+        Task<long> GetRowNumByCustomerFindAsync(CustomerFindClass find);
+        Task<bool> GetCustomerByCustomerFindAsync(CustomerFindClass find);
+
+        Task<bool> AddCustomerAsync(CustomerData data);
+
     }
 }
 

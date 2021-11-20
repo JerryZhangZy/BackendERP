@@ -35,8 +35,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             var result = new List<dynamic>();
 			if (!dto.HasOrderHeader)
-				return result;
-			//TODO change to merge Dto children object
+                return result;
+            //TODO change to merge Dto children object
 			if (withHeaderText)
                 result.Add(dto.OrderHeader.MergeName(dto.OrderHeader));
             result.Add(dto.OrderHeader.Merge(dto.OrderHeader));
@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// <returns>list of dynamic object include all properties of detailt objects</returns>
         public static IEnumerable<dynamic> MergeDetailRecord(this ChannelOrderDataDto dto, bool withHeaderText = false)
         {
-			//TODO change to merge Dto children object
+            //TODO change to merge Dto children object
 			var result = new List<dynamic>();
 			if (!dto.HasOrderLine)
                 return result;
@@ -93,7 +93,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             var data = new ChannelOrderDataDto();
 			data.OrderHeader = new OrderHeaderDto().GetFaker().Generate();
+			data.OrderHeaderMerchantExt = new OrderHeaderMerchantExtDto().GetFaker().Generate();
 			data.OrderLine = new OrderLineDto().GetFaker().Generate(3);
+			foreach (var ln in data.OrderLine)
+				ln.OrderLineMerchantExt = new OrderLineMerchantExtDto().GetFaker().Generate();
             return data;
         }
 
@@ -203,6 +206,139 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.DCAssignmentStatus, f => f.Random.Int(1, 100))
 				.RuleFor(u => u.DCAssignmentDateUtc, f => f.Date.Past(0).Date)
 				.RuleFor(u => u.CentralOrderUuid, f => String.Empty)
+				.RuleFor(u => u.TotalDueSellerAmount, f => f.Random.Decimal(1, 1000, 2))
+				;
+			#endregion faker data rules
+		}
+		/// <summary>
+		/// Get faker object for OrderHeaderMerchantExtDto
+		/// </summary>
+		/// <param name="dto">OrderHeaderMerchantExtDto</param>
+		/// <returns>Faker object use to generate data</returns>
+		public static Faker<OrderHeaderMerchantExtDto> GetFaker(this OrderHeaderMerchantExtDto dto)
+		{
+			#region faker data rules
+			return new Faker<OrderHeaderMerchantExtDto>()
+				.RuleFor(u => u.CentralOrderNum, f => default(long))
+				.RuleFor(u => u.MasterAccountNum, f => null)
+				.RuleFor(u => u.ProfileNum, f => null)
+				.RuleFor(u => u.ChannelNum, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.PoType, f => f.Lorem.Sentence().TruncateTo(20))
+				.RuleFor(u => u.HubOrderID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.MerchantID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.MerchantVendorID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.MerchantOrderDateUtc, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.PackingSlipMessage, f => f.Lorem.Sentence().TruncateTo(500))
+				.RuleFor(u => u.VendorNotes, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.VendorWarehouseID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.VendorCommitmentID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.SalesDivision, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.MerchantPhone1, f => f.Phone.PhoneNumber())
+				.RuleFor(u => u.MerchantPhone2, f => f.Phone.PhoneNumber())
+				.RuleFor(u => u.MerchantPhone3, f => f.Phone.PhoneNumber())
+				.RuleFor(u => u.MerchantCustomerID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.MerchantCustomerOrderID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.MerchantCustomerOrderDateUtc, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.MerchantCustomerPaymentMethod, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.CancelAfterDateUtc, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.RequiredShipDateUtc, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.PromoID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.PromoStartDateUtc, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.MerchandiseTypeCode, f => f.Lorem.Word())
+				.RuleFor(u => u.AuthorizationForExpenseNumber, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.ShipToAccountNO, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.ShipToGender, f => f.Lorem.Sentence().TruncateTo(20))
+				.RuleFor(u => u.ShipToReceipt, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.ShipToVcdID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.ShipToDEANumber, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.MerchantBillToAddressType, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.SoldToAddressType, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.SoldToAttention, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.SoldToCompanyname, f => f.Company.CompanyName())
+				.RuleFor(u => u.SoldToName, f => f.Company.CompanyName())
+				.RuleFor(u => u.SoldToFirstName, f => f.Company.CompanyName())
+				.RuleFor(u => u.SoldToLastName, f => f.Company.CompanyName())
+				.RuleFor(u => u.SoldToAddressLine1, f => f.Address.StreetAddress())
+				.RuleFor(u => u.SoldToAddressLine2, f => f.Address.SecondaryAddress())
+				.RuleFor(u => u.SoldToAddressLine3, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.SoldToCity, f => f.Address.City())
+				.RuleFor(u => u.SoldToState, f => f.Address.State())
+				.RuleFor(u => u.SoldToPostalCode, f => f.Address.ZipCode())
+				.RuleFor(u => u.SoldToPostalCodeExt, f => f.Lorem.Word())
+				.RuleFor(u => u.SoldToCountry, f => f.Address.Country())
+				.RuleFor(u => u.SoldToEmail, f => f.Internet.Email())
+				.RuleFor(u => u.SoldToDayPhone, f => f.Phone.PhoneNumber())
+				.RuleFor(u => u.SoldToNightPhone, f => f.Phone.PhoneNumber())
+				.RuleFor(u => u.SoldToTaxExemptNO, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.SoldToAccountNO, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.SoldToGender, f => f.Lorem.Sentence().TruncateTo(20))
+				.RuleFor(u => u.CustomerGiftMessage, f => f.Lorem.Sentence().TruncateTo(200))
+				.RuleFor(u => u.ReturnAddressee, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.ReturnAddressLine1, f => f.Address.StreetAddress())
+				.RuleFor(u => u.ReturnAddressLine2, f => f.Address.SecondaryAddress())
+				.RuleFor(u => u.ReturnAddrelssLine3, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.ReturnCity, f => f.Address.City())
+				.RuleFor(u => u.ReturnState, f => f.Address.State())
+				.RuleFor(u => u.ReturnPostalCode, f => f.Address.ZipCode())
+				.RuleFor(u => u.ReturnPostalCodeExt, f => f.Lorem.Word())
+				.RuleFor(u => u.ReturnCountry, f => f.Address.Country())
+				.RuleFor(u => u.ReturnEmail, f => f.Internet.Email())
+				.RuleFor(u => u.ReturnDayPhone, f => f.Phone.PhoneNumber())
+				.RuleFor(u => u.ReturnNightPhone, f => f.Phone.PhoneNumber())
+				.RuleFor(u => u.ReturnLocationID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.InvoiceToAddressType, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.InvoiceToAttention, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.InvoiceToCompany, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.InoviceToName, f => f.Company.CompanyName())
+				.RuleFor(u => u.InvoiceToFirstName, f => f.Company.CompanyName())
+				.RuleFor(u => u.InvoiceToLastName, f => f.Company.CompanyName())
+				.RuleFor(u => u.InvoiceToAddressLine1, f => f.Address.StreetAddress())
+				.RuleFor(u => u.InvoiceToAddressLine2, f => f.Address.SecondaryAddress())
+				.RuleFor(u => u.InvoiceToAddressLine3, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.InvoiceToCity, f => f.Address.City())
+				.RuleFor(u => u.InvoiceToState, f => f.Address.State())
+				.RuleFor(u => u.InvoiceToPostalCode, f => f.Address.ZipCode())
+				.RuleFor(u => u.InvoiceToPostalCodeExt, f => f.Lorem.Word())
+				.RuleFor(u => u.InvoiceToCountry, f => f.Address.Country())
+				.RuleFor(u => u.InvoiceToDayPhone, f => f.Phone.PhoneNumber())
+				.RuleFor(u => u.InvoviceToNightPhone, f => f.Phone.PhoneNumber())
+				.RuleFor(u => u.InvoiceToEmail, f => f.Internet.Email())
+				.RuleFor(u => u.InvoiceToAccountNO, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.InvoiceToTaxExemptNO, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.InvoiceToGender, f => f.Lorem.Sentence().TruncateTo(20))
+				.RuleFor(u => u.BuyingContract, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.CcParty, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.APVendor, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.RMEmail, f => f.Internet.Email())
+				.RuleFor(u => u.MarketingInserts, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.BusinessRuleCode, f => f.Lorem.Word())
+				.RuleFor(u => u.ReleaseNumber, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.MerchantBuyerName, f => f.Company.CompanyName())
+				.RuleFor(u => u.SalesCurrency, f => f.Lorem.Sentence().TruncateTo(10))
+				.RuleFor(u => u.FreightCollectAccount, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.FreightPaymentTerms, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.MerchantSalesAgent, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.PaymentMethodDescription, f => f.Commerce.ProductName())
+				.RuleFor(u => u.OrderFulfillmentFee, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.PackingSlipTemplateIndicator, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.SalesTax, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.ResponsibilityRole, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.ExpectedProcessingPriority, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.PreassignedWaybillNumber, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.URL, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.ShipperID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.FileIdentifier, f => f.Lorem.Sentence().TruncateTo(100))
+				.RuleFor(u => u.ERPCustomerOrderNumber, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.CustomerOrderPOIndex, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.MultiSource, f => f.Lorem.Sentence().TruncateTo(3))
+				.RuleFor(u => u.NetDaysDue, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.TotalOrderCost, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.UpdateDateUtc, f => null)
+				.RuleFor(u => u.EnterBy, f => null)
+				.RuleFor(u => u.UpdateBy, f => null)
+				.RuleFor(u => u.CentralOrderUuid, f => String.Empty)
+				.RuleFor(u => u.CentralOrderHeaderMerchantExtUuid, f => f.Random.Guid().ToString())
 				;
 			#endregion faker data rules
 		}
@@ -250,6 +386,89 @@ namespace DigitBridge.CommerceCentral.ERPDb
 				.RuleFor(u => u.DBChannelOrderLineRowID, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.CentralOrderUuid, f => f.Random.Guid().ToString())
 				.RuleFor(u => u.CentralOrderLineUuid, f => String.Empty)
+				.RuleFor(u => u.UnitDueSellerAmount, f => f.Random.Decimal(1, 1000, 2))
+				;
+			#endregion faker data rules
+		}
+		/// <summary>
+		/// Get faker object for OrderLineMerchantExtDto
+		/// </summary>
+		/// <param name="dto">OrderLineMerchantExtDto</param>
+		/// <returns>Faker object use to generate data</returns>
+		public static Faker<OrderLineMerchantExtDto> GetFaker(this OrderLineMerchantExtDto dto)
+		{
+			#region faker data rules
+			return new Faker<OrderLineMerchantExtDto>()
+				.RuleFor(u => u.CentralOrderLineNum, f => default(long))
+				.RuleFor(u => u.DatabaseNum, f => null)
+				.RuleFor(u => u.CentralOrderNum, f => default(long))
+				.RuleFor(u => u.MasterAccountNum, f => null)
+				.RuleFor(u => u.ProfileNum, f => null)
+				.RuleFor(u => u.ChannelNum, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.ChannelAccountNum, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.ChannelOrderID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.ChannelOrderLineNum, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.MerchantLineNumber, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.CustomerOrderLineNumber, f => f.Random.Int(1, 100))
+				.RuleFor(u => u.HubLineID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.MerchantNRProductID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.MerchantSKU, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.VendorSKU, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.ManufacturerSKU, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.ShoppingCartSKU, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.VendorDescription, f => f.Commerce.ProductName())
+				.RuleFor(u => u.VendorStyleNumber, f => f.Lorem.Sentence().TruncateTo(255))
+				.RuleFor(u => u.VendorColorDescription, f => f.Commerce.Color())
+				.RuleFor(u => u.VendorSizeDescription, f => f.Commerce.ProductName())
+				.RuleFor(u => u.MerchantColorCode, f => f.Commerce.Color())
+				.RuleFor(u => u.MerchantSizeCode, f => f.Lorem.Word())
+				.RuleFor(u => u.MerchantSetCode, f => f.Lorem.Word())
+				.RuleFor(u => u.MerchantDescription, f => f.Commerce.ProductName())
+				.RuleFor(u => u.MerchantDescription2, f => f.Commerce.ProductName())
+				.RuleFor(u => u.MerchantDescription3, f => f.Commerce.ProductName())
+				.RuleFor(u => u.MerchantColorSizeDescription, f => f.Commerce.Color())
+				.RuleFor(u => u.FullRetailPrice, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.EncodedPrice, f => f.Lorem.Word())
+				.RuleFor(u => u.UnitShippingWeight, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.WeightUnit, f => f.Lorem.Sentence().TruncateTo(20))
+				.RuleFor(u => u.CustomerUnitPrice, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.UnitCostToMerchant, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.LineMerchandiseCost, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.CustomerMerchandiseAmount, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.CustomerLineShippingAmount, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.CustomerLineHandlingAmount, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.CustomerLineSubTotalAmount, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.CustomerLineTaxAmount, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.CustomerLineTotalAmount, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.CustomerLineCredits, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.CustomerLineBalanceDue, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.LineDiscountAmount, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.VendorWareshoueID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.ExpectedShipDateUtc, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.PackingSlipLineMessage, f => f.Lorem.Sentence().TruncateTo(255))
+				.RuleFor(u => u.VendorLineNotes, f => f.Lorem.Sentence().TruncateTo(255))
+				.RuleFor(u => u.StoreName, f => f.Company.CompanyName())
+				.RuleFor(u => u.PersonalizationData, f => f.Lorem.Sentence().TruncateTo(400))
+				.RuleFor(u => u.FacgtoryOrderNum, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.SubUnitQty, f => f.Random.Decimal(1, 1000, 2))
+				.RuleFor(u => u.GiftWrapIndicator, f => f.Lorem.Sentence().TruncateTo(10))
+				.RuleFor(u => u.HoldUntilDateUtc, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.RequiredShipDateUtc, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.RequiredDeliveryDateUtc, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.CustomerRequestedArrivalDateUtc, f => f.Date.Past(0).Date)
+				.RuleFor(u => u.ShipperHubCode, f => f.Lorem.Word())
+				.RuleFor(u => u.ShippingHub, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.SerializedProduct, f => f.Lorem.Sentence().TruncateTo(20))
+				.RuleFor(u => u.CustomerSKU, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.VendorQuoteNumber, f => f.Lorem.Sentence().TruncateTo(30))
+				.RuleFor(u => u.GiftRegistryID, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.MerchantDepartment, f => f.Random.AlphaNumeric(50))
+				.RuleFor(u => u.NdcNumber, f => f.Lorem.Sentence().TruncateTo(20))
+				.RuleFor(u => u.VendorPatternCode, f => f.Lorem.Word())
+				.RuleFor(u => u.VendorFinishCode, f => f.Lorem.Word())
+				.RuleFor(u => u.CentralOrderUuid, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.CentralOrderLineUuid, f => f.Random.Guid().ToString())
+				.RuleFor(u => u.CentralOrderLineMerchantExtUuid, f => String.Empty)
 				;
 			#endregion faker data rules
 		}

@@ -69,6 +69,8 @@ GO
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'UI_Customer_CustomerCode')
 CREATE UNIQUE NONCLUSTERED INDEX [UI_Customer_CustomerCode] ON [dbo].[Customer]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[CustomerCode] ASC
 ) 
 GO
@@ -76,6 +78,8 @@ GO
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_CustomerID')
 CREATE NONCLUSTERED INDEX [IX_Customer_CustomerName] ON [dbo].[Customer]
 (
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[CustomerName] ASC
 ) 
 GO
@@ -126,6 +130,16 @@ GO
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_ChannelNum_ChannelAccountNum')
 CREATE NONCLUSTERED INDEX [IX_Customer_ChannelNum_ChannelAccountNum] ON [dbo].[Customer]
 (
+	[ChannelNum] ASC, 
+	[ChannelAccountNum] ASC
+) 
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND name = N'IX_Customer_MasterAccountNum_ChannelNum_ChannelAccountNum')
+CREATE NONCLUSTERED INDEX [IX_Customer_MasterAccountNum_ChannelNum_ChannelAccountNum] ON [dbo].[Customer]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
 	[ChannelNum] ASC, 
 	[ChannelAccountNum] ASC
 ) 

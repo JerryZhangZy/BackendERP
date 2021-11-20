@@ -1,4 +1,3 @@
-
               
     
 
@@ -44,6 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string ProfileNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ProfileNum AS {name ?? "ProfileNum".ToCamelCase(camelCase)} ";
         public static string InvoiceUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceUuid) AS {name ?? "InvoiceUuid".ToCamelCase(camelCase)} ";
         public static string InvoiceNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InvoiceNumber) AS {name ?? "InvoiceNumber".ToCamelCase(camelCase)} ";
+        public static string QboDocNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.QboDocNumber) AS {name ?? "QboDocNumber".ToCamelCase(camelCase)} ";
         public static string SalesOrderUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderUuid) AS {name ?? "SalesOrderUuid".ToCamelCase(camelCase)} ";
         public static string OrderNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.OrderNumber) AS {name ?? "OrderNumber".ToCamelCase(camelCase)} ";
         public static string InvoiceType(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.InvoiceType AS {name ?? "InvoiceType".ToCamelCase(camelCase)} ";
@@ -73,6 +73,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string MiscAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MiscAmount AS {name ?? "MiscAmount".ToCamelCase(camelCase)} ";
         public static string MiscTaxAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MiscTaxAmount AS {name ?? "MiscTaxAmount".ToCamelCase(camelCase)} ";
         public static string ChargeAndAllowanceAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChargeAndAllowanceAmount AS {name ?? "ChargeAndAllowanceAmount".ToCamelCase(camelCase)} ";
+        public static string ChannelAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChannelAmount AS {name ?? "ChannelAmount".ToCamelCase(camelCase)} ";
         public static string PaidAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.PaidAmount AS {name ?? "PaidAmount".ToCamelCase(camelCase)} ";
         public static string CreditAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.CreditAmount AS {name ?? "CreditAmount".ToCamelCase(camelCase)} ";
         public static string Balance(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Balance AS {name ?? "Balance".ToCamelCase(camelCase)} ";
@@ -86,7 +87,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";
 
-        public static string QboDocNumber(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.QboDocNumber) AS {name ?? "QboDocNumber".ToCamelCase(camelCase)} ";
         #endregion - static SQL fileds statement
 
         public static string SelectAll(string tableAllies = null) 
@@ -99,6 +99,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {allies}ProfileNum AS ProfileNum,
 RTRIM({allies}InvoiceUuid) AS InvoiceUuid,
 RTRIM({allies}InvoiceNumber) AS InvoiceNumber,
+RTRIM({allies}QboDocNumber) AS QboDocNumber,
 RTRIM({allies}SalesOrderUuid) AS SalesOrderUuid,
 RTRIM({allies}OrderNumber) AS OrderNumber,
 {allies}InvoiceType AS InvoiceType,
@@ -128,6 +129,7 @@ RTRIM({allies}Currency) AS Currency,
 {allies}MiscAmount AS MiscAmount,
 {allies}MiscTaxAmount AS MiscTaxAmount,
 {allies}ChargeAndAllowanceAmount AS ChargeAndAllowanceAmount,
+{allies}ChannelAmount AS ChannelAmount,
 {allies}PaidAmount AS PaidAmount,
 {allies}CreditAmount AS CreditAmount,
 {allies}Balance AS Balance,

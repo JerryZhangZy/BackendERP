@@ -263,7 +263,7 @@
     <None Include="ap\ApInvoiceHeader_Update.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="channelOrder\OrderHeaderMerchantExt.sql" />
+    <None Include="channelOrder\OrderHeaderMerchantExt.sql" />
     <None Include="channelOrder\OrderHeaderMarketplaceExt_Update.sql" />
     <None Include="setting\SystemSetting.sql" />
     <None Include="setting\InitNumbers.sql" />
@@ -280,5 +280,8 @@
     <None Include="sql\check salesorder logic..sql" />
     <None Include="sql\AddEventProcessFromPurchaseOrder.sql" />
     <None Include="po\PoHeaderInfo_Update.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="channelOrder\OrderHeaderMerchantExt_Update.sql" />
   </ItemGroup>
 </Project>

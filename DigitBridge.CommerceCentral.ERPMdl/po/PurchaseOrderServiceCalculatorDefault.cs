@@ -40,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
         }
 
-        private DateTime now = DateTime.Now;
+        private DateTime now = DateTime.UtcNow;
 
         #region Service Property
 
@@ -74,8 +74,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var key = header.MasterAccountNum + "_" + header.ProfileNum + '_' + sku;
             return data.GetCache(key, () =>
             {
-                inventoryService.GetByNumber(header.MasterAccountNum, header.ProfileNum, sku);
-                return inventoryService.Data;
+                if (inventoryService.GetByNumber(header.MasterAccountNum, header.ProfileNum, sku))
+                    return inventoryService.Data;
+                return null;
             });
         }
         ///// <summary>

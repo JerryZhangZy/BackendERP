@@ -1,12 +1,3 @@
-
-
-
-
-
-              
-
-
-
               
     
 
@@ -81,9 +72,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";
         public static string DBChannelOrderLineRowID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.DBChannelOrderLineRowID) AS {name ?? "DBChannelOrderLineRowID".ToCamelCase(camelCase)} ";
-        public static string RowNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum".ToCamelCase(camelCase)} ";
         public static string CentralOrderUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CentralOrderUuid) AS {name ?? "CentralOrderUuid".ToCamelCase(camelCase)} ";
         public static string CentralOrderLineUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CentralOrderLineUuid) AS {name ?? "CentralOrderLineUuid".ToCamelCase(camelCase)} ";
+        public static string RowNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum".ToCamelCase(camelCase)} ";
+        public static string UnitDueSellerAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.UnitDueSellerAmount AS {name ?? "UnitDueSellerAmount".ToCamelCase(camelCase)} ";
 
         #endregion - static SQL fileds statement
 
@@ -126,9 +118,10 @@ RTRIM({allies}UnitOfMeasure) AS UnitOfMeasure,
 {allies}EnterDateUtc AS EnterDateUtc,
 {allies}DigitBridgeGuid AS DigitBridgeGuid,
 RTRIM({allies}DBChannelOrderLineRowID) AS DBChannelOrderLineRowID,
-{allies}RowNum AS RowNum,
 RTRIM({allies}CentralOrderUuid) AS CentralOrderUuid,
-RTRIM({allies}CentralOrderLineUuid) AS CentralOrderLineUuid
+RTRIM({allies}CentralOrderLineUuid) AS CentralOrderLineUuid,
+{allies}RowNum AS RowNum,
+{allies}UnitDueSellerAmount AS UnitDueSellerAmount
 ";
         }
 

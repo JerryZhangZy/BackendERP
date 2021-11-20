@@ -36,6 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         bool Update(WarehouseDataDto dto);
         Task<bool> UpdateAsync(WarehouseDataDto dto);
 
+        Task<IList<DistributionCenter>> GetWarehouseList(int masterAccountNum, int profileNum);
     }
 }
 

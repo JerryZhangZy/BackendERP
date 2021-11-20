@@ -44,7 +44,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        private DateTime now = DateTime.Now;
+        private DateTime now = DateTime.UtcNow;
 
         #region Service Property
 
@@ -100,8 +100,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var key = header.MasterAccountNum + "_" + header.ProfileNum + '_' + sku;
             return data.GetCache(key, () =>
             {
-                inventoryService.GetByNumber(header.MasterAccountNum, header.ProfileNum, sku);
-                return inventoryService.Data;
+                if (inventoryService.GetByNumber(header.MasterAccountNum, header.ProfileNum, sku))
+                    return inventoryService.Data;
+                return null;
             });
         }
         /// <summary>
@@ -116,8 +117,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var key = header.MasterAccountNum + "_" + header.ProfileNum + '_' + customerCode;
             return data.GetCache(key, () =>
             {
-                customerService.GetByNumber(header.MasterAccountNum, header.ProfileNum, customerCode);
-                return customerService.Data;
+                if (customerService.GetByNumber(header.MasterAccountNum, header.ProfileNum, customerCode))
+                    return customerService.Data;
+                return null;
             });
         }
         public virtual SalesOrderData GetSalesOrderData(InvoiceData data, string orderNumber)
@@ -126,8 +128,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var key = header.MasterAccountNum + "_" + header.ProfileNum + '_' + orderNumber;
             return data.GetCache(key, () =>
             {
-                salesOrderService.GetByNumber(header.MasterAccountNum, header.ProfileNum, orderNumber);
-                return salesOrderService.Data;
+                if (salesOrderService.GetByNumber(header.MasterAccountNum, header.ProfileNum, orderNumber))
+                    return salesOrderService.Data;
+                return null;
             });
         }
 
@@ -230,18 +233,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //    item.Currency = data.InvoiceHeader.Currency;
             //Set SKU info
             var inventoryData = GetInventoryData(data, item.SKU);
-            if (inventoryData != null)
-            {
-                item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
-                var inventory = inventoryService.GetInventory(inventoryData, item);
-                item.InventoryUuid = inventory.InventoryUuid;
-                item.WarehouseCode = inventory.WarehouseCode;
-                item.WarehouseUuid = inventory.WarehouseUuid;
-                item.LotNum = inventory.LotNum;
-                item.UOM = inventory.UOM;
-                //if (string.IsNullOrEmpty(item.Currency))
-                //    item.Currency = inventory.Currency;
-            }
+            if (inventoryData == null) 
+                return false;
+
+            item.ProductUuid = inventoryData.ProductBasic.ProductUuid;
+
+            var inventory = inventoryData.FindInventoryByWarhouse(item.WarehouseCode);
+            if (inventory == null)
+                return false;
+
+            if (!string.IsNullOrEmpty(inventory.InventoryUuid)) item.InventoryUuid = inventory.InventoryUuid;
+            if (!string.IsNullOrEmpty(inventory.WarehouseCode)) item.WarehouseCode = inventory.WarehouseCode;
+            if (!string.IsNullOrEmpty(inventory.WarehouseUuid)) item.WarehouseUuid = inventory.WarehouseUuid;
+
+            item.LotNum = inventory.LotNum;
+            item.UOM = inventory.UOM;
 
             //Set salesorder info 
             var salesOrderData = GetSalesOrderData(data, data.InvoiceHeader.OrderNumber);
@@ -252,22 +258,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //item.OrderPack
                 //item.OrderQty 
             }
-
-            //var setting = new ERPSetting();
-            //var sum = data.InvoiceHeader;
-            ////var prod = data.GetCache<ProductBasic>(ProductId);
-            ////var inv = data.GetCache<Inventory>(InventoryId);
-            ////var invCost = new ItemCostClass(inv);
-            //var invCost = new ItemCostClass();
-
-            ////InvoiceItemType
-            ////InvoiceItemStatus 
-            ////ShipDate
-            ////EtaArrivalDate
-
-            ////SKU 
-            ////Description
-            ////Notes 
 
             return true;
         }
@@ -365,7 +355,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     continue;
                 SetDefault(item, data, processingMode);
                 CalculateDetail(item, data, processingMode);
-                if (item.IsAr)
+                if (!item.IsAr)
                 {
                     sum.SubTotalAmount += item.ExtAmount;
                     sum.TaxableAmount += item.TaxableAmount;
@@ -401,10 +391,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var setting = new ERPSetting();
             var sum = data.InvoiceHeader;
-            //var prod = data.GetCache<ProductBasic>(ProductId);
-            //var inv = data.GetCache<Inventory>(InventoryId);
-            //var invCost = new ItemCostClass(inv);
-            var invCost = new ItemCostClass();
+
+            var invData = GetInventoryData(data, item.SKU);
+            var inv = (invData == null) ? null : invData.FindInventoryByWarhouse(item.WarehouseCode);
+            var invCost = new ItemCostClass(inv);
 
             item.Price = item.Price.ToPrice();
             item.ShippingAmount = item.ShippingAmount.ToAmount();
@@ -486,13 +476,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             item.UnitCost = invCost.UnitCost;
             item.AvgCost = invCost.AvgCost;
             item.LotCost = invCost.AvgCost;
-            if (!item.Costable)
+            if (item.Costable)
             {
                 item.UnitCost = 0;
                 item.AvgCost = 0;
                 item.LotCost = 0;
             }
-            else if (!item.IsProfit)
+            else if (item.IsProfit)
             {
                 item.UnitCost = item.ExtAmount;
                 item.AvgCost = item.ExtAmount;

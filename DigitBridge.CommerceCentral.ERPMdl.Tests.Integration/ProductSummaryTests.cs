@@ -76,8 +76,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             payload.ProfileNum = 10001;
             payload.Filters = new SummaryInquiryFilter
             {
-                DateFrom = new DateTime(DateTime.Today.Year, 1, 1),
-                DateTo = DateTime.Today
+                DateFrom = new DateTime(DateTime.UtcNow.Date.Year, 1, 1),
+                DateTo = DateTime.UtcNow.Date
             };
 
             var qry = new ProductSummaryQuery();

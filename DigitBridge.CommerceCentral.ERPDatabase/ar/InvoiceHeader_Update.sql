@@ -72,3 +72,10 @@ CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_CustomerName] ON [dbo].[InvoiceHeade
 	[CustomerName] ASC
 ) 
 GO
+
+
+-- 11/19/2021 By jerry
+IF COL_LENGTH('InvoiceHeader', 'ChannelAmount') IS NULL					
+BEGIN					
+    ALTER TABLE InvoiceHeader ADD [ChannelAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END	 

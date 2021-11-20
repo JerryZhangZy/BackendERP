@@ -127,8 +127,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var key = header.MasterAccountNum + "_" + header.ProfileNum + '_' + customerCode;
             return data.GetCache(key, () =>
             {
-                customerService.GetByNumber(header.MasterAccountNum, header.ProfileNum, customerCode);
-                return customerService.Data;
+                if (customerService.GetByNumber(header.MasterAccountNum, header.ProfileNum, customerCode))
+                    return customerService.Data;
+                return null;
             });
         }
 
@@ -137,7 +138,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null)
                 return false;
 
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var sum = data.MiscInvoiceHeader;
 
             if (sum.MiscInvoiceTime.IsZero()) sum.MiscInvoiceTime = now.TimeOfDay;
@@ -308,7 +309,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     continue;
                 SetDefault(item, data, processingMode);
                 CalculateDetail(item, data, processingMode);
-                if (item.IsAr)
+                if (!item.IsAr)
                 {
                     sum.SubTotalAmount += item.ExtAmount;
                     sum.TaxableAmount += item.TaxableAmount;

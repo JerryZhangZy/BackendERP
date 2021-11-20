@@ -186,7 +186,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             foreach (var applyInvoice in payload.ApplyInvoices)
             {
                 //var transaction = GenerateTransactionByInvoice(payload, applyInvoice.InvoiceUuid);
-                var transaction = payload.InvoiceTransactions.Single(t => t.InvoiceTransaction.TransUuid == applyInvoice.TransUuid);
+                var transaction = payload.InvoiceTransactions.Single(t => t.InvoiceTransaction.InvoiceUuid == applyInvoice.InvoiceUuid);
                 transaction.InvoiceTransaction.MasterAccountNum = payload.MasterAccountNum;
                 transaction.InvoiceTransaction.ProfileNum = payload.ProfileNum;
                 if (!await base.AddAsync(transaction))
@@ -507,27 +507,56 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return payload.Success;
         }
 
-        public async virtual Task<bool> UpdateInvoicePayments(InvoicePaymentPayload payload)
+        public async virtual Task<bool> UpdateInvoicePayments(string checkNumOrAuthcode, InvoicePaymentPayload payload)
         {
+            if (string.IsNullOrEmpty(checkNumOrAuthcode))
+                return false;
+
+            var mapper = DtoMapper as InvoiceTransactionDataDtoMapperDefault;
+
             NewData();
-            string checkNumOrAuthCode = payload.InvoiceTransaction.InvoiceTransaction.CheckNum ?? payload.InvoiceTransaction.InvoiceTransaction.AuthCode;
-            var transList = await Data.InvoiceTransaction.GetTransactionsByCheckNumOrAuthCode(payload.MasterAccountNum, payload.ProfileNum, checkNumOrAuthCode);
-            var applyInvoiceDictionary = payload.ApplyInvoices.ToDictionary(a => a.TransUuid);
-            foreach (var t in transList)
+            var invoiceTransactions = await Data.InvoiceTransaction.GetTransactionsByCheckNumOrAuthCode(payload.MasterAccountNum, payload.ProfileNum, checkNumOrAuthcode);
+            List<InvoiceTransactionDataDto> respTransList = new List<InvoiceTransactionDataDto>();
+            payload.Success = false;
+
+            foreach (var applyInvoice in payload.ApplyInvoices)
             {
-                var applyInvoice = applyInvoiceDictionary[t.TransUuid];
-                var updatePayload = GetPayload(t, applyInvoice);
+                InvoiceTransactionDto invoiceTransactionDto = new InvoiceTransactionDto();
+                var trans = invoiceTransactions.SingleOrDefault(t => t.InvoiceUuid == applyInvoice.InvoiceUuid);
+                if (trans == null)
+                    continue;
+
+                var invoiceHeadDto = await GetInvoiceHeaderAsync(payload.MasterAccountNum, payload.ProfileNum, trans.InvoiceNumber);
+                trans.TotalAmount = applyInvoice.PaidAmount;
+                mapper.WriteInvoiceTransaction(trans, invoiceTransactionDto);
+                var invoiceTransactionDataDto = new InvoiceTransactionDataDto
+                {
+                    InvoiceTransaction = invoiceTransactionDto
+                };
+                var updatePayload = new InvoicePaymentPayload
+                {
+                    DatabaseNum = payload.DatabaseNum,
+                    MasterAccountNum = payload.MasterAccountNum,
+                    ProfileNum = payload.ProfileNum,
+                    InvoiceTransaction = invoiceTransactionDataDto
+                };
+
                 if (await base.UpdateAsync(updatePayload))
                 {
                     this.AddActivityLogForCurrentData();
                     var invoiceTransaction = Data.InvoiceTransaction;
                     if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
-                        payload.Success = payload.Success && await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, invoiceTransaction.OriginalPaidAmount);
-                    if (payload.Success)
-                        if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
-                        {
-                            payload.Success = payload.Success && await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
-                        }
+                        payload.Success = payload.Success && 
+                            await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, invoiceTransaction.OriginalPaidAmount);
+                    if (payload.Success && Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+                        payload.Success = payload.Success && 
+                            await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
+
+                    mapper.WriteInvoiceTransaction(Data.InvoiceTransaction, invoiceTransactionDto);
+                    respTransList.Add(new InvoiceTransactionDataDto { 
+                        InvoiceTransaction = invoiceTransactionDto,
+                        InvoiceDataDto = new InvoiceDataDto { InvoiceHeader = invoiceHeadDto }
+                    });
                 }
                 else
                 {
@@ -537,8 +566,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     continue;
                 }
 
+                //update payment success. then pay invoice.
+                var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
+                if (!success)
+                {
+                    payload.Success = false;
+                    applyInvoice.Success = false;
+                    AddError($"{applyInvoice.InvoiceNumber} is not applied.");
+                }
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
+                applyInvoice.TransRowNum = Data.InvoiceTransaction.RowNum;
+                applyInvoice.Success = success;
+                payload.InvoiceHeaders.Add(invoiceHeadDto);
             }
+            payload.InvoiceTransactions = respTransList;
 
             return payload.Success;
         }

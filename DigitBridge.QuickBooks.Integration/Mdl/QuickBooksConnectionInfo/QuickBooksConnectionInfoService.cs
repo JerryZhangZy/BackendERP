@@ -105,7 +105,7 @@ namespace DigitBridge.QuickBooks.Integration
                     ProfileNum = payload.ProfileNum,
                     ClientId = MyAppSetting.AppClientId,
                     ClientSecret = MyAppSetting.AppClientSecret,
-                    EnterDate=DateTime.Now,
+                    EnterDate=DateTime.UtcNow,
                     RequestState = state,
                     ConnectionUuid = Guid.NewGuid().ToString()
                 };

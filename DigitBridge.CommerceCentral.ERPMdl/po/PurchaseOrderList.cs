@@ -77,7 +77,14 @@ SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 0 THEN 1 ELSE
 SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 1 THEN 1 ELSE 0 END) as openCount,
 SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 2 THEN 1 ELSE 0 END) as shippedCount,
 SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 3 THEN 1 ELSE 0 END) as closedCount,
-SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 4 THEN 1 ELSE 0 END) as cancelledCount
+SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 255 THEN 1 ELSE 0 END) as cancelledCount,
+SUM(COALESCE({PoHeaderHelper.TableAllies}.TotalAmount, 0)) AS totalAmount,
+SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 0 THEN {PoHeaderHelper.TableAllies}.TotalAmount ELSE 0 END) as newAmount,
+SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 1 THEN {PoHeaderHelper.TableAllies}.TotalAmount ELSE 0 END) as openAmount,
+SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 2 THEN {PoHeaderHelper.TableAllies}.TotalAmount ELSE 0 END) as shippedAmount,
+SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 3 THEN {PoHeaderHelper.TableAllies}.TotalAmount ELSE 0 END) as closedAmount,
+SUM(CASE WHEN COALESCE({PoHeaderHelper.TableAllies}.PoStatus, 0) = 255 THEN {PoHeaderHelper.TableAllies}.TotalAmount ELSE 0 END) as cancelledAmount
+
 ";
             return this.SQL_SelectSummary;
         }

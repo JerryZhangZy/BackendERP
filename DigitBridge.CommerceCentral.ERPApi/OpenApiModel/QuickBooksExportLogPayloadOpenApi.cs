@@ -145,8 +145,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             #region faker data rules
             return new Faker<QuickBooksExportLogFilter>()
-                .RuleFor(u => u.LogDateFrom, f => DateTime.Today.AddMonths(-1).ToString("yyyy-MM-dd"))
-                .RuleFor(u => u.LogDateTo, f => DateTime.Today.ToString("yyyy-MM-dd"))
+                .RuleFor(u => u.LogDateFrom, f => DateTime.UtcNow.Date.AddMonths(-1).ToString("yyyy-MM-dd"))
+                .RuleFor(u => u.LogDateTo, f => DateTime.UtcNow.Date.ToString("yyyy-MM-dd"))
                 .RuleFor(u => u.LogType, f => "")
                 .RuleFor(u => u.LogStatus, f => "")
                 ;

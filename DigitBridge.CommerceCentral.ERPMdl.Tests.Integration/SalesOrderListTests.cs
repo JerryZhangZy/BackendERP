@@ -128,7 +128,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             qry.SetSecurityParameter(1, 1);
             qry.OrderDateFrom.Enable = false;
             qry.OrderDateTo.Enable = false;
-            //qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
+            //qry.SetFilterValue("OrderDateFrom", DateTime.UtcNow.Date.AddDays(-30));
             //qry.OrderNumberFrom.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
             //qry.OrderNumberTo.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
             //qry.OrderStatus.MultipleFilterValueString = "11,18,86";
@@ -173,7 +173,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             // var qry = new SalesOrderQuery();
             // var srv = new SalesOrderList(dataBaseFactory, qry);
             // srv.LoadRequestParameter(payload);
-            // //qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
+            // //qry.SetFilterValue("OrderDateFrom", DateTime.UtcNow.Date.AddDays(-30));
             // //qry.OrderNumberFrom.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
             // //qry.OrderNumberTo.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
             // //qry.OrderStatus.MultipleFilterValueString = "11,18,86";
@@ -238,7 +238,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             qry.SetSecurityParameter(1, 1);
             qry.OrderDateFrom.Enable = false;
             qry.OrderDateTo.Enable = false;
-            //qry.SetFilterValue("OrderDateFrom", DateTime.Today.AddDays(-30));
+            //qry.SetFilterValue("OrderDateFrom", DateTime.UtcNow.Date.AddDays(-30));
             //qry.OrderNumberFrom.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
             //qry.OrderNumberTo.FilterValue = "j5rjyh5s54kaoji12g9hynwn5f6y3hgn7ep61zw7oy60ilwb2p";
             //qry.OrderStatus.MultipleFilterValueString = "11,18,86";

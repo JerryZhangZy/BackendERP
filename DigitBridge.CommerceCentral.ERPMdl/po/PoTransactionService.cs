@@ -352,7 +352,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string poNum, int transNum)
         {
             List();
-            var success = await base.GetByNumberAsync(masterAccountNum, profileNum, poNum + "_" + transNum);
+            var success = await base.GetByNumberAsync(masterAccountNum, profileNum, transNum.ToString());
             LoadPurchaseOrderData(poNum, profileNum, masterAccountNum);
             return success;
         }
@@ -488,8 +488,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     Notes = item.Notes,
                     Price = item.Price,
                     ItemType = item.PoItemType,
-                    TaxRate = item.TaxRate
+                    TaxRate = item.TaxRate 
                 };
+                
                 poTransactionItems.Add(poTransactionItem);
             }
             Data.PoTransactionItems = poTransactionItems;

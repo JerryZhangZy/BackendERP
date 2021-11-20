@@ -206,7 +206,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
-        protected virtual bool Add(InvoiceTransactionDataDto dto)
+        public virtual bool Add(InvoiceTransactionDataDto dto)
         {
             if (dto is null)
             {
@@ -253,7 +253,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Add new data from Dto object
         /// </summary>
-        protected virtual async Task<bool> AddAsync(InvoiceTransactionDataDto dto)
+        public virtual async Task<bool> AddAsync(InvoiceTransactionDataDto dto)
         {
             if (dto is null)
             {
@@ -297,7 +297,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        protected virtual bool Add(InvoiceTransactionPayload payload)
+        public virtual bool Add(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
             {
@@ -347,7 +347,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        protected virtual async Task<bool> AddAsync(InvoiceTransactionPayload payload)
+        public virtual async Task<bool> AddAsync(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
             {
@@ -405,7 +405,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        protected virtual bool Update(InvoiceTransactionDataDto dto)
+        public virtual bool Update(InvoiceTransactionDataDto dto)
         {
             if (dto is null || !dto.HasInvoiceTransaction)
             {
@@ -461,7 +461,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        protected virtual async Task<bool> UpdateAsync(InvoiceTransactionDataDto dto)
+        public virtual async Task<bool> UpdateAsync(InvoiceTransactionDataDto dto)
         {
             if (dto is null || !dto.HasInvoiceTransaction)
             {
@@ -520,7 +520,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Payload object.
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        protected virtual bool Update(InvoiceTransactionPayload payload)
+        public virtual bool Update(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction || payload.InvoiceTransaction.InvoiceTransaction.RowNum.ToLong() <= 0)
             {
@@ -580,7 +580,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Update data from Dto object
         /// This processing will load data by RowNum of Dto, and then use change data by Dto.
         /// </summary>
-        protected virtual async Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
+        public virtual async Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
         {
             if (payload is null || !payload.HasInvoiceTransaction)
             {
@@ -711,7 +711,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        protected virtual async Task<bool> DeleteByNumberAsync(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
+        public virtual async Task<bool> DeleteByNumberAsync(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
         {
             //set delete mode
             Delete();
@@ -726,7 +726,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        protected virtual bool DeleteByNumber(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
+        public virtual bool DeleteByNumber(InvoiceTransactionPayload payload, string invoiceNumber, TransTypeEnum transType, int transNum)
         {
             if (string.IsNullOrEmpty(invoiceNumber))
                 return false;

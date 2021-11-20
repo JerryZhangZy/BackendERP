@@ -1,4 +1,3 @@
-
               
     
 
@@ -90,6 +89,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasInvoiceNumber => InvoiceNumber != null;
 
 		/// <summary>
+		/// Readable QboDocNumber, when push record to quickbook update number. <br> when push record to quickbook update number.
+		/// </summary>
+		[OpenApiPropertyDescription("Readable QboDocNumber, when push record to quickbook update number. <br> when push record to quickbook update number.")]
+        [StringLength(50, ErrorMessage = "The QboDocNumber value cannot exceed 50 characters. ")]
+        public string QboDocNumber { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasQboDocNumber => QboDocNumber != null;
+
+		/// <summary>
 		/// Link to Order uuid. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("Link to Order uuid. <br> Display: false, Editable: false.")]
@@ -167,7 +176,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBillDate => BillDate != null;
 
-        /// <summary>
+		/// <summary>
 		/// Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true
 		/// </summary>
 		[OpenApiPropertyDescription("Estimated vendor ship date. <br> Title: Ship Date, Display: true, Editable: true")]
@@ -177,10 +186,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasShipDate => ShipDate != null;
 
-        /// <summary>
-        /// Customer uuid, load from customer data. <br> Display: false, Editable: false
-        /// </summary>
-        [OpenApiPropertyDescription("Customer uuid, load from customer data. <br> Display: false, Editable: false")]
+		/// <summary>
+		/// Customer uuid, load from customer data. <br> Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Customer uuid, load from customer data. <br> Display: false, Editable: false")]
         [StringLength(50, ErrorMessage = "The CustomerUuid value cannot exceed 50 characters. ")]
         public string CustomerUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -361,6 +370,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasChargeAndAllowanceAmount => ChargeAndAllowanceAmount != null;
+
+		/// <summary>
+		/// (Readonly) Amount from Channel Order. <br> Display: false, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Amount from Channel Order. <br> Display: false, Editable: false")]
+        public decimal? ChannelAmount { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasChannelAmount => ChannelAmount != null;
 
 		/// <summary>
 		/// Total Paid amount. <br> Display: true, Editable: false

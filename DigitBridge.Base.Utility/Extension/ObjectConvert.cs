@@ -12,6 +12,8 @@ namespace DigitBridge.Base.Utility
     /// </summary>
     public class ObjectConvert
     {
+        public static DateTime SystemMinDatatime = new DateTime(1800, 12, 28);
+
         public static DateTime MinDatatime = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
         public static DateTime MaxDatatime = (DateTime)System.Data.SqlTypes.SqlDateTime.MaxValue;
 
@@ -613,8 +615,8 @@ namespace DigitBridge.Base.Utility
         public static TimeSpan ToTimeSpan(this object input) => (input is null) ? ObjectConvert.MinTime : ((DateTime)input).TimeOfDay;
         public static TimeSpan ToTimeSpan(this DateTime? input) => (input is null) ? ObjectConvert.MinTime : ((DateTime)input).TimeOfDay;
         public static TimeSpan ToTimeSpan(this TimeSpan? input) => (input is null) ? ObjectConvert.MinTime : (TimeSpan)input;
-        public static DateTime ToDateTime(this TimeSpan? input) => (input is null) ? DateTime.Today : DateTime.Today + (TimeSpan)input;
-        public static DateTime ToDateTime(this TimeSpan input) => DateTime.Today + input;
+        public static DateTime ToDateTime(this TimeSpan? input) => (input is null) ? DateTime.UtcNow.Date : DateTime.UtcNow.Date + (TimeSpan)input;
+        public static DateTime ToDateTime(this TimeSpan input) => DateTime.UtcNow.Date + input;
 
         public static int ToInt(this int? input) => (input is null) ? default(int) : (int)input;
         public static int ToInt(this string input) =>
@@ -685,7 +687,7 @@ namespace DigitBridge.Base.Utility
 
         public static bool IsZero(this string input) => string.IsNullOrEmpty(input);
 
-        public static bool IsZero(this DateTime input) => input <= ObjectConvert.MinDatatime;
+        public static bool IsZero(this DateTime input) => input <= ObjectConvert.SystemMinDatatime;
         public static bool IsZero(this DateTime? input) => (input is null) ? true : input.ToDateTime().IsZero();
 
         public static bool IsZero(this TimeSpan input) => input < ObjectConvert.MinTime || input > ObjectConvert.MaxTime;

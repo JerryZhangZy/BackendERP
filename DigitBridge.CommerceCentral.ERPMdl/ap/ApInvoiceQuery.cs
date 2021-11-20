@@ -143,14 +143,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public override void InitQueryFilter()
         {
-            _ApInvoiceDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            _ApInvoiceDateTo.FilterValue = DateTime.Today;
+            _ApInvoiceDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
+            _ApInvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
 
-            //_VendorInvoiceDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            //_VendorInvoiceDateTo.FilterValue = DateTime.Today;
+            //_VendorInvoiceDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
+            //_VendorInvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
 
-            //_DueDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            //_DueDateTo.FilterValue = DateTime.Today;
+            //_DueDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
+            //_DueDateTo.FilterValue = DateTime.UtcNow.Date;
 
         }
 
@@ -162,8 +162,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             _ApInvoiceStatus.FilterValue = (int)InvoiceStatusEnum.Outstanding;
 
-            _ApInvoiceDateFrom.FilterValue = DateTime.Today.AddYears(-5);//TODO. this is a tmp begin date. make sure this logic.
-            _ApInvoiceDateTo.FilterValue = DateTime.Today;
+            _ApInvoiceDateFrom.FilterValue = DateTime.UtcNow.Date.AddYears(-5);//TODO. this is a tmp begin date. make sure this logic.
+            _ApInvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
         }
     }
 

@@ -257,7 +257,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return (false, "");
             }
 
-            return await CreateInvoiceFromShipmentAsync(service.Data);
+            (bool ret, string msg) = await CreateInvoiceFromShipmentAsync(service.Data);
+            if (ret)
+            {
+                await service.MarkShipmentTransferredToInvoiceAsync(orderShimentUuid);
+            }
+            return (ret, msg);
         }
         #endregion
 
@@ -269,7 +274,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns>Success Create Invoice, Invoice UUID</returns>
         public async Task<(bool, string)> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData, string salesOrderUuid = null)
         {
-            var mainTrackingNumber = shipmentData.OrderShipmentHeader.MainTrackingNumber;
+            var orderShipmentUuid = shipmentData.OrderShipmentHeader.OrderShipmentUuid;
 
             if (salesOrderUuid.IsZero())
             {
@@ -284,14 +289,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (salesOrderUuid.IsZero())
             {
-                AddError($"SalesOrder not found for OrderShipment.");
+                AddError($"SalesOrder not found for OrderShipment. OrderShipmentUuid:{orderShipmentUuid}");
                 return (false, null);
             }
 
             if (await ExistSalesOrderInInvoiceAsync(salesOrderUuid))
             {
-                AddError($"SalesOrderUuid {salesOrderUuid} has been transferred to invoice.");
-                return (false, null);
+                AddError($"SalesOrderUuid {salesOrderUuid} has been transferred to invoice. OrderShipmentUuid:{orderShipmentUuid}");
+                return (true, "");
             }
 
             var salesorderService = new SalesOrderService(dbFactory);

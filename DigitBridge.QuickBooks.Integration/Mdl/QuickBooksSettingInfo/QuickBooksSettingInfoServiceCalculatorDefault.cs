@@ -114,8 +114,8 @@ namespace DigitBridge.QuickBooks.Integration
             //TODO: add set default summary data logic
             /* This is generated sample code
             var sum = data.QuickBooksSettingInfo;
-            if (sum.InvoiceDate.IsZero()) sum.InvoiceDate = DateTime.Today;
-            if (sum.InvoiceTime.IsZero()) sum.InvoiceTime = DateTime.Now.TimeOfDay;
+            if (sum.InvoiceDate.IsZero()) sum.InvoiceDate = DateTime.UtcNow.Date;
+            if (sum.InvoiceTime.IsZero()) sum.InvoiceTime = DateTime.UtcNow.TimeOfDay;
 
             //UpdateDateUtc
             //EnterBy
@@ -258,7 +258,7 @@ namespace DigitBridge.QuickBooks.Integration
                     continue;
                 SetDefault(item, data, processingMode);
                 CalculateDetail(item, data, processingMode);
-                if (item.IsAr)
+                if (!item.IsAr)
                 {
                     sum.SubTotalAmount += item.ExtAmount;
                     sum.TaxableAmount += item.TaxableAmount;

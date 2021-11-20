@@ -42,6 +42,7 @@
 	[MiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Invoice handling charge. <br> Title: Handling, Display: true, Editable: true 
 	[MiscTaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Readonly) tax amount for handling charge. <br> Title: Handling Tax, Display: true, Editable: false
 	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Invoice other Charg and Allowance Amount. Positive is charge, Negative is Allowance. <br> Title: Charge&Allowance, Display: true, Editable: true
+	[ChannelAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Readonly) Amount from Channel Order. <br> Display: false, Editable: false
 
 	[PaidAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Paid amount. <br> Display: true, Editable: false
 	[CreditAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Credit amount. <br> Display: true, Editable: false

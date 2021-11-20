@@ -41,7 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        private DateTime now = DateTime.Now;
+        private DateTime now = DateTime.UtcNow;
 
         #region Service Property
 
@@ -77,8 +77,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var key = data.InvoiceTransaction.MasterAccountNum + "_" + data.InvoiceTransaction.ProfileNum + '_' + sku;
             return data.GetCache(key, () =>
             {
-                inventoryService.GetByNumber(data.InvoiceTransaction.MasterAccountNum, data.InvoiceTransaction.ProfileNum, sku);
-                return inventoryService.Data;
+                if (inventoryService.GetByNumber(data.InvoiceTransaction.MasterAccountNum, data.InvoiceTransaction.ProfileNum, sku))
+                    return inventoryService.Data;
+                return null;
             });
         }
 
@@ -87,8 +88,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var key = data.InvoiceTransaction.MasterAccountNum + "_" + data.InvoiceTransaction.ProfileNum + '_' + invoiceNumber;
             return data.GetCache(key, () =>
             {
-                invoiceService.GetByNumber(data.InvoiceTransaction.MasterAccountNum, data.InvoiceTransaction.ProfileNum, invoiceNumber);
-                return invoiceService.Data;
+                if (invoiceService.GetByNumber(data.InvoiceTransaction.MasterAccountNum, data.InvoiceTransaction.ProfileNum, invoiceNumber))
+                    return invoiceService.Data;
+                return null;
             });
         }
 
@@ -103,8 +105,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var key = data.InvoiceTransaction.MasterAccountNum + "_" + data.InvoiceTransaction.ProfileNum + '_' + customerCode;
             return data.GetCache(key, () =>
             {
-                customerService.GetByNumber(data.InvoiceTransaction.MasterAccountNum, data.InvoiceTransaction.ProfileNum, customerCode);
-                return customerService.Data;
+                if (customerService.GetByNumber(data.InvoiceTransaction.MasterAccountNum, data.InvoiceTransaction.ProfileNum, customerCode))
+                    return customerService.Data;
+                return null;
             });
         }
         #endregion
@@ -329,7 +332,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 //var inv = GetInventoryData(data,item.ProductUuid);
 
                 CalculateDetail(item, data, processingMode);
-                if (item.IsAr)
+                if (!item.IsAr)
                 {
                     sum.SubTotalAmount += item.ExtAmount;
                     sum.TaxableAmount += item.TaxableAmount;

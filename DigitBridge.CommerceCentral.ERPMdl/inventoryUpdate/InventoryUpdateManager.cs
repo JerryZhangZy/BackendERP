@@ -20,7 +20,6 @@ using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
 using DigitBridge.CommerceCentral.ERPDb.inventorySync.dto;
 using DigitBridge.CommerceCentral.ERPDb.inventorySync;
-using DigitBridge.Base.Utility.Model;
 using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl

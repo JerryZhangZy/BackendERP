@@ -1,4 +1,3 @@
-
               
     
 
@@ -30,13 +29,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class InvoiceTransactionDto
     {
         public long? RowNum { get; set; }
+        [JsonIgnore,XmlIgnore]
         public string UniqueId { get; set; }
+        [JsonIgnore,XmlIgnore]
         public DateTime? EnterDateUtc { get; set; }
+        [JsonIgnore,XmlIgnore]
         public Guid DigitBridgeGuid { get; set; }
 
         #region Properties - Generated 
 
-        /// <summary>
+		/// <summary>
         /// (Readonly) Login user account. <br> Display: false, Editable: false.
         /// </summary>
         [OpenApiPropertyDescription("(Readonly) Login user account. <br> Display: false, Editable: false.")]
@@ -47,9 +49,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasCustomerCode => CustomerCode != null;
 
         /// <summary>
-        /// (Readonly) Database Number. <br> Display: false, Editable: false.
-        /// </summary>
-        [OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
+		/// (Readonly) Database Number. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("(Readonly) Database Number. <br> Display: false, Editable: false.")]
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         public int? DatabaseNum { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
@@ -81,7 +83,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// </summary>
 		[OpenApiPropertyDescription("Invoice Transaction uuid. <br> Display: false, Editable: false.")]
         [StringLength(50, ErrorMessage = "The TransUuid value cannot exceed 50 characters. ")]
-        [JsonIgnore, XmlIgnore, IgnoreCompare]
         public string TransUuid { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
@@ -115,6 +116,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasInvoiceNumber => InvoiceNumber != null;
+
+		/// <summary>
+		/// Group Payment uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Group Payment uuid. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The PaymentUuid value cannot exceed 50 characters. ")]
+        public string PaymentUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasPaymentUuid => PaymentUuid != null;
+
+		/// <summary>
+		/// Group Payment readable Number. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Group Payment readable Number. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The PaymentNumber value cannot exceed 50 characters. ")]
+        public string PaymentNumber { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasPaymentNumber => PaymentNumber != null;
 
 		/// <summary>
 		/// Transaction type, payment, return. <br> Title: Type, Display: true, Editable: true

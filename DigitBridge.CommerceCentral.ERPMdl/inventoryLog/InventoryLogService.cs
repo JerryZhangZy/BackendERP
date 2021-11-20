@@ -608,8 +608,8 @@ where inv.InventoryUuid=il.InventoryUuid
                     BatchNum = batchNum,
                     LogNumber = header.BatchNumber,
                     LogItemUuid = item.InventoryUpdateItemsUuid,
-                    LogDate = DateTime.Today,
-                    LogTime = DateTime.Now.TimeOfDay,
+                    LogDate = DateTime.UtcNow.Date,
+                    LogTime = DateTime.UtcNow.TimeOfDay,
                     LogBy = "InventoryUpdate",
                     SKU = item.SKU,
                     Description = item.Description,
@@ -689,7 +689,7 @@ where inv.InventoryUuid=il.InventoryUuid
             var list = new List<InventoryLog>();
             foreach (var item in detailItems)
             {
-                if (item.Stockable)
+                if (!item.Stockable)
                 {
                     if (item.StockQty > 0)
                     {
@@ -706,8 +706,8 @@ where inv.InventoryUuid=il.InventoryUuid
                             BatchNum = batchNum,
                             LogNumber = header.InvoiceNumber,
                             LogItemUuid = item.InvoiceItemsUuid,
-                            LogDate = DateTime.Today,
-                            LogTime = DateTime.Now.TimeOfDay,
+                            LogDate = DateTime.UtcNow.Date,
+                            LogTime = DateTime.UtcNow.TimeOfDay,
                             LogBy = "InvoiceReturn",
                             LogType = InventoyLogType.InvoiceReturn.ToString(),
                             SKU = item.SKU,
@@ -749,8 +749,8 @@ where inv.InventoryUuid=il.InventoryUuid
                             BatchNum = batchNum,
                             LogNumber = header.InvoiceNumber,
                             LogItemUuid = item.InvoiceItemsUuid,
-                            LogDate = DateTime.Today,
-                            LogTime = DateTime.Now.TimeOfDay,
+                            LogDate = DateTime.UtcNow.Date,
+                            LogTime = DateTime.UtcNow.TimeOfDay,
                             LogBy = "InvoiceReturn",
                             LogType = InventoyLogType.InvoiceReturn.ToString(),
                             SKU = item.SKU,
@@ -811,8 +811,8 @@ where inv.InventoryUuid=il.InventoryUuid
             if (data == null || data.PoTransaction == null)
                 return false;
             var header = data.PoTransaction;
-            if(header.TransStatus!=(int)PoTransStatus.StockReceive&&header.TransStatus!=(int)PoTransStatus.APReceive)
-                return false;
+            //if(header.TransStatus!=(int)PoTransStatus.StockReceive&&header.TransStatus!=(int)PoTransStatus.APReceive)
+            //    return false;
             var logUuid = data.PoTransaction.PoUuid;
             await ClearInventoryLogByLogUuidAsync(logUuid);
             //if remove all items or delete inventoryupdate
@@ -834,7 +834,7 @@ where inv.InventoryUuid=il.InventoryUuid
             var list = new List<InventoryLog>();
             foreach (var item in detailItems)
             {
-                if (item.Stockable)
+                if (!item.Stockable)
                 {
                     if (item.TransQty > 0)
                     {
@@ -851,8 +851,8 @@ where inv.InventoryUuid=il.InventoryUuid
                             BatchNum = batchNum,
                             LogNumber = header.PoNum,
                             LogItemUuid = item.PoItemUuid,
-                            LogDate = DateTime.Today,
-                            LogTime = DateTime.Now.TimeOfDay,
+                            LogDate = DateTime.UtcNow.Date,
+                            LogTime = DateTime.UtcNow.TimeOfDay,
                             LogBy = "PoReceive",
                             LogType = InventoyLogType.POReceive.ToString(),
                             SKU = item.SKU,
@@ -997,8 +997,8 @@ where inv.InventoryUuid=il.InventoryUuid
                         BatchNum = batchNum,
                         LogNumber = header.OrderShipmentUuid,
                         LogItemUuid =item.OrderShipmentShippedItemUuid,
-                        LogDate = DateTime.Today,
-                        LogTime = DateTime.Now.TimeOfDay,
+                        LogDate = DateTime.UtcNow.Date,
+                        LogTime = DateTime.UtcNow.TimeOfDay,
                         LogBy = "Shipments",
                         LogType = InventoyLogType.Shipment.ToString(),
                         LogQty = -item.ShippedQty,
@@ -1096,8 +1096,8 @@ where inv.InventoryUuid=il.InventoryUuid
                     BatchNum = batchNum,
                     LogNumber = header.BatchNumber,
                     LogItemUuid = $"From_{item.WarehouseTransferItemsUuid}",
-                    LogDate = DateTime.Today,
-                    LogTime = DateTime.Now.TimeOfDay,
+                    LogDate = DateTime.UtcNow.Date,
+                    LogTime = DateTime.UtcNow.TimeOfDay,
                     LogBy = "WarehouseTransfer",
                     LogType = InventoyLogType.FromWarehouse.ToString(),
                     SKU = item.SKU,
@@ -1125,8 +1125,8 @@ where inv.InventoryUuid=il.InventoryUuid
                     BatchNum = batchNum,
                     LogNumber = header.BatchNumber,
                     LogItemUuid = $"To_{item.WarehouseTransferItemsUuid}",
-                    LogDate = DateTime.Today,
-                    LogTime = DateTime.Now.TimeOfDay,
+                    LogDate = DateTime.UtcNow.Date,
+                    LogTime = DateTime.UtcNow.TimeOfDay,
                     LogBy = "",
                     SKU = item.SKU,
                     Description = item.Description,

@@ -312,7 +312,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // set Add mode and clear data
             Add();
-            data.ActivityLog.LogDate = DateTime.Now;
+            data.ActivityLog.LogDate = DateTime.UtcNow;
             data.ActivityLog.LogUuid = Guid.NewGuid().ToString();
             this.AttachData(data);
             var rtn = await SaveDataAsync();
@@ -331,7 +331,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // set Add mode and clear data
             Add();
-            data.ActivityLog.LogDate = DateTime.Now;
+            data.ActivityLog.LogDate = DateTime.UtcNow;
             data.ActivityLog.LogUuid = Guid.NewGuid().ToString();
             this.AttachData(data);
             return SaveData();
@@ -399,11 +399,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     ProcessUuid = log.ProcessUuid,
                     ProcessData = string.Empty,
                     ActionStatusEnum = EventProcessActionStatusEnum.Pending,
-                    ActionDate = DateTime.Now,
+                    ActionDate = DateTime.UtcNow,
                     ProcessStatusEnum = EventProcessProcessStatusEnum.Pending,
-                    //ProcessDate = DateTime.Now,
+                    //ProcessDate = DateTime.UtcNow,
                     CloseStatusEnum = EventCloseStatusEnum.Open,
-                    //CloseDate = DateTime.Now,
+                    //CloseDate = DateTime.UtcNow,
                     EventMessage = string.Empty
                 });
             }

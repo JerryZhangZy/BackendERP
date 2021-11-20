@@ -348,7 +348,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (this.Data.EventProcessERP.ProcessStatusEnum == EventProcessProcessStatusEnum.Pending)
                     {
                         this.Data.EventProcessERP.ActionStatusEnum = EventProcessActionStatusEnum.Pending;
-                        this.Data.EventProcessERP.LastUpdateDate = DateTime.Now;
+                        this.Data.EventProcessERP.LastUpdateDate = DateTime.UtcNow;
                         return await SaveDataAsync();
                     }
                 }
@@ -356,7 +356,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             Add();
             this.AttachData(data);
-            this.Data.EventProcessERP.LastUpdateDate = DateTime.Now;
+            this.Data.EventProcessERP.LastUpdateDate = DateTime.UtcNow;
             this.Data.EventProcessERP.EventUuid = Guid.NewGuid().ToString();
             return await SaveDataAsync();
         }
@@ -382,14 +382,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (data.EventProcessERP.ProcessStatusEnum == EventProcessProcessStatusEnum.Pending)
                     {
                         data.EventProcessERP.ActionStatusEnum = EventProcessActionStatusEnum.Pending;
-                        data.EventProcessERP.LastUpdateDate = DateTime.Now;
+                        data.EventProcessERP.LastUpdateDate = DateTime.UtcNow;
                         return SaveData();
                     }
                 }
             }
 
             Add();
-            data.EventProcessERP.LastUpdateDate = DateTime.Now;
+            data.EventProcessERP.LastUpdateDate = DateTime.UtcNow;
             data.EventProcessERP.EventUuid = Guid.NewGuid().ToString();
             this.AttachData(data);
             return SaveData();
@@ -458,13 +458,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (this.Data.EventProcessERP.ActionStatus == (int)EventProcessActionStatusEnum.Pending)
                 {
                     this.Data.EventProcessERP.ActionStatus = (int)EventProcessActionStatusEnum.Downloaded;
-                    this.Data.EventProcessERP.ActionDate = DateTime.Now;
+                    this.Data.EventProcessERP.ActionDate = DateTime.UtcNow;
                     AddInfo($"Due to data actionstatus is still pending, Do ack received also. ProcessUuid is :{result.ProcessUuid} ");
                 }
 
 
                 this.Data.EventProcessERP.ProcessStatus = result.ProcessStatus;
-                this.Data.EventProcessERP.ProcessDate = DateTime.Now;
+                this.Data.EventProcessERP.ProcessDate = DateTime.UtcNow;
                 this.Data.EventProcessERP.ProcessData = (result.ProcessData == null) ? string.Empty : result.ProcessData.ToString();
                 await this.SaveDataAsync();
             }

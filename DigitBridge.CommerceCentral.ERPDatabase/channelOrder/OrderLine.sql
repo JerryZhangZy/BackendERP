@@ -40,7 +40,6 @@
     [CentralOrderLineUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))),
     [RowNum]      BIGINT NOT NULL DEFAULT 0, --(Ignore)
     [UnitDueSellerAmount] MONEY NOT NULL DEFAULT 0,
-
     CONSTRAINT [PK_OrderLine] PRIMARY KEY ([CentralOrderLineNum])
 ) ON [PRIMARY]
 GO

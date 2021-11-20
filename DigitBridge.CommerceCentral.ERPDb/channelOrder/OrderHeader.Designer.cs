@@ -467,7 +467,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_userDataRemoveDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_userDataRemoveDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("UserDataRemoveDateUtc", value);
 				}
             }
@@ -563,7 +563,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_originalOrderDateUtc = value.Date.ToSqlSafeValue(); 
+				_originalOrderDateUtc = value.ToSqlSafeValue(); 
 				OnPropertyChanged("OriginalOrderDateUtc", value);
             }
         }
@@ -877,7 +877,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_estimatedShipDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_estimatedShipDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("EstimatedShipDateUtc", value);
 				}
             }
@@ -898,7 +898,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_deliverByDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_deliverByDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("DeliverByDateUtc", value);
 				}
             }
@@ -1045,7 +1045,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_paymentUpdateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_paymentUpdateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("PaymentUpdateUtc", value);
 				}
             }
@@ -1066,7 +1066,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_shippingUpdateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_shippingUpdateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("ShippingUpdateUtc", value);
 				}
             }
@@ -2221,7 +2221,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_orderStatusUpdateDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_orderStatusUpdateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("OrderStatusUpdateDateUtc", value);
 				}
             }
@@ -2284,7 +2284,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_dCAssignmentDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_dCAssignmentDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("DCAssignmentDateUtc", value);
 				}
             }
@@ -2476,6 +2476,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override OrderHeader ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override OrderHeader ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

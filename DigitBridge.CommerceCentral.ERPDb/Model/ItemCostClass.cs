@@ -34,6 +34,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
         public ItemCostClass(Inventory inv) : this()
         {
+            if (inv == null) return;
             ProductUuid = inv.ProductUuid;
             InventoryUuid = inv.InventoryUuid;
 

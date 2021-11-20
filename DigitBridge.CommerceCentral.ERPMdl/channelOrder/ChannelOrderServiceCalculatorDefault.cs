@@ -42,10 +42,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //    return;
             //if (string.IsNullOrEmpty(data.SalesOrderHeader.CustomerUuid))
             //{
-            //    using var trx = new ScopedTransaction(dbFactory);
-            //    data.SalesOrderHeader.CustomerUuid = CustomerServiceHelper.GetCustomerUuidByCustomerCode(
-            //        data.SalesOrderHeader.CustomerCode, data.SalesOrderHeader.MasterAccountNum,
-            //        data.SalesOrderHeader.ProfileNum);
+            //    using(var trx = new ScopedTransaction(dbFactory)){
+            //      data.SalesOrderHeader.CustomerUuid = CustomerServiceHelper.GetCustomerUuidByCustomerCode(
+            //          data.SalesOrderHeader.CustomerCode, data.SalesOrderHeader.MasterAccountNum,
+            //          data.SalesOrderHeader.ProfileNum);
+            //  }
             //}
             //// get customer data
             //GetCustomerData(data,data.SalesOrderHeader.CustomerUuid);
@@ -55,12 +56,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //    var skuList = data.SalesOrderItems
             //        .Where(r => string.IsNullOrEmpty(r.ProductUuid) && !string.IsNullOrEmpty(r.SKU)).Select(r => r.SKU)
             //        .Distinct().ToList();
-            //    using var trx = new ScopedTransaction(dbFactory);
-            //    var list = InventoryServiceHelper.GetKeyInfoBySkus(skuList, data.SalesOrderHeader.MasterAccountNum,
-            //        data.SalesOrderHeader.ProfileNum);
-            //    foreach (var tuple in list)
-            //    {
-            //        data.SalesOrderItems.First(r => r.SKU == tuple.Item3).ProductUuid = tuple.Item2;
+            //    using(var trx = new ScopedTransaction(dbFactory)){
+            //      var list = InventoryServiceHelper.GetKeyInfoBySkus(skuList, data.SalesOrderHeader.MasterAccountNum,
+            //          data.SalesOrderHeader.ProfileNum);
+            //      foreach (var tuple in list)
+            //      {
+            //          data.SalesOrderItems.First(r => r.SKU == tuple.Item3).ProductUuid = tuple.Item2;
+            //      }
             //    }
 
             //    // get inventory data
@@ -111,8 +113,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //TODO: add set default summary data logic
             /* This is generated sample code
             var sum = data.OrderHeader;
-            if (sum.InvoiceDate.IsZero()) sum.InvoiceDate = DateTime.Today;
-            if (sum.InvoiceTime.IsZero()) sum.InvoiceTime = DateTime.Now.TimeOfDay;
+            if (sum.InvoiceDate.IsZero()) sum.InvoiceDate = DateTime.UtcNow.Date;
+            if (sum.InvoiceTime.IsZero()) sum.InvoiceTime = DateTime.UtcNow.TimeOfDay;
 
             //UpdateDateUtc
             //EnterBy
@@ -255,7 +257,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     continue;
                 SetDefault(item, data, processingMode);
                 CalculateDetail(item, data, processingMode);
-                if (item.IsAr)
+                if (!item.IsAr)
                 {
                     sum.SubTotalAmount += item.ExtAmount;
                     sum.TaxableAmount += item.TaxableAmount;

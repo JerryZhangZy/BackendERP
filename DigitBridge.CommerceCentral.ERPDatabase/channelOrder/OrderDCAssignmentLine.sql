@@ -22,11 +22,7 @@
     [CentralOrderLineUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder
     [OrderDCAssignmentUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder
     [OrderDCAssignmentLineUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for CentralOrder
-
- CONSTRAINT [PK_OrderDCAssignmentLine] PRIMARY KEY CLUSTERED 
-(
-	[OrderDCAssignmentLineNum] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+	CONSTRAINT [PK_OrderDCAssignmentLine] PRIMARY KEY CLUSTERED ([OrderDCAssignmentLineNum] ASC)
 ) ON [PRIMARY]
 GO
 

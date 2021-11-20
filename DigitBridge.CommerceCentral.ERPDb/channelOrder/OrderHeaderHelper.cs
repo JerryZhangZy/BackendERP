@@ -1,20 +1,3 @@
-
-
-
-
-//SettingForChannelOrder
-//SettingForCustomer
-//SettingForInventory
-//SettingForInventoryLog
-//SettingForInvoice
-//SettingForInvoiceTransaction
-//SettingForSalesOrder
-//SettingForShipment
-
-              
-
-
-
               
     
 
@@ -151,8 +134,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string DBChannelOrderHeaderRowID(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.DBChannelOrderHeaderRowID) AS {name ?? "DBChannelOrderHeaderRowID".ToCamelCase(camelCase)} ";
         public static string DCAssignmentStatus(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DCAssignmentStatus AS {name ?? "DCAssignmentStatus".ToCamelCase(camelCase)} ";
         public static string DCAssignmentDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DCAssignmentDateUtc AS {name ?? "DCAssignmentDateUtc".ToCamelCase(camelCase)} ";
-        public static string RowNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum".ToCamelCase(camelCase)} ";
         public static string CentralOrderUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.CentralOrderUuid) AS {name ?? "CentralOrderUuid".ToCamelCase(camelCase)} ";
+        public static string RowNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum".ToCamelCase(camelCase)} ";
+        public static string TotalDueSellerAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TotalDueSellerAmount AS {name ?? "TotalDueSellerAmount".ToCamelCase(camelCase)} ";
 
         #endregion - static SQL fileds statement
 
@@ -257,8 +241,9 @@ RTRIM({allies}MerchantShipToAddressType) AS MerchantShipToAddressType,
 RTRIM({allies}DBChannelOrderHeaderRowID) AS DBChannelOrderHeaderRowID,
 {allies}DCAssignmentStatus AS DCAssignmentStatus,
 {allies}DCAssignmentDateUtc AS DCAssignmentDateUtc,
+RTRIM({allies}CentralOrderUuid) AS CentralOrderUuid,
 {allies}RowNum AS RowNum,
-RTRIM({allies}CentralOrderUuid) AS CentralOrderUuid
+{allies}TotalDueSellerAmount AS TotalDueSellerAmount
 ";
         }
 

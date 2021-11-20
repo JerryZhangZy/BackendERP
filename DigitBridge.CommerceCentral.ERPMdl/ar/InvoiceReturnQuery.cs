@@ -134,8 +134,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         public override void InitQueryFilter()
         {
-            _TransDateFrom.FilterValue = DateTime.Today.AddDays(-30);
-            _TransDateTo.FilterValue = DateTime.Today;
+            _TransDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
+            _TransDateTo.FilterValue = DateTime.UtcNow.Date;
             //TODO，make sure this won't be changed by user.
             _TransType.FilterValue = (int)TransTypeEnum.Return;
         }
