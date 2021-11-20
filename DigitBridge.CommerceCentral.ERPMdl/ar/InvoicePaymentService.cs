@@ -41,53 +41,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return this;
         }
 
-        /// <summary>
-        /// Add to ActivityLog record for current data and processMode
-        /// Should Call this method after successful save, update, delete
-        /// </summary>
-        protected void AddActivityLogForCurrentData()
-        {
-            this.AddActivityLog(new ActivityLog(dbFactory)
-            {
-                Type = (int)ActivityLogType.InvoicePayment,
-                Action = (int)this.ProcessMode,
-                LogSource = "InvoicePaymentService",
 
-                MasterAccountNum = this.Data.InvoiceTransaction.MasterAccountNum,
-                ProfileNum = this.Data.InvoiceTransaction.ProfileNum,
-                DatabaseNum = this.Data.InvoiceTransaction.DatabaseNum,
-                ProcessUuid = this.Data.InvoiceTransaction.TransUuid,
-                ProcessNumber = this.Data.InvoiceTransaction.TransNum.ToString(),
-                ChannelNum = this.Data.InvoiceData.InvoiceHeaderInfo.ChannelAccountNum,
-                ChannelAccountNum = this.Data.InvoiceData.InvoiceHeaderInfo.ChannelAccountNum,
-
-                LogMessage = string.Empty
-            });
-        }
-
-        /// <summary>
-        /// Add to ActivityLog record for current data and processMode
-        /// Should Call this method after successful save, update, delete
-        /// </summary>
-        protected async Task AddActivityLogForCurrentDataAsync()
-        {
-            await this.AddActivityLogAsync(new ActivityLog(dbFactory)
-            {
-                Type = (int)ActivityLogType.InvoicePayment,
-                Action = (int)this.ProcessMode,
-                LogSource = "InvoicePaymentService",
-
-                MasterAccountNum = this.Data.InvoiceTransaction.MasterAccountNum,
-                ProfileNum = this.Data.InvoiceTransaction.ProfileNum,
-                DatabaseNum = this.Data.InvoiceTransaction.DatabaseNum,
-                ProcessUuid = this.Data.InvoiceTransaction.TransUuid,
-                ProcessNumber = this.Data.InvoiceTransaction.TransNum.ToString(),
-                ChannelNum = this.Data.InvoiceData.InvoiceHeaderInfo.ChannelAccountNum,
-                ChannelAccountNum = this.Data.InvoiceData.InvoiceHeaderInfo.ChannelAccountNum,
-
-                LogMessage = string.Empty
-            });
-        }
 
         /// <summary>
         /// Get invoice payment with detail and invoiceheader by invoiceNumber
@@ -194,7 +148,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     applyInvoice.Success = false;
                     continue;
                 }
-                this.AddActivityLogForCurrentData();
+
                 successCount++;
 
                 applyInvoice.TransUuid = transaction.InvoiceTransaction.TransUuid;
@@ -255,7 +209,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     applyInvoice.Success = false;
                     continue;
                 }
-                this.AddActivityLogForCurrentData();
+
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
 
                 await AddMiscPaymentAsync();
@@ -293,14 +247,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     applyInvoice.Success = false;
                     continue;
                 }
-                this.AddActivityLogForCurrentData();
+
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
 
-                var invoiceTransaction = Data.InvoiceTransaction;
-                if (invoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
-                {
-                    AddMiscPayment();
-                }
+                AddMiscPayment();
             }
 
             return payload.Success;
@@ -407,8 +357,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var paymentDataDto = GetPaymentDataDto(payload, applyInvoice);
                 if (await base.UpdateAsync(paymentDataDto))
                 {
-                    this.AddActivityLogForCurrentData();
-
                     await UpdateMiscPaymentAsync();
                 }
                 else
@@ -461,8 +409,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 if (await base.UpdateAsync(updatePayload))
                 {
-                    this.AddActivityLogForCurrentData();
-
                     await UpdateMiscPaymentAsync();
 
                     mapper.WriteInvoiceTransaction(Data.InvoiceTransaction, invoiceTransactionDto);
@@ -529,8 +475,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     applyInvoice.Success = false;
                     continue;
                 }
-
-                this.AddActivityLogForCurrentData();
 
                 UpdateMiscPayment();
 
