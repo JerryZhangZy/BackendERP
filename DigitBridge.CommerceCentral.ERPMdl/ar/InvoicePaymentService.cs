@@ -565,18 +565,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError($"Update payment failed for InvoiceNumber:{applyInvoice.InvoiceNumber} ");
                     continue;
                 }
-
-                //update payment success. then pay invoice.
-                var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
-                if (!success)
-                {
-                    payload.Success = false;
-                    applyInvoice.Success = false;
-                    AddError($"{applyInvoice.InvoiceNumber} is not applied.");
-                }
+                
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
-                applyInvoice.TransRowNum = Data.InvoiceTransaction.RowNum;
-                applyInvoice.Success = success;
+                applyInvoice.TransRowNum = Data.InvoiceTransaction.RowNum; 
                 payload.InvoiceHeaders.Add(invoiceHeadDto);
             }
             payload.InvoiceTransactions = respTransList;
