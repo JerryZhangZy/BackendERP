@@ -724,10 +724,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Handle prepayment for auto transfer invoice from shipment.
 
-        protected InvoiceTransactionDataDto GetPaymentDataDto(string miscInvoiceUuid, decimal amount)
+        protected async Task<bool> GetPaymentDataAsync(string invoiceUuid, string miscInvoiceUuid, decimal amount)
         {
+            if (!await LoadInvoiceAsync(invoiceUuid))
+            {
+                return false;
+            }
+
             var header = Data.InvoiceData.InvoiceHeader;
-            var trans = new InvoiceTransactionDto()
+            var trans = new InvoiceTransaction()
             {
                 ProfileNum = header.ProfileNum,
                 MasterAccountNum = header.MasterAccountNum,
@@ -753,10 +758,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 trans.TransNum = InvoiceTransactionHelper.GetTranSeqNum(header.InvoiceNumber, header.ProfileNum);
             }
 
-            return new InvoiceTransactionDataDto()
+            _data = new InvoiceTransactionData()
             {
                 InvoiceTransaction = trans
             };
+
+            return true;
         }
 
         /// <summary>
@@ -798,14 +805,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return true;// this will not affect the transfer flow.
             }
 
-            if (!await LoadInvoiceAsync(invoiceUuid))
+            if (!await GetPaymentDataAsync(invoiceUuid, miscInvoiceUuid, actualApplyAmount))
             {
                 return false;
             }
 
-            var paymentDataDto = GetPaymentDataDto(miscInvoiceUuid, actualApplyAmount);
             // add payment and pay invoice.
-            if (!await base.AddAsync(paymentDataDto))
+            if (!await base.AddAsync())
             {
                 return false;
             }

@@ -204,6 +204,52 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #region Add transaction
 
         /// <summary>
+        /// Add new data.
+        /// </summary>
+        public virtual async Task<bool> AddAsync(InvoiceTransactionData data = null)
+        {
+            if (data != null)
+                _data = data;
+
+            if (Data is null)
+            {
+                AddError("transaction data is required.");
+                return false;
+            }
+
+            // set Add mode 
+            _ProcessMode = ProcessingMode.Add;
+
+
+            //load invoice data.
+            if (!(await LoadInvoiceAsync(Data.InvoiceTransaction.InvoiceNumber, Data.InvoiceTransaction.ProfileNum, Data.InvoiceTransaction.MasterAccountNum)))
+                return false;
+
+            //Load returned qty for each trans return item
+            if (Data.InvoiceTransaction.TransType == (int)TransTypeEnum.Return)
+                LoadReturnedQty();
+
+            // validate data for Add processing
+            if (!(await ValidateAsync()))
+                return false;
+
+            if (!await SaveDataAsync())
+            {
+                AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
+                return false;
+            }
+
+            //save trans success. then pay invoice. 
+            if (!await InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction))
+            {
+                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Add new data from Dto object
         /// </summary>
         public virtual bool Add(InvoiceTransactionDataDto dto)
