@@ -66,6 +66,8 @@
 	[BillToDaytimePhone] VARCHAR(50) NOT NULL DEFAULT '', --Bill to phone <br> Title: Bill to phone: Display: true, Editable: true
 	[BillToNightPhone] VARCHAR(50) NOT NULL DEFAULT '', --(Ignore)
 
+	[Notes] NVarchar(1000) NOT NULL DEFAULT '',--Order notes. <br> Title: Notes, Display: true, Editable: true
+
     [UpdateDateUtc] DATETIME NULL, --(Ignore)
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Ignore)

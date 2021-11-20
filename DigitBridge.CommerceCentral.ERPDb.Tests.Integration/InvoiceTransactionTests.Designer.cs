@@ -42,6 +42,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.TransNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.InvoiceUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.InvoiceNumber, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.PaymentUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.PaymentNumber, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.TransType, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.TransStatus, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.TransDate, f => f.Date.Past(0).Date)
@@ -180,14 +182,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            data.Patch(new[] { "InvoiceNumber", "Description" });
+            data.Patch(new[] { "InvoiceNumber", "PaymentNumber" });
             DataBaseFactory.Commit();
 
             var dataGet = DataBaseFactory.GetFromCache<InvoiceTransaction>(data.RowNum);
             var result = dataGet.InvoiceNumber != dataOrig.InvoiceNumber &&
-                            dataGet.Description != dataOrig.Description &&
+                            dataGet.PaymentNumber != dataOrig.PaymentNumber &&
                             dataGet.InvoiceNumber == newData.InvoiceNumber &&
-                            dataGet.Description == newData.Description;
+                            dataGet.PaymentNumber == newData.PaymentNumber;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -289,13 +291,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             list.SetDataBaseFactory<InvoiceTransaction>(DataBaseFactory)
                 .Save<InvoiceTransaction>();
 
-            var NewDescription = Guid.NewGuid().ToString();
+            var NewPaymentNumber = Guid.NewGuid().ToString();
             var listFind = DataBaseFactory.Find<InvoiceTransaction>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid).ToList();
-            listFind.ToList().ForEach(x => x.Description = NewDescription);
+            listFind.ToList().ForEach(x => x.PaymentNumber = NewPaymentNumber);
             listFind.Save<InvoiceTransaction>();
 
             list = DataBaseFactory.Find<InvoiceTransaction>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid).ToList();
-            var result = list.Where(x => x.Description == NewDescription).Count() == listFind.Count();
+            var result = list.Where(x => x.PaymentNumber == NewPaymentNumber).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -388,14 +390,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            await data.PatchAsync(new[] { "InvoiceNumber", "Description" });
+            await data.PatchAsync(new[] { "InvoiceNumber", "PaymentNumber" });
             DataBaseFactory.Commit();
 
             var dataGet = await DataBaseFactory.GetFromCacheAsync<InvoiceTransaction>(data.RowNum);
             var result = dataGet.InvoiceNumber != dataOrig.InvoiceNumber &&
-                            dataGet.Description != dataOrig.Description &&
+                            dataGet.PaymentNumber != dataOrig.PaymentNumber &&
                             dataGet.InvoiceNumber == newData.InvoiceNumber &&
-                            dataGet.Description == newData.Description;
+                            dataGet.PaymentNumber == newData.PaymentNumber;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -495,13 +497,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 .SetDataBaseFactory<InvoiceTransaction>(DataBaseFactory)
                 .SaveAsync<InvoiceTransaction>();
 
-            var NewDescription = Guid.NewGuid().ToString();
+            var NewPaymentNumber = Guid.NewGuid().ToString();
             var listFind = (await DataBaseFactory.FindAsync<InvoiceTransaction>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid)).ToList();
-            listFind.ToList().ForEach(x => x.Description = NewDescription);
+            listFind.ToList().ForEach(x => x.PaymentNumber = NewPaymentNumber);
             await listFind.SaveAsync<InvoiceTransaction>();
 
             list = DataBaseFactory.Find<InvoiceTransaction>("WHERE InvoiceUuid = @0 ORDER BY RowNum", InvoiceUuid).ToList();
-            var result = list.Where(x => x.Description == NewDescription).Count() == listFind.Count();
+            var result = list.Where(x => x.PaymentNumber == NewPaymentNumber).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }

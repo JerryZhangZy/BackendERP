@@ -61,6 +61,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("InvoiceNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _invoiceNumber;
 
+        [Column("PaymentUuid",SqlDbType.VarChar,NotNull=true)]
+        private string _paymentUuid;
+
+        [Column("PaymentNumber",SqlDbType.VarChar,NotNull=true)]
+        private string _paymentNumber;
+
         [Column("TransType",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _transType;
 
@@ -279,6 +285,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_invoiceNumber = value.TruncateTo(50); 
 				OnPropertyChanged("InvoiceNumber", value);
+            }
+        }
+
+		/// <summary>
+		/// Group Payment uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string PaymentUuid
+        {
+            get
+            {
+				return _paymentUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_paymentUuid = value.TruncateTo(50); 
+				OnPropertyChanged("PaymentUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Group Payment readable Number. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string PaymentNumber
+        {
+            get
+            {
+				return _paymentNumber?.TrimEnd(); 
+            }
+            set
+            {
+				_paymentNumber = value.TruncateTo(50); 
+				OnPropertyChanged("PaymentNumber", value);
             }
         }
 
@@ -850,6 +888,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_transNum = default(int); 
 			_invoiceUuid = String.Empty; 
 			_invoiceNumber = String.Empty; 
+			_paymentUuid = String.Empty; 
+			_paymentNumber = String.Empty; 
 			_transType = default(int); 
 			_transStatus = default(int); 
 			_transDate = new DateTime().MinValueSql(); 

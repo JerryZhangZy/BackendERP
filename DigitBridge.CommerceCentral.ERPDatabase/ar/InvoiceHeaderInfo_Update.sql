@@ -43,3 +43,10 @@ CREATE NONCLUSTERED INDEX [IX_InvoiceHeaderInfo_ShipToName] ON [dbo].[InvoiceHea
 (
 	[ShipToName] ASC
 )
+
+
+-- 11/19/2021 By jerry
+IF COL_LENGTH('InvoiceHeaderInfo', 'Notes') IS NULL					
+BEGIN					
+    ALTER TABLE InvoiceHeaderInfo ADD [Notes] NVarchar(1000) NOT NULL DEFAULT ''
+END	 

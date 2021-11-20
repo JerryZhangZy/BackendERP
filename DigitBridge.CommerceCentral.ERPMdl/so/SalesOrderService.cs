@@ -550,6 +550,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             return await SalesOrderHelper.ExistNumberAsync(orderNumber, masterAccountNum, profileNum);
         }
+
+        public virtual async Task<bool> SaveCurrentDataAsync()
+        {
+            if (this.Data == null || this.Data.SalesOrderHeader == null) 
+                return false;
+
+            await UpdateInventoryOpenSoQtyAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+            var result = await this.SaveDataAsync();
+            if (!result) return false;
+
+            await AddActivityLogForCurrentDataAsync();
+            await UpdateInventoryOpenSoQtyAsync(this.Data.SalesOrderHeader.SalesOrderUuid, false);
+
+            return result;
+        }
+
     }
 }
 
