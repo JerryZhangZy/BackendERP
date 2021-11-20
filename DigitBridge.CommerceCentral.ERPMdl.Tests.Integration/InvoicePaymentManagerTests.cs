@@ -47,45 +47,45 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         #region async methods
 
-        [Fact]
-        public async Task AddPaymentFromPrepayment_Test()
-        {
-            var miscInvoiceData = MiscInvoiceDataTests.SaveFakerMiscInvoice(DataBaseFactory);
-            var invoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(DataBaseFactory);
-            var prepaymentAmount = new Random().Next(1, 100);
-            var srv = new InvoicePaymentManager(DataBaseFactory);
-            var success = await srv.AddPaymentFromPrepayment(miscInvoiceData.UniqueId, invoiceData.UniqueId, prepaymentAmount);
+        //[Fact]
+//        public async Task AddPaymentFromPrepayment_Test()
+//        {
+//            var miscInvoiceData = MiscInvoiceDataTests.SaveFakerMiscInvoice(DataBaseFactory);
+//            var invoiceData = await InvoiceDataTests.SaveFakerInvoiceAsync(DataBaseFactory);
+//            var prepaymentAmount = new Random().Next(1, 100);
+//            var srv = new InvoicePaymentManager(DataBaseFactory);
+//            var success = await srv.AddPaymentFromPrepayment(miscInvoiceData.UniqueId, invoiceData.UniqueId, prepaymentAmount);
 
-            Assert.True(success, srv.Messages.ObjectToString());
+//            Assert.True(success, srv.Messages.ObjectToString());
 
-            var srv_misInvoice = new MiscInvoiceService(DataBaseFactory);
-            success = await srv_misInvoice.GetDataByIdAsync(miscInvoiceData.UniqueId);
-            Assert.True(success, srv_misInvoice.Messages.ObjectToString());
-            var misInvoiceHeader = srv_misInvoice.Data.MiscInvoiceHeader;
-            var payAmount = miscInvoiceData.MiscInvoiceHeader.Balance - misInvoiceHeader.Balance;
+//            var srv_misInvoice = new MiscInvoiceService(DataBaseFactory);
+//            success = await srv_misInvoice.GetDataByIdAsync(miscInvoiceData.UniqueId);
+//            Assert.True(success, srv_misInvoice.Messages.ObjectToString());
+//            var misInvoiceHeader = srv_misInvoice.Data.MiscInvoiceHeader;
+//            var payAmount = miscInvoiceData.MiscInvoiceHeader.Balance - misInvoiceHeader.Balance;
 
-            var miscPaymentTrasn = DataBaseFactory.GetBy<MiscInvoiceTransaction>($@"
-SELECT *
-FROM MiscInvoiceTransaction 
-WHERE ProfileNum={misInvoiceHeader.ProfileNum} 
-And MasterAccountNum={misInvoiceHeader.MasterAccountNum}
-And MiscInvoiceNumber='{misInvoiceHeader.MiscInvoiceNumber}'
-And TotalAmount={payAmount}
-");
-            Assert.True(miscPaymentTrasn != null && miscPaymentTrasn.RowNum > 0, "miscPaymentTrasn is null");
+//            var miscPaymentTrasn = DataBaseFactory.GetBy<MiscInvoiceTransaction>($@"
+//SELECT *
+//FROM MiscInvoiceTransaction 
+//WHERE ProfileNum={misInvoiceHeader.ProfileNum} 
+//And MasterAccountNum={misInvoiceHeader.MasterAccountNum}
+//And MiscInvoiceNumber='{misInvoiceHeader.MiscInvoiceNumber}'
+//And TotalAmount={payAmount}
+//");
+//            Assert.True(miscPaymentTrasn != null && miscPaymentTrasn.RowNum > 0, "miscPaymentTrasn is null");
 
 
-            var invoiceHeader = invoiceData.InvoiceHeader;
-            var paymentTrasn = DataBaseFactory.GetBy<InvoiceTransaction>($@"
-SELECT *
-FROM InvoiceTransaction 
-WHERE ProfileNum={invoiceHeader.ProfileNum} 
-And MasterAccountNum={invoiceHeader.MasterAccountNum}
-And InvoiceNumber='{invoiceHeader.InvoiceNumber}'
-And TotalAmount={payAmount}
-");
-            Assert.True(paymentTrasn != null && paymentTrasn.RowNum > 0, "paymentTrasn is null");
-        }
+//            var invoiceHeader = invoiceData.InvoiceHeader;
+//            var paymentTrasn = DataBaseFactory.GetBy<InvoiceTransaction>($@"
+//SELECT *
+//FROM InvoiceTransaction 
+//WHERE ProfileNum={invoiceHeader.ProfileNum} 
+//And MasterAccountNum={invoiceHeader.MasterAccountNum}
+//And InvoiceNumber='{invoiceHeader.InvoiceNumber}'
+//And TotalAmount={payAmount}
+//");
+//            Assert.True(paymentTrasn != null && paymentTrasn.RowNum > 0, "paymentTrasn is null");
+//        }
 
         #endregion async methods
 

@@ -38,20 +38,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _miscInvoiceService;
             }
         }
-        public async Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceTransUuid, string invoiceNumber, decimal amount)
-        {
-            Add();
-            if (miscInvoiceUuid.IsZero())
-            {
-                AddError($"miscInvoiceUuid is null");
-                return false;
-            }
 
-            if (invoiceTransUuid.IsZero())
-            {
-                AddError($"invoiceTransUuid is null");
-                return false;
-            }
+        protected async Task<bool> GetMiscPaymentData(string miscInvoiceUuid, string invoiceTransUuid, string invoiceNumber, decimal amount)
+        {
             if (!await LoadMiscInvoiceAsync(miscInvoiceUuid))
                 return false;
 
@@ -89,6 +78,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 Data.MiscInvoiceTransaction.TransNum = await MiscInvoiceTransactionHelper.GetTranSeqNumAsync(header.MiscInvoiceNumber, header.ProfileNum);
             }
 
+            return true;
+        }
+
+        public async Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceTransUuid, string invoiceNumber, decimal amount)
+        {
+            _ProcessMode = ProcessingMode.Add;
+
+            if (miscInvoiceUuid.IsZero())
+            {
+                AddError($"miscInvoiceUuid is null");
+                return false;
+            }
+
+            if (invoiceTransUuid.IsZero())
+            {
+                AddError($"invoiceTransUuid is null");
+                return false;
+            }
+
+            if (!await GetMiscPaymentData(miscInvoiceUuid, invoiceTransUuid, invoiceNumber, amount))
+            {
+                return false;
+            }
             if (!await SaveDataAsync())
             {
                 AddError($"AddMiscPayment->SaveDataAsync error.");
@@ -176,6 +188,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.MiscTransactions = await GetDtoListAsync(payload.MasterAccountNum, payload.ProfileNum, miscInvoiceNumber, TransTypeEnum.Payment, transNum);
             var miscInvoiceMapper = new MiscInvoiceDataDtoMapperDefault();
             payload.MiscInvoiceDataDto = miscInvoiceMapper.WriteDto(Data.MiscInvoiceData, null);
+        }
+
+        /// <summary>
+        /// Get actual amount that can pay to invoice.
+        /// </summary>
+        /// <param name="miscInvoiceUuid"></param>
+        /// <param name="expectedAmount"></param>
+        /// <returns></returns>
+        public virtual async Task<decimal> GetCanApplyAmount(string miscInvoiceUuid, decimal expectedAmount)
+        {
+            if (!await LoadMiscInvoiceAsync(miscInvoiceUuid))
+                return 0;
+
+            var miscInvoiceBalance = this.Data.MiscInvoiceData.MiscInvoiceHeader.Balance;
+
+            return expectedAmount > miscInvoiceBalance ? miscInvoiceBalance : expectedAmount;
+
         }
     }
 }

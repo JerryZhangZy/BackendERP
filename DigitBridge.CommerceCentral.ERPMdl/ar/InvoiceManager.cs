@@ -272,20 +272,22 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="centralOrderUuid"></param>
         /// <returns>Success Create Invoice, Invoice UUID</returns>
-        public async Task<(bool, string)> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData)
+        public async Task<(bool, string)> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData, string salesOrderUuid = null)
         {
             var orderShipmentUuid = shipmentData.OrderShipmentHeader.OrderShipmentUuid;
 
-            var orderDCAssignmentNum = shipmentData.OrderShipmentHeader.OrderDCAssignmentNum;
-            if (orderDCAssignmentNum.IsZero())
+            if (salesOrderUuid.IsZero())
             {
-                AddError($"OrderDCAssignmentNum cannot be empty. OrderShipmentUuid:{orderShipmentUuid}");
-                return (false, null);
+                var orderDCAssignmentNum = shipmentData.OrderShipmentHeader.OrderDCAssignmentNum;
+                if (orderDCAssignmentNum.IsZero())
+                {
+                    AddError($"Both salesOrderUuid and OrderDCAssignmentNum are empty. OrderShipmentUuid:{orderShipmentUuid}");
+                    return (false, null);
+                }
+                //Get Sale by uuid
+                salesOrderUuid = await GetSalesOrderUuidAsync(orderDCAssignmentNum.Value);
             }
-            //Get Sale by uuid
-            var salesOrderUuid = await GetSalesOrderUuidAsync(orderDCAssignmentNum.Value);
-
-            if (string.IsNullOrEmpty(salesOrderUuid))
+            if (salesOrderUuid.IsZero())
             {
                 AddError($"SalesOrder not found for OrderShipment. OrderShipmentUuid:{orderShipmentUuid}");
                 return (false, null);
@@ -301,7 +303,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = await salesorderService.GetDataByIdAsync(salesOrderUuid);
             if (!success)
             {
-                this.Messages = this.Messages.Concat(salesorderService.Messages).ToList();
+                this.Messages.Add(salesorderService.Messages);
                 return (false, null);
             }
 
@@ -312,9 +314,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return (false, null);
 
             var soHeader = salesorderService.Data.SalesOrderHeader;
+            if (soHeader.DepositAmount.IsZero() || soHeader.MiscInvoiceUuid.IsZero())
+            {
+                return (success, invoiceUuid);
+            }
 
-            var paymentManager = new InvoicePaymentManager(dbFactory);
-            success = await paymentManager.AddPaymentFromPrepayment(soHeader.MiscInvoiceUuid, invoiceUuid, soHeader.DepositAmount);
+            var paymentService = new InvoicePaymentService(dbFactory);
+            success = await paymentService.AddAsync(invoiceUuid, soHeader.DepositAmount, soHeader.MiscInvoiceUuid);
+            if (!success) this.Messages.Add(paymentService.Messages);
 
             return (success, invoiceUuid);
         }

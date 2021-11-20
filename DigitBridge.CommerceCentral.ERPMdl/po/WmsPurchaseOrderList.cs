@@ -45,11 +45,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {Helper.TableAllies}.VendorCode as 'VendorCode',
 {Helper.TableAllies}.PoDate as 'PoDate',
 {Helper.TableAllies}.CancelDate as 'CancelAfterDate',
---{Helper.TableAllies}.Terms as 'Terms',
---{Helper.TableAllies}.WarehousCode as 'WarehousCode',
+{Helper.TableAllies}.Terms as 'Terms',
+{InfoHelper.TableAllies}.WarehouseCode as 'WarehouseCode',
 {Helper.TableAllies}.EtaShipDate as 'RequestShipDate',
-{Helper.TableAllies}.EtaArrivalDate as 'ArrivalDueDate'
---{Helper.TableAllies}.PublicNote as 'PublicNote',
+{Helper.TableAllies}.EtaArrivalDate as 'ArrivalDueDate',
+{InfoHelper.TableAllies}.Notes as 'PublicNote'
 --{Helper.TableAllies}.PrivateNote as 'PrivateNote',
 ";
             return columns;
@@ -59,10 +59,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var columns = $@"
 {ItemHelper.TableAllies}.PoItemUuid as 'PoItemUuid',
 {ItemHelper.TableAllies}.SKU as 'SKU',
-
+{ItemHelper.TableAllies}.WarehouseCode as 'WarehouseCode',
 {ItemHelper.TableAllies}.Price as 'PoPrice',
 CAST({ ItemHelper.TableAllies}.PoQty as INT) as 'PoQty',
---CAST({ ItemHelper.TableAllies}.QtyForOther as INT) as 'QtyForOther',
+CAST({ ItemHelper.TableAllies}.QtyForOther as INT) as 'QtyForOther',
 {ItemHelper.TableAllies}.EtaShipDate as 'LineRequestShipDate',
 {ItemHelper.TableAllies}.EtaArrivalDate as 'LineArrivalDueDate',
 {ItemHelper.TableAllies}.Notes as 'LinePublicNote',
@@ -126,7 +126,7 @@ FOR JSON PATH
         on  {Helper.TableAllies}.MasterAccountNum={EventHelper.TableAllies}.MasterAccountNum
         and {Helper.TableAllies}.ProfileNum={EventHelper.TableAllies}.ProfileNum
         and {Helper.TableAllies}.PoUuid={EventHelper.TableAllies}.ProcessUuid
- --LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({InfoHelper.TableAllies}.PoUuid = {Helper.TableAllies}.PoUuid)
+ LEFT JOIN {InfoHelper.TableName} {InfoHelper.TableAllies} ON ({InfoHelper.TableAllies}.PoUuid = {Helper.TableAllies}.PoUuid)
 ";
             return this.SQL_From;
         }

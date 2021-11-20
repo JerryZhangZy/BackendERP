@@ -174,6 +174,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasWarehouseUuid => WarehouseUuid != null;
 
 		/// <summary>
+		/// Readable warehouse code. <br> Title: Warehouse Code: Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Readable warehouse code. <br> Title: Warehouse Code: Display: true, Editable: true")]
+        [StringLength(50, ErrorMessage = "The WarehouseCode value cannot exceed 50 characters. ")]
+        public string WarehouseCode { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasWarehouseCode => WarehouseCode != null;
+
+		/// <summary>
 		/// Customer uuid, load from customer data. <br> Display: false, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("Customer uuid, load from customer data. <br> Display: false, Editable: false")]
@@ -612,6 +622,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasBillToNightPhone => BillToNightPhone != null;
+
+		/// <summary>
+		/// Order notes. <br> Title: Notes, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Order notes. <br> Title: Notes, Display: true, Editable: true")]
+        [StringLength(1000, ErrorMessage = "The Notes value cannot exceed 1000 characters. ")]
+        public string Notes { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasNotes => Notes != null;
 
 		/// <summary>
 		/// (Ignore)

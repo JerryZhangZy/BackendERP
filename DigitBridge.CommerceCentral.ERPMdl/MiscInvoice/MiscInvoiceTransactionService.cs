@@ -311,6 +311,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
         #region Load misc invoice
+
         /// <summary>
         /// Load MiscInvoice data.
         /// </summary>
