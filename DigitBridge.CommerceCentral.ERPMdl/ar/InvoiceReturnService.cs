@@ -238,7 +238,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await base.UpdateAsync(payload);
         }
 
-        protected async override Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
+        public async override Task<bool> UpdateAsync(InvoiceTransactionPayload payload)
         {
             bool result = await base.UpdateAsync(payload);
 

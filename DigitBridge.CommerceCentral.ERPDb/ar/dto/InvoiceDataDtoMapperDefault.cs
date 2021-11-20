@@ -193,6 +193,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasBillToEmail) data.BillToEmail = dto.BillToEmail;
 			if (dto.HasBillToDaytimePhone) data.BillToDaytimePhone = dto.BillToDaytimePhone;
 			if (dto.HasBillToNightPhone) data.BillToNightPhone = dto.BillToNightPhone;
+			if (dto.HasNotes) data.Notes = dto.Notes;
 			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
@@ -520,6 +521,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.BillToEmail = data.BillToEmail;
 			dto.BillToDaytimePhone = data.BillToDaytimePhone;
 			dto.BillToNightPhone = data.BillToNightPhone;
+			dto.Notes = data.Notes;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
 			dto.UpdateBy = data.UpdateBy;

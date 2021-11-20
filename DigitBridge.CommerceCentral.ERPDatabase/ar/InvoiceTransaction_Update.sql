@@ -7,3 +7,15 @@ CREATE NONCLUSTERED INDEX [IX_InvoiceTransaction_Composite1] ON [dbo].[InvoiceTr
 	[PaidBy] ASC
 ) 
 GO
+
+
+-- 11/19/2021 By jerry
+IF COL_LENGTH('InvoiceTransaction', 'PaymentUuid') IS NULL					
+BEGIN					
+    ALTER TABLE InvoiceTransaction ADD [PaymentUuid] VARCHAR(50) NOT NULL DEFAULT ''
+END	 
+
+IF COL_LENGTH('InvoiceTransaction', 'PaymentNumber') IS NULL					
+BEGIN					
+    ALTER TABLE InvoiceTransaction ADD [PaymentNumber] VARCHAR(50) NOT NULL DEFAULT ''
+END	 

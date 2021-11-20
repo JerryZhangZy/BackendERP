@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         
         bool Update(SalesOrderDataDto dto);
         Task<bool> UpdateAsync(SalesOrderDataDto dto);
-
+        Task<bool> SaveCurrentDataAsync();
 
     }
 }

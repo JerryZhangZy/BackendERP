@@ -114,9 +114,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task CreateSalesOrderByChannelOrderIdAsync_Test()
         {
             var uuids = new List<string> {
-                "1daac816-0eef-4c3e-90de-b7fa3e7269bb",
-                "28917ee1-3ab2-438a-a0f3-552e8865fce8",
-                "b302d57f-1da9-4328-b46b-132222419fcf"
+                "bbf79acd-d61b-46dc-904b-9e9851a0e119"
             };
             
             SalesOrderManager soManager = new SalesOrderManager(DataBaseFactory);
