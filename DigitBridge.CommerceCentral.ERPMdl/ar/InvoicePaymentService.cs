@@ -159,35 +159,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task AddPaymentsForInvoicesAsync(InvoicePaymentPayload payload)
         {
-            //if (!payload.HasApplyInvoices)
-            //{
-            //    AddError("ApplyInvoices  is required.");
-            //    payload.Success = false;
-            //    return;
-            //}
-
-            //var invoices = await GetInvoiceHeadersByCustomerAsync(payload.MasterAccountNum, payload.ProfileNum, payload.CustomerCode);
-            //decimal sumOfAssignment = payload.ApplyInvoices.Sum(a => a.PaidAmount);
-            //if (payload.ApplyInvoices.Any(i => string.IsNullOrEmpty(i.InvoiceNumber)))
-            //{
-            //    AddError("ApplyInvoices.InvoiceNumber is required.");
-            //    payload.Success = false;
-            //    return;
-            //}
-            //if (sumOfAssignment != payload.TotalAmount)
-            //{
-            //    AddError("The total payment amount not equals sum of paid for each invoices");
-            //    payload.Success = false;
-            //    return;
-            //}
-
             int successCount = 0;
+            string paymentBatch = Guid.NewGuid().ToString();
             foreach (var applyInvoice in payload.ApplyInvoices)
             {
-                //var transaction = GenerateTransactionByInvoice(payload, applyInvoice.InvoiceUuid);
                 var transaction = payload.InvoiceTransactions.Single(t => t.InvoiceTransaction.InvoiceUuid == applyInvoice.InvoiceUuid);
                 transaction.InvoiceTransaction.MasterAccountNum = payload.MasterAccountNum;
                 transaction.InvoiceTransaction.ProfileNum = payload.ProfileNum;
+                transaction.InvoiceTransaction.TotalAmount = applyInvoice.PaidAmount;
+                transaction.InvoiceTransaction.PaymentUuid = paymentBatch;
                 if (!await base.AddAsync(transaction))
                 {
                     applyInvoice.Success = false;
@@ -198,6 +178,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 successCount++;
 
                 applyInvoice.TransUuid = transaction.InvoiceTransaction.TransUuid;
+                applyInvoice.TransRowNum = transaction.InvoiceTransaction.RowNum;
 
                 if (await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum))
                 {
@@ -561,79 +542,89 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return payload.Success;
         }
 
-        public async virtual Task<bool> UpdateInvoicePayments(string checkNumOrAuthcode, InvoicePaymentPayload payload)
+        public async Task UpdatePayment(InvoicePaymentPayload data)
         {
-            if (string.IsNullOrEmpty(checkNumOrAuthcode))
-                return false;
+            Edit();
+            data.Success = true;
+            string invoiceNumber = "";
+            ApplyInvoice applyInvoice = data.ApplyInvoices.First();
+            if (await base.UpdateAsync(data))
+            {
+                this.AddActivityLogForCurrentData();
+                var invoiceTransaction = Data.InvoiceTransaction;
+                invoiceNumber = data.InvoiceHeader.InvoiceNumber;
+                if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
+                    data.Success &= await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, invoiceTransaction.OriginalPaidAmount);
+                if (data.Success && Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+                    data.Success &= await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
+            }
+            else
+            {
+                data.Success = false;
+                AddError($"Update payment failed for InvoiceNumber: {invoiceNumber} ");
+            }
 
+            //update payment success. then pay invoice.
+            var success = await PayInvoiceAsync(applyInvoice, data.MasterAccountNum, data.ProfileNum);
+            if (!success)
+            {
+                data.Success = false;
+                applyInvoice.Success = false;
+                AddError($"{applyInvoice.InvoiceNumber} is not applied.");
+            }
+
+            applyInvoice.Success = true;
+        }
+
+        public async virtual Task<bool> UpdateInvoicePayments(InvoicePaymentPayload payload)
+        {
+            payload.Success = true;
             var mapper = DtoMapper as InvoiceTransactionDataDtoMapperDefault;
-
-            NewData();
-            var invoiceTransactions = await Data.InvoiceTransaction.GetTransactionsByCheckNumOrAuthCode(payload.MasterAccountNum, payload.ProfileNum, checkNumOrAuthcode);
-            List<InvoiceTransactionDataDto> respTransList = new List<InvoiceTransactionDataDto>();
-            payload.Success = false;
+            List<InvoiceTransactionData> readyToUpdate = new List<InvoiceTransactionData>();
+            Dictionary<string, decimal> dictionaryOfNewBatchPaymentSumAmount = new Dictionary<string, decimal>();
 
             foreach (var applyInvoice in payload.ApplyInvoices)
             {
-                InvoiceTransactionDto invoiceTransactionDto = new InvoiceTransactionDto();
-                var trans = invoiceTransactions.SingleOrDefault(t => t.InvoiceUuid == applyInvoice.InvoiceUuid);
-                if (trans == null)
-                    continue;
+                List();
+                await GetDataAsync(applyInvoice.TransRowNum.Value);
+                readyToUpdate.Add(this.Data);
 
-                var invoiceHeadDto = await GetInvoiceHeaderAsync(payload.MasterAccountNum, payload.ProfileNum, trans.InvoiceNumber);
-                trans.TotalAmount = applyInvoice.PaidAmount;
-                mapper.WriteInvoiceTransaction(trans, invoiceTransactionDto);
-                var invoiceTransactionDataDto = new InvoiceTransactionDataDto
-                {
-                    InvoiceTransaction = invoiceTransactionDto
-                };
-                var updatePayload = new InvoicePaymentPayload
-                {
-                    DatabaseNum = payload.DatabaseNum,
-                    MasterAccountNum = payload.MasterAccountNum,
-                    ProfileNum = payload.ProfileNum,
-                    InvoiceTransaction = invoiceTransactionDataDto
-                };
-
-                if (await base.UpdateAsync(updatePayload))
-                {
-                    this.AddActivityLogForCurrentData();
-                    var invoiceTransaction = Data.InvoiceTransaction;
-                    if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
-                        payload.Success = payload.Success && 
-                            await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, invoiceTransaction.OriginalPaidAmount);
-                    if (payload.Success && Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
-                        payload.Success = payload.Success && 
-                            await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
-
-                    mapper.WriteInvoiceTransaction(Data.InvoiceTransaction, invoiceTransactionDto);
-                    respTransList.Add(new InvoiceTransactionDataDto { 
-                        InvoiceTransaction = invoiceTransactionDto,
-                        InvoiceDataDto = new InvoiceDataDto { InvoiceHeader = invoiceHeadDto }
-                    });
-                }
+                string batchId = this.Data.InvoiceTransaction.PaymentUuid;
+                decimal amount = this.Data.InvoiceTransaction.TotalAmount;
+                if (dictionaryOfNewBatchPaymentSumAmount.ContainsKey(batchId))
+                    dictionaryOfNewBatchPaymentSumAmount[batchId] += amount;
                 else
-                {
-                    payload.Success = false;
-                    applyInvoice.Success = false;
-                    AddError($"Update payment failed for InvoiceNumber:{applyInvoice.InvoiceNumber} ");
-                    continue;
-                }
-
-                //update payment success. then pay invoice.
-                var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
-                if (!success)
-                {
-                    payload.Success = false;
-                    applyInvoice.Success = false;
-                    AddError($"{applyInvoice.InvoiceNumber} is not applied.");
-                }
-                applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
-                applyInvoice.TransRowNum = Data.InvoiceTransaction.RowNum;
-                applyInvoice.Success = success;
-                payload.InvoiceHeaders.Add(invoiceHeadDto);
+                    dictionaryOfNewBatchPaymentSumAmount.Add(batchId, amount);
             }
-            payload.InvoiceTransactions = respTransList;
+
+            var dictionaryOfOriginalBatchPaymentSumAmount = readyToUpdate.GroupBy(up => up.InvoiceTransaction.PaymentUuid)
+                .Select(g => new KeyValuePair<string, decimal>(
+                    g.Key, 
+                    g.Sum(p => p.InvoiceTransaction.TotalAmount))
+                ).ToList();
+
+            dictionaryOfOriginalBatchPaymentSumAmount.ForEach(p => {
+                if (dictionaryOfNewBatchPaymentSumAmount[p.Key] != p.Value)
+                    dictionaryOfNewBatchPaymentSumAmount.Remove(p.Key);
+            });
+
+            foreach (var item in dictionaryOfNewBatchPaymentSumAmount)
+            {
+                readyToUpdate.Where(up => up.InvoiceTransaction.PaymentUuid == item.Key)
+                    .ToList().ForEach(async up => {
+                        var applyInvoice = payload.ApplyInvoices.Single(a => a.TransUuid == up.InvoiceTransaction.TransUuid);
+                        var updatePayload = new InvoicePaymentPayload
+                        {
+                            DatabaseNum = payload.DatabaseNum,
+                            MasterAccountNum = payload.MasterAccountNum,
+                            ProfileNum = payload.ProfileNum,
+                            InvoiceTransaction = ToDto(up),
+                            ApplyInvoices = new List<ApplyInvoice> { applyInvoice }
+                        };
+                        await UpdatePayment(updatePayload);
+                        payload.Success &= updatePayload.Success;
+                    });
+            }
 
             return payload.Success;
         }
