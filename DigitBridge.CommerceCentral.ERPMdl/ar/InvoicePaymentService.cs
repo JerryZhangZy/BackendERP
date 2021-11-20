@@ -732,12 +732,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             var header = Data.InvoiceData.InvoiceHeader;
+
             var trans = new InvoiceTransaction()
             {
                 ProfileNum = header.ProfileNum,
                 MasterAccountNum = header.MasterAccountNum,
                 DatabaseNum = header.DatabaseNum,
 
+                TransUuid = Guid.NewGuid().ToString(),
                 TransType = (int)TransTypeEnum.Payment,
                 TransStatus = (int)TransStatus.Paid,
 
@@ -758,10 +760,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 trans.TransNum = InvoiceTransactionHelper.GetTranSeqNum(header.InvoiceNumber, header.ProfileNum);
             }
 
-            _data = new InvoiceTransactionData()
-            {
-                InvoiceTransaction = trans
-            };
+            Data.InvoiceTransaction = trans;
+            Data.InvoiceReturnItems = null;
 
             return true;
         }

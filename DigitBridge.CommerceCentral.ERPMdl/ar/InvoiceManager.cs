@@ -303,7 +303,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = await salesorderService.GetDataByIdAsync(salesOrderUuid);
             if (!success)
             {
-                this.Messages = this.Messages.Concat(salesorderService.Messages).ToList();
+                this.Messages.Add(salesorderService.Messages);
                 return (false, null);
             }
 
@@ -314,11 +314,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return (false, null);
 
             var soHeader = salesorderService.Data.SalesOrderHeader;
-            if (!soHeader.DepositAmount.IsZero() && !soHeader.MiscInvoiceUuid.IsZero())
+            if (soHeader.DepositAmount.IsZero() || soHeader.MiscInvoiceUuid.IsZero())
             {
-                var paymentService = new InvoicePaymentService(dbFactory);
-                success = await paymentService.AddAsync(invoiceUuid, soHeader.DepositAmount, soHeader.MiscInvoiceUuid);
+                return (success, invoiceUuid);
             }
+
+            var paymentService = new InvoicePaymentService(dbFactory);
+            success = await paymentService.AddAsync(invoiceUuid, soHeader.DepositAmount, soHeader.MiscInvoiceUuid);
+            if (!success) this.Messages.Add(paymentService.Messages);
 
             return (success, invoiceUuid);
         }

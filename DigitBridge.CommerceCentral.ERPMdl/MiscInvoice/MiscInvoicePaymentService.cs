@@ -38,20 +38,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _miscInvoiceService;
             }
         }
-        public async Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceTransUuid, string invoiceNumber, decimal amount)
-        {
-            Add();
-            if (miscInvoiceUuid.IsZero())
-            {
-                AddError($"miscInvoiceUuid is null");
-                return false;
-            }
 
-            if (invoiceTransUuid.IsZero())
-            {
-                AddError($"invoiceTransUuid is null");
-                return false;
-            }
+        protected async Task<bool> GetMiscPaymentData(string miscInvoiceUuid, string invoiceTransUuid, string invoiceNumber, decimal amount)
+        {
             if (!await LoadMiscInvoiceAsync(miscInvoiceUuid))
                 return false;
 
@@ -89,6 +78,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 Data.MiscInvoiceTransaction.TransNum = await MiscInvoiceTransactionHelper.GetTranSeqNumAsync(header.MiscInvoiceNumber, header.ProfileNum);
             }
 
+            return true;
+        }
+
+        public async Task<bool> AddMiscPayment(string miscInvoiceUuid, string invoiceTransUuid, string invoiceNumber, decimal amount)
+        {
+            _ProcessMode = ProcessingMode.Add;
+
+            if (miscInvoiceUuid.IsZero())
+            {
+                AddError($"miscInvoiceUuid is null");
+                return false;
+            }
+
+            if (invoiceTransUuid.IsZero())
+            {
+                AddError($"invoiceTransUuid is null");
+                return false;
+            }
+
+            if (!await GetMiscPaymentData(miscInvoiceUuid, invoiceTransUuid, invoiceNumber, amount))
+            {
+                return false;
+            }
             if (!await SaveDataAsync())
             {
                 AddError($"AddMiscPayment->SaveDataAsync error.");

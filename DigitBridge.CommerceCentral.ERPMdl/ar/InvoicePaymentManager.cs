@@ -191,49 +191,49 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
         #endregion
 
-        #region Add payment from prepayment.
+        //#region Add payment from prepayment.
 
-        public async Task<bool> AddPaymentFromPrepayment(string miscInvoiceUuid, string invoiceUuid, decimal amount)
-        {
-            if (miscInvoiceUuid.IsZero())
-                return true;
+        //public async Task<bool> AddPaymentFromPrepayment(string miscInvoiceUuid, string invoiceUuid, decimal amount)
+        //{
+        //    if (miscInvoiceUuid.IsZero())
+        //        return true;
 
-            if (invoiceUuid.IsZero())
-            {
-                AddError("invoiceUuid is required.");
-                return false;
-            }
-            if (amount.IsZero())
-            {
-                AddError("amount is error.");
-                return false;
-            }
+        //    if (invoiceUuid.IsZero())
+        //    {
+        //        AddError("invoiceUuid is required.");
+        //        return false;
+        //    }
+        //    if (amount.IsZero())
+        //    {
+        //        AddError("amount is error.");
+        //        return false;
+        //    }
 
-            var srv_MisPayment = new MiscInvoicePaymentService(dbFactory);
+        //    var srv_MisPayment = new MiscInvoicePaymentService(dbFactory);
 
-            var actualApplyAmount = await srv_MisPayment.GetCanApplyAmount(miscInvoiceUuid, amount);
+        //    var actualApplyAmount = await srv_MisPayment.GetCanApplyAmount(miscInvoiceUuid, amount);
 
-            //Add payment to invoice trans and pay invoice.
-            var srv_payment = new InvoicePaymentService(dbFactory);
-            var success = await srv_payment.AddAsync(invoiceUuid, actualApplyAmount, miscInvoiceUuid);
-            if (!success)
-            {
-                this.Messages = this.Messages.Concat(srv_payment.Messages).ToList();
-                return false;
-            }
-            var paymentData = srv_payment.Data.InvoiceTransaction;
+        //    //Add payment to invoice trans and pay invoice.
+        //    var srv_payment = new InvoicePaymentService(dbFactory);
+        //    var success = await srv_payment.AddAsync(invoiceUuid, actualApplyAmount, miscInvoiceUuid);
+        //    if (!success)
+        //    {
+        //        this.Messages = this.Messages.Concat(srv_payment.Messages).ToList();
+        //        return false;
+        //    }
+        //    var paymentData = srv_payment.Data.InvoiceTransaction;
 
-            //Add mis payment
-            success = await srv_MisPayment.AddMiscPayment(miscInvoiceUuid, paymentData.TransUuid, paymentData.InvoiceNumber, actualApplyAmount);
-            if (!success)
-            {
-                this.Messages = this.Messages.Concat(srv_MisPayment.Messages).ToList();
-                return false;
-            }
+        //    //Add mis payment
+        //    success = await srv_MisPayment.AddMiscPayment(miscInvoiceUuid, paymentData.TransUuid, paymentData.InvoiceNumber, actualApplyAmount);
+        //    if (!success)
+        //    {
+        //        this.Messages = this.Messages.Concat(srv_MisPayment.Messages).ToList();
+        //        return false;
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
-        #endregion
+        //#endregion
     }
 }
