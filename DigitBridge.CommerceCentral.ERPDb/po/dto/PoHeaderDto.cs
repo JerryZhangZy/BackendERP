@@ -157,6 +157,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasCancelDate => CancelDate != null;
 
 		/// <summary>
+		/// Payment terms, default from customer data. <br> Title: Terms, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Payment terms, default from customer data. <br> Title: Terms, Display: true, Editable: true")]
+        [StringLength(50, ErrorMessage = "The Terms value cannot exceed 50 characters. ")]
+        public string Terms { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasTerms => Terms != null;
+
+		/// <summary>
 		/// reference Vendor Unique Guid. <br> Display: false, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("reference Vendor Unique Guid. <br> Display: false, Editable: false")]
@@ -180,7 +190,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Vendor name. <br> Display: false, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("Vendor name. <br> Display: false, Editable: false")]
-        [StringLength(100, ErrorMessage = "The VendorName value cannot exceed 100 characters. ")]
+        [StringLength(200, ErrorMessage = "The VendorName value cannot exceed 200 characters. ")]
         public string VendorName { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]

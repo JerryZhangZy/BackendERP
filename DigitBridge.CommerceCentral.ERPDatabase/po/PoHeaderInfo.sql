@@ -17,6 +17,7 @@
 	[CustomerPoNum] VARCHAR(100) NOT NULL DEFAULT '', --Customer P/O Number. <br> Title: Customer PO: Display: true, Editable: true
 
 	[WarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Warehouse uuid, load from warehouse data. <br> Display: false, Editable: false
+	[WarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable warehouse code. <br> Title: Warehouse Code: Display: true, Editable: true
 	[CustomerUuid] VARCHAR(50) NOT NULL DEFAULT '', --Customer uuid, load from customer data. <br> Display: false, Editable: false
 
 	[EndBuyerUserID] VARCHAR(255) NOT NULL DEFAULT '', --The marketplace user ID of the customer. Don’t use “Buyer” alone to avoid confusion with retailer buyer from the purchase department.<br> Display: false, Editable: false
@@ -63,6 +64,8 @@
 	[BillToEmail] VARCHAR(100) NOT NULL DEFAULT '', --Bill to email <br> Title: Bill to email: Display: true, Editable: true
 	[BillToDaytimePhone] VARCHAR(50) NOT NULL DEFAULT '', --Bill to phone <br> Title: Bill to phone: Display: true, Editable: true
 	[BillToNightPhone] VARCHAR(50) NOT NULL DEFAULT '', --(Ignore)
+
+	[Notes] NVarchar(1000) NOT NULL DEFAULT '',--Order notes. <br> Title: Notes, Display: true, Editable: true
 
     [EnterDateUtc] DATETIME NULL, --(Ignore)
     [UpdateDateUtc] DATETIME NULL, --(Ignore)

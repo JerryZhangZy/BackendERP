@@ -15,6 +15,8 @@
 	[EtaArrivalDate] DATE NULL, --Estimated date when item arrival to buyer . <br> Title: Arrival Date, Display: true, Editable: true
 	[CancelDate] DATE NULL, --Usually it is related to shipping instruction. <br> Title: Cancel Date, Display: false, Editable: false
 
+	[Terms] VARCHAR(50) NOT NULL DEFAULT '', --Payment terms, default from customer data. <br> Title: Terms, Display: true, Editable: true
+
     [VendorUuid] VARCHAR(50) NULL DEFAULT '', --reference Vendor Unique Guid. <br> Display: false, Editable: false
 	[VendorCode] VARCHAR(50) NULL, --Vendor readable number.<br> DatabaseNum + VendorCode is DigitBridgeVendorCode, which is global unique. <br> Display: false, Editable: false
 	[VendorName] NVARCHAR(200) NULL, --Vendor name. <br> Display: false, Editable: false

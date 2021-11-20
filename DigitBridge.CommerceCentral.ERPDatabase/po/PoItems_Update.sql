@@ -28,3 +28,9 @@ IF COL_LENGTH('PoItems', 'ItemTotalAmount') IS NULL
 BEGIN					
     ALTER TABLE PoItems ADD [ItemTotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
 END	 
+
+-- 11/19/2021 added by junxian
+IF COL_LENGTH('PoItems', 'QtyForOther') IS NULL					
+BEGIN					
+    ALTER TABLE PoItems ADD [QtyForOther] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END	

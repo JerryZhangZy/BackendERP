@@ -413,7 +413,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                   await  AddActivityLogForCurrentDataAsync();
                 return result;
             }
-            return success;
+            return false;
         }
 
         /// <summary>

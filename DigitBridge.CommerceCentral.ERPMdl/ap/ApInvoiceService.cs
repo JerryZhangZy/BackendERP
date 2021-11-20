@@ -35,6 +35,52 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return this;
         }
 
+        /// <summary>
+        /// Add to ActivityLog record for current data and processMode
+        /// Should Call this method after successful save, update, delete
+        /// </summary>
+        protected void AddActivityLogForCurrentData()
+        {
+            this.AddActivityLog(new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.ApInvoice,
+                Action = (int)this.ProcessMode,
+                LogSource = "ApInvoiceService",
+
+                MasterAccountNum = this.Data.ApInvoiceHeader.MasterAccountNum,
+                ProfileNum = this.Data.ApInvoiceHeader.ProfileNum,
+                DatabaseNum = this.Data.ApInvoiceHeader.DatabaseNum,
+                ProcessUuid = this.Data.ApInvoiceHeader.ApInvoiceUuid,
+
+
+                LogMessage = string.Empty
+            });
+        }
+
+        /// <summary>
+        /// Add to ActivityLog record for current data and processMode
+        /// Should Call this method after successful save, update, delete
+        /// </summary>
+        protected async Task AddActivityLogForCurrentDataAsync()
+        {
+            await this.AddActivityLogAsync(new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.ApInvoice,
+                Action = (int)this.ProcessMode,
+                LogSource = "ApInvoiceService",
+
+                MasterAccountNum = this.Data.ApInvoiceHeader.MasterAccountNum,
+                ProfileNum = this.Data.ApInvoiceHeader.ProfileNum,
+                DatabaseNum = this.Data.ApInvoiceHeader.DatabaseNum,
+                ProcessUuid = this.Data.ApInvoiceHeader.ApInvoiceUuid,
+
+
+                LogMessage = string.Empty
+
+            });
+        }
+
+
 
         /// <summary>
         /// Add new data from Dto object
@@ -56,7 +102,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var result= SaveData();
+            if (result)
+                AddActivityLogForCurrentData();
+            return result;
         }
 
         /// <summary>
@@ -79,7 +128,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var result= await SaveDataAsync();
+            if (result)
+               await AddActivityLogForCurrentDataAsync();
+            return result;
         }
 
         public virtual bool Add(ApInvoicePayload payload)
@@ -103,7 +155,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var result= SaveData();
+            if (result)
+                AddActivityLogForCurrentData();
+            return result;
         }
 
         public virtual async Task<bool> AddAsync(ApInvoicePayload payload)
@@ -127,7 +182,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var result= await SaveDataAsync();
+            if (result)
+                await AddActivityLogForCurrentDataAsync();
+            return result;
         }
 
         /// <summary>
@@ -153,7 +211,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var result= SaveData();
+            if (result)
+                AddActivityLogForCurrentData();
+            return result;
         }
 
         /// <summary>
@@ -179,7 +240,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var result= await SaveDataAsync();
+            if (result)
+                await AddActivityLogForCurrentDataAsync();
+            return result;
         }
 
         /// <summary>
@@ -209,7 +273,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            return SaveData();
+            var result= SaveData();
+            if (result)
+                AddActivityLogForCurrentData();
+            return result;
         }
 
         /// <summary>
@@ -238,7 +305,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            return await SaveDataAsync();
+            var result= await SaveDataAsync();
+            if (result)
+                await AddActivityLogForCurrentDataAsync();
+            return result;
         }
 
         /// <summary>
@@ -285,8 +355,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Delete();
             //load data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-            success = success && DeleteData();
-            return success;
+            if (success)
+            {
+                if (DeleteData())
+                {
+                    await AddActivityLogForCurrentDataAsync();
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>

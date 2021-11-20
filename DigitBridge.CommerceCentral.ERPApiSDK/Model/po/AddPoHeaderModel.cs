@@ -17,11 +17,11 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public DateTime PoDate { get; set; }
         public DateTime? CancelAfterDate { get; set; }
         public string Terms { get; set; }
-        public string WarehousCode { get; set; }
+        public string WarehouseCode { get; set; }
         public DateTime? RequestShipDate { get; set; }
         public DateTime? ArrivalDueDate { get; set; }
         public string PublicNote { get; set; }
-        public string PrivateNote { get; set; }
+        //public string PrivateNote { get; set; }
         public List<PoLineModel> PoLineList { get; set; }
     }
 }

@@ -250,6 +250,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return response;
             }
 
+            if (wmsShipment.ShipmentHeader.SalesOrderUuid.IsZero())
+            {
+                AddError("SalesOrderUuid cannot be empty.");
+                return response;
+            }
+
             response.MainTrackingNumber = wmsShipment.ShipmentHeader.MainTrackingNumber;
 
             var mapper = new WMSOrderShipmentMapper(payload.MasterAccountNum, payload.ProfileNum);
@@ -267,7 +273,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // create invoice and set invoicenumber back to shipmentdata. 
             var invoiceManager = new InvoiceManager(dbFactory);
-            (success, response.InvoiceUuid) = await invoiceManager.CreateInvoiceFromShipmentAsync(service.Data);
+            (success, response.InvoiceUuid) = await invoiceManager.CreateInvoiceFromShipmentAsync(orderShipmentData, wmsShipment.ShipmentHeader.SalesOrderUuid);
             if (!success)
             {
                 this.Messages.Add(invoiceManager.Messages);
