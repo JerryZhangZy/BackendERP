@@ -492,7 +492,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
                     await AddActivityLogForCurrentDataAsync();
                 return result;
             }
-            return success;
+            return false;
             
         }
 
