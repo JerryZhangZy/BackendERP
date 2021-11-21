@@ -377,7 +377,7 @@ WHERE itm.cnt > 0
             var originalPaidAmount = header.PaidAmount;
             var originalPaidBalance = header.Balance;
 
-            success = await srv.PayInvoiceAsync(trans);
+            success = await srv.UpdateInvoicePaidAmountAsync(trans);
             Assert.True(success, "call PayInvoiceAsync failed.");
 
             // reget invoice data from db.
@@ -391,6 +391,30 @@ WHERE itm.cnt > 0
             success = paidAmount == originalPaidBalance - newHeader.Balance;
             Assert.True(success, "Balance is error.");
         }
+
+
+        [Fact()]
+        public async Task UpdateInvoiceBalanceAsync_Test()
+        {
+            var transUuid = "46530b79-2906-4fff-84b7-96a8527db8fb";
+
+            var srv = new InvoiceService(DataBaseFactory);
+            try
+            {
+                using (var b = new Benchmark("UpdateInvoiceBalanceAsync_Test"))
+                {
+                    var success = await srv.UpdateInvoiceBalanceAsync(transUuid, true);
+                    success = await srv.UpdateInvoiceBalanceAsync(transUuid);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
 
     }
 }

@@ -401,7 +401,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             soSrv.Data.CheckIntegrity();
 
-            if (await soSrv.SaveCurrentDataAsync())
+            if (await soSrv.SaveDataAsync())
                 return soSrv.Data;
             return null;
         }

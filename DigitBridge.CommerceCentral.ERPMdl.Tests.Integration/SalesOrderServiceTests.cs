@@ -21,6 +21,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -291,6 +292,7 @@ WHERE itm.cnt > 0
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
+
         [Fact()]
         //[Fact(Skip = SkipReason)]
         public async Task AddPrepaymentAmountAsync_Test()
@@ -328,6 +330,59 @@ WHERE itm.cnt > 0
             success = await misSrv_Get.GetDataByIdAsync(miscInvoiceUuid);
             Assert.True(success, "Get mis invoice  error:" + misSrv_Get.Messages.ObjectToString());
         }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateStatusAsync_Test()
+        {
+            //Save salesorder
+            var rowNum = (long)12741;
+            var status = SalesOrderStatus.Approved;
+
+            var srv = new SalesOrderService(DataBaseFactory);
+            try
+            {
+                using (var b = new Benchmark("FindNotExistSkuWarehouseAsync_Test"))
+                {
+                    var success = await srv.UpdateStatusAsync(rowNum, status);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+ 
+        }
+
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateWithIgnoreAsync_Test()
+        {
+            //Save salesorder
+            var rowNum = (long)12742;
+            var srv = new SalesOrderService(DataBaseFactory);
+            try
+            {
+                using (var b = new Benchmark("FindNotExistSkuWarehouseAsync_Test"))
+                {
+                    await srv.EditAsync(rowNum);
+                    srv.Data.SalesOrderItems[0].ShipPack = 0;
+                    srv.Data.SalesOrderItems[0].ShipQty = 0;
+                    await srv.SaveDataAsync();
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+        }
+
+
     }
 }
 

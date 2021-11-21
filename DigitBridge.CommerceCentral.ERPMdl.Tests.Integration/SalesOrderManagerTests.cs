@@ -114,7 +114,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         public async Task CreateSalesOrderByChannelOrderIdAsync_Test()
         {
             var uuids = new List<string> {
-                "bbf79acd-d61b-46dc-904b-9e9851a0e119"
+                "4d629cd3-9fdb-463d-b5bc-30d3e93127e7"
             };
             
             SalesOrderManager soManager = new SalesOrderManager(DataBaseFactory);
@@ -125,7 +125,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 foreach (var uuid in uuids)
                 {
-                    using (var b = new Benchmark("FindNotExistSkuWarehouseAsync_Test"))
+                    using (var b = new Benchmark("CreateSalesOrderByChannelOrderIdAsync_Test"))
                     {
                         (result, salesOrderNums) = await soManager.CreateSalesOrderByChannelOrderIdAsync(uuid);
                     }

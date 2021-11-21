@@ -382,6 +382,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GenerateServiceCalculator.ttinclude</DependentUpon>
     </Compile>
+    <Compile Update="T4\GenerateServicePartial.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenerateServicePartial.ttinclude</DependentUpon>
+    </Compile>
     <Compile Update="T4\GenerateStructureDto - Copy.cs">
       <DependentUpon>GenerateStructureDto.ttinclude</DependentUpon>
       <DesignTime>True</DesignTime>

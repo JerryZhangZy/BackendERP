@@ -224,7 +224,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await AddActivityLogForCurrentDataAsync();
 
             //save trans success. then pay invoice. 
-            if (!await InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction))
+            if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
             {
                 AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
                 return false;
@@ -273,7 +273,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddActivityLogForCurrentData();
 
             //save trans success. then pay invoice. 
-            if (!InvoiceService.PayInvoice(Data.InvoiceTransaction))
+            if (!InvoiceService.UpdateInvoicePaidAmount(Data.InvoiceTransaction))
             {
                 AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
                 return false;
@@ -322,7 +322,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await AddActivityLogForCurrentDataAsync();
 
             //save trans success. then pay invoice. 
-            if (!await InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction))
+            if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
             {
                 AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
                 return false;
@@ -374,7 +374,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddActivityLogForCurrentData();
 
             //save trans success. then pay invoice. 
-            if (!InvoiceService.PayInvoice(Data.InvoiceTransaction))
+            if (!InvoiceService.UpdateInvoicePaidAmount(Data.InvoiceTransaction))
             {
                 AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
                 return false;
@@ -426,7 +426,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await AddActivityLogForCurrentDataAsync();
 
             //save trans success. then pay invoice. 
-            if (!await InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction))
+            if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
             {
                 AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
                 return false;
@@ -488,7 +488,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddActivityLogForCurrentData();
 
             //save trans success. then pay invoice. 
-            if (!InvoiceService.PayInvoice(Data.InvoiceTransaction))
+            if (!InvoiceService.UpdateInvoicePaidAmount(Data.InvoiceTransaction))
             {
                 AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
                 return false;
@@ -546,7 +546,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await AddActivityLogForCurrentDataAsync();
 
             //save trans success. then pay invoice. 
-            if (!await InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction))
+            if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
             {
                 AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
                 return false;
@@ -611,7 +611,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddActivityLogForCurrentData();
 
             //save trans success. then pay invoice. 
-            if (!InvoiceService.PayInvoice(Data.InvoiceTransaction))
+            if (!InvoiceService.UpdateInvoicePaidAmount(Data.InvoiceTransaction))
             {
                 AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
                 return false;
@@ -675,7 +675,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await AddActivityLogForCurrentDataAsync();
 
             //save trans success. then pay invoice. 
-            if (!await InvoiceService.PayInvoiceAsync(Data.InvoiceTransaction))
+            if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
             {
                 AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
                 return false;

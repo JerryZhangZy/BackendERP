@@ -2207,6 +2207,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
             => await UpdateAsync(CancellationToken.None, poco, columns);
 
         /// <inheritdoc />
+        public async Task<int> UpdateWithIgnoreAsync(object poco, IEnumerable<string> ignoreColumns)
+            => await UpdateAsync(CancellationToken.None, poco, null, null, ignoreColumns);
+
+        /// <inheritdoc />
         public async Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, IEnumerable<string> columns)
             => await UpdateAsync(cancellationToken, poco, null, columns);
 
@@ -2231,7 +2235,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             => await UpdateAsync(CancellationToken.None, poco, primaryKeyValue, columns);
 
         /// <inheritdoc />
-        public async Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, object primaryKeyValue, IEnumerable<string> columns)
+        public async Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, object primaryKeyValue, IEnumerable<string> columns, IEnumerable<string> ignoreColumns = null)
         {
             if (poco == null)
                 throw new ArgumentNullException(nameof(poco));
@@ -2240,7 +2244,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 return await Task.FromResult(0);
 
             var pd = PocoData.ForType(poco.GetType(), _defaultMapper);
-            return await ExecuteUpdateAsync(cancellationToken, pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco, primaryKeyValue, columns);
+            return await ExecuteUpdateAsync(cancellationToken, pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco, primaryKeyValue, columns, ignoreColumns);
         }
 
         /// <inheritdoc />
@@ -2272,7 +2276,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         }
 
         private async Task<int> ExecuteUpdateAsync(CancellationToken cancellationToken, string tableName, string primaryKeyName, object poco,
-                                                   object primaryKeyValue, IEnumerable<string> columns)
+                                                   object primaryKeyValue, IEnumerable<string> columns, IEnumerable<string> ignoreColumns = null)
         {
             try
             {
@@ -2281,7 +2285,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 {
                     using (var cmd = CreateCommand(_sharedConnection, string.Empty))
                     {
-                        PreExecuteUpdate(tableName, primaryKeyName, poco, primaryKeyValue, columns, cmd);
+                        PreExecuteUpdate(tableName, primaryKeyName, poco, primaryKeyValue, columns, cmd, null, ignoreColumns);
                         return await ExecuteNonQueryHelperAsync(cancellationToken, cmd);
                     }
                 }

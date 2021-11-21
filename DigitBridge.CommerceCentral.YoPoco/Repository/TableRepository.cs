@@ -127,6 +127,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         public TableRepository() 
         {
             Clear();
+            SetIgnoreUpdateColumns(IgnoreUpdateColumns());
         }
 
         public TableRepository(IDataBaseFactory dbFactory) : this()
@@ -245,6 +246,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 _IgnoreUpdate = columns;
             }
         }
+        public virtual IList<string> IgnoreUpdateColumns() => null;
 
         #endregion Properties
 
@@ -455,7 +457,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             this.ConvertDataFieldsToDb();
             if (db.IsInTransaction)
                 if (_IgnoreUpdate != null && _IgnoreUpdate.Count > 0)
-                    rtn = await db.UpdateAsync(this.SetAllowNull(false), _IgnoreUpdate);
+                    rtn = await db.UpdateWithIgnoreAsync(this.SetAllowNull(false), _IgnoreUpdate);
                 else
                     rtn = await db.UpdateAsync(this.SetAllowNull(false));
             else
