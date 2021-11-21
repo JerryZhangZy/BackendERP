@@ -23,11 +23,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected static string PREFIX = Helper.TableAllies;
 
         // Filter fields
-        //protected QueryFilter<DateTime> _OrderDateFrom = new QueryFilter<DateTime>("OrderDateFrom", "OrderDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime);
-        //public QueryFilter<DateTime> OrderDateFrom => _OrderDateFrom;
+        protected QueryFilter<DateTime> _LogDateFrom = new QueryFilter<DateTime>("LogDateFrom", "LogDate", PREFIX, FilterBy.ge, SqlQuery._SqlMinDateTime, isDate: true);
+        public QueryFilter<DateTime> LogDateFrom => _LogDateFrom;
 
-        //protected QueryFilter<DateTime> _OrderDateTo = new QueryFilter<DateTime>("OrderDateTo", "OrderDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime);
-        //public QueryFilter<DateTime> OrderDateTo => _OrderDateTo;
+        protected QueryFilter<DateTime> _LogDateTo = new QueryFilter<DateTime>("LogDateTo", "LogDate", PREFIX, FilterBy.le, SqlQuery._AppMaxDateTime, isDate: true);
+        public QueryFilter<DateTime> LogDateTo => _LogDateTo;
 
         //protected QueryFilter<string> _CustomerCode = new QueryFilter<string>("CustomerCode", "CustomerCode", PREFIX, FilterBy.eq, string.Empty);
         //public QueryFilter<string> CustomerCode => _CustomerCode;
@@ -35,22 +35,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
         //public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
 
-        //protected EnumQueryFilter<SalesOrderType> _OrderType = new EnumQueryFilter<SalesOrderType>("OrderType", "OrderType", PREFIX, FilterBy.eq, -1);
-        //public EnumQueryFilter<SalesOrderType> OrderType => _OrderType;
+        protected EnumQueryFilter<ActivityLogType> _Type = new EnumQueryFilter<ActivityLogType>("Type", "Type", PREFIX, FilterBy.eq, -1);
+        public EnumQueryFilter<ActivityLogType> Type => _Type;
+
+        protected EnumQueryFilter<ActivityLogAction> _Action = new EnumQueryFilter<ActivityLogAction>("Action", "Action", PREFIX, FilterBy.eq, -1);
+        public EnumQueryFilter<ActivityLogAction> Action => _Action;
 
         public ActivityLogQuery() : base(PREFIX)
         {
-            //AddFilter(_OrderDateFrom);
-            //AddFilter(_OrderDateTo);
+            AddFilter(_LogDateFrom);
+            AddFilter(_LogDateTo);
             //AddFilter(_CustomerCode);
             //AddFilter(_OrderStatus);
-            //AddFilter(_OrderType);
+            AddFilter(_Type);
+            AddFilter(_Action);
         }
 
         public override void InitQueryFilter()
         {
-            //_OrderDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
-            //_OrderDateTo.FilterValue = DateTime.UtcNow.Date.AddDays(7);
+            _LogDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
+            _LogDateTo.FilterValue = DateTime.UtcNow.Date.AddDays(7);
         }
     }
 }
