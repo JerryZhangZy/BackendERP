@@ -121,6 +121,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion ActivityLog Service
 
+        #region InitNumbersService Service
+        [XmlIgnore, JsonIgnore]
+        protected InitNumbersService _initNumbersService;
+        [XmlIgnore, JsonIgnore]
+        public InitNumbersService initNumbersService
+        {
+            get
+            {
+                if (_initNumbersService is null)
+                    _initNumbersService = new InitNumbersService(dbFactory);
+                return _initNumbersService;
+            }
+        }
+        #endregion InitNumbersService Service
+
         #region Properties
         protected ProcessingMode _ProcessMode;
         /// <summary>
@@ -446,7 +461,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             //PrepareData();
             Calculate();
-            return _data.Save();
+
+            // call BeforeSaveAsync to update relative data, rollback data for update
+            BeforeSave();
+            var result = _data.Save();
+            // call AfterSaveAsync to update relative data, apply new update
+            AfterSave();
+
+            // only update success, call SaveSuccessAsync. for example: add activity log
+            if (result)
+                this.SaveSuccess();
+            return result;
         }
 
         public virtual bool DeleteData()
@@ -455,7 +480,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 return false;
-            return _data.Delete();
+
+            // call BeforeSaveAsync to update relative data, rollback data for update
+            BeforeSave();
+            var result = _data.Delete();
+            // call AfterSaveAsync to update relative data, apply new update
+            AfterSave();
+
+            // only update success, call SaveSuccessAsync. for example: add activity log
+            if (result)
+                this.SaveSuccess();
+            return result;
         }
 
         public virtual async Task<bool> GetDataAsync(long RowNum)
@@ -514,7 +549,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             //PrepareData();
             Calculate();
-            return await _data.SaveAsync();
+
+            // call BeforeSaveAsync to update relative data, rollback data for update
+            await BeforeSaveAsync();
+            var result = await _data.SaveAsync();
+            // call AfterSaveAsync to update relative data, apply new update
+            await AfterSaveAsync();
+
+            // only update success, call SaveSuccessAsync. for example: add activity log
+            if (result)
+                await this.SaveSuccessAsync();
+
+            return result;
         }
 
         public virtual async Task<bool> DeleteDataAsync()
@@ -523,8 +569,94 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             if (_data is null)
                 return false;
-            return await _data.DeleteAsync();
+
+            // call BeforeSaveAsync to update relative data, rollback data for update
+            await BeforeSaveAsync();
+            var result = await _data.DeleteAsync();
+            // call AfterSaveAsync to update relative data, apply new update
+            await AfterSaveAsync();
+
+            // only update success, call SaveSuccessAsync. for example: add activity log
+            if (result)
+                await this.SaveSuccessAsync();
+
+            return result;
         }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public virtual async Task BeforeSaveAsync() {}
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public virtual void BeforeSave() { }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public virtual async Task AfterSaveAsync() {}
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public virtual void AfterSave() { }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public virtual async Task SaveSuccessAsync()
+        {
+            await AddActivityLogForCurrentDataAsync();
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public virtual void SaveSuccess()
+        {
+            AddActivityLogForCurrentData();
+        }
+
+        /// <summary>
+        /// Add activity log record
+        /// </summary>
+        protected async Task AddActivityLogForCurrentDataAsync()
+        {
+            var obj = this.GetActivityLog();
+            if (obj == null)
+                return;
+            await this.AddActivityLogAsync(obj);
+        }
+
+        /// <summary>
+        /// Add activity log record
+        /// </summary>
+        protected void AddActivityLogForCurrentData()
+        {
+            var obj = this.GetActivityLog();
+            if (obj == null)
+                return;
+            this.AddActivityLog(obj);
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected virtual ActivityLog GetActivityLog() => null;
 
         #endregion CRUD Methods
 
