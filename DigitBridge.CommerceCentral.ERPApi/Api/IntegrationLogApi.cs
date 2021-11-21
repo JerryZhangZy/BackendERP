@@ -51,6 +51,33 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<EventERPPayload>(payload);
         }
 
+        /// <summary>
+        /// Load erpevent list
+        /// </summary>
+        [FunctionName(nameof(ActivityLogList))]
+        [OpenApiOperation(operationId: "CentralOrderTransferLog", tags: new[] { "IntegrationLog" },
+            Summary = "Load Central Order Transfer to Sales Order Log")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "MasterAccountNum", Description = "From login profile",
+            Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadFind),
+            Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(ActivityLogPayload))]
+        public static async Task<JsonNetResponse<ActivityLogPayload>> ActivityLogList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "IntegrationLog/ActivityLog/find")]
+            HttpRequest req)
+        {
+            var payload = await req.GetParameters<ActivityLogPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new ActivityLogList(dataBaseFactory);
+            await srv.GetActivityLogListAsync(payload);
+            return new JsonNetResponse<ActivityLogPayload>(payload);
+        }
     }
 }
 
