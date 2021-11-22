@@ -515,17 +515,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             success = success && DeleteData();
             return success;
-        }
-
-        /// <summary>
-        /// Delete data by number
-        /// </summary>
-        /// <param name="invoiceNumber"></param>
-        /// <returns></returns>
-        public virtual bool DeleteByNumber(InvoicePaymentPayload payload, string invoiceNumber, int transNum)
-        {
-            return base.DeleteByNumber(payload, invoiceNumber, TransTypeEnum.Payment, transNum);
-        }
+        } 
 
 
         #region New payment

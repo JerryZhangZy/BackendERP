@@ -266,9 +266,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
                 return false;
-            }
-
-            AddActivityLogForCurrentData();
+            } 
 
             //save trans success. then pay invoice. 
             if (!InvoiceService.UpdateInvoicePaidAmount(Data.InvoiceTransaction))
@@ -365,9 +363,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
                 return false;
-            }
-
-            AddActivityLogForCurrentData();
+            } 
 
             //save trans success. then pay invoice. 
             if (!InvoiceService.UpdateInvoicePaidAmount(Data.InvoiceTransaction))
@@ -477,9 +473,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
                 return false;
-            }
-
-            AddActivityLogForCurrentData();
+            } 
 
             //save trans success. then pay invoice. 
             if (!InvoiceService.UpdateInvoicePaidAmount(Data.InvoiceTransaction))
@@ -598,9 +592,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
                 return false;
-            }
-
-            AddActivityLogForCurrentData();
+            } 
 
             //save trans success. then pay invoice. 
             if (!InvoiceService.UpdateInvoicePaidAmount(Data.InvoiceTransaction))
