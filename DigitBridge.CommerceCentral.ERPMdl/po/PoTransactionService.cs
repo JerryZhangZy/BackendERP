@@ -625,7 +625,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     ShippingTaxAmount = item.ShippingTaxAmount.ToDecimal(),
                     MiscAmount = item.MiscAmount.ToDecimal(),
                     MiscTaxAmount = item.MiscTaxAmount.ToDecimal(),
-                    ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToDecimal()
+                    ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToDecimal(),
+                    //TransQty=item.PoQty-item.ReceivedQty-item.CancelledQty
                 };
                 
                 poTransactionItems.Add(poTransactionItem);
