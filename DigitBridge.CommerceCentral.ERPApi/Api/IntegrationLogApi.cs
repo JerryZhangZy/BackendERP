@@ -51,6 +51,61 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<EventERPPayload>(payload);
         }
 
+        /// <summary>
+        /// Load activityLog list
+        /// </summary>
+        [FunctionName(nameof(ActivityLogList))]
+        [OpenApiOperation(operationId: "ActivityLogList", tags: new[] { "IntegrationLog" },
+            Summary = "Load Central Order Transfer to Sales Order Log")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "MasterAccountNum", Description = "From login profile",
+            Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadFind),
+            Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(ActivityLogPayloadFind))]
+        public static async Task<JsonNetResponse<ActivityLogPayload>> ActivityLogList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "IntegrationLog/ActivityLog/find")]
+            HttpRequest req)
+        {
+            var payload = await req.GetParameters<ActivityLogPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new ActivityLogList(dataBaseFactory);
+            await srv.GetActivityLogListAsync(payload);
+            return new JsonNetResponse<ActivityLogPayload>(payload);
+        }
+
+        /// <summary>
+        /// Load activityLog list
+        /// </summary>
+        [FunctionName(nameof(EventProcessERPList))]
+        [OpenApiOperation(operationId: "EventProcessERPList", tags: new[] { "IntegrationLog" },
+            Summary = "Load Central Order Transfer to Sales Order Log")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "MasterAccountNum", Description = "From login profile",
+            Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventProcessERPPayloadFind),
+            Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventProcessERPPayloadFind))]
+        public static async Task<JsonNetResponse<EventProcessERPPayload>> EventProcessERPList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "IntegrationLog/EventProcessERP/find")]
+            HttpRequest req)
+        {
+            var payload = await req.GetParameters<EventProcessERPPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new EventProcessERPList(dataBaseFactory);
+            await srv.GetEventProcessERPListAsync(payload);
+            return new JsonNetResponse<EventProcessERPPayload>(payload);
+        }
     }
 }
 
