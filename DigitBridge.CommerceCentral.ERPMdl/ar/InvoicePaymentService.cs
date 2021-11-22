@@ -453,8 +453,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected async Task<bool> PayInvoiceAsync(ApplyInvoice applyInvoice, int masterAccountNum, int profileNum)
         {
             var changedPaidAmount = applyInvoice.PaidAmount - Data.InvoiceTransaction.OriginalPaidAmount;
-            using (var trs = new ScopedTransaction(dbFactory))
-                return await InvoiceHelper.PayInvoiceAsync(applyInvoice.InvoiceNumber, changedPaidAmount, masterAccountNum, profileNum);
+            using var trs = new ScopedTransaction(dbFactory);
+            return await InvoiceHelper.PayInvoiceAsync(applyInvoice.InvoiceNumber, changedPaidAmount, masterAccountNum, profileNum);
         }
         protected async Task<bool> PayInvoiceAsync(string invoiceNumber, int masterAccountNum, int profileNum, decimal paidAmount)
         {
@@ -466,7 +466,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var changedPaidAmount = applyInvoice.PaidAmount - Data.InvoiceTransaction.OriginalPaidAmount;
             using (var trs = new ScopedTransaction(dbFactory))
-                return InvoiceHelper.PayInvoice(applyInvoice.InvoiceNumber, changedPaidAmount, masterAccountNum, profileNum);
+            {
+                bool result = InvoiceHelper.PayInvoice(applyInvoice.InvoiceNumber, changedPaidAmount, masterAccountNum, profileNum);
+                trs.Commit();
+                return result;
+            }
         }
         #endregion
 
@@ -810,15 +814,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var trans = applyInvoice.GenerateTransaction(invoice, payload.InvoiceTransaction);
                 bool result = false;
                 if (applyInvoice.TransRowNum.HasValue)
-                {
-                    Edit();
                     result = await base.UpdateAsync(trans);
-                }
                 else
-                {
-                    Add();
                     result = await base.AddAsync(trans);
-                }
 
                 if (result)
                 {
@@ -829,13 +827,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
                         await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
 
-                    var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
+                    var success = PayInvoice(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
                     if (!success)
                     {
                         applyInvoice.Success = false;
                         AddError($"{applyInvoice.InvoiceNumber} is not applied.");
                     }
 
+                    applyInvoice.TransRowNum = Data.InvoiceTransaction.RowNum;
+                    applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
+                    applyInvoice.InvoiceDate = invoice.InvoiceDate ?? default;
+                    applyInvoice.DueDate = invoice.DueDate ?? default;
+                    applyInvoice.QuickbookDocNum = invoice.QboDocNumber;
+                    applyInvoice.InvoiceTotalAmount = invoice.TotalAmount ?? default;
+                    applyInvoice.PaidAmount = invoice.PaidAmount ?? default;
+                    applyInvoice.InvoiceBalance = invoice.Balance ?? default;
                     applyInvoice.Success = true;
                 }
                 else
