@@ -207,21 +207,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null)
                 return false;
 
-            //TODO: add calculate summary object logic
-            //This is generated sample code
-
+            var setting = new ERPSetting();
             var sum = data.PoTransaction;
 
             sum.ShippingAmount = sum.ShippingAmount.ToAmount();
-            sum.ShippingTaxAmount = sum.ShippingTaxAmount.ToAmount();
-            sum.TaxAmount = sum.TaxAmount.ToAmount();
-            sum.DiscountAmount = sum.DiscountAmount.ToAmount();
             sum.MiscAmount = sum.MiscAmount.ToAmount();
-            sum.TotalAmount = sum.TotalAmount.ToAmount();
-            sum.SubTotalAmount = sum.SubTotalAmount.ToAmount();
             sum.ChargeAndAllowanceAmount = sum.ChargeAndAllowanceAmount.ToAmount();
-            sum.MiscTaxAmount = sum.MiscTaxAmount.ToRate();
-            sum.TaxRate = sum.TaxRate.ToRate();
+
+            // P/O level not support discount
+            sum.DiscountAmount = 0;
+            sum.DiscountRate = 0;
+
+            // P/O level not support tax
+            sum.TaxRate = 0;
+            sum.TaxAmount = 0;
+
+            sum.TotalAmount = (
+                sum.SubTotalAmount - sum.DiscountAmount +
+                sum.TaxAmount +
+                sum.ShippingAmount +
+                sum.MiscAmount +
+                sum.ChargeAndAllowanceAmount
+                ).ToAmount();
 
             return true;
         }
@@ -230,78 +237,68 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (data is null)
                 return false;
-            //TODO: add calculate summary object logic
-            //This is generated sample code
 
             var sum = data.PoTransaction;
-            //sum.SubTotalAmount = 0;
-            //sum.TaxableAmount = 0;
-            //sum.NonTaxableAmount = 0;
             sum.SubTotalAmount = 0;
-            sum.TotalAmount = 0;
-            sum.TaxAmount = 0;
-            sum.DiscountAmount = 0;
-            sum.ShippingTaxAmount = 0;
-            sum.MiscTaxAmount = 0;
-            sum.TaxRate = sum.TaxRate.ToRate();
 
             foreach (var item in data.PoTransactionItems)
             {
                 if (item is null || item.IsEmpty)
                     continue;
-                //var inv = GetInventoryData(data,item.ProductUuid);
 
+                SetDefault(item, data, processingMode);
                 CalculateDetail(item, data, processingMode);
-                if (item.IsAp)
-                {
-                    sum.SubTotalAmount += item.ExtAmount;
-                }
+
+                // sum all items EXtAmount to SubTotalAmount
+                sum.SubTotalAmount += item.ExtAmount;
             }
 
             return true;
         }
 
+        //TODO: add set default for detail line logic
+        //This is generated sample code
         protected virtual bool CalculateDetail(PoTransactionItems item, PoTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (item is null || item.IsEmpty)
                 return false;
 
-            //var setting = new ERPSetting();
-            //var sum = data.InvoiceTransaction;
-            ////var prod = data.GetCache<ProductBasic>(ProductId);
-            ////var inv = data.GetCache<Inventory>(InventoryId);
-            ////var invCost = new ItemCostClass(inv);
-            //var invCost = new ItemCostClass();
+            item.TaxAmount = 0;
+            item.DiscountPrice = 0;
+            item.ExtAmount = 0;
+            item.ShippingTaxAmount = 0;
+            item.MiscTaxAmount = 0;
 
-            //item.Price = item.Price.ToPrice();
-            //item.ShippingAmount = item.ShippingAmount.ToAmount();
-            //item.MiscAmount = item.MiscAmount.ToAmount();
-            //item.ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount(); 
-            //item.StockQty = item.StockQty < 0 ? 0 : item.StockQty.ToQty();
-            //item.NonStockQty = item.NonStockQty < 0 ? 0 : item.StockQty.ToQty(); 
-            //item.ReceiveQty= item.StockQty + item.NonStockQty // Are they equal.?
-            item.TransQty = item.TransQty < 0 ? 0 : item.TransQty.ToQty();
+            var setting = new ERPSetting();
+            var sum = data.PoTransaction;
+            //TODO need get inventory object and load inventory cost
+            //var prod = data.GetCache<ProductBasic>(ProductId);
+            //var inv = data.GetCache<Inventory>(InventoryId);
+            //var invCost = new ItemCostClass(inv);
+            var invCost = new ItemCostClass();
 
-            //item.ExtAmount = item.ExtAmount + item.ReturnDiscountAmount;//TODO
+            // format number var
+            item.Price = item.Price.ToPrice();
+            item.ShippingAmount = item.ShippingAmount.ToAmount();
+            item.MiscAmount = item.MiscAmount.ToAmount();
+            item.ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount();
+            item.TransQty = item.TransQty.ToQty();
 
-            //// when all item return then return the invoice item discount amount. 
-            //if (IsAllItemsReturned())
-            //{
-            //    item.ExtAmount = item.ExtAmount + item.ReturnDiscountAmount;
-            //}
-            //else
-            //{
-            //    // item.ReturnDiscountAmount defalut value is invoice item discount amount.
-            //    item.ReturnDiscountAmount = 0;
-            //}
+            //PriceRule
+            // if exist DiscountRate, calculate after discount unit price
+            item.DiscountPrice = item.Price;
+            if (!item.DiscountRate.IsZero())
+                item.DiscountPrice = (item.Price * (1 - item.DiscountRate.ToRate())).ToPrice();
 
+            // use after discount price to calculate ext. amount
+            item.ExtAmount = (item.DiscountPrice * item.TransQty).ToAmount();
+            item.ExtAmount -= item.DiscountAmount.ToAmount();
 
-            //TODO copy from invoice item  or calculate by percent receivedQty/shipQty
-            //if (setting.TaxForShippingAndHandling)
-            //{
-            //    item.ShippingTaxAmount = (item.ShippingAmount * item.TaxRate).ToAmount();
-            //    item.MiscTaxAmount = (item.MiscAmount * item.TaxRate).ToAmount();
-            //}
+            // if item is taxable, need add taxAmount to extAmount
+            if (!item.TaxRate.IsZero())
+                item.TaxAmount = (item.ExtAmount * item.TaxRate).ToAmount();
+            item.ExtAmount += item.TaxAmount.ToAmount();
+
             return true;
         }
 
