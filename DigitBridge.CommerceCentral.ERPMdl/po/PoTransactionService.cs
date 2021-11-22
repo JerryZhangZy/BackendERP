@@ -605,16 +605,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var poTransactionItem = new PoTransactionItems()
                 {
                     PoUuid = item.PoUuid,
+                    PoNum = Data.PurchaseOrderData.PoHeader.PoNum,
                     PoItemUuid = item.PoItemUuid,
                     Description = item.Description,
                     ProductUuid = item.ProductUuid,
                     InventoryUuid = item.InventoryUuid,
                     WarehouseUuid = item.WarehouseUuid,
+                    WarehouseCode = item.WarehouseCode,
                     SKU = item.SKU,
                     Notes = item.Notes,
                     Price = item.Price,
                     ItemType = item.PoItemType.ToInt(),
-                    TaxRate = item.TaxRate.ToInt()
+                    TaxRate = item.TaxRate.ToDecimal(),
+                    ExtAmount = item.ExtAmount.ToDecimal(),
+                    TaxAmount = item.TaxAmount.ToDecimal(),
+                    DiscountRate = item.DiscountRate.ToDecimal(),
+                    DiscountAmount = item.DiscountAmount.ToDecimal(),
+                    ShippingAmount = item.ShippingAmount.ToDecimal(),
+                    ShippingTaxAmount = item.ShippingTaxAmount.ToDecimal(),
+                    MiscAmount = item.MiscAmount.ToDecimal(),
+                    MiscTaxAmount = item.MiscTaxAmount.ToDecimal(),
+                    ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToDecimal()
                 };
                 
                 poTransactionItems.Add(poTransactionItem);
