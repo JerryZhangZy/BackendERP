@@ -51,7 +51,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion
 
-
         #region override methods
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
@@ -696,6 +695,45 @@ INNER JOIN InvoiceTransaction trs ON (trs.InvoiceUuid = ins.InvoiceUuid AND trs.
 WHERE ins.InvoiceStatus != @4 AND ins.InvoiceStatus != @5
 ";
             var result = await dbFactory.Db.ExecuteAsync(
+                sql,
+                transUuid.ToSqlParameter("@0"),
+                ((int)InvoiceStatusEnum.Outstanding).ToSqlParameter("@1"),
+                ((int)InvoiceStatusEnum.Paid).ToSqlParameter("@2"),
+                ((int)InvoiceStatusEnum.OverPaid).ToSqlParameter("@3"),
+                ((int)InvoiceStatusEnum.Closed).ToSqlParameter("@4"),
+                ((int)InvoiceStatusEnum.Void).ToSqlParameter("@5")
+            );
+            return result > 0;
+        }
+
+        public bool UpdateInvoiceBalance(string transUuid, bool isRollBack = false)
+        {
+            var op = isRollBack ? "-" : "+";
+            var opp = isRollBack ? "+" : "-";
+
+            var sql = $@"
+UPDATE ins 
+SET 
+PaidAmount = (CASE 
+    WHEN COALESCE(trs.TransType,0) = 1 THEN COALESCE(ins.PaidAmount,0){op}COALESCE(trs.TotalAmount,0)
+    ELSE ins.PaidAmount
+END), 
+CreditAmount = (CASE 
+    WHEN COALESCE(trs.TransType,0) = 2 THEN COALESCE(ins.PaidAmount,0){op}COALESCE(trs.TotalAmount,0)
+    ELSE ins.CreditAmount
+END), 
+Balance = COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0),
+InvoiceStatus = (CASE 
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) = 0 AND (COALESCE(ins.InvoiceStatus,0)!=@2) THEN @2
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) > 0 AND (COALESCE(ins.InvoiceStatus,0)!=@1) THEN @1
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) < 0 AND (COALESCE(ins.InvoiceStatus,0)!=@3) THEN @3
+    ELSE COALESCE(ins.InvoiceStatus,0)
+END)
+FROM InvoiceHeader ins
+INNER JOIN InvoiceTransaction trs ON (trs.InvoiceUuid = ins.InvoiceUuid AND trs.TransUuid = @0)
+WHERE ins.InvoiceStatus != @4 AND ins.InvoiceStatus != @5
+";
+            var result = dbFactory.Db.Execute(
                 sql,
                 transUuid.ToSqlParameter("@0"),
                 ((int)InvoiceStatusEnum.Outstanding).ToSqlParameter("@1"),
