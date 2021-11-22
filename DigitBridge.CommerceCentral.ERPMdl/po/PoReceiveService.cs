@@ -668,7 +668,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (poUuids is null || poUuids.Count() == 0)
             {
-                AddError("receiveItems cannot be empty");
+                AddError("WMSPoReceiveItems cannot be empty");
                 results.Add(new WMSPoReceivePayload() { Messages = this.Messages });
                 return results;
             }
