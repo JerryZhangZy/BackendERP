@@ -661,20 +661,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (!success) AddError("Update Misc.Invoice payment failed");
             }
             success = success && DeleteData();
-            if (success)
-                this.AddActivityLogForCurrentData();
             return success;
-        }
-
-        /// <summary>
-        /// Delete data by number
-        /// </summary>
-        /// <param name="invoiceNumber"></param>
-        /// <returns></returns>
-        public virtual bool DeleteByNumber(InvoicePaymentPayload payload, string invoiceNumber, int transNum)
-        {
-            return base.DeleteByNumber(payload, invoiceNumber, TransTypeEnum.Payment, transNum);
-        }
+        } 
 
 
         #region New payment
@@ -987,7 +975,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //return success;
         }
-        #endregion
+        #endregion 
+
     }
 }
 
