@@ -58,31 +58,31 @@ ins.TermsDays as 'InvoiceHeader.InvoiceTermsDays',
 ins.EnterDateUtc as 'InvoiceHeader.EnterDateUtc', 
 
 ( 
-SELECT 
-insl.Seq AS OrderInvoiceLineNum,
---insl.DatabaseNum AS DatabaseNum,
---insl.MasterAccountNum AS MasterAccountNum,
---insl.ProfileNum AS ProfileNum,
---insl.ChannelNum AS ChannelNum,
---insl.ChannelAccountNum AS ChannelAccountNum,
---insl.OrderShipmentItemNum AS OrderShipmentItemNum,
---insl.CentralOrderLineNum AS CentralOrderLineNum,
---insl.OrderDCAssignmentLineNum AS OrderDCAssignmentLineNum,
-insl.SKU AS SKU,
---insl.ChannelItemID AS ChannelItemID,
-insl.ShipQty AS ShippedQty,
-insl.DiscountPrice AS UnitPrice,
-insl.ExtAmount AS LineItemAmount,
-insl.TaxAmount AS LineTaxAmount,
-insl.ChargeAndAllowanceAmount AS LineHandlingFee,
-insl.DiscountAmount AS LineDiscountAmount,
-insl.ItemTotalAmount AS LineAmount,
---insl.DBChannelOrderLineRowID AS DBChannelOrderLineRowID,
-insl.InvoiceItemStatus AS ItemStatus,
-insl.EnterDateUtc AS EnterDateUtc
-FROM InvoiceItems insl
-WHERE insl.InvoiceUuid = ins.InvoiceUuid 
-FOR JSON PATH
+    SELECT 
+    insl.Seq AS OrderInvoiceLineNum,
+    --insl.DatabaseNum AS DatabaseNum,
+    --insl.MasterAccountNum AS MasterAccountNum,
+    --insl.ProfileNum AS ProfileNum,
+        --insl.ChannelNum AS ChannelNum,
+    --insl.ChannelAccountNum AS ChannelAccountNum,
+    --insl.OrderShipmentItemNum AS OrderShipmentItemNum,
+    --insl.CentralOrderLineNum AS CentralOrderLineNum,
+    --insl.OrderDCAssignmentLineNum AS OrderDCAssignmentLineNum,
+    insl.SKU AS SKU,
+    --insl.ChannelItemID AS ChannelItemID,
+    insl.ShipQty AS ShippedQty,
+    insl.DiscountPrice AS UnitPrice,
+    insl.ExtAmount AS LineItemAmount,
+    insl.TaxAmount AS LineTaxAmount,
+    insl.ChargeAndAllowanceAmount AS LineHandlingFee,
+    insl.DiscountAmount AS LineDiscountAmount,
+    insl.ItemTotalAmount AS LineAmount,
+    --insl.DBChannelOrderLineRowID AS DBChannelOrderLineRowID,
+    insl.InvoiceItemStatus AS ItemStatus,
+    insl.EnterDateUtc AS EnterDateUtc
+    FROM InvoiceItems insl
+    WHERE insl.InvoiceUuid = ins.InvoiceUuid 
+    FOR JSON PATH
 ) AS InvoiceItems
             ";
 
