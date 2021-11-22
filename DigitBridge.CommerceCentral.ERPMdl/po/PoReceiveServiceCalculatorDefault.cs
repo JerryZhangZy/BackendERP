@@ -72,7 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     using (var tx = new ScopedTransaction(dbFactory))
                     {
-                         sum.TransNum = PoTransactionHelper.GetTranSeqNum(sum.PoUuid, sum.ProfileNum.ToInt());
+                        sum.TransNum = PoTransactionHelper.GetTranSeqNum(sum.PoUuid, sum.ProfileNum.ToInt());
                     }
                 }
                 //for Add mode, always reset uuid
@@ -98,7 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //Set default for po
             var poData = data.PurchaseOrderData;
             sum.PoUuid = poData.PoHeader.PoUuid;
-            
+
             //sum.DiscountAmount = poData.PoHeader.DiscountAmount;
             //sum.DiscountRate = poData.PoHeader.DiscountRate;
             //sum.TaxableAmount = poData.PoHeader.TaxableAmount;
@@ -167,7 +167,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (poItem != null)
                 {
                     item.PoUuid = poItem.PoUuid;
-                    item.WarehouseUuid = poItem.WarehouseUuid;
+
+                    if (item.WarehouseCode.IsZero())
+                    {
+                        //po receive warehousecode may not equal the item warehousecode.
+                        item.WarehouseCode = poItem.WarehouseCode;
+                        item.WarehouseUuid = poItem.WarehouseUuid;
+                    }
+
                     item.Description = poItem.Description;
                     item.InventoryUuid = item.InventoryUuid;
                     item.Taxable = poItem.Taxable;
