@@ -219,9 +219,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
                 return false;
-            }
-
-            await AddActivityLogForCurrentDataAsync();
+            } 
 
             //save trans success. then pay invoice. 
             if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
@@ -317,9 +315,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
                 return false;
-            }
-
-            await AddActivityLogForCurrentDataAsync();
+            } 
 
             //save trans success. then pay invoice. 
             if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
@@ -421,9 +417,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
                 return false;
-            }
-
-            await AddActivityLogForCurrentDataAsync();
+            } 
 
             //save trans success. then pay invoice. 
             if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
@@ -541,9 +535,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
                 return false;
-            }
-
-            await AddActivityLogForCurrentDataAsync();
+            } 
 
             //save trans success. then pay invoice. 
             if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
@@ -671,8 +663,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
                 return false;
             }
-
-            await AddActivityLogForCurrentDataAsync();
 
             //save trans success. then pay invoice. 
             if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
@@ -885,58 +875,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var trans = Data.InvoiceTransaction;
             return await LoadInvoiceAsync(trans.InvoiceNumber, trans.ProfileNum, trans.MasterAccountNum);
-        }
-
-        #region Add activity log
-        /// <summary>
-        /// Add to ActivityLog record for current data and processMode
-        /// Should Call this method after successful save, update, delete
-        /// </summary>
-        protected void AddActivityLogForCurrentData()
-        {
-            var trans = Data.InvoiceTransaction;
-            this.AddActivityLog(new ActivityLog(dbFactory)
-            {
-                Type = trans.TransType == (int)TransTypeEnum.Payment ? (int)ActivityLogType.InvoicePayment : (int)ActivityLogType.InvoiceReturn,
-                Action = (int)this.ProcessMode,
-                LogSource = trans.TransType == (int)TransTypeEnum.Payment ? "InvoicePaymentService" : "InvoiceReturnService",
-
-                MasterAccountNum = trans.MasterAccountNum,
-                ProfileNum = trans.ProfileNum,
-                DatabaseNum = trans.DatabaseNum,
-                ProcessUuid = trans.TransUuid,
-                ProcessNumber = trans.TransNum.ToString(),
-                ChannelNum = this.Data.InvoiceData.InvoiceHeaderInfo.ChannelAccountNum,
-                ChannelAccountNum = this.Data.InvoiceData.InvoiceHeaderInfo.ChannelAccountNum,
-
-                LogMessage = string.Empty
-            });
-        }
-
-        /// <summary>
-        /// Add to ActivityLog record for current data and processMode
-        /// Should Call this method after successful save, update, delete
-        /// </summary>
-        protected async Task AddActivityLogForCurrentDataAsync()
-        {
-            var trans = Data.InvoiceTransaction;
-            await this.AddActivityLogAsync(new ActivityLog(dbFactory)
-            {
-                Type = trans.TransType == (int)TransTypeEnum.Payment ? (int)ActivityLogType.InvoicePayment : (int)ActivityLogType.InvoiceReturn,
-                Action = (int)this.ProcessMode,
-                LogSource = trans.TransType == (int)TransTypeEnum.Payment ? "InvoicePaymentService" : "InvoiceReturnService",
-
-                MasterAccountNum = trans.MasterAccountNum,
-                ProfileNum = trans.ProfileNum,
-                DatabaseNum = trans.DatabaseNum,
-                ProcessUuid = trans.TransUuid,
-                ProcessNumber = trans.TransNum.ToString(),
-                ChannelNum = this.Data.InvoiceData.InvoiceHeaderInfo.ChannelAccountNum,
-                ChannelAccountNum = this.Data.InvoiceData.InvoiceHeaderInfo.ChannelAccountNum,
-
-                LogMessage = string.Empty
-            });
-        }
-        #endregion
+        }   
     }
 }

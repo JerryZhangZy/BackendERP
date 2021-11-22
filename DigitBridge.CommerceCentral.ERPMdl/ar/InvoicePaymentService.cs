@@ -841,6 +841,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //return success;
         }
         #endregion
+
+        #region write activity log
+
+        protected override ActivityLog GetActivityLog()
+        {
+            var trans = Data.InvoiceTransaction;
+            return new ActivityLog()
+            {
+                Type = (int)ActivityLogType.InvoicePayment,
+                Action = (int)this.ProcessMode,
+                LogSource = "InvoicePaymentService",
+
+                MasterAccountNum = trans.MasterAccountNum,
+                ProfileNum = trans.ProfileNum,
+                DatabaseNum = trans.DatabaseNum,
+                ProcessUuid = trans.TransUuid,
+                ProcessNumber = trans.PaymentNumber,
+                ChannelNum = this.Data.InvoiceData.InvoiceHeaderInfo.ChannelAccountNum,
+                ChannelAccountNum = this.Data.InvoiceData.InvoiceHeaderInfo.ChannelAccountNum,
+
+                LogMessage = string.Empty
+            };
+        }
+
+        #endregion
+
     }
 }
 
