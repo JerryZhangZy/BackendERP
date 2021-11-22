@@ -655,6 +655,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Add po trans for wms po receive.
 
+        /// <summary>
+        /// Add po trans for wms po receive.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="receiveItems"></param>
+        /// <returns></returns>
         public async Task<IList<WmsPoReceivePayload>> AddListAsync(PoReceivePayload payload, IList<WMSPoReceiveItem> receiveItems)
         {
             var results = new List<WmsPoReceivePayload>();
@@ -684,6 +690,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return results;
         }
 
+        /// <summary>
+        /// Get po transaction from wms po receive items.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="receiveItems"></param>
+        /// <param name="poUuid"></param>
+        /// <returns></returns>
         protected PoTransactionData GetPoTransData(PoReceivePayload payload, IList<WMSPoReceiveItem> receiveItems, string poUuid)
         {
             var items = receiveItems.Where(i => i.PoUuid == poUuid && i.Qty > 0);

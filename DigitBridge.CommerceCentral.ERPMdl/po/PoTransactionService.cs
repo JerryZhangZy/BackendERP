@@ -661,7 +661,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
         #region Add by data
-
+        /// <summary>
+        ///  Add po transaction from data.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public virtual async Task<bool> AddAsync(PoTransactionData data)
         {
             // set Add mode and clear data
