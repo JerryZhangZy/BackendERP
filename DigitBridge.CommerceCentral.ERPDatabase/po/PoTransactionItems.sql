@@ -7,6 +7,7 @@
     [Seq] INT NOT NULL DEFAULT 0, --Invoice Item Line sort sequence
 
     [PoUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice
+	[PoNum] VARCHAR(50) NOT NULL, --Unique in this database. <br> ProfileNum + PoNum is DigitBridgePoNum, which is global unique. <br> Title: PoNum, Display: true, Editable: true
     [PoItemUuid] VARCHAR(50)  NOT NULL DEFAULT '', --Global Unique Guid for Invoice
 
     [ItemType] INT NULL DEFAULT 0, --Invoice item type
@@ -18,6 +19,8 @@
     [InventoryUuid] VARCHAR(50) NULL DEFAULT '',--(Readonly) Inventory uuid. <br> Display: false, Editable: false
 	[SKU] Varchar(100) NOT NULL,--Product SKU 
 	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
+	[WarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
+
 	[LotNum] Varchar(100) NOT NULL,--Product SKU Lot Number 
 	[LotDescription] NVarchar(200) NOT NULL,--Invoice item description 
 	[LotInDate] DATE NULL, --Lot receive Date
@@ -28,6 +31,7 @@
 	[Currency] VARCHAR(10)  NOT NULL DEFAULT '',--(Ignore) po transaction price in currency. <br> Title: Currency, Display: false, Editable: false
 	[UOM] Varchar(50)  NOT NULL DEFAULT '',--Product SKU Qty unit of measure 
 	[TransQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Claim return Qty. 
+	[PoPrice] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item P/O price.  <br> Title: Unit Price, Display: true, Editable: true
 
 	[Price] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Invoice price. 
 	[ExtAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount. 

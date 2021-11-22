@@ -42,6 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string TransUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.TransUuid) AS {name ?? "TransUuid".ToCamelCase(camelCase)} ";
         public static string Seq(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Seq AS {name ?? "Seq".ToCamelCase(camelCase)} ";
         public static string PoUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.PoUuid) AS {name ?? "PoUuid".ToCamelCase(camelCase)} ";
+        public static string PoNum(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.PoNum) AS {name ?? "PoNum".ToCamelCase(camelCase)} ";
         public static string PoItemUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.PoItemUuid) AS {name ?? "PoItemUuid".ToCamelCase(camelCase)} ";
         public static string ItemType(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ItemType AS {name ?? "ItemType".ToCamelCase(camelCase)} ";
         public static string ItemStatus(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ItemStatus AS {name ?? "ItemStatus".ToCamelCase(camelCase)} ";
@@ -51,6 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string InventoryUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.InventoryUuid) AS {name ?? "InventoryUuid".ToCamelCase(camelCase)} ";
         public static string SKU(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SKU) AS {name ?? "SKU".ToCamelCase(camelCase)} ";
         public static string WarehouseUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseUuid) AS {name ?? "WarehouseUuid".ToCamelCase(camelCase)} ";
+        public static string WarehouseCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.WarehouseCode) AS {name ?? "WarehouseCode".ToCamelCase(camelCase)} ";
         public static string LotNum(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.LotNum) AS {name ?? "LotNum".ToCamelCase(camelCase)} ";
         public static string LotDescription(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.LotDescription) AS {name ?? "LotDescription".ToCamelCase(camelCase)} ";
         public static string LotInDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.LotInDate AS {name ?? "LotInDate".ToCamelCase(camelCase)} ";
@@ -60,6 +62,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string Currency(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Currency) AS {name ?? "Currency".ToCamelCase(camelCase)} ";
         public static string UOM(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.UOM) AS {name ?? "UOM".ToCamelCase(camelCase)} ";
         public static string TransQty(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TransQty AS {name ?? "TransQty".ToCamelCase(camelCase)} ";
+        public static string OpenPoQty(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.OpenPoQty AS {name ?? "OpenPoQty".ToCamelCase(camelCase)} ";
+        public static string PoPrice(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.PoPrice AS {name ?? "PoPrice".ToCamelCase(camelCase)} ";
         public static string Price(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Price AS {name ?? "Price".ToCamelCase(camelCase)} ";
         public static string ExtAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ExtAmount AS {name ?? "ExtAmount".ToCamelCase(camelCase)} ";
         public static string TaxRate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TaxRate AS {name ?? "TaxRate".ToCamelCase(camelCase)} ";
@@ -92,6 +96,7 @@ RTRIM({allies}TransItemUuid) AS TransItemUuid,
 RTRIM({allies}TransUuid) AS TransUuid,
 {allies}Seq AS Seq,
 RTRIM({allies}PoUuid) AS PoUuid,
+RTRIM({allies}PoNum) AS PoNum,
 RTRIM({allies}PoItemUuid) AS PoItemUuid,
 {allies}ItemType AS ItemType,
 {allies}ItemStatus AS ItemStatus,
@@ -101,6 +106,7 @@ RTRIM({allies}ProductUuid) AS ProductUuid,
 RTRIM({allies}InventoryUuid) AS InventoryUuid,
 RTRIM({allies}SKU) AS SKU,
 RTRIM({allies}WarehouseUuid) AS WarehouseUuid,
+RTRIM({allies}WarehouseCode) AS WarehouseCode,
 RTRIM({allies}LotNum) AS LotNum,
 RTRIM({allies}LotDescription) AS LotDescription,
 {allies}LotInDate AS LotInDate,
@@ -110,6 +116,8 @@ RTRIM({allies}Notes) AS Notes,
 RTRIM({allies}Currency) AS Currency,
 RTRIM({allies}UOM) AS UOM,
 {allies}TransQty AS TransQty,
+{allies}OpenPoQty AS OpenPoQty,
+{allies}PoPrice AS PoPrice,
 {allies}Price AS Price,
 {allies}ExtAmount AS ExtAmount,
 {allies}TaxRate AS TaxRate,
