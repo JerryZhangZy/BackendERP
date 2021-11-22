@@ -62,19 +62,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string Currency(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Currency) AS {name ?? "Currency".ToCamelCase(camelCase)} ";
         public static string UOM(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.UOM) AS {name ?? "UOM".ToCamelCase(camelCase)} ";
         public static string TransQty(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TransQty AS {name ?? "TransQty".ToCamelCase(camelCase)} ";
-        public static string OpenPoQty(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.OpenPoQty AS {name ?? "OpenPoQty".ToCamelCase(camelCase)} ";
         public static string PoPrice(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.PoPrice AS {name ?? "PoPrice".ToCamelCase(camelCase)} ";
         public static string Price(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Price AS {name ?? "Price".ToCamelCase(camelCase)} ";
         public static string ExtAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ExtAmount AS {name ?? "ExtAmount".ToCamelCase(camelCase)} ";
         public static string TaxRate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TaxRate AS {name ?? "TaxRate".ToCamelCase(camelCase)} ";
         public static string TaxAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.TaxAmount AS {name ?? "TaxAmount".ToCamelCase(camelCase)} ";
         public static string DiscountRate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DiscountRate AS {name ?? "DiscountRate".ToCamelCase(camelCase)} ";
+        public static string DiscountPrice(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DiscountPrice AS {name ?? "DiscountPrice".ToCamelCase(camelCase)} ";
         public static string DiscountAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DiscountAmount AS {name ?? "DiscountAmount".ToCamelCase(camelCase)} ";
         public static string ShippingAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShippingAmount AS {name ?? "ShippingAmount".ToCamelCase(camelCase)} ";
         public static string ShippingTaxAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShippingTaxAmount AS {name ?? "ShippingTaxAmount".ToCamelCase(camelCase)} ";
         public static string MiscAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MiscAmount AS {name ?? "MiscAmount".ToCamelCase(camelCase)} ";
         public static string MiscTaxAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MiscTaxAmount AS {name ?? "MiscTaxAmount".ToCamelCase(camelCase)} ";
         public static string ChargeAndAllowanceAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChargeAndAllowanceAmount AS {name ?? "ChargeAndAllowanceAmount".ToCamelCase(camelCase)} ";
+        public static string BaseCost(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.BaseCost AS {name ?? "BaseCost".ToCamelCase(camelCase)} ";
+        public static string UnitCost(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.UnitCost AS {name ?? "UnitCost".ToCamelCase(camelCase)} ";
         public static string Stockable(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Stockable AS {name ?? "Stockable".ToCamelCase(camelCase)} ";
         public static string IsAp(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.IsAp AS {name ?? "IsAp".ToCamelCase(camelCase)} ";
         public static string Taxable(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.Taxable AS {name ?? "Taxable".ToCamelCase(camelCase)} ";
@@ -116,19 +118,21 @@ RTRIM({allies}Notes) AS Notes,
 RTRIM({allies}Currency) AS Currency,
 RTRIM({allies}UOM) AS UOM,
 {allies}TransQty AS TransQty,
-{allies}OpenPoQty AS OpenPoQty,
 {allies}PoPrice AS PoPrice,
 {allies}Price AS Price,
 {allies}ExtAmount AS ExtAmount,
 {allies}TaxRate AS TaxRate,
 {allies}TaxAmount AS TaxAmount,
 {allies}DiscountRate AS DiscountRate,
+{allies}DiscountPrice AS DiscountPrice,
 {allies}DiscountAmount AS DiscountAmount,
 {allies}ShippingAmount AS ShippingAmount,
 {allies}ShippingTaxAmount AS ShippingTaxAmount,
 {allies}MiscAmount AS MiscAmount,
 {allies}MiscTaxAmount AS MiscTaxAmount,
 {allies}ChargeAndAllowanceAmount AS ChargeAndAllowanceAmount,
+{allies}BaseCost AS BaseCost,
+{allies}UnitCost AS UnitCost,
 {allies}Stockable AS Stockable,
 {allies}IsAp AS IsAp,
 {allies}Taxable AS Taxable,

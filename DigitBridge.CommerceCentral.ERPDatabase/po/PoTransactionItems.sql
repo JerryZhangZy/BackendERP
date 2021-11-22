@@ -10,15 +10,15 @@
 	[PoNum] VARCHAR(50) NOT NULL, --Unique in this database. <br> ProfileNum + PoNum is DigitBridgePoNum, which is global unique. <br> Title: PoNum, Display: true, Editable: true
     [PoItemUuid] VARCHAR(50)  NOT NULL DEFAULT '', --Global Unique Guid for Invoice
 
-    [ItemType] INT NULL DEFAULT 0, --Invoice item type
-    [ItemStatus] INT NULL DEFAULT 0, --Invoice item status
+    [ItemType] INT NOT NULL DEFAULT 0, --Invoice item type
+    [ItemStatus] INT NOT NULL DEFAULT 0, --Invoice item status
 	[ItemDate] DATE NOT NULL, --Invoice date
 	[ItemTime] TIME NOT NULL, --Invoice time
 
-    [ProductUuid] VARCHAR(50) NULL DEFAULT '',--(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
-    [InventoryUuid] VARCHAR(50) NULL DEFAULT '',--(Readonly) Inventory uuid. <br> Display: false, Editable: false
+    [ProductUuid] VARCHAR(50) NOT NULL DEFAULT '',--(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
+    [InventoryUuid] VARCHAR(50) NOT NULL DEFAULT '',--(Readonly) Inventory uuid. <br> Display: false, Editable: false
 	[SKU] Varchar(100) NOT NULL,--Product SKU 
-	[WarehouseUuid] VARCHAR(50) NULL, --Warehouse Guid
+	[WarehouseUuid] VARCHAR(50) NOT NULL, --Warehouse Guid
 	[WarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
 
 	[LotNum] Varchar(100) NOT NULL,--Product SKU Lot Number 
@@ -35,22 +35,26 @@
 
 	[Price] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item Invoice price. 
 	[ExtAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount. 
-	[TaxRate] DECIMAL(24, 6) NULL DEFAULT 0, --Default Tax rate for Invoice items. 
-	[TaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total Invoice tax amount (include shipping tax and misc tax) 
-	[DiscountRate] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice level discount rate. 
-	[DiscountAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice level discount amount, base on SubTotalAmount
-	[ShippingAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Total shipping fee for all items
-	[ShippingTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of shipping fee
-	[MiscAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice handling charge 
-	[MiscTaxAmount] DECIMAL(24, 6) NULL DEFAULT 0, --tax amount of handling charge
-	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NULL DEFAULT 0, --Invoice total Charg Allowance Amount
+	[TaxRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Default Tax rate for Invoice items. 
+	[TaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total Invoice tax amount (include shipping tax and misc tax) 
+	[DiscountRate] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Invoice level discount rate. 
+	[DiscountPrice] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item after discount price. <br> Title: Discount Price, Display: true, Editable: false
+	[DiscountAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Invoice level discount amount, base on SubTotalAmount
+	[ShippingAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Total shipping fee for all items
+	[ShippingTaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --tax amount of shipping fee
+	[MiscAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Invoice handling charge 
+	[MiscTaxAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --tax amount of handling charge
+	[ChargeAndAllowanceAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Invoice total Charg Allowance Amount
+
+	[BaseCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Unit Cost. 
+	[UnitCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Avg.Cost. 
 
 	[Stockable] TINYINT NOT NULL DEFAULT 1,--Invoice item will update inventory instock qty 
 	[IsAp] TINYINT NOT NULL DEFAULT 1,--Invoice item will add to invoice total amount
 	[Taxable] TINYINT NOT NULL DEFAULT 0,--Invoice item will apply tax
 	[Costable] TINYINT NOT NULL DEFAULT 0,--Invoice item will apply tax
 
-    [UpdateDateUtc] DATETIME NULL, --(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
+    [UpdateDateUtc] DATETIME NOT NULL, --(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
     [EnterBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) User who created this transaction. <br> Title: Created By, Display: true, Editable: false
     [UpdateBy] Varchar(100) NOT NULL DEFAULT '', --(Readonly) Last updated user. <br> Title: Update By, Display: true, Editable: false
     [EnterDateUtc] DATETIME NOT NULL DEFAULT (getutcdate()), --(Radonly) Created Date time. <br> Title: Created At, Display: true, Editable: false

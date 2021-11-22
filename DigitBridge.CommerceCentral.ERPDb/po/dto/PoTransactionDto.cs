@@ -335,6 +335,24 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasChargeAndAllowanceAmount => ChargeAndAllowanceAmount != null;
 
 		/// <summary>
+		/// How to assign shipping fee to each item
+		/// </summary>
+		[OpenApiPropertyDescription("How to assign shipping fee to each item")]
+        public int? ShippingAmountAssign { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasShippingAmountAssign => ShippingAmountAssign != null;
+
+		/// <summary>
+		/// How to assign MiscAmount fee to each item
+		/// </summary>
+		[OpenApiPropertyDescription("How to assign MiscAmount fee to each item")]
+        public int? MiscAmountAssign { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasMiscAmountAssign => MiscAmountAssign != null;
+
+		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
 		[OpenApiPropertyDescription("(Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false")]
