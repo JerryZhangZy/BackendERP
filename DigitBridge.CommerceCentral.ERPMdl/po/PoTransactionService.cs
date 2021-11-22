@@ -626,6 +626,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     MiscAmount = item.MiscAmount.ToDecimal(),
                     MiscTaxAmount = item.MiscTaxAmount.ToDecimal(),
                     ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToDecimal(),
+                    PoPrice=item.Price
                     //TransQty=item.PoQty-item.ReceivedQty-item.CancelledQty
                 };
                 
