@@ -102,6 +102,8 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// </summary>
         Task<int> UpdateAsync(object poco);
 
+        Task<int> UpdateWithIgnoreAsync(object poco, IEnumerable<string> ignoreColumns);
+
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Update(object)" />.
         /// </summary>
@@ -125,7 +127,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Update(object, object, IEnumerable{string})" />.
         /// </summary>
-        Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, object primaryKeyValue, IEnumerable<string> columns);
+        Task<int> UpdateAsync(CancellationToken cancellationToken, object poco, object primaryKeyValue, IEnumerable<string> columns, IEnumerable<string> ignoreColumns = null);
 
         /// <summary>
         ///     Async version of <see cref="IAlterPoco.Update{t}(string, object[])" />.

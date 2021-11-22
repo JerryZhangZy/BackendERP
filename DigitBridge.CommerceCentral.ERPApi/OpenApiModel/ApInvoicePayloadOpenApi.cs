@@ -138,9 +138,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public string ApInvoiceNumFrom { get; set; }
         public string ApInvoiceNumTo { get; set; }
 
-        public string ApInvoiceType { get; set; }
+        public long ApInvoiceType { get; set; }
 
-        public string ApInvoiceStatus { get; set; }
+        public long ApInvoiceStatus { get; set; }
 
        
         public DateTime ApInvoiceDateFrom { get; set; }
@@ -154,8 +154,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
                  .RuleFor(u => u.ApInvoiceNumTo, f => string.Empty)
                    .RuleFor(u => u.ApInvoiceDateFrom, f => f.Date.Past(0).Date.Date.AddDays(-30))
                 .RuleFor(u => u.ApInvoiceDateTo, f => f.Date.Past(0).Date.Date)
-                .RuleFor(u => u.ApInvoiceType, f => string.Empty)
-                .RuleFor(u => u.ApInvoiceStatus, f => string.Empty);
+                .RuleFor(u => u.ApInvoiceType, f => 0)
+                .RuleFor(u => u.ApInvoiceStatus, f => 0);
             #endregion faker data rules
         }
     }

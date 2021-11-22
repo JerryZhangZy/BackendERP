@@ -38,12 +38,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore]
         public new string UniqueId => PoTransaction.UniqueId;
         
-			 [JsonIgnore, XmlIgnore] 
-			public static string PoTransactionTable ="PoTransaction ";
-			
-			 [JsonIgnore, XmlIgnore] 
-			public static string PoTransactionItemsTable ="PoTransactionItems ";
-			
+		 [JsonIgnore, XmlIgnore] 
+		public static string PoTransactionTable ="PoTransaction ";
+		
+		 [JsonIgnore, XmlIgnore] 
+		public static string PoTransactionItemsTable ="PoTransactionItems ";
+		
         #region CRUD Methods
 
         public override bool Equals(PoTransactionData other)

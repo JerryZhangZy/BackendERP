@@ -52,6 +52,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("PoUuid",SqlDbType.VarChar,NotNull=true)]
         private string _poUuid;
 
+        [Column("PoNum",SqlDbType.VarChar,NotNull=true)]
+        private string _poNum;
+
         [Column("PoItemUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _poItemUuid;
 
@@ -79,6 +82,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("WarehouseUuid",SqlDbType.VarChar)]
         private string _warehouseUuid;
 
+        [Column("WarehouseCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _warehouseCode;
+
         [Column("LotNum",SqlDbType.VarChar,NotNull=true)]
         private string _lotNum;
 
@@ -105,6 +111,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("TransQty",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _transQty;
+
+        [Column("PoPrice",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _poPrice;
 
         [Column("Price",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _price;
@@ -231,6 +240,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_poUuid = value.TruncateTo(50); 
 				OnPropertyChanged("PoUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Unique in this database. <br> ProfileNum + PoNum is DigitBridgePoNum, which is global unique. <br> Title: PoNum, Display: true, Editable: true
+		/// </summary>
+        public virtual string PoNum
+        {
+            get
+            {
+				return _poNum?.TrimEnd(); 
+            }
+            set
+            {
+				_poNum = value.TruncateTo(50); 
+				OnPropertyChanged("PoNum", value);
             }
         }
 
@@ -404,6 +429,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
+		/// </summary>
+        public virtual string WarehouseCode
+        {
+            get
+            {
+				return _warehouseCode?.TrimEnd(); 
+            }
+            set
+            {
+				_warehouseCode = value.TruncateTo(50); 
+				OnPropertyChanged("WarehouseCode", value);
+            }
+        }
+
+		/// <summary>
 		/// Product SKU Lot Number
 		/// </summary>
         public virtual string LotNum
@@ -554,6 +595,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_transQty = value; 
 				OnPropertyChanged("TransQty", value);
+            }
+        }
+
+		/// <summary>
+		/// Item P/O price.  <br> Title: Unit Price, Display: true, Editable: true
+		/// </summary>
+        public virtual decimal PoPrice
+        {
+            get
+            {
+				return _poPrice; 
+            }
+            set
+            {
+				_poPrice = value; 
+				OnPropertyChanged("PoPrice", value);
             }
         }
 
@@ -927,6 +984,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_transUuid = String.Empty; 
 			_seq = default(int); 
 			_poUuid = String.Empty; 
+			_poNum = String.Empty; 
 			_poItemUuid = String.Empty; 
 			_itemType = AllowNull ? (int?)null : default(int); 
 			_itemStatus = AllowNull ? (int?)null : default(int); 
@@ -936,6 +994,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_inventoryUuid = AllowNull ? (string)null : String.Empty; 
 			_sku = String.Empty; 
 			_warehouseUuid = AllowNull ? (string)null : String.Empty; 
+			_warehouseCode = String.Empty; 
 			_lotNum = String.Empty; 
 			_lotDescription = String.Empty; 
 			_lotInDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
@@ -945,6 +1004,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_currency = String.Empty; 
 			_uom = String.Empty; 
 			_transQty = default(decimal); 
+			_poPrice = default(decimal); 
 			_price = default(decimal); 
 			_extAmount = default(decimal); 
 			_taxRate = AllowNull ? (decimal?)null : default(decimal); 

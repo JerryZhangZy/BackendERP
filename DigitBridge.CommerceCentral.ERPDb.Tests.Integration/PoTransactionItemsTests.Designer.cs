@@ -39,6 +39,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.TransUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.Seq, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.PoUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.PoNum, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.PoItemUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.ItemType, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ItemStatus, f => f.Random.Int(1, 100))
@@ -48,6 +49,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.InventoryUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.SKU, f => f.Commerce.Product())
 					.RuleFor(u => u.WarehouseUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.WarehouseCode, f => f.Lorem.Word())
 					.RuleFor(u => u.LotNum, f => f.Lorem.Sentence().TruncateTo(100))
 					.RuleFor(u => u.LotDescription, f => f.Commerce.ProductName())
 					.RuleFor(u => u.LotInDate, f => f.Date.Past(0).Date)
@@ -57,6 +59,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.Currency, f => f.Lorem.Sentence().TruncateTo(10))
 					.RuleFor(u => u.UOM, f => f.PickRandom(TestHelper.UOM))
 					.RuleFor(u => u.TransQty, f => f.Random.Decimal(1, 1000, 6))
+					.RuleFor(u => u.PoPrice, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.Price, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.ExtAmount, f => f.Random.Decimal(1, 1000, 6))
 					.RuleFor(u => u.TaxRate, f => f.Random.Decimal(0.01m, 0.99m, 6))
@@ -180,14 +183,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            data.Patch(new[] { "SKU", "LotNum" });
+            data.Patch(new[] { "PoNum", "SKU" });
             DataBaseFactory.Commit();
 
             var dataGet = DataBaseFactory.GetFromCache<PoTransactionItems>(data.RowNum);
-            var result = dataGet.SKU != dataOrig.SKU &&
-                            dataGet.LotNum != dataOrig.LotNum &&
-                            dataGet.SKU == newData.SKU &&
-                            dataGet.LotNum == newData.LotNum;
+            var result = dataGet.PoNum != dataOrig.PoNum &&
+                            dataGet.SKU != dataOrig.SKU &&
+                            dataGet.PoNum == newData.PoNum &&
+                            dataGet.SKU == newData.SKU;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -289,13 +292,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             list.SetDataBaseFactory<PoTransactionItems>(DataBaseFactory)
                 .Save<PoTransactionItems>();
 
-            var NewLotNum = Guid.NewGuid().ToString();
+            var NewSKU = Guid.NewGuid().ToString();
             var listFind = DataBaseFactory.Find<PoTransactionItems>("WHERE TransUuid = @0 ORDER BY RowNum", TransUuid).ToList();
-            listFind.ToList().ForEach(x => x.LotNum = NewLotNum);
+            listFind.ToList().ForEach(x => x.SKU = NewSKU);
             listFind.Save<PoTransactionItems>();
 
             list = DataBaseFactory.Find<PoTransactionItems>("WHERE TransUuid = @0 ORDER BY RowNum", TransUuid).ToList();
-            var result = list.Where(x => x.LotNum == NewLotNum).Count() == listFind.Count();
+            var result = list.Where(x => x.SKU == NewSKU).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -388,14 +391,14 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
             data.SetDataBaseFactory(DataBaseFactory);
             var newData = FakerData.Generate();
             data?.CopyFrom(newData);
-            await data.PatchAsync(new[] { "SKU", "LotNum" });
+            await data.PatchAsync(new[] { "PoNum", "SKU" });
             DataBaseFactory.Commit();
 
             var dataGet = await DataBaseFactory.GetFromCacheAsync<PoTransactionItems>(data.RowNum);
-            var result = dataGet.SKU != dataOrig.SKU &&
-                            dataGet.LotNum != dataOrig.LotNum &&
-                            dataGet.SKU == newData.SKU &&
-                            dataGet.LotNum == newData.LotNum;
+            var result = dataGet.PoNum != dataOrig.PoNum &&
+                            dataGet.SKU != dataOrig.SKU &&
+                            dataGet.PoNum == newData.PoNum &&
+                            dataGet.SKU == newData.SKU;
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
@@ -495,13 +498,13 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 .SetDataBaseFactory<PoTransactionItems>(DataBaseFactory)
                 .SaveAsync<PoTransactionItems>();
 
-            var NewLotNum = Guid.NewGuid().ToString();
+            var NewSKU = Guid.NewGuid().ToString();
             var listFind = (await DataBaseFactory.FindAsync<PoTransactionItems>("WHERE TransUuid = @0 ORDER BY RowNum", TransUuid)).ToList();
-            listFind.ToList().ForEach(x => x.LotNum = NewLotNum);
+            listFind.ToList().ForEach(x => x.SKU = NewSKU);
             await listFind.SaveAsync<PoTransactionItems>();
 
             list = DataBaseFactory.Find<PoTransactionItems>("WHERE TransUuid = @0 ORDER BY RowNum", TransUuid).ToList();
-            var result = list.Where(x => x.LotNum == NewLotNum).Count() == listFind.Count();
+            var result = list.Where(x => x.SKU == NewSKU).Count() == listFind.Count();
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }

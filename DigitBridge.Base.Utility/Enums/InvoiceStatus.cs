@@ -9,8 +9,9 @@ namespace DigitBridge.Base.Common
         New = 0,
         Outstanding = 1,
         Paid = 2,
-        Closed = 3,
-        Due = 100,
+        OverPaid = 3,
+        PastDue = 100,
+        Closed = 200,
         Void = 255,
     }
 }

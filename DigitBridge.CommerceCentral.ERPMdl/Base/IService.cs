@@ -81,6 +81,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         Task<bool> SaveDataAsync();
         Task<bool> DeleteDataAsync();
 
+        Task BeforeSaveAsync();
+        void BeforeSave();
+        Task AfterSaveAsync();
+        void AfterSave();
+        Task SaveSuccessAsync();
+        void SaveSuccess();
+
 
         bool Add();
         bool Edit();
