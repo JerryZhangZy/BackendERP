@@ -93,31 +93,7 @@ pohi.Notes as 'PublicNote',
         }
 
         #endregion override methods 
-
-        public virtual void GetPurchaseOrderList(PurchaseOrderPayload payload)
-        {
-            if (payload == null)
-                payload = new PurchaseOrderPayload();
-
-            this.LoadRequestParameter(payload);
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                payload.PurchaseOrderListCount = Count();
-                payload.Success = ExcuteJson(sb);
-                if (payload.Success)
-                    payload.PurchaseOrderList = sb;
-            }
-            catch (Exception ex)
-            {
-                payload.PurchaseOrderListCount = 0;
-                payload.PurchaseOrderList = null;
-                AddError(ex.ObjectToString());
-                payload.Success = false;
-                payload.Messages = this.Messages;
-            }
-        }
-
+        
         public virtual async Task GetPurchaseOrderListAsync(PurchaseOrderPayload payload)
         {
             if (payload == null)
