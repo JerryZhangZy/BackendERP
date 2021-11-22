@@ -654,22 +654,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #region Add po trans for wms po receive.
+
         public async Task<IList<WmsPoReceivePayload>> AddListAsync(PoReceivePayload payload, IList<WMSPoReceiveItem> receiveItems)
         {
             var results = new List<WmsPoReceivePayload>();
+            var poUuids = receiveItems?.Select(i => i.PoUuid).Distinct();
 
-            if (receiveItems is null || receiveItems.Count == 0)
+            if (poUuids is null || poUuids.Count() == 0)
             {
                 AddError("receiveItems cannot be empty");
                 results.Add(new WmsPoReceivePayload() { Messages = this.Messages });
                 return results;
             }
 
-            var dataList = GetPoTransDataList(payload, receiveItems);
-
-            foreach (var data in dataList)
+            foreach (var poUuid in poUuids)
             {
-                _messages = new List<MessageClass>();
+                var data = GetPoTransData(payload, receiveItems, poUuid);
+                if (data is null) continue;
+
                 var success = await base.AddAsync(data);
                 results.Add(new WmsPoReceivePayload()
                 {
@@ -682,50 +684,39 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return results;
         }
 
-        protected List<PoTransactionData> GetPoTransDataList(PoReceivePayload payload, IList<WMSPoReceiveItem> receiveItems)
+        protected PoTransactionData GetPoTransData(PoReceivePayload payload, IList<WMSPoReceiveItem> receiveItems, string poUuid)
         {
-            var dataList = new List<PoTransactionData>();
+            var items = receiveItems.Where(i => i.PoUuid == poUuid && i.Qty > 0);
+            if (items.Count() == 0) return null;
 
-            if (receiveItems is null || receiveItems.Count == 0)
+            var data = new PoTransactionData()
             {
-                return dataList;
-            }
-            var poUuids = receiveItems.Select(i => i.PoUuid).Distinct();
-
-            foreach (var poUuid in poUuids)
-            {
-                var data = new PoTransactionData()
+                PoTransaction = new PoTransaction()
                 {
-                    PoTransaction = new PoTransaction()
-                    {
-                        TransUuid = Guid.NewGuid().ToString(),
-                        PoUuid = poUuid,
-                        MasterAccountNum = payload.MasterAccountNum,
-                        ProfileNum = payload.ProfileNum,
-                    },
+                    TransUuid = Guid.NewGuid().ToString(),
+                    PoUuid = poUuid,
+                    MasterAccountNum = payload.MasterAccountNum,
+                    ProfileNum = payload.ProfileNum,
+                    TransStatus = (int)PoTransStatus.StockReceive,
+                },
+            };
+
+            data.PoTransactionItems = new List<PoTransactionItems>();
+            foreach (var item in items)
+            {
+                var transItem = new PoTransactionItems()
+                {
+                    TransItemUuid = Guid.NewGuid().ToString(),
+                    PoUuid = item.PoUuid,
+                    PoItemUuid = item.PoItemUuid,
+                    TransQty = item.Qty,
+                    WarehouseCode = item.WarehouseCode,
+                    SKU = item.SKU,
                 };
-
-                var items = receiveItems.Where(i => i.PoUuid == poUuid && i.Qty > 0);
-                if (items.Count() == 0) continue;
-
-                data.PoTransactionItems = new List<PoTransactionItems>();
-                foreach (var item in items)
-                {
-                    var transItem = new PoTransactionItems()
-                    {
-                        TransItemUuid = Guid.NewGuid().ToString(),
-                        PoUuid = item.PoUuid,
-                        PoItemUuid = item.PoItemUuid,
-                        TransQty = item.Qty,
-                        WarehouseCode = item.WarehouseCode,
-                        SKU = item.SKU,
-                    };
-                    data.PoTransactionItems.Add(transItem);
-                }
-
-                dataList.Add(data);
+                transItem.SetParent(data);
+                data.PoTransactionItems.Add(transItem);
             }
-            return dataList;
+            return data;
         }
         #endregion
     }

@@ -664,16 +664,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public virtual async Task<bool> AddAsync(PoTransactionData data)
         {
-            if (data != null)
-                _data = data;
             // set Add mode and clear data
             Add();
+
+            if (data is null)
+            {
+                AddError("data cann't be empty");
+                return false;
+            }
+
+            this.AttachData(data);
 
             if (!await LoadPoAsync(Data.PoTransaction.PoUuid))
                 return false;
 
+            // validate data for Add processing
+            if (!(await ValidateAsync()))
+                return false;
+
             return await SaveDataAsync();
-        } 
+        }
 
         #endregion
     }
