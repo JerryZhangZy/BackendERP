@@ -275,7 +275,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            var list = SplitPoTransactions(payload.PoTransactions);
+            var list = SplitPoTransactionsForVendor(payload.PoTransactions);
             payload.PoTransactions = new List<PoTransactionDataDto>();
             foreach (var dto in list)
             {
@@ -330,7 +330,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            var list = SplitPoTransactions(payload.PoTransactions);
+            var list = SplitPoTransactionsForVendor(payload.PoTransactions);
             payload.PoTransactions = new List<PoTransactionDataDto>();
             foreach (var dto in list)
             {
@@ -581,9 +581,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //     }
         // }
 
-        private IList<PoTransactionDataDto> SplitPoTransactions(IList<PoTransactionDataDto> dtolist)
+        private IList<PoTransactionDataDto> SplitPoTransactionsForVendor(IList<PoTransactionDataDto> dtolist)
         {
-            var list = new List<PoTransactionDataDto>();
+            //var list = new List<PoTransactionDataDto>();
             foreach (var transdata in dtolist)
             {
                 if (!transdata.HasPoTransaction || !transdata.HasPoTransactionItems)
@@ -592,10 +592,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     continue;
                 }
 
-                list.AddRange(SplitPoTransaction(transdata));
+                //list.AddRange(SplitPoTransaction(transdata));
             }
-            return list;
+            var vendorPoTransactionList = new List<PoTransactionDataDto>();
+            var vendorPoTransactions = dtolist.GroupBy(r => r.PoTransaction.VendorCode);
+            foreach (var vendorItem in vendorPoTransactions)
+            { 
+                 
+                
+            }
+
+
+            return vendorPoTransactionList;
+
+
+
         }
+
+
+
+
+
 
         private IList<PoTransactionDataDto> SplitPoTransaction(PoTransactionDataDto dto)
         {
