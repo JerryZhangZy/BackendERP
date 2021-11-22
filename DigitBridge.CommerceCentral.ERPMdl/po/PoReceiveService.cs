@@ -197,11 +197,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> GetByNumberAsync(PoReceivePayload payload, int transNum)
         {
-            var poTransactions = dbFactory.Db.Query<PoTransaction>($@"SELECT * FROM PoTransaction WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND TransNum=@2",payload.MasterAccountNum.ToSqlParameter("MasterAccountNum"), payload.ProfileNum.ToSqlParameter("ProfileNum"), transNum.ToSqlParameter("transNum")).ToList();
-            if ( poTransactions.Count == 0) {
-                this.Messages.Add(new MessageClass() {  Message= "transNum is not found" });
-                return false; }
-            return await base.GetByNumberAsync(payload.MasterAccountNum,payload.ProfileNum , transNum.ToString());
+            var poTransactions = dbFactory.Db.Query<PoTransaction>($@"SELECT * FROM PoTransaction WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND TransNum=@2", payload.MasterAccountNum.ToSqlParameter("MasterAccountNum"), payload.ProfileNum.ToSqlParameter("ProfileNum"), transNum.ToSqlParameter("transNum")).ToList();
+            if (poTransactions.Count == 0)
+            {
+                this.Messages.Add(new MessageClass() { Message = "transNum is not found" });
+                return false;
+            }
+            return await base.GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, transNum.ToString());
         }
 
         /// <summary>
@@ -233,7 +235,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             _firstAPReceiveStatus = isAp;
         }
-        
+
         public bool Add(PoReceivePayload payload)
         {
             if (!payload.HasPoTransaction)
@@ -264,7 +266,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.Messages = Messages;
             return true;
         }
-        
+
         public bool AddList(PoReceivePayload payload)
         {
             if (!payload.HasPoTransactions)
@@ -272,7 +274,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("PoTransaction cannot be blank");
                 return false;
             }
-            
+
             var list = SplitPoTransactions(payload.PoTransactions);
             payload.PoTransactions = new List<PoTransactionDataDto>();
             foreach (var dto in list)
@@ -327,7 +329,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("PoTransaction cannot be blank");
                 return false;
             }
-            
+
             var list = SplitPoTransactions(payload.PoTransactions);
             payload.PoTransactions = new List<PoTransactionDataDto>();
             foreach (var dto in list)
@@ -380,7 +382,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        public async Task<bool> ClosePoReceiveAsync(PoReceivePayload payload,int transNum)
+        public async Task<bool> ClosePoReceiveAsync(PoReceivePayload payload, int transNum)
         {
 
             Edit();
@@ -389,18 +391,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("PoTransaction cannot be find");
                 return false;
             }
-            
+
             if (!LoadPurchaseOrderData(_data.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
                 return false;
 
             //检查限制条件 --暂无
 
             base.Data.PoTransaction.TransStatus = (int)PoTransStatus.Closed;
-           
+
             //Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
             if (await base.SaveDataAsync())
             {
-                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(payload.MasterAccountNum, payload.ProfileNum,_data);
+                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(payload.MasterAccountNum, payload.ProfileNum, _data);
                 await InventoryService.UpdatAvgCostByPoReceiveAsync(_data);
                 return true;
             }
@@ -465,9 +467,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (await base.SaveDataAsync())
             {
                 await InventoryLogService.UpdateByPoReceiveAsync(_data);
-               // await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);//close
+                // await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);//close
                 await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
-               // await InventoryService.UpdatAvgCostByPoReceiveAsync(_data);//close
+                // await InventoryService.UpdatAvgCostByPoReceiveAsync(_data);//close
                 return true;
             }
 
@@ -480,9 +482,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (base.SaveData())
             {
                 InventoryLogService.UpdateByPoReceive(_data);
-               // ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
+                // ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
                 PurchaseOrderService.UpdateByPoReceive(_data);
-               // InventoryService.UpdatAvgCostByPoReceive(_data);
+                // InventoryService.UpdatAvgCostByPoReceive(_data);
                 return true;
             }
 
@@ -496,7 +498,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 _data.PoTransactionItems.Clear();
                 await InventoryLogService.UpdateByPoReceiveAsync(_data);
                 await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
-                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data.PoTransaction.MasterAccountNum,_data.PoTransaction.ProfileNum,_data);
+                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data.PoTransaction.MasterAccountNum, _data.PoTransaction.ProfileNum, _data);
                 return true;
             }
 
@@ -538,27 +540,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Create new P/O receive data for one vendor
         /// This will load multiple Open P/O Items for one vendor
         /// </summary>
-        public async Task<bool> NewReceiveForVendorAsync(PoReceivePayload payload,string vendorCode)
+        public async Task<bool> NewReceiveForVendorAsync(PoReceivePayload payload, string vendorCode)
         {
 
-           List<string> poNums= dbFactory.Db.Query<string>($@"select  distinct ph.[PoNum] from [dbo].[PoHeader] ph  
+            List<string> poNums = dbFactory.Db.Query<string>($@"select  distinct ph.[PoNum] from [dbo].[PoHeader] ph  
                   LEFT JOIN  [dbo].[PoItems] poi on ph.PoUuid=poi.PoUuid 
                   where    ph.MasterAccountNum=@0 AND  ph.ProfileNum=@1 AND (poi.PoQty-poi.ReceivedQty-poi.CancelledQty)>0 AND ph.VendorCode=@2",
-                  payload.MasterAccountNum.ToSqlParameter("MasterAccountNum"), payload.ProfileNum.ToSqlParameter("ProfileNum"), vendorCode.ToSqlParameter("VendorCode")).ToList();
+                   payload.MasterAccountNum.ToSqlParameter("MasterAccountNum"), payload.ProfileNum.ToSqlParameter("ProfileNum"), vendorCode.ToSqlParameter("VendorCode")).ToList();
 
             var transactions = new List<PoTransactionDataDto>();
             foreach (var num in poNums)
             {
                 if (await NewReceiveAsync(payload, num))
                     transactions.Add(ToDto());
-                
+
             }
             payload.PoTransactions = transactions;
             return true;
         }
 
 
- 
+
 
 
         //
@@ -604,7 +606,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var totalShipmentAmount = dto.PoTransaction.ShippingAmount.ToAmount();
             var totalShipmentTaxAmount = dto.PoTransaction.ShippingTaxAmount.ToAmount();
             var totalMiscAmount = dto.PoTransaction.MiscAmount.ToAmount();
-            var totalMiscTaxAmount = dto.PoTransaction.MiscTaxAmount.ToAmount(); 
+            var totalMiscTaxAmount = dto.PoTransaction.MiscTaxAmount.ToAmount();
             var totalDiscountAmount = dto.PoTransaction.DiscountAmount.ToAmount();
             foreach (var poUUid in poUUids)
             {
@@ -613,7 +615,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var currentQty = poTransactionItems.Sum(r => r.TransQty);
                 var potransaction = new PoTransactionDto()
                 {
-                    RowNum= dto.PoTransaction.RowNum,
+                    RowNum = dto.PoTransaction.RowNum,
                     PoUuid = poUUid,
                     PoNum = dto.PoTransaction.PoNum,
                     ProfileNum = dto.PoTransaction.ProfileNum,
@@ -650,5 +652,84 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return list;
         }
+
+        #region Add po trans for wms po receive.
+
+        /// <summary>
+        /// Add po trans for wms po receive.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="receiveItems"></param>
+        /// <returns></returns>
+        public async Task<IList<WMSPoReceivePayload>> AddTransForWMSPoReceiveAsync(PoReceivePayload payload)
+        {
+            var results = new List<WMSPoReceivePayload>();
+            var poUuids = payload.WMSPoReceiveItems?.Select(i => i.PoUuid).Distinct();
+
+            if (poUuids is null || poUuids.Count() == 0)
+            {
+                AddError("receiveItems cannot be empty");
+                results.Add(new WMSPoReceivePayload() { Messages = this.Messages });
+                return results;
+            }
+
+            foreach (var poUuid in poUuids)
+            {
+                var data = GetPoTransData(payload, poUuid);
+                if (data is null) continue;
+
+                var success = await base.AddAsync(data);
+                results.Add(new WMSPoReceivePayload()
+                {
+                    Messages = this.Messages,
+                    Success = success,
+                    PoUuid = data.PoTransaction.PoUuid,
+                    TransUuid = data.PoTransaction.TransUuid,
+                });
+            }
+            return results;
+        }
+
+        /// <summary>
+        /// Get po transaction from wms po receive items.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="poUuid"></param>
+        /// <returns></returns>
+        protected PoTransactionData GetPoTransData(PoReceivePayload payload, string poUuid)
+        {
+            var items = payload.WMSPoReceiveItems?.Where(i => i.PoUuid == poUuid && i.Qty > 0);
+            if (items.Count() == 0) return null;
+
+            var data = new PoTransactionData()
+            {
+                PoTransaction = new PoTransaction()
+                {
+                    TransUuid = Guid.NewGuid().ToString(),
+                    PoUuid = poUuid,
+                    MasterAccountNum = payload.MasterAccountNum,
+                    ProfileNum = payload.ProfileNum,
+                    TransStatus = (int)PoTransStatus.StockReceive,
+                },
+            };
+
+            data.PoTransactionItems = new List<PoTransactionItems>();
+            foreach (var item in items)
+            {
+                var transItem = new PoTransactionItems()
+                {
+                    TransItemUuid = Guid.NewGuid().ToString(),
+                    PoUuid = item.PoUuid,
+                    PoItemUuid = item.PoItemUuid,
+                    TransQty = item.Qty,
+                    WarehouseCode = item.WarehouseCode,
+                    SKU = item.SKU,
+                };
+                transItem.SetParent(data);
+                data.PoTransactionItems.Add(transItem);
+            }
+            return data;
+        }
+        #endregion
     }
 }

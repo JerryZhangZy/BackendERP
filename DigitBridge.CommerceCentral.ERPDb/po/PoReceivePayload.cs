@@ -92,7 +92,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasPoReceiveListSummary => PoReceiveListSummary != null && PoReceiveListSummary.Length > 0;
         public bool ShouldSerializePoReceiveListSummary() => HasPoReceiveListSummary;
 
+        #region List
 
+        public IList<WMSPoReceiveItem> WMSPoReceiveItems { get; set; }
+
+        [JsonIgnore]
+        public virtual bool HasWMSPoReceiveItems => WMSPoReceiveItems != null && WMSPoReceiveItems.Count > 0;
+        public bool ShouldSerializeWMSPoReceiveItems() => HasWMSPoReceiveItems;
+
+        #endregion
     }
 }
 
