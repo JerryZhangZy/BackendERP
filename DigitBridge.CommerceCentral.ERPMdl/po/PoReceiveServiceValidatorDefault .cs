@@ -83,6 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (processingMode == ProcessingMode.Add)
             {
+                dto.PoTransaction.TransStatus = (int)PoTransStatus.StockReceive;
                 // dto.PoTransaction.TransType = (int)TransTypeEnum.Payment;  
             }
             // payment shouldn't add any return item.
