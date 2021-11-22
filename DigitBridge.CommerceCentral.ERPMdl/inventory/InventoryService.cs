@@ -665,6 +665,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
                 if(inventory==null)
                     continue;
                 var itemCost = new ItemCostClass(inventory);
+               
                 var cost = itemCost.CalculateAvgCost(new ItemCostClass(items));
                 await UpdateAvgCostAsync(cost);
             }
