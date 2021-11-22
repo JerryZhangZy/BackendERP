@@ -24,9 +24,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Response payload object
     /// </summary>
     [Serializable()]
-    public class WmsPoReceivePayload : ResponsePayloadBase
+    public class WMSPoReceivePayload : ResponsePayloadBase
     {
-        public WmsPoReceivePayload(bool success = false)
+        public WMSPoReceivePayload(bool success = false)
         {
             this.Success = success;
         }

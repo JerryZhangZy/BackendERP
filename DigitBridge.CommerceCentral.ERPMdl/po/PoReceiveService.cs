@@ -661,25 +661,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="receiveItems"></param>
         /// <returns></returns>
-        public async Task<IList<WmsPoReceivePayload>> AddListAsync(PoReceivePayload payload, IList<WMSPoReceiveItem> receiveItems)
+        public async Task<IList<WMSPoReceivePayload>> AddTransForWMSPoReceiveAsync(PoReceivePayload payload)
         {
-            var results = new List<WmsPoReceivePayload>();
-            var poUuids = receiveItems?.Select(i => i.PoUuid).Distinct();
+            var results = new List<WMSPoReceivePayload>();
+            var poUuids = payload.WMSPoReceiveItems?.Select(i => i.PoUuid).Distinct();
 
             if (poUuids is null || poUuids.Count() == 0)
             {
                 AddError("receiveItems cannot be empty");
-                results.Add(new WmsPoReceivePayload() { Messages = this.Messages });
+                results.Add(new WMSPoReceivePayload() { Messages = this.Messages });
                 return results;
             }
 
             foreach (var poUuid in poUuids)
             {
-                var data = GetPoTransData(payload, receiveItems, poUuid);
+                var data = GetPoTransData(payload, poUuid);
                 if (data is null) continue;
 
                 var success = await base.AddAsync(data);
-                results.Add(new WmsPoReceivePayload()
+                results.Add(new WMSPoReceivePayload()
                 {
                     Messages = this.Messages,
                     Success = success,
@@ -694,12 +694,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Get po transaction from wms po receive items.
         /// </summary>
         /// <param name="payload"></param>
-        /// <param name="receiveItems"></param>
         /// <param name="poUuid"></param>
         /// <returns></returns>
-        protected PoTransactionData GetPoTransData(PoReceivePayload payload, IList<WMSPoReceiveItem> receiveItems, string poUuid)
+        protected PoTransactionData GetPoTransData(PoReceivePayload payload, string poUuid)
         {
-            var items = receiveItems.Where(i => i.PoUuid == poUuid && i.Qty > 0);
+            var items = payload.WMSPoReceiveItems?.Where(i => i.PoUuid == poUuid && i.Qty > 0);
             if (items.Count() == 0) return null;
 
             var data = new PoTransactionData()

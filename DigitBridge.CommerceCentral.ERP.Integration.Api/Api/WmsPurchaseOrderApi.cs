@@ -17,7 +17,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
 {
     public class PurchaseOrderIntegrationApi
     {
-        
+
         /// <summary>
         /// Get purchase order list by criteria.
         /// </summary>
@@ -49,20 +49,20 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WMSPoReceiveItem[]), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WmsPoReceivePayload[]))]
-        public static async Task<JsonNetResponse<IList<WmsPoReceivePayload>>> PoReceive(
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WMSPoReceivePayload[]))]
+        public static async Task<JsonNetResponse<IList<WMSPoReceivePayload>>> PoReceive(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "wms/purchaseOrders/receive")] HttpRequest req)
         {
-            var receiveItems = await req.GetBodyObjectAsync<IList<WMSPoReceiveItem>>();
             var payload = await req.GetParameters<PoReceivePayload>();
+            payload.WMSPoReceiveItems = await req.GetBodyObjectAsync<IList<WMSPoReceiveItem>>();
 
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
 
             var service = new PoReceiveService(dataBaseFactory);
-            var result = await service.AddListAsync(payload, receiveItems);
+            var result = await service.AddTransForWMSPoReceiveAsync(payload);
 
-            return new JsonNetResponse<IList<WmsPoReceivePayload>>(result);
+            return new JsonNetResponse<IList<WMSPoReceivePayload>>(result);
         }
-        
+
     }
 }
