@@ -10,3 +10,17 @@ BEGIN
     ALTER TABLE PoTransaction ADD [PoPrice] DECIMAL(24, 6) NOT NULL DEFAULT 0
 END
 
+IF COL_LENGTH('PoTransactionItems', 'DiscountPrice') IS NULL
+BEGIN
+    ALTER TABLE PoTransaction ADD [DiscountPrice] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END
+
+IF COL_LENGTH('PoTransactionItems', 'BaseCost') IS NULL
+BEGIN
+    ALTER TABLE PoTransaction ADD [BaseCost] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END
+
+IF COL_LENGTH('PoTransactionItems', 'UnitCost') IS NULL
+BEGIN
+    ALTER TABLE PoTransaction ADD [UnitCost] DECIMAL(24, 6) NOT NULL DEFAULT 0
+END

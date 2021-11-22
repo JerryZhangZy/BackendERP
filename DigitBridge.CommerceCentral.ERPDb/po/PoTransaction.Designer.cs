@@ -63,43 +63,43 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("PoNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _poNum;
 
-        [Column("TransType",SqlDbType.Int,IsDefault=true)]
-        private int? _transType;
+        [Column("TransType",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _transType;
 
-        [Column("TransStatus",SqlDbType.Int,IsDefault=true)]
-        private int? _transStatus;
+        [Column("TransStatus",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _transStatus;
 
         [Column("TransDate",SqlDbType.Date,NotNull=true)]
         private DateTime _transDate;
 
-        [Column("TransTime",SqlDbType.Time,NotNull=true)]
-        private TimeSpan _transTime;
+        [Column("TransTime",SqlDbType.Time)]
+        private TimeSpan? _transTime;
 
-        [Column("Description",SqlDbType.NVarChar,IsDefault=true)]
+        [Column("Description",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _description;
 
-        [Column("Notes",SqlDbType.NVarChar,IsDefault=true)]
+        [Column("Notes",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _notes;
 
-        [Column("VendorUuid",SqlDbType.VarChar,IsDefault=true)]
+        [Column("VendorUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _vendorUuid;
 
-        [Column("VendorCode",SqlDbType.VarChar)]
+        [Column("VendorCode",SqlDbType.VarChar,NotNull=true)]
         private string _vendorCode;
 
-        [Column("VendorName",SqlDbType.NVarChar)]
+        [Column("VendorName",SqlDbType.NVarChar,NotNull=true)]
         private string _vendorName;
 
         [Column("VendorInvoiceNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _vendorInvoiceNum;
 
-        [Column("VendorInvoiceDate",SqlDbType.Date)]
-        private DateTime? _vendorInvoiceDate;
+        [Column("VendorInvoiceDate",SqlDbType.Date,NotNull=true)]
+        private DateTime _vendorInvoiceDate;
 
         [Column("DueDate",SqlDbType.Date)]
         private DateTime? _dueDate;
 
-        [Column("Currency",SqlDbType.VarChar)]
+        [Column("Currency",SqlDbType.VarChar,NotNull=true)]
         private string _currency;
 
         [Column("SubTotalAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
@@ -108,35 +108,41 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("TotalAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
         private decimal _totalAmount;
 
-        [Column("TaxRate",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _taxRate;
+        [Column("TaxRate",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _taxRate;
 
-        [Column("TaxAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _taxAmount;
+        [Column("TaxAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _taxAmount;
 
-        [Column("DiscountRate",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _discountRate;
+        [Column("DiscountRate",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _discountRate;
 
-        [Column("DiscountAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _discountAmount;
+        [Column("DiscountAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _discountAmount;
 
-        [Column("ShippingAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _shippingAmount;
+        [Column("ShippingAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _shippingAmount;
 
-        [Column("ShippingTaxAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _shippingTaxAmount;
+        [Column("ShippingTaxAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _shippingTaxAmount;
 
-        [Column("MiscAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _miscAmount;
+        [Column("MiscAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _miscAmount;
 
-        [Column("MiscTaxAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _miscTaxAmount;
+        [Column("MiscTaxAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _miscTaxAmount;
 
-        [Column("ChargeAndAllowanceAmount",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _chargeAndAllowanceAmount;
+        [Column("ChargeAndAllowanceAmount",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _chargeAndAllowanceAmount;
 
-        [Column("UpdateDateUtc",SqlDbType.DateTime)]
-        private DateTime? _updateDateUtc;
+        [Column("ShippingAmountAssign",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _shippingAmountAssign;
+
+        [Column("MiscAmountAssign",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _miscAmountAssign;
+
+        [Column("UpdateDateUtc",SqlDbType.DateTime,NotNull=true)]
+        private DateTime _updateDateUtc;
 
         [Column("EnterBy",SqlDbType.VarChar,NotNull=true)]
         private string _enterBy;
@@ -269,42 +275,32 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// P/O Transaction type (Receive, return, cancel)
 		/// </summary>
-        public virtual int? TransType
+        public virtual int TransType
         {
             get
             {
-				if (!AllowNull && _transType is null) 
-					_transType = default(int); 
 				return _transType; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_transType = value; 
-					OnPropertyChanged("TransType", value);
-				}
+				_transType = value; 
+				OnPropertyChanged("TransType", value);
             }
         }
 
 		/// <summary>
 		/// P/O Transaction status, new, close
 		/// </summary>
-        public virtual int? TransStatus
+        public virtual int TransStatus
         {
             get
             {
-				if (!AllowNull && _transStatus is null) 
-					_transStatus = default(int); 
 				return _transStatus; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_transStatus = value; 
-					OnPropertyChanged("TransStatus", value);
-				}
+				_transStatus = value; 
+				OnPropertyChanged("TransStatus", value);
             }
         }
 
@@ -327,16 +323,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Transaction time
 		/// </summary>
-        public virtual TimeSpan TransTime
+        public virtual TimeSpan? TransTime
         {
             get
             {
+				if (!AllowNull && _transTime is null) 
+					_transTime = new TimeSpan().MinValueSql(); 
 				return _transTime; 
             }
             set
             {
-				_transTime = value.ToSqlSafeValue(); 
-				OnPropertyChanged("TransTime", value);
+				if (value != null || AllowNull) 
+				{
+					_transTime = (value is null) ? (TimeSpan?) null : value.ToSqlSafeValue(); 
+					OnPropertyChanged("TransTime", value);
+				}
             }
         }
 
@@ -347,17 +348,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _description is null) 
-					_description = String.Empty; 
 				return _description?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_description = value.TruncateTo(200); 
-					OnPropertyChanged("Description", value);
-				}
+				_description = value.TruncateTo(200); 
+				OnPropertyChanged("Description", value);
             }
         }
 
@@ -368,17 +364,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _notes is null) 
-					_notes = String.Empty; 
 				return _notes?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_notes = value.TruncateTo(500); 
-					OnPropertyChanged("Notes", value);
-				}
+				_notes = value.TruncateTo(500); 
+				OnPropertyChanged("Notes", value);
             }
         }
 
@@ -389,17 +380,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _vendorUuid is null) 
-					_vendorUuid = String.Empty; 
 				return _vendorUuid?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_vendorUuid = value.TruncateTo(50); 
-					OnPropertyChanged("VendorUuid", value);
-				}
+				_vendorUuid = value.TruncateTo(50); 
+				OnPropertyChanged("VendorUuid", value);
             }
         }
 
@@ -410,17 +396,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _vendorCode is null) 
-					_vendorCode = String.Empty; 
 				return _vendorCode?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_vendorCode = value.TruncateTo(50); 
-					OnPropertyChanged("VendorCode", value);
-				}
+				_vendorCode = value.TruncateTo(50); 
+				OnPropertyChanged("VendorCode", value);
             }
         }
 
@@ -431,17 +412,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _vendorName is null) 
-					_vendorName = String.Empty; 
 				return _vendorName?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_vendorName = value.TruncateTo(200); 
-					OnPropertyChanged("VendorName", value);
-				}
+				_vendorName = value.TruncateTo(200); 
+				OnPropertyChanged("VendorName", value);
             }
         }
 
@@ -464,21 +440,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Vendor Invoice date
 		/// </summary>
-        public virtual DateTime? VendorInvoiceDate
+        public virtual DateTime VendorInvoiceDate
         {
             get
             {
-				if (!AllowNull && _vendorInvoiceDate is null) 
-					_vendorInvoiceDate = new DateTime().MinValueSql(); 
 				return _vendorInvoiceDate; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_vendorInvoiceDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
-					OnPropertyChanged("VendorInvoiceDate", value);
-				}
+				_vendorInvoiceDate = value.Date.ToSqlSafeValue(); 
+				OnPropertyChanged("VendorInvoiceDate", value);
             }
         }
 
@@ -510,17 +481,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _currency is null) 
-					_currency = String.Empty; 
 				return _currency?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_currency = value.TruncateTo(10); 
-					OnPropertyChanged("Currency", value);
-				}
+				_currency = value.TruncateTo(10); 
+				OnPropertyChanged("Currency", value);
             }
         }
 
@@ -559,210 +525,192 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// Default Tax rate for P/O items.
 		/// </summary>
-        public virtual decimal? TaxRate
+        public virtual decimal TaxRate
         {
             get
             {
-				if (!AllowNull && _taxRate is null) 
-					_taxRate = default(decimal); 
 				return _taxRate; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_taxRate = value; 
-					OnPropertyChanged("TaxRate", value);
-				}
+				_taxRate = value; 
+				OnPropertyChanged("TaxRate", value);
             }
         }
 
 		/// <summary>
 		/// Total P/O tax amount (include shipping tax and misc tax)
 		/// </summary>
-        public virtual decimal? TaxAmount
+        public virtual decimal TaxAmount
         {
             get
             {
-				if (!AllowNull && _taxAmount is null) 
-					_taxAmount = default(decimal); 
 				return _taxAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_taxAmount = value; 
-					OnPropertyChanged("TaxAmount", value);
-				}
+				_taxAmount = value; 
+				OnPropertyChanged("TaxAmount", value);
             }
         }
 
 		/// <summary>
 		/// P/O level discount rate.
 		/// </summary>
-        public virtual decimal? DiscountRate
+        public virtual decimal DiscountRate
         {
             get
             {
-				if (!AllowNull && _discountRate is null) 
-					_discountRate = default(decimal); 
 				return _discountRate; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_discountRate = value; 
-					OnPropertyChanged("DiscountRate", value);
-				}
+				_discountRate = value; 
+				OnPropertyChanged("DiscountRate", value);
             }
         }
 
 		/// <summary>
 		/// P/O level discount amount, base on SubTotalAmount
 		/// </summary>
-        public virtual decimal? DiscountAmount
+        public virtual decimal DiscountAmount
         {
             get
             {
-				if (!AllowNull && _discountAmount is null) 
-					_discountAmount = default(decimal); 
 				return _discountAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_discountAmount = value; 
-					OnPropertyChanged("DiscountAmount", value);
-				}
+				_discountAmount = value; 
+				OnPropertyChanged("DiscountAmount", value);
             }
         }
 
 		/// <summary>
 		/// Total shipping fee for all items
 		/// </summary>
-        public virtual decimal? ShippingAmount
+        public virtual decimal ShippingAmount
         {
             get
             {
-				if (!AllowNull && _shippingAmount is null) 
-					_shippingAmount = default(decimal); 
 				return _shippingAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shippingAmount = value; 
-					OnPropertyChanged("ShippingAmount", value);
-				}
+				_shippingAmount = value; 
+				OnPropertyChanged("ShippingAmount", value);
             }
         }
 
 		/// <summary>
 		/// tax amount of shipping fee
 		/// </summary>
-        public virtual decimal? ShippingTaxAmount
+        public virtual decimal ShippingTaxAmount
         {
             get
             {
-				if (!AllowNull && _shippingTaxAmount is null) 
-					_shippingTaxAmount = default(decimal); 
 				return _shippingTaxAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_shippingTaxAmount = value; 
-					OnPropertyChanged("ShippingTaxAmount", value);
-				}
+				_shippingTaxAmount = value; 
+				OnPropertyChanged("ShippingTaxAmount", value);
             }
         }
 
 		/// <summary>
 		/// P/O handling charge
 		/// </summary>
-        public virtual decimal? MiscAmount
+        public virtual decimal MiscAmount
         {
             get
             {
-				if (!AllowNull && _miscAmount is null) 
-					_miscAmount = default(decimal); 
 				return _miscAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_miscAmount = value; 
-					OnPropertyChanged("MiscAmount", value);
-				}
+				_miscAmount = value; 
+				OnPropertyChanged("MiscAmount", value);
             }
         }
 
 		/// <summary>
 		/// tax amount of handling charge
 		/// </summary>
-        public virtual decimal? MiscTaxAmount
+        public virtual decimal MiscTaxAmount
         {
             get
             {
-				if (!AllowNull && _miscTaxAmount is null) 
-					_miscTaxAmount = default(decimal); 
 				return _miscTaxAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_miscTaxAmount = value; 
-					OnPropertyChanged("MiscTaxAmount", value);
-				}
+				_miscTaxAmount = value; 
+				OnPropertyChanged("MiscTaxAmount", value);
             }
         }
 
 		/// <summary>
 		/// P/O total Charg Allowance Amount
 		/// </summary>
-        public virtual decimal? ChargeAndAllowanceAmount
+        public virtual decimal ChargeAndAllowanceAmount
         {
             get
             {
-				if (!AllowNull && _chargeAndAllowanceAmount is null) 
-					_chargeAndAllowanceAmount = default(decimal); 
 				return _chargeAndAllowanceAmount; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_chargeAndAllowanceAmount = value; 
-					OnPropertyChanged("ChargeAndAllowanceAmount", value);
-				}
+				_chargeAndAllowanceAmount = value; 
+				OnPropertyChanged("ChargeAndAllowanceAmount", value);
+            }
+        }
+
+		/// <summary>
+		/// How to assign shipping fee to each item
+		/// </summary>
+        public virtual int ShippingAmountAssign
+        {
+            get
+            {
+				return _shippingAmountAssign; 
+            }
+            set
+            {
+				_shippingAmountAssign = value; 
+				OnPropertyChanged("ShippingAmountAssign", value);
+            }
+        }
+
+		/// <summary>
+		/// How to assign MiscAmount fee to each item
+		/// </summary>
+        public virtual int MiscAmountAssign
+        {
+            get
+            {
+				return _miscAmountAssign; 
+            }
+            set
+            {
+				_miscAmountAssign = value; 
+				OnPropertyChanged("MiscAmountAssign", value);
             }
         }
 
 		/// <summary>
 		/// (Readonly) Last update date time. <br> Title: Update At, Display: true, Editable: false
 		/// </summary>
-        public virtual DateTime? UpdateDateUtc
+        public virtual DateTime UpdateDateUtc
         {
             get
             {
-				if (!AllowNull && _updateDateUtc is null) 
-					_updateDateUtc = new DateTime().MinValueSql(); 
 				return _updateDateUtc; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_updateDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
-					OnPropertyChanged("UpdateDateUtc", value);
-				}
+				_updateDateUtc = value.ToSqlSafeValue(); 
+				OnPropertyChanged("UpdateDateUtc", value);
             }
         }
 
@@ -833,31 +781,33 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_transNum = default(int); 
 			_poUuid = String.Empty; 
 			_poNum = String.Empty; 
-			_transType = AllowNull ? (int?)null : default(int); 
-			_transStatus = AllowNull ? (int?)null : default(int); 
+			_transType = default(int); 
+			_transStatus = default(int); 
 			_transDate = new DateTime().MinValueSql(); 
-			_transTime = new TimeSpan().MinValueSql(); 
-			_description = AllowNull ? (string)null : String.Empty; 
-			_notes = AllowNull ? (string)null : String.Empty; 
-			_vendorUuid = AllowNull ? (string)null : String.Empty; 
-			_vendorCode = AllowNull ? (string)null : String.Empty; 
-			_vendorName = AllowNull ? (string)null : String.Empty; 
+			_transTime = AllowNull ? (TimeSpan?)null : new TimeSpan().MinValueSql(); 
+			_description = String.Empty; 
+			_notes = String.Empty; 
+			_vendorUuid = String.Empty; 
+			_vendorCode = String.Empty; 
+			_vendorName = String.Empty; 
 			_vendorInvoiceNum = String.Empty; 
-			_vendorInvoiceDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_vendorInvoiceDate = new DateTime().MinValueSql(); 
 			_dueDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
-			_currency = AllowNull ? (string)null : String.Empty; 
+			_currency = String.Empty; 
 			_subTotalAmount = default(decimal); 
 			_totalAmount = default(decimal); 
-			_taxRate = AllowNull ? (decimal?)null : default(decimal); 
-			_taxAmount = AllowNull ? (decimal?)null : default(decimal); 
-			_discountRate = AllowNull ? (decimal?)null : default(decimal); 
-			_discountAmount = AllowNull ? (decimal?)null : default(decimal); 
-			_shippingAmount = AllowNull ? (decimal?)null : default(decimal); 
-			_shippingTaxAmount = AllowNull ? (decimal?)null : default(decimal); 
-			_miscAmount = AllowNull ? (decimal?)null : default(decimal); 
-			_miscTaxAmount = AllowNull ? (decimal?)null : default(decimal); 
-			_chargeAndAllowanceAmount = AllowNull ? (decimal?)null : default(decimal); 
-			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_taxRate = default(decimal); 
+			_taxAmount = default(decimal); 
+			_discountRate = default(decimal); 
+			_discountAmount = default(decimal); 
+			_shippingAmount = default(decimal); 
+			_shippingTaxAmount = default(decimal); 
+			_miscAmount = default(decimal); 
+			_miscTaxAmount = default(decimal); 
+			_chargeAndAllowanceAmount = default(decimal); 
+			_shippingAmountAssign = default(int); 
+			_miscAmountAssign = default(int); 
+			_updateDateUtc = new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 
             ClearChildren();
