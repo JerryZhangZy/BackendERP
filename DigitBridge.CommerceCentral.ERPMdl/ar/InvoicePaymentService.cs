@@ -514,8 +514,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (!success) AddError("Update Misc.Invoice payment failed");
             }
             success = success && DeleteData();
-            if (success)
-                this.AddActivityLogForCurrentData();
             return success;
         }
 
