@@ -788,6 +788,66 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
+        public async virtual Task<bool> UpdateInvoicePayments(InvoiceNewPaymentPayload payload)
+        {
+            if (!payload.HasApplyInvoices)
+                return false;
+
+            var invoices = await GetInvoiceHeadersByCustomerAsync(payload.MasterAccountNum, payload.ProfileNum, payload.InvoiceTransaction.CustomerCode);
+            if (invoices?.Count == 0)
+                return false;
+
+            payload.InvoiceTransaction.MasterAccountNum = payload.MasterAccountNum;
+            payload.InvoiceTransaction.ProfileNum = payload.ProfileNum;
+            foreach (var applyInvoice in payload.ApplyInvoices)
+            {
+                var invoice = invoices.SingleOrDefault(i => i.InvoiceUuid == applyInvoice.InvoiceUuid);
+                if (invoice == null)
+                {
+                    AddError($"Invoice {applyInvoice.InvoiceUuid} does not exist");
+                    continue;
+                }
+                var trans = applyInvoice.GenerateTransaction(invoice, payload.InvoiceTransaction);
+                bool result = false;
+                if (applyInvoice.TransRowNum.HasValue)
+                {
+                    Edit();
+                    result = await base.UpdateAsync(trans);
+                }
+                else
+                {
+                    Add();
+                    result = await base.AddAsync(trans);
+                }
+
+                if (result)
+                {
+                    this.AddActivityLogForCurrentData();
+                    var invoiceTransaction = Data.InvoiceTransaction;
+                    if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
+                        await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, invoiceTransaction.OriginalPaidAmount);
+                    if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+                        await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
+
+                    var success = await PayInvoiceAsync(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
+                    if (!success)
+                    {
+                        applyInvoice.Success = false;
+                        AddError($"{applyInvoice.InvoiceNumber} is not applied.");
+                    }
+
+                    applyInvoice.Success = true;
+                }
+                else
+                {
+                    applyInvoice.Success = false;
+                    AddError($"Save payment for invoice {applyInvoice.InvoiceNumber} failed");
+                }
+            }
+
+            return true;
+        }
+
         private async Task<bool> LoadInvoiceListAsync(InvoiceNewPaymentPayload payload, string customerCode)
         {
             var invoicePayload = new InvoicePayload()

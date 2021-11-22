@@ -98,17 +98,16 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadAdd), Description = "Request Body in json format")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadAdd))]
-        public static async Task<JsonNetResponse<InvoicePaymentPayload>> UpdateInvoicePaymentsList(
+        public static async Task<JsonNetResponse<InvoiceNewPaymentPayload>> UpdateInvoicePaymentsList(
             [HttpTrigger(AuthorizationLevel.Function, "patch", Route = "invoicePayments/adjustment")] HttpRequest req)
         {
-            var payload = await req.GetParameters<InvoicePaymentPayload>(true);
+            var payload = await req.GetParameters<InvoiceNewPaymentPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
             await srv.UpdateInvoicePayments(payload);
             payload.Messages = srv.Messages;
-            payload.InvoiceTransaction = srv.ToDto();
 
-            return new JsonNetResponse<InvoicePaymentPayload>(payload);
+            return new JsonNetResponse<InvoiceNewPaymentPayload>(payload);
         }
 
         /// <summary>
