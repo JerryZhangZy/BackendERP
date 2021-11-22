@@ -113,6 +113,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasTransUuid) data.TransUuid = dto.TransUuid;
 			if (dto.HasSeq) data.Seq = dto.Seq.ToInt();
 			if (dto.HasPoUuid) data.PoUuid = dto.PoUuid;
+			if (dto.HasPoNum) data.PoNum = dto.PoNum;
 			if (dto.HasPoItemUuid) data.PoItemUuid = dto.PoItemUuid;
 			if (dto.HasItemType) data.ItemType = dto.ItemType;
 			if (dto.HasItemStatus) data.ItemStatus = dto.ItemStatus;
@@ -122,6 +123,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasInventoryUuid) data.InventoryUuid = dto.InventoryUuid;
 			if (dto.HasSKU) data.SKU = dto.SKU;
 			if (dto.HasWarehouseUuid) data.WarehouseUuid = dto.WarehouseUuid;
+			if (dto.HasWarehouseCode) data.WarehouseCode = dto.WarehouseCode;
 			if (dto.HasLotNum) data.LotNum = dto.LotNum;
 			if (dto.HasLotDescription) data.LotDescription = dto.LotDescription;
 			if (dto.HasLotInDate) data.LotInDate = dto.LotInDate;
@@ -131,6 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasCurrency) data.Currency = dto.Currency;
 			if (dto.HasUOM) data.UOM = dto.UOM;
 			if (dto.HasTransQty) data.TransQty = dto.TransQty.ToDecimal();
+			if (dto.HasPoPrice) data.PoPrice = dto.PoPrice.ToDecimal();
 			if (dto.HasPrice) data.Price = dto.Price.ToDecimal();
 			if (dto.HasExtAmount) data.ExtAmount = dto.ExtAmount.ToDecimal();
 			if (dto.HasTaxRate) data.TaxRate = dto.TaxRate;
@@ -166,9 +169,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			{
 				if (itemDto == null) continue;
 
-				var obj = (itemDto.RowNum > 0
+				var obj = itemDto.RowNum > 0
 					? lstOrig.Find(x => x.RowNum == itemDto.RowNum)
-					: lstOrig.Find(x => x.TransItemUuid == itemDto.TransItemUuid)) ?? lstOrig.Find(x => x.PoItemUuid == itemDto.PoItemUuid);
+					: lstOrig.Find(x => x.TransItemUuid == itemDto.TransItemUuid);
 				if (obj is null)
 					obj = new PoTransactionItems().SetAllowNull(false);
 				else
@@ -272,6 +275,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.TransUuid = data.TransUuid;
 			dto.Seq = data.Seq;
 			dto.PoUuid = data.PoUuid;
+			dto.PoNum = data.PoNum;
 			dto.PoItemUuid = data.PoItemUuid;
 			dto.ItemType = data.ItemType;
 			dto.ItemStatus = data.ItemStatus;
@@ -281,6 +285,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.InventoryUuid = data.InventoryUuid;
 			dto.SKU = data.SKU;
 			dto.WarehouseUuid = data.WarehouseUuid;
+			dto.WarehouseCode = data.WarehouseCode;
 			dto.LotNum = data.LotNum;
 			dto.LotDescription = data.LotDescription;
 			dto.LotInDate = data.LotInDate;
@@ -290,6 +295,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.Currency = data.Currency;
 			dto.UOM = data.UOM;
 			dto.TransQty = data.TransQty;
+			dto.PoPrice = data.PoPrice;
 			dto.Price = data.Price;
 			dto.ExtAmount = data.ExtAmount;
 			dto.TaxRate = data.TaxRate;
@@ -310,7 +316,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.UpdateBy = data.UpdateBy;
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
-			
+
 			dto.PoQty = data.PoQty;
 			dto.ReceivedQty = data.ReceivedQty;
 			dto.OpenQty = data.OpenQty;

@@ -78,6 +78,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasPoUuid => PoUuid != null;
 
 		/// <summary>
+		/// Unique in this database. <br> ProfileNum + PoNum is DigitBridgePoNum, which is global unique. <br> Title: PoNum, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Unique in this database. <br> ProfileNum + PoNum is DigitBridgePoNum, which is global unique. <br> Title: PoNum, Display: true, Editable: true")]
+        [StringLength(50, ErrorMessage = "The PoNum value cannot exceed 50 characters. ")]
+        public string PoNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasPoNum => PoNum != null;
+
+		/// <summary>
 		/// Global Unique Guid for Invoice
 		/// </summary>
 		[OpenApiPropertyDescription("Global Unique Guid for Invoice")]
@@ -164,6 +174,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasWarehouseUuid => WarehouseUuid != null;
+
+		/// <summary>
+		/// Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true")]
+        [StringLength(50, ErrorMessage = "The WarehouseCode value cannot exceed 50 characters. ")]
+        public string WarehouseCode { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasWarehouseCode => WarehouseCode != null;
 
 		/// <summary>
 		/// Product SKU Lot Number
@@ -253,6 +273,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasTransQty => TransQty != null;
+
+		/// <summary>
+		/// Item P/O price.  <br> Title: Unit Price, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Item P/O price.  <br> Title: Unit Price, Display: true, Editable: true")]
+        public decimal? PoPrice { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasPoPrice => PoPrice != null;
 
 		/// <summary>
 		/// Item Invoice price.
@@ -425,8 +454,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         #region Children - Generated 
 
-        #endregion Children - Generated
-
+        #endregion Children - Generated 
 
         /// <summary>
         /// po item po Qty
@@ -442,7 +470,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// OpenQty => po item po Qty - po item  total received qty;
         /// </summary>
         public virtual decimal OpenQty { get; set; }
-
     }
 }
 

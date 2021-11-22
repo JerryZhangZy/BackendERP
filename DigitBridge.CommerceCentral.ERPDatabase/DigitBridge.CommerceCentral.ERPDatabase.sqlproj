@@ -284,4 +284,7 @@
   <ItemGroup>
     <None Include="channelOrder\OrderHeaderMerchantExt_Update.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="po\PoTransactionItems_Update.sql" />
+  </ItemGroup>
 </Project>
