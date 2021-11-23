@@ -9,10 +9,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// </summary>
     public class WMSPoReceiveItem
     {
-        /// <summary>
-        /// Po header unique key erp provided.
-        /// </summary>
-        public string PoUuid { get; set; }
+        ///// <summary>
+        ///// Po header unique key erp provided.
+        ///// </summary>
+        //public string PoUuid { get; set; }
 
         /// <summary>
         /// Po item unique key erp provided.

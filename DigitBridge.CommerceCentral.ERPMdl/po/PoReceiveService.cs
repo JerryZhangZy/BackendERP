@@ -683,7 +683,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     Messages = this.Messages,
                     Success = success,
-                    PoUuid = data.PoTransaction.PoUuid,
+                    PoItemUuidList = data.PoTransactionItems.Select(i => i.PoItemUuid).ToList(),
                     TransUuid = data.PoTransaction.TransUuid,
                 });
             }

@@ -31,9 +31,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
             this.Success = success;
         }
         /// <summary>
-        /// The uuid of po Purchase order
+        /// The uuid list of po item
         /// </summary>
-        public string PoUuid { get; set; }
+        public List<string> PoItemUuidList { get; set; }
 
         /// <summary>
         /// the uuid of Po transaction
