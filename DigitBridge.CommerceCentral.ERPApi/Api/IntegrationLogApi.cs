@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ApiCommon;
 using DigitBridge.CommerceCentral.ERPApi.OpenApiModel;
@@ -80,7 +81,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         /// <summary>
-        /// Load activityLog list
+        /// Load EventProcessERP list
         /// </summary>
         [FunctionName(nameof(EventProcessERPList))]
         [OpenApiOperation(operationId: "EventProcessERPList", tags: new[] { "IntegrationLog" },
@@ -101,6 +102,90 @@ namespace DigitBridge.CommerceCentral.ERPApi
             HttpRequest req)
         {
             var payload = await req.GetParameters<EventProcessERPPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new EventProcessERPList(dataBaseFactory);
+            await srv.GetEventProcessERPListAsync(payload);
+            return new JsonNetResponse<EventProcessERPPayload>(payload);
+        }
+        /// <summary>
+        /// Load InvoiceToCommerceCentral EventProcessERP list
+        /// </summary>
+        [FunctionName(nameof(InvoiceToCommerceCentralList))]
+        [OpenApiOperation(operationId: "InvoiceToCommerceCentralList", tags: new[] { "IntegrationLog" },
+            Summary = "Load Central Order Transfer to Sales Order Log")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "MasterAccountNum", Description = "From login profile",
+            Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventProcessERPPayloadFind),
+            Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventProcessERPPayloadFind))]
+        public static async Task<JsonNetResponse<EventProcessERPPayload>> InvoiceToCommerceCentralList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "IntegrationLog/InvoiceToCommerceCentral/find")]
+            HttpRequest req)
+        {
+            var payload = await req.GetParameters<EventProcessERPPayload>(true);
+            payload.Filter["ERPEventProcessType"] = (int)EventProcessTypeEnum.InvoiceToCommerceCentral;
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new EventProcessERPList(dataBaseFactory);
+            await srv.GetEventProcessERPListAsync(payload);
+            return new JsonNetResponse<EventProcessERPPayload>(payload);
+        }
+        /// <summary>
+        /// Load SalesOrderToWMS EventProcessERP list
+        /// </summary>
+        [FunctionName(nameof(SalesOrderToWMSList))]
+        [OpenApiOperation(operationId: "SalesOrderToWMSList", tags: new[] { "IntegrationLog" },
+            Summary = "Load Central Order Transfer to Sales Order Log")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "MasterAccountNum", Description = "From login profile",
+            Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventProcessERPPayloadFind),
+            Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventProcessERPPayloadFind))]
+        public static async Task<JsonNetResponse<EventProcessERPPayload>> SalesOrderToWMSList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "IntegrationLog/SalesOrderToWMS/find")]
+            HttpRequest req)
+        {
+            var payload = await req.GetParameters<EventProcessERPPayload>(true);
+            payload.Filter["ERPEventProcessType"] = (int)EventProcessTypeEnum.SalesOrderToWMS;
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new EventProcessERPList(dataBaseFactory);
+            await srv.GetEventProcessERPListAsync(payload);
+            return new JsonNetResponse<EventProcessERPPayload>(payload);
+        }
+        /// <summary>
+        /// Load PoToWMS EventProcessERP list
+        /// </summary>
+        [FunctionName(nameof(PoToWMSList))]
+        [OpenApiOperation(operationId: "PoToWMSList", tags: new[] { "IntegrationLog" },
+            Summary = "Load Central Order Transfer to Sales Order Log")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "MasterAccountNum", Description = "From login profile",
+            Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int),
+            Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventProcessERPPayloadFind),
+            Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventProcessERPPayloadFind))]
+        public static async Task<JsonNetResponse<EventProcessERPPayload>> PoToWMSList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "IntegrationLog/PoToWMS/find")]
+            HttpRequest req)
+        {
+            var payload = await req.GetParameters<EventProcessERPPayload>(true);
+            payload.Filter["ERPEventProcessType"] = (int)EventProcessTypeEnum.PoToWMS;
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new EventProcessERPList(dataBaseFactory);
             await srv.GetEventProcessERPListAsync(payload);
