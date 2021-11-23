@@ -69,14 +69,14 @@
     //"DefaultCacheExpireSlidingMins": "2"
 
     //dev
-    "UseOrchestration": "false",
-    "OrchestrationDbConnString": "Server=tcp:bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-Orchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
-    "OrchestrationDbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
-    "DBConnectionString": "Data Source=(localdb)\\ProjectsV13;Initial Catalog=DigitBridge.CommerceCentral.ERPDatabase;Integrated Security=True;Pooling=False;Connect Timeout=30",
-    "DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
-    "UseAzureManagedIdentity": "false",
-    "AzureTokenProviderConnectionString": "runas=developer;developertool=visualstudio",
-    "DefaultCacheExpireSlidingMins": "2"
+    //"UseOrchestration": "false",
+    //"OrchestrationDbConnString": "Server=tcp:bolanyououtlooksql01.database.windows.net,1433;Initial Catalog=DigitBridgeDev-Orchestration;Persist Security Info=False;User ID=DigitBridgeDev;Password=DevTest168;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    //"OrchestrationDbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    //"DBConnectionString": "Data Source=(localdb)\\ProjectsV13;Initial Catalog=DigitBridge.CommerceCentral.ERPDatabase;Integrated Security=True;Pooling=False;Connect Timeout=30",
+    //"DbTenantId": "c7bf52bc-7dd4-4ab7-91de-634b36cbc350",
+    //"UseAzureManagedIdentity": "false",
+    //"AzureTokenProviderConnectionString": "runas=developer;developertool=visualstudio",
+    //"DefaultCacheExpireSlidingMins": "2"
 
     //"ERP_Integration_Api_BaseUrl": "https://digitbridge-erp-integration-api-dev.azurewebsites.net",
     //"ERP_Integration_Api_AuthCode": "yaEyeN7PjOovcgu4h2Q2JEgOtQt5gSb5uC9jHR840ca/qjErIxxMZw==",
