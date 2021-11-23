@@ -92,45 +92,80 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected override bool ValidateAdd(PoTransactionData data)
         {
             var isValid = base.ValidateAdd(data);
-            isValid = isValid && ValidReceivedQty(data.PoTransactionItems);
+            isValid = isValid && ValidReceivedQty(data);
             return isValid;
         }
         protected override async Task<bool> ValidateAddAsync(PoTransactionData data)
         {
             var isValid = await base.ValidateAddAsync(data);
-            isValid = isValid && ValidReceivedQty(data.PoTransactionItems);
+            isValid = isValid && ValidReceivedQty(data);
             return isValid;
         }
         protected override bool ValidateEdit(PoTransactionData data)
         {
             var isValid = base.ValidateEdit(data);
-            isValid = isValid && ValidReceivedQty(data.PoTransactionItems);
+            isValid = isValid && ValidReceivedQty(data);
             return isValid;
         }
         protected override async Task<bool> ValidateEditAsync(PoTransactionData data)
         {
             var isValid = await base.ValidateEditAsync(data);
-            isValid = isValid && ValidReceivedQty(data.PoTransactionItems);
+            isValid = isValid && ValidReceivedQty(data);
             return isValid;
         }
 
-        private bool ValidReceivedQty(IList<PoTransactionItems> poReceiveItems)
+        private bool ValidReceivedQty(PoTransactionData data)
         {
             var isValid = true;
-
+           var  poReceiveItems = data.PoTransactionItems;
             if (poReceiveItems == null || poReceiveItems.Count == 0)
                 return isValid;
 
             foreach (var item in poReceiveItems)
             {
-                //return qty cannot > open qty
-                if (item.TransQty > item.OpenQty)
+
+                if (item.TransQty <= 0)
+                {
+                    isValid = false;
+                    AddError($"Receive item TransQty cannot less than 0.");
+                }
+
+
+                var poData= GetPurchaseOrderData(item.PoNum, data.PoTransaction.ProfileNum, data.PoTransaction.MasterAccountNum);
+                if (poData == null)
+                {
+                    isValid = false;
+                    AddError($"Can not find this PurchaseOrder.  PoItemUuid:{item.PoUuid},PoNum:{item.PoNum}]");
+                }
+
+
+
+
+               decimal PoQty = (poData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid)?.PoQty).ToQty();
+               decimal ReceivedQty = (poData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid)?.ReceivedQty).ToQty();
+               decimal CancelledQty = (poData ?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid)?.CancelledQty).ToQty();
+                if (item.TransQty > (PoQty - ReceivedQty))
                 {
                     isValid = false;
                     AddError($"Receive item TransQty cannot greater than OpenQty. [Sku:{item.SKU},PoItemUuid:{item.PoUuid},TransQty:{item.TransQty},OpenQty:{item.OpenQty}]");
                 }
             }
             return isValid;
+        }
+
+        /// <summary>
+        /// Load LoadPurchaseOrder data.
+        /// </summary>
+        /// <param name="poNum"></param>
+        protected PurchaseOrderData GetPurchaseOrderData(string poNum, int profileNum, int masterAccountNum)
+        {
+        
+            var poData = new PurchaseOrderData(dbFactory);
+            var success = poData.GetByNumber(masterAccountNum, profileNum, poNum);
+            if (!success)
+                return null;
+            else
+                return poData;
         }
     }
 }

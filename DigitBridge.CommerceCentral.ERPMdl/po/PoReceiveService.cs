@@ -306,18 +306,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            var list = SplitPoTransaction(transdata);
-            payload.PoTransactions = new List<PoTransactionDataDto>();
-            foreach (var dto in list)
-            {
-                payload.PoTransaction = dto;
-                if (await base.AddAsync(payload))
-                {
-                    payload.PoTransactions.Add(ToDto());
-                }
-            }
 
-            payload.PoTransaction = null;
+            payload.PoTransactions = new List<PoTransactionDataDto>();
+            if (await base.AddAsync(payload))
+                payload.Success = true;
+ 
             payload.Messages = Messages;
             return true;
         }
@@ -467,9 +460,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (await base.SaveDataAsync())
             {
                 await InventoryLogService.UpdateByPoReceiveAsync(_data);
-                // await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data);//close
                 await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
-                // await InventoryService.UpdatAvgCostByPoReceiveAsync(_data);//close
                 return true;
             }
 
@@ -743,6 +734,41 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="receiveItems"></param>
         /// <returns></returns>
+        public async Task<IList<WMSPoReceivePayload>> AddTransForWMSPoReceiveAsyncNew(PoReceivePayload payload)
+        {
+            var poUuids = payload.WMSPoReceiveItems?.Select(i => i.PoUuid).Distinct();
+            List<StringArray> poUuidArrays = new List<StringArray>();
+            foreach (var item in poUuids)
+                poUuidArrays.Add(new StringArray() { Item0 = item });
+
+
+            var poNumList =  await PurchaseOrderHelper.GetPoNumsByPoItemUuidAsync(poUuidArrays, payload.MasterAccountNum, payload.ProfileNum);
+
+            var transactions = new List<PoTransactionDataDto>();
+            foreach (var item in poNumList)
+            {
+
+                if (await NewReceiveAsync(payload, item.Item0))
+                    transactions.Add(ToDto());
+            }
+
+            var list = SplitPoTransactionsForVendor(transactions);
+            payload.PoTransactions = new List<PoTransactionDataDto>();
+            foreach (var dto in list)
+            {
+                payload.PoTransaction = dto;
+                await base.AddAsync(payload);
+            }
+
+            return null;
+ 
+        }
+        /// <summary>
+        /// Add po trans for wms po receive.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="receiveItems"></param>
+        /// <returns></returns>
         public async Task<IList<WMSPoReceivePayload>> AddTransForWMSPoReceiveAsync(PoReceivePayload payload)
         {
             var results = new List<WMSPoReceivePayload>();
@@ -771,7 +797,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return results;
         }
-
         /// <summary>
         /// Get po transaction from wms po receive items.
         /// </summary>

@@ -253,8 +253,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.PoTransaction);
 
-            if (!LoadPurchaseOrderData(payload.PoTransaction.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
-                return false;
+            //if (!LoadPurchaseOrderData(payload.PoTransaction.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
+            //    return false;
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -629,7 +629,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 VendorName = poHeader.VendorName,
                 VendorCode = poHeader.VendorCode,
                 VendorUuid = poHeader.VendorUuid,
-                Currency=poHeader.Currency
+                Currency = poHeader.Currency,
+                TaxRate = poHeader.TaxRate.ToDecimal(),
+                DiscountRate=poHeader.DiscountRate.ToDecimal()
             };
         }
         protected void CopyPoItemsToReceiveItems()
@@ -662,7 +664,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     MiscAmount = item.MiscAmount.ToDecimal(),
                     MiscTaxAmount = item.MiscTaxAmount.ToDecimal(),
                     ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToDecimal(),
-                    PoPrice=item.Price
+                    PoPrice=item.Price,
+                    Taxable=item.Taxable,
+                    Currency=item.Currency,
                     //TransQty=item.PoQty-item.ReceivedQty-item.CancelledQty
                 };
 
