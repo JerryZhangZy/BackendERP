@@ -29,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
 
         /// <summary>
-        /// Wms data downloaded then send ack to erp.
+        /// WMS post po receive items back to erp.
         /// </summary>
         /// <param name="masterAccountNum"></param>
         /// <param name="profileNum"></param>
