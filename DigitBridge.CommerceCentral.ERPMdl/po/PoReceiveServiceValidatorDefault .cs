@@ -132,6 +132,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return isValid;
         }
+
+        protected override async Task<bool> ValidateAllModeAsync(PoTransactionData data)
+        {
+            if (data.PoTransaction.VendorCode.IsZero())
+            {
+                IsValid = false;
+                AddError($"VendorCode cannot be empty.");
+                return IsValid;
+            }
+
+            return await base.ValidateAllModeAsync(data);
+        }
     }
 }
 

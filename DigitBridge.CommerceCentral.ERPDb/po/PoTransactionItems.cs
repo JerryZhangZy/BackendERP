@@ -39,6 +39,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// OpenQty => po item po Qty - po item  total received qty;
         /// </summary>
         public virtual decimal OpenQty => PoQty - ReceivedQty;
+
+        #region 
+
+        /// <summary>
+        /// VendorCode
+        /// </summary> 
+        [JsonIgnore,XmlIgnore]
+        public string VendorCode { get; set; }
+        /// <summary>
+        /// VendorName
+        /// </summary> 
+        [JsonIgnore, XmlIgnore]
+        public string VendorName { get; set; }
+        /// <summary>
+        /// VendorUuid
+        /// </summary> 
+        [JsonIgnore, XmlIgnore]
+        public string VendorUuid { get; set; }
+
+        #endregion
     }
 }
 
