@@ -443,29 +443,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 TransRowNum = trans.RowNum
             };
         }
-
-        protected async Task<bool> PayInvoiceAsync(ApplyInvoice applyInvoice, int masterAccountNum, int profileNum)
-        {
-            var changedPaidAmount = applyInvoice.PaidAmount - Data.InvoiceTransaction.OriginalPaidAmount;
-            using var trs = new ScopedTransaction(dbFactory);
-            return await InvoiceHelper.PayInvoiceAsync(applyInvoice.InvoiceNumber, changedPaidAmount, masterAccountNum, profileNum);
-        }
-        protected async Task<bool> PayInvoiceAsync(string invoiceNumber, int masterAccountNum, int profileNum, decimal paidAmount)
-        {
-            using (var trs = new ScopedTransaction(dbFactory))
-                return await InvoiceHelper.PayInvoiceAsync(invoiceNumber, paidAmount, masterAccountNum, profileNum);
-        }
-
-        protected bool PayInvoice(ApplyInvoice applyInvoice, int masterAccountNum, int profileNum)
-        {
-            var changedPaidAmount = applyInvoice.PaidAmount - Data.InvoiceTransaction.OriginalPaidAmount;
-            using (var trs = new ScopedTransaction(dbFactory))
-            {
-                bool result = InvoiceHelper.PayInvoice(applyInvoice.InvoiceNumber, changedPaidAmount, masterAccountNum, profileNum);
-                trs.Commit();
-                return result;
-            }
-        }
         #endregion
 
         #region update multi payments
@@ -518,93 +495,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
 
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
-            }
-
-            return payload.Success;
-        }
-
-        public async Task UpdatePayment(InvoicePaymentPayload data)
-        {
-            Edit();
-            data.Success = true;
-            string invoiceNumber = "";
-            ApplyInvoice applyInvoice = data.ApplyInvoices.First();
-            if (await base.UpdateAsync(data))
-            {
-                this.AddActivityLogForCurrentData();
-                var invoiceTransaction = Data.InvoiceTransaction;
-                invoiceNumber = data.InvoiceHeader.InvoiceNumber;
-                if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
-                    data.Success &= await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, invoiceTransaction.OriginalPaidAmount);
-                if (data.Success && Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
-                    data.Success &= await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
-            }
-            else
-            {
-                data.Success = false;
-                AddError($"Update payment failed for InvoiceNumber: {invoiceNumber} ");
-            }
-
-            //update payment success. then pay invoice.
-            var success = await PayInvoiceAsync(applyInvoice, data.MasterAccountNum, data.ProfileNum);
-            if (!success)
-            {
-                data.Success = false;
-                applyInvoice.Success = false;
-                AddError($"{applyInvoice.InvoiceNumber} is not applied.");
-            }
-
-            applyInvoice.Success = true;
-        }
-
-        public async virtual Task<bool> UpdateInvoicePayments(InvoicePaymentPayload payload)
-        {
-            payload.Success = true;
-            var mapper = DtoMapper as InvoiceTransactionDataDtoMapperDefault;
-            List<InvoiceTransactionData> readyToUpdate = new List<InvoiceTransactionData>();
-            Dictionary<string, decimal> dictionaryOfNewBatchPaymentSumAmount = new Dictionary<string, decimal>();
-
-            foreach (var applyInvoice in payload.ApplyInvoices)
-            {
-                List();
-                await GetDataAsync(applyInvoice.TransRowNum.Value);
-                readyToUpdate.Add(this.Data);
-
-                string batchId = this.Data.InvoiceTransaction.PaymentUuid;
-                decimal amount = this.Data.InvoiceTransaction.TotalAmount;
-                if (dictionaryOfNewBatchPaymentSumAmount.ContainsKey(batchId))
-                    dictionaryOfNewBatchPaymentSumAmount[batchId] += amount;
-                else
-                    dictionaryOfNewBatchPaymentSumAmount.Add(batchId, amount);
-            }
-
-            var dictionaryOfOriginalBatchPaymentSumAmount = readyToUpdate.GroupBy(up => up.InvoiceTransaction.PaymentUuid)
-                .Select(g => new KeyValuePair<string, decimal>(
-                    g.Key, 
-                    g.Sum(p => p.InvoiceTransaction.TotalAmount))
-                ).ToList();
-
-            dictionaryOfOriginalBatchPaymentSumAmount.ForEach(p => {
-                if (dictionaryOfNewBatchPaymentSumAmount[p.Key] != p.Value)
-                    dictionaryOfNewBatchPaymentSumAmount.Remove(p.Key);
-            });
-
-            foreach (var item in dictionaryOfNewBatchPaymentSumAmount)
-            {
-                readyToUpdate.Where(up => up.InvoiceTransaction.PaymentUuid == item.Key)
-                    .ToList().ForEach(async up => {
-                        var applyInvoice = payload.ApplyInvoices.Single(a => a.TransUuid == up.InvoiceTransaction.TransUuid);
-                        var updatePayload = new InvoicePaymentPayload
-                        {
-                            DatabaseNum = payload.DatabaseNum,
-                            MasterAccountNum = payload.MasterAccountNum,
-                            ProfileNum = payload.ProfileNum,
-                            InvoiceTransaction = ToDto(up),
-                            ApplyInvoices = new List<ApplyInvoice> { applyInvoice }
-                        };
-                        await UpdatePayment(updatePayload);
-                        payload.Success &= updatePayload.Success;
-                    });
             }
 
             return payload.Success;
@@ -767,14 +657,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (result)
                 {
                     this.AddActivityLogForCurrentData();
-                    var invoiceTransaction = Data.InvoiceTransaction;
-                    if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
-                        await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, invoiceTransaction.OriginalPaidAmount);
-                    if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
-                        await MiscPaymentService.AddMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.InvoiceNumber, invoiceTransaction.TotalAmount);
-
-                    var success = PayInvoice(applyInvoice, payload.MasterAccountNum, payload.ProfileNum);
-                    if (!success)
+                    
+                    if (!await UpdateMiscPaymentAsync())
                     {
                         applyInvoice.Success = false;
                         AddError($"{applyInvoice.InvoiceNumber} is not applied.");
