@@ -64,8 +64,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ProfileNum = ProfileNum,
                 WMSPoReceiveItems = new List<WMSPoReceiveItem>()
                 {
-                 new WMSPoReceiveItem(){ PoUuid="de4a8888-9f12-4e8f-8f96-0a1c67c9bdea", PoItemUuid="1a8e53ca-4a0c-4317-952e-445584eee520", Qty=1 },
-                 new WMSPoReceiveItem(){ PoUuid="de4a8888-9f12-4e8f-8f96-0a1c67c9bdea", PoItemUuid="fc2d34b8-e3f0-443f-89b4-2309f66729ad", Qty=2 },
+                 new WMSPoReceiveItem(){ PoItemUuid="1a8e53ca-4a0c-4317-952e-445584eee520", Qty=1 },
+                 new WMSPoReceiveItem(){ PoItemUuid="fc2d34b8-e3f0-443f-89b4-2309f66729ad", Qty=2 },
                 }
             };
 
