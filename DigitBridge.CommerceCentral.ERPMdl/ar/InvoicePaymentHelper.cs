@@ -61,6 +61,37 @@ AND CheckNum = @number
                   number.ToSqlParameter("number"));
             return result > 0;
         }
+
+        public static async Task<decimal> GetSumPaidOfBatch(string paymentUuid, int masterAccountNum, int profileNum)
+        {
+
+            var sql = $@"
+SELECT SUM(TotalAmount) FROM InvoiceTransaction
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND PaymentUuid = @paymentUuid
+";
+
+            var sumOfBatchPaid = await SqlQuery.ExecuteScalarAsync<int>(sql, masterAccountNum.ToSqlParameter("masterAccountNum"),
+                  profileNum.ToSqlParameter("profileNum"),
+                  paymentUuid.ToSqlParameter("paymentUuid"));
+            return sumOfBatchPaid;
+        }
+
+        public static async Task<decimal> GetSumPaidByInvoice(string invoiceUuid, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT SUM(TotalAmount) FROM InvoiceTransaction
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND InvoiceUuid = @invoiceUuid
+";
+
+            var sumOfBatchPaid = await SqlQuery.ExecuteScalarAsync<int>(sql, masterAccountNum.ToSqlParameter("masterAccountNum"),
+                  profileNum.ToSqlParameter("profileNum"),
+                  invoiceUuid.ToSqlParameter("invoiceUuid"));
+            return sumOfBatchPaid;
+        }
     }
 }
 
