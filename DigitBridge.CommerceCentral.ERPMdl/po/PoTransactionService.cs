@@ -661,7 +661,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     MiscAmount = item.MiscAmount.ToDecimal(),
                     MiscTaxAmount = item.MiscTaxAmount.ToDecimal(),
                     ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToDecimal(),
-                    PoPrice=item.Price
+                    PoPrice = item.Price
                     //TransQty=item.PoQty-item.ReceivedQty-item.CancelledQty
                 };
 
@@ -692,7 +692,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             this.AttachData(data);
 
-            if (!await LoadPoAsync(Data.PoTransaction.PoUuid))
+            if (!Data.PoTransaction.PoUuid.IsZero() && !await LoadPoAsync(Data.PoTransaction.PoUuid))
                 return false;
 
             // validate data for Add processing

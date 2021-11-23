@@ -744,25 +744,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return data;
         }
 
-        protected List<PoReceiveExtend> GetWMSPoReceiveExt(List<string> poItemUuidList)
+        protected List<PoReceiveExtend> GetWMSPoReceiveExt(IList<string> poItemUuidList)
         {
-            var sql = $@"
-select 
-distinct
-poh.VendorCode
-,poh.VendorName
-,poh.VendorUuid
-,poh.PoUuid
-,poh.PoNum
-,poi.PoItemUuid
-from PoHeader poh  
-join PoItems poi on poi.PoUuid=poh.PoUuid
-join PoItemUuidList itemUuidList on itemUuidList.item= poi.PoItemUuid
-";
-
-            return dbFactory.Db.Query<PoReceiveExtend>(sql,
-poItemUuidList.ToParameter<string>("PoItemUuidList")
-).ToList();
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                return PoTransactionHelper.GetWMSPoReceiveExt(poItemUuidList);
+            }
         }
 
         #endregion
