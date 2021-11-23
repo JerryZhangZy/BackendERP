@@ -41,6 +41,41 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
+        #region Service Property
+
+        private VendorService _vendorService;
+
+        protected VendorService VendorService
+        {
+            get
+            {
+                if (_vendorService is null)
+                    _vendorService = new VendorService(dbFactory);
+                return _vendorService;
+            }
+        }
+
+        #endregion
+
+        #region GetDataWithCache
+        /// <summary>
+        /// get vendor data
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="sku"></param>
+        /// <returns></returns>
+        public virtual VendorData GetVendorData(PoTransactionData data, string vendorCode)
+        {
+            var key = data.PoTransaction.MasterAccountNum + "_" + data.PoTransaction.ProfileNum + '_' + vendorCode;
+            return data.GetCache(key, () =>
+            {
+                if (VendorService.GetByNumber(data.PoTransaction.MasterAccountNum, data.PoTransaction.ProfileNum, vendorCode))
+                    return VendorService.Data;
+                return null;
+            });
+        }
+        #endregion
+
         private DateTime now = DateTime.UtcNow;
 
         public virtual bool SetDefault(PoTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -72,32 +107,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     using (var tx = new ScopedTransaction(dbFactory))
                     {
-                        sum.TransNum = PoTransactionHelper.GetTranSeqNum(sum.PoUuid, sum.ProfileNum.ToInt());
+                        sum.TransNum = PoTransactionHelper.GetTranSeqNum(sum.VendorCode, sum.ProfileNum.ToInt());
                     }
                 }
                 //for Add mode, always reset uuid
                 sum.TransUuid = Guid.NewGuid().ToString();
-                if (sum.VendorUuid.IsZero())
+
+                if (!data.HasMultiPo)
                 {
-                    sum.VendorUuid = poHeader.VendorUuid;
-                    sum.VendorName = poHeader.VendorName;
-                    sum.VendorCode = poHeader.VendorCode;
-                }
-                if (sum.TransDate.IsZero())
-                {
-                    sum.TransDate = now.Date;
-                    sum.TransTime = now.TimeOfDay;
+                    if (sum.Currency.IsZero()) sum.Currency = poHeader?.Currency;
+                    if (sum.PoNum.IsZero()) sum.PoNum = poHeader?.PoNum;
+                    if (sum.TaxRate.IsZero()) sum.TaxRate = (poHeader?.TaxRate).ToDecimal();
+                    if (sum.DiscountRate.IsZero()) sum.DiscountRate = (poHeader?.DiscountRate).ToDecimal();
                 }
 
-                if (sum.Currency.IsZero()) sum.Currency = poHeader.Currency;
-                if (sum.PoNum.IsZero()) sum.PoNum = poHeader.PoNum;
-                if (sum.TaxRate.IsZero()) sum.TaxRate = poHeader.TaxRate.ToDecimal();
-                if (sum.DiscountRate.IsZero()) sum.DiscountRate = poHeader.DiscountRate.ToDecimal();
             }
 
-            //Set default for po
-            var poData = data.PurchaseOrderData;
-            sum.PoUuid = poData.PoHeader.PoUuid;
+            if (sum.VendorUuid.IsZero())
+            {
+                var vendorData = GetVendorData(data, sum.VendorCode);
+                sum.VendorUuid = vendorData?.Vendor?.VendorUuid;
+                sum.VendorName = vendorData?.Vendor?.VendorName;
+                //sum.VendorCode = poHeader.VendorCode;
+            }
+            if (!data.HasMultiPo)
+            {
+                sum.PoUuid = poHeader?.PoUuid;
+            }
 
             //sum.DiscountAmount = poData.PoHeader.DiscountAmount;
             //sum.DiscountRate = poData.PoHeader.DiscountRate;

@@ -100,29 +100,29 @@ AND TransUuid = @uuid
             );
             return result > 0;
         }
-        public static async Task<int> GetTranSeqNumAsync(string poUuid, int profileNum)
+        public static async Task<int> GetTranSeqNumAsync(string vendorCode, int profileNum)
         {
             var sql = $@"
 SELECT isnull(max(TransNum),0)+1 FROM PoTransaction tbl
 WHERE ProfileNum = @profileNum
-AND PoUuid= @PoUuid
+AND VendorCode= @vendorCode
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                 profileNum.ToSqlParameter("profileNum"),
-                poUuid.ToSqlParameter("PoUuid")
+                vendorCode.ToSqlParameter("vendorCode")
             );
             return result;
         }
-        public static int GetTranSeqNum(string poUuid, int profileNum)
+        public static int GetTranSeqNum(string vendorCode, int profileNum)
         {
             var sql = $@"
 SELECT isnull(max(TransNum),0)+1 FROM PoTransaction tbl
 WHERE ProfileNum = @profileNum
-AND PoUuid= @PoUuid
+AND VendorCode= @vendorCode
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                 profileNum.ToSqlParameter("profileNum"),
-                poUuid.ToSqlParameter("PoUuid")
+                vendorCode.ToSqlParameter("vendorCode")
             );
             return result;
         }
