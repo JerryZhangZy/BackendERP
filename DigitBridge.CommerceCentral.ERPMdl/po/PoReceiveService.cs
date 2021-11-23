@@ -751,14 +751,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (await NewReceiveAsync(payload, item.Item0))
                     transactions.Add(ToDto());
             }
+            payload.PoTransactions = transactions;
 
-            var list = SplitPoTransactionsForVendor(transactions);
-            payload.PoTransactions = new List<PoTransactionDataDto>();
-            foreach (var dto in list)
-            {
-                payload.PoTransaction = dto;
-                await base.AddAsync(payload);
-            }
+           await AddListAsync(payload);
+
+            //var list = SplitPoTransactionsForVendor(transactions);
+            //payload.PoTransactions = new List<PoTransactionDataDto>();
+            //foreach (var dto in list)
+            //{
+            //    payload.PoTransaction = dto;
+            //    await base.AddAsync(payload);
+            //}
 
             return null;
  
