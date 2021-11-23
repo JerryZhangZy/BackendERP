@@ -628,7 +628,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 PoUuid = poHeader.PoUuid,
                 VendorName = poHeader.VendorName,
                 VendorCode = poHeader.VendorCode,
-                VendorUuid = poHeader.VendorUuid
+                VendorUuid = poHeader.VendorUuid,
+                Currency=poHeader.Currency
             };
         }
         protected void CopyPoItemsToReceiveItems()

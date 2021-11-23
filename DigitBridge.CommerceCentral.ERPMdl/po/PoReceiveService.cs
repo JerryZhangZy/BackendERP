@@ -555,7 +555,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     transactions.Add(ToDto());
 
             }
-            payload.PoTransactions = transactions;
+            payload.PoTransaction = MergePoTransactions(transactions,false);
             return true;
         }
 
@@ -583,7 +583,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         private IList<PoTransactionDataDto> SplitPoTransactionsForVendor(IList<PoTransactionDataDto> dtolist)
         {
-            //var list = new List<PoTransactionDataDto>();
+            
             foreach (var transdata in dtolist)
             {
                 if (!transdata.HasPoTransaction || !transdata.HasPoTransactionItems)
@@ -591,26 +591,91 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError("PoTransaction cannot be blank");
                     continue;
                 }
-
-                //list.AddRange(SplitPoTransaction(transdata));
             }
             var vendorPoTransactionList = new List<PoTransactionDataDto>();
             var vendorPoTransactions = dtolist.GroupBy(r => r.PoTransaction.VendorCode);
             foreach (var vendorItem in vendorPoTransactions)
-            { 
-                 
-                
+            {
+                vendorPoTransactionList.Add(MergePoTransactions(vendorItem.ToList()));
             }
-
-
             return vendorPoTransactionList;
-
-
-
         }
 
 
+        private PoTransactionDataDto MergePoTransactions(List<PoTransactionDataDto> list,bool filterZeroTransQty=true)
+        {
+            //var list = new List<PoTransactionDataDto>();
 
+            var poTransactionItems = new List<PoTransactionItemsDto>();
+            foreach (var po in list)
+            {
+                foreach (var poItem in po.PoTransactionItems)
+                {
+
+                    if (!filterZeroTransQty)
+                    {
+                        poTransactionItems.Add(poItem);
+                    }
+                    else
+                    {
+                        if (poItem.TransQty > 0)
+                            poTransactionItems.Add(poItem);
+                    }
+
+                }
+            }
+
+
+            var totalQty = list.Sum(r=>r.PoTransactionItems.Sum(r => r.TransQty.ToInt()));
+            var toalTaxAmount = list.Sum(r => r.PoTransaction.TaxAmount.ToAmount());
+            var totalShipmentAmount = list.Sum(r => r.PoTransaction.ShippingAmount.ToAmount());
+            var totalShipmentTaxAmount = list.Sum(r => r.PoTransaction.ShippingTaxAmount.ToAmount());
+            var totalMiscAmount = list.Sum(r => r.PoTransaction.MiscAmount.ToAmount());
+            var totalMiscTaxAmount = list.Sum(r => r.PoTransaction.MiscTaxAmount.ToAmount());
+            var totalDiscountAmount = list.Sum(r => r.PoTransaction.DiscountAmount.ToAmount());
+            var currentQty = poTransactionItems.Sum(r => r.TransQty);
+
+            var poTransaction = new PoTransactionDto()
+            {
+                 
+                PoUuid = list.Count>1?"":list[0].PoTransaction.PoUuid,
+                PoNum = list.Count > 1 ? "" : list[0].PoTransaction.PoNum,
+                ProfileNum = list[0].PoTransaction.ProfileNum,
+                MasterAccountNum = list[0].PoTransaction.MasterAccountNum,
+                DatabaseNum = list[0].PoTransaction.DatabaseNum,
+                VendorCode = list[0].PoTransaction.VendorCode,
+                VendorName = list[0].PoTransaction.VendorName,
+                VendorUuid = list[0].PoTransaction.VendorUuid,
+                Currency = list[0].PoTransaction.Currency,
+                Description = list[0].PoTransaction.Description,
+                //ChargeAndAllowanceAmount = list.Sum(r=>r.PoTransaction.ChargeAndAllowanceAmount),
+
+                //DiscountAmount = totalQty > 0 ? totalDiscountAmount / totalQty * currentQty : 0,
+                //DiscountRate = list[0].PoTransaction.DiscountRate,
+                //ShippingAmount = totalQty > 0 ? totalShipmentAmount / totalQty * currentQty : 0,
+                //ShippingTaxAmount = totalQty > 0 ? totalShipmentTaxAmount / totalQty * currentQty : 0,
+                //MiscAmount = totalQty > 0 ? totalMiscAmount / totalQty * currentQty : 0,
+                //MiscTaxAmount = totalQty > 0 ? totalMiscTaxAmount / totalQty * currentQty : 0,
+                //TaxAmount = totalQty > 0 ? toalTaxAmount / totalQty * currentQty : 0,
+
+            };
+
+            if (ProcessMode == ProcessingMode.Add)
+            {
+                poTransaction.TransStatus = _firstAPReceiveStatus ? (int)PoTransStatus.APReceive : (int)PoTransStatus.StockReceive;
+            }
+
+
+            var dto = new PoTransactionDataDto()
+            {
+                     PoTransaction= poTransaction,
+                     PoTransactionItems= poTransactionItems
+            };
+
+
+            return dto;
+ 
+        }
 
 
 
