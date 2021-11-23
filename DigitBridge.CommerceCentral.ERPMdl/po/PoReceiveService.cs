@@ -759,7 +759,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 List<PoTransactionItemsDto> poTransactionItemsDtos = new List<PoTransactionItemsDto>();   
                 foreach (var aItem in items)
                 {
-                   var transItem= poTran.PoTransactionItems.Where(r => r.PoItemUuid == aItem.PoItemUuid).SingleOrDefault();
+                   var transItem= poTran.PoTransactionItems.Where(r => r.PoItemUuid == aItem.PoItemUuid).FirstOrDefault();
                     if (transItem != null)
                     {
                         transItem.TransQty = aItem.Qty;
