@@ -706,7 +706,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var items = extendInfos?.Where(i => i.VendorCode == vendorCode);
             if (items.Count() == 0) return null;
 
-            var IsItemInSamePo = items.Select(i => i.PoUuid).Distinct().Count() == 1;
+            var isItemInSamePo = items.Select(i => i.PoUuid).Distinct().Count() == 1;
             var defaultItem = items.FirstOrDefault();
 
             var data = new PoTransactionData()
@@ -714,8 +714,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 PoTransaction = new PoTransaction()
                 {
                     TransUuid = Guid.NewGuid().ToString(),
-                    PoUuid = IsItemInSamePo ? defaultItem.PoUuid : string.Empty,
-                    PoNum = IsItemInSamePo ? defaultItem.PoNum : string.Empty,
+                    PoUuid = isItemInSamePo ? defaultItem.PoUuid : string.Empty,
+                    PoNum = isItemInSamePo ? defaultItem.PoNum : string.Empty,
                     MasterAccountNum = payload.MasterAccountNum,
                     ProfileNum = payload.ProfileNum,
                     VendorCode = vendorCode,
@@ -723,6 +723,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     VendorUuid = defaultItem.VendorUuid,
                     TransStatus = (int)PoTransStatus.StockReceive
                 },
+                HasMultiPo = !isItemInSamePo,
             };
 
             data.PoTransactionItems = new List<PoTransactionItems>();
