@@ -380,6 +380,14 @@ FROM EventProcessERP ins
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+        
+        [Fact]
+        public async Task GetUnprocessedEvent_Test()
+        {
+            var srv = new EventProcessERPService(DataBaseFactory);
+            var result = await srv.GetUnprocessedEvent(10001, 10001, 1, 1, EventProcessTypeEnum.InvoiceToCommerceCentral);
+            Assert.NotEmpty(result.ToString());
+        }
     }
 }
 
