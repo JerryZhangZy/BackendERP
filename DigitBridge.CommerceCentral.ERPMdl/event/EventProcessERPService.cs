@@ -17,6 +17,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.Base.Common;
+using System.Text;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -494,7 +495,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion
-
+        public async Task<StringBuilder> GetUnprocessedEvent(int masterAccountNum, int profileNum, int channelNum, int channelAccountNum, EventProcessTypeEnum erpEventProcessType)
+        {
+            var payload = new EventProcessERPPayload()
+            {
+                MasterAccountNum = masterAccountNum,
+                ProfileNum = profileNum,
+                Filter = new Newtonsoft.Json.Linq.JObject()
+                {
+                    { "ChannelNum", channelNum },
+                    { "ChannelAccountNum", channelAccountNum },
+                    { "ERPEventProcessType", (int)erpEventProcessType }
+                }
+            };
+            var srv = new EventProcessERPList(dbFactory, new EventProcessERPQuery());
+            await srv.GetEventProcessERPListAsync(payload);
+            return payload.EventProcessERPList;
+        }
     }
 }
 

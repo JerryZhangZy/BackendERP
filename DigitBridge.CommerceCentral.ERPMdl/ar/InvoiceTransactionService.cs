@@ -221,13 +221,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             } 
 
-            //save trans success. then pay invoice. 
-            if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
-            {
-                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
-                return false;
-            }
-
             return true;
         }
 
@@ -268,13 +261,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             } 
 
-            //save trans success. then pay invoice. 
-            if (!InvoiceService.UpdateInvoicePaidAmount(Data.InvoiceTransaction))
-            {
-                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
-                return false;
-            }
-
             return true;
         }
 
@@ -314,13 +300,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
                 return false;
             } 
-
-            //save trans success. then pay invoice. 
-            if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
-            {
-                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
-                return false;
-            }
 
             return true;
         }
@@ -365,13 +344,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             } 
 
-            //save trans success. then pay invoice. 
-            if (!InvoiceService.UpdateInvoicePaidAmount(Data.InvoiceTransaction))
-            {
-                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
-                return false;
-            }
-
             return true;
         }
 
@@ -415,12 +387,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             } 
 
-            //save trans success. then pay invoice. 
-            if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
-            {
-                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
-                return false;
-            }
 
             return true;
         }
@@ -475,13 +441,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             } 
 
-            //save trans success. then pay invoice. 
-            if (!InvoiceService.UpdateInvoicePaidAmount(Data.InvoiceTransaction))
-            {
-                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
-                return false;
-            }
-
             return true;
         }
 
@@ -530,13 +489,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
                 return false;
             } 
-
-            //save trans success. then pay invoice. 
-            if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
-            {
-                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
-                return false;
-            }
 
             return true;
         }
@@ -594,13 +546,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             } 
 
-            //save trans success. then pay invoice. 
-            if (!InvoiceService.UpdateInvoicePaidAmount(Data.InvoiceTransaction))
-            {
-                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
-                return false;
-            }
-
             return true;
         }
 
@@ -653,13 +598,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!await SaveDataAsync())
             {
                 AddError($"Save trans failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber} ");
-                return false;
-            }
-
-            //save trans success. then pay invoice. 
-            if (!await InvoiceService.UpdateInvoicePaidAmountAsync(Data.InvoiceTransaction))
-            {
-                AddError($"Update invoice paidAmount and balance failed for InvoiceNumber:{Data.InvoiceTransaction.InvoiceNumber}");
                 return false;
             }
 

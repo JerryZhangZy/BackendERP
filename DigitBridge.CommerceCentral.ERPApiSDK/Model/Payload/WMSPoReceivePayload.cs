@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Json.Serialization;
-using System.Xml.Serialization;
 
-namespace DigitBridge.CommerceCentral.ERPDb
+namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
-    /// <summary>
-    /// WMS receive po item.
-    /// </summary>
     public class WMSPoReceiveItem
     {
         /// <summary>
@@ -30,5 +25,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// WMS Received item quantity
         /// </summary>
         public decimal Qty { get; set; }
-    } 
+    }
+    public class WMSPoReceivePayload : ResponsePayloadBase
+    {
+        /// <summary>
+        /// The uuid list of po item
+        /// </summary>
+        public List<string> PoItemUuidList { get; set; }
+
+        /// <summary>
+        /// the uuid of Po transaction
+        /// </summary>
+        public string TransUuid { get; set; }
+    }
 }
