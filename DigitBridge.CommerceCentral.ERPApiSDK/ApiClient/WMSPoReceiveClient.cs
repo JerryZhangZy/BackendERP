@@ -35,7 +35,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <param name="profileNum"></param>
         /// <param name="PurchaseOrderUuids"></param>
         /// <returns></returns>
-        public async Task<bool> PoReceiveAsync(int masterAccountNum, int profileNum, IList<WMSPoReceiveItem> receiveItems)
+        public async Task<bool> ReceiveAsync(int masterAccountNum, int profileNum, IList<WMSPoReceiveItem> receiveItems)
         {
             if (receiveItems == null || receiveItems.Count == 0)
             {
@@ -52,7 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
                 return false;
             }
 
-            return await PostAsync(receiveItems, FunctionUrl.AckReceivePurchaseOrders);
+            return await PostAsync(receiveItems, FunctionUrl.PoReceive);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)

@@ -35,21 +35,21 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         }
 
         [Fact()]
-        public async Task PoReceiveAsync_Simple_Test()
+        public async Task ReceiveAsync_Simple_Test()
         {
             var client = new WMSPoReceiveClient(_baseUrl, _code);
             var list = GetWMSPoReceiveItems();
-            var success = await client.PoReceiveAsync(MasterAccountNum, ProfileNum, list);
+            var success = await client.ReceiveAsync(MasterAccountNum, ProfileNum, list);
             Assert.True(client.ResopneData != null, $"SDK invoice failed. Error is {client.Messages.ObjectToString()}");
             //Assert.True(success, client.Messages.ObjectToString());
         }
 
         [Fact()]
-        public async Task PoReceiveAsync_Full_Test()
+        public async Task ReceiveAsync_Full_Test()
         {
             var client = new WMSPoReceiveClient(_baseUrl, _code);
             var list = GetWMSPoReceiveItems();
-            var success = await client.PoReceiveAsync(MasterAccountNum, ProfileNum, list);
+            var success = await client.ReceiveAsync(MasterAccountNum, ProfileNum, list);
             Assert.True(client.ResopneData != null, $"SDK invoke failed. Error is {client.Messages.ObjectToString()}");
             Assert.True(success, $"SDK invoke succeed.But call integration api failed. Logic error is{client.Messages.ObjectToString()}");
         }
