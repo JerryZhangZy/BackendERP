@@ -91,7 +91,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null || sum == null)
                 return false;
 
-            var poHeader = data.PurchaseOrderData.PoHeader;
+           // var poHeader = data.PurchaseOrderData.PoHeader;
             if (sum.TransTime.IsZero()) sum.TransTime = now.TimeOfDay;
             if (sum.TransDate.IsZero())
             {
@@ -112,8 +112,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 //for Add mode, always reset uuid
                 sum.TransUuid = Guid.NewGuid().ToString();
-
-                if (!data.HasMultiPo)
+                if (sum.VendorUuid.IsZero())
+                {
+                    //sum.VendorUuid = poHeader.VendorUuid;
+                    //sum.VendorName = poHeader.VendorName;
+                    //sum.VendorCode = poHeader.VendorCode;
+                }
+                if (sum.TransDate.IsZero())
                 {
                     if (sum.Currency.IsZero()) sum.Currency = poHeader?.Currency;
                     if (sum.PoNum.IsZero()) sum.PoNum = poHeader?.PoNum;
@@ -121,19 +126,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     if (sum.DiscountRate.IsZero()) sum.DiscountRate = (poHeader?.DiscountRate).ToDecimal();
                 }
 
+                //if (sum.Currency.IsZero()) sum.Currency = poHeader.Currency;
+                //if (sum.PoNum.IsZero()) sum.PoNum = poHeader.PoNum;
+                //if (sum.TaxRate.IsZero()) sum.TaxRate = poHeader.TaxRate.ToDecimal();
+                //if (sum.DiscountRate.IsZero()) sum.DiscountRate = poHeader.DiscountRate.ToDecimal();
             }
 
-            if (sum.VendorUuid.IsZero())
-            {
-                var vendorData = GetVendorData(data, sum.VendorCode);
-                sum.VendorUuid = vendorData?.Vendor?.VendorUuid;
-                sum.VendorName = vendorData?.Vendor?.VendorName;
-                //sum.VendorCode = poHeader.VendorCode;
-            }
-            if (!data.HasMultiPo)
-            {
-                sum.PoUuid = poHeader?.PoUuid;
-            }
+            //Set default for po
+            //var poData = data.PurchaseOrderData;
+            //sum.PoUuid = poData.PoHeader.PoUuid;
 
             //sum.DiscountAmount = poData.PoHeader.DiscountAmount;
             //sum.DiscountRate = poData.PoHeader.DiscountRate;
@@ -196,7 +197,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             //Set default for invoice
-            var poData = data.PurchaseOrderData;
+            var poData = GetPurchaseOrderData(item.PoNum, data.PoTransaction.ProfileNum, data.PoTransaction.MasterAccountNum); 
             if (poData != null)
             {
                 var poItem = poData.PoItems.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid);
@@ -515,7 +516,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return true;
         }
+        protected PurchaseOrderData GetPurchaseOrderData(string poNum, int profileNum, int masterAccountNum)
+        {
 
+            var poData = new PurchaseOrderData(dbFactory);
+            var success = poData.GetByNumber(masterAccountNum, profileNum, poNum);
+            if (!success)
+                return null;
+            else
+                return poData;
+        }
         #region message
         [XmlIgnore, JsonIgnore]
         public virtual IList<MessageClass> Messages
