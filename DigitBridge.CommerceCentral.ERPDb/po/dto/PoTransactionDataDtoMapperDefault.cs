@@ -67,8 +67,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasTransNum) data.TransNum = dto.TransNum.ToInt();
 			if (dto.HasPoUuid) data.PoUuid = dto.PoUuid;
 			if (dto.HasPoNum) data.PoNum = dto.PoNum;
-			if (dto.HasTransType) data.TransType = dto.TransType;
-			if (dto.HasTransStatus) data.TransStatus = dto.TransStatus;
+			if (dto.HasTransType) data.TransType = dto.TransType.ToInt();
+			if (dto.HasTransStatus) data.TransStatus = dto.TransStatus.ToInt();
 			if (dto.HasTransDate) data.TransDate = dto.TransDate.ToDateTime();
 			if (dto.HasTransTime) data.TransTime = dto.TransTime.ToTimeSpan();
 			if (dto.HasDescription) data.Description = dto.Description;
@@ -77,21 +77,23 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasVendorCode) data.VendorCode = dto.VendorCode;
 			if (dto.HasVendorName) data.VendorName = dto.VendorName;
 			if (dto.HasVendorInvoiceNum) data.VendorInvoiceNum = dto.VendorInvoiceNum;
-			if (dto.HasVendorInvoiceDate) data.VendorInvoiceDate = dto.VendorInvoiceDate;
+			if (dto.HasVendorInvoiceDate) data.VendorInvoiceDate = dto.VendorInvoiceDate.ToDateTime();
 			if (dto.HasDueDate) data.DueDate = dto.DueDate;
 			if (dto.HasCurrency) data.Currency = dto.Currency;
 			if (dto.HasSubTotalAmount) data.SubTotalAmount = dto.SubTotalAmount.ToDecimal();
 			if (dto.HasTotalAmount) data.TotalAmount = dto.TotalAmount.ToDecimal();
-			if (dto.HasTaxRate) data.TaxRate = dto.TaxRate;
-			if (dto.HasTaxAmount) data.TaxAmount = dto.TaxAmount;
-			if (dto.HasDiscountRate) data.DiscountRate = dto.DiscountRate;
-			if (dto.HasDiscountAmount) data.DiscountAmount = dto.DiscountAmount;
-			if (dto.HasShippingAmount) data.ShippingAmount = dto.ShippingAmount;
-			if (dto.HasShippingTaxAmount) data.ShippingTaxAmount = dto.ShippingTaxAmount;
-			if (dto.HasMiscAmount) data.MiscAmount = dto.MiscAmount;
-			if (dto.HasMiscTaxAmount) data.MiscTaxAmount = dto.MiscTaxAmount;
-			if (dto.HasChargeAndAllowanceAmount) data.ChargeAndAllowanceAmount = dto.ChargeAndAllowanceAmount;
-			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
+			if (dto.HasTaxRate) data.TaxRate = dto.TaxRate.ToDecimal();
+			if (dto.HasTaxAmount) data.TaxAmount = dto.TaxAmount.ToDecimal();
+			if (dto.HasDiscountRate) data.DiscountRate = dto.DiscountRate.ToDecimal();
+			if (dto.HasDiscountAmount) data.DiscountAmount = dto.DiscountAmount.ToDecimal();
+			if (dto.HasShippingAmount) data.ShippingAmount = dto.ShippingAmount.ToDecimal();
+			if (dto.HasShippingTaxAmount) data.ShippingTaxAmount = dto.ShippingTaxAmount.ToDecimal();
+			if (dto.HasMiscAmount) data.MiscAmount = dto.MiscAmount.ToDecimal();
+			if (dto.HasMiscTaxAmount) data.MiscTaxAmount = dto.MiscTaxAmount.ToDecimal();
+			if (dto.HasChargeAndAllowanceAmount) data.ChargeAndAllowanceAmount = dto.ChargeAndAllowanceAmount.ToDecimal();
+			if (dto.HasShippingAmountAssign) data.ShippingAmountAssign = dto.ShippingAmountAssign.ToInt();
+			if (dto.HasMiscAmountAssign) data.MiscAmountAssign = dto.MiscAmountAssign.ToInt();
+			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc.ToDateTime();
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
@@ -113,15 +115,17 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasTransUuid) data.TransUuid = dto.TransUuid;
 			if (dto.HasSeq) data.Seq = dto.Seq.ToInt();
 			if (dto.HasPoUuid) data.PoUuid = dto.PoUuid;
+			if (dto.HasPoNum) data.PoNum = dto.PoNum;
 			if (dto.HasPoItemUuid) data.PoItemUuid = dto.PoItemUuid;
-			if (dto.HasItemType) data.ItemType = dto.ItemType;
-			if (dto.HasItemStatus) data.ItemStatus = dto.ItemStatus;
+			if (dto.HasItemType) data.ItemType = dto.ItemType.ToInt();
+			if (dto.HasItemStatus) data.ItemStatus = dto.ItemStatus.ToInt();
 			if (dto.HasItemDate) data.ItemDate = dto.ItemDate.ToDateTime();
 			if (dto.HasItemTime) data.ItemTime = dto.ItemTime.ToTimeSpan();
 			if (dto.HasProductUuid) data.ProductUuid = dto.ProductUuid;
 			if (dto.HasInventoryUuid) data.InventoryUuid = dto.InventoryUuid;
 			if (dto.HasSKU) data.SKU = dto.SKU;
 			if (dto.HasWarehouseUuid) data.WarehouseUuid = dto.WarehouseUuid;
+			if (dto.HasWarehouseCode) data.WarehouseCode = dto.WarehouseCode;
 			if (dto.HasLotNum) data.LotNum = dto.LotNum;
 			if (dto.HasLotDescription) data.LotDescription = dto.LotDescription;
 			if (dto.HasLotInDate) data.LotInDate = dto.LotInDate;
@@ -131,22 +135,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasCurrency) data.Currency = dto.Currency;
 			if (dto.HasUOM) data.UOM = dto.UOM;
 			if (dto.HasTransQty) data.TransQty = dto.TransQty.ToDecimal();
+			if (dto.HasPoPrice) data.PoPrice = dto.PoPrice.ToDecimal();
 			if (dto.HasPrice) data.Price = dto.Price.ToDecimal();
 			if (dto.HasExtAmount) data.ExtAmount = dto.ExtAmount.ToDecimal();
-			if (dto.HasTaxRate) data.TaxRate = dto.TaxRate;
-			if (dto.HasTaxAmount) data.TaxAmount = dto.TaxAmount;
-			if (dto.HasDiscountRate) data.DiscountRate = dto.DiscountRate;
-			if (dto.HasDiscountAmount) data.DiscountAmount = dto.DiscountAmount;
-			if (dto.HasShippingAmount) data.ShippingAmount = dto.ShippingAmount;
-			if (dto.HasShippingTaxAmount) data.ShippingTaxAmount = dto.ShippingTaxAmount;
-			if (dto.HasMiscAmount) data.MiscAmount = dto.MiscAmount;
-			if (dto.HasMiscTaxAmount) data.MiscTaxAmount = dto.MiscTaxAmount;
-			if (dto.HasChargeAndAllowanceAmount) data.ChargeAndAllowanceAmount = dto.ChargeAndAllowanceAmount;
+			if (dto.HasTaxRate) data.TaxRate = dto.TaxRate.ToDecimal();
+			if (dto.HasTaxAmount) data.TaxAmount = dto.TaxAmount.ToDecimal();
+			if (dto.HasDiscountRate) data.DiscountRate = dto.DiscountRate.ToDecimal();
+			if (dto.HasDiscountPrice) data.DiscountPrice = dto.DiscountPrice.ToDecimal();
+			if (dto.HasDiscountAmount) data.DiscountAmount = dto.DiscountAmount.ToDecimal();
+			if (dto.HasShippingAmount) data.ShippingAmount = dto.ShippingAmount.ToDecimal();
+			if (dto.HasShippingTaxAmount) data.ShippingTaxAmount = dto.ShippingTaxAmount.ToDecimal();
+			if (dto.HasMiscAmount) data.MiscAmount = dto.MiscAmount.ToDecimal();
+			if (dto.HasMiscTaxAmount) data.MiscTaxAmount = dto.MiscTaxAmount.ToDecimal();
+			if (dto.HasChargeAndAllowanceAmount) data.ChargeAndAllowanceAmount = dto.ChargeAndAllowanceAmount.ToDecimal();
+			if (dto.HasBaseCost) data.BaseCost = dto.BaseCost.ToDecimal();
+			if (dto.HasUnitCost) data.UnitCost = dto.UnitCost.ToDecimal();
 			if (dto.HasStockable) data.Stockable = dto.Stockable.ToBool();
 			if (dto.HasIsAp) data.IsAp = dto.IsAp.ToBool();
 			if (dto.HasTaxable) data.Taxable = dto.Taxable.ToBool();
 			if (dto.HasCostable) data.Costable = dto.Costable.ToBool();
-			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc;
+			if (dto.HasUpdateDateUtc) data.UpdateDateUtc = dto.UpdateDateUtc.ToDateTime();
 			if (dto.HasEnterBy) data.EnterBy = dto.EnterBy;
 			if (dto.HasUpdateBy) data.UpdateBy = dto.UpdateBy;
 
@@ -166,9 +174,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			{
 				if (itemDto == null) continue;
 
-				var obj = (itemDto.RowNum > 0
+				var obj = itemDto.RowNum > 0
 					? lstOrig.Find(x => x.RowNum == itemDto.RowNum)
-					: lstOrig.Find(x => x.TransItemUuid == itemDto.TransItemUuid)) ?? lstOrig.Find(x => x.PoItemUuid == itemDto.PoItemUuid);
+					: lstOrig.Find(x => x.TransItemUuid == itemDto.TransItemUuid);
 				if (obj is null)
 					obj = new PoTransactionItems().SetAllowNull(false);
 				else
@@ -249,6 +257,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.MiscAmount = data.MiscAmount;
 			dto.MiscTaxAmount = data.MiscTaxAmount;
 			dto.ChargeAndAllowanceAmount = data.ChargeAndAllowanceAmount;
+			dto.ShippingAmountAssign = data.ShippingAmountAssign;
+			dto.MiscAmountAssign = data.MiscAmountAssign;
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.UpdateDateUtc = data.UpdateDateUtc;
 			dto.EnterBy = data.EnterBy;
@@ -272,6 +282,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.TransUuid = data.TransUuid;
 			dto.Seq = data.Seq;
 			dto.PoUuid = data.PoUuid;
+			dto.PoNum = data.PoNum;
 			dto.PoItemUuid = data.PoItemUuid;
 			dto.ItemType = data.ItemType;
 			dto.ItemStatus = data.ItemStatus;
@@ -281,6 +292,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.InventoryUuid = data.InventoryUuid;
 			dto.SKU = data.SKU;
 			dto.WarehouseUuid = data.WarehouseUuid;
+			dto.WarehouseCode = data.WarehouseCode;
 			dto.LotNum = data.LotNum;
 			dto.LotDescription = data.LotDescription;
 			dto.LotInDate = data.LotInDate;
@@ -290,17 +302,21 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.Currency = data.Currency;
 			dto.UOM = data.UOM;
 			dto.TransQty = data.TransQty;
+			dto.PoPrice = data.PoPrice;
 			dto.Price = data.Price;
 			dto.ExtAmount = data.ExtAmount;
 			dto.TaxRate = data.TaxRate;
 			dto.TaxAmount = data.TaxAmount;
 			dto.DiscountRate = data.DiscountRate;
+			dto.DiscountPrice = data.DiscountPrice;
 			dto.DiscountAmount = data.DiscountAmount;
 			dto.ShippingAmount = data.ShippingAmount;
 			dto.ShippingTaxAmount = data.ShippingTaxAmount;
 			dto.MiscAmount = data.MiscAmount;
 			dto.MiscTaxAmount = data.MiscTaxAmount;
 			dto.ChargeAndAllowanceAmount = data.ChargeAndAllowanceAmount;
+			dto.BaseCost = data.BaseCost;
+			dto.UnitCost = data.UnitCost;
 			dto.Stockable = data.Stockable;
 			dto.IsAp = data.IsAp;
 			dto.Taxable = data.Taxable;
@@ -310,7 +326,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.UpdateBy = data.UpdateBy;
 			dto.EnterDateUtc = data.EnterDateUtc;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
-			
+
 			dto.PoQty = data.PoQty;
 			dto.ReceivedQty = data.ReceivedQty;
 			dto.OpenQty = data.OpenQty;

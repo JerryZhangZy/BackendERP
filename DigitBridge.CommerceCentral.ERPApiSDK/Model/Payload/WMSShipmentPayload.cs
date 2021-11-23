@@ -20,8 +20,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
     {
         [Required]
         public string ShipmentID = "";
-
-        [Required]
+        public string SalesOrderUuid { get; set; }
         public long OrderDCAssignmentNum { get; set; }
 
         [Required]
@@ -57,7 +56,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public VolumeUnitEnum VolumeUnit = VolumeUnitEnum.CubicInch;
         public OrderShipmentStatusEnum ShipmentStatus { get; set; }//OrderStatus: Shipped = 1,PartiallyShipped = 2, Canceled = 16
 
-        public string InvoiceNumber = "";
+        // this is write by erp
+        //public string InvoiceNumber = "";
     }
 
     public class InputOrderShipmentPackageType

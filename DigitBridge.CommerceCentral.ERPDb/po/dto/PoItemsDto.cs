@@ -214,6 +214,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasPoQty => PoQty != null;
 
 		/// <summary>
+		/// (Ignore) Item P/O Qty.
+		/// </summary>
+		[OpenApiPropertyDescription("(Ignore) Item P/O Qty.")]
+        public decimal? QtyForOther { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasQtyForOther => QtyForOther != null;
+
+		/// <summary>
 		/// (Ignore) Item Received Qty.
 		/// </summary>
 		[OpenApiPropertyDescription("(Ignore) Item Received Qty.")]

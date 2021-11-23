@@ -52,6 +52,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string Description(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Description) AS {name ?? "Description".ToCamelCase(camelCase)} ";
         public static string Notes(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.Notes) AS {name ?? "Notes".ToCamelCase(camelCase)} ";
         public static string VendorUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorUuid) AS {name ?? "VendorUuid".ToCamelCase(camelCase)} ";
+        public static string VendorCode(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorCode) AS {name ?? "VendorCode".ToCamelCase(camelCase)} ";
+        public static string VendorName(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorName) AS {name ?? "VendorName".ToCamelCase(camelCase)} ";
         public static string VendorInvoiceNum(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.VendorInvoiceNum) AS {name ?? "VendorInvoiceNum".ToCamelCase(camelCase)} ";
         public static string VendorInvoiceDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.VendorInvoiceDate AS {name ?? "VendorInvoiceDate".ToCamelCase(camelCase)} ";
         public static string DueDate(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DueDate AS {name ?? "DueDate".ToCamelCase(camelCase)} ";
@@ -67,6 +69,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string MiscAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MiscAmount AS {name ?? "MiscAmount".ToCamelCase(camelCase)} ";
         public static string MiscTaxAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MiscTaxAmount AS {name ?? "MiscTaxAmount".ToCamelCase(camelCase)} ";
         public static string ChargeAndAllowanceAmount(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ChargeAndAllowanceAmount AS {name ?? "ChargeAndAllowanceAmount".ToCamelCase(camelCase)} ";
+        public static string ShippingAmountAssign(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.ShippingAmountAssign AS {name ?? "ShippingAmountAssign".ToCamelCase(camelCase)} ";
+        public static string MiscAmountAssign(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.MiscAmountAssign AS {name ?? "MiscAmountAssign".ToCamelCase(camelCase)} ";
         public static string EnterDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.EnterDateUtc AS {name ?? "EnterDateUtc".ToCamelCase(camelCase)} ";
         public static string UpdateDateUtc(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.UpdateDateUtc AS {name ?? "UpdateDateUtc".ToCamelCase(camelCase)} ";
         public static string EnterBy(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.EnterBy) AS {name ?? "EnterBy".ToCamelCase(camelCase)} ";
@@ -94,6 +98,8 @@ RTRIM({allies}PoNum) AS PoNum,
 RTRIM({allies}Description) AS Description,
 RTRIM({allies}Notes) AS Notes,
 RTRIM({allies}VendorUuid) AS VendorUuid,
+RTRIM({allies}VendorCode) AS VendorCode,
+RTRIM({allies}VendorName) AS VendorName,
 RTRIM({allies}VendorInvoiceNum) AS VendorInvoiceNum,
 {allies}VendorInvoiceDate AS VendorInvoiceDate,
 {allies}DueDate AS DueDate,
@@ -109,6 +115,8 @@ RTRIM({allies}Currency) AS Currency,
 {allies}MiscAmount AS MiscAmount,
 {allies}MiscTaxAmount AS MiscTaxAmount,
 {allies}ChargeAndAllowanceAmount AS ChargeAndAllowanceAmount,
+{allies}ShippingAmountAssign AS ShippingAmountAssign,
+{allies}MiscAmountAssign AS MiscAmountAssign,
 {allies}EnterDateUtc AS EnterDateUtc,
 {allies}UpdateDateUtc AS UpdateDateUtc,
 RTRIM({allies}EnterBy) AS EnterBy,

@@ -22,7 +22,8 @@
 
 	[ItemTotalAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Item total amount include all. <br> Display: false, Editable: false
 	[Currency] VARCHAR(10) NOT NULL DEFAULT '', --(Ignore)  
-	[PoQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item P/O Qty. 
+	[PoQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item P/O Qty.
+	[QtyForOther] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item P/O Qty.
 	[ReceivedQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Received Qty. 
 	[CancelledQty] DECIMAL(24, 6) NOT NULL DEFAULT 0, --(Ignore) Item Cancelled Qty. 
 	[PriceRule] VARCHAR(50) NOT NULL DEFAULT '',  --Item P/O price rule. <br> Title: Price Type, Display: true, Editable: true

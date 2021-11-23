@@ -82,6 +82,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("WarehouseUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _warehouseUuid;
 
+        [Column("WarehouseCode",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _warehouseCode;
+
         [Column("CustomerUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _customerUuid;
 
@@ -213,6 +216,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("BillToNightPhone",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _billToNightPhone;
+
+        [Column("Notes",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
+        private string _notes;
 
         [Column("UpdateDateUtc",SqlDbType.DateTime)]
         private DateTime? _updateDateUtc;
@@ -454,6 +460,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_warehouseUuid = value.TruncateTo(50); 
 				OnPropertyChanged("WarehouseUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Readable warehouse code. <br> Title: Warehouse Code: Display: true, Editable: true
+		/// </summary>
+        public virtual string WarehouseCode
+        {
+            get
+            {
+				return _warehouseCode?.TrimEnd(); 
+            }
+            set
+            {
+				_warehouseCode = value.TruncateTo(50); 
+				OnPropertyChanged("WarehouseCode", value);
             }
         }
 
@@ -1162,6 +1184,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 		/// <summary>
+		/// Order notes. <br> Title: Notes, Display: true, Editable: true
+		/// </summary>
+        public virtual string Notes
+        {
+            get
+            {
+				return _notes?.TrimEnd(); 
+            }
+            set
+            {
+				_notes = value.TruncateTo(1000); 
+				OnPropertyChanged("Notes", value);
+            }
+        }
+
+		/// <summary>
 		/// (Ignore)
 		/// </summary>
         public virtual DateTime? UpdateDateUtc
@@ -1256,6 +1294,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_refNum = String.Empty; 
 			_customerPoNum = String.Empty; 
 			_warehouseUuid = String.Empty; 
+			_warehouseCode = String.Empty; 
 			_customerUuid = String.Empty; 
 			_endBuyerUserID = String.Empty; 
 			_endBuyerName = String.Empty; 
@@ -1300,6 +1339,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_billToEmail = String.Empty; 
 			_billToDaytimePhone = String.Empty; 
 			_billToNightPhone = String.Empty; 
+			_notes = String.Empty; 
 			_updateDateUtc = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_enterBy = String.Empty; 
 			_updateBy = String.Empty; 

@@ -507,7 +507,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
                     await AddActivityLogForCurrentDataAsync();
                 return result;
             }
-            return success;
+            return false;
             
         }
 
@@ -665,6 +665,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
                 if(inventory==null)
                     continue;
                 var itemCost = new ItemCostClass(inventory);
+               
                 var cost = itemCost.CalculateAvgCost(new ItemCostClass(items));
                 await UpdateAvgCostAsync(cost);
             }
@@ -711,7 +712,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
 
         private async Task UpdateAvgCostAsync(ItemCostClass cost)
         {
-            await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.AvgCost.ToSqlParameter("inventoryUuid"));
+            await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 , BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
         }
 
         public void UpdateOpenSoQtyFromSalesOrderItem(string salesOrderUuid, bool isReturnBack = false)

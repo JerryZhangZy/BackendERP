@@ -23,6 +23,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class ApInvoiceService
     {
 
+        #region override methods
+
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
         /// </summary>
@@ -30,10 +32,151 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             base.Init();
             SetDtoMapper(new ApInvoiceDataDtoMapperDefault());
-            SetCalculator(new ApInvoiceServiceCalculatorDefault(this,this.dbFactory));
+            SetCalculator(new ApInvoiceServiceCalculatorDefault(this, this.dbFactory));
             AddValidator(new ApInvoiceServiceValidatorDefault(this, this.dbFactory));
             return this;
         }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override async Task BeforeSaveAsync()
+        {
+            try
+            {
+                await base.BeforeSaveAsync();
+                if (this.Data?.ApInvoiceHeader != null)
+                {
+                    //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override void BeforeSave()
+        {
+            try
+            {
+                base.BeforeSave();
+                if (this.Data?.ApInvoiceHeader != null)
+                {
+                    //inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override async Task AfterSaveAsync()
+        {
+            try
+            {
+                await base.AfterSaveAsync();
+                if (this.Data?.ApInvoiceHeader != null)
+                {
+                    //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override void AfterSave()
+        {
+            try
+            {
+                base.AfterSave();
+                if (this.Data?.ApInvoiceHeader != null)
+                {
+                    //inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid);
+                }
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override async Task SaveSuccessAsync()
+        {
+            try
+            {
+                await base.SaveSuccessAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override void SaveSuccess()
+        {
+            try
+            {
+                base.SaveSuccess();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected override ActivityLog GetActivityLog() =>
+            new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.ApInvoice,
+                Action = (int)this.ProcessMode,
+                LogSource = "ApInvoiceService",
+
+                MasterAccountNum = this.Data.ApInvoiceHeader.MasterAccountNum,
+                ProfileNum = this.Data.ApInvoiceHeader.ProfileNum,
+                DatabaseNum = this.Data.ApInvoiceHeader.DatabaseNum,
+                ProcessUuid = this.Data.ApInvoiceHeader.ApInvoiceUuid,
+                ProcessNumber = this.Data.ApInvoiceHeader.ApInvoiceNum,
+                ChannelNum = this.Data.ApInvoiceHeaderInfo.ChannelAccountNum,
+                ChannelAccountNum = this.Data.ApInvoiceHeaderInfo.ChannelAccountNum,
+
+                LogMessage = string.Empty
+            };
+
+        #endregion override methods
 
 
         /// <summary>
@@ -285,8 +428,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Delete();
             //load data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-            success = success && DeleteData();
-            return success;
+            if (success)
+            {
+                return DeleteData();
+            }
+            return false;
         }
 
         /// <summary>

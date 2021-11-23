@@ -74,8 +74,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("PoTransaction is require.");
                 return false;
             }
+            //decimal totalAmount = 0;
+            //foreach (var item in dto.PoTransactionItems)
+            //{
+            //    totalAmount += item.TransQty.Value;
+            //}
+            //dto.PoTransaction.TotalAmount = totalAmount;
+
             if (processingMode == ProcessingMode.Add)
             {
+                dto.PoTransaction.TransStatus = (int)PoTransStatus.StockReceive;
                 // dto.PoTransaction.TransType = (int)TransTypeEnum.Payment;  
             }
             // payment shouldn't add any return item.

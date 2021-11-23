@@ -70,13 +70,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             // payment shouldn't add any return item.
             dto.InvoiceReturnItems = null;
+
+            if (dto.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo && dto.InvoiceTransaction.CheckNum.IsZero())
+            {
+                AddError("Misc invoice is require for prepayment.");
+            }
+
+            if (dto.InvoiceTransaction.TotalAmount.IsZero())
+            {
+                AddError("Payment TotalAmount cann't be zero.");
+            } 
+
             return base.Validate(dto, processingMode);
         }
         public override async Task<bool> ValidateAsync(InvoiceTransactionDataDto dto, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (dto is null || dto.InvoiceTransaction is null)
             {
-                AddError("InvoiceTransaction is require.");
+                AddError("InvoiceTransaction is required.");
                 return false;
             }
 
@@ -94,6 +105,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             // payment shouldn't add any return item.
             dto.InvoiceReturnItems = null;
+
+            if (dto.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo && dto.InvoiceTransaction.CheckNum.IsZero())
+            {
+                AddError("Misc invoice is required for prepayment.");
+            }
+
+            if (dto.InvoiceTransaction.TotalAmount.IsZero())
+            {
+                AddError("Payment TotalAmount cann't be zero.");
+            }
+
             return await base.ValidateAsync(dto, processingMode);
         }
     }

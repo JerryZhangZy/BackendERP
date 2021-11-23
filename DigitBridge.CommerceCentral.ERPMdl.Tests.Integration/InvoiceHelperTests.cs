@@ -59,25 +59,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         #endregion sync methods
 
         #region async methods
-        [Fact()]
-        public async Task PayInvoiceAsync_Test()
-        {
-            var invoiceData = SaveInvoice();
-
-            var paidAmount = new Random().Next(1, 100);
-
-            var success = await InvoiceHelper.PayInvoiceAsync(invoiceData.InvoiceHeader.InvoiceNumber, paidAmount, MasterAccountNum, ProfileNum);
-            Assert.True(success, "call PayInvoiceAsync failed.");
-
-            var invoiceData_Paid = GetInvoiceFromDB(invoiceData.InvoiceHeader.InvoiceNumber);
-
-
-            success = paidAmount == invoiceData_Paid.InvoiceHeader.PaidAmount - invoiceData.InvoiceHeader.PaidAmount;
-            Assert.True(success, "paidAmount is error.");
-
-            success = paidAmount == invoiceData.InvoiceHeader.Balance - invoiceData_Paid.InvoiceHeader.Balance;
-            Assert.True(success, "Balance is error.");
-        }
+        
         #endregion async methods
 
 

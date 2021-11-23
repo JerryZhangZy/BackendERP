@@ -78,6 +78,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("CancelDate",SqlDbType.Date)]
         private DateTime? _cancelDate;
 
+        [Column("Terms",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _terms;
+
         [Column("VendorUuid",SqlDbType.VarChar,IsDefault=true)]
         private string _vendorUuid;
 
@@ -365,6 +368,22 @@ namespace DigitBridge.CommerceCentral.ERPDb
 					_cancelDate = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
 					OnPropertyChanged("CancelDate", value);
 				}
+            }
+        }
+
+		/// <summary>
+		/// Payment terms, default from customer data. <br> Title: Terms, Display: true, Editable: true
+		/// </summary>
+        public virtual string Terms
+        {
+            get
+            {
+				return _terms?.TrimEnd(); 
+            }
+            set
+            {
+				_terms = value.TruncateTo(50); 
+				OnPropertyChanged("Terms", value);
             }
         }
 
@@ -809,6 +828,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_etaShipDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_etaArrivalDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
 			_cancelDate = AllowNull ? (DateTime?)null : new DateTime().MinValueSql(); 
+			_terms = String.Empty; 
 			_vendorUuid = AllowNull ? (string)null : String.Empty; 
 			_vendorCode = AllowNull ? (string)null : String.Empty; 
 			_vendorName = AllowNull ? (string)null : String.Empty; 

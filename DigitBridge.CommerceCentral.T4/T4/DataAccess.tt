@@ -83,7 +83,7 @@
 //SettingForApTransaction
 //SettingForEventProcessERP
 #>
-<#@ include file="SettingForInvoice.ttinclude" #>
+<#@ include file="SettingForPoTransaction.ttinclude" #>
 <#
     var dtoSuf = "";
     
@@ -316,7 +316,7 @@
 <#@ include file="GenerateServicePartial.ttinclude" #>
 <# 
         dir = Path.Combine(path,ServiceFolder);
-        SaveOutputNotExists(dir, $"{ServiceName}.cs");
+        SaveOutputNotExists(dir, $"{ServiceName}_new.cs");
 #>
 <#@ include file="GenerateServiceHelper.ttinclude" #>
 <# 

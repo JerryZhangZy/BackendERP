@@ -25,7 +25,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 {
     public partial class InvoiceService
     {
+        #region Service Property
 
+        private CustomerService _customerService;
+        public CustomerService customerService
+        {
+            get
+            {
+                if (_customerService is null)
+                    _customerService = new CustomerService(dbFactory);
+                return _customerService;
+            }
+        }
+
+        private InventoryService _inventoryService;
+        public InventoryService inventoryService
+        {
+            get
+            {
+                if (_inventoryService is null)
+                    _inventoryService = new InventoryService(dbFactory);
+                return _inventoryService;
+            }
+        }
+
+        #endregion
+
+        #region override methods
         /// <summary>
         /// Initiate service objcet, set instance of DtoMapper, Calculator and Validator 
         /// </summary>
@@ -38,6 +64,130 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return this;
         }
 
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override async Task BeforeSaveAsync()
+        {
+            try
+            {
+                await base.BeforeSaveAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// Before update data (Add/Update/Delete). call this function to update relative data.
+        /// For example: before save shipment, rollback instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// </summary>
+        public override void BeforeSave()
+        {
+            try
+            {
+                base.BeforeSave();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error before save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override async Task AfterSaveAsync()
+        {
+            try
+            {
+                await base.AfterSaveAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// After save data (Add/Update/Delete), doesn't matter success or not, call this function to update relative data.
+        /// For example: after save shipment, update instock in inventory table according to shipment table.
+        /// Mostly, inside this function should call SQL script update other table depend on current database table records.
+        /// So that, if update not success, database records will not change, this update still use then same data. 
+        /// </summary>
+        public override void AfterSave()
+        {
+            try
+            {
+                base.AfterSave();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override async Task SaveSuccessAsync()
+        {
+            try
+            {
+                await base.SaveSuccessAsync();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Only save success (Add/Update/Delete), call this function to update relative data.
+        /// For example: add activity log records.
+        /// </summary>
+        public override void SaveSuccess()
+        {
+            try
+            {
+                base.SaveSuccess();
+            }
+            catch (Exception)
+            {
+                AddWarning("Updating relative data caused an error after save success.");
+            }
+        }
+
+        /// <summary>
+        /// Sub class should override this method to return new ActivityLog object for service
+        /// </summary>
+        protected override ActivityLog GetActivityLog() => 
+            new ActivityLog(dbFactory)
+            {
+                Type = (int)ActivityLogType.Invoice,
+                Action = (int)this.ProcessMode,
+                LogSource = "InvoiceService",
+
+                MasterAccountNum = this.Data.InvoiceHeader.MasterAccountNum,
+                ProfileNum = this.Data.InvoiceHeader.ProfileNum,
+                DatabaseNum = this.Data.InvoiceHeader.DatabaseNum,
+                ProcessUuid = this.Data.InvoiceHeader.InvoiceUuid,
+                ProcessNumber = this.Data.InvoiceHeader.InvoiceNumber,
+                ChannelNum = this.Data.InvoiceHeaderInfo.ChannelAccountNum,
+                ChannelAccountNum = this.Data.InvoiceHeaderInfo.ChannelAccountNum,
+
+                LogMessage = string.Empty
+            };
+
+        #endregion override methods
 
         /// <summary>
         /// Add new data from Dto object
@@ -393,13 +543,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             int profileNum = transaction.InvoiceDataDto.InvoiceHeader.ProfileNum.ToInt();
             string invoiceNumber = transaction.InvoiceDataDto.InvoiceHeader.InvoiceNumber;
             await GetDataByNumberAsync(masterAccountNum, profileNum, invoiceNumber);
-            decimal returnAmount = 
+            decimal returnAmount =
                 transaction.InvoiceTransaction.TotalAmount.ToDecimal() - transaction.InvoiceTransaction.DiscountAmount.ToDecimal();
             this.Data.InvoiceHeader.CreditAmount += returnAmount;
             this.Data.InvoiceHeader.Balance -= returnAmount;
 
             return await SaveDataAsync();
         }
+
         #region To qbo queue 
 
         private QboInvoiceClient _qboInvoiceClient;
@@ -446,6 +597,154 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion
+
+        #region Pay invoice
+
+        public async Task<bool> UpdateInvoicePaidAmountAsync(InvoiceTransaction trans)
+        {
+            var changedPaidAmount = trans.TransType == (int)TransTypeEnum.Payment
+                ? trans.TotalAmount - trans.OriginalPaidAmount
+                : trans.OriginalPaidAmount - trans.TotalAmount;
+
+            var sql = $@"
+UPDATE InvoiceHeader 
+SET PaidAmount=PaidAmount+@0, Balance=Balance-@0
+WHERE InvoiceNumber=@1 
+AND MasterAccountNum=@2 
+AND ProfileNum=@3
+";
+            var result = await dbFactory.Db.ExecuteAsync(sql,
+                    changedPaidAmount.ToSqlParameter("@0"),
+                    trans.InvoiceNumber.ToSqlParameter("@1"),
+                    trans.MasterAccountNum.ToSqlParameter("@2"),
+                    trans.ProfileNum.ToSqlParameter("@3")
+                    );
+            return result > 0;
+        }
+
+        public bool UpdateInvoicePaidAmount(InvoiceTransaction trans)
+        {
+            var changedPaidAmount = trans.TransType == (int)TransTypeEnum.Payment
+                ? trans.TotalAmount - trans.OriginalPaidAmount
+                : trans.OriginalPaidAmount - trans.TotalAmount;
+
+            var sql = $@"
+UPDATE InvoiceHeader 
+SET PaidAmount=PaidAmount+@0, Balance=Balance-@0
+WHERE InvoiceNumber=@1 
+AND MasterAccountNum=@2 
+AND ProfileNum=@3
+";
+            var result = dbFactory.Db.Execute(sql,
+                    changedPaidAmount.ToSqlParameter("@0"),
+                    trans.InvoiceNumber.ToSqlParameter("@1"),
+                    trans.MasterAccountNum.ToSqlParameter("@2"),
+                    trans.ProfileNum.ToSqlParameter("@3")
+                    );
+            return result > 0;
+        }
+
+        #endregion
+
+
+        public async Task<bool> UpdateStatusAsync(long rowNum, InvoiceStatusEnum status)
+        {
+            if (rowNum == 0) return false;
+
+            var sql = $@"
+UPDATE InvoiceHeader 
+SET InvoiceStatus=@0
+WHERE RowNum=@1 
+";
+            return await dbFactory.Db.ExecuteAsync(
+                sql,
+                ((int)status).ToSqlParameter("@0"),
+                rowNum.ToSqlParameter("@1")
+            ) > 0;
+        }
+
+        /// <summary>
+        /// Update InvoiceHeader Balance and status according to InvoiceTransaction TotalAmount
+        /// 
+        /// </summary>
+        public async Task<bool> UpdateInvoiceBalanceAsync(string transUuid, bool isRollBack = false)
+        {
+            var op = isRollBack ? "-" : "+";
+            var opp = isRollBack ? "+" : "-";
+
+            var sql = $@"
+UPDATE ins 
+SET 
+PaidAmount = (CASE 
+    WHEN COALESCE(trs.TransType,0) = 1 THEN COALESCE(ins.PaidAmount,0){op}COALESCE(trs.TotalAmount,0)
+    ELSE ins.PaidAmount
+END), 
+CreditAmount = (CASE 
+    WHEN COALESCE(trs.TransType,0) = 2 THEN COALESCE(ins.PaidAmount,0){op}COALESCE(trs.TotalAmount,0)
+    ELSE ins.CreditAmount
+END), 
+Balance = COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0),
+InvoiceStatus = (CASE 
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) = 0 AND (COALESCE(ins.InvoiceStatus,0)!=@2) THEN @2
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) > 0 AND (COALESCE(ins.InvoiceStatus,0)!=@1) THEN @1
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) < 0 AND (COALESCE(ins.InvoiceStatus,0)!=@3) THEN @3
+    ELSE COALESCE(ins.InvoiceStatus,0)
+END)
+FROM InvoiceHeader ins
+INNER JOIN InvoiceTransaction trs ON (trs.InvoiceUuid = ins.InvoiceUuid AND trs.TransUuid = @0)
+WHERE ins.InvoiceStatus != @4 AND ins.InvoiceStatus != @5
+";
+            var result = await dbFactory.Db.ExecuteAsync(
+                sql,
+                transUuid.ToSqlParameter("@0"),
+                ((int)InvoiceStatusEnum.Outstanding).ToSqlParameter("@1"),
+                ((int)InvoiceStatusEnum.Paid).ToSqlParameter("@2"),
+                ((int)InvoiceStatusEnum.OverPaid).ToSqlParameter("@3"),
+                ((int)InvoiceStatusEnum.Closed).ToSqlParameter("@4"),
+                ((int)InvoiceStatusEnum.Void).ToSqlParameter("@5")
+            );
+            return result > 0;
+        }
+
+        public bool UpdateInvoiceBalance(string transUuid, bool isRollBack = false)
+        {
+            var op = isRollBack ? "-" : "+";
+            var opp = isRollBack ? "+" : "-";
+
+            var sql = $@"
+UPDATE ins 
+SET 
+PaidAmount = (CASE 
+    WHEN COALESCE(trs.TransType,0) = 1 THEN COALESCE(ins.PaidAmount,0){op}COALESCE(trs.TotalAmount,0)
+    ELSE ins.PaidAmount
+END), 
+CreditAmount = (CASE 
+    WHEN COALESCE(trs.TransType,0) = 2 THEN COALESCE(ins.PaidAmount,0){op}COALESCE(trs.TotalAmount,0)
+    ELSE ins.CreditAmount
+END), 
+Balance = COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0),
+InvoiceStatus = (CASE 
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) = 0 AND (COALESCE(ins.InvoiceStatus,0)!=@2) THEN @2
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) > 0 AND (COALESCE(ins.InvoiceStatus,0)!=@1) THEN @1
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) < 0 AND (COALESCE(ins.InvoiceStatus,0)!=@3) THEN @3
+    ELSE COALESCE(ins.InvoiceStatus,0)
+END)
+FROM InvoiceHeader ins
+INNER JOIN InvoiceTransaction trs ON (trs.InvoiceUuid = ins.InvoiceUuid AND trs.TransUuid = @0)
+WHERE ins.InvoiceStatus != @4 AND ins.InvoiceStatus != @5
+";
+            var result = dbFactory.Db.Execute(
+                sql,
+                transUuid.ToSqlParameter("@0"),
+                ((int)InvoiceStatusEnum.Outstanding).ToSqlParameter("@1"),
+                ((int)InvoiceStatusEnum.Paid).ToSqlParameter("@2"),
+                ((int)InvoiceStatusEnum.OverPaid).ToSqlParameter("@3"),
+                ((int)InvoiceStatusEnum.Closed).ToSqlParameter("@4"),
+                ((int)InvoiceStatusEnum.Void).ToSqlParameter("@5")
+            );
+            return result > 0;
+        }
+
     }
 }
 

@@ -18,13 +18,14 @@ namespace DigitBridge.Base.Common
         InventoryUpdate = 9,
         WarehouseTransfer = 10,
         PurchaseOrder = 11,
-        PoStockReceive = 12,
-        PoApReceive = 13,
+        PoReceive = 12,
+        PoReceiveClose = 13,
         PoCancel = 14,
         PoReturn = 15,
         ApInvoice = 16,
         ApInvoicePayment = 17,
         Vendor = 18,
+        InitNumber=19
     }
 
     public static class ActivityLogTypeExtensions
