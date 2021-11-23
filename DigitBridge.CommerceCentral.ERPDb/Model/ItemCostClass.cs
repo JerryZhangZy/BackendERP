@@ -70,7 +70,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             SalesCost = item.Price.ToAmount();
             Cost = (AvgCost.IsZero()) ? UnitCost : AvgCost;
 
-            Instock = item.TransQty;
+            Qty = item.TransQty;
+            //Instock = item.TransQty;
         }
 
         /// <summary>
