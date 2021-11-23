@@ -753,7 +753,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             payload.PoTransactions = transactions;
 
-           await AddListAsync(payload);
+            foreach (var poTran in payload.PoTransactions)
+            {
+                 var items= payload.WMSPoReceiveItems?.Where(r => r.PoUuid == poTran.PoTransaction.PoUuid).ToList();
+                List<PoTransactionItemsDto> poTransactionItemsDtos = new List<PoTransactionItemsDto>();   
+                foreach (var aItem in items)
+                {
+                   var transItem= poTran.PoTransactionItems.Where(r => r.PoItemUuid == aItem.PoItemUuid).SingleOrDefault();
+                    if (transItem != null)
+                    {
+                        transItem.TransQty = aItem.Qty;
+                        poTransactionItemsDtos.Add(transItem);
+                    }
+                }
+                poTran.PoTransactionItems = poTransactionItemsDtos;
+            }
+
+
+            await AddListAsync(payload);
 
             //var list = SplitPoTransactionsForVendor(transactions);
             //payload.PoTransactions = new List<PoTransactionDataDto>();
