@@ -90,10 +90,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("InvoiceTransaction is required.");
                 return false;
             }
+
+            string invoiceUuid = dto.InvoiceTransaction.InvoiceUuid;
+            var invoice = await dbFactory.GetByIdAsync<InvoiceHeader>(
+                invoiceUuid,
+                new string[3] { "TotalAmount", "PaidAmount", "Balance" });
+
             if (processingMode == ProcessingMode.Add)
             {
-                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;  
+                dto.InvoiceTransaction.TransType = (int)TransTypeEnum.Payment;
             }
+            if (invoice.Balance < dto.InvoiceTransaction.TotalAmount)
+                AddError($"Invoice {invoiceUuid} is overpaying");
+
             // payment shouldn't add any return item.
             dto.InvoiceReturnItems = null;
 

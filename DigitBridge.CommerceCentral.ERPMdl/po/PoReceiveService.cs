@@ -792,18 +792,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<IList<WMSPoReceivePayload>> AddTransForWMSPoReceiveAsync(PoReceivePayload payload)
         {
             var results = new List<WMSPoReceivePayload>();
-            var poUuids = payload.WMSPoReceiveItems?.Select(i => i.PoUuid).Distinct();
 
-            if (poUuids is null || poUuids.Count() == 0)
+            var poItemUuidList = payload.WMSPoReceiveItems?.Select(i => i.PoItemUuid).Distinct().ToList();
+
+            if (poItemUuidList is null || poItemUuidList.Count() == 0)
             {
-                AddError("receiveItems cannot be empty");
+                AddError("PoItemUuid cannot be empty");
                 results.Add(new WMSPoReceivePayload() { Messages = this.Messages });
                 return results;
             }
 
-            foreach (var poUuid in poUuids)
+            var fullItems = GetWMSPoReceiveExt(poItemUuidList);
+
+            var vendorCodes = fullItems.Select(i => i.VendorCode).Distinct();
+
+            foreach (var vendorCode in vendorCodes)
             {
-                var data = GetPoTransData(payload, poUuid);
+                var data = GetPoTransData(payload, fullItems, vendorCode);
                 if (data is null) continue;
 
                 var success = await base.AddAsync(data);
@@ -811,7 +816,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     Messages = this.Messages,
                     Success = success,
-                    PoUuid = data.PoTransaction.PoUuid,
+                    PoItemUuidList = data.PoTransactionItems.Select(i => i.PoItemUuid).ToList(),
                     TransUuid = data.PoTransaction.TransUuid,
                 });
             }
@@ -823,40 +828,58 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="poUuid"></param>
         /// <returns></returns>
-        protected PoTransactionData GetPoTransData(PoReceivePayload payload, string poUuid)
+        protected PoTransactionData GetPoTransData(PoReceivePayload payload, List<PoReceiveExtend> extendInfos, string vendorCode)
         {
-            var items = payload.WMSPoReceiveItems?.Where(i => i.PoUuid == poUuid && i.Qty > 0);
+            var items = extendInfos?.Where(i => i.VendorCode == vendorCode);
             if (items.Count() == 0) return null;
+
+            var isItemInSamePo = items.Select(i => i.PoUuid).Distinct().Count() == 1;
+            var defaultItem = items.FirstOrDefault();
 
             var data = new PoTransactionData()
             {
                 PoTransaction = new PoTransaction()
                 {
                     TransUuid = Guid.NewGuid().ToString(),
-                    PoUuid = poUuid,
+                    PoUuid = isItemInSamePo ? defaultItem.PoUuid : string.Empty,
+                    PoNum = isItemInSamePo ? defaultItem.PoNum : string.Empty,
                     MasterAccountNum = payload.MasterAccountNum,
                     ProfileNum = payload.ProfileNum,
-                    TransStatus = (int)PoTransStatus.StockReceive,
+                    VendorCode = vendorCode,
+                    VendorName = defaultItem.VendorName,
+                    VendorUuid = defaultItem.VendorUuid,
+                    TransStatus = (int)PoTransStatus.StockReceive
                 },
+                HasMultiPo = !isItemInSamePo,
             };
 
             data.PoTransactionItems = new List<PoTransactionItems>();
             foreach (var item in items)
             {
+                var wmsItem = payload.WMSPoReceiveItems.Where(i => i.PoItemUuid == item.PoItemUuid).FirstOrDefault();
                 var transItem = new PoTransactionItems()
                 {
                     TransItemUuid = Guid.NewGuid().ToString(),
                     PoUuid = item.PoUuid,
                     PoItemUuid = item.PoItemUuid,
-                    TransQty = item.Qty,
-                    WarehouseCode = item.WarehouseCode,
-                    SKU = item.SKU,
+                    TransQty = wmsItem.Qty,
+                    WarehouseCode = wmsItem.WarehouseCode,
+                    SKU = wmsItem.SKU,
                 };
                 transItem.SetParent(data);
                 data.PoTransactionItems.Add(transItem);
             }
             return data;
         }
+
+        protected List<PoReceiveExtend> GetWMSPoReceiveExt(IList<string> poItemUuidList)
+        {
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                return PoTransactionHelper.GetWMSPoReceiveExt(poItemUuidList);
+            }
+        }
+
         #endregion
     }
 }

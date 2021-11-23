@@ -45,6 +45,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore] public virtual bool HasInvoiceListCount => InvoiceListCount > 0;
         public bool ShouldSerializeInvoiceListCount() => HasInvoiceListCount;
 
+        public IList<ApplyInvoice> ApplyInvoices { get; set; } = new List<ApplyInvoice>();
+        [JsonIgnore]
+        public virtual bool HasApplyInvoices => ApplyInvoices != null && ApplyInvoices.Count > 0;
+        public bool ShouldSerializeApplyInvoices() => HasApplyInvoices;
+
         #region payment
 
         public InvoiceTransactionDto InvoiceTransaction { get; set; }
