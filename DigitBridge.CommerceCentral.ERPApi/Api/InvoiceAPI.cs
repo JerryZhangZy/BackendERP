@@ -294,8 +294,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
             {
                 OrderShipmentUuid = payload.OrderShipmentUuid
             };
-            (bool ret, string invoiceUuid) = await svc.CreateInvoiceByOrderShipmentIdAsync(payload.OrderShipmentUuid);
-            if (ret)
+            var invoiceUuid = await svc.CreateInvoiceByOrderShipmentIdAsync(payload.OrderShipmentUuid);
+            if (!string.IsNullOrEmpty(invoiceUuid))
             {
                 crtPayLoad.Success = true;
                 crtPayLoad.InvoiceUuid = invoiceUuid;

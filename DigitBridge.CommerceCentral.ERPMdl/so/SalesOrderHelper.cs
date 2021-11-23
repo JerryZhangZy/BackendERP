@@ -194,7 +194,7 @@ WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + Cast(@orderDCAssignmentNum as 
         public static async Task<string> GetSalesOrderUuidAsync(long orderDCAssignmentNum)
         {
             var sql = $@"
-SELECT [SalesOrderUuid] FROM SalesOrderHeader tbl
+SELECT TOP 1 [SalesOrderUuid] FROM SalesOrderHeader tbl
 WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + Cast(@orderDCAssignmentNum as varchar)
 ";
             var result = await SqlQuery.ExecuteScalarAsync<string>(sql,
@@ -202,6 +202,19 @@ WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + Cast(@orderDCAssignmentNum as 
 
             return result;
         }
+
+        public static async Task<string> GetSalesOrderNumberByUuidAsync(string salesOrderUuid)
+        {
+            var sql = $@"
+SELECT TOP 1 [OrderNumber] FROM SalesOrderHeader
+WHERE SalesOrderUuid = @salesOrderUuid)
+";
+            var result = await SqlQuery.ExecuteScalarAsync<string>(sql,
+                 salesOrderUuid.ToSqlParameter("salesOrderUuid"));
+
+            return result;
+        }
+
     }
 }
 

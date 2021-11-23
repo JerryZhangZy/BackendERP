@@ -86,6 +86,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
             header.VolumeUnit = (int)inputShipmentHeader.VolumeUnit;//= VolumeUnitEnum.CubicInch;
             header.ShipmentStatus = (int)inputShipmentHeader.ShipmentStatus;//OrderStatus: Shipped = 1,PartiallyShipped = 2, Canceled = 16
 
+            header.SalesOrderUuid = inputShipmentHeader.SalesOrderUuid;
+
             return header;
         }
         /// <summary>
@@ -153,6 +155,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             //orderShippedPackageItem.LineHandlingFee = inputOrderShippedPackageItem.LineHandlingFee;
 
             orderShippedPackageItem.EnterDateUtc = inputOrderShippedPackageItem.EnterDateUtc;
+            orderShippedPackageItem.SalesOrderItemsUuid = inputOrderShippedPackageItem.SalesOrderItemsUuid;
             return orderShippedPackageItem;
         }
         /// <summary>
@@ -227,6 +230,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             canceledItem.CanceledQty = inputCanceledItem.CanceledQty;
             canceledItem.CancelCode = inputCanceledItem.CancelCode; //see CancelCodeType
             canceledItem.CancelOtherReason = inputCanceledItem.CancelOtherReason;
+            canceledItem.SalesOrderItemsUuid = inputCanceledItem.SalesOrderItemsUuid;
             return canceledItem;
         }
     }

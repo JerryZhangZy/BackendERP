@@ -27,8 +27,8 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InputOrderShipmentType[]), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WmsOrderShipmentPayload[]))]
-        public static async Task<JsonNetResponse<IList<WmsOrderShipmentPayload>>> CreateShipmentList(
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(OrderShipmentCreateResultPayload[]))]
+        public static async Task<JsonNetResponse<IList<OrderShipmentCreateResultPayload>>> CreateShipmentList(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "wms/shipments")] HttpRequest req)
         {
             var inputShipments = await req.GetBodyObjectAsync<IList<InputOrderShipmentType>>();
@@ -39,7 +39,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api
             var shipmentManager = new OrderShipmentManager(dataBaseFactory);
             var result = await shipmentManager.CreateShipmentListAsync(payload, inputShipments);
 
-            return new JsonNetResponse<IList<WmsOrderShipmentPayload>>(result);
+            return new JsonNetResponse<IList<OrderShipmentCreateResultPayload>>(result);
         }
     }
 }

@@ -360,6 +360,46 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasOrderShipmentUuid => OrderShipmentUuid != null;
 
+		/// <summary>
+		/// InvoiceNumber. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("InvoiceNumber. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The InvoiceNumber value cannot exceed 50 characters. ")]
+        public string InvoiceNumber { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasInvoiceNumber => InvoiceNumber != null;
+
+		/// <summary>
+		/// Invoice uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Invoice uuid. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The InvoiceUuid value cannot exceed 50 characters. ")]
+        public string InvoiceUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasInvoiceUuid => InvoiceUuid != null;
+
+		/// <summary>
+		/// Sales Order uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Sales Order uuid. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The SalesOrderUuid value cannot exceed 50 characters. ")]
+        public string SalesOrderUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasSalesOrderUuid => SalesOrderUuid != null;
+
+		/// <summary>
+		/// Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
+		/// </summary>
+		[OpenApiPropertyDescription("Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true")]
+        [StringLength(50, ErrorMessage = "The OrderNumber value cannot exceed 50 characters. ")]
+        public string OrderNumber { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasOrderNumber => OrderNumber != null;
+
 
 
         #endregion Properties - Generated 

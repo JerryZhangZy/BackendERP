@@ -776,6 +776,32 @@ WHERE RowNum=@1
             ) > 0;
         }
 
+        /// <summary>
+        /// Get SalesOrderData by OrderDCAssignmentNum
+        /// </summary>
+        /// <param name="orderDCAssignmentNum"></param>
+        /// <returns>SalesOrderData</returns>
+        public async Task<string> GetSalesOrderUuidByDCAssignmentNumAsync(long orderDCAssignmentNum)
+        {
+            if (orderDCAssignmentNum == 0) return string.Empty;
+            //Get SalesOrderData by uuid
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await SalesOrderHelper.GetSalesOrderUuidAsync(orderDCAssignmentNum);
+        }
+
+        /// <summary>
+        /// Get SalesOrderData by OrderDCAssignmentNum
+        /// </summary>
+        /// <param name="orderDCAssignmentNum"></param>
+        /// <returns>SalesOrderData</returns>
+        public async Task<string> GetSalesOrderNumberByUuidAsync(string salesOrderUuid)
+        {
+            if (string.IsNullOrEmpty(salesOrderUuid)) return string.Empty;
+            //Get SalesOrderData by uuid
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await SalesOrderHelper.GetSalesOrderNumberByUuidAsync(salesOrderUuid);
+        }
+
     }
 }
 
