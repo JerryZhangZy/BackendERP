@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPDb
 {
@@ -9,11 +11,6 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// </summary>
     public class WMSPoReceiveItem
     {
-        ///// <summary>
-        ///// Po header unique key erp provided.
-        ///// </summary>
-        //public string PoUuid { get; set; }
-
         /// <summary>
         /// Po item unique key erp provided.
         /// </summary>
@@ -33,5 +30,5 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// WMS Received item quantity
         /// </summary>
         public decimal Qty { get; set; }
-    }
+    } 
 }
