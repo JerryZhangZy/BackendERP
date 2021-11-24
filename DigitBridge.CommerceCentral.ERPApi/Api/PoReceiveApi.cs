@@ -101,10 +101,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var srv = new PoReceiveService(dataBaseFactory);
             payload.Success = await srv.DeleteByNumberAsync(payload, transNum);
             payload.Messages = srv.Messages;
-
-            //Directly return without waiting this result. 
-            // if (payload.Success)
-            //     srv.DeleteQboRefundEventAsync(payload.MasterAccountNum, payload.ProfileNum);
+ 
 
             return new JsonNetResponse<PoReceivePayload>(payload);
         }
@@ -193,10 +190,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
             await srv.GetPoReceiveListAsync(payload);
             return new JsonNetResponse<PoReceivePayload>(payload);
         }
-        
+
         /// <summary>
-        /// Add Po Receive
+        /// Sample_PoReceives_Post
         /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
         [FunctionName(nameof(Sample_PoReceives_Post))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -208,7 +207,11 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             return new JsonNetResponse<PoReceivePayloadAdd>(PoReceivePayloadAdd.GetSampleData());
         }
-
+        /// <summary>
+        /// Sample_PoReceive_Find
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
         [FunctionName(nameof(Sample_PoReceive_Find))]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
@@ -226,7 +229,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
 
         /// <summary>
-        /// Get invoice new return by invoiceNumber
+        /// Get NewPoReceive return by poNum
         /// </summary>
         /// <param name="req"></param>
         /// <param name="poNum"></param>
@@ -255,7 +258,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
         /// <summary>
-        /// 
+        /// Get NewPoReceive return by vendorCode
         /// </summary>
         /// <param name="req"></param>
         /// <param name="vendorCode">vendorCode</param>
@@ -308,10 +311,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
 
-
-
-
-
+ 
 
         [FunctionName(nameof(PoReceiveListSummary))]
         [OpenApiOperation(operationId: "PoReceiveListSummary", tags: new[] { "Po Receives" }, Summary = "Load Po Receives list summary")]

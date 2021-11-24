@@ -811,8 +811,6 @@ where inv.InventoryUuid=il.InventoryUuid
             if (data == null || data.PoTransaction == null)
                 return false;
             var header = data.PoTransaction;
-            //if(header.TransStatus!=(int)PoTransStatus.StockReceive&&header.TransStatus!=(int)PoTransStatus.APReceive)
-            //    return false;
             var logUuid = data.PoTransaction.TransUuid;
             await ClearInventoryLogByLogUuidAsync(logUuid);
             //if remove all items or delete inventoryupdate
@@ -830,6 +828,12 @@ where inv.InventoryUuid=il.InventoryUuid
             await UpdateInventoryInStockAsync(logUuid, isAddInventory?1:-1);
             return true;
         }
+        public async Task<bool> RollbackPoReceiveAsync(string logUuid)
+        {
+              await UpdateInventoryInStockAsync(logUuid, -1);
+            return true;
+        }
+
 
         private IList<InventoryLog> ConvertPoTransactionItemsToInventoryLogList(PoTransaction header, IList<PoTransactionItems> detailItems, long batchNum, string logUuid)
         {

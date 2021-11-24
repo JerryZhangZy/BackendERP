@@ -98,6 +98,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     {
                         await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
                         await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
+                        await InventoryLogService.RollbackPoReceiveAsync(this.Data.PoTransaction.TransUuid);
                     }
                 }
                 else
@@ -405,20 +406,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            var list = SplitPoTransaction(transdata);
-            payload.PoTransactions = new List<PoTransactionDataDto>();
-            foreach (var dto in list)
-            {
-                payload.PoTransaction = dto;
-                if (await base.UpdateAsync(payload))
-                {
-                    payload.PoTransactions.Add(ToDto());
-                }
-            }
-
-            payload.PoTransaction = null;
-            payload.Messages = Messages;
-            return true;
+           return await base.UpdateAsync(payload);
+ 
         }
 
         public async Task<bool> ClosePoReceiveAsync(PoReceivePayload payload, int transNum)
@@ -430,12 +419,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("PoTransaction cannot be find");
                 return false;
             }
-
-            if (!LoadPurchaseOrderData(_data.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
-                return false;
-
-            //检查限制条件 --暂无
-
             base.Data.PoTransaction.TransStatus = (int)PoTransStatus.Closed;
 
             //Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
