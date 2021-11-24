@@ -56,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null || sum == null)
                 return false;
 
-            var poHeader = data.PurchaseOrderData.PoHeader;
+ 
             if (sum.TransTime.IsZero()) sum.TransTime = now.TimeOfDay;
             if (sum.TransDate.IsZero())
             {
@@ -76,43 +76,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 //for Add mode, always reset uuid
                 sum.TransUuid = Guid.NewGuid().ToString();
-
-                if (sum.Currency.IsZero()) sum.Currency = poHeader.Currency;
-                if (sum.PoNum.IsZero()) sum.PoNum = poHeader.PoNum;
-                if (sum.TaxRate.IsZero()) sum.TaxRate = poHeader.TaxRate.ToDecimal();
-                if (sum.DiscountRate.IsZero()) sum.DiscountRate = poHeader.DiscountRate.ToDecimal();
+ 
             }
 
-            if (sum.VendorUuid.IsZero()) sum.VendorUuid = poHeader.VendorUuid;
-            if (sum.VendorName.IsZero()) sum.VendorName = poHeader.VendorName;
-            if (sum.VendorCode.IsZero()) sum.VendorCode = poHeader.VendorCode;
-            if (sum.PoUuid.IsZero()) sum.PoUuid = poHeader.PoUuid;
-            if (sum.PoNum.IsZero()) sum.PoNum = poHeader.PoNum;
-
-            //sum.DiscountAmount = poData.PoHeader.DiscountAmount;
-            //sum.DiscountRate = poData.PoHeader.DiscountRate;
-            //sum.TaxableAmount = poData.PoHeader.TaxableAmount;
-            //sum.NonTaxableAmount = poData.PoHeader.NonTaxableAmount;
-            //sum.ShippingAmount = poData.PoHeader.ShippingAmount;
-            //sum.ShippingTaxAmount = poData.PoHeader.ShippingTaxAmount;
-            //sum.MiscAmount = poData.PoHeader.MiscAmount;
-            //sum.MiscTaxAmount = poData.PoHeader.MiscTaxAmount;
-            //sum.ChargeAndAllowanceAmount = poData.PoHeader.ChargeAndAllowanceAmount;
-
-            //sum.SalesAmount = poData.PoHeader.SalesAmount; 
-
-            //sum.BankAccountCode = poData.PoHeader 
-            //var customerData = GetCustomerData(data, poData.PoHeader.CustomerCode);
-            //if (customerData != null && customerData.Customer != null)
-            //{
-            //    //sum.BankAccountCode
-            //    //sum.BankAccountUuid
-            //    //sum.CreditAccount= 
-            //    //sum.PaidBy=
-            //} 
-
-            //EnterBy
-            //UpdateBy 
+ 
 
             return true;
         }
@@ -149,34 +116,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.TransItemUuid = Guid.NewGuid().ToString();
             }
 
-            //Set default for po trans item. 
-
-            var poItem = data.PurchaseOrderData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid);
-            if (poItem != null)
+            //Set default for invoice
+            var poData = GetPurchaseOrderData(item.PoNum, data.PoTransaction.ProfileNum, data.PoTransaction.MasterAccountNum); 
+            if (poData != null)
             {
-                item.PoUuid = poItem.PoUuid;
-
-                if (item.WarehouseCode.IsZero()) item.WarehouseCode = poItem.WarehouseCode;
-                if (item.WarehouseUuid.IsZero()) item.WarehouseUuid = poItem.WarehouseUuid;
-                if (item.Description.IsZero()) item.Description = poItem.Description;
-                if (item.InventoryUuid.IsZero()) item.InventoryUuid = item.InventoryUuid;
-                //if (item.Taxable.IsZero()) item.Taxable = poItem.Taxable;
-                if (item.LotNum.IsZero()) item.LotNum = item.LotNum;
-                //if (item.Notes.IsZero()) item.Notes = item.Notes; 
-                if (item.ProductUuid.IsZero()) item.ProductUuid = poItem.ProductUuid;
-                if (item.TaxRate.IsZero()) item.TaxRate = poItem.TaxRate.ToDecimal();
-                if (item.SKU.IsZero()) item.SKU = poItem.SKU;
-                if (item.Currency.IsZero()) item.Currency = poItem.Currency;
-
-                if (item.Price.IsZero()) item.Price = poItem.Price;
-
-                //item.ReturnDiscountAmount = invoiceItem.DiscountAmount;// user can input this item. 
-                //item.DiscountRate = poItem.DiscountRate.ToDecimal();
-                //item.ShippingAmount = poItem.ShippingAmount.ToDecimal();
-                //item.ShippingTaxAmount = poItem.ShippingTaxAmount.ToDecimal();
-                //item.MiscAmount = poItem.MiscAmount.ToDecimal();
-                //item.MiscTaxAmount = poItem.MiscTaxAmount.ToDecimal();
-                //item.ChargeAndAllowanceAmount = poItem.ChargeAndAllowanceAmount.ToDecimal();
+                var poItem = poData.PoItems.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid);
+                if (poItem != null)
+                {
+                    item.PoUuid = poItem.PoUuid;
+                    item.InventoryUuid = item.InventoryUuid;
+                    item.ProductUuid = poItem.ProductUuid;
+                    item.SKU = poItem.SKU;
+                    item.Currency = poItem.Currency;
+                    item.LotNum = item.LotNum;
+                    if (item.WarehouseCode.IsZero())
+                    {
+                        item.WarehouseCode = poItem.WarehouseCode;
+                        item.WarehouseUuid = poItem.WarehouseUuid;
+                    }
+                }
             }
 
             return true;
@@ -237,8 +195,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 SetDefault(item, data, processingMode);
                 CalculateDetail(item, data, processingMode);
-
-                // sum all items EXtAmount to SubTotalAmount
                 sum.SubTotalAmount += item.ExtAmount;
             }
 

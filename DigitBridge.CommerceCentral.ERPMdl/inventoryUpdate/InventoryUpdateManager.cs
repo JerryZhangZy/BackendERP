@@ -347,7 +347,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
  
             var inventoryUpdateDatalist = new List<InventoryUpdateDataDto>();
-            
+
+
+ 
+
             foreach (var item in inventorySyncItems)
             {
                 var existInventory = inventoryList.Find(r => r.Item0 == item.SKU && r.Item1 == item.WarehouseCode);

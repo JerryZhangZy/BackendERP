@@ -92,10 +92,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.BeforeSaveAsync();
-                if (this.Data?.PoTransaction != null)
+                if (ProcessMode != ProcessingMode.Delete)
                 {
-                    await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
+                    if (this.Data?.PoTransaction != null)
+                    {
+                        await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
+                        await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
+                        await InventoryLogService.RollbackPoReceiveAsync(this.Data.PoTransaction.TransUuid);
+                    }
+                }
+                else
+                {
                     await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
+                    await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
+                    await InventoryLogService.UpdateByPoReceiveAsync(_data, false);
                 }
             }
             catch (Exception)
@@ -136,11 +146,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.AfterSaveAsync();
-                if (this.Data?.PoTransaction != null)
+                if (ProcessMode != ProcessingMode.Delete)
                 {
-                    await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid);
-                    await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid);
+                    if (this.Data?.PoTransaction != null)
+                    {
+                        await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid);
+                        await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid);
+                        await InventoryLogService.UpdateByPoReceiveAsync(_data, true);
+                    }
                 }
+ 
             }
             catch (Exception)
             {
@@ -321,29 +336,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return true;
         }
 
-        public bool AddList(PoReceivePayload payload)
-        {
-            if (!payload.HasPoTransactions)
-            {
-                AddError("PoTransaction cannot be blank");
-                return false;
-            }
-
-            var list = SplitPoTransactionsForVendor(payload.PoTransactions);
-            payload.PoTransactions = new List<PoTransactionDataDto>();
-            foreach (var dto in list)
-            {
-                payload.PoTransaction = dto;
-                if (base.Add(payload))
-                {
-                    payload.PoTransactions.Add(ToDto());
-                }
-            }
-
-            payload.PoTransaction = null;
-            payload.Messages = Messages;
-            return true;
-        }
+       
 
         public async Task<bool> AddAsync(PoReceivePayload payload)
         {
@@ -413,20 +406,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
 
-            var list = SplitPoTransaction(transdata);
-            payload.PoTransactions = new List<PoTransactionDataDto>();
-            foreach (var dto in list)
-            {
-                payload.PoTransaction = dto;
-                if (await base.UpdateAsync(payload))
-                {
-                    payload.PoTransactions.Add(ToDto());
-                }
-            }
-
-            payload.PoTransaction = null;
-            payload.Messages = Messages;
-            return true;
+           return await base.UpdateAsync(payload);
+ 
         }
 
         public async Task<bool> ClosePoReceiveAsync(PoReceivePayload payload, int transNum)
@@ -438,12 +419,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("PoTransaction cannot be find");
                 return false;
             }
-
-            if (!LoadPurchaseOrderData(_data.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
-                return false;
-
-            //检查限制条件 --暂无
-
             base.Data.PoTransaction.TransStatus = (int)PoTransStatus.Closed;
 
             //Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
@@ -464,58 +439,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override async Task<bool> SaveDataAsync()
         {
             Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
-            if (await base.SaveDataAsync())
-            {
-                await InventoryLogService.UpdateByPoReceiveAsync(_data);
-                await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
-                return true;
-            }
-
-            return false;
+            return await base.SaveDataAsync();
         }
 
-        public override bool SaveData()
-        {
-            Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
-            if (base.SaveData())
-            {
-                InventoryLogService.UpdateByPoReceive(_data);
-                // ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
-                PurchaseOrderService.UpdateByPoReceive(_data);
-                // InventoryService.UpdatAvgCostByPoReceive(_data);
-                return true;
-            }
-
-            return false;
-        }
+ 
 
         public override async Task<bool> DeleteDataAsync()
         {
-            if (await base.DeleteDataAsync())
-            {
-                _data.PoTransactionItems.Clear();
-                await InventoryLogService.UpdateByPoReceiveAsync(_data);
-                await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
-                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data.PoTransaction.MasterAccountNum, _data.PoTransaction.ProfileNum, _data);
-                return true;
-            }
-
-            return false;
+            //await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
+            //await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
+            //await InventoryLogService.UpdateByPoReceiveAsync(_data,false);
+            return await base.DeleteDataAsync();
+          
         }
 
-        public override bool DeleteData()
-        {
-            if (base.DeleteData())
-            {
-                _data.PoTransactionItems.Clear();
-                InventoryLogService.UpdateByPoReceive(_data);
-                PurchaseOrderService.UpdateByPoReceive(_data);
-                ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
-                return true;
-            }
+        //public override bool DeleteData()
+        //{
+        //    if (base.DeleteData())
+        //    {
+        //        _data.PoTransactionItems.Clear();
+        //        InventoryLogService.UpdateByPoReceive(_data);
+        //        PurchaseOrderService.UpdateByPoReceive(_data);
+        //        ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         /// <summary>
         /// Create new P/O receive data for one P/O
@@ -553,7 +503,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     transactions.Add(ToDto());
 
             }
-            payload.PoTransaction = MergePoTransactions(transactions, false);
+            payload.PoTransactions = new List<PoTransactionDataDto>();
+            payload.PoTransactions.Add(MergePoTransactions(transactions, false));
             return true;
         }
 
@@ -594,7 +545,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var vendorPoTransactions = dtolist.GroupBy(r => r.PoTransaction.VendorCode);
             foreach (var vendorItem in vendorPoTransactions)
             {
-                vendorPoTransactionList.Add(MergePoTransactions(vendorItem.ToList()));
+                vendorPoTransactionList.Add(MergePoTransactions(vendorItem.ToList(),true));
             }
             return vendorPoTransactionList;
         }
@@ -622,16 +573,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 }
             }
-
-
-            var totalQty = list.Sum(r => r.PoTransactionItems.Sum(r => r.TransQty.ToInt()));
-            var toalTaxAmount = list.Sum(r => r.PoTransaction.TaxAmount.ToAmount());
-            var totalShipmentAmount = list.Sum(r => r.PoTransaction.ShippingAmount.ToAmount());
-            var totalShipmentTaxAmount = list.Sum(r => r.PoTransaction.ShippingTaxAmount.ToAmount());
-            var totalMiscAmount = list.Sum(r => r.PoTransaction.MiscAmount.ToAmount());
-            var totalMiscTaxAmount = list.Sum(r => r.PoTransaction.MiscTaxAmount.ToAmount());
-            var totalDiscountAmount = list.Sum(r => r.PoTransaction.DiscountAmount.ToAmount());
-            var currentQty = poTransactionItems.Sum(r => r.TransQty);
+ 
 
             var poTransaction = new PoTransactionDto()
             {
@@ -646,16 +588,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 VendorUuid = list[0].PoTransaction.VendorUuid,
                 Currency = list[0].PoTransaction.Currency,
                 Description = list[0].PoTransaction.Description,
-                //ChargeAndAllowanceAmount = list.Sum(r=>r.PoTransaction.ChargeAndAllowanceAmount),
-
-                //DiscountAmount = totalQty > 0 ? totalDiscountAmount / totalQty * currentQty : 0,
-                //DiscountRate = list[0].PoTransaction.DiscountRate,
-                //ShippingAmount = totalQty > 0 ? totalShipmentAmount / totalQty * currentQty : 0,
-                //ShippingTaxAmount = totalQty > 0 ? totalShipmentTaxAmount / totalQty * currentQty : 0,
-                //MiscAmount = totalQty > 0 ? totalMiscAmount / totalQty * currentQty : 0,
-                //MiscTaxAmount = totalQty > 0 ? totalMiscTaxAmount / totalQty * currentQty : 0,
-                //TaxAmount = totalQty > 0 ? toalTaxAmount / totalQty * currentQty : 0,
-
             };
 
             if (ProcessMode == ProcessingMode.Add)

@@ -500,7 +500,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         private async Task ClearInventoryLogByLogUuidAsync(string logUuid)
         {
-            await UpdateInventoryInStockAsync(logUuid, -1);
+            //await UpdateInventoryInStockAsync(logUuid, -1);
             await DeleteInventoryLogByLogUuidAsync(logUuid);
         }
 
@@ -806,14 +806,12 @@ where inv.InventoryUuid=il.InventoryUuid
             return true;
         }
 
-        public async Task<bool> UpdateByPoReceiveAsync(PoTransactionData data)
+        public async Task<bool> UpdateByPoReceiveAsync(PoTransactionData data,bool isAddInventory)
         {
             if (data == null || data.PoTransaction == null)
                 return false;
             var header = data.PoTransaction;
-            //if(header.TransStatus!=(int)PoTransStatus.StockReceive&&header.TransStatus!=(int)PoTransStatus.APReceive)
-            //    return false;
-            var logUuid = data.PoTransaction.PoUuid;
+            var logUuid = data.PoTransaction.TransUuid;
             await ClearInventoryLogByLogUuidAsync(logUuid);
             //if remove all items or delete inventoryupdate
             if (data.PoTransactionItems == null || data.PoTransactionItems.Count == 0)
@@ -823,11 +821,19 @@ where inv.InventoryUuid=il.InventoryUuid
             var detailItems = data.PoTransactionItems;
             var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
             var list = ConvertPoTransactionItemsToInventoryLogList(header, detailItems, batchNum, logUuid);
+           
+
             await list.SetDataBaseFactory(dbFactory).SaveAsync();
 
-            await UpdateInventoryInStockAsync(logUuid, 1);
+            await UpdateInventoryInStockAsync(logUuid, isAddInventory?1:-1);
             return true;
         }
+        public async Task<bool> RollbackPoReceiveAsync(string logUuid)
+        {
+              await UpdateInventoryInStockAsync(logUuid, -1);
+            return true;
+        }
+
 
         private IList<InventoryLog> ConvertPoTransactionItemsToInventoryLogList(PoTransaction header, IList<PoTransactionItems> detailItems, long batchNum, string logUuid)
         {
