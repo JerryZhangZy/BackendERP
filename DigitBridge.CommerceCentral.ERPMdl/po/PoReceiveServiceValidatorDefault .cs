@@ -74,6 +74,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("PoTransaction is require.");
                 return false;
             }
+
+            if (!dto.HasPoTransactionItems)
+            {
+                AddError("Effective TransactionItem is require.");
+                return false;
+            }
             //decimal totalAmount = 0;
             //foreach (var item in dto.PoTransactionItems)
             //{
@@ -127,28 +133,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (item.TransQty <= 0)
                 {
                     isValid = false;
-                    AddError($"Receive item TransQty cannot less than 0.");
+             
+                    AddError($"{item.PoItemUuid}Receive item TransQty cannot less than 0.");
                 }
 
 
-                var poData= GetPurchaseOrderData(item.PoNum, data.PoTransaction.ProfileNum, data.PoTransaction.MasterAccountNum);
-                if (poData == null)
-                {
-                    isValid = false;
-                    AddError($"Can not find this PurchaseOrder.  PoItemUuid:{item.PoUuid},PoNum:{item.PoNum}]");
-                }
+                //var poData= GetPurchaseOrderData(item.PoNum, data.PoTransaction.ProfileNum, data.PoTransaction.MasterAccountNum);
+                //if (poData == null)
+                //{
+                //    isValid = false;
+                //     AddError($"Can not find this PurchaseOrder.  PoItemUuid:{item.PoUuid},PoNum:{item.PoNum}]");
+                //}
 
 
 
 
-               decimal PoQty = (poData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid)?.PoQty).ToQty();
-               decimal ReceivedQty = (poData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid)?.ReceivedQty).ToQty();
-               decimal CancelledQty = (poData ?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid)?.CancelledQty).ToQty();
-                if (item.TransQty > (PoQty - ReceivedQty))
-                {
-                    isValid = false;
-                    AddError($"Receive item TransQty cannot greater than OpenQty. [Sku:{item.SKU},PoItemUuid:{item.PoUuid},TransQty:{item.TransQty},OpenQty:{item.OpenQty}]");
-                }
+                //decimal PoQty = (poData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid)?.PoQty).ToQty();
+                //decimal ReceivedQty = (poData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid)?.ReceivedQty).ToQty();
+                //decimal CancelledQty = (poData ?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid)?.CancelledQty).ToQty();
+                // if (item.TransQty > (PoQty - ReceivedQty))
+                // {
+                //     isValid = false;
+                //     AddError($"Receive item TransQty cannot greater than OpenQty. [Sku:{item.SKU},PoItemUuid:{item.PoUuid},TransQty:{item.TransQty},OpenQty:{item.OpenQty}]");
+                // }
             }
             return isValid;
         }

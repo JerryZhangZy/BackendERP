@@ -370,8 +370,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.PoTransaction);
 
-            if (!LoadPurchaseOrderData(payload.PoTransaction.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
-                return false;
+            //if (!LoadPurchaseOrderData(payload.PoTransaction.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
+            //    return false;
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -415,7 +415,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Delete();
             //load data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-            success = success && DeleteData();
+            success = success &&await DeleteDataAsync();
             return success;
         }
 
@@ -548,7 +548,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Load Po data.
         /// </summary>
         /// <param name="poUuid"></param>
-        public async Task<bool> LoadPoAsync(string poUuid)
+        public async Task<bool> LoadPoByPoUuidAsync(string poUuid)
         {
             // load invoice data
             PurchaseOrderService.List();
@@ -696,14 +696,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             this.AttachData(data);
-
-            //if all items are belong to same po, load podata.
-            if (!Data.PoTransaction.PoUuid.IsZero() && !await LoadPoAsync(Data.PoTransaction.PoUuid))
-                return false;
-
-            // validate data for Add processing
-            if (!(await ValidateAsync()))
-                return false;
 
             return await SaveDataAsync();
         }
