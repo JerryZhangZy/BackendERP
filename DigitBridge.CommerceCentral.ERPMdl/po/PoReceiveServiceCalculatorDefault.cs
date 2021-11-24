@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 sum.TransDate = now.Date;
                 sum.TransTime = now.TimeOfDay;
-            } 
+            }
 
             if (processingMode == ProcessingMode.Add)
             {
@@ -83,11 +83,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (sum.DiscountRate.IsZero()) sum.DiscountRate = poHeader.DiscountRate.ToDecimal();
             }
 
-            sum.VendorUuid = poHeader.VendorUuid;
-            sum.VendorName = poHeader.VendorName;
-            sum.VendorCode = poHeader.VendorCode;
-            sum.PoUuid = poHeader.PoUuid;
-            sum.PoNum = poHeader.PoNum;
+            if (sum.VendorUuid.IsZero()) sum.VendorUuid = poHeader.VendorUuid;
+            if (sum.VendorName.IsZero()) sum.VendorName = poHeader.VendorName;
+            if (sum.VendorCode.IsZero()) sum.VendorCode = poHeader.VendorCode;
+            if (sum.PoUuid.IsZero()) sum.PoUuid = poHeader.PoUuid;
+            if (sum.PoNum.IsZero()) sum.PoNum = poHeader.PoNum;
 
             //sum.DiscountAmount = poData.PoHeader.DiscountAmount;
             //sum.DiscountRate = poData.PoHeader.DiscountRate;
@@ -156,34 +156,27 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 item.PoUuid = poItem.PoUuid;
 
-                if (item.WarehouseCode.IsZero())
-                {
-                    //po receive warehousecode may not equal the item warehousecode.
-                    item.WarehouseCode = poItem.WarehouseCode;
-                    item.WarehouseUuid = poItem.WarehouseUuid;
-                }
+                if (item.WarehouseCode.IsZero()) item.WarehouseCode = poItem.WarehouseCode;
+                if (item.WarehouseUuid.IsZero()) item.WarehouseUuid = poItem.WarehouseUuid;
+                if (item.Description.IsZero()) item.Description = poItem.Description;
+                if (item.InventoryUuid.IsZero()) item.InventoryUuid = item.InventoryUuid;
+                //if (item.Taxable.IsZero()) item.Taxable = poItem.Taxable;
+                if (item.LotNum.IsZero()) item.LotNum = item.LotNum;
+                //if (item.Notes.IsZero()) item.Notes = item.Notes; 
+                if (item.ProductUuid.IsZero()) item.ProductUuid = poItem.ProductUuid;
+                if (item.TaxRate.IsZero()) item.TaxRate = poItem.TaxRate.ToDecimal();
+                if (item.SKU.IsZero()) item.SKU = poItem.SKU;
+                if (item.Currency.IsZero()) item.Currency = poItem.Currency;
 
-                item.Description = poItem.Description;
-                item.InventoryUuid = item.InventoryUuid;
-                item.Taxable = poItem.Taxable;
-                item.LotNum = item.LotNum;
-                item.Notes = item.Notes;
+                if (item.Price.IsZero()) item.Price = poItem.Price;
 
-                item.ProductUuid = poItem.ProductUuid;
-                item.TaxRate = poItem.TaxRate.ToDecimal();
-                item.SKU = poItem.SKU;
-                item.Currency = poItem.Currency;
-
-                item.Price = poItem.Price;
-                item.DiscountRate = poItem.DiscountRate.ToDecimal();
-                //item.ReturnDiscountAmount = invoiceItem.DiscountAmount;// user can input this item.
-                item.Price = poItem.Price;
-
-                item.ShippingAmount = poItem.ShippingAmount.ToDecimal();
-                item.ShippingTaxAmount = poItem.ShippingTaxAmount.ToDecimal();
-                item.MiscAmount = poItem.MiscAmount.ToDecimal();
-                item.MiscTaxAmount = poItem.MiscTaxAmount.ToDecimal();
-                item.ChargeAndAllowanceAmount = poItem.ChargeAndAllowanceAmount.ToDecimal();
+                //item.ReturnDiscountAmount = invoiceItem.DiscountAmount;// user can input this item. 
+                //item.DiscountRate = poItem.DiscountRate.ToDecimal();
+                //item.ShippingAmount = poItem.ShippingAmount.ToDecimal();
+                //item.ShippingTaxAmount = poItem.ShippingTaxAmount.ToDecimal();
+                //item.MiscAmount = poItem.MiscAmount.ToDecimal();
+                //item.MiscTaxAmount = poItem.MiscTaxAmount.ToDecimal();
+                //item.ChargeAndAllowanceAmount = poItem.ChargeAndAllowanceAmount.ToDecimal();
             }
 
             return true;

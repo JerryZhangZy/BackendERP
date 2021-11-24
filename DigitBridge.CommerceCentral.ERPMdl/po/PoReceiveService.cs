@@ -364,7 +364,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.PoTransactions = new List<PoTransactionDataDto>();
             if (await base.AddAsync(payload))
                 payload.Success = true;
- 
+
             payload.Messages = Messages;
             return true;
         }
@@ -553,7 +553,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     transactions.Add(ToDto());
 
             }
-            payload.PoTransaction = MergePoTransactions(transactions,false);
+            payload.PoTransaction = MergePoTransactions(transactions, false);
             return true;
         }
 
@@ -581,7 +581,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         private IList<PoTransactionDataDto> SplitPoTransactionsForVendor(IList<PoTransactionDataDto> dtolist)
         {
-            
+
             foreach (var transdata in dtolist)
             {
                 if (!transdata.HasPoTransaction || !transdata.HasPoTransactionItems)
@@ -600,7 +600,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
 
-        private PoTransactionDataDto MergePoTransactions(List<PoTransactionDataDto> list,bool filterZeroTransQty=true)
+        private PoTransactionDataDto MergePoTransactions(List<PoTransactionDataDto> list, bool filterZeroTransQty = true)
         {
             //var list = new List<PoTransactionDataDto>();
 
@@ -624,7 +624,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
 
-            var totalQty = list.Sum(r=>r.PoTransactionItems.Sum(r => r.TransQty.ToInt()));
+            var totalQty = list.Sum(r => r.PoTransactionItems.Sum(r => r.TransQty.ToInt()));
             var toalTaxAmount = list.Sum(r => r.PoTransaction.TaxAmount.ToAmount());
             var totalShipmentAmount = list.Sum(r => r.PoTransaction.ShippingAmount.ToAmount());
             var totalShipmentTaxAmount = list.Sum(r => r.PoTransaction.ShippingTaxAmount.ToAmount());
@@ -635,8 +635,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var poTransaction = new PoTransactionDto()
             {
-                 
-                PoUuid = list.Count>1?"":list[0].PoTransaction.PoUuid,
+
+                PoUuid = list.Count > 1 ? "" : list[0].PoTransaction.PoUuid,
                 PoNum = list.Count > 1 ? "" : list[0].PoTransaction.PoNum,
                 ProfileNum = list[0].PoTransaction.ProfileNum,
                 MasterAccountNum = list[0].PoTransaction.MasterAccountNum,
@@ -666,13 +666,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var dto = new PoTransactionDataDto()
             {
-                     PoTransaction= poTransaction,
-                     PoTransactionItems= poTransactionItems
+                PoTransaction = poTransaction,
+                PoTransactionItems = poTransactionItems
             };
 
 
             return dto;
- 
+
         }
 
 
@@ -749,7 +749,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 poUuidArrays.Add(new StringArray() { Item0 = item });
 
 
-            var poNumList =  await PurchaseOrderHelper.GetPoNumsByPoItemUuidAsync(poUuidArrays, payload.MasterAccountNum, payload.ProfileNum);
+            var poNumList = await PurchaseOrderHelper.GetPoNumsByPoItemUuidAsync(poUuidArrays, payload.MasterAccountNum, payload.ProfileNum);
 
             var transactions = new List<PoTransactionDataDto>();
             foreach (var item in poNumList)
@@ -762,11 +762,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             foreach (var poTran in payload.PoTransactions)
             {
-                 var items= payload.WMSPoReceiveItems?.Where(r => r.PoUuid == poTran.PoTransaction.PoUuid).ToList();
-                List<PoTransactionItemsDto> poTransactionItemsDtos = new List<PoTransactionItemsDto>();   
+                var items = payload.WMSPoReceiveItems?.Where(r => r.PoUuid == poTran.PoTransaction.PoUuid).ToList();
+                List<PoTransactionItemsDto> poTransactionItemsDtos = new List<PoTransactionItemsDto>();
                 foreach (var aItem in items)
                 {
-                   var transItem= poTran.PoTransactionItems.Where(r => r.PoItemUuid == aItem.PoItemUuid).FirstOrDefault();
+                    var transItem = poTran.PoTransactionItems.Where(r => r.PoItemUuid == aItem.PoItemUuid).FirstOrDefault();
                     if (transItem != null)
                     {
                         transItem.TransQty = aItem.Qty;
@@ -788,7 +788,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //}
 
             return null;
- 
+
         }
         /// <summary>
         /// Add po trans for wms po receive.
@@ -877,7 +877,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         PoItemUuid = wmsItem.PoItemUuid,
                         TransQty = wmsItem.Qty,
                         WarehouseCode = wmsItem.WarehouseCode,
-                        SKU = wmsItem.SKU
+                        SKU = wmsItem.SKU,
+                        Price = item.Price,
                     };
                     transItem.SetParent(data);
                     data.PoTransactionItems.Add(transItem);
