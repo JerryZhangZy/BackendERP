@@ -140,6 +140,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid);
                     await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid);
+                    await InventoryLogService.UpdateByPoReceiveAsync(_data,true);
                 }
             }
             catch (Exception)
@@ -464,58 +465,33 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override async Task<bool> SaveDataAsync()
         {
             Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
-            if (await base.SaveDataAsync())
-            {
-                await InventoryLogService.UpdateByPoReceiveAsync(_data);
-                await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
-                return true;
-            }
-
-            return false;
+            return await base.SaveDataAsync();
         }
 
-        public override bool SaveData()
-        {
-            Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
-            if (base.SaveData())
-            {
-                InventoryLogService.UpdateByPoReceive(_data);
-                // ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
-                PurchaseOrderService.UpdateByPoReceive(_data);
-                // InventoryService.UpdatAvgCostByPoReceive(_data);
-                return true;
-            }
-
-            return false;
-        }
+ 
 
         public override async Task<bool> DeleteDataAsync()
         {
-            if (await base.DeleteDataAsync())
-            {
-                _data.PoTransactionItems.Clear();
-                await InventoryLogService.UpdateByPoReceiveAsync(_data);
-                await PurchaseOrderService.UpdateByPoReceiveAsync(_data);
-                await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(_data.PoTransaction.MasterAccountNum, _data.PoTransaction.ProfileNum, _data);
-                return true;
-            }
-
-            return false;
+            await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
+            await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
+            await InventoryLogService.UpdateByPoReceiveAsync(_data,false);
+            return await base.DeleteDataAsync();
+          
         }
 
-        public override bool DeleteData()
-        {
-            if (base.DeleteData())
-            {
-                _data.PoTransactionItems.Clear();
-                InventoryLogService.UpdateByPoReceive(_data);
-                PurchaseOrderService.UpdateByPoReceive(_data);
-                ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
-                return true;
-            }
+        //public override bool DeleteData()
+        //{
+        //    if (base.DeleteData())
+        //    {
+        //        _data.PoTransactionItems.Clear();
+        //        InventoryLogService.UpdateByPoReceive(_data);
+        //        PurchaseOrderService.UpdateByPoReceive(_data);
+        //        ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         /// <summary>
         /// Create new P/O receive data for one P/O

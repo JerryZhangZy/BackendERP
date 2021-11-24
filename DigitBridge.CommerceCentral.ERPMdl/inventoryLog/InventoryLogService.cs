@@ -806,7 +806,7 @@ where inv.InventoryUuid=il.InventoryUuid
             return true;
         }
 
-        public async Task<bool> UpdateByPoReceiveAsync(PoTransactionData data)
+        public async Task<bool> UpdateByPoReceiveAsync(PoTransactionData data,bool isAddInventory)
         {
             if (data == null || data.PoTransaction == null)
                 return false;
@@ -823,6 +823,10 @@ where inv.InventoryUuid=il.InventoryUuid
             var detailItems = data.PoTransactionItems;
             var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
             var list = ConvertPoTransactionItemsToInventoryLogList(header, detailItems, batchNum, logUuid);
+            int oper = isAddInventory ? 1 : -1;
+            foreach (var item in list)
+                item.LogQty *= item.LogQty;
+
             await list.SetDataBaseFactory(dbFactory).SaveAsync();
 
             await UpdateInventoryInStockAsync(logUuid, 1);

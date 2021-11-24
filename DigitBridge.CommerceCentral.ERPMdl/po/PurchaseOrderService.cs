@@ -478,16 +478,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         
-        public virtual async Task<bool> UpdateByPoReceiveAsync(PoTransactionData data)
-        {
-            if (data == null || data.PoTransaction == null)
-                return false;
+        //public virtual async Task<bool> UpdateByPoReceiveAsync(PoTransactionData data)
+        //{
+        //    if (data == null || data.PoTransaction == null)
+        //        return false;
             
-            await UpdatePoHeaderByPoReceiveAsync(data.PoTransaction.PoUuid);
-            await UpdatePoItemsByPoReceiveAsync(data.PoTransaction.PoUuid);
+        //    await UpdatePoHeaderByPoReceiveAsync(data.PoTransaction.PoUuid);
+        //    await UpdatePoItemsByPoReceiveAsync(data.PoTransaction.PoUuid);
 
-            return true;
-        }
+        //    return true;
+        //}
         
         public virtual bool UpdateByPoReceive(PoTransactionData data)
         {

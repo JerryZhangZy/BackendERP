@@ -172,36 +172,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<PoReceivePayload>(payload);
         }
         
-        /// <summary>
-        /// Add po receive 
-        /// </summary>
-        /// <param name="req"></param>
-        /// <returns></returns>
-        [FunctionName(nameof(AddApPoReceives))]
-        [OpenApiOperation(operationId: "AddApPoReceives", tags: new[] { "Po Receives" }, Summary = "Add PO A/P Receive")]
-        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PoReceivePayloadAdd), Description = "Request Body in json format")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadAdd))]
-        public static async Task<JsonNetResponse<PoReceivePayload>> AddApPoReceives(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "poReceives/ap")] HttpRequest req)
-        {
-            var payload = await req.GetParameters<PoReceivePayload>(true);
-            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var srv = new PoReceiveService(dataBaseFactory);
-            srv.SetFirstAPReceiveStatus(true);
-            await srv.AddAsync(payload);
-            // payload.Success = await srv.AddAsync(payload);
-            // payload.Messages = srv.Messages;
-            // payload.PoTransaction = srv.ToDto();
-
-            //Directly return without waiting this result. 
-            //if (payload.Success)
-            // srv.AddQboPaymentEventAsync(payload.MasterAccountNum, payload.ProfileNum, payload.ApplyInvoices);
-
-            return new JsonNetResponse<PoReceivePayload>(payload);
-        }
+      
         
         /// <summary>
         /// Add po receive 
@@ -342,6 +313,39 @@ namespace DigitBridge.CommerceCentral.ERPApi
         //     await srv.PoReceiveSummaryAsync(payload);
         //     return new JsonNetResponse<PoReceivePayload>(payload);
         // }
+
+
+        ///// <summary>
+        ///// Add po receive 
+        ///// </summary>
+        ///// <param name="req"></param>
+        ///// <returns></returns>
+        //[FunctionName(nameof(AddApPoReceives))]
+        //[OpenApiOperation(operationId: "AddApPoReceives", tags: new[] { "Po Receives" }, Summary = "Add PO A/P Receive")]
+        //[OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PoReceivePayloadAdd), Description = "Request Body in json format")]
+        //[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(PoReceivePayloadAdd))]
+        //public static async Task<JsonNetResponse<PoReceivePayload>> AddApPoReceives(
+        //    [HttpTrigger(AuthorizationLevel.Function, "post", Route = "poReceives/ap")] HttpRequest req)
+        //{
+        //    var payload = await req.GetParameters<PoReceivePayload>(true);
+        //    var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+        //    var srv = new PoReceiveService(dataBaseFactory);
+        //    srv.SetFirstAPReceiveStatus(true);
+        //    await srv.AddAsync(payload);
+        //    // payload.Success = await srv.AddAsync(payload);
+        //    // payload.Messages = srv.Messages;
+        //    // payload.PoTransaction = srv.ToDto();
+
+        //    //Directly return without waiting this result. 
+        //    //if (payload.Success)
+        //    // srv.AddQboPaymentEventAsync(payload.MasterAccountNum, payload.ProfileNum, payload.ApplyInvoices);
+
+        //    return new JsonNetResponse<PoReceivePayload>(payload);
+        //}
+
 
         /// <summary>
         /// Get invoice new return by invoiceNumber

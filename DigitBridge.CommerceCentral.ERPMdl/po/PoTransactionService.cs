@@ -415,7 +415,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Delete();
             //load data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, orderNumber);
-            success = success && DeleteData();
+            success = success &&await DeleteDataAsync();
             return success;
         }
 
