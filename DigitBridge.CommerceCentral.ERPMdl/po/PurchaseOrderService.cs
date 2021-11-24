@@ -17,6 +17,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.Base.Common;
+using System.Text;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -570,47 +571,66 @@ where poi.PoUuid=@0;
         /// <returns></returns>
         public async Task<List<PurchaseOrderData>> GetMergedPoByPoItemUuidsAsync(int masterAccountNum, int profileNum, List<string> poItemUuids)
         {
-            var sql = $@"
-select 
-poh.* 
-,
-(
-  select item.* 
-  from PoItems item
-  where item.RowNum=poi.RowNum
-  for json path
-)
-from PoHeader poh 
-JOIN PoItems  poi on poh.PoUuid=poi.PoUuid
-where poh.MasterAccountNum=@0
-AND poh.ProfileNum=@1
-AND @2 poUuid on poItemUuid.item=poi.PoItemUuid
-for json path
-;
-";
-            var dataJson = await dbFactory.Db.ExecuteScalarAsync<string>(sql
-                , masterAccountNum.ToSqlParameter("masterAccountNum")
-                , profileNum.ToSqlParameter("profileNum")
-                //, vendorCode.ToSqlParameter("vendorCode")
-                , poItemUuids.ToParameter<string>("poItemUuids")
-                );
-
-            var poData = dataJson.JsonToObject<List<PurchaseOrderData>>();
-            return MergePoByVendor(poData);
+            var poItems = await GetItems(masterAccountNum, profileNum, poItemUuids);
+            var poUuids = poItems.Select(i => i.PoUuid).ToList();
+            var poHeaders = await GetHeaders(masterAccountNum, profileNum, poUuids);
+            return MergePoByVendor(poHeaders, poItems);
         }
 
-        protected List<PurchaseOrderData> MergePoByVendor(List<PurchaseOrderData> poList)
+        protected async Task<IEnumerable<PoItems>> GetItems(int masterAccountNum, int profileNum, List<string> poItemUuids)
+        {
+            var sql_Item = $@" 
+select poi.* 
+from PoHeader poh 
+JOIN PoItems  poi on poh.PoUuid=poi.PoUuid
+JOIN @0 poItemUuid on poItemUuid.item=poi.PoItemUuid
+where poh.MasterAccountNum=@1
+AND poh.ProfileNum=@2 
+;
+";
+            var poItems = await dbFactory.FindAsync<PoItems>(sql_Item
+                      , poItemUuids.ToParameter<string>("poItemUuids")
+                      , masterAccountNum.ToSqlParameter("masterAccountNum")
+                      , profileNum.ToSqlParameter("profileNum")
+                  );
+
+            return poItems;
+
+        }
+        protected async Task<IEnumerable<PoHeader>> GetHeaders(int masterAccountNum, int profileNum, List<string> poUuids)
+        {
+            var sql_Item = $@" 
+select poh.* 
+from PoHeader poh  
+JOIN @0 poUuid on poUuid.item=poh.PoUuid
+where poh.MasterAccountNum=@1
+AND poh.ProfileNum=@2 
+;
+";
+            var poHeaders = await dbFactory.FindAsync<PoHeader>(sql_Item
+                      , poUuids.ToParameter<string>("poUuids")
+                      , masterAccountNum.ToSqlParameter("masterAccountNum")
+                      , profileNum.ToSqlParameter("profileNum")
+                  );
+
+            return poHeaders;
+
+        }
+
+        protected List<PurchaseOrderData> MergePoByVendor(IEnumerable<PoHeader> poHeaders, IEnumerable<PoItems> poItems)
         {
             var result = new List<PurchaseOrderData>();
-            var vendorCodes = poList.Select(i => i.PoHeader.VendorCode).Distinct();
+            var vendorCodes = poHeaders.Select(i => i.VendorCode).Distinct();
             foreach (var vendorCode in vendorCodes)
             {
-                var matchList = poList.Where(i => i.PoHeader.VendorCode == vendorCode);
-                var hasMultiPo = matchList.Count() > 1;
-                var defaultHeader = matchList.FirstOrDefault().PoHeader;
+                var matchHeaders = poHeaders.Where(i => i.VendorCode == vendorCode);
+                var matchItems = poItems.Where(i => matchHeaders.Count(h => h.PoUuid == i.PoUuid) > 0).ToList();
+                if (matchItems is null || matchItems.Count == 0) continue;
 
+                var hasMultiPo = matchHeaders.Count() > 1;
+                var defaultHeader = matchHeaders.FirstOrDefault();
                 var poData = new PurchaseOrderData();
-                poData.PoItems = matchList.SelectMany(i => i.PoItems).ToList();
+                poData.PoItems = matchItems;
 
                 if (hasMultiPo)
                 {
@@ -619,7 +639,6 @@ for json path
                         VendorCode = defaultHeader.VendorCode,
                         VendorName = defaultHeader.VendorName,
                         VendorUuid = defaultHeader.VendorUuid,
-                        PoNum = defaultHeader.PoNum,
                     };
                 }
                 else
