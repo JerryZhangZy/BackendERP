@@ -11,11 +11,8 @@ using Microsoft.Data.SqlClient;
 namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class PoTransactionData
-    {
-        /// <summary>
-        /// One Trans has multi purchase data.
-        /// </summary>
-        public bool HasMultiPo = false;
+    { 
+
         /// <summary>
         /// Load original invoicedata.
         /// </summary>

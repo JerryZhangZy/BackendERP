@@ -11,6 +11,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// </summary>
     public class WMSPoReceiveItem
     {
+        ///// <summary>
+        ///// Vendor code
+        ///// </summary>
+        //public string VendorCode { get; set; }
+
         /// <summary>
         /// Po item unique key erp provided.
         /// </summary>
@@ -30,5 +35,5 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// WMS Received item quantity
         /// </summary>
         public decimal Qty { get; set; }
-    } 
+    }
 }
