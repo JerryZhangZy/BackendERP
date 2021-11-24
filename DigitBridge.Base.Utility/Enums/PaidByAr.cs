@@ -20,8 +20,9 @@ namespace DigitBridge.Base.Common
         ApplePay = 10,
         Other = 20,
         CustomerCredit = 40,
-        CreditMemo = 50,
 
+        PrePayment = 50,
+        CreditMemo = 51,
         Refund = 60,
         ChargeOff = 65,
         DebitMemo = 71,

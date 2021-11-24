@@ -1,20 +1,3 @@
-
-
-
-
-//SettingForChannelOrder
-//SettingForCustomer
-//SettingForInventory
-//SettingForInventoryLog
-//SettingForInvoice
-//SettingForInvoiceTransaction
-//SettingForSalesOrder
-//SettingForShipment
-
-              
-
-
-
               
     
 
@@ -73,6 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public static string OrderShipmentCanceledItemUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.OrderShipmentCanceledItemUuid) AS {name ?? "OrderShipmentCanceledItemUuid".ToCamelCase(camelCase)} ";
         public static string RowNum(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.RowNum AS {name ?? "RowNum".ToCamelCase(camelCase)} ";
         public static string DigitBridgeGuid(string tableAllies = null, string name = null, bool camelCase = true) => $"{tableAllies ?? TableAllies}.DigitBridgeGuid AS {name ?? "DigitBridgeGuid".ToCamelCase(camelCase)} ";
+        public static string SalesOrderItemsUuid(string tableAllies = null, string name = null, bool camelCase = true) => $"RTRIM({tableAllies ?? TableAllies}.SalesOrderItemsUuid) AS {name ?? "SalesOrderItemsUuid".ToCamelCase(camelCase)} ";
 
         #endregion - static SQL fileds statement
 
@@ -98,7 +82,8 @@ RTRIM({allies}DBChannelOrderLineRowID) AS DBChannelOrderLineRowID,
 RTRIM({allies}OrderShipmentUuid) AS OrderShipmentUuid,
 RTRIM({allies}OrderShipmentCanceledItemUuid) AS OrderShipmentCanceledItemUuid,
 {allies}RowNum AS RowNum,
-{allies}DigitBridgeGuid AS DigitBridgeGuid
+{allies}DigitBridgeGuid AS DigitBridgeGuid,
+RTRIM({allies}SalesOrderItemsUuid) AS SalesOrderItemsUuid
 ";
         }
 

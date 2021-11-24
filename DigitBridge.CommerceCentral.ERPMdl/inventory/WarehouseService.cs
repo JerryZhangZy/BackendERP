@@ -323,11 +323,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await GetDataAsync(rowNum);
         }
 
+        public async Task<WarehouseData> GetWarehouseDataByWarehouseCodeAsync(string warehouseCode, int masterAccountNum, int profileNum)
+        {
+            if (string.IsNullOrEmpty(warehouseCode))
+                return null;
+            long rowNum = 0;
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                rowNum = await WarehouseServiceHelper.GetRowNumByWarehouseCodeAsync(warehouseCode, masterAccountNum, profileNum);
+            }
+            if (await GetDataAsync(rowNum))
+                return this.Data;
+            return null;
+        }
 
         public async Task<IList<DistributionCenter>> GetWarehouseList(int masterAccountNum, int profileNum)
         {
             return (await dbFactory.FindAsync<DistributionCenter>("WHERE MasterAccountNum=@0 AND ProfileNum=@1", masterAccountNum, profileNum))
                 .ToList();
+        }
+
+        public async Task<string> GetWarehouseUuidByCodeAsync(string warehouseCode, int masterAccountNum, int profileNum)
+        {
+            if (string.IsNullOrEmpty(warehouseCode))
+                return string.Empty;
+            using (var tx = new ScopedTransaction(dbFactory))
+                return await WarehouseServiceHelper.GetWarehouseUuidByCodeAsync(warehouseCode, masterAccountNum, profileNum);
         }
 
     }
