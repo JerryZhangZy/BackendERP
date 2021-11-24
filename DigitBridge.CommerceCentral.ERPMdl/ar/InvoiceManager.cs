@@ -116,6 +116,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        [XmlIgnore, JsonIgnore]
+        protected WarehouseService _warehouseService;
+        [XmlIgnore, JsonIgnore]
+        public WarehouseService warehouseService
+        {
+            get
+            {
+                if (_warehouseService is null)
+                    _warehouseService = new WarehouseService(dbFactory);
+                return _warehouseService;
+            }
+        }
+
         #endregion services
 
         #region DataBase
@@ -287,10 +300,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             var invoiceUuid = await CreateInvoiceFromShipmentAsync(service.Data);
-            if (!string.IsNullOrEmpty(invoiceUuid))
-            {
-                await service.UpdateProcessStatusAsync(orderShimentUuid, OrderShipmentProcessStatusEnum.InvoiceReady);
-            }
+            //if (!string.IsNullOrEmpty(invoiceUuid))
+            //{
+            //    await service.UpdateProcessStatusAsync(orderShimentUuid, OrderShipmentProcessStatusEnum.InvoiceReady);
+            //}
             return invoiceUuid;
         }
         #endregion
@@ -382,21 +395,46 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             invoiceService.NewData();
 
             var invoiceData = invoiceTransfer.FromOrderShipmentAndSalesOrder(shipmentData, salesOrderData, invoiceService.Data);
+            await SetWarehouse(invoiceService.Data);
 
-            var mapper = new InvoiceDataDtoMapperDefault();
-            var dto = mapper.WriteDto(invoiceData, null);
-            var success = await invoiceService.AddAsync(dto);
-            if (!success)
+            //var mapper = new InvoiceDataDtoMapperDefault();
+            //var dto = mapper.WriteDto(invoiceData, null);
+            //var success = await invoiceService.SaveDataAsync();
+            if (!(await invoiceService.SaveDataAsync()))
             {
-                this.Messages = this.Messages.Concat(invoiceService.Messages).ToList();
+                this.Messages.Add(invoiceService.Messages);
                 return null;
             }
 
-            //set InvoiceNumber back to shipment.
+            //set InvoiceNumber back to shipment and update shipment to ready.
             shipmentData.OrderShipmentHeader.InvoiceNumber = invoiceService.Data.InvoiceHeader.InvoiceNumber;
+            await orderShipmentService.UpdateProcessStatusAsync(
+                shipmentData.OrderShipmentHeader.OrderShipmentUuid, 
+                OrderShipmentProcessStatusEnum.InvoiceReady,
+                invoiceService.Data.InvoiceHeader.InvoiceUuid,
+                invoiceService.Data.InvoiceHeader.InvoiceNumber
+            );
             return invoiceService.Data.InvoiceHeader.InvoiceUuid;
         }
 
+        protected async Task<bool> SetWarehouse(InvoiceData data)
+        {
+            if (data == null) return false;
+            var header = data.InvoiceHeader;
+            var info = data.InvoiceHeaderInfo;
+            var whs = await warehouseService.GetWarehouseDataByWarehouseCodeAsync(info.WarehouseCode, header.MasterAccountNum, header.ProfileNum);
+            if (whs == null)
+                return false;
+            foreach (var item in data.InvoiceItems)
+            {
+                if (item == null || item.IsEmpty) continue;
+                item.WarehouseCode = info.WarehouseCode;
+                item.WarehouseUuid = whs.DistributionCenter.DistributionCenterUuid;
+            }
+            return true;
+        }
+
+        
 
         public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid)
         {
