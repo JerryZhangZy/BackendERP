@@ -50,6 +50,22 @@ namespace DigitBridge.CommerceCentral.ERPApi
             return new JsonNetResponse<CentralOrderReferencePayload>(payload);
         }
 
+        [FunctionName(nameof(CentralOrdersList))]
+        [OpenApiOperation(operationId: "CentralOrdersList", tags: new[] { "SalesOrders" }, Summary = "Load sales order list data")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/file", bodyType: typeof(IFormFile), Description = "type form data,key=File,value=Files")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SalesOrderPayloadFind))]
+        public static async Task<JsonNetResponse<ChannelOrderPayload>> CentralOrdersList(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "centralOrders/find")] HttpRequest req)
+        {
+            var payload = await req.GetParameters<ChannelOrderPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var srv = new CentralOrderList(dataBaseFactory, new CentralOrderQuery());
+            await srv.GetChannelOrderListAsync(payload);
+            return new JsonNetResponse<ChannelOrderPayload>(payload);
+        }
     }
 }
 
