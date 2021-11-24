@@ -1,5 +1,5 @@
-              
-    
+
+
 
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class PoItems
     {
-
+        /// <summary>
+        /// Vendor code.
+        /// </summary>
+        public string VendorCode { get; set; }
     }
 }
 

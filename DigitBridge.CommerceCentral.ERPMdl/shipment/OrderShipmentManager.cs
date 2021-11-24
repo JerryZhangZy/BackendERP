@@ -380,8 +380,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return result.Success;
             }
 
-            // change orderShipment status to 0 (InvoiceReady, allow to upload)
-            await orderShipmentService.UpdateProcessStatusAsync(orderShipmentData.OrderShipmentHeader.OrderShipmentUuid, OrderShipmentProcessStatusEnum.InvoiceReady);
+            //// change orderShipment status to 0 (InvoiceReady, allow to upload)
+            //await orderShipmentService.UpdateProcessStatusAsync(orderShipmentData.OrderShipmentHeader.OrderShipmentUuid, OrderShipmentProcessStatusEnum.InvoiceReady);
             return result.Success;
         }
 

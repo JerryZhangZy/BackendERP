@@ -3074,10 +3074,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
                     //OnExecutedCommand(dbCommand);
                     return result;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     //return null;
-                    throw;
+                    throw e;
                 }
 
                 //return CommandHelper(cancellationToken, dbCommand,

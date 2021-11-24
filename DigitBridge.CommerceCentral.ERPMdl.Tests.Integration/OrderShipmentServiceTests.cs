@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             srv.Add();
 
             var mapper = srv.DtoMapper;
-            var data = GetFakerData();
+            var data = GetFakerDataWithProfile();
             var dto = mapper.WriteDto(data, null);
             
 
@@ -73,7 +73,7 @@ WHERE itm.cnt > 0
             //var rowNum = srv.Data.OrderShipmentHeader.RowNum;
 
             var mapper = srv.DtoMapper;
-            var data = GetFakerData();
+            var data = GetFakerDataWithProfile();
             var dto = mapper.WriteDto(data, null);
             dto.OrderShipmentHeader.RowNum = rowNum; 
 
@@ -99,7 +99,7 @@ WHERE itm.cnt > 0
 //            srv.Add();
 
 //            var mapper = srv.DtoMapper;
-//            var data = GetFakerData();
+//            var data = GetFakerDataWithProfile();
 //            var dto = mapper.WriteDto(data, null); 
 
 //            await srv.AddAsync(dto);
@@ -135,7 +135,7 @@ WHERE itm.cnt > 0
 //            var rowNum = srv.Data.OrderShipmentHeader.RowNum;
 
 //            var mapper = srv.DtoMapper;
-//            var data = GetFakerData();
+//            var data = GetFakerDataWithProfile();
 //            var dto = mapper.WriteDto(data, null);
 //            dto.OrderShipmentHeader.RowNum = rowNum;
 //            dto.OrderShipmentHeader.OrderShipmentUuid = id;
@@ -160,7 +160,7 @@ WHERE itm.cnt > 0
             srv.Add();
 
             var mapper = srv.DtoMapper;
-            var data = GetFakerData();
+            var data = GetFakerDataWithProfile();
             var dto = mapper.WriteDto(data, null);
             
 
@@ -201,7 +201,7 @@ WHERE itm.cnt > 0
             var rowNum = srv.Data.OrderShipmentHeader.RowNum;
 
             var mapper = srv.DtoMapper;
-            var data = GetFakerData();
+            var data = GetFakerDataWithProfile();
             var dto = mapper.WriteDto(data, null);
             dto.OrderShipmentHeader.RowNum = rowNum;
             dto.OrderShipmentHeader.OrderShipmentUuid = id;
@@ -231,7 +231,7 @@ WHERE itm.cnt > 0
   //          srv.Add();
 
   //          var mapper = srv.DtoMapper;
-  //          var data = GetFakerData();
+  //          var data = GetFakerDataWithProfile();
   //          var dto = mapper.WriteDto(data, null);
             
   //          var payload = new OrderShipmentPayload();
@@ -273,7 +273,7 @@ WHERE itm.cnt > 0
 //            var rowNum = srv.Data.OrderShipmentHeader.RowNum;
 
 //            var mapper = srv.DtoMapper;
-//            var data = GetFakerData();
+//            var data = GetFakerDataWithProfile();
 //            var dto = mapper.WriteDto(data, null);
 //            dto.OrderShipmentHeader.RowNum = rowNum;
 //            dto.OrderShipmentHeader.OrderShipmentUuid = id;
@@ -300,7 +300,7 @@ WHERE itm.cnt > 0
         public async Task AddDtoAsync_Test()
         {
             var srv = new OrderShipmentService(DataBaseFactory);
-            var dto = GetFakerDataDto();
+            var dto = GetFakerDataWithProfileDto();
             var success = await srv.AddAsync(dto);
             Assert.True(success && srv.Data.OrderShipmentHeader.OrderShipmentNum > 0, srv.Messages.ObjectToString());
 
@@ -318,7 +318,7 @@ WHERE itm.cnt > 0
         public async Task AddPayloadAsync_Test()
         {
             var srv = new OrderShipmentService(DataBaseFactory);
-            var dto = GetFakerDataDto();
+            var dto = GetFakerDataWithProfileDto();
             var payload = new OrderShipmentPayload()
             {
                 MasterAccountNum = MasterAccountNum,
@@ -343,7 +343,7 @@ WHERE itm.cnt > 0
         public async Task UpdateDtoAsync_Test()
         {
             var srv = new OrderShipmentService(DataBaseFactory);
-            var dto = GetFakerDataDto();
+            var dto = GetFakerDataWithProfileDto();
             var success = await srv.AddAsync(dto);
             Assert.True(success && srv.Data.OrderShipmentHeader.OrderShipmentNum > 0, srv.Messages.ObjectToString());
 
@@ -351,7 +351,7 @@ WHERE itm.cnt > 0
 
             srv.List();
             srv.GetDataById(uuid);
-            var updateDto = GetFakerDataDto_Update(srv.Data);
+            var updateDto = GetFakerDataWithProfileDto_Update(srv.Data);
 
             success = await srv.UpdateAsync(updateDto);
 
@@ -364,7 +364,7 @@ WHERE itm.cnt > 0
         public async Task UpdatePayloadAsync_Test()
         {
             var srv = new OrderShipmentService(DataBaseFactory);
-            var dto = GetFakerDataDto();
+            var dto = GetFakerDataWithProfileDto();
             var success = await srv.AddAsync(dto);
             Assert.True(success && srv.Data.OrderShipmentHeader.OrderShipmentNum > 0, srv.Messages.ObjectToString());
 
@@ -372,7 +372,7 @@ WHERE itm.cnt > 0
 
             srv.List();
             srv.GetDataById(uuid);
-            var updateDto = GetFakerDataDto_Update(srv.Data);
+            var updateDto = GetFakerDataWithProfileDto_Update(srv.Data);
             var payload = new OrderShipmentPayload()
             {
                 MasterAccountNum = MasterAccountNum,
@@ -390,7 +390,7 @@ WHERE itm.cnt > 0
         public async Task DeleteAsync_Test()
         {
             var srv = new OrderShipmentService(DataBaseFactory);
-            var dto = GetFakerDataDto();
+            var dto = GetFakerDataWithProfileDto();
             var success = await srv.AddAsync(dto);
             Assert.True(success && srv.Data.OrderShipmentHeader.OrderShipmentNum > 0, srv.Messages.ObjectToString());
 
@@ -408,7 +408,7 @@ WHERE itm.cnt > 0
         #region get faker data
         public const int MasterAccountNum = 10001;
         public const int ProfileNum = 10001;
-        protected OrderShipmentData GetFakerData()
+        protected OrderShipmentData GetFakerDataWithProfile()
         {
             var data = OrderShipmentDataTests.GetFakerData();
             data.OrderShipmentHeader.MasterAccountNum = MasterAccountNum;
@@ -438,7 +438,7 @@ WHERE itm.cnt > 0
             }
             return data;
         }
-        protected OrderShipmentDataDto GetFakerDataDto()
+        protected OrderShipmentDataDto GetFakerDataWithProfileDto()
         {
             var data = OrderShipmentDataTests.GetFakerData();
             data.OrderShipmentHeader.MasterAccountNum = MasterAccountNum;
@@ -448,9 +448,9 @@ WHERE itm.cnt > 0
             return mapper.WriteDto(data, null);
         }
 
-        protected OrderShipmentDataDto GetFakerDataDto_Update(OrderShipmentData originalData)
+        protected OrderShipmentDataDto GetFakerDataWithProfileDto_Update(OrderShipmentData originalData)
         {
-            var updateData = GetFakerData();
+            var updateData = GetFakerDataWithProfile();
             var header = originalData.OrderShipmentHeader;
 
             updateData.OrderShipmentHeader.OrderShipmentNum = header.OrderShipmentNum;

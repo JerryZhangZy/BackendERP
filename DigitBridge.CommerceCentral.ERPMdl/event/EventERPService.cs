@@ -360,6 +360,24 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
+
+        /// <summary>
+        /// resend event by event uuid.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="eventUuid"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ResendEventAsync(string eventUuid)
+        {
+            if (string.IsNullOrEmpty(eventUuid))
+                return false;
+            List();
+            //load data
+            if (!await GetDataByIdAsync(eventUuid))
+                return false;
+            return await InQueueAsync();
+        }
+
     }
 }
 

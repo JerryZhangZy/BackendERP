@@ -41,41 +41,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         }
 
-        #region Service Property
-
-        private VendorService _vendorService;
-
-        protected VendorService VendorService
-        {
-            get
-            {
-                if (_vendorService is null)
-                    _vendorService = new VendorService(dbFactory);
-                return _vendorService;
-            }
-        }
-
-        #endregion
-
-        #region GetDataWithCache
-        /// <summary>
-        /// get vendor data
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="sku"></param>
-        /// <returns></returns>
-        public virtual VendorData GetVendorData(PoTransactionData data, string vendorCode)
-        {
-            var key = data.PoTransaction.MasterAccountNum + "_" + data.PoTransaction.ProfileNum + '_' + vendorCode;
-            return data.GetCache(key, () =>
-            {
-                if (VendorService.GetByNumber(data.PoTransaction.MasterAccountNum, data.PoTransaction.ProfileNum, vendorCode))
-                    return VendorService.Data;
-                return null;
-            });
-        }
-        #endregion
-
         private DateTime now = DateTime.UtcNow;
 
         public virtual bool SetDefault(PoTransactionData data, ProcessingMode processingMode = ProcessingMode.Edit)
@@ -98,7 +63,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 sum.TransDate = now.Date;
                 sum.TransTime = now.TimeOfDay;
             }
-            sum.UpdateDateUtc = now;
 
             if (processingMode == ProcessingMode.Add)
             {
@@ -172,6 +136,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     }
                 }
             }
+
             return true;
         }
 
