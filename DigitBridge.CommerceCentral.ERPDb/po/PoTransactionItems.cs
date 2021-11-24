@@ -34,31 +34,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// Same po same PoItemUuid total returned qty
         /// </summary>
         public virtual decimal ReceivedQty =>(this.Parent.PurchaseOrderData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == this.PoItemUuid)?.ReceivedQty).ToQty();
+        /// <summary>
+        /// Same po same PoItemUuid total CancelledQty
+        /// </summary>
+        public virtual decimal CancelledQty => (this.Parent.PurchaseOrderData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == this.PoItemUuid)?.CancelledQty).ToQty();
 
         /// <summary>
         /// OpenQty => po item po Qty - po item  total received qty;
         /// </summary>
-        public virtual decimal OpenQty => PoQty - ReceivedQty;
-
-        #region 
-
-        /// <summary>
-        /// VendorCode
-        /// </summary> 
-        [JsonIgnore,XmlIgnore]
-        public string VendorCode { get; set; }
-        /// <summary>
-        /// VendorName
-        /// </summary> 
-        [JsonIgnore, XmlIgnore]
-        public string VendorName { get; set; }
-        /// <summary>
-        /// VendorUuid
-        /// </summary> 
-        [JsonIgnore, XmlIgnore]
-        public string VendorUuid { get; set; }
-
-        #endregion
+        public virtual decimal OpenQty => PoQty - ReceivedQty-CancelledQty;
     }
 }
 

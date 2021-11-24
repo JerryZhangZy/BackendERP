@@ -505,8 +505,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var sql = $@"
                 SELECT  
                 COALESCE(
-                    (SELECT TOP 1 RowNum FROM Customer WHERE CustomerUuid=@4),
-                    (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND CustomerCode=@5),
+                    (SELECT TOP 1 RowNum FROM Customer WHERE CustomerUuid=@4 AND CustomerUuid != ''),
+                    (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND CustomerCode=@5 AND CustomerCode!=''),
                     (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND ChannelNum=@2 AND ChannelAccountNum=@3),
                     (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND Phone1=@7 AND CustomerName=@6),
                     (SELECT TOP 1 RowNum FROM Customer WHERE MasterAccountNum=@0 AND ProfileNum=@1 AND Email=@8 AND CustomerName=@6),

@@ -40,7 +40,10 @@
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore) 
     
 	[InvoiceNumber] VARCHAR(50) NOT NULL DEFAULT '',	--InvoiceNumber. <br> Display: false, Editable: false.
-	
+    [InvoiceUuid] VARCHAR(50) NOT NULL DEFAULT '', --Invoice uuid. <br> Display: false, Editable: false.
+    [SalesOrderUuid] VARCHAR(50) NOT NULL DEFAULT '', --Sales Order uuid. <br> Display: false, Editable: false.
+	[OrderNumber] VARCHAR(50) NOT NULL DEFAULT '', --Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
+
 	CONSTRAINT [PK_OrderShipmentHeader] PRIMARY KEY CLUSTERED ([OrderShipmentNum] ASC)
 );
 GO
@@ -59,4 +62,18 @@ GO
 --ALTER TABLE [dbo].[OrderShipmentHeader] ADD  CONSTRAINT [DF_OrderShipmentHeader_EnterDateUtc]  DEFAULT (getutcdate()) FOR [EnterDateUtc]
 --GO
 
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_InvoiceNumber')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_InvoiceNumber] ON [dbo].[OrderShipmentHeader]
+(
+	[ProfileNum] ASC,
+	[InvoiceNumber] ASC
+) 
+GO
 
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_OrderNumber')
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_OrderNumber] ON [dbo].[OrderShipmentHeader]
+(
+	[ProfileNum] ASC,
+	[OrderNumber] ASC
+) 
+GO

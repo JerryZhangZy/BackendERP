@@ -17,6 +17,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         //public string VendorCode { get; set; }
 
         /// <summary>
+        /// Po unique key erp provided.
+        /// </summary>
+        public string PoUuid { get; set; }
+
+        /// <summary>
         /// Po item unique key erp provided.
         /// </summary>
         public string PoItemUuid { get; set; }

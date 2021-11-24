@@ -100,6 +100,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasProcessStatus) data.ProcessStatus = dto.ProcessStatus.ToInt();
 			if (dto.HasProcessDateUtc) data.ProcessDateUtc = dto.ProcessDateUtc.ToDateTime();
 			if (dto.HasOrderShipmentUuid) data.OrderShipmentUuid = dto.OrderShipmentUuid;
+			if (dto.HasInvoiceNumber) data.InvoiceNumber = dto.InvoiceNumber;
+			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
+			if (dto.HasSalesOrderUuid) data.SalesOrderUuid = dto.SalesOrderUuid;
+			if (dto.HasOrderNumber) data.OrderNumber = dto.OrderNumber;
 
 			#endregion read properties
 
@@ -130,6 +134,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasDBChannelOrderLineRowID) data.DBChannelOrderLineRowID = dto.DBChannelOrderLineRowID;
 			if (dto.HasOrderShipmentUuid) data.OrderShipmentUuid = dto.OrderShipmentUuid;
 			if (dto.HasOrderShipmentCanceledItemUuid) data.OrderShipmentCanceledItemUuid = dto.OrderShipmentCanceledItemUuid;
+			if (dto.HasSalesOrderItemsUuid) data.SalesOrderItemsUuid = dto.SalesOrderItemsUuid;
 
 			#endregion read properties
 
@@ -258,6 +263,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasOrderShipmentUuid) data.OrderShipmentUuid = dto.OrderShipmentUuid;
 			if (dto.HasOrderShipmentPackageUuid) data.OrderShipmentPackageUuid = dto.OrderShipmentPackageUuid;
 			if (dto.HasOrderShipmentShippedItemUuid) data.OrderShipmentShippedItemUuid = dto.OrderShipmentShippedItemUuid;
+			if (dto.HasSalesOrderItemsUuid) data.SalesOrderItemsUuid = dto.SalesOrderItemsUuid;
 
 			#endregion read properties
 
@@ -368,6 +374,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.OrderShipmentUuid = data.OrderShipmentUuid;
 			dto.RowNum = data.RowNum;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+			dto.InvoiceNumber = data.InvoiceNumber;
+			dto.InvoiceUuid = data.InvoiceUuid;
+			dto.SalesOrderUuid = data.SalesOrderUuid;
+			dto.OrderNumber = data.OrderNumber;
 
 			#endregion read properties
 
@@ -400,6 +410,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.OrderShipmentCanceledItemUuid = data.OrderShipmentCanceledItemUuid;
 			dto.RowNum = data.RowNum;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+			dto.SalesOrderItemsUuid = data.SalesOrderItemsUuid;
 
 			#endregion read properties
 
@@ -522,6 +533,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.OrderShipmentShippedItemUuid = data.OrderShipmentShippedItemUuid;
 			dto.RowNum = data.RowNum;
 			dto.DigitBridgeGuid = data.DigitBridgeGuid;
+			dto.SalesOrderItemsUuid = data.SalesOrderItemsUuid;
 
 			#endregion read properties
 

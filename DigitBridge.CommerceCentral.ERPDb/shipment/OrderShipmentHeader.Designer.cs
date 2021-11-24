@@ -158,6 +158,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("InvoiceNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _invoiceNumber;
 
+        [Column("InvoiceUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _invoiceUuid;
+
+        [Column("SalesOrderUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesOrderUuid;
+
+        [Column("OrderNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _orderNumber;
+
         #endregion Fields - Generated 
 
         #region Properties - Generated 
@@ -406,7 +415,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				if (value != null || AllowNull) 
 				{
-					_shipmentDateUtc = (value is null) ? (DateTime?) null : value?.Date.ToSqlSafeValue(); 
+					_shipmentDateUtc = (value is null) ? (DateTime?) null : value.ToSqlSafeValue(); 
 					OnPropertyChanged("ShipmentDateUtc", value);
 				}
             }
@@ -695,7 +704,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
             set
             {
-				_processDateUtc = value.Date.ToSqlSafeValue(); 
+				_processDateUtc = value.ToSqlSafeValue(); 
 				OnPropertyChanged("ProcessDateUtc", value);
             }
         }
@@ -729,6 +738,54 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_invoiceNumber = value.TruncateTo(50); 
 				OnPropertyChanged("InvoiceNumber", value);
+            }
+        }
+
+		/// <summary>
+		/// Invoice uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string InvoiceUuid
+        {
+            get
+            {
+				return _invoiceUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_invoiceUuid = value.TruncateTo(50); 
+				OnPropertyChanged("InvoiceUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Sales Order uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string SalesOrderUuid
+        {
+            get
+            {
+				return _salesOrderUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_salesOrderUuid = value.TruncateTo(50); 
+				OnPropertyChanged("SalesOrderUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Readable Sales Order number, unique in same database and profile. <br> Parameter should pass ProfileNum-OrderNumber. <br> Title: Order Number, Display: true, Editable: true
+		/// </summary>
+        public virtual string OrderNumber
+        {
+            get
+            {
+				return _orderNumber?.TrimEnd(); 
+            }
+            set
+            {
+				_orderNumber = value.TruncateTo(50); 
+				OnPropertyChanged("OrderNumber", value);
             }
         }
 
@@ -796,6 +853,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_processDateUtc = new DateTime().MinValueSql(); 
 			_orderShipmentUuid = String.Empty; 
 			_invoiceNumber = String.Empty; 
+			_invoiceUuid = String.Empty; 
+			_salesOrderUuid = String.Empty; 
+			_orderNumber = String.Empty; 
             ClearChildren();
             return this;
         }
@@ -824,6 +884,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
         }
 
 
+		public override OrderShipmentHeader ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override OrderShipmentHeader ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			return this;
+		}
 
         #endregion Methods - Generated 
     }
