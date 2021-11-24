@@ -500,7 +500,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         private async Task ClearInventoryLogByLogUuidAsync(string logUuid)
         {
-            await UpdateInventoryInStockAsync(logUuid, -1);
+            //await UpdateInventoryInStockAsync(logUuid, -1);
             await DeleteInventoryLogByLogUuidAsync(logUuid);
         }
 
@@ -823,13 +823,11 @@ where inv.InventoryUuid=il.InventoryUuid
             var detailItems = data.PoTransactionItems;
             var batchNum = GetBatchNum();//data.InventoryUpdateHeader.BatchNumber;
             var list = ConvertPoTransactionItemsToInventoryLogList(header, detailItems, batchNum, logUuid);
-            int oper = isAddInventory ? 1 : -1;
-            foreach (var item in list)
-                item.LogQty *= item.LogQty;
+           
 
             await list.SetDataBaseFactory(dbFactory).SaveAsync();
 
-            await UpdateInventoryInStockAsync(logUuid, 1);
+            await UpdateInventoryInStockAsync(logUuid, isAddInventory?1:-1);
             return true;
         }
 

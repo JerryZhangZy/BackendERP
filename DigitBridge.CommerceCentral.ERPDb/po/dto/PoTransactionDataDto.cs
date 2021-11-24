@@ -30,7 +30,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         public IList<PoTransactionItemsDto> PoTransactionItems { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
-        public bool HasPoTransactionItems => PoTransactionItems != null;
+        public bool HasPoTransactionItems => PoTransactionItems != null&& PoTransactionItems.Count!=0;
 
     }
 }

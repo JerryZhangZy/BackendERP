@@ -74,6 +74,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("PoTransaction is require.");
                 return false;
             }
+
+            if (!dto.HasPoTransactionItems)
+            {
+                AddError("Effective TransactionItem is require.");
+                return false;
+            }
             //decimal totalAmount = 0;
             //foreach (var item in dto.PoTransactionItems)
             //{
