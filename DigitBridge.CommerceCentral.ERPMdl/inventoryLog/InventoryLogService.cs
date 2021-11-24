@@ -813,7 +813,7 @@ where inv.InventoryUuid=il.InventoryUuid
             var header = data.PoTransaction;
             //if(header.TransStatus!=(int)PoTransStatus.StockReceive&&header.TransStatus!=(int)PoTransStatus.APReceive)
             //    return false;
-            var logUuid = data.PoTransaction.PoUuid;
+            var logUuid = data.PoTransaction.TransUuid;
             await ClearInventoryLogByLogUuidAsync(logUuid);
             //if remove all items or delete inventoryupdate
             if (data.PoTransactionItems == null || data.PoTransactionItems.Count == 0)
