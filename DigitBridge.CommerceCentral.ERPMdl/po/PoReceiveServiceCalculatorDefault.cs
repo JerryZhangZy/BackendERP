@@ -117,25 +117,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             //Set default for invoice
-            var poData = GetPurchaseOrderData(item.PoNum, data.PoTransaction.ProfileNum, data.PoTransaction.MasterAccountNum); 
-            if (poData != null)
-            {
-                var poItem = poData.PoItems.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid);
-                if (poItem != null)
-                {
-                    item.PoUuid = poItem.PoUuid;
-                    item.InventoryUuid = item.InventoryUuid;
-                    item.ProductUuid = poItem.ProductUuid;
-                    item.SKU = poItem.SKU;
-                    item.Currency = poItem.Currency;
-                    item.LotNum = item.LotNum;
-                    if (item.WarehouseCode.IsZero())
-                    {
-                        item.WarehouseCode = poItem.WarehouseCode;
-                        item.WarehouseUuid = poItem.WarehouseUuid;
-                    }
-                }
-            }
+            //var poData = GetPurchaseOrderData(item.PoNum, data.PoTransaction.ProfileNum, data.PoTransaction.MasterAccountNum); 
+            //if (poData != null)
+            //{
+            //    var poItem = poData.PoItems.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid);
+            //    if (poItem != null)
+            //    {
+            //        item.PoUuid = poItem.PoUuid;
+            //        item.InventoryUuid = item.InventoryUuid;
+            //        item.ProductUuid = poItem.ProductUuid;
+            //        item.SKU = poItem.SKU;
+            //        item.Currency = poItem.Currency;
+            //        item.LotNum = item.LotNum;
+            //        if (item.WarehouseCode.IsZero())
+            //        {
+            //            item.WarehouseCode = poItem.WarehouseCode;
+            //            item.WarehouseUuid = poItem.WarehouseUuid;
+            //        }
+            //    }
+            //}
 
             return true;
         }
