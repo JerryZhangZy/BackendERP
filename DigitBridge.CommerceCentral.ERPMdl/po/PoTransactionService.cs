@@ -697,7 +697,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             this.AttachData(data);
 
-            if (!await LoadPoAsync(Data.PoTransaction.PoUuid))
+            //if all items are belong to same po, load podata.
+            if (!Data.PoTransaction.PoUuid.IsZero() && !await LoadPoAsync(Data.PoTransaction.PoUuid))
                 return false;
 
             // validate data for Add processing

@@ -13,6 +13,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public partial class PoTransactionData
     {
         /// <summary>
+        /// One Trans has multi purchase data.
+        /// </summary>
+        public bool HasMultiPo = false;
+        /// <summary>
         /// Load original invoicedata.
         /// </summary>
         public PurchaseOrderData PurchaseOrderData;
@@ -46,7 +50,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
             return datas;
         }
-        
+
         public override bool GetByNumber(int masterAccountNum, int profileNum, string number)
         {
             var poNumAndTranNum = number.Split('_');
@@ -116,7 +120,7 @@ AND PoNum = @2
 
         public override async Task<bool> GetByNumberAsync(int masterAccountNum, int profileNum, string number)
         {
-           
+
             var sql = @"
 SELECT TOP 1 * FROM PoTransaction
 WHERE MasterAccountNum = @0
@@ -131,7 +135,7 @@ AND TransNum = @2
                 new SqlParameter("@2",number.ToInt()),
             };
 
-            
+
 
             var obj = await dbFactory.GetByAsync<PoTransaction>(sql, paras.ToArray());
             if (obj is null) return false;
@@ -141,9 +145,9 @@ AND TransNum = @2
                 _OnAfterLoad(this);
             return true;
         }
-        public  async Task<bool> GetByTransNumAsync(int masterAccountNum, int profileNum, int transNum)
+        public async Task<bool> GetByTransNumAsync(int masterAccountNum, int profileNum, int transNum)
         {
-           
+
 
             var sql = @"
 SELECT TOP 1 * FROM PoTransaction
@@ -159,7 +163,7 @@ AND TransNum = @2
                 new SqlParameter("@2",transNum),
             };
 
-          
+
 
             var obj = await dbFactory.GetByAsync<PoTransaction>(sql, paras.ToArray());
             if (obj is null) return false;

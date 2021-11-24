@@ -19,3 +19,24 @@ IF COL_LENGTH('PoTransaction', 'MiscAmountAssign') IS NULL
 BEGIN
     ALTER TABLE PoTransaction ADD [MiscAmountAssign] INT NOT NULL DEFAULT 0
 END
+
+-- 11/23/2021 by junxian
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransaction]') AND name = N'IX_PoTransaction_TransNum')
+  DROP INDEX [dbo].[PoTransaction].IX_PoTransaction_TransNum
+CREATE NONCLUSTERED INDEX [IX_PoTransaction_TransNum] ON [dbo].[PoTransaction]
+(
+	[VendorUuid] ASC,
+	[TransNum] ASC
+) ON [PRIMARY]
+GO
+
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransaction]') AND name = N'UI_PoTransaction_ProfileNum_PoNum_TransNum')
+  DROP INDEX [dbo].[PoTransaction].UI_PoTransaction_ProfileNum_PoNum_TransNum
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[PoTransaction]') AND name = N'UI_PoTransaction_ProfileNum_VendorCode_TransNum')
+CREATE UNIQUE NONCLUSTERED INDEX [UI_PoTransaction_ProfileNum_VendorCode_TransNum] ON [dbo].[PoTransaction]
+(
+	[ProfileNum] ASC,
+	[VendorCode] ASC,
+	[TransNum] ASC
+) 
+GO
