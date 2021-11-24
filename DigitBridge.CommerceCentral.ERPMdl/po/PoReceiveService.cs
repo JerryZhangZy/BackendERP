@@ -880,7 +880,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                         SKU = wmsItem.SKU,
                         Price = item.Price,
                     };
-                    transItem.SetParent(data);
+                    //transItem.SetParent(data);
                     data.PoTransactionItems.Add(transItem);
                 }
 
