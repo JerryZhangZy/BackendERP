@@ -728,61 +728,61 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #region Add po trans for wms po receive.
 
-        /// <summary>
-        /// Add po trans for wms po receive.
-        /// </summary>
-        /// <param name="payload"></param>
-        /// <param name="receiveItems"></param>
-        /// <returns></returns>
-        public async Task<IList<WMSPoReceivePayload>> AddTransForWMSPoReceiveAsyncNew(PoReceivePayload payload)
-        {
-            var poUuids = payload.WMSPoReceiveItems?.Select(i => i.PoUuid).Distinct();
-            List<StringArray> poUuidArrays = new List<StringArray>();
-            foreach (var item in poUuids)
-                poUuidArrays.Add(new StringArray() { Item0 = item });
+        ///// <summary>
+        ///// Add po trans for wms po receive.
+        ///// </summary>
+        ///// <param name="payload"></param>
+        ///// <param name="receiveItems"></param>
+        ///// <returns></returns>
+        //public async Task<IList<WMSPoReceivePayload>> AddTransForWMSPoReceiveAsyncNew(PoReceivePayload payload)
+        //{
+        //    var poUuids = payload.WMSPoReceiveItems?.Select(i => i.PoUuid).Distinct();
+        //    List<StringArray> poUuidArrays = new List<StringArray>();
+        //    foreach (var item in poUuids)
+        //        poUuidArrays.Add(new StringArray() { Item0 = item });
 
 
-            var poNumList =  await PurchaseOrderHelper.GetPoNumsByPoItemUuidAsync(poUuidArrays, payload.MasterAccountNum, payload.ProfileNum);
+        //    var poNumList =  await PurchaseOrderHelper.GetPoNumsByPoItemUuidAsync(poUuidArrays, payload.MasterAccountNum, payload.ProfileNum);
 
-            var transactions = new List<PoTransactionDataDto>();
-            foreach (var item in poNumList)
-            {
+        //    var transactions = new List<PoTransactionDataDto>();
+        //    foreach (var item in poNumList)
+        //    {
 
-                if (await NewReceiveAsync(payload, item.Item0))
-                    transactions.Add(ToDto());
-            }
-            payload.PoTransactions = transactions;
+        //        if (await NewReceiveAsync(payload, item.Item0))
+        //            transactions.Add(ToDto());
+        //    }
+        //    payload.PoTransactions = transactions;
 
-            foreach (var poTran in payload.PoTransactions)
-            {
-                 var items= payload.WMSPoReceiveItems?.Where(r => r.PoUuid == poTran.PoTransaction.PoUuid).ToList();
-                List<PoTransactionItemsDto> poTransactionItemsDtos = new List<PoTransactionItemsDto>();   
-                foreach (var aItem in items)
-                {
-                   var transItem= poTran.PoTransactionItems.Where(r => r.PoItemUuid == aItem.PoItemUuid).FirstOrDefault();
-                    if (transItem != null)
-                    {
-                        transItem.TransQty = aItem.Qty;
-                        poTransactionItemsDtos.Add(transItem);
-                    }
-                }
-                poTran.PoTransactionItems = poTransactionItemsDtos;
-            }
+        //    foreach (var poTran in payload.PoTransactions)
+        //    {
+        //         var items= payload.WMSPoReceiveItems?.Where(r => r.PoUuid == poTran.PoTransaction.PoUuid).ToList();
+        //        List<PoTransactionItemsDto> poTransactionItemsDtos = new List<PoTransactionItemsDto>();   
+        //        foreach (var aItem in items)
+        //        {
+        //           var transItem= poTran.PoTransactionItems.Where(r => r.PoItemUuid == aItem.PoItemUuid).FirstOrDefault();
+        //            if (transItem != null)
+        //            {
+        //                transItem.TransQty = aItem.Qty;
+        //                poTransactionItemsDtos.Add(transItem);
+        //            }
+        //        }
+        //        poTran.PoTransactionItems = poTransactionItemsDtos;
+        //    }
 
 
-            await AddListAsync(payload);
+        //    await AddListAsync(payload);
 
-            //var list = SplitPoTransactionsForVendor(transactions);
-            //payload.PoTransactions = new List<PoTransactionDataDto>();
-            //foreach (var dto in list)
-            //{
-            //    payload.PoTransaction = dto;
-            //    await base.AddAsync(payload);
-            //}
+        //    //var list = SplitPoTransactionsForVendor(transactions);
+        //    //payload.PoTransactions = new List<PoTransactionDataDto>();
+        //    //foreach (var dto in list)
+        //    //{
+        //    //    payload.PoTransaction = dto;
+        //    //    await base.AddAsync(payload);
+        //    //}
 
-            return null;
+        //    return null;
  
-        }
+        //}
         /// <summary>
         /// Add po trans for wms po receive.
         /// </summary>

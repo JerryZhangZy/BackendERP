@@ -120,10 +120,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
                 if (sum.TransDate.IsZero())
                 {
-                    if (sum.Currency.IsZero()) sum.Currency = poHeader?.Currency;
-                    if (sum.PoNum.IsZero()) sum.PoNum = poHeader?.PoNum;
-                    if (sum.TaxRate.IsZero()) sum.TaxRate = (poHeader?.TaxRate).ToDecimal();
-                    if (sum.DiscountRate.IsZero()) sum.DiscountRate = (poHeader?.DiscountRate).ToDecimal();
+                    //if (sum.Currency.IsZero()) sum.Currency = poHeader?.Currency;
+                    //if (sum.PoNum.IsZero()) sum.PoNum = poHeader?.PoNum;
+                    //if (sum.TaxRate.IsZero()) sum.TaxRate = (poHeader?.TaxRate).ToDecimal();
+                    //if (sum.DiscountRate.IsZero()) sum.DiscountRate = (poHeader?.DiscountRate).ToDecimal();
                 }
 
                 //if (sum.Currency.IsZero()) sum.Currency = poHeader.Currency;
