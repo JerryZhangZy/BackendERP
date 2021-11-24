@@ -31,12 +31,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
     /// </summary>
     public partial class OrderShipmentServiceTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
-        
+        protected OrderShipmentData GetFakerData()
+        {
+            return OrderShipmentDataTests.GetFakerData();
+        }
+
         protected List<OrderShipmentData> GetFakerData(int count)
         {
             return OrderShipmentDataTests.GetFakerData(count);
         }
-
 
         protected const string SkipReason = "Debug Helper Function";
 

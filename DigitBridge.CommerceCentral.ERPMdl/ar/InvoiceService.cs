@@ -534,7 +534,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<bool> ExistInvoiceNumber(string invoiceNum, int masterAccountNum, int profileNum)
         {
-            return await InvoiceHelper.ExistNumberAsync(invoiceNum, masterAccountNum, profileNum);
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await InvoiceHelper.ExistNumberAsync(invoiceNum, masterAccountNum, profileNum);
+        }
+
+        public async Task<bool> ExistInvoiceUuidAsync(string invoiceUuid, int masterAccountNum, int profileNum)
+        {
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await InvoiceHelper.ExistIdAsync(invoiceUuid, masterAccountNum, profileNum);
         }
 
         public async Task<bool> ReceivedInvoiceTransactionReturnbackItem(InvoiceTransactionDataDto transaction)

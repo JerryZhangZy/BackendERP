@@ -69,8 +69,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             {
                 try
                 {
-                    string invoiceNumber = "";
-                    (result, invoiceNumber) = invoiceManager.CreateInvoiceByOrderShipmentIdAsync(uuid).Result;
+                    var invoiceNumber = invoiceManager.CreateInvoiceByOrderShipmentIdAsync(uuid).Result;
+                    result = !string.IsNullOrEmpty(invoiceNumber);
                     if (result)
                         Assert.True(result);
                     else
@@ -94,8 +94,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var shipmentData = await SaveShipmentAndSalesOrder();
             var managerService = new InvoiceManager(DataBaseFactory);
-            (var success, string invoiceUuid) = await managerService.CreateInvoiceFromShipmentAsync(shipmentData);
-            Assert.True(success, managerService.Messages.ObjectToString());
+            var invoiceUuid = await managerService.CreateInvoiceFromShipmentAsync(shipmentData);
+            Assert.True(!string.IsNullOrEmpty(invoiceUuid), managerService.Messages.ObjectToString());
             Assert.False(string.IsNullOrEmpty(invoiceUuid));
         }
         [Fact()]
@@ -103,8 +103,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         {
             var shipmentData = await SaveShipmentAndSalesOrder();
             var managerService = new InvoiceManager(DataBaseFactory);
-            (var success, string invoiceUuid) = await managerService.CreateInvoiceByOrderShipmentIdAsync(shipmentData.UniqueId);
-            Assert.True(success, managerService.Messages.ObjectToString());
+            var invoiceUuid = await managerService.CreateInvoiceByOrderShipmentIdAsync(shipmentData.UniqueId);
+            Assert.True(!string.IsNullOrEmpty(invoiceUuid), managerService.Messages.ObjectToString());
             Assert.False(string.IsNullOrEmpty(invoiceUuid));
         }
 

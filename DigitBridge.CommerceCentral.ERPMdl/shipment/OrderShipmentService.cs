@@ -171,7 +171,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.OrderShipmentHeader.DatabaseNum,
                 ProcessUuid = this.Data.OrderShipmentHeader.OrderShipmentUuid,
                 ProcessNumber = this.Data.OrderShipmentHeader.OrderShipmentNum.ToString(),
-                ChannelNum = this.Data.OrderShipmentHeader.ChannelAccountNum,
+                ChannelNum = this.Data.OrderShipmentHeader.ChannelNum,
                 ChannelAccountNum = this.Data.OrderShipmentHeader.ChannelAccountNum,
 
                 LogMessage = string.Empty
@@ -483,28 +483,41 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Edit();
             if (GetDataById(ordershipmentUuid))
             {
-                Data.OrderShipmentHeader.ProcessStatus = OrderShipmentProcessStatusEnum.Transferred.ToInt();
+                Data.OrderShipmentHeader.ProcessStatus = OrderShipmentProcessStatusEnum.InvoiceReady.ToInt();
                 Data.OrderShipmentHeader.ProcessDateUtc = DateTime.UtcNow;
                 return SaveData();
             }
             return false;
         }
 
-        public async Task<bool> MarkShipmentTransferredToInvoiceAsync(string ordershipmentUuid)
+        public async Task<bool> UpdateProcessStatusAsync(string ordershipmentUuid, OrderShipmentProcessStatusEnum status)
         {
-            Edit();
-            if (GetDataById(ordershipmentUuid))
-            {
-                if (Data.OrderShipmentHeader.ProcessStatus == (int)OrderShipmentProcessStatusEnum.Default)
-                {
-                    Data.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Transferred;
-                    Data.OrderShipmentHeader.ProcessDateUtc = DateTime.UtcNow;
-                    return await SaveDataAsync();
-                }
-                return true;
-            }
-            return false;
+            var sql = $@"
+UPDATE OrderShipmentHeader 
+SET ProcessStatus=@0, ProcessDateUtc=@1
+WHERE OrderShipmentUuid=@2 
+";
+            return await dbFactory.Db.ExecuteAsync(
+                sql,
+                ((int)status).ToSqlParameter("@0"),
+                DateTime.UtcNow.ToSqlParameter("@1"),
+                ordershipmentUuid.ToSqlParameter("@2")
+            ) > 0;
+
+            //Edit();
+            //if (GetDataById(ordershipmentUuid))
+            //{
+            //    if (Data.OrderShipmentHeader.ProcessStatus == (int)OrderShipmentProcessStatusEnum.Pending)
+            //    {
+            //        Data.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.InvoiceReady;
+            //        Data.OrderShipmentHeader.ProcessDateUtc = DateTime.UtcNow;
+            //        return await SaveDataAsync();
+            //    }
+            //    return true;
+            //}
+            //return false;
         }
+
     }
 }
 

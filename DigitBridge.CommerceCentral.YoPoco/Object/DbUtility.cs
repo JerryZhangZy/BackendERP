@@ -319,6 +319,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
         {
             return new SqlParameter($"@{name}", SqlDbType.VarChar, strValue.Length) {Value = strValue};
         }
+        public static IDataParameter ToSqlParameter(this DateTime dtValue, string name)
+        {
+            return new SqlParameter($"@{name}", SqlDbType.DateTime) { Value = dtValue };
+        }
 
         public static IDataParameter ToSqlParameter(this Guid? value, string name)
         {

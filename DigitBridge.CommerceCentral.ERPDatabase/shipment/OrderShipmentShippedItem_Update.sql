@@ -40,3 +40,11 @@ END
     FROM OrderShipmentShippedItem spi
     INNER JOIN OrderShipmentHeader sph ON (sph.OrderShipmentNum = spi.OrderShipmentNum);
 */
+
+
+-- 11/22/20201 By Jerry Z 
+IF COL_LENGTH('OrderShipmentShippedItem', 'SalesOrderItemsUuid') IS NULL					
+BEGIN					
+    ALTER TABLE OrderShipmentShippedItem ADD [SalesOrderItemsUuid] VARCHAR(50) NOT NULL DEFAULT ''
+END					
+

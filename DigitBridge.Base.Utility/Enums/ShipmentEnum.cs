@@ -26,9 +26,10 @@ namespace DigitBridge.Base.Common
     }
     public enum OrderShipmentProcessStatusEnum : int
     {
-        Default = -1,
+        Pending = -1,
         [Description("Shipment transferred to erp invoice")]
-        Transferred = 0,
+        InvoiceReady = 0,
+        Closed = 1,
     }
 
     public enum OrderShipmentPackageTypeEnum : int

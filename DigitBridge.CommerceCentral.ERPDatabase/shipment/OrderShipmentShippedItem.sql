@@ -21,6 +21,8 @@
     [RowNum] BIGINT NOT NULL DEFAULT 0,	--(Ignore) 
     [DigitBridgeGuid] uniqueidentifier NOT NULL DEFAULT (newid()), --(Ignore)
 
+    [SalesOrderItemsUuid] VARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Order Item Line uuid. <br> Display: false, Editable: false
+
 	CONSTRAINT [PK_OrderShipmentShippedItem] PRIMARY KEY CLUSTERED ([OrderShipmentShippedItemNum] ASC)
 );
 GO
