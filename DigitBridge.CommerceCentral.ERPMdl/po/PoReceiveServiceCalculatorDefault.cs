@@ -416,16 +416,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return true;
         }
-        protected PurchaseOrderData GetPurchaseOrderData(string poNum, int profileNum, int masterAccountNum)
-        {
+        //protected PurchaseOrderData GetPurchaseOrderData(string poNum, int profileNum, int masterAccountNum)
+        //{
 
-            var poData = new PurchaseOrderData(dbFactory);
-            var success = poData.GetByNumber(masterAccountNum, profileNum, poNum);
-            if (!success)
-                return null;
-            else
-                return poData;
-        }
+        //    var poData = new PurchaseOrderData(dbFactory);
+        //    var success = poData.GetByNumber(masterAccountNum, profileNum, poNum);
+        //    if (!success)
+        //        return null;
+        //    else
+        //        return poData;
+        //}
         #region message
         [XmlIgnore, JsonIgnore]
         public virtual IList<MessageClass> Messages
