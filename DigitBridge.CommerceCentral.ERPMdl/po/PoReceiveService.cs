@@ -17,6 +17,58 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
         }
 
+        #region Service Property
+
+        private InventoryLogService _inventoryLogService;
+
+        protected InventoryLogService InventoryLogService
+        {
+            get
+            {
+                if (_inventoryLogService == null)
+                    _inventoryLogService = new InventoryLogService(dbFactory);
+                return _inventoryLogService;
+            }
+        }
+
+        private PurchaseOrderService _purchaseOrderService;
+
+        protected PurchaseOrderService PurchaseOrderService
+        {
+            get
+            {
+                if (_purchaseOrderService == null)
+                    _purchaseOrderService = new PurchaseOrderService(dbFactory);
+                return _purchaseOrderService;
+            }
+        }
+
+        private ApInvoiceService _apInvoiceService;
+
+        protected ApInvoiceService ApInvoiceService
+        {
+            get
+            {
+                if (_apInvoiceService == null)
+                    _apInvoiceService = new ApInvoiceService(dbFactory);
+                return _apInvoiceService;
+            }
+        }
+
+        private InventoryService _inventoryService;
+
+        protected InventoryService InventoryService
+        {
+            get
+            {
+                if (_inventoryService == null)
+                    _inventoryService = new InventoryService(dbFactory);
+                return _inventoryService;
+            }
+        }
+
+        #endregion
+
         #region override methods
 
         /// <summary>
@@ -42,7 +94,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.BeforeSaveAsync();
                 if (this.Data?.PoTransaction != null)
                 {
-                    //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+                    await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
+                    await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
                 }
             }
             catch (Exception)
@@ -85,7 +138,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.AfterSaveAsync();
                 if (this.Data?.PoTransaction != null)
                 {
-                    //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
+                    await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid);
+                    await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid);
                 }
             }
             catch (Exception)
@@ -406,53 +460,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
 
 
-        private InventoryLogService _inventoryLogService;
-
-        protected InventoryLogService InventoryLogService
-        {
-            get
-            {
-                if (_inventoryLogService == null)
-                    _inventoryLogService = new InventoryLogService(dbFactory);
-                return _inventoryLogService;
-            }
-        }
-
-        private PurchaseOrderService _purchaseOrderService;
-
-        protected PurchaseOrderService PurchaseOrderService
-        {
-            get
-            {
-                if (_purchaseOrderService == null)
-                    _purchaseOrderService = new PurchaseOrderService(dbFactory);
-                return _purchaseOrderService;
-            }
-        }
-
-        private ApInvoiceService _apInvoiceService;
-
-        protected ApInvoiceService ApInvoiceService
-        {
-            get
-            {
-                if (_apInvoiceService == null)
-                    _apInvoiceService = new ApInvoiceService(dbFactory);
-                return _apInvoiceService;
-            }
-        }
-
-        private InventoryService _inventoryService;
-
-        protected InventoryService InventoryService
-        {
-            get
-            {
-                if (_inventoryService == null)
-                    _inventoryService = new InventoryService(dbFactory);
-                return _inventoryService;
-            }
-        }
 
         public override async Task<bool> SaveDataAsync()
         {

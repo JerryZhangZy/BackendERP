@@ -24,12 +24,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
     /// Response payload object
     /// </summary>
     [Serializable()]
-    public class WmsOrderShipmentPayload : ResponsePayloadBase
+    public class OrderShipmentCreateResultPayload : ResponsePayloadBase
     {
-        public WmsOrderShipmentPayload(bool success = false)
+        public OrderShipmentCreateResultPayload(bool success = false)
         {
             this.Success = success;
         }
+
+        public int MasterAccountNum { get; set; }
+        public int ProfileNum { get; set; }
+
         /// <summary>
         /// The uuid of invoice tranferred from shipment.
         /// </summary>

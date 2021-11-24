@@ -530,7 +530,25 @@ where poi.PoUuid=@0;
 ";
             dbFactory.Db.Execute(sql, poUuid.ToSqlParameter("PoUuid"));
         }
-        
+
+        public async Task UpdateReceivedQtyFromPoTransactionItemAsync(string transUuid, bool isReturnBack = false)
+        {
+            string op = isReturnBack ? "-" : "+";
+            string command = $@"
+UPDATE poi SET ReceivedQty=poi.ReceivedQty{op}COALESCE(rcv.qty,0)
+FROM PoItems poi 
+INNER JOIN
+    (SELECT SUM(COALESCE(TransQty,0)) as qty, 
+        PoItemUuid 
+    FROM PoTransactionItems
+    WHERE TransUuid='{transUuid}'  
+    GROUP BY PoItemUuid
+) rcv
+ON poi.PoItemUuid=rcv.PoItemUuid
+";
+            await dbFactory.Db.ExecuteAsync(command.ToString());
+        }
+
         private async Task UpdatePoItemsByPoReceiveAsync(string poUuid)
         {
             var sql = $@"

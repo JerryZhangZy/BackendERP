@@ -71,7 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // payment shouldn't add any return item.
             dto.InvoiceReturnItems = null;
 
-            if (dto.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo && dto.InvoiceTransaction.CheckNum.IsZero())
+            if (dto.InvoiceTransaction.PaidBy == (int)PaidByAr.PrePayment && dto.InvoiceTransaction.CheckNum.IsZero())
             {
                 AddError("Misc invoice is require for prepayment.");
             }
@@ -106,7 +106,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // payment shouldn't add any return item.
             dto.InvoiceReturnItems = null;
 
-            if (dto.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo && dto.InvoiceTransaction.CheckNum.IsZero())
+            if (dto.InvoiceTransaction.PaidBy == (int)PaidByAr.PrePayment && dto.InvoiceTransaction.CheckNum.IsZero())
             {
                 AddError("Misc invoice is required for prepayment.");
             }

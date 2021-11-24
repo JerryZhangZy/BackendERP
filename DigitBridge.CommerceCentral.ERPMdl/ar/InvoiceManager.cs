@@ -36,6 +36,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             SetDataBaseFactory(dbFactory);
         }
 
+        #region services
+
         [XmlIgnore, JsonIgnore]
         protected InvoiceService _invoiceService;
         [XmlIgnore, JsonIgnore]
@@ -75,6 +77,31 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        [XmlIgnore, JsonIgnore]
+        protected SalesOrderService _salesOrderService;
+        [XmlIgnore, JsonIgnore]
+        public SalesOrderService salesOrderService
+        {
+            get
+            {
+                if (_salesOrderService is null)
+                    _salesOrderService = new SalesOrderService(dbFactory);
+                return _salesOrderService;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected OrderShipmentService _orderShipmentService;
+        [XmlIgnore, JsonIgnore]
+        public OrderShipmentService orderShipmentService
+        {
+            get
+            {
+                if (_orderShipmentService is null)
+                    _orderShipmentService = new OrderShipmentService(dbFactory);
+                return _orderShipmentService;
+            }
+        }
 
         [XmlIgnore, JsonIgnore]
         protected InitNumbersService _initNumbersService;
@@ -89,6 +116,57 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        #endregion services
+
+        #region DataBase
+        [XmlIgnore, JsonIgnore]
+        protected IDataBaseFactory _dbFactory;
+
+        [XmlIgnore, JsonIgnore]
+        public IDataBaseFactory dbFactory
+        {
+            get
+            {
+                if (_dbFactory is null)
+                    _dbFactory = DataBaseFactory.CreateDefault();
+                return _dbFactory;
+            }
+        }
+
+        public void SetDataBaseFactory(IDataBaseFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
+
+        #endregion DataBase
+
+        #region Messages
+        protected IList<MessageClass> _messages;
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get
+            {
+                if (_messages is null)
+                    _messages = new List<MessageClass>();
+                return _messages;
+            }
+            set { _messages = value; }
+        }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             Messages.Add(message, MessageLevel.Info, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Warning, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Error, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Fatal, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Debug, code);
+
+        #endregion Messages
+
+        #region import export 
         public async Task<byte[]> ExportAsync(InvoicePayload payload)
         {
             var rowNumList = await invoiceList.GetRowNumListAsync(payload);
@@ -191,78 +269,29 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
-        #region DataBase
-        [XmlIgnore, JsonIgnore]
-        protected IDataBaseFactory _dbFactory;
-
-        [XmlIgnore, JsonIgnore]
-        public IDataBaseFactory dbFactory
-        {
-            get
-            {
-                if (_dbFactory is null)
-                    _dbFactory = DataBaseFactory.CreateDefault();
-                return _dbFactory;
-            }
-        }
-
-        public void SetDataBaseFactory(IDataBaseFactory dbFactory)
-        {
-            _dbFactory = dbFactory;
-        }
-
-        #endregion DataBase
-
-        #region Messages
-        protected IList<MessageClass> _messages;
-        [XmlIgnore, JsonIgnore]
-        public virtual IList<MessageClass> Messages
-        {
-            get
-            {
-                if (_messages is null)
-                    _messages = new List<MessageClass>();
-                return _messages;
-            }
-            set { _messages = value; }
-        }
-        public IList<MessageClass> AddInfo(string message, string code = null) =>
-             Messages.Add(message, MessageLevel.Info, code);
-        public IList<MessageClass> AddWarning(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Warning, code);
-        public IList<MessageClass> AddError(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Error, code);
-        public IList<MessageClass> AddFatal(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Fatal, code);
-        public IList<MessageClass> AddDebug(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Debug, code);
-
-        #endregion Messages
-
+        #endregion import export 
 
         #region create invoice from orderShimentUuid 
 
         /// <summary>
         /// Load OrderShipment and SalesOrder, create Invoice for each OrderShipment.
         /// </summary>
-        /// <param name="centralOrderUuid"></param>
-        /// <returns>Success Create Invoice, Invoice UUID</returns>
-        public async Task<(bool, string)> CreateInvoiceByOrderShipmentIdAsync(string orderShimentUuid)
+        public async Task<string> CreateInvoiceByOrderShipmentIdAsync(string orderShimentUuid)
         {
             //Get OrderShipment by uuid
-            var service = new OrderShipmentService(dbFactory);
+            var service = orderShipmentService;
             if (!await service.GetDataByIdAsync(orderShimentUuid))
             {
-                this.Messages = this.Messages.Concat(service.Messages).ToList();
-                return (false, "");
+                this.Messages = this.Messages.Add(service.Messages);
+                return null;
             }
 
-            (bool ret, string msg) = await CreateInvoiceFromShipmentAsync(service.Data);
-            if (ret)
+            var invoiceUuid = await CreateInvoiceFromShipmentAsync(service.Data);
+            if (!string.IsNullOrEmpty(invoiceUuid))
             {
-                await service.MarkShipmentTransferredToInvoiceAsync(orderShimentUuid);
+                await service.UpdateProcessStatusAsync(orderShimentUuid, OrderShipmentProcessStatusEnum.InvoiceReady);
             }
-            return (ret, msg);
+            return invoiceUuid;
         }
         #endregion
 
@@ -270,95 +299,89 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Load OrderShipment and SalesOrder, create Invoice for each OrderShipment.
         /// </summary>
-        /// <param name="centralOrderUuid"></param>
-        /// <returns>Success Create Invoice, Invoice UUID</returns>
-        public async Task<(bool, string)> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData, string salesOrderUuid = null)
+        protected async Task<bool> ValidateShipmentForInvoiceAsync(OrderShipmentData shipmentData)
         {
             var orderShipmentUuid = shipmentData.OrderShipmentHeader.OrderShipmentUuid;
 
+            // shipment must has SalesOrderUuid
+            var salesOrderUuid = shipmentData.OrderShipmentHeader.SalesOrderUuid;
             if (salesOrderUuid.IsZero())
             {
-                var orderDCAssignmentNum = shipmentData.OrderShipmentHeader.OrderDCAssignmentNum;
-                if (orderDCAssignmentNum.IsZero())
-                {
-                    AddError($"Both salesOrderUuid and OrderDCAssignmentNum are empty. OrderShipmentUuid:{orderShipmentUuid}");
-                    return (false, null);
-                }
-                //Get Sale by uuid
-                salesOrderUuid = await GetSalesOrderUuidAsync(orderDCAssignmentNum.Value);
+                salesOrderUuid = await salesOrderService.GetSalesOrderUuidByDCAssignmentNumAsync(shipmentData.OrderShipmentHeader.OrderDCAssignmentNum.Value);
+                return false;
             }
             if (salesOrderUuid.IsZero())
             {
                 AddError($"SalesOrder not found for OrderShipment. OrderShipmentUuid:{orderShipmentUuid}");
-                return (false, null);
+                return false;
             }
 
-            if (await ExistSalesOrderInInvoiceAsync(salesOrderUuid))
+            // shipment exist invoiceUuid
+            if (!string.IsNullOrEmpty(shipmentData.OrderShipmentHeader?.InvoiceUuid))
             {
-                AddError($"SalesOrderUuid {salesOrderUuid} has been transferred to invoice. OrderShipmentUuid:{orderShipmentUuid}");
-                return (true, "");
+                if (await invoiceService.ExistInvoiceUuidAsync(
+                    shipmentData.OrderShipmentHeader?.InvoiceUuid,
+                    (int)shipmentData.OrderShipmentHeader?.MasterAccountNum,
+                    (int)shipmentData.OrderShipmentHeader?.ProfileNum)
+                )
+                {
+                    AddError($"Shipment has been transferred to invoice.");
+                    return false;
+                }
             }
 
-            var salesorderService = new SalesOrderService(dbFactory);
-            var success = await salesorderService.GetDataByIdAsync(salesOrderUuid);
-            if (!success)
+            //if (await ExistSalesOrderInInvoiceAsync(salesOrderUuid))
+            //{
+            //    AddError($"SalesOrderUuid {salesOrderUuid} has been transferred to invoice. OrderShipmentUuid:{orderShipmentUuid}");
+            //    return (true, "");
+            //}
+
+            return true;
+        }
+            /// <summary>
+            /// Load OrderShipment and SalesOrder, create Invoice for each OrderShipment.
+            /// </summary>
+        public async Task<string> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData)
+        {
+            if (!(await ValidateShipmentForInvoiceAsync(shipmentData)))
+                return null;
+
+            // load sales order data           
+            if (!(await salesOrderService.ListAsync(shipmentData.OrderShipmentHeader.SalesOrderUuid)))
             {
-                this.Messages.Add(salesorderService.Messages);
-                return (false, null);
+                this.Messages.Add(salesOrderService.Messages);
+                return null;
             }
+            var salesOrderData = salesOrderService.Data;
+            salesOrderService.DetachData(null);
 
-            string invoiceUuid;
-            //Create Invoice 
-            (success, invoiceUuid) = await CreateInvoiceAsync(shipmentData, salesorderService.Data);
-            if (!success)
-                return (false, null);
+            // Create Invoice from shipment and sales order
+            var invoiceUuid = await CreateInvoiceAsync(shipmentData, salesOrderData);
+            if (string.IsNullOrEmpty(invoiceUuid))
+                return null;
 
-            var soHeader = salesorderService.Data.SalesOrderHeader;
+            // if sales order include deposit, create invoice payment for deposit
+            var soHeader = salesOrderData.SalesOrderHeader;
             if (soHeader.DepositAmount.IsZero() || soHeader.MiscInvoiceUuid.IsZero())
-            {
-                return (success, invoiceUuid);
-            }
+                return invoiceUuid;
 
             var paymentService = new InvoicePaymentService(dbFactory);
-            success = await paymentService.AddAsync(invoiceUuid, soHeader.DepositAmount, soHeader.MiscInvoiceUuid);
-            if (!success) this.Messages.Add(paymentService.Messages);
+            if (!(await paymentService.AddAsync(invoiceUuid, soHeader.DepositAmount, soHeader.MiscInvoiceUuid)))
+                this.Messages.Add(paymentService.Messages);
 
-            return (success, invoiceUuid);
-        }
-
-        /// <summary>
-        /// Get SalesOrderData by OrderDCAssignmentNum
-        /// </summary>
-        /// <param name="orderDCAssignmentNum"></param>
-        /// <returns>SalesOrderData</returns>
-        protected async Task<string> GetSalesOrderUuidAsync(long orderDCAssignmentNum)
-        {
-            //Get SalesOrderData by uuid
-            using (var trs = new ScopedTransaction(dbFactory))
-                return await SalesOrderHelper.GetSalesOrderUuidAsync(orderDCAssignmentNum);
-        }
-        /// <summary>
-        /// Check SalesOrder is already exist in Invoice
-        /// </summary>
-        /// <param name="salesOrderUuid"></param>
-        /// <returns>Exist or Not</returns>
-        protected async Task<bool> ExistSalesOrderInInvoiceAsync(string salesOrderUuid)
-        {
-            using (var trs = new ScopedTransaction(dbFactory))
-                return await InvoiceHelper.ExistSalesOrderUuidAsync(salesOrderUuid);
+            return invoiceUuid;
         }
 
         /// <summary>
         /// Create one invoice from one orderShipment and one salesOrder.
         /// </summary>
-        /// <param name="coData"></param>
-        /// <param name="dcAssigmentData"></param>
-        /// <returns>Success Create Invoice</returns>
-        protected async Task<(bool, string)> CreateInvoiceAsync(OrderShipmentData shipmentData, SalesOrderData salesOrderData)
+        protected async Task<string> CreateInvoiceAsync(OrderShipmentData shipmentData, SalesOrderData salesOrderData)
         {
             InvoiceTransfer invoiceTransfer = new InvoiceTransfer(this, "");
-            var invoiceData = invoiceTransfer.FromOrderShipmentAndSalesOrder(shipmentData, salesOrderData);
-            var invoiceService = new InvoiceService(dbFactory);
+            invoiceService.Add();
+            invoiceService.NewData();
+
+            var invoiceData = invoiceTransfer.FromOrderShipmentAndSalesOrder(shipmentData, salesOrderData, invoiceService.Data);
 
             var mapper = new InvoiceDataDtoMapperDefault();
             var dto = mapper.WriteDto(invoiceData, null);
@@ -366,12 +389,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!success)
             {
                 this.Messages = this.Messages.Concat(invoiceService.Messages).ToList();
-                return (false, null);
+                return null;
             }
 
             //set InvoiceNumber back to shipment.
             shipmentData.OrderShipmentHeader.InvoiceNumber = invoiceService.Data.InvoiceHeader.InvoiceNumber;
-            return (true, invoiceService.Data.InvoiceHeader.InvoiceUuid);
+            return invoiceService.Data.InvoiceHeader.InvoiceUuid;
         }
 
 

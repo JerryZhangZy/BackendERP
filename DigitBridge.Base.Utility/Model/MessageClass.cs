@@ -72,6 +72,16 @@ namespace DigitBridge.Base.Utility
         public static IEnumerable<MessageClass> FindLevel(this IEnumerable<MessageClass> lst, MessageLevel level) =>
             lst?.Where(x => x.Level == level);
 
+        public static IList<MessageClass> Add(this IList<MessageClass> lst, IList<MessageClass> source)
+        {
+            if (lst == null)
+                lst = new List<MessageClass>();
+            foreach (var obj in source)
+                if (obj != null && !string.IsNullOrEmpty(obj.Message)) 
+                    lst.Add(obj);
+            return lst;
+        }
+
         public static IList<MessageClass> Add(this IList<MessageClass> lst, MessageClass obj)
         {
             if (lst == null)
@@ -85,14 +95,6 @@ namespace DigitBridge.Base.Utility
             if (lst == null)
                 lst = new List<MessageClass>();
             lst.Add(new MessageClass(message, level, code));
-            return lst;
-        }
-        public static IList<MessageClass> Add(this IList<MessageClass> lst, IList<MessageClass> messages)
-        {
-            if (lst == null)
-                lst = new List<MessageClass>();
-            foreach (var message in messages)
-                lst.Add(message);
             return lst;
         }
 

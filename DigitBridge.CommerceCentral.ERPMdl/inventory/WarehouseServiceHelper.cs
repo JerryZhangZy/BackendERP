@@ -241,6 +241,23 @@ AND (EXISTS (SELECT * FROM @WarehouseCode _WarehouseCode WHERE _WarehouseCode.it
                 warehouseCodes.ToParameter<string>("WarehouseCode"));
         }
 
+        public static async Task<string> GetWarehouseUuidByCodeAsync(string warehouseCode, int masterAccountNum, int profileNum)
+        {
+            var sql = $@"
+SELECT TOP 1 DistributionCenterUuid 
+FROM DistributionCenter
+WHERE MasterAccountNum = @masterAccountNum
+AND ProfileNum = @profileNum
+AND DistributionCenterCode = @warehouseCode
+";
+            return await SqlQuery.ExecuteScalarAsync<string>(sql,
+                masterAccountNum.ToSqlParameter("masterAccountNum"),
+                profileNum.ToSqlParameter("profileNum"),
+                warehouseCode.ToSqlParameter("warehouseCode")
+            );
+        }
+
+
     }
 }
 

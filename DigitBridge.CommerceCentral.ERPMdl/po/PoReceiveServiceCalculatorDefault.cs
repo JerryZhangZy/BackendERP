@@ -91,7 +91,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null || sum == null)
                 return false;
 
-           // var poHeader = data.PurchaseOrderData.PoHeader;
+            var poHeader = data.PurchaseOrderData.PoHeader;
             if (sum.TransTime.IsZero()) sum.TransTime = now.TimeOfDay;
             if (sum.TransDate.IsZero())
             {

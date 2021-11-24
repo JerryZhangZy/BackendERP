@@ -573,7 +573,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             Delete();
             //load data
             var success = await GetByNumberAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, transNum);
-            if (success && Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+            if (success && Data.InvoiceTransaction.PaidBy == (int)PaidByAr.PrePayment)
             {
                 var invoiceTransaction = Data.InvoiceTransaction;
                 success = await MiscPaymentService.DeleteMiscPayment(invoiceTransaction.AuthCode, invoiceTransaction.TransUuid, invoiceTransaction.TotalAmount);
@@ -803,7 +803,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 TaxRate = header.TaxRate,
 
                 TotalAmount = amount,
-                PaidBy = (int)PaidByAr.CreditMemo,
+                PaidBy = (int)PaidByAr.PrePayment,
                 CheckNum = miscInvoiceUuid,//TODO
                 AuthCode = miscInvoiceUuid,
                 Description = "Add payment from prepayment",
@@ -881,7 +881,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var paymentData = Data.InvoiceTransaction;
 
-            if (paymentData.PaidBy != (int)PaidByAr.CreditMemo)
+            if (paymentData.PaidBy != (int)PaidByAr.PrePayment)
                 return true;
 
             //Add mis payment and withdraw from misinvoice
@@ -917,13 +917,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var success = true;
             //original paydby is creditmemo then delete mispayment.
-            if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
+            if (lastPaidByBeforeUpdate == (int)PaidByAr.PrePayment)
             {
                 success = await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, Data.InvoiceTransaction.OriginalPaidAmount);
             }
 
             //new paydby is creditmemo then add miscpayment
-            if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+            if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.PrePayment)
             {
                 success = success && await AddMiscPaymentAsync();
             }

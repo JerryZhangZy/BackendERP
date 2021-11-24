@@ -330,6 +330,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 .ToList();
         }
 
+        public async Task<string> GetWarehouseUuidByCodeAsync(string warehouseCode, int masterAccountNum, int profileNum)
+        {
+            if (string.IsNullOrEmpty(warehouseCode))
+                return string.Empty;
+            using (var tx = new ScopedTransaction(dbFactory))
+                return await WarehouseServiceHelper.GetWarehouseUuidByCodeAsync(warehouseCode, masterAccountNum, profileNum);
+        }
+
+        
+
     }
 }
 

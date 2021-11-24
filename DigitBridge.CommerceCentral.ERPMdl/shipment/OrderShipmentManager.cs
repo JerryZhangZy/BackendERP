@@ -36,6 +36,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             SetDataBaseFactory(dbFactory);
         }
 
+        #region services
+        [XmlIgnore, JsonIgnore]
+        protected SalesOrderService _salesOrderService;
+        [XmlIgnore, JsonIgnore]
+        public SalesOrderService salesOrderService
+        {
+            get
+            {
+                if (_salesOrderService is null)
+                    _salesOrderService = new SalesOrderService(dbFactory);
+                return _salesOrderService;
+            }
+        }
+
         [XmlIgnore, JsonIgnore]
         protected OrderShipmentService _orderShipmentService;
         [XmlIgnore, JsonIgnore]
@@ -74,6 +88,72 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _orderShipmentList;
             }
         }
+
+        [XmlIgnore, JsonIgnore]
+        protected InvoiceManager _invoiceManager;
+        [XmlIgnore, JsonIgnore]
+        public InvoiceManager invoiceManager
+        {
+            get
+            {
+                if (_invoiceManager is null)
+                    _invoiceManager = new InvoiceManager(dbFactory);
+                return _invoiceManager;
+            }
+        }
+
+
+        #endregion services
+
+        #region DataBase
+        [XmlIgnore, JsonIgnore]
+        protected IDataBaseFactory _dbFactory;
+
+        [XmlIgnore, JsonIgnore]
+        public IDataBaseFactory dbFactory
+        {
+            get
+            {
+                if (_dbFactory is null)
+                    _dbFactory = DataBaseFactory.CreateDefault();
+                return _dbFactory;
+            }
+        }
+
+        public void SetDataBaseFactory(IDataBaseFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
+
+        #endregion DataBase
+
+        #region Messages
+        protected IList<MessageClass> _messages;
+        [XmlIgnore, JsonIgnore]
+        public virtual IList<MessageClass> Messages
+        {
+            get
+            {
+                if (_messages is null)
+                    _messages = new List<MessageClass>();
+                return _messages;
+            }
+            set { _messages = value; }
+        }
+        public IList<MessageClass> AddInfo(string message, string code = null) =>
+             Messages.Add(message, MessageLevel.Info, code);
+        public IList<MessageClass> AddWarning(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Warning, code);
+        public IList<MessageClass> AddError(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Error, code);
+        public IList<MessageClass> AddFatal(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Fatal, code);
+        public IList<MessageClass> AddDebug(string message, string code = null) =>
+            Messages.Add(message, MessageLevel.Debug, code);
+
+        #endregion Messages
+
+        #region import export 
 
         public async Task<byte[]> ExportAsync(OrderShipmentPayload payload)
         {
@@ -177,144 +257,132 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
-        #region DataBase
-        [XmlIgnore, JsonIgnore]
-        protected IDataBaseFactory _dbFactory;
-
-        [XmlIgnore, JsonIgnore]
-        public IDataBaseFactory dbFactory
-        {
-            get
-            {
-                if (_dbFactory is null)
-                    _dbFactory = DataBaseFactory.CreateDefault();
-                return _dbFactory;
-            }
-        }
-
-        public void SetDataBaseFactory(IDataBaseFactory dbFactory)
-        {
-            _dbFactory = dbFactory;
-        }
-
-        #endregion DataBase
-
-        #region Messages
-        protected IList<MessageClass> _messages;
-        [XmlIgnore, JsonIgnore]
-        public virtual IList<MessageClass> Messages
-        {
-            get
-            {
-                if (_messages is null)
-                    _messages = new List<MessageClass>();
-                return _messages;
-            }
-            set { _messages = value; }
-        }
-        public IList<MessageClass> AddInfo(string message, string code = null) =>
-             Messages.Add(message, MessageLevel.Info, code);
-        public IList<MessageClass> AddWarning(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Warning, code);
-        public IList<MessageClass> AddError(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Error, code);
-        public IList<MessageClass> AddFatal(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Fatal, code);
-        public IList<MessageClass> AddDebug(string message, string code = null) =>
-            Messages.Add(message, MessageLevel.Debug, code);
-
-        #endregion Messages
+        #endregion import export 
 
         #region Create shipment
 
-        public async Task<WmsOrderShipmentPayload> CreateShipmentAsync(OrderShipmentPayload payload, InputOrderShipmentType wmsShipment)
+        /// <summary>
+        /// Create multiple shipment and invoice
+        /// </summary>
+        public async Task<List<OrderShipmentCreateResultPayload>> CreateShipmentListAsync(OrderShipmentPayload payload, IList<InputOrderShipmentType> wmsShipments)
         {
-            var response = new WmsOrderShipmentPayload();
-            //reset message.
-            _messages = new List<MessageClass>();
-
-            if (payload is null)
+            var resultList = new List<OrderShipmentCreateResultPayload>();
+            if (wmsShipments is null || wmsShipments.Count == 0)
             {
-                AddError("Request is invalid.");
-                return response;
+                AddError("shipment data is required.");
+                resultList.Add(new OrderShipmentCreateResultPayload()
+                {
+                    Messages = new List<MessageClass>().Add(this.Messages),
+                });
+                return resultList;
             }
+
+            // loop for shipment list to create each shipment
+            foreach (var shipment in wmsShipments)
+            {
+                // for each shipment, create result object to hold shipment creating result
+                var result = new OrderShipmentCreateResultPayload()
+                {
+                    Success = true,
+                    MasterAccountNum = payload.MasterAccountNum,
+                    ProfileNum = payload.ProfileNum,
+                    MainTrackingNumber = shipment?.ShipmentHeader?.MainTrackingNumber,
+                };
+
+                // first validate shipment data, allow to create new shipment
+                if (ValidateShipment(shipment, result))
+                {
+                    await CreateShipmentAsync(shipment, result);
+                }
+                resultList.Add(result);
+            }
+            return resultList;
+        }
+
+        /// <summary>
+        /// Validate current shipment data 
+        /// </summary>
+        protected bool ValidateShipment(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
+        {
+            //if (payload is null)
+            //{
+            //    AddError("Request is invalid.");
+            //    return response;
+            //}
+            result.Success = true;
             if (wmsShipment is null)
             {
-                AddError("Shipment data cannot be empty.");
-                return response;
+                result.Messages.AddError("Shipment data cannot be empty.");
+                result.Success = false;
             }
 
             if (wmsShipment.ShipmentHeader is null)
             {
-                AddError("ShipmentHeader data cannot be empty.");
-                return response;
+                result.Messages.AddError("ShipmentHeader data cannot be empty.");
+                result.Success = false;
             }
 
             if (wmsShipment.ShipmentHeader.SalesOrderUuid.IsZero())
             {
-                AddError("SalesOrderUuid cannot be empty.");
-                return response;
+                result.Messages.AddError("SalesOrderUuid cannot be empty.");
+                result.Success = false;
             }
+            return result.Success;
+        }
 
-            response.MainTrackingNumber = wmsShipment.ShipmentHeader.MainTrackingNumber;
-
-            var mapper = new WMSOrderShipmentMapper(payload.MasterAccountNum, payload.ProfileNum);
+        /// <summary>
+        /// Create and save one shipment, but set processStatus to -1 (pending)
+        /// </summary>
+        public async Task<bool> CreateShipmentAsync(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
+        {
+            // create mapper, and transfer shipment payload ro ero shipment Dto
+            var mapper = new WMSOrderShipmentMapper(result.MasterAccountNum, result.ProfileNum);
             var erpShipment = mapper.MapperToErpShipment(wmsShipment);
-            erpShipment.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Default;
+            // set shipment status to pending, this will not send to marketplace API
+            erpShipment.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Pending;
 
-            var service = new OrderShipmentService(dbFactory);
-            var success = await service.AddAsync(erpShipment);
-            if (!success)
+            // if shipment payload not include SalesOrderUuid, try to load SalesOrderUuid by OrderDCAssignmentNum
+            if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
+                erpShipment.OrderShipmentHeader.SalesOrderUuid =
+                    await salesOrderService.GetSalesOrderUuidByDCAssignmentNumAsync(erpShipment.OrderShipmentHeader.OrderDCAssignmentNum.Value);
+
+            // load OrderNumber from salesOrder Uuid
+            if (!string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
+                erpShipment.OrderShipmentHeader.OrderNumber =
+                    await salesOrderService.GetSalesOrderNumberByUuidAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid);
+
+            // create orderShipmentService and save new shipment
+            var service = orderShipmentService;
+            service.DetachData(null);
+            if (!(await service.AddAsync(erpShipment)))
             {
-                Messages.Add(service.Messages);
-                return response;
+                result.Messages.Add(service.Messages);
+                result.Success = false;
+                return result.Success;
             }
-            var orderShipmentData = service.Data;
 
+            // if shipment succes add, transfer shipment to invoice
+            await CreateInvoiceAsync(orderShipmentService.Data, result);
+            return result.Success;
+        }
+
+        /// <summary>
+        /// After save one shipment, create invoice from this shipment and set processStatus to 0 (allow send to marketplace)
+        /// </summary>
+        protected async Task<bool> CreateInvoiceAsync(OrderShipmentData orderShipmentData, OrderShipmentCreateResultPayload result)
+        {
             // create invoice and set invoicenumber back to shipmentdata. 
-            var invoiceManager = new InvoiceManager(dbFactory);
-            (success, response.InvoiceUuid) = await invoiceManager.CreateInvoiceFromShipmentAsync(orderShipmentData, wmsShipment.ShipmentHeader.SalesOrderUuid);
-            if (!success)
+            var invoiceUuid = await invoiceManager.CreateInvoiceFromShipmentAsync(orderShipmentData);
+            if (string.IsNullOrEmpty(invoiceUuid))
             {
                 this.Messages.Add(invoiceManager.Messages);
-                return response;
+                result.Success = false;
+                return result.Success;
             }
 
-            //save shipmentdata to db.
-            orderShipmentData.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Transferred;
-            success = await service.SaveDataAsync();
-            if (!success)
-            {
-                Messages.Add(service.Messages);
-            }
-            response.Success = success;
-
-            return response;
-        }
-        public async Task<List<WmsOrderShipmentPayload>> CreateShipmentListAsync(OrderShipmentPayload payload, IList<InputOrderShipmentType> wmsShipments)
-        {
-            var resultList = new List<WmsOrderShipmentPayload>();
-            if (wmsShipments is null || wmsShipments.Count == 0)
-            {
-                AddError("shipment data is required.");
-                resultList.Add(new WmsOrderShipmentPayload()
-                {
-                    Messages = this.Messages,
-                });
-                return resultList;
-            }
-            foreach (var shipment in wmsShipments)
-            {
-                var shipmentPayload = new OrderShipmentPayload()
-                {
-                    MasterAccountNum = payload.MasterAccountNum,
-                    ProfileNum = payload.ProfileNum,
-                };
-                var result = await CreateShipmentAsync(shipmentPayload, shipment);
-                result.Messages = this.Messages;
-                resultList.Add(result);
-            }
-            return resultList;
+            // change orderShipment status to 0 (InvoiceReady, allow to upload)
+            await orderShipmentService.UpdateProcessStatusAsync(orderShipmentData.OrderShipmentHeader.OrderShipmentUuid, OrderShipmentProcessStatusEnum.InvoiceReady);
+            return result.Success;
         }
 
         #endregion

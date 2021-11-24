@@ -83,7 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         private long? _orderDCAssignmentLineNum;
 
         [Column("SKU",SqlDbType.VarChar,IsDefault=true)]
-        private string _sKU;
+        private string _sku;
 
         [Column("CanceledQty",SqlDbType.Decimal,NotNull=true)]
         private decimal _canceledQty;
@@ -102,6 +102,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
 
         [Column("OrderShipmentCanceledItemUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _orderShipmentCanceledItemUuid;
+
+        [Column("SalesOrderItemsUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _salesOrderItemsUuid;
 
         #endregion Fields - Generated 
 
@@ -258,15 +261,15 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _sKU is null) 
-					_sKU = String.Empty; 
-				return _sKU?.TrimEnd(); 
+				if (!AllowNull && _sku is null) 
+					_sku = String.Empty; 
+				return _sku?.TrimEnd(); 
             }
             set
             {
 				if (value != null || AllowNull) 
 				{
-					_sKU = value.TruncateTo(100); 
+					_sku = value.TruncateTo(100); 
 					OnPropertyChanged("SKU", value);
 				}
             }
@@ -373,6 +376,23 @@ namespace DigitBridge.CommerceCentral.ERPDb
             }
         }
 
+		/// <summary>
+		/// (Readonly) Order Item Line uuid. <br> Display: false, Editable: false
+
+		/// </summary>
+        public virtual string SalesOrderItemsUuid
+        {
+            get
+            {
+				return _salesOrderItemsUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_salesOrderItemsUuid = value.TruncateTo(50); 
+				OnPropertyChanged("SalesOrderItemsUuid", value);
+            }
+        }
+
 
 
         #endregion Properties - Generated 
@@ -411,13 +431,14 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_orderShipmentNum = AllowNull ? (long?)null : default(long); 
 			_channelOrderID = String.Empty; 
 			_orderDCAssignmentLineNum = AllowNull ? (long?)null : default(long); 
-			_sKU = AllowNull ? (string)null : String.Empty; 
+			_sku = AllowNull ? (string)null : String.Empty; 
 			_canceledQty = default(decimal); 
 			_cancelCode = String.Empty; 
 			_cancelOtherReason = AllowNull ? (string)null : String.Empty; 
 			_dBChannelOrderLineRowID = String.Empty; 
 			_orderShipmentUuid = String.Empty; 
 			_orderShipmentCanceledItemUuid = String.Empty; 
+			_salesOrderItemsUuid = String.Empty; 
             ClearChildren();
             return this;
         }
@@ -478,6 +499,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<OrderShipmentCanceledItem>("WHERE OrderShipmentNum = @0 ", orderShipmentNum);
 		}
 
+		public override OrderShipmentCanceledItem ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override OrderShipmentCanceledItem ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			return this;
+		}
 
         #endregion Methods - Generated 
     }

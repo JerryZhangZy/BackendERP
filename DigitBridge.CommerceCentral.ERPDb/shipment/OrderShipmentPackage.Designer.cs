@@ -741,6 +741,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			return await dbFactory.CountAsync<OrderShipmentPackage>("WHERE OrderShipmentUuid = @0 ", orderShipmentUuid);
 		}
 
+		public override OrderShipmentPackage ConvertDbFieldsToData()
+		{
+			base.ConvertDbFieldsToData();
+			return this;
+		}
+		public override OrderShipmentPackage ConvertDataFieldsToDb()
+		{
+			base.ConvertDataFieldsToDb();
+			return this;
+		}
 
         #endregion Methods - Generated 
     }
