@@ -462,7 +462,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 TotalAmount = salesOrder.DepositAmount,
                 Currency = salesOrder.Currency,
                 CreditAmount = salesOrder.DepositAmount,
-                PaidBy = (int)PaidByAr.CreditMemo,
+                PaidBy = (int)PaidByAr.PrePayment,
 
                 CustomerCode = salesOrder.CustomerCode,
                 CustomerName = salesOrder.CustomerName,

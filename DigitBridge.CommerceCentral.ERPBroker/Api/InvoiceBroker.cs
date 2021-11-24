@@ -36,8 +36,8 @@ namespace DigitBridge.CommerceCentral.ERPBroker
                 eventDto.ProfileNum = message.ProfileNum;
                 var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
                 var svc = new InvoiceManager(dbFactory);
-                (bool ret, string invoiceUuid) = await svc.CreateInvoiceByOrderShipmentIdAsync(message.ProcessUuid);
-                eventDto.ActionStatus = ret ? 0 : 1;
+                string invoiceUuid = await svc.CreateInvoiceByOrderShipmentIdAsync(message.ProcessUuid);
+                eventDto.ActionStatus = string.IsNullOrEmpty(invoiceUuid) ? 0 : 1;
                 eventDto.EventMessage = svc.Messages.ObjectToString();
             }
             catch (Exception e)

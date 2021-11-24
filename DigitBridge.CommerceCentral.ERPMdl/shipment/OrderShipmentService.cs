@@ -171,7 +171,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.OrderShipmentHeader.DatabaseNum,
                 ProcessUuid = this.Data.OrderShipmentHeader.OrderShipmentUuid,
                 ProcessNumber = this.Data.OrderShipmentHeader.OrderShipmentNum.ToString(),
-                ChannelNum = this.Data.OrderShipmentHeader.ChannelAccountNum,
+                ChannelNum = this.Data.OrderShipmentHeader.ChannelNum,
                 ChannelAccountNum = this.Data.OrderShipmentHeader.ChannelAccountNum,
 
                 LogMessage = string.Empty
