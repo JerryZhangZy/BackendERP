@@ -490,18 +490,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return false;
         }
 
-        public async Task<bool> UpdateProcessStatusAsync(string ordershipmentUuid, OrderShipmentProcessStatusEnum status)
+        public async Task<bool> UpdateProcessStatusAsync(string ordershipmentUuid, OrderShipmentProcessStatusEnum status, string invoiceUuid, string invoiceNumber)
         {
             var sql = $@"
 UPDATE OrderShipmentHeader 
-SET ProcessStatus=@0, ProcessDateUtc=@1
-WHERE OrderShipmentUuid=@2 
+SET ProcessStatus=@0, 
+ProcessDateUtc=@1,
+InvoiceUuid=@2,
+InvoiceNumber=@3
+WHERE OrderShipmentUuid=@4 
 ";
             return await dbFactory.Db.ExecuteAsync(
                 sql,
                 ((int)status).ToSqlParameter("@0"),
                 DateTime.UtcNow.ToSqlParameter("@1"),
-                ordershipmentUuid.ToSqlParameter("@2")
+                invoiceUuid.ToSqlParameter("@2"),
+                invoiceNumber.ToSqlParameter("@3"),
+                ordershipmentUuid.ToSqlParameter("@4")
             ) > 0;
 
             //Edit();
