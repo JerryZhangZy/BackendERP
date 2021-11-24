@@ -43,6 +43,22 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             return await PatchAsync(eventDto);
         }
 
+        public async Task<bool> ResendAsync(int masterAccountNum, int profileNum, string eventUuid)
+        {
+            if (string.IsNullOrEmpty(eventUuid))
+            {
+                AddError("EventUuid cann't be empty.");
+                return false;
+            }
+
+            if (!SetAccount(masterAccountNum, profileNum))
+            {
+                return false;
+            }
+
+            return await PostAsync(null, FunctionUrl.ResendEvent + eventUuid);
+        }
+
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
         {
             if (ResopneData == null)

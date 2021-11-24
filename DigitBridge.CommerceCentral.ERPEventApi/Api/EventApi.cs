@@ -377,5 +377,34 @@ namespace DigitBridge.CommerceCentral.EventERPApi
         {
             return new JsonNetResponse<EventERPPayloadFind>(EventERPPayloadFind.GetSampleData());
         }
+
+
+
+        [FunctionName(nameof(ReSendEvent))]
+        [OpenApiOperation(operationId: "ReSendEvent", tags: new[] { "EventERPs" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "eventUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "eventUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadUpdate))]
+        public static async Task<JsonNetResponse<EventERPPayload>> ReSendEvent(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/resend/{eventUuid}")]
+            HttpRequest req, string eventUuid)
+        {
+            var payload = await req.GetParameters<EventERPPayload>();
+            var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
+            if (await svc.ResendEventAsync(eventUuid))
+                payload.EventERP = svc.ToDto();
+            else
+            {
+                payload.Messages = svc.Messages;
+                payload.Success = false;
+            }
+
+            return new JsonNetResponse<EventERPPayload>(payload);
+        }
     }
 }

@@ -364,7 +364,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.PoTransactions = new List<PoTransactionDataDto>();
             if (await base.AddAsync(payload))
                 payload.Success = true;
- 
+
             payload.Messages = Messages;
             return true;
         }
@@ -553,7 +553,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     transactions.Add(ToDto());
 
             }
-            payload.PoTransaction = MergePoTransactions(transactions,false);
+            payload.PoTransaction = MergePoTransactions(transactions, false);
             return true;
         }
 
@@ -581,7 +581,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         private IList<PoTransactionDataDto> SplitPoTransactionsForVendor(IList<PoTransactionDataDto> dtolist)
         {
-            
+
             foreach (var transdata in dtolist)
             {
                 if (!transdata.HasPoTransaction || !transdata.HasPoTransactionItems)
@@ -600,7 +600,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
 
-        private PoTransactionDataDto MergePoTransactions(List<PoTransactionDataDto> list,bool filterZeroTransQty=true)
+        private PoTransactionDataDto MergePoTransactions(List<PoTransactionDataDto> list, bool filterZeroTransQty = true)
         {
             //var list = new List<PoTransactionDataDto>();
 
@@ -624,7 +624,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
 
-            var totalQty = list.Sum(r=>r.PoTransactionItems.Sum(r => r.TransQty.ToInt()));
+            var totalQty = list.Sum(r => r.PoTransactionItems.Sum(r => r.TransQty.ToInt()));
             var toalTaxAmount = list.Sum(r => r.PoTransaction.TaxAmount.ToAmount());
             var totalShipmentAmount = list.Sum(r => r.PoTransaction.ShippingAmount.ToAmount());
             var totalShipmentTaxAmount = list.Sum(r => r.PoTransaction.ShippingTaxAmount.ToAmount());
@@ -635,8 +635,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var poTransaction = new PoTransactionDto()
             {
-                 
-                PoUuid = list.Count>1?"":list[0].PoTransaction.PoUuid,
+
+                PoUuid = list.Count > 1 ? "" : list[0].PoTransaction.PoUuid,
                 PoNum = list.Count > 1 ? "" : list[0].PoTransaction.PoNum,
                 ProfileNum = list[0].PoTransaction.ProfileNum,
                 MasterAccountNum = list[0].PoTransaction.MasterAccountNum,
@@ -666,13 +666,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var dto = new PoTransactionDataDto()
             {
-                     PoTransaction= poTransaction,
-                     PoTransactionItems= poTransactionItems
+                PoTransaction = poTransaction,
+                PoTransactionItems = poTransactionItems
             };
 
 
             return dto;
- 
+
         }
 
 
@@ -749,7 +749,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 poUuidArrays.Add(new StringArray() { Item0 = item });
 
 
-            var poNumList =  await PurchaseOrderHelper.GetPoNumsByPoItemUuidAsync(poUuidArrays, payload.MasterAccountNum, payload.ProfileNum);
+            var poNumList = await PurchaseOrderHelper.GetPoNumsByPoItemUuidAsync(poUuidArrays, payload.MasterAccountNum, payload.ProfileNum);
 
             var transactions = new List<PoTransactionDataDto>();
             foreach (var item in poNumList)
@@ -762,11 +762,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             foreach (var poTran in payload.PoTransactions)
             {
-                 var items= payload.WMSPoReceiveItems?.Where(r => r.PoUuid == poTran.PoTransaction.PoUuid).ToList();
-                List<PoTransactionItemsDto> poTransactionItemsDtos = new List<PoTransactionItemsDto>();   
+                var items = payload.WMSPoReceiveItems?.Where(r => r.PoUuid == poTran.PoTransaction.PoUuid).ToList();
+                List<PoTransactionItemsDto> poTransactionItemsDtos = new List<PoTransactionItemsDto>();
                 foreach (var aItem in items)
                 {
-                   var transItem= poTran.PoTransactionItems.Where(r => r.PoItemUuid == aItem.PoItemUuid).FirstOrDefault();
+                    var transItem = poTran.PoTransactionItems.Where(r => r.PoItemUuid == aItem.PoItemUuid).FirstOrDefault();
                     if (transItem != null)
                     {
                         transItem.TransQty = aItem.Qty;
@@ -788,7 +788,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //}
 
             return null;
- 
+
         }
         /// <summary>
         /// Add po trans for wms po receive.
@@ -800,25 +800,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             var results = new List<WMSPoReceivePayload>();
 
-            var poItemUuidList = payload.WMSPoReceiveItems?.Select(i => i.PoItemUuid).Distinct().ToList();
-
-            if (poItemUuidList is null || poItemUuidList.Count() == 0)
+            if (!payload.HasWMSPoReceiveItems)
+            {
+                AddError("WMSPoReceiveItems cannot be empty");
+                results.Add(new WMSPoReceivePayload() { Messages = this.Messages });
+                return results;
+            }
+            if (payload.WMSPoReceiveItems.Count(i => i.PoItemUuid.IsZero()) > 0)
             {
                 AddError("PoItemUuid cannot be empty");
                 results.Add(new WMSPoReceivePayload() { Messages = this.Messages });
                 return results;
             }
 
-            var fullItems = GetWMSPoReceiveExt(poItemUuidList);
+            var poItemUuids = payload.WMSPoReceiveItems.Select(i => i.PoItemUuid).Distinct().ToList();
+            // Get po data list by po item uuid list.
+            var mergedPoDataList = await PurchaseOrderService.GetMergedPoByPoItemUuidsAsync(payload.MasterAccountNum, payload.ProfileNum, poItemUuids);
 
-            var vendorCodes = fullItems.Select(i => i.VendorCode).Distinct();
 
-            foreach (var vendorCode in vendorCodes)
+            foreach (var mergedPoData in mergedPoDataList)
             {
-                var data = GetPoTransData(payload, fullItems, vendorCode);
-                if (data is null) continue;
+                if (mergedPoData.PoItems is null || mergedPoData.PoItems.Count == 0) continue;
+
+                var data = GetPoTransData(payload, mergedPoData);
 
                 var success = await base.AddAsync(data);
+
                 results.Add(new WMSPoReceivePayload()
                 {
                     Messages = this.Messages,
@@ -829,64 +836,57 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return results;
         }
+
+
         /// <summary>
         /// Get po transaction from wms po receive items.
         /// </summary>
         /// <param name="payload"></param>
-        /// <param name="poUuid"></param>
+        /// <param name="mergedPoData"></param>
         /// <returns></returns>
-        protected PoTransactionData GetPoTransData(PoReceivePayload payload, List<PoReceiveExtend> extendInfos, string vendorCode)
+        protected PoTransactionData GetPoTransData(PoReceivePayload payload, PurchaseOrderData mergedPoData)
         {
-            var items = extendInfos?.Where(i => i.VendorCode == vendorCode);
-            if (items.Count() == 0) return null;
-
-            var isItemInSamePo = items.Select(i => i.PoUuid).Distinct().Count() == 1;
-            var defaultItem = items.FirstOrDefault();
+            var header = mergedPoData.PoHeader;
 
             var data = new PoTransactionData()
             {
                 PoTransaction = new PoTransaction()
                 {
                     TransUuid = Guid.NewGuid().ToString(),
-                    PoUuid = isItemInSamePo ? defaultItem.PoUuid : string.Empty,
-                    PoNum = isItemInSamePo ? defaultItem.PoNum : string.Empty,
                     MasterAccountNum = payload.MasterAccountNum,
                     ProfileNum = payload.ProfileNum,
-                    VendorCode = vendorCode,
-                    VendorName = defaultItem.VendorName,
-                    VendorUuid = defaultItem.VendorUuid,
+                    VendorCode = header.VendorCode,
+                    VendorName = header.VendorName,
+                    VendorUuid = header.VendorUuid,
+                    PoNum = header.PoNum,
+                    PoUuid = header.PoUuid,
                     TransStatus = (int)PoTransStatus.StockReceive
                 },
-                HasMultiPo = !isItemInSamePo,
+                PurchaseOrderData = mergedPoData,
             };
 
             data.PoTransactionItems = new List<PoTransactionItems>();
-            foreach (var item in items)
+            foreach (var item in mergedPoData.PoItems)//mergedPoData.PoItems only contain wms po receive post poitemuuid.
             {
-                var wmsItem = payload.WMSPoReceiveItems.Where(i => i.PoItemUuid == item.PoItemUuid).FirstOrDefault();
-                var transItem = new PoTransactionItems()
+                var wmsItems = payload.WMSPoReceiveItems.Where(i => i.PoItemUuid == item.PoItemUuid);
+                foreach (var wmsItem in wmsItems)
                 {
-                    TransItemUuid = Guid.NewGuid().ToString(),
-                    PoUuid = item.PoUuid,
-                    PoItemUuid = item.PoItemUuid,
-                    TransQty = wmsItem.Qty,
-                    WarehouseCode = wmsItem.WarehouseCode,
-                    SKU = wmsItem.SKU,
-                };
-                transItem.SetParent(data);
-                data.PoTransactionItems.Add(transItem);
+                    var transItem = new PoTransactionItems()
+                    {
+                        TransItemUuid = Guid.NewGuid().ToString(),
+                        PoItemUuid = wmsItem.PoItemUuid,
+                        TransQty = wmsItem.Qty,
+                        WarehouseCode = wmsItem.WarehouseCode,
+                        SKU = wmsItem.SKU,
+                        Price = item.Price,
+                    };
+                    //transItem.SetParent(data);
+                    data.PoTransactionItems.Add(transItem);
+                }
+
             }
             return data;
         }
-
-        protected List<PoReceiveExtend> GetWMSPoReceiveExt(IList<string> poItemUuidList)
-        {
-            using (var tx = new ScopedTransaction(dbFactory))
-            {
-                return PoTransactionHelper.GetWMSPoReceiveExt(poItemUuidList);
-            }
-        }
-
         #endregion
     }
 }

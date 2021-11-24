@@ -110,16 +110,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var wmsShipment = await GetWmsShipmentWithSavedSalesOrder();
             //copy json data to postman for test create shipment from wms shipment.
             var jsonData = JsonConvert.SerializeObject(wmsShipment);
-            var payload = new OrderShipmentPayload()
+            var payload = new OrderShipmentCreateResultPayload()
             {
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
             };
             var srv = new OrderShipmentManager(DataBaseFactory);
-            var result = (await srv.CreateShipmentAsync(payload, wmsShipment));
-            Assert.True(result.Success, srv.Messages.ObjectToString());
+            var result = (await srv.CreateShipmentAsync(wmsShipment, payload));
+            Assert.True(result, srv.Messages.ObjectToString());
 
-            Assert.True(!result.InvoiceUuid.IsZero(), "Shipment Added. But invoice was not transferred.");
+            Assert.True(!payload.InvoiceUuid.IsZero(), "Shipment Added. But invoice was not transferred.");
 
             //var shipmentService = new OrderShipmentService(DataBaseFactory);
             //success = await shipmentService.GetDataByIdAsync(payload.OrderShipment.OrderShipmentHeader.OrderShipmentUuid);
@@ -148,7 +148,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             var result = await srv.CreateShipmentListAsync(payload, wmsShipmentList);
             var success = result.Count(i => !i.Success) == 0;
             Assert.True(success, result.Where(i => !i.Success).SelectMany(j => j.Messages).ObjectToString());
-             
+
             //Assert.True(!result.InvoiceUuid.IsZero(), "Shipment Added. But invoice was not transferred.");
         }
     }

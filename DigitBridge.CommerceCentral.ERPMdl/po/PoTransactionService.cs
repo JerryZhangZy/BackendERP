@@ -548,7 +548,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Load Po data.
         /// </summary>
         /// <param name="poUuid"></param>
-        public async Task<bool> LoadPoAsync(string poUuid)
+        public async Task<bool> LoadPoByPoUuidAsync(string poUuid)
         {
             // load invoice data
             PurchaseOrderService.List();
@@ -696,14 +696,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             this.AttachData(data);
-
-            //if all items are belong to same po, load podata.
-            if (!Data.PoTransaction.PoUuid.IsZero() && !await LoadPoAsync(Data.PoTransaction.PoUuid))
-                return false;
-
-            // validate data for Add processing
-            if (!(await ValidateAsync()))
-                return false;
 
             return await SaveDataAsync();
         }
