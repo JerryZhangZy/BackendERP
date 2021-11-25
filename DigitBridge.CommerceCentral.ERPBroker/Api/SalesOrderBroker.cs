@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPBroker
         public static async Task CreateSalesOrderByCentralOrder([QueueTrigger("erp-create-salesorder-by-centralorder")] string myQueueItem, ILogger log)
         {
             log.LogInformation($"C# Queue trigger function processed: {myQueueItem}");
-            var salesOrderClient = new SalesOrderClient();
+            var salesOrderClient = new ChannelOrderClient();
             var eventDto = new UpdateErpEventDto();
             try
             {

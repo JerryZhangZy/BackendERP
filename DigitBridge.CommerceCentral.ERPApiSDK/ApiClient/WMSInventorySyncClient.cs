@@ -20,15 +20,15 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.ApiClient
         public WMSInventorySyncClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
-        public async Task<bool> InventoryDataAsync(WMSInventorySyncModel  wMSInventorySyncModel)
+        public async Task<bool> InventoryDataAsync(int masterAccountNum, int profileNum, IList<InventorySyncItemsModel> inventorySyncItems)
         {
 
-            if (!SetAccount(wMSInventorySyncModel.MasterAccountNum, wMSInventorySyncModel.ProfileNum))
+            if (!SetAccount(masterAccountNum, profileNum))
             {
                 return false;
             }
           
-            return await PostAsync(new WMSInventorySyncPayload() { InventorySyncData = wMSInventorySyncModel }, FunctionUrl.InventorySync);
+            return await PostAsync(inventorySyncItems, FunctionUrl.InventorySync);
         }
 
         protected override async Task<bool> AnalysisResponseAsync(string responseData)
