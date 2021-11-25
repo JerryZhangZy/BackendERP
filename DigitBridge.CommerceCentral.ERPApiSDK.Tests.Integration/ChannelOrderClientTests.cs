@@ -42,7 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         {
             var client = new ChannelOrderClient(_baseUrl, _code);
             var centralOrderUuid = "44fb1ae8-83ea-4b34-9eec-b358f94953df";
-            var result = await client.CentralOrderToErpAsync(MasterAccountNum, ProfileNum, centralOrderUuid);
+            var result = await client.ChannelOrderToErpAsync(MasterAccountNum, ProfileNum, centralOrderUuid);
             Assert.True(client.Data != null, "succ");
             Assert.True(client.Data.ProcessUuid == centralOrderUuid, "succ");
             Assert.True(result, "succ");

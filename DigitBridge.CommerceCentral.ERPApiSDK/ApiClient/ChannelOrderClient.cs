@@ -20,7 +20,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <param name="ProfileNum"></param>
         /// <param name="processUuid"></param>
         /// <returns></returns>
-        public async Task<bool> CentralOrderToErpAsync(int masterAccountNum, int profileNum, string centralOrderUuid)
+        public async Task<bool> ChannelOrderToErpAsync(int masterAccountNum, int profileNum, string centralOrderUuid)
         {
             var data = new AddErpEventDto
             {

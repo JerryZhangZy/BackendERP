@@ -62,14 +62,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         #endregion
 
         /// <summary>
-        /// send central order to erp.
+        /// send ChannelOrder to erp.
         /// </summary>
         /// <param name="payload"></param>
         /// <param name="centralOrderUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> SendCentralOrderToErpAsync(int masterAccountNum, int profileNum, string centralOrderUuid)
+        public virtual async Task<bool> ReSendChannelOrderToErpAsync(int masterAccountNum, int profileNum, string centralOrderUuid)
         {
-            var success = await centralOrderClient.CentralOrderToErpAsync(masterAccountNum, profileNum, centralOrderUuid);
+            var success = await centralOrderClient.ChannelOrderToErpAsync(masterAccountNum, profileNum, centralOrderUuid);
             if (!success)
             {
                 this.Messages.Add(centralOrderClient.Messages);
@@ -78,12 +78,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         /// <summary>
-        /// send central order to erp.
+        /// send ChannelOrder to erp.
         /// </summary>
         /// <param name="payload"></param>
         /// <param name="centralOrderUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> ReSendAllCentralOrderToErp(ChannelOrderPayload payload)
+        public virtual async Task<bool> ReSendAllChannelOrderToErp(ChannelOrderPayload payload)
         {
             var srv = new CentralOrderList(dbFactory, new CentralOrderQuery());
             await srv.GetChannelOrderListAsync(payload);
@@ -111,7 +111,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.SentCentralOrderUuids = new List<string>();
             foreach (var centralOrderUuid in payload.MatchedCentralOrderUuids)
             {
-                if (!await SendCentralOrderToErpAsync(payload.MasterAccountNum, payload.ProfileNum, centralOrderUuid))
+                if (!await ReSendChannelOrderToErpAsync(payload.MasterAccountNum, payload.ProfileNum, centralOrderUuid))
                     continue; 
                 
                 payload.SentCentralOrderUuids.Add(centralOrderUuid);
