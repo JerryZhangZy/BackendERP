@@ -1,9 +1,12 @@
 ﻿using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPApiSDK;
 using DigitBridge.CommerceCentral.ERPDb;
+using DigitBridge.CommerceCentral.YoPoco;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -13,12 +16,40 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public class IntegrationCentralOrderApi : IMessage
     {
         public IntegrationCentralOrderApi() { }
+        public IntegrationCentralOrderApi(IDataBaseFactory dbFactory)
+        {
+            SetDataBaseFactory(dbFactory);
+        }
+
+
+        #region DataBase
+        [XmlIgnore, JsonIgnore]
+        protected IDataBaseFactory _dbFactory;
+
+        [XmlIgnore, JsonIgnore]
+        public IDataBaseFactory dbFactory
+        {
+            get
+            {
+                if (_dbFactory is null)
+                    _dbFactory = DataBaseFactory.CreateDefault();
+                return _dbFactory;
+            }
+        }
+
+        public void SetDataBaseFactory(IDataBaseFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
+
+        #endregion DataBase
         public IntegrationCentralOrderApi(string baseUrl, string authCode)
         {
             _centralOrderClient = new CentralOrderClient(baseUrl, authCode);
         }
-        private CentralOrderClient _centralOrderClient;
 
+        #region Service
+        private CentralOrderClient _centralOrderClient;
         protected CentralOrderClient centralOrderClient
         {
             get
@@ -28,6 +59,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return _centralOrderClient;
             }
         }
+        #endregion
+
         /// <summary>
         /// send central order to erp.
         /// </summary>
@@ -43,6 +76,49 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return success;
         }
+
+        /// <summary>
+        /// send central order to erp.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="centralOrderUuid"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ReSendAllCentralOrderToErp(ChannelOrderPayload payload)
+        {
+            var srv = new CentralOrderList(dbFactory, new CentralOrderQuery());
+            await srv.GetChannelOrderListAsync(payload);
+            if (!payload.Success)
+            {
+                this.Messages.Add(srv.Messages);
+                return false;
+            }
+            if (payload.ChannelOrderListCount == 0)
+            {
+                AddInfo("ChannelOrderListCount is 0");
+                return true;
+            }
+
+            var jsonData = payload.ChannelOrderList.ToString();
+
+            if (jsonData.IsZero())
+            {
+                AddInfo("ChannelOrderList is empty.");
+                return true;
+            }
+
+            var queryResult = JArray.Parse(jsonData);
+            payload.MatchedCentralOrderUuids = queryResult.Select(i => i.Value<string>("centralOrderUuid")).ToList();
+            payload.SentCentralOrderUuids = new List<string>();
+            foreach (var centralOrderUuid in payload.MatchedCentralOrderUuids)
+            {
+                if (!await SendCentralOrderToErpAsync(payload.MasterAccountNum, payload.ProfileNum, centralOrderUuid))
+                    continue; 
+                
+                payload.SentCentralOrderUuids.Add(centralOrderUuid);
+            }
+            return true;
+        }
+
 
         #region Messages
         protected IList<MessageClass> _messages;
