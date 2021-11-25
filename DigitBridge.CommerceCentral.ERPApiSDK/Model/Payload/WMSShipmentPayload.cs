@@ -99,6 +99,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public decimal LineHandlingFee = 0;
 
         public DateTime EnterDateUtc = DateTime.UtcNow;
+
+        [Required]
+        public string SalesOrderItemsUuid { get; set; }
     }
     public class InputOrderShipmentCanceledItemType
     {
@@ -113,6 +116,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         [Required]
         public string CancelCode = ""; //see CancelCodeType
         public string CancelOtherReason = "";
+        [Required]
+        public string SalesOrderItemsUuid { get; set; }
     }
 
     public class InputOrderShipmentPackageItemsType
@@ -128,7 +133,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 
     #endregion
     public class WmsOrderShipmentPayload : ResponsePayloadBase
-    { 
+    {
         /// <summary>
         /// The uuid of invoice tranferred from shipment.
         /// </summary>
