@@ -531,7 +531,7 @@ where PoUuid=@0";
             var header = data.PoTransaction;
             //if (header.TransStatus != (int)PoTransStatus.APReceive)
             //    return false;
-            var poUuid = data.PoTransaction.PoUuid;
+            var poUuid = data.PoTransaction.TransUuid;
             Edit();
             var rowNum = await GetRowNumByPoUuidAsync(poUuid);
             var summary = GetSummaryAmountByPoUuid(poUuid);

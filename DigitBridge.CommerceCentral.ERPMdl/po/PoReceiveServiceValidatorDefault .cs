@@ -80,12 +80,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("Effective TransactionItem is require.");
                 return false;
             }
-            //decimal totalAmount = 0;
-            //foreach (var item in dto.PoTransactionItems)
-            //{
-            //    totalAmount += item.TransQty.Value;
-            //}
-            //dto.PoTransaction.TotalAmount = totalAmount;
+          
 
             if (processingMode == ProcessingMode.Add)
             {
@@ -136,26 +131,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
              
                     AddError($"{item.PoItemUuid}Receive item TransQty cannot less than 0.");
                 }
-
-
-                //var poData= GetPurchaseOrderData(item.PoNum, data.PoTransaction.ProfileNum, data.PoTransaction.MasterAccountNum);
-                //if (poData == null)
-                //{
-                //    isValid = false;
-                //     AddError($"Can not find this PurchaseOrder.  PoItemUuid:{item.PoUuid},PoNum:{item.PoNum}]");
-                //}
-
-
-
-
-                //decimal PoQty = (poData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid)?.PoQty).ToQty();
-                //decimal ReceivedQty = (poData?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid)?.ReceivedQty).ToQty();
-                //decimal CancelledQty = (poData ?.PoItems?.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid)?.CancelledQty).ToQty();
-                // if (item.TransQty > (PoQty - ReceivedQty))
-                // {
-                //     isValid = false;
-                //     AddError($"Receive item TransQty cannot greater than OpenQty. [Sku:{item.SKU},PoItemUuid:{item.PoUuid},TransQty:{item.TransQty},OpenQty:{item.OpenQty}]");
-                // }
+ 
             }
             return isValid;
         }
