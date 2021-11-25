@@ -18,6 +18,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -25,16 +26,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a PurchaseOrderService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class PurchaseOrderManager :  IPurchaseOrderManager , IMessage
+    public class PurchaseOrderManager : IPurchaseOrderManager, IMessage
     {
 
-        public PurchaseOrderManager() : base() {}
+        public PurchaseOrderManager() : base() { }
 
         public PurchaseOrderManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
         }
-        
+
         [XmlIgnore, JsonIgnore]
         protected PurchaseOrderService _purchaseOrderService;
         [XmlIgnore, JsonIgnore]
@@ -58,6 +59,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (_purchaseOrderDataDtoCsv is null)
                     _purchaseOrderDataDtoCsv = new PurchaseOrderDataDtoCsv();
                 return _purchaseOrderDataDtoCsv;
+            }
+        }
+
+        [XmlIgnore, JsonIgnore]
+        protected PoReceiveService _poReceiveService;
+        [XmlIgnore, JsonIgnore]
+        public PoReceiveService PoReceiveService
+        {
+            get
+            {
+                if (_poReceiveService is null)
+                    _poReceiveService = new PoReceiveService(dbFactory);
+                return _poReceiveService;
             }
         }
 
@@ -90,9 +104,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<byte[]> ExportAsync(PurchaseOrderPayload payload)
         {
-            var rowNumList =await purchaseOrderList.GetRowNumListAsync(payload);
+            var rowNumList = await purchaseOrderList.GetRowNumListAsync(payload);
             var dtoList = new List<PurchaseOrderDataDto>();
-           foreach(var x in rowNumList)
+            foreach (var x in rowNumList)
             {
                 if (purchaseOrderService.GetData(x))
                     dtoList.Add(purchaseOrderService.ToDto());
@@ -104,7 +118,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public byte[] Export(PurchaseOrderPayload payload)
         {
-            var rowNumList =purchaseOrderList.GetRowNumList(payload);
+            var rowNumList = purchaseOrderList.GetRowNumList(payload);
             var dtoList = new List<PurchaseOrderDataDto>();
             foreach (var x in rowNumList)
             {
@@ -118,12 +132,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public void Import(PurchaseOrderPayload payload, IFormFileCollection files)
         {
-            if(files==null||files.Count==0)
+            if (files == null || files.Count == 0)
             {
                 AddError("no files upload");
                 return;
             }
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 if (!file.FileName.ToLower().EndsWith("csv"))
                 {
@@ -134,7 +148,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.PurchaseOrder = item;
                     if (purchaseOrderService.Add(payload))
@@ -155,23 +169,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task ImportAsync(PurchaseOrderPayload payload, IFormFileCollection files)
         {
-            if(files==null||files.Count==0)
+            if (files == null || files.Count == 0)
             {
                 AddError("no files upload");
                 return;
             }
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 if (!file.FileName.ToLower().EndsWith("csv"))
                 {
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list =purchaseOrderDataDtoCsv.Import(file.OpenReadStream());
+                var list = purchaseOrderDataDtoCsv.Import(file.OpenReadStream());
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.PurchaseOrder = item;
                     if (await purchaseOrderService.AddAsync(payload))
@@ -194,13 +208,117 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid)
         {
-                return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, "po");
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, "po");
         }
 
         public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string currentNumber)
         {
-                return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "po", currentNumber);
+            return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "po", currentNumber);
         }
+
+        #region Add po trans for wms po receive.
+
+        /// <summary>
+        /// Add po trans for wms po receive.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="receiveItems"></param>
+        /// <returns></returns>
+        public async Task<IList<WMSPoReceivePayload>> AddTransForWMSPoReceiveAsync(PoReceivePayload payload)
+        {
+            var results = new List<WMSPoReceivePayload>();
+
+            if (!payload.HasWMSPoReceiveItems)
+            {
+                AddError("WMSPoReceiveItems cannot be empty");
+                results.Add(new WMSPoReceivePayload() { Messages = this.Messages });
+                return results;
+            }
+            if (payload.WMSPoReceiveItems.Count(i => i.PoItemUuid.IsZero()) > 0)
+            {
+                AddError("PoItemUuid cannot be empty");
+                results.Add(new WMSPoReceivePayload() { Messages = this.Messages });
+                return results;
+            }
+
+            var poItemUuids = payload.WMSPoReceiveItems.Select(i => i.PoItemUuid).Distinct().ToList();
+            // Get po data list by po item uuid list.
+            var mergedPoDataList = await purchaseOrderService.GetMergedPoByPoItemUuidsAsync(payload.MasterAccountNum, payload.ProfileNum, poItemUuids);
+
+
+            foreach (var mergedPoData in mergedPoDataList)
+            {
+                if (mergedPoData.PoItems is null || mergedPoData.PoItems.Count == 0) continue;
+
+                var data = GetPoTransData(payload, mergedPoData);
+
+                var success = await PoReceiveService.AddAsync(data);
+
+                results.Add(new WMSPoReceivePayload()
+                {
+                    Messages = this.Messages,
+                    Success = success,
+                    PoItemUuidList = data.PoTransactionItems.Select(i => i.PoItemUuid).ToList(),
+                    TransUuid = data.PoTransaction.TransUuid,
+                });
+            }
+            return results;
+        }
+
+        /// <summary>
+        /// Get po transaction from wms po receive items.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="mergedPoData"></param>
+        /// <returns></returns>
+        protected PoTransactionData GetPoTransData(PoReceivePayload payload, PurchaseOrderData mergedPoData)
+        {
+            var header = mergedPoData.PoHeader;
+
+            var data = new PoTransactionData()
+            {
+                PoTransaction = new PoTransaction()
+                {
+                    TransUuid = Guid.NewGuid().ToString(),
+                    MasterAccountNum = payload.MasterAccountNum,
+                    ProfileNum = payload.ProfileNum,
+                    VendorCode = header.VendorCode,
+                    VendorName = header.VendorName,
+                    VendorUuid = header.VendorUuid,
+                    PoNum = header.PoNum,
+                    PoUuid = header.PoUuid,
+                    TransStatus = (int)PoTransStatus.StockReceive
+                },
+                PurchaseOrderData = mergedPoData,
+            };
+
+            data.PoTransactionItems = new List<PoTransactionItems>();
+            foreach (var item in mergedPoData.PoItems)//mergedPoData.PoItems only contain wms po receive post poitemuuid.
+            {
+                var wmsItems = payload.WMSPoReceiveItems.Where(i => i.PoItemUuid == item.PoItemUuid);
+                foreach (var wmsItem in wmsItems)
+                {
+                    var transItem = new PoTransactionItems()
+                    {
+                        TransItemUuid = Guid.NewGuid().ToString(),
+                        PoItemUuid = wmsItem.PoItemUuid,
+                        TransQty = wmsItem.Qty,
+                        WarehouseCode = wmsItem.WarehouseCode,
+                        SKU = wmsItem.SKU,
+                        Price = item.Price,
+                        Currency = item.Currency,
+                        Costable = item.Costable,
+                        IsAp = item.IsAp,
+                        Taxable = item.Taxable,
+                    };
+                    //transItem.SetParent(data);
+                    data.PoTransactionItems.Add(transItem);
+                }
+
+            }
+            return data;
+        }
+        #endregion
 
         #region DataBase
         [XmlIgnore, JsonIgnore]
