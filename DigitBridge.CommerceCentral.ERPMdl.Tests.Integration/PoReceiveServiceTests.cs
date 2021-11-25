@@ -69,7 +69,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 }
             };
 
-            var service = new PoReceiveService(DataBaseFactory);
+            var service = new PoReceiveManager(DataBaseFactory);
             var result = await service.AddTransForWMSPoReceiveAsync(payload);
             var success = result != null && result.Count(i => !i.Success) <= 0;
             Assert.True(success, result.SelectMany(i => i.Messages).ObjectToString());
