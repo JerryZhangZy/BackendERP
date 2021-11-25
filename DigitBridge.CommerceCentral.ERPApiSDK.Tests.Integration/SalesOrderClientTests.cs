@@ -38,7 +38,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendAddData_Test()
         {
-            var client = new SalesOrderClient(_baseUrl, _code);
+            var client = new ChannelOrderClient(_baseUrl, _code);
             var data=new AddErpEventDto{
                 MasterAccountNum=10001,
                 ProcessUuid=Guid.NewGuid().ToString(),
@@ -52,7 +52,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendAddDataWithConfig_Test()
         {
-            var client = new SalesOrderClient();
+            var client = new ChannelOrderClient();
             var data=new AddErpEventDto{
                 MasterAccountNum=10001,
                 ProcessUuid=Guid.NewGuid().ToString(),
@@ -67,7 +67,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendActionResult_Test()
         {
-            var client = new SalesOrderClient(_baseUrl, _code);
+            var client = new ChannelOrderClient(_baseUrl, _code);
             var data=new UpdateErpEventDto{
                 MasterAccountNum=10001,
                 EventUuid=Guid.NewGuid().ToString(),
@@ -83,7 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendActionResultWithConfig_Test()
         {
-            var client = new SalesOrderClient();
+            var client = new ChannelOrderClient();
             var data=new UpdateErpEventDto{
                 MasterAccountNum=10001,
                 EventUuid=Guid.NewGuid().ToString(),
