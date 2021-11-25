@@ -6,36 +6,36 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     internal static class FunctionUrl
     {
-        internal const string ResendEvent = "/resend/";
+        internal const string ResendEvent = "/api/erpevents/resend";
 
-        internal static string QuickBooksInvoice = "/addQuicksBooksInvoice";
-        internal static string QuickBooksInvoiceVoid = "/addQuicksBooksInvoiceVoid";
+        internal static string QuickBooksInvoice = "/api/erpevents/addQuicksBooksInvoice";
+        internal static string QuickBooksInvoiceVoid = "/api/erpevents/addQuicksBooksInvoiceVoid";
 
-        internal static string QuickBooksReturn = "/addQuicksBooksReturn";
-        internal static string QuickBooksReturnDelete = "/addQuicksBooksReturnDelete";
+        internal static string QuickBooksReturn = "/api/erpevents/addQuicksBooksReturn";
+        internal static string QuickBooksReturnDelete = "/api/erpevents/addQuicksBooksReturnDelete";
 
-        internal static string QuickBooksPayment = "/addQuicksBooksPayment";
-        internal static string QuickBooksPaymentDelete = "/addQuicksBooksPaymentDelete";
+        internal static string QuickBooksPayment = "/api/erpevents/addQuicksBooksPayment";
+        internal static string QuickBooksPaymentDelete = "/api/erpevents/addQuicksBooksPaymentDelete";
 
-        internal static string CreateSalesOrderByCentralOrder = "/addCreateSalesOrderByCentralOrder";
-        internal static string CreateInvoiceByOrderShipment = "/addCreateInvoiceByOrderShipment";
+        internal static string CreateSalesOrderByCentralOrder = "/api/erpevents/addCreateSalesOrderByCentralOrder";
+        internal static string CreateInvoiceByOrderShipment = "/api/erpevents/addCreateInvoiceByOrderShipment";
 
-        internal const string GetSalesOrderOpenList = "wms/salesOrders/find";
-        internal const string AckReceiveSalesOrders = "wms/salesOrders/AckReceive";
-        internal const string AckProcessSalesOrders = "wms/salesOrders/AckProcess";
+        internal const string GetSalesOrderOpenList = "/api/wms/salesOrders/find";
+        internal const string AckReceiveSalesOrders = "/api/wms/salesOrders/AckReceive";
+        internal const string AckProcessSalesOrders = "/api/wms/salesOrders/AckProcess";
 
-        internal const string GetPurchaseOrderList = "wms/purchaseOrders/find";
-        internal const string AckReceivePurchaseOrders = "wms/purchaseOrders/AckReceive";
-        internal const string AckProcessPurchaseOrders = "wms/purchaseOrders/AckProcess";
-        internal const string PoReceive = "wms/purchaseOrders/receive";
+        internal const string GetPurchaseOrderList = "/api/wms/purchaseOrders/find";
+        internal const string AckReceivePurchaseOrders = "/api/wms/purchaseOrders/AckReceive";
+        internal const string AckProcessPurchaseOrders = "/api/wms/purchaseOrders/AckProcess";
+        internal const string PoReceive = "/api/wms/purchaseOrders/receive";
 
-        internal static string InventorySync = "/InventorySyncs";
+        internal static string InventorySync = "/api/InventorySyncs";
 
-        internal const string AddShipments = "wms/shipments";
+        internal const string AddShipments = "/api/wms/shipments";
 
-        internal const string UnprocessList = "commercecentral/invoices/list/unprocess";
-        internal const string AckReceiveInvoices = "commercecentral/invoices/AckReceive";
-        internal const string AckProcessInvoices = "commercecentral/invoices/AckProcess";
+        internal const string UnprocessList = "/api/commercecentral/invoices/list/unprocess";
+        internal const string AckReceiveInvoices = "/api/commercecentral/invoices/AckReceive";
+        internal const string AckProcessInvoices = "/api/commercecentral/invoices/AckProcess";
 
     }
 }

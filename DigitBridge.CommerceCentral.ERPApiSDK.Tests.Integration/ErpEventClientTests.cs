@@ -14,8 +14,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
 
-        private string _baseUrl = "http://localhost:7073/api/erpevents";
-        //private string _baseUrl = "https://digitbridge-erp-event-api-dev.azurewebsites.net/api/erpevents";
+        private string _baseUrl = "http://localhost:7073";
+        //private string _baseUrl = "https://digitbridge-erp-event-api-dev.azurewebsites.neterpevents";
         private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
 
         protected const int MasterAccountNum = 10001;

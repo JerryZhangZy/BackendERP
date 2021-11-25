@@ -19,7 +19,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
 
-        private string _baseUrl = "http://localhost:7071/api";
+        private string _baseUrl = "http://localhost:7071";
         private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
 
         public InventorySyncClientTest(TestFixture<StartupTest> fixture)
