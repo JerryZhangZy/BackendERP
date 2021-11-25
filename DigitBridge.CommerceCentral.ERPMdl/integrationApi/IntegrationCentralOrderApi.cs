@@ -1,5 +1,6 @@
 ﻿using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPApiSDK;
+using DigitBridge.CommerceCentral.ERPDb;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,36 +10,36 @@ using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class CentralOrderApi : IMessage
+    public class IntegrationCentralOrderApi : IMessage
     {
-        public CentralOrderApi() { }
-        public CentralOrderApi(string baseUrl, string authCode)
+        public IntegrationCentralOrderApi() { }
+        public IntegrationCentralOrderApi(string baseUrl, string authCode)
         {
-            _erpEventClient = new ErpEventClient(baseUrl, authCode);
+            _centralOrderClient = new CentralOrderClient(baseUrl, authCode);
         }
-        private ErpEventClient _erpEventClient;
+        private CentralOrderClient _centralOrderClient;
 
-        protected ErpEventClient erpEventClient
+        protected CentralOrderClient centralOrderClient
         {
             get
             {
-                if (_erpEventClient is null)
-                    _erpEventClient = new ErpEventClient();
-                return _erpEventClient;
+                if (_centralOrderClient is null)
+                    _centralOrderClient = new CentralOrderClient();
+                return _centralOrderClient;
             }
         }
         /// <summary>
-        /// resend event by event uuid.
+        /// send central order to erp.
         /// </summary>
         /// <param name="payload"></param>
-        /// <param name="eventUuid"></param>
+        /// <param name="centralOrderUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> ResendEventAsync(int masterAccountNum, int profileNum, string eventUuid)
+        public virtual async Task<bool> CentralOrderToErpAsync(ChannelOrderPayload payload, string centralOrderUuid)
         {
-            var success = await erpEventClient.ResendEventAsync(masterAccountNum, profileNum, eventUuid);
+            var success = await centralOrderClient.CentralOrderToErpAsync(payload.MasterAccountNum, payload.ProfileNum, centralOrderUuid);
             if (!success)
             {
-                this.Messages.Add(erpEventClient.Messages);
+                this.Messages.Add(centralOrderClient.Messages);
             }
             return success;
         }

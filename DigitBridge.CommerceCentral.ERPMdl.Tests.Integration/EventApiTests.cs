@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         [Fact()]
         public async Task ResendAsync_Test()
         {
-            var client = new EventApi(_baseUrl, _code);
+            var client = new IntegrationEventApi(_baseUrl, _code);
             var eventUuid = "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622";
             var success = await client.ResendEventAsync(MasterAccountNum, ProfileNum, eventUuid);
             Assert.True(success, client.Messages.ObjectToString());

@@ -9,10 +9,10 @@ using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class EventApi : IMessage
+    public class IntegrationEventApi : IMessage
     {
-        public EventApi() { }
-        public EventApi(string baseUrl, string authCode)
+        public IntegrationEventApi() { }
+        public IntegrationEventApi(string baseUrl, string authCode)
         {
             _erpEventClient = new ErpEventClient(baseUrl, authCode);
         }
