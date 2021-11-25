@@ -28,7 +28,7 @@ using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
-    public partial class IntegrationCentralOrderApiTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class IntegrationChannelOrderApiTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug Helper Function";
 
@@ -42,7 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         protected const int MasterAccountNum = 10002;
         protected const int ProfileNum = 10003;
-        public IntegrationCentralOrderApiTests(TestFixture<StartupTest> fixture)
+        public IntegrationChannelOrderApiTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         [Fact()]
         public async Task ResendAsync_Test()
         {
-            var client = new IntegrationCentralOrderApi(_baseUrl, _code);
+            var client = new IntegrationChannelOrderApi(_baseUrl, _code);
             var centralOrderUuid = "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622";
             var success = await client.SendCentralOrderToErpAsync(MasterAccountNum, ProfileNum, centralOrderUuid);
             Assert.True(success, client.Messages.ObjectToString());

@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
-    public class CentralOrderClient : ErpEventClient
+    public class ChannelOrderClient : ErpEventClient
     {
 
-        public CentralOrderClient() : base()
+        public ChannelOrderClient() : base()
         { }
-        public CentralOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
+        public ChannelOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
         /// <summary>

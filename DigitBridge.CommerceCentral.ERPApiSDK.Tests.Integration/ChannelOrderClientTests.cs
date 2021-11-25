@@ -6,7 +6,7 @@ using Xunit;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
-    public partial class CentralOrderClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class ChannelOrderClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug TableUniversalTests Function";
 
@@ -18,7 +18,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
         protected const int MasterAccountNum = 10002;
         protected const int ProfileNum = 10003;
-        public CentralOrderClientTests(TestFixture<StartupTest> fixture)
+        public ChannelOrderClientTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -40,7 +40,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendAddData_Test()
         {
-            var client = new CentralOrderClient(_baseUrl, _code);
+            var client = new ChannelOrderClient(_baseUrl, _code);
             var centralOrderUuid = "44fb1ae8-83ea-4b34-9eec-b358f94953df";
             var result = await client.CentralOrderToErpAsync(MasterAccountNum, ProfileNum, centralOrderUuid);
             Assert.True(client.Data != null, "succ");
@@ -51,7 +51,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendActionResult_Test()
         {
-            var client = new CentralOrderClient(_baseUrl, _code);
+            var client = new ChannelOrderClient(_baseUrl, _code);
             var data = new UpdateErpEventDto
             {
                 MasterAccountNum = 10001,
@@ -68,7 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         [Fact()]
         public async Task SendActionResultWithConfig_Test()
         {
-            var client = new CentralOrderClient();
+            var client = new ChannelOrderClient();
             var data = new UpdateErpEventDto
             {
                 MasterAccountNum = 10001,

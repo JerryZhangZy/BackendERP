@@ -13,10 +13,10 @@ using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class IntegrationCentralOrderApi : IMessage
+    public class IntegrationChannelOrderApi : IMessage
     {
-        public IntegrationCentralOrderApi() { }
-        public IntegrationCentralOrderApi(IDataBaseFactory dbFactory)
+        public IntegrationChannelOrderApi() { }
+        public IntegrationChannelOrderApi(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
         }
@@ -43,19 +43,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion DataBase
-        public IntegrationCentralOrderApi(string baseUrl, string authCode)
+        public IntegrationChannelOrderApi(string baseUrl, string authCode)
         {
-            _centralOrderClient = new CentralOrderClient(baseUrl, authCode);
+            _centralOrderClient = new ChannelOrderClient(baseUrl, authCode);
         }
 
         #region Service
-        private CentralOrderClient _centralOrderClient;
-        protected CentralOrderClient centralOrderClient
+        private ChannelOrderClient _centralOrderClient;
+        protected ChannelOrderClient centralOrderClient
         {
             get
             {
                 if (_centralOrderClient is null)
-                    _centralOrderClient = new CentralOrderClient();
+                    _centralOrderClient = new ChannelOrderClient();
                 return _centralOrderClient;
             }
         }
