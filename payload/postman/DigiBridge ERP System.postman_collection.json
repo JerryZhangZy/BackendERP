@@ -1027,7 +1027,7 @@
 									"raw": "{\n    \"OrderShipmentUuid\":\"0f3bbb3c-2c5a-4f39-9bad-3249bd1bca33\",\n}"
 								},
 								"url": {
-									"raw": "http://localhost:7071/api//invoices/CreateInvoiceByOrderShipmentUuid?code={{code}}",
+									"raw": "http://localhost:7071/api/invoices/CreateInvoiceByOrderShipmentUuid?code={{code}}",
 									"protocol": "http",
 									"host": [
 										"localhost"
