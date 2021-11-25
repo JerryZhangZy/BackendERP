@@ -191,6 +191,27 @@ namespace DigitBridge.CommerceCentral.ERPApi
             await srv.GetEventProcessERPListAsync(payload);
             return new JsonNetResponse<EventProcessERPPayload>(payload);
         }
+
+
+        [FunctionName(nameof(ReSendEvent))]
+        [OpenApiOperation(operationId: "ReSendEvent", tags: new[] { "EventERPs" })]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "eventUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "eventUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadUpdate))]
+        public static async Task<JsonNetResponse<EventERPPayload>> ReSendEvent(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/resend/{eventUuid}")]
+            HttpRequest req, string eventUuid)
+        {
+            var payload = await req.GetParameters<EventERPPayload>();
+            var svc = new EventApi();
+            payload.Success = await svc.ResendEventAsync(payload.MasterAccountNum, payload.ProfileNum, eventUuid);
+            payload.Messages = svc.Messages;
+            return new JsonNetResponse<EventERPPayload>(payload);
+        }
     }
 }
 
