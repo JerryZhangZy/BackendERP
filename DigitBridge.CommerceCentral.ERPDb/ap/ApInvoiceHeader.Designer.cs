@@ -63,6 +63,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("PoNum",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _poNum;
 
+        [Column("TransUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
+        private string _transUuid;
+
+        [Column("TransNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _transNum;
+
         [Column("ApInvoiceType",SqlDbType.Int,IsDefault=true)]
         private int? _apInvoiceType;
 
@@ -245,6 +251,38 @@ namespace DigitBridge.CommerceCentral.ERPDb
             {
 				_poNum = value.TruncateTo(50); 
 				OnPropertyChanged("PoNum", value);
+            }
+        }
+
+		/// <summary>
+		/// Link to PoTransaction uuid. <br> Display: false, Editable: false.
+		/// </summary>
+        public virtual string TransUuid
+        {
+            get
+            {
+				return _transUuid?.TrimEnd(); 
+            }
+            set
+            {
+				_transUuid = value.TruncateTo(50); 
+				OnPropertyChanged("TransUuid", value);
+            }
+        }
+
+		/// <summary>
+		/// Link to PoTransaction number, unique in same database and profile. <br> Title: PoHeader Number, Display: true, Editable: false
+		/// </summary>
+        public virtual int TransNum
+        {
+            get
+            {
+				return _transNum; 
+            }
+            set
+            {
+				_transNum = value; 
+				OnPropertyChanged("TransNum", value);
             }
         }
 
@@ -694,6 +732,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_apInvoiceNum = String.Empty; 
 			_poUuid = String.Empty; 
 			_poNum = String.Empty; 
+			_transUuid = String.Empty; 
+			_transNum = default(int); 
 			_apInvoiceType = AllowNull ? (int?)null : default(int); 
 			_apInvoiceStatus = AllowNull ? (int?)null : default(int); 
 			_apInvoiceDate = new DateTime().MinValueSql(); 

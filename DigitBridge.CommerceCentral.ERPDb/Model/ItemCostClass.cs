@@ -44,12 +44,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
             ChargeAndAllowanceAmount = inv.ChargeAndAllowanceAmount.ToAmount();
             TaxRate = inv.TaxRate.ToRate();
             TaxAmount = inv.TaxAmount.ToAmount();
-
             UnitCost = inv.UnitCost;
             AvgCost = inv.AvgCost;
             SalesCost = inv.SalesCost;
             Cost = (AvgCost.IsZero()) ? UnitCost : AvgCost;
-
             Instock = inv.Instock;
         }
         
@@ -66,7 +64,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             TaxAmount = item.TaxAmount.ToAmount();
 
             UnitCost = item.Price.ToAmount();
-            AvgCost = item.Price.ToAmount();
+            //AvgCost = item.Price.ToAmount();
             SalesCost = item.Price.ToAmount();
             Cost = (AvgCost.IsZero()) ? UnitCost : AvgCost;
 

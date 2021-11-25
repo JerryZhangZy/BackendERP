@@ -79,6 +79,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasApInvoiceNum) data.ApInvoiceNum = dto.ApInvoiceNum;
 			if (dto.HasPoUuid) data.PoUuid = dto.PoUuid;
 			if (dto.HasPoNum) data.PoNum = dto.PoNum;
+			if (dto.HasTransUuid) data.TransUuid = dto.TransUuid;
+			if (dto.HasTransNum) data.TransNum = dto.TransNum.ToInt();
 			if (dto.HasApInvoiceType) data.ApInvoiceType = dto.ApInvoiceType;
 			if (dto.HasApInvoiceStatus) data.ApInvoiceStatus = dto.ApInvoiceStatus;
 			if (dto.HasApInvoiceDate) data.ApInvoiceDate = dto.ApInvoiceDate.ToDateTime();
@@ -289,6 +291,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			dto.ApInvoiceNum = data.ApInvoiceNum;
 			dto.PoUuid = data.PoUuid;
 			dto.PoNum = data.PoNum;
+			dto.TransUuid = data.TransUuid;
+			dto.TransNum = data.TransNum;
 			dto.ApInvoiceType = data.ApInvoiceType;
 			dto.ApInvoiceStatus = data.ApInvoiceStatus;
 			dto.ApInvoiceDate = data.ApInvoiceDate;
