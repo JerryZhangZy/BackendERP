@@ -83,7 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         {
             var payload = await req.GetParameters<ChannelOrderPayload>();
             var svc = new IntegrationCentralOrderApi();
-            payload.Success = await svc.CentralOrderToErpAsync(payload, centralOrderUuid);
+            payload.Success = await svc.SendCentralOrderToErpAsync(payload.MasterAccountNum, payload.ProfileNum, centralOrderUuid);
             payload.Messages = svc.Messages;
             return new JsonNetResponse<ChannelOrderPayload>(payload);
         }

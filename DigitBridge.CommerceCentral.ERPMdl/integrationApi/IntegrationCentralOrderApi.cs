@@ -34,9 +34,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="centralOrderUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> CentralOrderToErpAsync(ChannelOrderPayload payload, string centralOrderUuid)
+        public virtual async Task<bool> SendCentralOrderToErpAsync(int masterAccountNum, int profileNum, string centralOrderUuid)
         {
-            var success = await centralOrderClient.CentralOrderToErpAsync(payload.MasterAccountNum, payload.ProfileNum, centralOrderUuid);
+            var success = await centralOrderClient.CentralOrderToErpAsync(masterAccountNum, profileNum, centralOrderUuid);
             if (!success)
             {
                 this.Messages.Add(centralOrderClient.Messages);
