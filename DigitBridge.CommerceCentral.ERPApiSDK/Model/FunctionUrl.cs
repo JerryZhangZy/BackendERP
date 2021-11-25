@@ -29,7 +29,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         internal const string AckProcessPurchaseOrders = "/api/wms/purchaseOrders/AckProcess";
         internal const string PoReceive = "/api/wms/purchaseOrders/receive";
 
-        internal static string InventorySync = "/api/InventorySyncs";
+        internal static string InventorySync = "/api/wms/inventory";
 
         internal const string AddShipments = "/api/wms/shipments";
 
