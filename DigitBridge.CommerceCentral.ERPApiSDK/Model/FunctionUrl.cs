@@ -6,7 +6,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
     internal static class FunctionUrl
     {
-        internal const string ResendEvent = "/api/erpevents/resend";
+        internal const string ResendEvent = "/api/erpevents/resend/";
 
         internal static string QuickBooksInvoice = "/api/erpevents/addQuicksBooksInvoice";
         internal static string QuickBooksInvoiceVoid = "/api/erpevents/addQuicksBooksInvoiceVoid";
