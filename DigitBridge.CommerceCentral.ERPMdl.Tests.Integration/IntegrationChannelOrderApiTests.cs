@@ -60,14 +60,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         #region async methods
         [Fact()]
-        public async Task ResendAsync_Test()
+        public async Task ReSendChannelOrderToErpAsync_Test()
         {
             var client = new IntegrationChannelOrderApi(_baseUrl, _code);
             var centralOrderUuid = "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622";
-            var success = await client.ReSendChannelOrderToErpAsync(MasterAccountNum, ProfileNum, centralOrderUuid);
+            var payload = new ChannelOrderPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum
+            };
+            var success = await client.ReSendChannelOrderToErpAsync(payload, centralOrderUuid);
             Assert.True(success, client.Messages.ObjectToString());
         }
 
+        [Fact()]
+        public async Task ReSendAllChannelOrderToErp_Test()
+        {
+            var client = new IntegrationChannelOrderApi(_baseUrl, _code);
+            var payload = new ChannelOrderPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum,
+                LoadAll = true,
+            };
+            var success = await client.ReSendAllChannelOrderToErp(payload);
+            Assert.True(success, client.Messages.ObjectToString());
+        }
         #endregion async methods
 
     }

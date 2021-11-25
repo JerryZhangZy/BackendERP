@@ -28,7 +28,7 @@ using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
-    public partial class EventApiTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class IntegrationEventApiTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug Helper Function";
 
@@ -42,7 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         protected const int MasterAccountNum = 10002;
         protected const int ProfileNum = 10003;
-        public EventApiTests(TestFixture<StartupTest> fixture)
+        public IntegrationEventApiTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;

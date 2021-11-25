@@ -11,7 +11,7 @@ using Xunit;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
- 
+
     public partial class InventorySyncClientTest : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug TableUniversalTests Function";
@@ -21,6 +21,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
         private string _baseUrl = "http://localhost:7071";
         private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
+
+        protected const int MasterAccountNum = 10001;
+        protected const int ProfileNum = 10001;
 
         public InventorySyncClientTest(TestFixture<StartupTest> fixture)
         {
@@ -45,14 +48,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task SendAddData_Test()
         {
             var client = new WMSInventorySyncClient(_baseUrl, _code);
-            var data = new WMSInventorySyncModel
+            var inventorySyncItems = new List<InventorySyncItemsModel>()
             {
-                MasterAccountNum = 10001,
-                ProfileNum = 10001,
-                InventorySyncItems = new List<InventorySyncItemsModel>() { new InventorySyncItemsModel() { SKU = "Bike", WarehouseCode = "nobis", Qty = 20 } }
+                new InventorySyncItemsModel() { SKU = "Bike", WarehouseCode = "nobis", Qty = 20 }
+            }
+            ;
 
-            };
-            var result = await client.InventoryDataAsync(data);
+            var result = await client.InventoryDataAsync(MasterAccountNum, ProfileNum, inventorySyncItems);
             Assert.True(result, "succ");
             Assert.True(client.Messages.Count == 0, "succ");
 
