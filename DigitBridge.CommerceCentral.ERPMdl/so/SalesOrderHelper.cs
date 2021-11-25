@@ -195,10 +195,10 @@ WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + Cast(@orderDCAssignmentNum as 
         {
             var sql = $@"
 SELECT TOP 1 [SalesOrderUuid] FROM SalesOrderHeader tbl
-WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + Cast(@orderDCAssignmentNum as varchar)
+WHERE OrderSourceCode = @orderSourceCode
 ";
             var result = await SqlQuery.ExecuteScalarAsync<string>(sql,
-                 orderDCAssignmentNum.ToSqlParameter("orderDCAssignmentNum"));
+                 $"OrderDCAssignmentNum:{orderDCAssignmentNum}".ToSqlParameter("orderSourceCode"));
 
             return result;
         }

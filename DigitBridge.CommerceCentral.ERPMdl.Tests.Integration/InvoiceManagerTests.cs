@@ -61,16 +61,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             //"ed239ada-6526-4fed-99f2-e9a4fe7ad0f3",
             //"736bf01f-31a2-49b5-a14c-f6235e88e096",
             //"f9973f32-5d61-4e7c-8862-3f98f73da427"
-            "0f3bbb3c-2c5a-4f39-9bad-3249bd1bca33"
+            "cd1eefbb-d0f8-4110-9ae7-66f126802f63"
             };
             InvoiceManager invoiceManager = new InvoiceManager(DataBaseFactory);
             bool result = true;
+            var invoiceUuid = string.Empty;
             foreach (var uuid in uuids)
             {
                 try
                 {
-                    var invoiceNumber = invoiceManager.CreateInvoiceByOrderShipmentIdAsync(uuid).Result;
-                    result = !string.IsNullOrEmpty(invoiceNumber);
+                    using (var b = new Benchmark("CreateSalesOrderByChannelOrderIdAsync_Test"))
+                    {
+                        invoiceUuid = invoiceManager.CreateInvoiceByOrderShipmentIdAsync(uuid).Result;
+                        result = !string.IsNullOrEmpty(invoiceUuid);
+                    }
                     if (result)
                         Assert.True(result);
                     else
