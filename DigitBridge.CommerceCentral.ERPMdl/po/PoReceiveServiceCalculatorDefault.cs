@@ -116,26 +116,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 item.TransItemUuid = Guid.NewGuid().ToString();
             }
 
-            //Set default for invoice
-            var poData = GetPurchaseOrderData(item.PoNum, data.PoTransaction.ProfileNum, data.PoTransaction.MasterAccountNum); 
-            if (poData != null)
-            {
-                var poItem = poData.PoItems.FirstOrDefault(i => i.PoItemUuid == item.PoItemUuid);
-                if (poItem != null)
-                {
-                    item.PoUuid = poItem.PoUuid;
-                    item.InventoryUuid = item.InventoryUuid;
-                    item.ProductUuid = poItem.ProductUuid;
-                    item.SKU = poItem.SKU;
-                    item.Currency = poItem.Currency;
-                    item.LotNum = item.LotNum;
-                    if (item.WarehouseCode.IsZero())
-                    {
-                        item.WarehouseCode = poItem.WarehouseCode;
-                        item.WarehouseUuid = poItem.WarehouseUuid;
-                    }
-                }
-            }
+         
 
             return true;
         }
@@ -416,16 +397,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             return true;
         }
-        protected PurchaseOrderData GetPurchaseOrderData(string poNum, int profileNum, int masterAccountNum)
-        {
-
-            var poData = new PurchaseOrderData(dbFactory);
-            var success = poData.GetByNumber(masterAccountNum, profileNum, poNum);
-            if (!success)
-                return null;
-            else
-                return poData;
-        }
+       
         #region message
         [XmlIgnore, JsonIgnore]
         public virtual IList<MessageClass> Messages

@@ -421,7 +421,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             base.Data.PoTransaction.TransStatus = (int)PoTransStatus.Closed;
 
-            //Data.FirstAPReceiveStatus = _firstAPReceiveStatus;
             if (await base.SaveDataAsync())
             {
                 await ApInvoiceService.CreateOrUpdateApInvoiceByPoReceiveAsync(payload.MasterAccountNum, payload.ProfileNum, _data);

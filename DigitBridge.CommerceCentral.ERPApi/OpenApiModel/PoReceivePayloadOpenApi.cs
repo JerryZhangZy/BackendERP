@@ -44,8 +44,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public static PoReceivePayloadAdd GetSampleData()
         {
             var data = new PoReceivePayloadAdd();
-            data.PoTransaction = new PoTransactionDataDto().GetFakerData();
-            data.PoTransactions = new PoTransactionDataDto().GetFakerData(5);
+            //data.PoTransaction = new PoTransactionDataDto().GetFakerData();
+            data.PoTransactions = new PoTransactionDataDto().GetFakerData(2);
             return data;
         }
     }
