@@ -67,9 +67,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="centralOrderUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> ReSendChannelOrderToErpAsync(int masterAccountNum, int profileNum, string centralOrderUuid)
+        public virtual async Task<bool> ReSendChannelOrderToErpAsync(ChannelOrderPayload payload, string centralOrderUuid)
         {
-            var success = await centralOrderClient.ChannelOrderToErpAsync(masterAccountNum, profileNum, centralOrderUuid);
+            var success = await centralOrderClient.ChannelOrderToErpAsync(payload.MasterAccountNum, payload.ProfileNum, centralOrderUuid);
             if (!success)
             {
                 this.Messages.Add(centralOrderClient.Messages);
@@ -111,9 +111,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.SentCentralOrderUuids = new List<string>();
             foreach (var centralOrderUuid in payload.MatchedCentralOrderUuids)
             {
-                if (!await ReSendChannelOrderToErpAsync(payload.MasterAccountNum, payload.ProfileNum, centralOrderUuid))
-                    continue; 
-                
+                if (!await ReSendChannelOrderToErpAsync(payload, centralOrderUuid))
+                    continue;
+
                 payload.SentCentralOrderUuids.Add(centralOrderUuid);
             }
             return true;
