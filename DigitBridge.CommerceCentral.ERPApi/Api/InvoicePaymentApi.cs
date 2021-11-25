@@ -180,7 +180,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "transNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "transNum", Description = "Transaction Num. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadGetSingle))]
         public static async Task<JsonNetResponse<InvoiceNewPaymentPayload>> GetInvoicePayment(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoicePayments/{invoiceNumber}/{transNum}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoicePayments/invoice/{invoiceNumber}/transNum/{transNum}")] HttpRequest req,
             string invoiceNumber, int transNum)
         {
             var payload = await req.GetParameters<InvoiceNewPaymentPayload>();
