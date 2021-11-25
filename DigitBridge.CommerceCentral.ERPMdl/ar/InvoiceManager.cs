@@ -321,7 +321,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (salesOrderUuid.IsZero())
             {
                 salesOrderUuid = await salesOrderService.GetSalesOrderUuidByDCAssignmentNumAsync(shipmentData.OrderShipmentHeader.OrderDCAssignmentNum.Value);
-                return false;
+                shipmentData.OrderShipmentHeader.SalesOrderUuid = salesOrderUuid;
             }
             if (salesOrderUuid.IsZero())
             {
@@ -341,6 +341,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     AddError($"Shipment has been transferred to invoice.");
                     return false;
                 }
+            } else if (!string.IsNullOrEmpty(await invoiceService.GetInvoiceUuidByOrderShipmentUuidAsync(orderShipmentUuid)))
+            {
+                AddError($"Shipment has been transferred to invoice.");
+                return false;
             }
 
             //if (await ExistSalesOrderInInvoiceAsync(salesOrderUuid))
@@ -351,7 +355,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return true;
         }
-            /// <summary>
+        /// <summary>
             /// Load OrderShipment and SalesOrder, create Invoice for each OrderShipment.
             /// </summary>
         public async Task<string> CreateInvoiceFromShipmentAsync(OrderShipmentData shipmentData)

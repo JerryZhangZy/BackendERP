@@ -544,6 +544,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return await InvoiceHelper.ExistIdAsync(invoiceUuid, masterAccountNum, profileNum);
         }
 
+        public async Task<string> GetInvoiceUuidByOrderShipmentUuidAsync(string orderShipmentUuid)
+        {
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await InvoiceHelper.GetInvoiceUuidByOrderShipmentUuidAsync(orderShipmentUuid);
+        }
+
         public async Task<bool> ReceivedInvoiceTransactionReturnbackItem(InvoiceTransactionDataDto transaction)
         {
             int masterAccountNum = transaction.InvoiceDataDto.InvoiceHeader.MasterAccountNum.ToInt();
