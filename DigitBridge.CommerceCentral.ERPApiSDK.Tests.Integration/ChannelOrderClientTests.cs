@@ -6,7 +6,7 @@ using Xunit;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 {
-    public partial class SalesOrderClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class ChannelOrderClientTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug TableUniversalTests Function";
 
@@ -16,7 +16,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         private string _baseUrl = "https://digitbridge-erp-event-api-dev.azurewebsites.neterpevents";
         private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
 
-        public SalesOrderClientTests(TestFixture<StartupTest> fixture)
+        public ChannelOrderClientTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
