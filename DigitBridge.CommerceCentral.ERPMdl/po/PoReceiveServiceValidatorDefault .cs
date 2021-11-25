@@ -160,20 +160,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return isValid;
         }
 
-        /// <summary>
-        /// Load LoadPurchaseOrder data.
-        /// </summary>
-        /// <param name="poNum"></param>
-        protected PurchaseOrderData GetPurchaseOrderData(string poNum, int profileNum, int masterAccountNum)
-        {
-        
-            var poData = new PurchaseOrderData(dbFactory);
-            var success = poData.GetByNumber(masterAccountNum, profileNum, poNum);
-            if (!success)
-                return null;
-            else
-                return poData;
-        }
+ 
     }
 }
 
