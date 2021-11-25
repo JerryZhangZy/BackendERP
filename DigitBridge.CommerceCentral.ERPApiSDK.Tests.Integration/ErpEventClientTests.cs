@@ -45,7 +45,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         {
             var client = new ErpEventClient(_baseUrl, _code);
             var eventUuid = "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622";
-            var success = await client.ResendAsync(MasterAccountNum, ProfileNum, eventUuid);
+            var success = await client.ResendEventAsync(MasterAccountNum, ProfileNum, eventUuid);
 
             Assert.True(success, client.Messages.ObjectToString());
             Assert.True(client.Data != null && client.Data.EventUuid == eventUuid);

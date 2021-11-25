@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+	<Compile Remove="integrationApi\CentralOrderApi.cs" />
 	<Compile Remove="selectList\SelectListService.cs" />
 	<Compile Remove="shipment\CommerceCentralShipment\AddCentralOrderShipment.cs" />
 	<Compile Remove="shipment\CommerceCentralShipment\CommerceCentralOrderShipmentInputType.cs" />
