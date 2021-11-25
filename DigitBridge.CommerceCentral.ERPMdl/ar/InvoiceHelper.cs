@@ -155,6 +155,18 @@ WHERE SalesOrderUuid = @salesOrderUuid
                 );
             return result > 0;
         }
+
+        public static async Task<string> GetInvoiceUuidByOrderShipmentUuidAsync(string orderShipmentUuid)
+        {
+            var sql = $@"
+SELECT TOP 1 InvoiceUuid FROM InvoiceHeaderInfo
+WHERE OrderShipmentUuid= @orderShipmentUuid
+";
+            return await SqlQuery.ExecuteScalarAsync<string>(
+                sql,
+                orderShipmentUuid.ToSqlParameter("orderShipmentUuid"));
+        }
+
     }
 }
 

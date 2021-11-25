@@ -115,7 +115,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 base.AfterSave();
                 if (this.Data?.OrderShipmentHeader != null)
                 {
-                    //inventoryService.UpdateOpenSoQtyFromSalesOrderItem(this.Data.SalesOrderHeader.SalesOrderUuid);
                 }
             }
             catch (Exception)
@@ -133,6 +132,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             try
             {
                 await base.SaveSuccessAsync();
+                if (this.Data?.OrderShipmentHeader != null)
+                {
+                    await UpdateOrderShipmentNumReferenceAsync(this.Data.OrderShipmentHeader.OrderShipmentUuid);
+                }
             }
             catch (Exception)
             {
@@ -200,9 +203,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var rtn = SaveData();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return SaveData();
         }
 
         /// <summary>
@@ -225,9 +226,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var rtn = await SaveDataAsync();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return await SaveDataAsync();
         }
 
         public virtual bool Add(OrderShipmentPayload payload)
@@ -251,9 +250,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var rtn = SaveData();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return SaveData();
         }
 
         public virtual async Task<bool> AddAsync(OrderShipmentPayload payload)
@@ -277,9 +274,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var rtn = await SaveDataAsync();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return await SaveDataAsync();
         }
 
         /// <summary>
@@ -305,9 +300,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var rtn = SaveData();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return SaveData();
         }
 
         /// <summary>
@@ -333,9 +326,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var rtn = await SaveDataAsync();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return await SaveDataAsync();
         }
 
         public async Task GetListByOrderShipmentNumbersAsync(OrderShipmentPayload payload, IList<string> orderShipmentNumbers)
@@ -386,9 +377,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var rtn = SaveData();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return SaveData();
         }
 
         /// <summary>
@@ -417,9 +406,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!(await ValidateAsync()))
                 return false;
 
-            var rtn = await SaveDataAsync();
-            if (rtn) AddActivityLogForCurrentData();
-            return rtn;
+            return await SaveDataAsync();
         }
 
         InventoryLogService logService;
@@ -444,7 +431,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 if (logService == null) logService = new InventoryLogService(dbFactory);
                 await logService.UpdateByDeleteShipmentAsync(Data.OrderShipmentHeader.OrderShipmentUuid);
-                AddActivityLogForCurrentData();
             }
             return success;
         }
@@ -457,37 +443,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public virtual bool GetData(OrderShipmentPayload payload, string number)
         {
             return GetByNumber(payload.MasterAccountNum, payload.ProfileNum, number);
-        }
-        protected void AddActivityLogForCurrentData()
-        {
-            this.AddActivityLog(new ActivityLog(dbFactory)
-            {
-                Type = (int)ActivityLogType.Shipment,
-                Action = (int)this.ProcessMode,
-                LogSource = "OrderShipmentService",
-
-                MasterAccountNum = this.Data.OrderShipmentHeader.MasterAccountNum,
-                ProfileNum = this.Data.OrderShipmentHeader.ProfileNum,
-                DatabaseNum = this.Data.OrderShipmentHeader.DatabaseNum,
-                ProcessUuid = this.Data.OrderShipmentHeader.OrderShipmentUuid,
-                ProcessNumber = this.Data.OrderShipmentHeader.OrderShipmentNum.ToString(),
-                ChannelNum = this.Data.OrderShipmentHeader.ChannelAccountNum,
-                ChannelAccountNum = this.Data.OrderShipmentHeader.ChannelAccountNum,
-
-                LogMessage = string.Empty
-            });
-        }
-
-        public bool MarkShipmentTransferredToInvoice(string ordershipmentUuid)
-        {
-            Edit();
-            if (GetDataById(ordershipmentUuid))
-            {
-                Data.OrderShipmentHeader.ProcessStatus = OrderShipmentProcessStatusEnum.InvoiceReady.ToInt();
-                Data.OrderShipmentHeader.ProcessDateUtc = DateTime.UtcNow;
-                return SaveData();
-            }
-            return false;
         }
 
         public async Task<bool> UpdateProcessStatusAsync(string ordershipmentUuid, OrderShipmentProcessStatusEnum status, string invoiceUuid, string invoiceNumber)
@@ -508,19 +463,57 @@ WHERE OrderShipmentUuid=@4
                 invoiceNumber.ToSqlParameter("@3"),
                 ordershipmentUuid.ToSqlParameter("@4")
             ) > 0;
+        }
 
-            //Edit();
-            //if (GetDataById(ordershipmentUuid))
-            //{
-            //    if (Data.OrderShipmentHeader.ProcessStatus == (int)OrderShipmentProcessStatusEnum.Pending)
-            //    {
-            //        Data.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.InvoiceReady;
-            //        Data.OrderShipmentHeader.ProcessDateUtc = DateTime.UtcNow;
-            //        return await SaveDataAsync();
-            //    }
-            //    return true;
-            //}
-            //return false;
+        public async Task<bool> UpdateOrderShipmentNumReferenceAsync(string orderShipmentUuid)
+        {
+            var sql = $@"
+UPDATE spk 
+SET spk.OrderShipmentNum=shd.OrderShipmentNum 
+FROM OrderShipmentPackage spk 
+INNER JOIN OrderShipmentHeader shd ON (spk.OrderShipmentUuid = shd.OrderShipmentUuid)
+WHERE spk.OrderShipmentUuid=@0 
+";
+            await dbFactory.Db.ExecuteAsync(sql,
+                orderShipmentUuid.ToSqlParameter("@0")
+            );
+
+            var sql1 = $@"
+UPDATE spi
+SET spi.OrderShipmentNum=spk.OrderShipmentNum,
+spi.OrderShipmentPackageNum=spk.OrderShipmentPackageNum
+FROM OrderShipmentShippedItem spi 
+INNER JOIN OrderShipmentPackage spk ON (spk.OrderShipmentPackageUuid = spi.OrderShipmentPackageUuid)
+WHERE spi.OrderShipmentUuid=@0 
+";
+                await dbFactory.Db.ExecuteAsync(sql1,
+                    orderShipmentUuid.ToSqlParameter("@0")
+                );
+
+
+            var sql2 = $@"
+UPDATE spc 
+SET spc.OrderShipmentNum=shd.OrderShipmentNum 
+FROM OrderShipmentCanceledItem spc
+INNER JOIN OrderShipmentHeader shd ON (spc.OrderShipmentUuid = shd.OrderShipmentUuid)
+WHERE spc.OrderShipmentUuid=@0 
+";
+            await dbFactory.Db.ExecuteAsync(sql2,
+                orderShipmentUuid.ToSqlParameter("@0")
+                );
+
+            return true;
+        }
+
+    /// <summary>
+    /// Get ShipmentUuid by OrderDCAssignmentNum or sSalesOrderUuid
+    /// </summary>
+    public async Task<string> GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(string salesOrderUuid, string orderSourceCode)
+        {
+            if (string.IsNullOrEmpty(orderSourceCode) && string.IsNullOrEmpty(salesOrderUuid)) return string.Empty;
+            //Get SalesOrderData by uuid
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await OrderShipmentHelper.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(salesOrderUuid, orderSourceCode);
         }
 
     }

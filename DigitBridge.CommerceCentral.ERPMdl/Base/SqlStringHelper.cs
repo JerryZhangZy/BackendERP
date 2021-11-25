@@ -16,7 +16,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (string.IsNullOrEmpty(allies))
                 allies = "chanel";
-            return $"LEFT JOIN Setting_Channel {allies} ON({masterAccountNum} = chanel.MasterAccountNum AND {profileNum} = chanel.ProfileNum AND {channelNum} = chanel.ChannelNum)";
+            return @$"
+LEFT JOIN Setting_Channel {allies} ON(
+{masterAccountNum} = chanel.MasterAccountNum AND 
+{profileNum} = chanel.ProfileNum AND 
+{channelNum} = chanel.ChannelNum)
+";
         }
 
         /// <summary>
@@ -29,7 +34,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             if (string.IsNullOrEmpty(allies))
                 allies = "channelAccount";
-            return $"LEFT JOIN Setting_ChannelAccount channelAccount ON({masterAccountNum} = chanel.MasterAccountNum AND {profileNum} = chanel.ProfileNum AND {channelNum} = chanel.ChannelNum AND {channelAccountNum} = channelAccount.ChannelAccountNum)";
+            return @$"
+LEFT JOIN Setting_ChannelAccount channelAccount ON(
+{masterAccountNum} = channelAccount.MasterAccountNum AND 
+{profileNum} = channelAccount.ProfileNum AND 
+{channelNum} = channelAccount.ChannelNum AND 
+{channelAccountNum} = channelAccount.ChannelAccountNum)
+";
         }
     }
 }
