@@ -259,7 +259,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion import export 
 
-        #region Create shipment
+        #region Create shipment from API
 
         /// <summary>
         /// Create multiple shipment and invoice
@@ -386,5 +386,115 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion
+
+        #region Create shipment from Sales order
+
+        /// <summary>
+        /// Validate current shipment data 
+        /// </summary>
+        protected async Task<bool> ValidateSalesOrderForShipmentAsync(SalesOrderData salesOrderData)
+        {
+            if (salesOrderData is null)
+            {
+                this.Messages.AddError("Sales order data cannot be empty.");
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(
+                await orderShipmentService.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(
+                    salesOrderData.SalesOrderHeader.SalesOrderUuid,
+                    salesOrderData.SalesOrderHeader.OrderSourceCode
+                )))
+            {
+                this.Messages.AddError("Sales Order has been transferred to shipment.");
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<string> CreateShipmentFromSalesOrderAsync(string salesOrderUuid)
+        {
+            if (string.IsNullOrEmpty(salesOrderUuid))
+                return null;
+
+            // load sales order data           
+            if (!(await salesOrderService.ListAsync(salesOrderUuid)))
+            {
+                this.Messages.Add(salesOrderService.Messages);
+                return null;
+            }
+            var salesOrderData = salesOrderService.Data;
+            salesOrderService.DetachData(null);
+
+            if (!(await ValidateSalesOrderForShipmentAsync(salesOrderData)))
+                return null;
+
+            // Create Invoice from shipment and sales order
+            return await CreateShipmentFromSalesOrderAsync(salesOrderData);
+        }
+
+
+        /// <summary>
+        /// Create and save one shipment, but set processStatus to -1 (pending)
+        /// </summary>
+        protected async Task<string> CreateShipmentFromSalesOrderAsync(SalesOrderData salesOrderData)
+        {
+            // create orderShipmentService and save new shipment
+            var service = orderShipmentService;
+            service.Add();
+            service.NewData();
+
+            // create mapper, and transfer shipment payload ro ero shipment Dto
+            var mapper = new ShipmentTransfer(this, dbFactory, "");
+            if (!(await mapper.FromSalesOrder(salesOrderData, service)))
+                return null;
+
+            if (!(await service.SaveDataAsync()))
+            {
+                this.Messages.Add(service.Messages);
+                return null;
+            }
+            return service.Data.OrderShipmentHeader.OrderShipmentUuid;
+        }
+
+        public async Task<OrderShipmentData> CreateShipmentDataFromSalesOrderAsync(string salesOrderUuid)
+        {
+            if (string.IsNullOrEmpty(salesOrderUuid))
+                return null;
+
+            // load sales order data           
+            if (!(await salesOrderService.ListAsync(salesOrderUuid)))
+            {
+                this.Messages.Add(salesOrderService.Messages);
+                return null;
+            }
+            var salesOrderData = salesOrderService.Data;
+            salesOrderService.DetachData(null);
+
+            // Create Invoice from shipment and sales order
+            return await CreateShipmentDataFromSalesOrderAsync(salesOrderData);
+        }
+
+        /// <summary>
+        /// Create and save one shipment, but set processStatus to -1 (pending)
+        /// </summary>
+        protected async Task<OrderShipmentData> CreateShipmentDataFromSalesOrderAsync(SalesOrderData salesOrderData)
+        {
+            // create orderShipmentService and save new shipment
+            var service = orderShipmentService;
+            service.Add();
+            service.NewData();
+
+            // create mapper, and transfer shipment payload ro ero shipment Dto
+            var mapper = new ShipmentTransfer(this, dbFactory, "");
+            if (!(await mapper.FromSalesOrder(salesOrderData, service)))
+                return null;
+
+            return service.Data;
+        }
+
+        #endregion
+
     }
 }

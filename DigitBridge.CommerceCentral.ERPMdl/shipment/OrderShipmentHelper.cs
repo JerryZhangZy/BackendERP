@@ -247,6 +247,25 @@ AND PackageTrackingNumber= @packageTrackingNumber
                  );
             return result > 0;
         }
+
+        public static async Task<string> GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(string salesOrderUuid, string orderSourceCode)
+        {
+            var sql = $@"
+                SELECT  
+                COALESCE(
+                    (SELECT TOP 1 OrderShipmentUuid FROM OrderShipmentHeader WHERE SalesOrderUuid != '' AND SalesOrderUuid=@salesOrderUuid),
+                    (SELECT TOP 1 OrderShipmentUuid FROM OrderShipmentHeader WHERE OrderDCAssignmentNum != 0 AND 
+                        ('OrderDCAssignmentNum:' + Cast(OrderDCAssignmentNum as varchar))=@orderSourceCode)
+                    ''
+                )
+            ";
+
+            return await SqlQuery.ExecuteScalarAsync<string>(sql,
+                 salesOrderUuid.ToSqlParameter("salesOrderUuid"),
+                 orderSourceCode.ToSqlParameter("orderSourceCode")
+                 );
+        }
+
     }
 }
 
