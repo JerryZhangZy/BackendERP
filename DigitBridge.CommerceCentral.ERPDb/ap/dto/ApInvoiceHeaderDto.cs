@@ -109,6 +109,25 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool HasPoNum => PoNum != null;
 
 		/// <summary>
+		/// Link to PoTransaction uuid. <br> Display: false, Editable: false.
+		/// </summary>
+		[OpenApiPropertyDescription("Link to PoTransaction uuid. <br> Display: false, Editable: false.")]
+        [StringLength(50, ErrorMessage = "The TransUuid value cannot exceed 50 characters. ")]
+        public string TransUuid { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasTransUuid => TransUuid != null;
+
+		/// <summary>
+		/// Link to PoTransaction number, unique in same database and profile. <br> Title: PoHeader Number, Display: true, Editable: false
+		/// </summary>
+		[OpenApiPropertyDescription("Link to PoTransaction number, unique in same database and profile. <br> Title: PoHeader Number, Display: true, Editable: false")]
+        public int? TransNum { get; set; }
+        [JsonIgnore, XmlIgnore, IgnoreCompare]
+        [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
+        public bool HasTransNum => TransNum != null;
+
+		/// <summary>
 		/// A/P Invoice type
 		/// </summary>
 		[OpenApiPropertyDescription("A/P Invoice type")]
@@ -156,10 +175,10 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasVendorUuid => VendorUuid != null;
 
-        /// <summary>
-        /// Vendor readable number, DatabaseNum + VendorCode is DigitBridgeVendorCode, which is global unique
-        /// </summary>
-        [OpenApiPropertyDescription("Vendor readable number, DatabaseNum + VendorCode is DigitBridgeVendorCode, which is global unique")]
+		/// <summary>
+		/// Vendor readable number, DatabaseNum + VendorCode is DigitBridgeVendorCode, which is global unique
+		/// </summary>
+		[OpenApiPropertyDescription("Vendor readable number, DatabaseNum + VendorCode is DigitBridgeVendorCode, which is global unique")]
         [StringLength(50, ErrorMessage = "The VendorCode value cannot exceed 50 characters. ")]
         public string VendorCode { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]

@@ -42,6 +42,8 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
 					.RuleFor(u => u.ApInvoiceNum, f => f.Random.AlphaNumeric(50))
 					.RuleFor(u => u.PoUuid, f => f.Random.Guid().ToString())
 					.RuleFor(u => u.PoNum, f => f.Random.AlphaNumeric(50))
+					.RuleFor(u => u.TransUuid, f => f.Random.Guid().ToString())
+					.RuleFor(u => u.TransNum, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ApInvoiceType, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ApInvoiceStatus, f => f.Random.Int(1, 100))
 					.RuleFor(u => u.ApInvoiceDate, f => f.Date.Past(0).Date)

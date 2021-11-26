@@ -17,7 +17,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.inventorySync.dto
     [Serializable()]
     public class InventorySyncUpdateDataDto
     {
-        public IList<InventorySyncItemsDto> InventorySyncItems { get; set; }
+        public IList<InventorySyncItem> InventorySyncItems { get; set; }
         public bool HasInventorySyncItems => InventorySyncItems != null;
 
         /// <summary>
@@ -28,9 +28,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.inventorySync.dto
         public static  InventorySyncUpdateDataDto GetFakerData()
         {
             var data = new InventorySyncUpdateDataDto();
-            data.InventorySyncItems = new List<InventorySyncItemsDto>()
+            data.InventorySyncItems = new List<InventorySyncItem>()
             {
-                new InventorySyncItemsDto(){ SKU="rabbimt",WarehouseCode="test", Qty=10 }
+                new InventorySyncItem(){ SKU="rabbimt",WarehouseCode="test", Qty=10 }
             };
  
             return data;

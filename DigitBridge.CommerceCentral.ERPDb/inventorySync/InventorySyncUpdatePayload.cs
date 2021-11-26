@@ -25,10 +25,9 @@ namespace DigitBridge.CommerceCentral.ERPDb.inventorySync
         /// (Response Data) InventorySync object which has been updated.
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) InventorySync object to update.")]
-        public InventorySyncUpdateDataDto InventorySyncData { get; set; }
-
-        [JsonIgnore] public virtual bool HasInventorySyncData => InventorySyncData != null;
-        public bool ShouldSerializeInventorySyncData() => HasInventorySyncData;
+        public IList<InventorySyncItem> InventorySyncItems { get; set; }
+        public bool HasInventorySyncItems => InventorySyncItems != null && InventorySyncItems.Count > 0;
+        public bool ShouldSerializeInventorySyncItems() => HasInventorySyncItems;
 
 
     }

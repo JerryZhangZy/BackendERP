@@ -14,6 +14,8 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.ERPDb;
 using DigitBridge.CommerceCentral.YoPoco;
 using Helper = DigitBridge.CommerceCentral.ERPDb.OrderHeaderHelper;
+using ordiHelper = DigitBridge.CommerceCentral.ERPDb.SalesOrderHeaderInfoHelper;
+using insiHelper = DigitBridge.CommerceCentral.ERPDb.InvoiceHeaderInfoHelper;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -50,6 +52,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _ChannelOrderID = new QueryFilter<string>("ChannelOrderID", "ChannelOrderID", PREFIX, FilterBy.bw, string.Empty);
         public QueryFilter<string> ChannelOrderID => _ChannelOrderID;
 
+        protected QueryFilterRawSql _WithOutSalesOrder = new QueryFilterRawSql($"{ordiHelper.TableAllies}.CentralOrderNum IS NULL", PREFIX) { Name = "WithOutSalesOrder" };
+        public QueryFilterRawSql WithOutSalesOrder => _WithOutSalesOrder;
+
+        protected QueryFilterRawSql _WithOutInvoice = new QueryFilterRawSql($"{insiHelper.TableAllies}.CentralOrderNum IS NULL", PREFIX) { Name = "WithOutInvoice" };
+        public QueryFilterRawSql WithOutInvoice => _WithOutInvoice;
+
         //protected EnumQueryFilter<SalesOrderStatus> _OrderStatus = new EnumQueryFilter<SalesOrderStatus>("OrderStatus", "OrderStatus", PREFIX, FilterBy.eq, -1);
         //public EnumQueryFilter<SalesOrderStatus> OrderStatus => _OrderStatus;
 
@@ -67,6 +75,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ChannelNum);
             AddFilter(_ChannelAccountNum);
             AddFilter(_ChannelOrderID);
+            AddFilter(_WithOutSalesOrder);
+            AddFilter(_WithOutInvoice);
         }
 
         public override void InitQueryFilter()
