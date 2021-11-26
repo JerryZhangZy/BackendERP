@@ -190,164 +190,57 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (data is null)
                 return false;
 
-            //TODO: add calculate summary object logic
-            /* This is generated sample code
-
             var setting = new ERPSetting();
-            var sum = data.InvoiceHeader;
+            var sum = data.OrderShipmentHeader;
 
-            sum.ShippingAmount = sum.ShippingAmount.ToAmount();
-            sum.MiscAmount = sum.MiscAmount.ToAmount();
-            sum.ChargeAndAllowanceAmount = sum.ChargeAndAllowanceAmount.ToAmount();
-
-            // if exist DiscountRate, calculate discount amount, otherwise use entry discount amount
-            if (!sum.DiscountRate.IsZero())
-                sum.DiscountAmount = (sum.SubTotalAmount * sum.DiscountRate.ToRate()).ToAmount();
-            else
-                sum.DiscountRate = 0;
-
-            // tax calculate should deduct discount from taxable amount
-            sum.TaxAmount = ((sum.TaxableAmount - sum.DiscountAmount * (sum.TaxableAmount / sum.SubTotalAmount).ToRate()) * sum.TaxRate).ToAmount();
-
-            if (setting.TaxForShippingAndHandling)
-            {
-                sum.ShippingTaxAmount = (sum.ShippingAmount * sum.TaxRate).ToAmount();
-                sum.MiscTaxAmount = (sum.MiscAmount * sum.TaxRate).ToAmount();
-                sum.TaxAmount = (sum.TaxAmount + sum.ShippingTaxAmount + sum.MiscTaxAmount).ToAmount();
-            }
-
-            sum.SalesAmount = (sum.SubTotalAmount - sum.DiscountAmount).ToAmount();
-            sum.TotalAmount =(
-                sum.SalesAmount +
-                sum.TaxAmount +
-                sum.ShippingAmount +
-                sum.MiscAmount +
-                sum.ChargeAndAllowanceAmount
-                ).ToAmount();
-
-            sum.Balance = (sum.TotalAmount - sum.PaidAmount - sum.CreditAmount).ToAmount();
-
-            sum.DueDate = sum.InvoiceDate.AddDays(sum.TermsDays);
-
-            */
             return true;
         }
 
-        InventoryLogService logService;
         public virtual bool CalculateDetail(OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
             if (data is null)
                 return false;
 
-            if (logService == null) logService = new InventoryLogService(dbFactory);
-            logService.UpdateByShipment(data);
-            
+            var setting = new ERPSetting();
+            var sum = data.OrderShipmentHeader;
+
+            sum.TotalPackages = 0;
+            sum.TotalShippedQty = 0;
+            sum.TotalCanceledQty = 0;
+
+            // calculate total package and shipped items
+            foreach (var package in data.OrderShipmentPackage)
+            {
+                if (package == null) continue;
+                CalculateDetail(package, data, processingMode);
+                sum.TotalPackages += 1;
+                sum.TotalShippedQty += package.PackageQty;
+            }
+
+            // calculate total cancelled items
+            foreach (var canItem in data.OrderShipmentCanceledItem)
+            {
+                if (canItem == null) continue;
+                sum.TotalCanceledQty += canItem.CanceledQty;
+            }
+
             return true;
         }
 
-        //TODO: add set default for detail line logic
-        /* This is generated sample code
-        protected virtual bool CalculateDetail(InvoiceItems item, OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
+        protected virtual bool CalculateDetail(OrderShipmentPackage package, OrderShipmentData data, ProcessingMode processingMode = ProcessingMode.Edit)
         {
-            if (item is null || item.IsEmpty)
+            if (package is null)
                 return false;
 
             var setting = new ERPSetting();
-            var sum = data.InvoiceHeader;
-            //var prod = data.GetCache<ProductBasic>(ProductId);
-            //var inv = data.GetCache<Inventory>(InventoryId);
-            //var invCost = new ItemCostClass(inv);
-            var invCost = new ItemCostClass();
-
-            item.Price = item.Price.ToPrice();
-            item.ShippingAmount = item.ShippingAmount.ToAmount();
-            item.MiscAmount = item.MiscAmount.ToAmount();
-            item.ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount();
-            item.OrderQty = item.OrderQty.ToQty();
-            item.ShipQty = item.ShipQty.ToQty();
-            item.CancelledQty = item.CancelledQty.ToQty();
-
-            item.PackType = string.Empty;
-            if (string.IsNullOrEmpty(item.PackType) || item.PackType.EqualsIgnoreSpace(PackType.Each))
-                item.PackQty = 1;
-
-            if (item.PackQty > 1)
+            package.PackageQty = 0;
+            foreach (var item in package.OrderShipmentShippedItem)
             {
-                item.OrderQty = item.OrderPack * item.PackQty;
-                item.ShipQty = item.ShipPack * item.PackQty;
-                item.CancelledQty = item.CancelledPack * item.PackQty;
+                if (item == null) continue;
+                package.PackageQty += item.ShippedQty;
             }
-            else
-            {
-                item.OrderPack = item.OrderQty;
-                item.ShipPack = item.ShipQty;
-                item.CancelledPack = item.CancelledQty;
-            }
-
-            //PriceRule
-            // if exist DiscountRate, calculate after discount unit price
-            if (!item.DiscountRate.IsZero())
-            {
-                item.DiscountPrice = (item.Price * (item.DiscountRate.ToRate() / 100)).ToPrice();
-                item.ExtAmount = (item.DiscountPrice * item.ShipQty).ToAmount();
-                item.DiscountAmount = (item.Price * item.ShipQty).ToAmount() - item.ExtAmount;
-            }
-            else
-            {
-                item.DiscountPrice = item.Price;
-                item.ExtAmount = (item.Price * item.ShipQty).ToAmount() - item.DiscountAmount.ToAmount();
-            }
-
-            if (item.Taxable)
-            {
-                item.TaxableAmount = item.ExtAmount;
-                item.NonTaxableAmount = 0;
-                if (item.TaxRate.IsZero())
-                    item.TaxRate = sum.TaxRate;
-            }
-            else
-            {
-                item.TaxableAmount = 0;
-                item.NonTaxableAmount = item.ExtAmount;
-                item.TaxRate = 0;
-            }
-            item.TaxAmount = (item.TaxableAmount * item.TaxRate).ToAmount();
-
-            if (setting.TaxForShippingAndHandling)
-            {
-                item.ShippingTaxAmount = (item.ShippingAmount * item.TaxRate).ToAmount();
-                item.MiscTaxAmount = (item.MiscAmount * item.TaxRate).ToAmount();
-            }
-
-            item.ItemTotalAmount =(
-                item.ExtAmount +
-                item.TaxAmount +
-                item.ShippingAmount +
-                item.ShippingTaxAmount +
-                item.MiscAmount +
-                item.MiscTaxAmount +
-                item.ChargeAndAllowanceAmount
-                ).ToAmount();
-
-            item.UnitCost = invCost.UnitCost;
-            item.AvgCost = invCost.AvgCost;
-            item.LotCost = invCost.AvgCost;
-            if (!item.Costable)
-            {
-                item.UnitCost = 0;
-                item.AvgCost = 0;
-                item.LotCost = 0;
-            }
-            else if (!item.IsProfit)
-            {
-                item.UnitCost = item.ExtAmount;
-                item.AvgCost = item.ExtAmount;
-                item.LotCost = item.ExtAmount;
-            }
-
             return true;
         }
-        */
         
         #region message
         [XmlIgnore, JsonIgnore]

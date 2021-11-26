@@ -341,15 +341,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // set shipment status to pending, this will not send to marketplace API
             erpShipment.OrderShipmentHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Pending;
 
-            // if shipment payload not include SalesOrderUuid, try to load SalesOrderUuid by OrderDCAssignmentNum
-            if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
-                erpShipment.OrderShipmentHeader.SalesOrderUuid =
-                    await salesOrderService.GetSalesOrderUuidByDCAssignmentNumAsync(erpShipment.OrderShipmentHeader.OrderDCAssignmentNum.Value);
-
-            // load OrderNumber from salesOrder Uuid
-            if (!string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
-                erpShipment.OrderShipmentHeader.OrderNumber =
-                    await salesOrderService.GetSalesOrderNumberByUuidAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid);
+            // load other info from salesOrder data
+            if (!(await LoadSalesOrderToShipmentAsync(erpShipment, result)))
+                return false;
 
             // create orderShipmentService and save new shipment
             var service = orderShipmentService;
@@ -365,6 +359,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             await CreateInvoiceAsync(orderShipmentService.Data, result);
             return result.Success;
         }
+
+        protected async Task<bool> LoadSalesOrderToShipmentAsync(OrderShipmentDataDto erpShipment, OrderShipmentCreateResultPayload result)
+        {
+            // if shipment payload not include SalesOrderUuid, try to load SalesOrderUuid by OrderDCAssignmentNum
+            if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
+                erpShipment.OrderShipmentHeader.SalesOrderUuid =
+                    await salesOrderService.GetSalesOrderUuidByDCAssignmentNumAsync(erpShipment.OrderShipmentHeader.OrderDCAssignmentNum.Value);
+
+            // load OrderNumber from salesOrder Uuid
+            if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
+                erpShipment.OrderShipmentHeader.OrderNumber =
+                    await salesOrderService.GetSalesOrderNumberByUuidAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid);
+
+            // load sales order data           
+            if (!(await salesOrderService.ListAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid)))
+            {
+                result.Messages.Add(salesOrderService.Messages);
+                return false;
+            }
+            var salesOrderData = salesOrderService.Data;
+            salesOrderService.DetachData(null);
+
+            // create mapper, and transfer shipment payload ro ero shipment Dto
+            var mapper = new ShipmentTransfer(this, dbFactory, "");
+            await mapper.LoadOthersDataFromSalesOrder(salesOrderData, erpShipment);
+            return true;
+        }
+
 
         /// <summary>
         /// After save one shipment, create invoice from this shipment and set processStatus to 0 (allow send to marketplace)

@@ -56,13 +56,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		}
 		[JsonIgnore, XmlIgnore, IgnoreCompare] 
 		public override bool IsNew => OrderShipmentPackageNum <= 0; 
-        [Column("DatabaseNum",SqlDbType.Int,NotNull=true)]
+        [Column("DatabaseNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _databaseNum;
 
-        [Column("MasterAccountNum",SqlDbType.Int,NotNull=true)]
+        [Column("MasterAccountNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _masterAccountNum;
 
-        [Column("ProfileNum",SqlDbType.Int,NotNull=true)]
+        [Column("ProfileNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _profileNum;
 
         [Column("ChannelNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
@@ -71,47 +71,47 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [Column("ChannelAccountNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
         private int _channelAccountNum;
 
-        [Column("OrderShipmentNum",SqlDbType.BigInt,IsDefault=true)]
-        private long? _orderShipmentNum;
+        [Column("OrderShipmentNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _orderShipmentNum;
 
-        [Column("PackageID",SqlDbType.NVarChar,IsDefault=true)]
+        [Column("PackageID",SqlDbType.NVarChar,NotNull=true,IsDefault=true)]
         private string _packageID;
 
-        [Column("PackageType",SqlDbType.Int,IsDefault=true)]
-        private int? _packageType;
+        [Column("PackageType",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _packageType;
 
-        [Column("PackagePatternNum",SqlDbType.Int,IsDefault=true)]
-        private int? _packagePatternNum;
+        [Column("PackagePatternNum",SqlDbType.Int,NotNull=true,IsDefault=true)]
+        private int _packagePatternNum;
 
-        [Column("PackageTrackingNumber",SqlDbType.VarChar,IsDefault=true)]
+        [Column("PackageTrackingNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _packageTrackingNumber;
 
-        [Column("PackageReturnTrackingNumber",SqlDbType.VarChar,IsDefault=true)]
+        [Column("PackageReturnTrackingNumber",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _packageReturnTrackingNumber;
 
-        [Column("PackageWeight",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _packageWeight;
+        [Column("PackageWeight",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _packageWeight;
 
-        [Column("PackageLength",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _packageLength;
+        [Column("PackageLength",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _packageLength;
 
-        [Column("PackageWidth",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _packageWidth;
+        [Column("PackageWidth",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _packageWidth;
 
-        [Column("PackageHeight",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _packageHeight;
+        [Column("PackageHeight",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _packageHeight;
 
-        [Column("PackageVolume",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _packageVolume;
+        [Column("PackageVolume",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _packageVolume;
 
-        [Column("PackageQty",SqlDbType.Decimal,IsDefault=true)]
-        private decimal? _packageQty;
+        [Column("PackageQty",SqlDbType.Decimal,NotNull=true,IsDefault=true)]
+        private decimal _packageQty;
 
-        [Column("ParentPackageNum",SqlDbType.BigInt,IsDefault=true)]
-        private long? _parentPackageNum;
+        [Column("ParentPackageNum",SqlDbType.BigInt,NotNull=true,IsDefault=true)]
+        private long _parentPackageNum;
 
-        [Column("HasChildPackage",SqlDbType.Bit,IsDefault=true)]
-        private bool? _hasChildPackage;
+        [Column("HasChildPackage",SqlDbType.Bit,NotNull=true,IsDefault=true)]
+        private bool _hasChildPackage;
 
         [Column("OrderShipmentUuid",SqlDbType.VarChar,NotNull=true,IsDefault=true)]
         private string _orderShipmentUuid;
@@ -212,21 +212,16 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// <summary>
 		/// (Readonly) Shipment Unique Number. Required, <br> Title: Shipment Number Display: true, Editable: false.
 		/// </summary>
-        public virtual long? OrderShipmentNum
+        public virtual long OrderShipmentNum
         {
             get
             {
-				if (!AllowNull && _orderShipmentNum is null) 
-					_orderShipmentNum = default(long); 
 				return _orderShipmentNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_orderShipmentNum = value; 
-					OnPropertyChanged("OrderShipmentNum", value);
-				}
+				_orderShipmentNum = value; 
+				OnPropertyChanged("OrderShipmentNum", value);
             }
         }
 
@@ -237,59 +232,44 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _packageID is null) 
-					_packageID = String.Empty; 
 				return _packageID?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_packageID = value.TruncateTo(50); 
-					OnPropertyChanged("PackageID", value);
-				}
+				_packageID = value.TruncateTo(50); 
+				OnPropertyChanged("PackageID", value);
             }
         }
 
 		/// <summary>
 		/// Package Type. <br> Title: Package Type, Display: true, Editable: true
 		/// </summary>
-        public virtual int? PackageType
+        public virtual int PackageType
         {
             get
             {
-				if (!AllowNull && _packageType is null) 
-					_packageType = default(int); 
 				return _packageType; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_packageType = value; 
-					OnPropertyChanged("PackageType", value);
-				}
+				_packageType = value; 
+				OnPropertyChanged("PackageType", value);
             }
         }
 
 		/// <summary>
 		/// Package Pattern. <br> Title: Package Pattern, Display: true, Editable: true
 		/// </summary>
-        public virtual int? PackagePatternNum
+        public virtual int PackagePatternNum
         {
             get
             {
-				if (!AllowNull && _packagePatternNum is null) 
-					_packagePatternNum = default(int); 
 				return _packagePatternNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_packagePatternNum = value; 
-					OnPropertyChanged("PackagePatternNum", value);
-				}
+				_packagePatternNum = value; 
+				OnPropertyChanged("PackagePatternNum", value);
             }
         }
 
@@ -300,17 +280,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _packageTrackingNumber is null) 
-					_packageTrackingNumber = String.Empty; 
 				return _packageTrackingNumber?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_packageTrackingNumber = value.TruncateTo(50); 
-					OnPropertyChanged("PackageTrackingNumber", value);
-				}
+				_packageTrackingNumber = value.TruncateTo(50); 
+				OnPropertyChanged("PackageTrackingNumber", value);
             }
         }
 
@@ -321,185 +296,140 @@ namespace DigitBridge.CommerceCentral.ERPDb
         {
             get
             {
-				if (!AllowNull && _packageReturnTrackingNumber is null) 
-					_packageReturnTrackingNumber = String.Empty; 
 				return _packageReturnTrackingNumber?.TrimEnd(); 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_packageReturnTrackingNumber = value.TruncateTo(50); 
-					OnPropertyChanged("PackageReturnTrackingNumber", value);
-				}
+				_packageReturnTrackingNumber = value.TruncateTo(50); 
+				OnPropertyChanged("PackageReturnTrackingNumber", value);
             }
         }
 
 		/// <summary>
 		/// Weight. <br> Title: Weight, Display: true, Editable: true
 		/// </summary>
-        public virtual decimal? PackageWeight
+        public virtual decimal PackageWeight
         {
             get
             {
-				if (!AllowNull && _packageWeight is null) 
-					_packageWeight = default(decimal); 
 				return _packageWeight; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_packageWeight = value; 
-					OnPropertyChanged("PackageWeight", value);
-				}
+				_packageWeight = value; 
+				OnPropertyChanged("PackageWeight", value);
             }
         }
 
 		/// <summary>
 		/// Length. <br> Title: Length, Display: true, Editable: true
 		/// </summary>
-        public virtual decimal? PackageLength
+        public virtual decimal PackageLength
         {
             get
             {
-				if (!AllowNull && _packageLength is null) 
-					_packageLength = default(decimal); 
 				return _packageLength; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_packageLength = value; 
-					OnPropertyChanged("PackageLength", value);
-				}
+				_packageLength = value; 
+				OnPropertyChanged("PackageLength", value);
             }
         }
 
 		/// <summary>
 		/// Width. <br> Title: Width, Display: true, Editable: true
 		/// </summary>
-        public virtual decimal? PackageWidth
+        public virtual decimal PackageWidth
         {
             get
             {
-				if (!AllowNull && _packageWidth is null) 
-					_packageWidth = default(decimal); 
 				return _packageWidth; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_packageWidth = value; 
-					OnPropertyChanged("PackageWidth", value);
-				}
+				_packageWidth = value; 
+				OnPropertyChanged("PackageWidth", value);
             }
         }
 
 		/// <summary>
 		/// Height. <br> Title: Height, Display: true, Editable: true
 		/// </summary>
-        public virtual decimal? PackageHeight
+        public virtual decimal PackageHeight
         {
             get
             {
-				if (!AllowNull && _packageHeight is null) 
-					_packageHeight = default(decimal); 
 				return _packageHeight; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_packageHeight = value; 
-					OnPropertyChanged("PackageHeight", value);
-				}
+				_packageHeight = value; 
+				OnPropertyChanged("PackageHeight", value);
             }
         }
 
 		/// <summary>
 		/// Volume. <br> Title: Volume, Display: true, Editable: true
 		/// </summary>
-        public virtual decimal? PackageVolume
+        public virtual decimal PackageVolume
         {
             get
             {
-				if (!AllowNull && _packageVolume is null) 
-					_packageVolume = default(decimal); 
 				return _packageVolume; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_packageVolume = value; 
-					OnPropertyChanged("PackageVolume", value);
-				}
+				_packageVolume = value; 
+				OnPropertyChanged("PackageVolume", value);
             }
         }
 
 		/// <summary>
 		/// Qty. <br> Title: Qty, Display: true, Editable: true
 		/// </summary>
-        public virtual decimal? PackageQty
+        public virtual decimal PackageQty
         {
             get
             {
-				if (!AllowNull && _packageQty is null) 
-					_packageQty = default(decimal); 
 				return _packageQty; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_packageQty = value; 
-					OnPropertyChanged("PackageQty", value);
-				}
+				_packageQty = value; 
+				OnPropertyChanged("PackageQty", value);
             }
         }
 
 		/// <summary>
 		/// Parent Package Num. <br> Title: Parent Package, Display: true, Editable: true
 		/// </summary>
-        public virtual long? ParentPackageNum
+        public virtual long ParentPackageNum
         {
             get
             {
-				if (!AllowNull && _parentPackageNum is null) 
-					_parentPackageNum = default(long); 
 				return _parentPackageNum; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_parentPackageNum = value; 
-					OnPropertyChanged("ParentPackageNum", value);
-				}
+				_parentPackageNum = value; 
+				OnPropertyChanged("ParentPackageNum", value);
             }
         }
 
 		/// <summary>
 		/// Has Child Package. <br> Title: Has Child, Display: true, Editable: true
 		/// </summary>
-        public virtual bool? HasChildPackage
+        public virtual bool HasChildPackage
         {
             get
             {
-				if (!AllowNull && _hasChildPackage is null) 
-					_hasChildPackage = false; 
 				return _hasChildPackage; 
             }
             set
             {
-				if (value != null || AllowNull) 
-				{
-					_hasChildPackage = value; 
-					OnPropertyChanged("HasChildPackage", value);
-				}
+				_hasChildPackage = value; 
+				OnPropertyChanged("HasChildPackage", value);
             }
         }
 
@@ -675,20 +605,20 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			_profileNum = default(int); 
 			_channelNum = default(int); 
 			_channelAccountNum = default(int); 
-			_orderShipmentNum = AllowNull ? (long?)null : default(long); 
-			_packageID = AllowNull ? (string)null : String.Empty; 
-			_packageType = AllowNull ? (int?)null : default(int); 
-			_packagePatternNum = AllowNull ? (int?)null : default(int); 
-			_packageTrackingNumber = AllowNull ? (string)null : String.Empty; 
-			_packageReturnTrackingNumber = AllowNull ? (string)null : String.Empty; 
-			_packageWeight = AllowNull ? (decimal?)null : default(decimal); 
-			_packageLength = AllowNull ? (decimal?)null : default(decimal); 
-			_packageWidth = AllowNull ? (decimal?)null : default(decimal); 
-			_packageHeight = AllowNull ? (decimal?)null : default(decimal); 
-			_packageVolume = AllowNull ? (decimal?)null : default(decimal); 
-			_packageQty = AllowNull ? (decimal?)null : default(decimal); 
-			_parentPackageNum = AllowNull ? (long?)null : default(long); 
-			_hasChildPackage = AllowNull ? (bool?)null : false; 
+			_orderShipmentNum = default(long); 
+			_packageID = String.Empty; 
+			_packageType = default(int); 
+			_packagePatternNum = default(int); 
+			_packageTrackingNumber = String.Empty; 
+			_packageReturnTrackingNumber = String.Empty; 
+			_packageWeight = default(decimal); 
+			_packageLength = default(decimal); 
+			_packageWidth = default(decimal); 
+			_packageHeight = default(decimal); 
+			_packageVolume = default(decimal); 
+			_packageQty = default(decimal); 
+			_parentPackageNum = default(long); 
+			_hasChildPackage = false; 
 			_orderShipmentUuid = String.Empty; 
 			_orderShipmentPackageUuid = String.Empty; 
             ClearChildren();

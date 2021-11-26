@@ -6,15 +6,15 @@
 
 	[ChannelNum] INT NOT NULL DEFAULT 0, --(Readonly) The channel which sells the item. Refer to Master Account Channel Setting. <br> Title: Channel: Display: true, Editable: false
 	[ChannelAccountNum] INT NOT NULL DEFAULT 0, --(Readonly) The unique number of this profile’s channel account. <br> Title: Shipping Carrier: Display: false, Editable: false
-	[OrderDCAssignmentNum] BIGINT NULL DEFAULT 0, --(Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
-	[DistributionCenterNum] INT NULL DEFAULT 0, --(Readonly) DC number. <br> Title: DC Number: Display: true, Editable: false
-	[CentralOrderNum] BIGINT NULL DEFAULT 0, --(Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
+	[OrderDCAssignmentNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) The unique number of Order DC Assignment. <br> Title: Assignment Number: Display: true, Editable: false
+	[DistributionCenterNum] INT NOT NULL DEFAULT 0, --(Readonly) DC number. <br> Title: DC Number: Display: true, Editable: false
+	[CentralOrderNum] BIGINT NOT NULL DEFAULT 0, --(Readonly) CentralOrderNum. <br> Title: Central Order: Display: true, Editable: false
 	[ChannelOrderID] VARCHAR(130) NOT NULL DEFAULT '', --(Readonly) This usually is the marketplace order ID, or merchant PO Number. <br> Title: Channel Order: Display: true, Editable: false
 	[ShipmentID] NVARCHAR(50) NOT NULL DEFAULT '', --(Readonly) Shipment ID. <br> Title: Shipment Id, Display: true, Editable: false
 	[WarehouseCode] NVARCHAR(50) NOT NULL DEFAULT '', --Warehouse Code. <br> Title: Warehouse Code, Display: true, Editable: true
 	[ShipmentType] INT NOT NULL DEFAULT 0, --Shipment Type. <br> Title: Shipment Type, Display: true, Editable: true
 	[ShipmentReferenceID] VARCHAR(50) NOT NULL DEFAULT '', --Ref Id. <br> Title: Reference, Display: true, Editable: true
-	[ShipmentDateUtc] DATETIME NULL, --Ship Date. <br> Title: Ship Date, Display: true, Editable: true
+	[ShipmentDateUtc] DATETIME NOT NULL, --Ship Date. <br> Title: Ship Date, Display: true, Editable: true
 	[ShippingCarrier] VARCHAR(50) NOT NULL DEFAULT '', --Shipping Carrier. <br> Title: Shipping Carrier: Display: true, Editable: true
 	[ShippingClass] VARCHAR(50) NOT NULL DEFAULT '', --Shipping Method. <br> Title: Shipping Method: Display: true, Editable: true
 	[ShippingCost] DECIMAL(24, 6) NOT NULL DEFAULT 0, --Shipping fee. <br> Title: Shipping Fee, Display: true, Editable: true
