@@ -511,11 +511,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return dbFactory.Exists<ApInvoiceHeader>("PoUuid=@0", poUuid.ToSqlParameter("PoUuid"));
         }
 
-        private (decimal totalAmount, decimal miscAmount, decimal shippingAmount) GetSummaryAmountByPoUuid(
+        private (decimal subTotalAmount, decimal miscAmount, decimal shippingAmount) GetSummaryAmountByPoUuid(
             string transUuid)
         {
             var sql = $@"select 
-ISNULL(sum(TotalAmount),0) as TotalAmount,ISNULL(sum(MiscAmount),0) as MiscAmount,ISNULL(sum(ShippingAmount),0) as ShippingAmount
+ISNULL(sum(SubTotalAmount),0) as SubTotalAmount,ISNULL(sum(MiscAmount),0) as MiscAmount,ISNULL(sum(ShippingAmount),0) as ShippingAmount
 from PoTransaction
 where TransUuid=@0";
             using (var tx = new ScopedTransaction(dbFactory))
@@ -529,8 +529,7 @@ where TransUuid=@0";
             if (data == null || data.PoTransaction == null)
                 return false;
             var header = data.PoTransaction;
-            //if (header.TransStatus != (int)PoTransStatus.APReceive)
-            //    return false;
+
             var transUuid = data.PoTransaction.TransUuid;
             
             var rowNum = await GetRowNumByPoUuidAsync(transUuid);
@@ -540,7 +539,7 @@ where TransUuid=@0";
                 Edit();
                 //Update;
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ReceiveItemTotalAmount)
-                    .Amount = summary.totalAmount.ToAmount();
+                    .Amount = summary.subTotalAmount.ToAmount();
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.HandlingCost)
                     .Amount = summary.miscAmount.ToAmount();
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ShippingCost)
@@ -574,7 +573,7 @@ where TransUuid=@0";
                 {
                     ApInvoiceItemType = (int)ApInvoiceItemType.ReceiveItemTotalAmount,
                     Currency = header.Currency,
-                    Amount = summary.totalAmount.ToAmount()
+                    Amount = summary.subTotalAmount.ToAmount()
                 });
                 Data.AddApInvoiceItems(new ApInvoiceItems()
                 {
@@ -607,7 +606,7 @@ where TransUuid=@0";
             {
                 //Update;
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ReceiveItemTotalAmount)
-                    .Amount =summary.totalAmount.ToAmount();
+                    .Amount =summary.subTotalAmount.ToAmount();
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.HandlingCost)
                     .Amount = summary.miscAmount.ToAmount();
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ShippingCost)
@@ -631,7 +630,7 @@ where TransUuid=@0";
                 {
                     ApInvoiceItemType = (int)ApInvoiceItemType.ReceiveItemTotalAmount,
                     Currency = header.Currency,
-                    Amount = summary.totalAmount.ToAmount()
+                    Amount = summary.subTotalAmount.ToAmount()
                 });
                 Data.AddApInvoiceItems(new ApInvoiceItems()
                 {
