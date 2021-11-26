@@ -308,16 +308,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"No DCAssigmentLine for DCAssingmentUuid {string.Join(",", dcAssDataNoLines.Select(p => p.Uuid))}.");
                 return (false, null);
             }
-            var soDataList = new List<SalesOrderData>();
+            var salesOrderUuids = new List<string>();
             //Create SalesOrder
             foreach (var dcAssigmentData in dcAssigmentDataList)
             {
-                var soData = await CreateSalesOrdersAsync(coData, dcAssigmentData);
-                if (soData != null)
-                    soDataList.Add(soData);
+                var soUuid = await CreateSalesOrdersAsync(coData, dcAssigmentData);
+                if (soUuid != null)
+                    salesOrderUuids.Add(soUuid);
             }
-            bool ret = soDataList.Count > 0;
-            List<string> salesOrderUuids = soDataList.Select(p => p.SalesOrderHeader.SalesOrderUuid).ToList();
+            bool ret = salesOrderUuids.Count > 0;
             return (ret, salesOrderUuids);
         }
 
@@ -352,7 +351,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="orderDCAssignmentNum"></param>
         /// <returns>Exist or Not</returns>
-        protected async Task<bool> ExistDCAssignmentInSalesOrderAsync(long orderDCAssignmentNum)
+        protected async Task<string> ExistDCAssignmentInSalesOrderAsync(long orderDCAssignmentNum)
         {
             using (var trs = new ScopedTransaction(dbFactory))
                 return await SalesOrderHelper.ExistOrderDCAssignmentNumAsync(orderDCAssignmentNum);
@@ -372,14 +371,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="coData"></param>
         /// <param name="dcAssigmentData"></param>
-        /// <returns>Success Create Sales Order</returns>
-        public async Task<SalesOrderData> CreateSalesOrdersAsync(ChannelOrderData coData, DCAssignmentData dcAssigmentData)
+        /// <returns>Success Create Sales Order Uuid</returns>
+        public async Task<string> CreateSalesOrdersAsync(ChannelOrderData coData, DCAssignmentData dcAssigmentData)
         {
             long orderDCAssignmentNum = dcAssigmentData.OrderDCAssignmentHeader.OrderDCAssignmentNum;
-            if ((await ExistDCAssignmentInSalesOrderAsync(orderDCAssignmentNum)))
+            var uuid = await ExistDCAssignmentInSalesOrderAsync(orderDCAssignmentNum);
+            if (uuid != null)
             {
-                AddError($"Channel OrderDCAssigmentNum {orderDCAssignmentNum} has transferred to sales order.");
-                return null;
+                return uuid;
             }
 
             SalesOrderTransfer soTransfer = new SalesOrderTransfer(this, "");
@@ -402,7 +401,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             soSrv.Data.CheckIntegrity();
 
             if (await soSrv.SaveDataAsync())
-                return soSrv.Data;
+                return soSrv.Data.SalesOrderHeader.SalesOrderUuid;
             return null;
         }
 
