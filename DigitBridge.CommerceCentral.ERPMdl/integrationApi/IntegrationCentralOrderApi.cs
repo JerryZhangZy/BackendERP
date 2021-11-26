@@ -69,6 +69,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> ReSendCentralOrderToErpAsync(ChannelOrderPayload payload, string centralOrderUuid)
         {
+            if (centralOrderUuid.IsZero())
+            {
+                AddInfo("CentralOrderUuid cann't be empty.");
+                return false;
+            }
+            if (payload.SentCentralOrderUuids is null)
+            {
+                payload.SentCentralOrderUuids = new List<string>();
+            }
             var success = await centralOrderClient.CentralOrderToErpAsync(payload.MasterAccountNum, payload.ProfileNum, centralOrderUuid);
             if (success)
             {
