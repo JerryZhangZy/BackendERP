@@ -511,16 +511,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return dbFactory.Exists<ApInvoiceHeader>("PoUuid=@0", poUuid.ToSqlParameter("PoUuid"));
         }
 
-        private (decimal subTotalAmount, decimal miscAmount, decimal shippingAmount) GetSummaryAmountByPoUuid(
+        private (decimal subTotalAmount, decimal miscAmount, decimal shippingAmount,decimal totalAmount) GetSummaryAmountByPoUuid(
             string transUuid)
         {
             var sql = $@"select 
-ISNULL(sum(SubTotalAmount),0) as SubTotalAmount,ISNULL(sum(MiscAmount),0) as MiscAmount,ISNULL(sum(ShippingAmount),0) as ShippingAmount
+ISNULL(sum(SubTotalAmount),0) as SubTotalAmount,ISNULL(sum(MiscAmount),0) as MiscAmount,ISNULL(sum(ShippingAmount),0) as ShippingAmount,ISNULL(sum(TotalAmount),0) as TotalAmount
 from PoTransaction
 where TransUuid=@0";
             using (var tx = new ScopedTransaction(dbFactory))
             {
-                return SqlQuery.Execute(sql, (decimal totalAmount, decimal miscAmount, decimal shippingAmount) => (totalAmount, miscAmount, shippingAmount), transUuid.ToSqlParameter("0")).First();
+                return SqlQuery.Execute(sql, (decimal subTotalAmount, decimal miscAmount, decimal shippingAmount,decimal totalAmount) => (subTotalAmount, miscAmount, shippingAmount, totalAmount), transUuid.ToSqlParameter("0")).First();
             }
         }
         
@@ -538,8 +538,9 @@ where TransUuid=@0";
             Edit();
             if (rowNum!=null && await GetDataAsync(rowNum.Value))//
             {
-             
+
                 //Update;
+                Data.ApInvoiceHeader.TotalAmount = summary.totalAmount.ToAmount();
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ReceiveItemTotalAmount)
                     .Amount = summary.subTotalAmount.ToAmount();
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.HandlingCost)
