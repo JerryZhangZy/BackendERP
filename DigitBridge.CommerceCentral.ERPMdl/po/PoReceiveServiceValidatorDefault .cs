@@ -29,6 +29,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public partial class PoReceiveServiceValidatorDefault : PoTransactionServiceValidatorDefault
     {
         public PoReceiveServiceValidatorDefault() : base() { }
+
+
+        [XmlIgnore, JsonIgnore]
+        protected PoTransactionService _poTransactionService;
+        [XmlIgnore, JsonIgnore]
+        public PoTransactionService poTransactionService
+        {
+            get
+            {
+                if (_poTransactionService is null)
+                    _poTransactionService = new PoTransactionService(dbFactory);
+                return _poTransactionService;
+            }
+        }
         public PoReceiveServiceValidatorDefault(IMessage serviceMessage, IDataBaseFactory dbFactory) : base(serviceMessage, dbFactory) { }
         public override bool ValidateAccount(IPayload payload, string number = null, ProcessingMode processingMode = ProcessingMode.Edit)
         {
@@ -87,6 +101,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 dto.PoTransaction.TransStatus = (int)PoTransStatus.StockReceive;
                 // dto.PoTransaction.TransType = (int)TransTypeEnum.Payment;  
             }
+
+
             // payment shouldn't add any return item.
             return await base.ValidateAsync(dto, processingMode);
         }

@@ -370,8 +370,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load data from dto
             FromDto(payload.PoTransaction);
 
-            //if (!LoadPurchaseOrderData(payload.PoTransaction.PoTransaction.PoNum, payload.ProfileNum, payload.MasterAccountNum))
-            //    return false;
+ 
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
@@ -543,6 +542,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             return success;
         }
+
+
 
         /// <summary>
         /// Load Po data.
