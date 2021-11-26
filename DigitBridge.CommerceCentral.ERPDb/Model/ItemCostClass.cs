@@ -62,14 +62,12 @@ namespace DigitBridge.CommerceCentral.ERPDb
             ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount();
             TaxRate = item.TaxRate.ToRate();
             TaxAmount = item.TaxAmount.ToAmount();
-
-            UnitCost = item.Price.ToAmount();
-            //AvgCost = item.Price.ToAmount();
+            UnitCost = item.UnitCost.ToAmount();
+            AvgCost = item.Price.ToAmount();
             SalesCost = item.Price.ToAmount();
             Cost = (AvgCost.IsZero()) ? UnitCost : AvgCost;
 
             Qty = item.TransQty;
-            //Instock = item.TransQty;
         }
 
         /// <summary>
@@ -82,7 +80,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             UnitCost = (BaseCost + TaxAmount + ShippingAmount + MiscAmount + ChargeAndAllowanceAmount).ToCost();
             if (AvgCost.IsZero())
                 AvgCost = UnitCost;
-            Cost = AvgCost;
+            Cost = AvgCost; 
             return this;
         }
         /// <summary>

@@ -179,16 +179,16 @@ AND ProfileNum = @profileNum";
         //          orderDCAssignmentUuid.ToSqlParameter("orderDCAssignmentUuid"));
         //    return result > 0;
         //}
-        public static async Task<bool> ExistOrderDCAssignmentNumAsync(long orderDCAssignmentNum)
+        public static async Task<string> ExistOrderDCAssignmentNumAsync(long orderDCAssignmentNum)
         {
 
             var sql = $@"
-SELECT COUNT(1) FROM SalesOrderHeader tbl
+SELECT SalesOrderUuid FROM SalesOrderHeader tbl
 WHERE OrderSourceCode = 'OrderDCAssignmentNum:' + Cast(@orderDCAssignmentNum as varchar)
 ";
-            var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
+            var result = await SqlQuery.ExecuteScalarAsync<string>(sql,
                   orderDCAssignmentNum.ToSqlParameter("orderDCAssignmentNum"));
-            return result > 0;
+            return result;
         }
 
         public static async Task<string> GetSalesOrderUuidAsync(long orderDCAssignmentNum)

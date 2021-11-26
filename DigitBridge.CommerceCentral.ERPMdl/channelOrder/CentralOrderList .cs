@@ -152,7 +152,7 @@ FROM {Helper.TableName} {Helper.TableAllies}
 LEFT JOIN {ordiHelper.TableName} {ordiHelper.TableAllies} ON {Helper.TableAllies}.CentralOrderNum = {ordiHelper.TableAllies}.CentralOrderNum
 LEFT JOIN {ordHelper.TableName} {ordHelper.TableAllies} ON {ordiHelper.TableAllies}.SalesOrderUuid = {ordHelper.TableAllies}.SalesOrderUuid
 LEFT JOIN {insiHelper.TableName} {insiHelper.TableAllies} ON {Helper.TableAllies}.CentralOrderNum = {insiHelper.TableAllies}.CentralOrderNum
-LEFT JOIN {insHelper.TableName} {insHelper.TableAllies} ON {insiHelper.TableAllies}.InvoiceUuid = {insiHelper.TableAllies}.InvoiceUuid
+LEFT JOIN {insHelper.TableName} {insHelper.TableAllies} ON {insiHelper.TableAllies}.InvoiceUuid = {insHelper.TableAllies}.InvoiceUuid
 ";
             return this.SQL_From;
         }

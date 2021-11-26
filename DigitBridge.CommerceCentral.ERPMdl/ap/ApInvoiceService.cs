@@ -491,8 +491,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<int?> GetRowNumByPoUuidAsync(string transUuid)
         {
-           return dbFactory.Db.ExecuteScalar<int?>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE TransUuid=@0", transUuid.ToSqlParameter("@0"));
-
+           return   dbFactory.Db.ExecuteScalar<int?>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE TransUuid=@0", transUuid.ToSqlParameter("@0"));
+       
            // return await dbFactory.GetValueAsync<ApInvoiceHeader,int>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE PoUuid=@0",poUuid.ToSqlParameter("@0"));
         }
         
@@ -511,16 +511,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return dbFactory.Exists<ApInvoiceHeader>("PoUuid=@0", poUuid.ToSqlParameter("PoUuid"));
         }
 
-        private (decimal totalAmount, decimal miscAmount, decimal shippingAmount) GetSummaryAmountByPoUuid(
+        private (decimal subTotalAmount, decimal miscAmount, decimal shippingAmount,decimal totalAmount) GetSummaryAmountByPoUuid(
             string transUuid)
         {
             var sql = $@"select 
-ISNULL(sum(TotalAmount),0) as TotalAmount,ISNULL(sum(MiscAmount),0) as MiscAmount,ISNULL(sum(ShippingAmount),0) as ShippingAmount
+ISNULL(sum(SubTotalAmount),0) as SubTotalAmount,ISNULL(sum(MiscAmount),0) as MiscAmount,ISNULL(sum(ShippingAmount),0) as ShippingAmount,ISNULL(sum(TotalAmount),0) as TotalAmount
 from PoTransaction
 where TransUuid=@0";
             using (var tx = new ScopedTransaction(dbFactory))
             {
-                return SqlQuery.Execute(sql, (decimal totalAmount, decimal miscAmount, decimal shippingAmount) => (totalAmount, miscAmount, shippingAmount), transUuid.ToSqlParameter("0")).First();
+                return SqlQuery.Execute(sql, (decimal subTotalAmount, decimal miscAmount, decimal shippingAmount,decimal totalAmount) => (subTotalAmount, miscAmount, shippingAmount, totalAmount), transUuid.ToSqlParameter("0")).First();
             }
         }
         
@@ -529,18 +529,20 @@ where TransUuid=@0";
             if (data == null || data.PoTransaction == null)
                 return false;
             var header = data.PoTransaction;
-            //if (header.TransStatus != (int)PoTransStatus.APReceive)
-            //    return false;
+
             var transUuid = data.PoTransaction.TransUuid;
             
             var rowNum = await GetRowNumByPoUuidAsync(transUuid);
             var summary = GetSummaryAmountByPoUuid(transUuid);
-            if (rowNum!=null&& await GetDataAsync(rowNum.Value))
+
+            Edit();
+            if (rowNum!=null && await GetDataAsync(rowNum.Value))//
             {
-                Edit();
+
                 //Update;
+                Data.ApInvoiceHeader.TotalAmount = summary.totalAmount.ToAmount();
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ReceiveItemTotalAmount)
-                    .Amount = summary.totalAmount.ToAmount();
+                    .Amount = summary.subTotalAmount.ToAmount();
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.HandlingCost)
                     .Amount = summary.miscAmount.ToAmount();
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ShippingCost)
@@ -574,7 +576,7 @@ where TransUuid=@0";
                 {
                     ApInvoiceItemType = (int)ApInvoiceItemType.ReceiveItemTotalAmount,
                     Currency = header.Currency,
-                    Amount = summary.totalAmount.ToAmount()
+                    Amount = summary.subTotalAmount.ToAmount()
                 });
                 Data.AddApInvoiceItems(new ApInvoiceItems()
                 {
@@ -592,62 +594,62 @@ where TransUuid=@0";
             return await SaveDataAsync();
         }
         
-        public bool CreateOrUpdateApInvoiceByPoReceive(PoTransactionData data)
-        {
-            if (data == null || data.PoTransaction == null)
-                return false;
-            var header = data.PoTransaction;
-            if (header.TransStatus != (int)PoTransStatus.APReceive)
-                return false;
-            var poUuid = data.PoTransaction.PoUuid;
-            Edit();
-            var rowNum = GetRowNumByPoUuid(poUuid);
-            var summary = GetSummaryAmountByPoUuid(poUuid);
-            if (GetData(rowNum))
-            {
-                //Update;
-                Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ReceiveItemTotalAmount)
-                    .Amount =summary.totalAmount.ToAmount();
-                Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.HandlingCost)
-                    .Amount = summary.miscAmount.ToAmount();
-                Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ShippingCost)
-                    .Amount = summary.shippingAmount.ToAmount();
-            }
-            else
-            {
-                NewData();
-                Data.ApInvoiceHeader = new ApInvoiceHeader()
-                {
-                    ApInvoiceDate = DateTime.UtcNow.Date,
-                    ApInvoiceTime = DateTime.UtcNow.TimeOfDay,
-                    ApInvoiceType = 0, //PoReceive
-                    TotalAmount = header.TotalAmount,
-                    VendorUuid = header.VendorUuid,
-                    VendorInvoiceNum = header.VendorInvoiceNum,
-                    VendorInvoiceDate = header.VendorInvoiceDate
-                };
-                Data.ApInvoiceItems = new List<ApInvoiceItems>();
-                Data.AddApInvoiceItems(new ApInvoiceItems()
-                {
-                    ApInvoiceItemType = (int)ApInvoiceItemType.ReceiveItemTotalAmount,
-                    Currency = header.Currency,
-                    Amount = summary.totalAmount.ToAmount()
-                });
-                Data.AddApInvoiceItems(new ApInvoiceItems()
-                {
-                    ApInvoiceItemType = (int)ApInvoiceItemType.HandlingCost,
-                    Currency = header.Currency,
-                    Amount = summary.miscAmount.ToAmount()
-                });
-                Data.AddApInvoiceItems(new ApInvoiceItems()
-                {
-                    ApInvoiceItemType = (int)ApInvoiceItemType.ShippingCost,
-                    Currency = header.Currency,
-                    Amount = summary.shippingAmount.ToAmount()
-                });
-            }
-            return SaveData();
-        }
+        //public bool CreateOrUpdateApInvoiceByPoReceive(PoTransactionData data)
+        //{
+        //    if (data == null || data.PoTransaction == null)
+        //        return false;
+        //    var header = data.PoTransaction;
+        //    if (header.TransStatus != (int)PoTransStatus.APReceive)
+        //        return false;
+        //    var poUuid = data.PoTransaction.PoUuid;
+        //    Edit();
+        //    var rowNum = GetRowNumByPoUuid(poUuid);
+        //    var summary = GetSummaryAmountByPoUuid(poUuid);
+        //    if (GetData(rowNum))
+        //    {
+        //        //Update;
+        //        Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ReceiveItemTotalAmount)
+        //            .Amount =summary.subTotalAmount.ToAmount();
+        //        Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.HandlingCost)
+        //            .Amount = summary.miscAmount.ToAmount();
+        //        Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ShippingCost)
+        //            .Amount = summary.shippingAmount.ToAmount();
+        //    }
+        //    else
+        //    {
+        //        NewData();
+        //        Data.ApInvoiceHeader = new ApInvoiceHeader()
+        //        {
+        //            ApInvoiceDate = DateTime.UtcNow.Date,
+        //            ApInvoiceTime = DateTime.UtcNow.TimeOfDay,
+        //            ApInvoiceType = 0, //PoReceive
+        //            TotalAmount = header.TotalAmount,
+        //            VendorUuid = header.VendorUuid,
+        //            VendorInvoiceNum = header.VendorInvoiceNum,
+        //            VendorInvoiceDate = header.VendorInvoiceDate
+        //        };
+        //        Data.ApInvoiceItems = new List<ApInvoiceItems>();
+        //        Data.AddApInvoiceItems(new ApInvoiceItems()
+        //        {
+        //            ApInvoiceItemType = (int)ApInvoiceItemType.ReceiveItemTotalAmount,
+        //            Currency = header.Currency,
+        //            Amount = summary.subTotalAmount.ToAmount()
+        //        });
+        //        Data.AddApInvoiceItems(new ApInvoiceItems()
+        //        {
+        //            ApInvoiceItemType = (int)ApInvoiceItemType.HandlingCost,
+        //            Currency = header.Currency,
+        //            Amount = summary.miscAmount.ToAmount()
+        //        });
+        //        Data.AddApInvoiceItems(new ApInvoiceItems()
+        //        {
+        //            ApInvoiceItemType = (int)ApInvoiceItemType.ShippingCost,
+        //            Currency = header.Currency,
+        //            Amount = summary.shippingAmount.ToAmount()
+        //        });
+        //    }
+        //    return SaveData();
+        //}
 
     }
 }

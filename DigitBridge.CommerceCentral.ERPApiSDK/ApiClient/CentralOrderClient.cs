@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace DigitBridge.CommerceCentral.ERPApiSDK
 {
-    public class ChannelOrderClient : ErpEventClient
+    public class CentralOrderClient : ErpEventClient
     {
 
-        public ChannelOrderClient() : base()
+        public CentralOrderClient() : base()
         { }
-        public ChannelOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
+        public CentralOrderClient(string baseUrl, string authCode) : base(baseUrl, authCode)
         { }
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// <param name="ProfileNum"></param>
         /// <param name="processUuid"></param>
         /// <returns></returns>
-        public async Task<bool> ChannelOrderToErpAsync(int masterAccountNum, int profileNum, string centralOrderUuid)
+        public async Task<bool> CentralOrderToErpAsync(int masterAccountNum, int profileNum, string centralOrderUuid)
         {
             var data = new AddErpEventDto
             {

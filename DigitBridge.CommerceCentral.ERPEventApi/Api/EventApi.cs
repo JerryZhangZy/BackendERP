@@ -396,13 +396,8 @@ namespace DigitBridge.CommerceCentral.EventERPApi
             var payload = await req.GetParameters<EventERPPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
-            if (await svc.ResendEventAsync(eventUuid))
-                payload.EventERP = svc.ToDto();
-            else
-            {
-                payload.Messages = svc.Messages;
-                payload.Success = false;
-            }
+            payload.Success = await svc.ResendEventAsync(eventUuid);
+            payload.Messages = svc.Messages;
 
             return new JsonNetResponse<EventERPPayload>(payload);
         }
