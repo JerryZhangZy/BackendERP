@@ -199,18 +199,18 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         protected async Task<long> GetLatestPaymentRowNum(string invoiceNumber)
         {
             var paymentService = new InvoicePaymentService(DataBaseFactory);
-            var queryPayload = new InvoicePaymentPayload()
+            var queryPayload = new InvoiceNewPaymentPayload()
             {
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
             };
-            await paymentService.GetPaymentWithInvoiceHeaderAsync(queryPayload, invoiceNumber);
+            await paymentService.GetPaymentsAsync(queryPayload, invoiceNumber);
 
             Assert.True(queryPayload.Success, "Get payments by invoiceNumber error:" + paymentService.Messages.ObjectToString());
 
-            Assert.True(queryPayload.InvoiceTransactions.Count > 0, $"no payment trans in db for invoice {invoiceNumber}");
+            Assert.True(queryPayload.ApplyInvoices.Count > 0, $"no payment trans in db for invoice {invoiceNumber}");
 
-            return queryPayload.InvoiceTransactions.OrderByDescending(i => i.InvoiceTransaction.TransNum).FirstOrDefault().InvoiceTransaction.RowNum.ToLong();
+            return queryPayload.ApplyInvoices.OrderByDescending(i => i.TransRowNum).FirstOrDefault().TransRowNum.ToLong();
         }
         #endregion
     }

@@ -195,12 +195,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task GetPaymentWithInvoiceHeaderAsync(InvoicePaymentPayload payload, string invoiceNumber, int? transNum = null)
+        public virtual async Task GetPaymentsAsync(InvoiceNewPaymentPayload payload, string invoiceNumber, int? transNum = null)
         {
-            payload.InvoiceTransactions = await GetDtoListAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, TransTypeEnum.Payment, transNum);
-            payload.InvoiceHeader = await GetInvoiceHeaderAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
+            var transList = await GetDataListAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber, TransTypeEnum.Payment, transNum);
+            if (transList == null)
+            {
+                payload.ApplyInvoices = new List<ApplyInvoice>();
+                payload.Success = true;
+                if (transNum.HasValue)
+                    payload.Messages.AddInfo($"The invoice {invoiceNumber} doesn't contains payment which Number is {transNum.Value}");
+                else
+                    payload.Messages.AddInfo($"The invoice {invoiceNumber} doesn't contains any payment");
+                return;
+            }
+            var invoiceHeader = await GetInvoiceHeaderAsync(payload.MasterAccountNum, payload.ProfileNum, invoiceNumber);
+            
+            payload.ApplyInvoices = transList.Select(t => new ApplyInvoice { 
+                TransRowNum = t.InvoiceTransaction.RowNum,
+                TransUuid = t.InvoiceTransaction.TransUuid,
+                InvoiceUuid = t.InvoiceTransaction.InvoiceUuid,
+                InvoiceNumber = t.InvoiceTransaction.InvoiceNumber,
+                InvoiceDate = invoiceHeader.InvoiceDate.ToDateTime(),
+                DueDate = invoiceHeader.DueDate.ToDateTime(),
+                QuickbookDocNum = invoiceHeader.QboDocNumber,
+                InvoiceTotalAmount = invoiceHeader.TotalAmount.ToDecimal(),
+                InvoicePaidAmount = invoiceHeader.PaidAmount.ToDecimal(),
+                InvoiceBalance = invoiceHeader.Balance.ToDecimal(),
+                PaidAmount = t.InvoiceTransaction.TotalAmount,
+                Success = true
+            }).ToList();
+            
             payload.Success = true;
-            payload.Messages = this.Messages;
+            payload.Messages = Messages;
         }
 
         public async Task<bool> ExistCheckNumber(string number, int masterAccountNum, int profileNum)
@@ -568,7 +594,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="invoiceNumber"></param>
         /// <returns></returns>
-        public virtual async Task<bool> DeleteByNumberAsync(InvoicePaymentPayload payload, string invoiceNumber, int transNum)
+        public virtual async Task<bool> DeleteByNumberAsync(InvoiceNewPaymentPayload payload, string invoiceNumber, int transNum)
         {
             Delete();
             //load data
@@ -641,7 +667,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.InvoiceTransaction.ProfileNum = payload.ProfileNum;
             foreach (var applyInvoice in payload.ApplyInvoices)
             {
-                var invoice = invoices.SingleOrDefault(i => i.InvoiceUuid == applyInvoice.InvoiceUuid);
+                var invoice = invoices.SingleOrDefault(i => i.InvoiceUuid == applyInvoice.InvoiceUuid || i.InvoiceNumber == applyInvoice.InvoiceNumber);
                 if (invoice == null)
                 {
                     AddError($"Invoice {applyInvoice.InvoiceUuid} does not exist");
