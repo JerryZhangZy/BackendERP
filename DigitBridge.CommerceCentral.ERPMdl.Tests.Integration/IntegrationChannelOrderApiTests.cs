@@ -69,7 +69,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum
             };
-            var success = await client.ReSendChannelOrderToErpAsync(payload, centralOrderUuid);
+            var success = await client.ReSendCentralOrderToErpAsync(payload, centralOrderUuid);
             Assert.True(success, client.Messages.ObjectToString());
         }
 
@@ -83,7 +83,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 ProfileNum = ProfileNum,
                 LoadAll = true,
             };
-            var success = await client.ReSendAllChannelOrderToErp(payload);
+            var success = await client.ReSendAllCentralOrderToErp(payload);
             Assert.True(success, client.Messages.ObjectToString());
         }
         #endregion async methods
