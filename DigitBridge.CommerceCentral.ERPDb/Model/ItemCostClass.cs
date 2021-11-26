@@ -80,7 +80,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             UnitCost = (BaseCost + TaxAmount + ShippingAmount + MiscAmount + ChargeAndAllowanceAmount).ToCost();
             if (AvgCost.IsZero())
                 AvgCost = UnitCost;
-            Cost = AvgCost;
+            Cost = AvgCost; 
             return this;
         }
         /// <summary>
