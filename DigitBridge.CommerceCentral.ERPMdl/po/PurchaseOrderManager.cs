@@ -18,6 +18,7 @@ using DigitBridge.Base.Utility;
 using DigitBridge.CommerceCentral.YoPoco;
 using DigitBridge.CommerceCentral.ERPDb;
 using Microsoft.AspNetCore.Http;
+using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -25,16 +26,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     /// Represents a PurchaseOrderService.
     /// NOTE: This class is generated from a T4 template - you should not modify it manually.
     /// </summary>
-    public class PurchaseOrderManager :  IPurchaseOrderManager , IMessage
+    public class PurchaseOrderManager : IPurchaseOrderManager, IMessage
     {
 
-        public PurchaseOrderManager() : base() {}
+        public PurchaseOrderManager() : base() { }
 
         public PurchaseOrderManager(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
         }
-        
+
         [XmlIgnore, JsonIgnore]
         protected PurchaseOrderService _purchaseOrderService;
         [XmlIgnore, JsonIgnore]
@@ -90,9 +91,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<byte[]> ExportAsync(PurchaseOrderPayload payload)
         {
-            var rowNumList =await purchaseOrderList.GetRowNumListAsync(payload);
+            var rowNumList = await purchaseOrderList.GetRowNumListAsync(payload);
             var dtoList = new List<PurchaseOrderDataDto>();
-           foreach(var x in rowNumList)
+            foreach (var x in rowNumList)
             {
                 if (purchaseOrderService.GetData(x))
                     dtoList.Add(purchaseOrderService.ToDto());
@@ -104,7 +105,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public byte[] Export(PurchaseOrderPayload payload)
         {
-            var rowNumList =purchaseOrderList.GetRowNumList(payload);
+            var rowNumList = purchaseOrderList.GetRowNumList(payload);
             var dtoList = new List<PurchaseOrderDataDto>();
             foreach (var x in rowNumList)
             {
@@ -118,12 +119,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public void Import(PurchaseOrderPayload payload, IFormFileCollection files)
         {
-            if(files==null||files.Count==0)
+            if (files == null || files.Count == 0)
             {
                 AddError("no files upload");
                 return;
             }
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 if (!file.FileName.ToLower().EndsWith("csv"))
                 {
@@ -134,7 +135,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.PurchaseOrder = item;
                     if (purchaseOrderService.Add(payload))
@@ -155,23 +156,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task ImportAsync(PurchaseOrderPayload payload, IFormFileCollection files)
         {
-            if(files==null||files.Count==0)
+            if (files == null || files.Count == 0)
             {
                 AddError("no files upload");
                 return;
             }
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 if (!file.FileName.ToLower().EndsWith("csv"))
                 {
                     AddError($"invalid file type:{file.FileName}");
                     continue;
                 }
-                var list =purchaseOrderDataDtoCsv.Import(file.OpenReadStream());
+                var list = purchaseOrderDataDtoCsv.Import(file.OpenReadStream());
                 var readcount = list.Count();
                 var addsucccount = 0;
                 var errorcount = 0;
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     payload.PurchaseOrder = item;
                     if (await purchaseOrderService.AddAsync(payload))
@@ -194,13 +195,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<string> GetNextNumberAsync(int masterAccountNum, int profileNum, string customerUuid)
         {
-                return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, "po");
+            return await initNumbersService.GetNextNumberAsync(masterAccountNum, profileNum, customerUuid, "po");
         }
 
         public async Task<bool> UpdateInitNumberForCustomerAsync(int masterAccountNum, int profileNum, string customerUuid, string currentNumber)
         {
-                return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "po", currentNumber);
-        }
+            return await initNumbersService.UpdateInitNumberForCustomerAsync(masterAccountNum, profileNum, customerUuid, "po", currentNumber);
+        } 
 
         #region DataBase
         [XmlIgnore, JsonIgnore]

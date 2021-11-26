@@ -492,7 +492,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:7071/api//invoices/CreateInvoiceByOrderShipmentUuid?code={{code}}",
+									"raw": "http://localhost:7071/api/invoices/CreateInvoiceByOrderShipmentUuid?code={{code}}",
 									"protocol": "http",
 									"host": [
 										"localhost"

@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
             return await PatchAsync(eventDto);
         }
 
-        public async Task<bool> ResendAsync(int masterAccountNum, int profileNum, string eventUuid)
+        public async Task<bool> ResendEventAsync(int masterAccountNum, int profileNum, string eventUuid)
         {
             if (string.IsNullOrEmpty(eventUuid))
             {

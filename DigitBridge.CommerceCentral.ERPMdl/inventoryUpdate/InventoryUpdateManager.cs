@@ -267,13 +267,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<bool> UpdateStockByList(InventorySyncUpdatePayload inventorySyncUpdatePayload)
         {
             List<StringArray> updateSkuArrays = new List<StringArray>();
-            if (!inventorySyncUpdatePayload.HasInventorySyncData || !inventorySyncUpdatePayload.InventorySyncData.HasInventorySyncItems)
+            if (!inventorySyncUpdatePayload.HasInventorySyncItems)
             {
                 AddError("no data sync");
                 return false;
             }
 
-            var inventorySyncItems = inventorySyncUpdatePayload.InventorySyncData.InventorySyncItems;
+            var inventorySyncItems = inventorySyncUpdatePayload.InventorySyncItems;
 
             foreach (var item in inventorySyncItems)
                 updateSkuArrays.Add(new StringArray() { Item0 = item.SKU, Item1 = item.WarehouseCode,Item2=item.Qty.ToString() });

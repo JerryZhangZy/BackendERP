@@ -92,6 +92,26 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeChannelOrderListCount() => HasChannelOrderListCount;
 
         #endregion list service
+
+        #region Re send central order to erp
+
+        /// <summary>
+        /// central order uuid list loaded by filter.
+        /// </summary>
+        public List<string> MatchedCentralOrderUuids { get; set; }
+        [JsonIgnore]
+        public virtual bool HasMatchedCentralOrderUuids => MatchedCentralOrderUuids != null && MatchedCentralOrderUuids.Count > 0;
+        public bool ShouldSerializeMatchedCentralOrderUuids() => HasMatchedCentralOrderUuids;
+
+        /// <summary>
+        /// successfully send loaded central order uuid to erp.
+        /// </summary>
+        public List<string> SentCentralOrderUuids { get; set; }
+        [JsonIgnore]
+        public virtual bool HasSentCentralOrderUuids => SentCentralOrderUuids != null && SentCentralOrderUuids.Count > 0;
+        public bool ShouldSerializeSentCentralOrderUuids() => HasSentCentralOrderUuids;
+
+        #endregion
     }
 }
 
