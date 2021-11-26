@@ -84,7 +84,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         #endregion DataBase
 
-        //private string _soUuid;
+        #region load all shipment data from sales order
         public async Task<bool> FromSalesOrder(SalesOrderData soData, OrderShipmentService service)
         {
             if (soData == null) return false;
@@ -240,5 +240,146 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             shipmentData.OrderShipmentCanceledItem = new List<OrderShipmentCanceledItem>();
         }
+        #endregion 
+
+        // shipment data already created, load other data from sales order
+        public async Task<bool> LoadOthersDataFromSalesOrder(SalesOrderData soData, OrderShipmentDataDto shipmentDto)
+        {
+            if (soData == null || shipmentDto == null) return false;
+
+            _dtNowUtc = DateTime.UtcNow;
+            //_soUuid = Guid.NewGuid().ToString();
+
+            LoadOrderShipmentHeader(soData, shipmentDto);
+            LoadOrderShipmentPackage(soData, shipmentDto);
+            LoadOrderShipmentCanceledItem(soData, shipmentDto);
+
+            return true;
+        }
+
+        protected void LoadOrderShipmentHeader(SalesOrderData soData, OrderShipmentDataDto shipmentDto)
+        {
+            var soHeader = soData.SalesOrderHeader;
+            var soInfo = soData.SalesOrderHeaderInfo;
+            if (shipmentDto.OrderShipmentHeader == null)
+                shipmentDto.OrderShipmentHeader = new OrderShipmentHeaderDto();
+            var shipHeader = shipmentDto.OrderShipmentHeader;
+
+            shipHeader.OrderShipmentUuid = Guid.NewGuid().ToString();
+            shipHeader.DatabaseNum = soHeader.DatabaseNum;
+            shipHeader.MasterAccountNum = soHeader.MasterAccountNum;
+            shipHeader.ProfileNum = soHeader.ProfileNum;
+
+            shipHeader.ChannelNum = soInfo.ChannelNum;
+            shipHeader.ChannelAccountNum = soInfo.ChannelAccountNum;
+            //shipHeader.OrderDCAssignmentNum = 0;    //soHeader.OrderSourceCode
+            shipHeader.DistributionCenterNum = soInfo.DistributionCenterNum;
+            //shipHeader.CentralOrderNum = soInfo.CentralOrderNum;
+            //shipHeader.ChannelOrderID = soInfo.ChannelOrderID;
+            //shipHeader.ShipmentID = string.Empty;
+            shipHeader.WarehouseCode = soInfo.WarehouseCode;
+            //shipHeader.ShipmentType = 0;
+            //shipHeader.ShipmentReferenceID = string.Empty;
+            //shipHeader.ShipmentDateUtc = _dtNowUtc;
+            //shipHeader.ShippingCarrier = soInfo.ShippingCarrier;
+            //shipHeader.ShippingClass = soInfo.ShippingClass;
+            //shipHeader.ShippingCost = soHeader.ShippingAmount;
+            //shipHeader.MainTrackingNumber = string.Empty;
+            //shipHeader.MainReturnTrackingNumber = string.Empty;
+            //shipHeader.BillOfLadingID = string.Empty;
+            //shipHeader.TotalPackages = 1;
+            //shipHeader.TotalShippedQty = 1;
+            //shipHeader.TotalCanceledQty = 0;
+            //shipHeader.TotalWeight = 1;
+            //shipHeader.TotalVolume = 1;
+            //shipHeader.WeightUnit = 1;
+            //shipHeader.LengthUnit = 1;
+            //shipHeader.VolumeUnit = 1;
+            //shipHeader.ShipmentStatus = 0;
+            //shipHeader.DBChannelOrderHeaderRowID = string.Empty;
+            shipHeader.ProcessStatus = (int)OrderShipmentProcessStatusEnum.Pending;
+            shipHeader.ProcessDateUtc = DateTime.MinValue;
+            //shipHeader.EnterDateUtc =
+            shipHeader.RowNum = 0;
+            //shipHeader.DigitBridgeGuid = 
+            shipHeader.InvoiceNumber = string.Empty;
+            shipHeader.InvoiceUuid = string.Empty;
+            shipHeader.SalesOrderUuid = soHeader.SalesOrderUuid;
+            shipHeader.OrderNumber = soHeader.OrderNumber;
+
+            return;
+        }
+
+        protected void LoadOrderShipmentPackage(SalesOrderData soData, OrderShipmentDataDto shipmentDto)
+        {
+            var soItemList = soData.SalesOrderItems;
+            var soHeader = soData.SalesOrderHeader;
+            var soInfo = soData.SalesOrderHeaderInfo;
+
+            var shipHeader = shipmentDto.OrderShipmentHeader;
+
+            if (shipmentDto.OrderShipmentPackage == null)
+                return;
+
+            foreach (var package in shipmentDto.OrderShipmentPackage)
+            {
+                if (package == null) continue;
+
+                //obj.OrderShipmentPackageNum = 
+                package.DatabaseNum = shipHeader.DatabaseNum;
+                package.MasterAccountNum = shipHeader.MasterAccountNum;
+                package.ProfileNum = shipHeader.ProfileNum;
+                package.ChannelNum = shipHeader.ChannelNum;
+                package.ChannelAccountNum = shipHeader.ChannelAccountNum;
+                package.OrderShipmentNum = shipHeader.OrderShipmentNum;
+                //package.PackageID = "Package-10001";
+                //package.PackageType = 0;
+                //package.PackagePatternNum = 0;
+                //package.PackageTrackingNumber = string.Empty;
+                //package.PackageReturnTrackingNumber = string.Empty;
+                //package.PackageWeight = 1;
+                //package.PackageLength = 1;
+                //package.PackageWidth = 1;
+                //package.PackageHeight = 1;
+                //package.PackageVolume = 1;
+                //package.PackageQty = 1;
+                //package.ParentPackageNum = 0;
+                //package.HasChildPackage = false;
+                package.OrderShipmentUuid = shipHeader.OrderShipmentUuid;
+                package.OrderShipmentPackageUuid = Guid.NewGuid().ToString();
+
+                foreach (var item in package.OrderShipmentShippedItem)
+                {
+                    if (item == null) continue;
+                    var soItem = soItemList.FindById(item.SalesOrderItemsUuid);
+                    if (soItem == null) continue;
+
+                    //item.OrderShipmentShippedItemNum = 
+                    item.DatabaseNum = shipHeader.DatabaseNum;
+                    item.MasterAccountNum = shipHeader.MasterAccountNum;
+                    item.ProfileNum = shipHeader.ProfileNum;
+                    item.ChannelNum = shipHeader.ChannelNum;
+                    item.ChannelAccountNum = shipHeader.ChannelAccountNum;
+                    item.OrderShipmentNum = shipHeader.OrderShipmentNum;
+                    item.OrderShipmentPackageNum = package.OrderShipmentPackageNum;
+                    item.ChannelOrderID = shipHeader.ChannelOrderID;
+                    //item.OrderDCAssignmentLineNum = shipHeader.OrderDCAssignmentNum;
+                    //item.SKU = item.SKU;
+                    //item.ShippedQty = item.OpenQty;
+                    item.DBChannelOrderLineRowID = soItem.DBChannelOrderLineRowID;
+                    item.OrderShipmentUuid = shipHeader.OrderShipmentUuid;
+                    item.OrderShipmentPackageUuid = package.OrderShipmentPackageUuid;
+                    item.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
+                    item.RowNum = 0;
+                    //item.SalesOrderItemsUuid = item.SalesOrderItemsUuid;
+                }
+            }
+        }
+
+        protected void LoadOrderShipmentCanceledItem(SalesOrderData soData, OrderShipmentDataDto shipmentDto)
+        {
+            return;
+        }
+
     }
 }

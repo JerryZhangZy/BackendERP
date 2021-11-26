@@ -56,7 +56,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceNewPaymentPayload))]
         public static async Task<JsonNetResponse<InvoiceNewPaymentPayload>> NewPaymentByInvoiceNumber(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "invoicePayments/invoice/{invoiceNumber}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "invoicePayments/newPayment/invoice/{invoiceNumber}")] HttpRequest req,
             string invoiceNumber)
         {
             var payload = await req.GetParameters<InvoiceNewPaymentPayload>();
@@ -81,7 +81,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "customerCode", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "customerCode", Description = "Customer code.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoiceNewPaymentPayload))]
         public static async Task<JsonNetResponse<InvoiceNewPaymentPayload>> NewPaymentByCustomerCode(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "invoicePayments/customer/{customerCode}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "invoicePayments/newPayment/customer/{customerCode}")] HttpRequest req,
             string customerCode)
         {
             var payload = await req.GetParameters<InvoiceNewPaymentPayload>();
@@ -154,7 +154,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "invoiceNumber", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "invoiceNumber", Description = "Invoice number. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadGetSingle))]
         public static async Task<JsonNetResponse<InvoiceNewPaymentPayload>> GetInvoicePayments(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoicePayments/invoice/{invoiceNumber}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoicePayments/{invoiceNumber}")] HttpRequest req,
             string invoiceNumber)
         {
             var payload = await req.GetParameters<InvoiceNewPaymentPayload>();
@@ -180,7 +180,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "transNum", In = ParameterLocation.Path, Required = true, Type = typeof(int), Summary = "transNum", Description = "Transaction Num. ", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(InvoicePaymentPayloadGetSingle))]
         public static async Task<JsonNetResponse<InvoiceNewPaymentPayload>> GetInvoicePayment(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoicePayments/invoice/{invoiceNumber}/transNum/{transNum}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "invoicePayments/{invoiceNumber}/{transNum}")] HttpRequest req,
             string invoiceNumber, int transNum)
         {
             var payload = await req.GetParameters<InvoiceNewPaymentPayload>();
