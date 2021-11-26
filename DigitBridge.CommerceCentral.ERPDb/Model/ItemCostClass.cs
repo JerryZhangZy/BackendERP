@@ -62,14 +62,13 @@ namespace DigitBridge.CommerceCentral.ERPDb
             ChargeAndAllowanceAmount = item.ChargeAndAllowanceAmount.ToAmount();
             TaxRate = item.TaxRate.ToRate();
             TaxAmount = item.TaxAmount.ToAmount();
-
-            UnitCost = item.Price.ToAmount();
+            //UnitCost = item.Price.ToAmount();
+            UnitCost = item.UnitCost.ToAmount();
             AvgCost = item.Price.ToAmount();
             SalesCost = item.Price.ToAmount();
             Cost = (AvgCost.IsZero()) ? UnitCost : AvgCost;
 
             Qty = item.TransQty;
-            //Instock = item.TransQty;
         }
 
         /// <summary>
