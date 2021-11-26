@@ -7,7 +7,7 @@ namespace DigitBridge.Base.Common
     public enum ApInvoiceItemType:int
     {
         ReceiveItemTotalAmount=1,
-        ShippingCost,
-        HandlingCost
+        ShippingCost=2,
+        HandlingCost=3
     }
 }
