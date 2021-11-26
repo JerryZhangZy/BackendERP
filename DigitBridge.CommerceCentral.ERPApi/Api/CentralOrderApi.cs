@@ -68,8 +68,8 @@ namespace DigitBridge.CommerceCentral.ERPApi
         }
 
 
-        [FunctionName(nameof(ResendChannelOrderToErp))]
-        [OpenApiOperation(operationId: "ResendChannelOrderToErp", tags: new[] { "CentralOrders" }, Summary = "Resend one channel order to erp")]
+        [FunctionName(nameof(ResendCentralOrderToErp))]
+        [OpenApiOperation(operationId: "ResendCentralOrderToErp", tags: new[] { "CentralOrders" }, Summary = "Resend one channel order to erp")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
@@ -77,33 +77,33 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "centralOrderUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "centralOrderUuid", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
         bodyType: typeof(ChannelOrderPayload))]
-        public static async Task<JsonNetResponse<ChannelOrderPayload>> ResendChannelOrderToErp(
-        [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "centralOrders/resendChannelOrderToErp/{centralOrderUuid}")]
+        public static async Task<JsonNetResponse<ChannelOrderPayload>> ResendCentralOrderToErp(
+        [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "centralOrders/resendCentralOrderToErp/{centralOrderUuid}")]
             HttpRequest req, string centralOrderUuid)
         {
             var payload = await req.GetParameters<ChannelOrderPayload>();
-            var svc = new IntegrationChannelOrderApi();
-            payload.Success = await svc.ReSendChannelOrderToErpAsync(payload, centralOrderUuid);
+            var svc = new IntegrationCentralOrderApi();
+            payload.Success = await svc.ReSendCentralOrderToErpAsync(payload, centralOrderUuid);
             payload.Messages = svc.Messages;
             return new JsonNetResponse<ChannelOrderPayload>(payload);
         } 
 
-        [FunctionName(nameof(ResendAllChannelOrderToErp))]
-        [OpenApiOperation(operationId: "ResendAllChannelOrderToErp", tags: new[] { "CentralOrders" }, Summary = "Load channel order list by criteria then send them to erp")]
+        [FunctionName(nameof(ResendAllCentralOrderToErp))]
+        [OpenApiOperation(operationId: "ResendAllCentralOrderToErp", tags: new[] { "CentralOrders" }, Summary = "Load channel order list by criteria then send them to erp")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
         Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
         bodyType: typeof(ChannelOrderPayload))]
-        public static async Task<JsonNetResponse<ChannelOrderPayload>> ResendAllChannelOrderToErp(
-        [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "centralOrders/resendAllChannelOrderToErp")]
+        public static async Task<JsonNetResponse<ChannelOrderPayload>> ResendAllCentralOrderToErp(
+        [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "centralOrders/resendAllCentralOrderToErp")]
             HttpRequest req)
         {
             var payload = await req.GetParameters<ChannelOrderPayload>();
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
-            var svc = new IntegrationChannelOrderApi(dataBaseFactory); 
-            payload.Success = await svc.ReSendAllChannelOrderToErp(payload);
+            var svc = new IntegrationCentralOrderApi(dataBaseFactory); 
+            payload.Success = await svc.ReSendAllCentralOrderToErp(payload);
             payload.Messages = svc.Messages;
             return new JsonNetResponse<ChannelOrderPayload>(payload);
         }

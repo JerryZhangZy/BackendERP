@@ -62,7 +62,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         [Fact()]
         public async Task ReSendChannelOrderToErpAsync_Test()
         {
-            var client = new IntegrationChannelOrderApi(_baseUrl, _code);
+            var client = new IntegrationCentralOrderApi(_baseUrl, _code);
             var centralOrderUuid = "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622";
             var payload = new ChannelOrderPayload()
             {
@@ -76,7 +76,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
         [Fact()]
         public async Task ReSendAllChannelOrderToErp_Test()
         {
-            var client = new IntegrationChannelOrderApi(_baseUrl, _code);
+            var client = new IntegrationCentralOrderApi(_baseUrl, _code);
             var payload = new ChannelOrderPayload()
             {
                 MasterAccountNum = MasterAccountNum,
