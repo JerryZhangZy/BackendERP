@@ -502,6 +502,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     transactions.Add(ToDto());
 
             }
+            if (transactions.Count == 0)
+            {
+                AddWarning($@"{vendorCode} there is no purchase record");
+                return false;
+            }
             payload.PoTransactions = new List<PoTransactionDataDto>();
             payload.PoTransactions.Add(MergePoTransactions(transactions, false));
             return true;

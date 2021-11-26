@@ -491,10 +491,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<int?> GetRowNumByPoUuidAsync(string transUuid)
         {
-           int? rowNum = dbFactory.Db.ExecuteScalar<int?>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE TransUuid=@0", transUuid.ToSqlParameter("@0"));
-            if (rowNum != null)
-                this._data.Get(rowNum.Value);
-            return rowNum;
+           return   dbFactory.Db.ExecuteScalar<int?>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE TransUuid=@0", transUuid.ToSqlParameter("@0"));
+       
            // return await dbFactory.GetValueAsync<ApInvoiceHeader,int>("SELECT TOP 1 RowNum FROM ApInvoiceHeader WHERE PoUuid=@0",poUuid.ToSqlParameter("@0"));
         }
         
@@ -536,9 +534,11 @@ where TransUuid=@0";
             
             var rowNum = await GetRowNumByPoUuidAsync(transUuid);
             var summary = GetSummaryAmountByPoUuid(transUuid);
-            if (rowNum!=null)//&& await GetDataAsync(rowNum.Value)
+
+            Edit();
+            if (rowNum!=null && await GetDataAsync(rowNum.Value))//
             {
-                Edit();
+             
                 //Update;
                 Data.ApInvoiceItems.First(r => r.ApInvoiceItemType == (int)ApInvoiceItemType.ReceiveItemTotalAmount)
                     .Amount = summary.subTotalAmount.ToAmount();
