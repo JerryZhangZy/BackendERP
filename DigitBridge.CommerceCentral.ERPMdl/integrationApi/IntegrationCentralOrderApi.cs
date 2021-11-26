@@ -13,10 +13,10 @@ using System.Xml.Serialization;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
-    public class IntegrationChannelOrderApi : IMessage
+    public class IntegrationCentralOrderApi : IMessage
     {
-        public IntegrationChannelOrderApi() { }
-        public IntegrationChannelOrderApi(IDataBaseFactory dbFactory)
+        public IntegrationCentralOrderApi() { }
+        public IntegrationCentralOrderApi(IDataBaseFactory dbFactory)
         {
             SetDataBaseFactory(dbFactory);
         }
@@ -43,19 +43,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion DataBase
-        public IntegrationChannelOrderApi(string baseUrl, string authCode)
+        public IntegrationCentralOrderApi(string baseUrl, string authCode)
         {
-            _centralOrderClient = new ChannelOrderClient(baseUrl, authCode);
+            _centralOrderClient = new CentralOrderClient(baseUrl, authCode);
         }
 
         #region Service
-        private ChannelOrderClient _centralOrderClient;
-        protected ChannelOrderClient centralOrderClient
+        private CentralOrderClient _centralOrderClient;
+        protected CentralOrderClient centralOrderClient
         {
             get
             {
                 if (_centralOrderClient is null)
-                    _centralOrderClient = new ChannelOrderClient();
+                    _centralOrderClient = new CentralOrderClient();
                 return _centralOrderClient;
             }
         }
@@ -67,10 +67,23 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="centralOrderUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> ReSendChannelOrderToErpAsync(ChannelOrderPayload payload, string centralOrderUuid)
+        public virtual async Task<bool> ReSendCentralOrderToErpAsync(ChannelOrderPayload payload, string centralOrderUuid)
         {
-            var success = await centralOrderClient.ChannelOrderToErpAsync(payload.MasterAccountNum, payload.ProfileNum, centralOrderUuid);
-            if (!success)
+            if (centralOrderUuid.IsZero())
+            {
+                AddInfo("CentralOrderUuid cann't be empty.");
+                return false;
+            }
+            if (payload.SentCentralOrderUuids is null)
+            {
+                payload.SentCentralOrderUuids = new List<string>();
+            }
+            var success = await centralOrderClient.CentralOrderToErpAsync(payload.MasterAccountNum, payload.ProfileNum, centralOrderUuid);
+            if (success)
+            {
+                payload.SentCentralOrderUuids.Add(centralOrderUuid);
+            }
+            else
             {
                 this.Messages.Add(centralOrderClient.Messages);
             }
@@ -83,8 +96,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="centralOrderUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> ReSendAllChannelOrderToErp(ChannelOrderPayload payload)
-        {
+        public virtual async Task<bool> ReSendAllCentralOrderToErp(ChannelOrderPayload payload)
+        { 
             var srv = new CentralOrderList(dbFactory, new CentralOrderQuery());
             await srv.GetChannelOrderListAsync(payload);
             if (!payload.Success)
@@ -107,14 +120,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             var queryResult = JArray.Parse(jsonData);
-            payload.MatchedCentralOrderUuids = queryResult.Select(i => i.Value<string>("centralOrderUuid")).ToList();
-            payload.SentCentralOrderUuids = new List<string>();
+            payload.MatchedCentralOrderUuids = queryResult.Select(i => i.Value<string>("centralOrderUuid")).Distinct().ToList();
+
             foreach (var centralOrderUuid in payload.MatchedCentralOrderUuids)
             {
-                if (!await ReSendChannelOrderToErpAsync(payload, centralOrderUuid))
-                    continue;
-
-                payload.SentCentralOrderUuids.Add(centralOrderUuid);
+                await ReSendCentralOrderToErpAsync(payload, centralOrderUuid);
             }
             return true;
         }
