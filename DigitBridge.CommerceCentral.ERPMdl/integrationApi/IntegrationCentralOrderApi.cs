@@ -121,7 +121,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             var queryResult = JArray.Parse(jsonData);
             payload.MatchedCentralOrderUuids = queryResult.Select(i => i.Value<string>("centralOrderUuid")).ToList();
-            payload.SentCentralOrderUuids = new List<string>();
+
             foreach (var centralOrderUuid in payload.MatchedCentralOrderUuids)
             {
                 await ReSendCentralOrderToErpAsync(payload, centralOrderUuid);

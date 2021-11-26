@@ -100,7 +100,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "centralOrders/resendAllCentralOrderToErp")]
             HttpRequest req)
         {
-            var payload = await req.GetParameters<ChannelOrderPayload>();
+            var payload = await req.GetParameters<ChannelOrderPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new IntegrationCentralOrderApi(dataBaseFactory); 
             payload.Success = await svc.ReSendAllCentralOrderToErp(payload);
