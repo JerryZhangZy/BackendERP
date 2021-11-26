@@ -8,10 +8,16 @@
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
     "dsn": "Data Source=DESKTOP-AIG3DDD\\SQLEXPRESS;Initial Catalog=digit_data;Integrated Security=SSPI;Connection Timeout=30;",
 
-    "ERP_Integration_Api_BaseUrl": "https://digitbridge-erp-integration-api-dev.azurewebsites.net",
+    //"ERP_Integration_Api_BaseUrl": "https://digitbridge-erp-integration-api-dev.azurewebsites.net",
+    //"ERP_Integration_Api_AuthCode": "yaEyeN7PjOovcgu4h2Q2JEgOtQt5gSb5uC9jHR840ca/qjErIxxMZw==",
+
+    //"EventApi_BaseUrl": "https://digitbridge-erp-event-api-dev.azurewebsites.net",
+    //"EventApi_AuthCode": "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==",
+
+    "ERP_Integration_Api_BaseUrl": "http://localhost:7074",
     "ERP_Integration_Api_AuthCode": "yaEyeN7PjOovcgu4h2Q2JEgOtQt5gSb5uC9jHR840ca/qjErIxxMZw==",
 
-    "EventApi_BaseUrl": "https://digitbridge-erp-event-api-dev.azurewebsites.net",
+    "EventApi_BaseUrl": "http://localhost:7073",
     "EventApi_AuthCode": "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==",
 
     //local

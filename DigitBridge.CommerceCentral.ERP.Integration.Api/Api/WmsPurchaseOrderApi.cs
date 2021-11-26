@@ -58,7 +58,7 @@ namespace DigitBridge.CommerceCentral.ERP.Integration.Api.Api
 
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
 
-            var service = new PoReceiveService(dataBaseFactory);
+            var service = new PoReceiveManager(dataBaseFactory);
             var result = await service.AddTransForWMSPoReceiveAsync(payload);
 
             return new JsonNetResponse<IList<WMSPoReceivePayload>>(result);

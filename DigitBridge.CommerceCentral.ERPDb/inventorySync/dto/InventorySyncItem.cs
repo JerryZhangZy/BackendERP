@@ -9,10 +9,10 @@ using Newtonsoft.Json;
 
 using DigitBridge.CommerceCentral.YoPoco;
 
-namespace DigitBridge.CommerceCentral.ERPDb.inventorySync.dto
+namespace DigitBridge.CommerceCentral.ERPDb
 {
     [Serializable()]
-    public class InventorySyncItemsDto
+    public class InventorySyncItem
     {
         [OpenApiPropertyDescription("SKU")]
         [StringLength(50, ErrorMessage = "The SKU value cannot exceed 100 characters. ")]

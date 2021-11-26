@@ -28,17 +28,21 @@ using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
-    public partial class PoReceiveServiceTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class IntegrationChannelOrderApiTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug Helper Function";
 
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
         public IDataBaseFactory DataBaseFactory { get; set; }
-        public const int MasterAccountNum = 10001;
-        public const int ProfileNum = 10001;
 
-        public PoReceiveServiceTests(TestFixture<StartupTest> fixture)
+        private string _baseUrl = "http://localhost:7073";
+        //private string _baseUrl = "https://digitbridge-erp-event-api-dev.azurewebsites.neterpevents";
+        private string _code = "drZEGmRUVmGcitmCqyp3VZe5b4H8fSoy8rDUsEMkfG9U7UURXMtnrw==";
+
+        protected const int MasterAccountNum = 10002;
+        protected const int ProfileNum = 10003;
+        public IntegrationChannelOrderApiTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -56,25 +60,32 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         #region async methods
         [Fact()]
-        public async Task AddTransForWMSPoReceiveAsync_Test()
+        public async Task ReSendChannelOrderToErpAsync_Test()
         {
-            var payload = new PoReceivePayload()
+            var client = new IntegrationChannelOrderApi(_baseUrl, _code);
+            var centralOrderUuid = "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622";
+            var payload = new ChannelOrderPayload()
+            {
+                MasterAccountNum = MasterAccountNum,
+                ProfileNum = ProfileNum
+            };
+            var success = await client.ReSendChannelOrderToErpAsync(payload, centralOrderUuid);
+            Assert.True(success, client.Messages.ObjectToString());
+        }
+
+        [Fact()]
+        public async Task ReSendAllChannelOrderToErp_Test()
+        {
+            var client = new IntegrationChannelOrderApi(_baseUrl, _code);
+            var payload = new ChannelOrderPayload()
             {
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
-                WMSPoReceiveItems = new List<WMSPoReceiveItem>()
-                {
-                 new WMSPoReceiveItem(){ PoItemUuid="1a8e53ca-4a0c-4317-952e-445584eee520", Qty=1 },
-                 new WMSPoReceiveItem(){ PoItemUuid="fc2d34b8-e3f0-443f-89b4-2309f66729ad", Qty=2 },
-                }
+                LoadAll = true,
             };
-
-            var service = new PoReceiveManager(DataBaseFactory);
-            var result = await service.AddTransForWMSPoReceiveAsync(payload);
-            var success = result != null && result.Count(i => !i.Success) <= 0;
-            Assert.True(success, result.SelectMany(i => i.Messages).ObjectToString());
+            var success = await client.ReSendAllChannelOrderToErp(payload);
+            Assert.True(success, client.Messages.ObjectToString());
         }
-
         #endregion async methods
 
     }
