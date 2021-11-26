@@ -97,7 +97,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="centralOrderUuid"></param>
         /// <returns></returns>
         public virtual async Task<bool> ReSendAllCentralOrderToErp(ChannelOrderPayload payload)
-        {
+        { 
             var srv = new CentralOrderList(dbFactory, new CentralOrderQuery());
             await srv.GetChannelOrderListAsync(payload);
             if (!payload.Success)
@@ -120,7 +120,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             var queryResult = JArray.Parse(jsonData);
-            payload.MatchedCentralOrderUuids = queryResult.Select(i => i.Value<string>("centralOrderUuid")).ToList();
+            payload.MatchedCentralOrderUuids = queryResult.Select(i => i.Value<string>("centralOrderUuid")).Distinct().ToList();
 
             foreach (var centralOrderUuid in payload.MatchedCentralOrderUuids)
             {
