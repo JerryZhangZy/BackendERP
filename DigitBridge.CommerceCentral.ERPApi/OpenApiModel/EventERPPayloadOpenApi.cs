@@ -152,7 +152,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Response payload object for DELETE API
     /// </summary>
     [Serializable()]
-    public class EventERPPayloadResend
+    public class EventERPPayloadResendRequest
     {
         /// <summary>
         /// (Request) Array of event uuids which will be resent.
@@ -160,5 +160,47 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiPropertyDescription("(Request) Array of event uuids which will be resent.")] 
         public IList<string> EventUuids { get; set; }
     }
-}
 
+    /// <summary>
+    /// Request Response payload for ReSendEvent API
+    /// </summary>
+    [Serializable()]
+    public class EventERPPayloadResendResponse : ResponsePayloadBase
+    {
+        /// <summary>
+        /// (Response Parameter) Array of EventUuid which have been sent to erp.
+        /// </summary>
+        [OpenApiPropertyDescription(" (Response Parameter) Array of EventUuid which have been resent.")]
+        public IList<string> SentEventUuids { get; set; }
+
+
+        /// <summary>
+        /// (Request) Array of event uuids which will be resent.
+        /// </summary>
+        [OpenApiPropertyDescription("(Request) Array of event uuids which will be resent.")]
+        public IList<string> EventUuids { get; set; }
+
+    }
+
+    /// <summary>
+    /// Request Response payload for ResendCentralOrderToErp API
+    /// </summary>
+    [Serializable()]
+    public class EventERPPayloadResendAllResponse : PayloadBase
+    {
+
+        /// <summary>
+        /// (Response Parameter) Array of EventUuid searched by criteria.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Parameter) Array of EventUuid searched by criteria.")]
+        public IList<string> EventUuids { get; set; }
+
+        /// <summary>
+        /// (Response Parameter) Array of EventUuid which have been sent to erp.
+        /// </summary>
+        [OpenApiPropertyDescription(" (Response Parameter) Array of EventUuid which have been sent to erp.")]
+        public IList<string> SentEventUuids { get; set; }
+
+    }
+
+}
