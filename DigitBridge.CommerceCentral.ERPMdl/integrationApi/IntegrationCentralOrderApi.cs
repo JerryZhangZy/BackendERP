@@ -16,11 +16,14 @@ namespace DigitBridge.CommerceCentral.ERPMdl
     public class IntegrationCentralOrderApi : IMessage
     {
         public IntegrationCentralOrderApi() { }
-        public IntegrationCentralOrderApi(IDataBaseFactory dbFactory)
+        public IntegrationCentralOrderApi(IDataBaseFactory _dbFactory)
         {
-            SetDataBaseFactory(dbFactory);
+            SetDataBaseFactory(_dbFactory);
         }
-
+        public IntegrationCentralOrderApi(string baseUrl, string authCode)
+        {
+            _centralOrderClient = new CentralOrderClient(baseUrl, authCode);
+        }
 
         #region DataBase
         [XmlIgnore, JsonIgnore]
@@ -43,10 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion DataBase
-        public IntegrationCentralOrderApi(string baseUrl, string authCode)
-        {
-            _centralOrderClient = new CentralOrderClient(baseUrl, authCode);
-        }
+        
 
         #region Service
         private CentralOrderClient _centralOrderClient;
