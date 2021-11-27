@@ -28,7 +28,7 @@ using DigitBridge.Base.Common;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
-    public partial class IntegrationChannelOrderApiTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
+    public partial class IntegrationCentralOrderApiTests : IDisposable, IClassFixture<TestFixture<StartupTest>>
     {
         protected const string SkipReason = "Debug Helper Function";
 
@@ -42,7 +42,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         protected const int MasterAccountNum = 10002;
         protected const int ProfileNum = 10003;
-        public IntegrationChannelOrderApiTests(TestFixture<StartupTest> fixture)
+        public IntegrationCentralOrderApiTests(TestFixture<StartupTest> fixture)
         {
             Fixture = fixture;
             Configuration = fixture.Configuration;
@@ -60,30 +60,34 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         #region async methods
         [Fact()]
-        public async Task ReSendChannelOrderToErpAsync_Test()
+        public async Task ReSendCentralOrderToErpAsync_Test()
         {
-            var client = new IntegrationCentralOrderApi(_baseUrl, _code);
-            var centralOrderUuid = "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622";
+            var client = new IntegrationCentralOrderApi(_baseUrl, _code); 
             var payload = new ChannelOrderPayload()
             {
                 MasterAccountNum = MasterAccountNum,
-                ProfileNum = ProfileNum
+                ProfileNum = ProfileNum,
+                CentralOrderUuids=new List<string>()
+                {
+                    "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622",
+                    "b02b78de-f88f-47f8-b693-cb7f520b1729"
+                }
             };
-            var success = await client.ReSendCentralOrderToErpAsync(payload, centralOrderUuid);
+            var success = await client.ReSendCentralOrderToErpAsync(payload);
             Assert.True(success, client.Messages.ObjectToString());
         }
 
         [Fact()]
-        public async Task ReSendAllChannelOrderToErp_Test()
+        public async Task ReSendAllCentralOrderToErp_Test()
         {
             var client = new IntegrationCentralOrderApi(_baseUrl, _code);
             var payload = new ChannelOrderPayload()
             {
                 MasterAccountNum = MasterAccountNum,
                 ProfileNum = ProfileNum,
-                LoadAll = true,
+                Top=10,
             };
-            var success = await client.ReSendAllCentralOrderToErp(payload);
+            var success = await client.ReSendAllCentralOrderToErpAsync(payload);
             Assert.True(success, client.Messages.ObjectToString());
         }
         #endregion async methods

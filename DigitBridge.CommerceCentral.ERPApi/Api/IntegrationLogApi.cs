@@ -194,21 +194,43 @@ namespace DigitBridge.CommerceCentral.ERPApi
 
 
         [FunctionName(nameof(ReSendEvent))]
-        [OpenApiOperation(operationId: "ReSendEvent", tags: new[] { "IntegrationLog" })]
+        [OpenApiOperation(operationId: "ReSendEvent", tags: new[] { "IntegrationLog" }, Summary = "Re send event by eventuuids")]
         [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "eventUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "eventUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadResendRequest), Required = true, Description = "Array of eventUuid.")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
-            bodyType: typeof(EventERPPayload))]
+            bodyType: typeof(EventERPPayloadResendResponse))]
         public static async Task<JsonNetResponse<EventERPPayload>> ReSendEvent(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "IntegrationLog/reSendEvent/{eventUuid}")]
-            HttpRequest req, string eventUuid)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "IntegrationLog/reSendEvent")]
+            HttpRequest req)
         {
-            var payload = await req.GetParameters<EventERPPayload>();
+            var payload = await req.GetParameters<EventERPPayload>(true);
             var svc = new IntegrationEventApi();
-            payload.Success = await svc.ResendEventAsync(payload.MasterAccountNum, payload.ProfileNum, eventUuid);
+            payload.Success = await svc.ResendEventAsync(payload);
+            payload.Messages = svc.Messages;
+            return new JsonNetResponse<EventERPPayload>(payload);
+        }
+
+        [FunctionName(nameof(ReSendAllEvent))]
+        [OpenApiOperation(operationId: "ReSendAllEvent", tags: new[] { "IntegrationLog" }, Summary = "Re send all event by search criteria")]
+        [OpenApiParameter(name: "masterAccountNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "MasterAccountNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
+            Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(EventERPPayloadFind),
+            Description = "Request Body in json format")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
+            bodyType: typeof(EventERPPayloadResendAllResponse))]
+        public static async Task<JsonNetResponse<EventERPPayload>> ReSendAllEvent(
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "IntegrationLog/reSendAllEvent")]
+            HttpRequest req)
+        {
+            var payload = await req.GetParameters<EventERPPayload>(true);
+            var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
+            var svc = new IntegrationEventApi(dataBaseFactory);
+            payload.Success = await svc.ResendAllEventAsync(payload);
             payload.Messages = svc.Messages;
             return new JsonNetResponse<EventERPPayload>(payload);
         }
