@@ -212,7 +212,7 @@ FROM Event_ERP ins
         public async Task AddPayloadAsync_Test()
         {
             var srv = new EventERPService(DataBaseFactory, AzureWebJobsStorage);
-           
+
             var mapper = srv.DtoMapper;
             var data = GetFakerData();
             var dto = mapper.WriteDto(data, null);
@@ -273,6 +273,40 @@ FROM Event_ERP ins
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
         }
 
+
+        [Fact()]
+        public async Task ResendEventAsync_Test()
+        {
+            var servcie = new EventERPService(DataBaseFactory);
+            var eventUuid = "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622";
+            var sentEventUuid = new List<string>();
+            var success = await servcie.ResendEventAsync(eventUuid, sentEventUuid);
+            Assert.True(success, servcie.Messages.ObjectToString());
+            Assert.True(sentEventUuid.Contains(eventUuid), "resend event failed");
+        }
+        [Fact()]
+        public async Task ResendEventsAsync_Test()
+        {
+            var servcie = new EventERPService(DataBaseFactory);
+
+            var payload = new EventERPPayload()
+            {
+                MasterAccountNum = 10002,
+                ProfileNum = 10003,
+                EventUuids = new List<string>()
+                {
+                    "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622",
+                    "b437f4b7-65d5-4a52-bc05-827667a3c67e",
+                }
+            };
+
+            var success = await servcie.ResendEventsAsync(payload);
+            Assert.True(success, servcie.Messages.ObjectToString());
+            foreach (var eventUuid in payload.EventUuids)
+            {
+                Assert.True(payload.SentEventUuids.Contains(eventUuid), $"resend event failed, eventUuid:{eventUuid}.");
+            }
+        }
     }
 }
 

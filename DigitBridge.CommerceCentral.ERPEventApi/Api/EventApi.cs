@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -386,17 +387,17 @@ namespace DigitBridge.CommerceCentral.EventERPApi
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
             Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiParameter(name: "eventUuid", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "eventUuid", Visibility = OpenApiVisibilityType.Advanced)]
+        [OpenApiParameter(name: "eventUuids", In = ParameterLocation.Query, Required = true, Type = typeof(IList<string>), Summary = "eventUuids", Description = "Array of eventUuid.", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
             bodyType: typeof(EventERPPayloadUpdate))]
         public static async Task<JsonNetResponse<EventERPPayload>> ReSendEvent(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/resend/{eventUuid}")]
-            HttpRequest req, string eventUuid)
+            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "erpevents/resend")]
+            HttpRequest req)
         {
             var payload = await req.GetParameters<EventERPPayload>();
             var dbFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var svc = new EventERPService(dbFactory, MySingletonAppSetting.AzureWebJobsStorage);
-            payload.Success = await svc.ResendEventAsync(eventUuid);
+            payload.Success = await svc.ResendEventsAsync(payload);
             payload.Messages = svc.Messages;
 
             return new JsonNetResponse<EventERPPayload>(payload);
