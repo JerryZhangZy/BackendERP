@@ -25,6 +25,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
     public partial class EventERPServiceTests
     {
+        const string queueConn = "DefaultEndpointsProtocol=https;AccountName=dbgerptablestoragedev;AccountKey=0ZLZN6MUD6JdeQeFcjuy/DYsf4m/tCtBi0VNJbPU6Puz7jXlrQrJJMf+E8IIlu/9y9iQMJHw5H/vgyJf3rgtXw==;EndpointSuffix=core.windows.net";
 
         [Fact()]
         //[Fact(Skip = SkipReason)]
@@ -287,7 +288,8 @@ FROM Event_ERP ins
         [Fact()]
         public async Task ResendEventsAsync_Test()
         {
-            var servcie = new EventERPService(DataBaseFactory);
+           
+            var servcie = new EventERPService(DataBaseFactory, queueConn);
 
             var payload = new EventERPPayload()
             {
