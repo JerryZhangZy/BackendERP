@@ -52,14 +52,21 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <returns></returns>
         public virtual async Task<bool> ResendEventAsync(EventERPPayload payload)
         {
+            if (!payload.HasEventUuids)
+            {
+                AddError("EventUuids cann't be empty.");
+                return false;
+            }
+
             var success = await ErpEventResendClient.ResendEventAsync(payload.MasterAccountNum, payload.ProfileNum, payload.EventUuids);
 
             if (!success)
             {
                 this.Messages.Add(ErpEventResendClient.Messages);
+                return false;
             }
 
-            payload.SentEventUuids = ErpEventResendClient.ResopneData.SentEventUuids;
+            payload.SentEventUuids = ErpEventResendClient.ResopneData?.SentEventUuids;
 
             return success;
         }
