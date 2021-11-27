@@ -25,6 +25,7 @@ using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
 using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 using DigitBridge.Base.Common;
+using Newtonsoft.Json.Linq;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -60,11 +61,36 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         #region async methods
         [Fact()]
-        public async Task ResendAsync_Test()
+        public async Task ResendEventAsync_Test()
         {
             var client = new IntegrationEventApi(_baseUrl, _code);
-            var eventUuid = "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622";
-            var success = await client.ResendEventAsync(MasterAccountNum, ProfileNum, eventUuid);
+            var payload = new EventERPPayload()
+            {
+                MasterAccountNum = 10002,
+                ProfileNum = 10003,
+            };
+
+            payload.EventUuids = new List<string> { "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622" };
+
+            var success = await client.ResendEventAsync(payload);
+            Assert.True(success, client.Messages.ObjectToString());
+        }
+
+        [Fact()]
+        public async Task ResendAllEventAsync_Test()
+        {
+            var client = new IntegrationEventApi(_baseUrl, _code);
+            var payload = new EventERPPayload()
+            {
+                MasterAccountNum = 10002,
+                ProfileNum = 10003,
+                Top = 10,
+                IsQueryTotalCount = true,
+                LoadAll = false,
+                Filter = new JObject() { { "eRPEventType", 5 } },
+            };
+
+            var success = await client.ResendAllEventAsync(payload);
             Assert.True(success, client.Messages.ObjectToString());
         }
 
