@@ -46,7 +46,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         }
 
         #endregion DataBase
-        
+
 
         #region Service
         private CentralOrderClient _centralOrderClient;
@@ -67,18 +67,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="centralOrderUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> ReSendCentralOrderToErpAsync(ChannelOrderPayload payload, string centralOrderUuid)
+        protected virtual async Task<bool> ReSendCentralOrderToErpAsync(ChannelOrderPayload payload, string centralOrderUuid)
         {
             if (centralOrderUuid.IsZero())
             {
                 AddInfo("CentralOrderUuid cann't be empty.");
                 return false;
             }
-            if (payload.SentCentralOrderUuids is null)
-            {
-                payload.SentCentralOrderUuids = new List<string>();
-            }
+
             var success = await centralOrderClient.CentralOrderToErpAsync(payload.MasterAccountNum, payload.ProfileNum, centralOrderUuid);
+
             if (success)
             {
                 payload.SentCentralOrderUuids.Add(centralOrderUuid);
@@ -96,8 +94,28 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <param name="payload"></param>
         /// <param name="centralOrderUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> ReSendAllCentralOrderToErp(ChannelOrderPayload payload)
-        { 
+        public virtual async Task<bool> ReSendCentralOrderToErpAsync(ChannelOrderPayload payload)
+        {
+            if (!payload.HasCentralOrderUuids)
+            {
+                AddInfo("CentralOrderUuids cann't be empty.");
+                return false;
+            }
+
+            foreach (var centralOrderUuid in payload.CentralOrderUuids)
+            {
+                await ReSendCentralOrderToErpAsync(payload, centralOrderUuid);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Load channel order list by search criteria then send them to erp.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ReSendAllCentralOrderToErpAsync(ChannelOrderPayload payload)
+        {
             var srv = new CentralOrderList(dbFactory, new CentralOrderQuery());
             await srv.GetChannelOrderListAsync(payload);
             if (!payload.Success)
@@ -120,9 +138,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             var queryResult = JArray.Parse(jsonData);
-            payload.MatchedCentralOrderUuids = queryResult.Select(i => i.Value<string>("centralOrderUuid")).Distinct().ToList();
+            payload.CentralOrderUuids = queryResult.Select(i => i.Value<string>("centralOrderUuid")).Distinct().ToList();
 
-            foreach (var centralOrderUuid in payload.MatchedCentralOrderUuids)
+            foreach (var centralOrderUuid in payload.CentralOrderUuids)
             {
                 await ReSendCentralOrderToErpAsync(payload, centralOrderUuid);
             }
