@@ -96,8 +96,9 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public bool ShouldSerializeSalesOrderUuids() => HasCentralOrderUuids;
 
         /// <summary>
-        /// successfully send loaded central order uuid to erp.
+        /// (Response Parameter) Array of CentralOrderUuid which have been sent to erp.
         /// </summary>
+        [OpenApiPropertyDescription(" (Response Parameter) Array of CentralOrderUuid which have been sent to erp.")]
         public List<string> SentCentralOrderUuids { get; set; } = new List<string>();
         [JsonIgnore]
         public virtual bool HasSentCentralOrderUuids => SentCentralOrderUuids != null && SentCentralOrderUuids.Count > 0;

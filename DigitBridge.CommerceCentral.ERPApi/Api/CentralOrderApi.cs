@@ -74,9 +74,9 @@ namespace DigitBridge.CommerceCentral.ERPApi
         [OpenApiParameter(name: "profileNum", In = ParameterLocation.Header, Required = true, Type = typeof(int), Summary = "ProfileNum", Description = "From login profile", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiParameter(name: "code", In = ParameterLocation.Query, Required = true, Type = typeof(string),
         Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ChannelOrderPayloadResend), Required = true, Description = "Array of eventUuid.")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CentralOrderPayloadResendRequest), Required = true, Description = "Array of eventUuid.")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
-        bodyType: typeof(ChannelOrderPayload))]
+        bodyType: typeof(CentralOrderPayloadResendResponse))]
         public static async Task<JsonNetResponse<ChannelOrderPayload>> ResendCentralOrderToErp(
         [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "centralOrders/resendCentralOrderToErp")]
             HttpRequest req)
@@ -96,7 +96,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
         Summary = "API Keys", Description = "Azure Function App key", Visibility = OpenApiVisibilityType.Advanced)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ChannelOrderPayloadFind))]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json",
-        bodyType: typeof(ChannelOrderPayload))]
+        bodyType: typeof(CentralOrderPayloadResendAllResponse))]
         public static async Task<JsonNetResponse<ChannelOrderPayload>> ResendAllCentralOrderToErp(
         [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "centralOrders/resendAllCentralOrderToErp")]
             HttpRequest req)

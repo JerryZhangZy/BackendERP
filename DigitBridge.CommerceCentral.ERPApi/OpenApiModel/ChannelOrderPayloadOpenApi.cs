@@ -119,7 +119,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request Response payload for ResendCentralOrderToErp API
     /// </summary>
     [Serializable()]
-    public class ChannelOrderPayloadResend
+    public class CentralOrderPayloadResendRequest
     {
         /// <summary>
         /// (Request Parameter) Array of uuid that will be resend to erp.
@@ -128,5 +128,47 @@ namespace DigitBridge.CommerceCentral.ERPApi
         public IList<string> CentralOrderUuids { get; set; }
 
     }
+    /// <summary>
+    /// Request Response payload for ResendCentralOrderToErp API
+    /// </summary>
+    [Serializable()]
+    public class CentralOrderPayloadResendResponse : ResponsePayloadBase
+    {
+        /// <summary>
+        /// (Response Parameter) Array of CentralOrderUuid which have been sent to erp.
+        /// </summary>
+        [OpenApiPropertyDescription(" (Response Parameter) Array of CentralOrderUuid which have been sent to erp.")]
+        public IList<string> SentCentralOrderUuids { get; set; }
+
+
+        /// <summary>
+        /// (Request Parameter) Array of uuid that will be resend to erp.
+        /// </summary>
+        [OpenApiPropertyDescription(" (Request Parameter) Array of uuid that will be resend to erp.")]
+        public IList<string> CentralOrderUuids { get; set; }
+
+    }
+
+    /// <summary>
+    /// Request Response payload for ResendCentralOrderToErp API
+    /// </summary>
+    [Serializable()]
+    public class CentralOrderPayloadResendAllResponse : PayloadBase
+    {
+
+        /// <summary>
+        /// (Response Parameter) Array of CentralOrderUuid searched by criteria.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Parameter) Array of CentralOrderUuid searched by criteria.")]
+        public IList<string> CentralOrderUuids { get; set; }
+
+        /// <summary>
+        /// (Response Parameter) Array of CentralOrderUuid which have been sent to erp.
+        /// </summary>
+        [OpenApiPropertyDescription(" (Response Parameter) Array of CentralOrderUuid which have been sent to erp.")]
+        public IList<string> SentCentralOrderUuids { get; set; }
+
+    }
+    
 }
 
