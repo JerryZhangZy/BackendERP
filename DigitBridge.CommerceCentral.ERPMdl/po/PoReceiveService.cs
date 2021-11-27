@@ -433,26 +433,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public override async Task<bool> DeleteDataAsync()
         {
-            //await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
-            //await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
-            //await InventoryLogService.UpdateByPoReceiveAsync(_data,false);
             return await base.DeleteDataAsync();
-
         }
 
-        //public override bool DeleteData()
-        //{
-        //    if (base.DeleteData())
-        //    {
-        //        _data.PoTransactionItems.Clear();
-        //        InventoryLogService.UpdateByPoReceive(_data);
-        //        PurchaseOrderService.UpdateByPoReceive(_data);
-        //        ApInvoiceService.CreateOrUpdateApInvoiceByPoReceive(_data);
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
+ 
 
         /// <summary>
         /// Create new P/O receive data for one P/O
