@@ -79,3 +79,12 @@ IF COL_LENGTH('InvoiceHeader', 'ChannelAmount') IS NULL
 BEGIN					
     ALTER TABLE InvoiceHeader ADD [ChannelAmount] DECIMAL(24, 6) NOT NULL DEFAULT 0
 END	 
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_CustomerCode_InvoiceStatus')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_CustomerCode_InvoiceStatus] ON [dbo].[InvoiceHeader]
+(
+	[ProfileNum] ASC,
+	[CustomerCode] ASC,
+	[InvoiceStatus] ASC
+) 
+GO

@@ -213,6 +213,41 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             return queryPayload.ApplyInvoices.OrderByDescending(i => i.TransRowNum).FirstOrDefault().TransRowNum.ToLong();
         }
         #endregion
+
+
+        [Fact]
+        public async Task LoadInvoiceListAsync_Test()
+        {
+            var payload = new InvoiceNewPaymentPayload() 
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = true,
+            };
+            var customerCode = "cumque";
+
+            var service = new InvoicePaymentService(DataBaseFactory);
+            bool result = true;
+            List<string> salesOrderNums = new List<string>();
+
+            try
+            {
+                using (var b = new Benchmark("LoadInvoiceListAsync_Test"))
+                {
+                    result = await service.LoadInvoiceListAsync(payload, customerCode);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+
+        }
+
+        
     }
 }
 

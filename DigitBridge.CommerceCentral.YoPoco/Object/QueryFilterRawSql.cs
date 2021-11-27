@@ -20,6 +20,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
             _sqlString = SqlString;
             _prefix = prefix;
         }
+        public QueryFilterRawSql(string Name, string SqlString, string prefix, bool Enable = false)
+            : base()
+        {
+            _enable = Enable;
+            _sqlString = SqlString;
+            _prefix = prefix;
+            _name = Name;
+        }
 
         public override void Clear()
         {

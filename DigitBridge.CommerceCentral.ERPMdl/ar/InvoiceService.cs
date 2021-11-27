@@ -564,6 +564,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return await SaveDataAsync();
         }
 
+        public async Task<InvoiceHeader> GetInvoiceHeaderAsync(string invoiceUuid)
+        {
+            return await this.Data.GetInvoiceHeaderByInvoiceUuidAsync(invoiceUuid);
+        }
+
+
         #region To qbo queue 
 
         private QboInvoiceClient _qboInvoiceClient;

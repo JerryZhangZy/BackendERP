@@ -13,8 +13,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// This is used for update trans.
         /// </summary>
         public long? TransRowNum { get; set; }
-        [JsonIgnore]
         public string TransUuid { get; set; }
+        public int TransNum { get; set; }
+        public string Description { get; set; }
+        public string Notes { get; set; }
+
         public DateTime InvoiceDate { get; set; }
         public DateTime DueDate { get; set; }
         public string QuickbookDocNum { get; set; }
@@ -25,33 +28,5 @@ namespace DigitBridge.CommerceCentral.ERPDb
         [JsonIgnore]
         public bool Success { get; set; } = true;
 
-        public InvoiceTransactionDataDto GenerateTransaction(InvoiceHeaderDto invoiceHeader, InvoiceTransactionDto templateTransaction)
-        {
-            InvoiceTransactionDataDto result = new InvoiceTransactionDataDto
-            {
-                InvoiceReturnItems = null,
-                InvoiceDataDto = null,
-                InvoiceTransaction = new InvoiceTransactionDto
-                {
-                    MasterAccountNum = templateTransaction.MasterAccountNum,
-                    ProfileNum = templateTransaction.ProfileNum,
-                    InvoiceUuid = invoiceHeader.InvoiceUuid,
-                    InvoiceNumber = invoiceHeader.InvoiceNumber,
-
-                    RowNum = TransRowNum,
-                    TransUuid = TransRowNum.HasValue ? TransUuid : null,
-                    CustomerCode = templateTransaction.CustomerCode,
-                    AuthCode = templateTransaction.AuthCode,
-                    CheckNum = templateTransaction.CheckNum,
-                    PaidBy = templateTransaction.PaidBy,
-
-                    TransType = (int)TransTypeEnum.Payment,
-                    Currency = invoiceHeader.Currency,
-                    TotalAmount = PaidAmount
-                }
-            };
-
-            return result;
-        }
     }
 }

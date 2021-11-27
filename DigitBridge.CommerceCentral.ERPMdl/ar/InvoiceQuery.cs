@@ -92,6 +92,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         protected QueryFilter<string> _ShipToPostalCode = new QueryFilter<string>("ShipToPostalCode", "ShipToPostalCode", PREFIX_INFO, FilterBy.eq, string.Empty, isNVarChar: true);
         public QueryFilter<string> ShipToPostalCode => _ShipToPostalCode;
 
+        protected QueryFilterRawSql _OutstandingInvoiceOnly = new QueryFilterRawSql("OutstandingInvoiceOnly",
+            $"{PREFIX}.InvoiceStatus IN (0,1,100)", 
+            PREFIX, false);
+        public QueryFilterRawSql OutstandingInvoiceOnly => _OutstandingInvoiceOnly;
+       
+
         public InvoiceQuery() : base(PREFIX)
         {
             AddFilter(_InvoiceUuid);
@@ -120,6 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddFilter(_ShipToName);
             AddFilter(_ShipToState);
             AddFilter(_ShipToPostalCode);
+            AddFilter(_OutstandingInvoiceOnly);
         }
         public override void InitQueryFilter()
         {
@@ -129,7 +136,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public void InitForNewPaymet(string customerCode)
         {
-            _InvoiceStatus.FilterValue = (int)InvoiceStatusEnum.Outstanding;
+            //_InvoiceStatus.FilterValue = (int)InvoiceStatusEnum.Outstanding;
+            OutstandingInvoiceOnly.Enable = true;
             _CustomerCode.FilterValue = customerCode;
 
             _InvoiceDateFrom.FilterValue = DateTime.UtcNow.Date.AddYears(-5);//TODO. this is a tmp begin date. make sure this logic.

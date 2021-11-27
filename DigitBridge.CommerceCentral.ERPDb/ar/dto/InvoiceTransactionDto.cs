@@ -126,8 +126,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 		/// Group Payment readable Number. <br> Display: false, Editable: false.
 		/// </summary>
 		[OpenApiPropertyDescription("Group Payment readable Number. <br> Display: false, Editable: false.")]
-        [StringLength(50, ErrorMessage = "The PaymentNumber value cannot exceed 50 characters. ")]
-        public string PaymentNumber { get; set; }
+        public long? PaymentNumber { get; set; }
         [JsonIgnore, XmlIgnore, IgnoreCompare]
         [OpenApiSchemaVisibility(OpenApiVisibilityType.Internal)]
         public bool HasPaymentNumber => PaymentNumber != null;

@@ -110,7 +110,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoiceNewPaymentPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
-            await srv.UpdateInvoicePayments(payload);
+            await srv.UpdateInvoicePaymentsAsync(payload);
             payload.Messages = srv.Messages;
 
             return new JsonNetResponse<InvoiceNewPaymentPayload>(payload);
@@ -134,7 +134,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
             var payload = await req.GetParameters<InvoiceNewPaymentPayload>(true);
             var dataBaseFactory = await MyAppHelper.CreateDefaultDatabaseAsync(payload);
             var srv = new InvoicePaymentService(dataBaseFactory);
-            await srv.UpdateInvoicePayments(payload);
+            await srv.UpdateInvoicePaymentsAsync(payload);
             payload.Messages = srv.Messages;
 
             return new JsonNetResponse<InvoiceNewPaymentPayload>(payload);
