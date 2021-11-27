@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using EventERPPayload = DigitBridge.CommerceCentral.ERPDb.EventERPPayload;
 
 namespace DigitBridge.CommerceCentral.ERPMdl
 {
@@ -14,34 +15,55 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public IntegrationEventApi() { }
         public IntegrationEventApi(string baseUrl, string authCode)
         {
-            _erpEventClient = new ErpEventClient(baseUrl, authCode);
+            _ErpEventResendClient = new ErpEventResendClient(baseUrl, authCode);
         }
-        private ErpEventClient _erpEventClient;
+        private ErpEventResendClient _ErpEventResendClient;
 
-        protected ErpEventClient erpEventClient
+        protected ErpEventResendClient ErpEventResendClient
         {
             get
             {
-                if (_erpEventClient is null)
-                    _erpEventClient = new ErpEventClient();
-                return _erpEventClient;
+                if (_ErpEventResendClient is null)
+                    _ErpEventResendClient = new ErpEventResendClient();
+                return _ErpEventResendClient;
             }
         }
+        ///// <summary>
+        ///// resend event by event uuid.
+        ///// </summary>
+        ///// <param name="payload"></param>
+        ///// <param name="eventUuid"></param>
+        ///// <returns></returns>
+        //public virtual async Task<bool> ResendEventAsync(int masterAccountNum, int profileNum, string eventUuid)
+        //{
+        //    var success = await ErpEventResendClient.ResendEventAsync(masterAccountNum, profileNum, eventUuid);
+        //    if (!success)
+        //    {
+        //        this.Messages.Add(ErpEventResendClient.Messages);
+        //    }
+        //    return success;
+        //}
+
         /// <summary>
-        /// resend event by event uuid.
+        /// resend event by array event uuid.
         /// </summary>
         /// <param name="payload"></param>
         /// <param name="eventUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> ResendEventAsync(int masterAccountNum, int profileNum, string eventUuid)
+        public virtual async Task<bool> ResendEventAsync(EventERPPayload payload)
         {
-            var success = await erpEventClient.ResendEventAsync(masterAccountNum, profileNum, eventUuid);
+            var success = await ErpEventResendClient.ResendEventAsync(payload.MasterAccountNum, payload.ProfileNum, payload.EventUuids);
+
             if (!success)
             {
-                this.Messages.Add(erpEventClient.Messages);
+                this.Messages.Add(ErpEventResendClient.Messages);
             }
+
+            payload.SentEventUuids = ErpEventResendClient.ResopneData.SentEventUuids;
+
             return success;
         }
+
 
         #region Messages
         protected IList<MessageClass> _messages;
