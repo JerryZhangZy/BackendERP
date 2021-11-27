@@ -90,8 +90,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
                 Filter = new JObject() { { "eRPEventType", 5 } },
             };
 
-            payload.EventUuids = new List<string> { "c2dc72e4-6e74-49c3-9ab6-eb2a951d5622" };
-
             var success = await client.ResendAllEventAsync(payload);
             Assert.True(success, client.Messages.ObjectToString());
         }
