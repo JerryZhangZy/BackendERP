@@ -566,6 +566,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         public async Task<InvoiceHeader> GetInvoiceHeaderAsync(string invoiceUuid)
         {
+            if (this.Data == null)
+                this.NewData();
             return await this.Data.GetInvoiceHeaderByInvoiceUuidAsync(invoiceUuid);
         }
 

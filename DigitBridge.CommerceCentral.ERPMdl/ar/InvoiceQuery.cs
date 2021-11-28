@@ -143,5 +143,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _InvoiceDateFrom.FilterValue = DateTime.UtcNow.Date.AddYears(-5);//TODO. this is a tmp begin date. make sure this logic.
             _InvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
         }
+        public void DisableDate()
+        {
+            _InvoiceDateFrom.Enable = false;
+            _InvoiceDateTo.Enable = false;
+        }
     }
 }

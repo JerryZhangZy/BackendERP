@@ -47,7 +47,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             get
             {
                 if (_invoiceService is null)
-                    _invoiceService = new InvoiceService(dbFactory);
+                    _invoiceService = new InvoiceService(dbFactory).NewData();
                 return _invoiceService;
             }
         }

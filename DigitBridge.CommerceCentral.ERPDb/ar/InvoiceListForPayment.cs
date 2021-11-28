@@ -75,6 +75,29 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public string shipToEmail { get; set; }
         public string billToEmail { get; set; }
 
+
+        public long TransRowNum { get; set; } = 0;
+        public string TransUuid { get; set; } = string.Empty;
+        public int TransNum { get; set; } = 0;
+        public string Description { get; set; } = string.Empty;
+        public string Notes { get; set; } = string.Empty;
+        public decimal pay { get; set; } = 0;
     }
+
+    public static class InvoiceListForPaymentExtensions
+    {
+
+        public static InvoiceListForPayment FindByInvoiceUuid(this IList<InvoiceListForPayment> lst, string invoiceUuid)
+            => (lst == null || string.IsNullOrEmpty(invoiceUuid))
+                ? null
+                : lst.FirstOrDefault(item => item.invoiceUuid.EqualsIgnoreSpace(invoiceUuid));
+
+        public static InvoiceListForPayment FindByTransUuid(this IList<InvoiceListForPayment> lst, string TransUuid)
+            => (lst == null || string.IsNullOrEmpty(TransUuid))
+                ? null
+                : lst.FirstOrDefault(item => item.TransUuid.EqualsIgnoreSpace(TransUuid));
+
+    }
+
 }
 

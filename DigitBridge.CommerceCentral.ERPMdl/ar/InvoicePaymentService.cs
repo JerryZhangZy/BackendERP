@@ -672,14 +672,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 foreach (var payment in payload.ApplyInvoices.Where(x => x.Success))
                     await DeleteAsync(payment.TransUuid);
 
+            await GetByPaymentNumberAsync(payload, payload.InvoiceTransaction.PaymentNumber.ToLong());
             return succes;
         }
 
         protected async virtual Task<bool> AddNewApplyPaymentAsync(InvoiceNewPaymentPayload payload)
         {
-            if (!(await ValidateAccountAsync(payload)))
-                return false;
-
             payload.InvoiceTransaction.MasterAccountNum = payload.MasterAccountNum;
             payload.InvoiceTransaction.ProfileNum = payload.ProfileNum;
             var succes = true;
@@ -724,24 +722,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         protected async virtual Task<bool> UpdateApplyPaymentAsync(InvoiceNewPaymentPayload payload)
         {
-            if (!(await ValidateAccountAsync(payload)))
-                return false;
-
             payload.InvoiceTransaction.MasterAccountNum = payload.MasterAccountNum;
             payload.InvoiceTransaction.ProfileNum = payload.ProfileNum;
             // load exist payment list
             var existPayment = await GetByPaymentNumberAsync(payload.InvoiceTransaction.PaymentNumber.ToLong(), payload.MasterAccountNum, payload.ProfileNum);
 
             var succes = true;
-
+            var removed = new List<InvoiceTransaction>();
             // if exist old payment, but not exist in current apply payment, need delete old payment
             foreach (var payment in existPayment)
             {
                 if (payment == null || string.IsNullOrEmpty(payment.TransUuid)) continue;
                 var obj = payload.ApplyInvoices.FirstOrDefault(x => x.TransUuid.EqualsIgnoreSpace(payment.TransUuid));
                 if (obj == null || obj.PaidAmount <= 0)
+                {
                     await DeleteAsync(payment.TransUuid);
+                    removed.Add(payment);
+                }
             }
+            foreach (var rem in removed)
+                existPayment.Remove(rem);
 
             // add or update payment for each apply invoice
             foreach (var applyInvoice in payload.ApplyInvoices)
@@ -832,6 +832,92 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return result;
         }
 
+        public async Task<bool> GetByPaymentNumberAsync(InvoiceNewPaymentPayload payload, long paymentNumber)
+        {
+            // load exist payment list
+            var payments = await GetByPaymentNumberAsync(paymentNumber, payload.MasterAccountNum, payload.ProfileNum);
+            if (payments == null || payments.Count == 0)
+            {
+                payload.Messages.AddError($"Payment number {paymentNumber} not found.");
+                payload.Success = false;
+                return false;
+            }
+
+            // use first invoiceTransaction for payment info
+            var pay1 = payments[0];
+            payload.InvoiceTransaction = new InvoiceTransactionDto()
+            {
+                DatabaseNum = pay1.DatabaseNum,
+                MasterAccountNum = pay1.MasterAccountNum,
+                PaymentUuid = pay1.PaymentUuid,
+                PaymentNumber = pay1.PaymentNumber,
+                PaidBy = pay1.PaidBy,
+                BankAccountUuid = pay1.BankAccountUuid,
+                BankAccountCode = pay1.BankAccountCode,
+                CheckNum = pay1.CheckNum,
+                AuthCode = pay1.AuthCode,
+                Currency = pay1.Currency,
+                TotalAmount = 0,
+            };
+
+            // load first invoice
+            var invoice1 = await InvoiceService.GetInvoiceHeaderAsync(pay1.InvoiceUuid);
+
+            // load outstanding invoice list for customer
+            if (!await LoadInvoiceListAsync(payload, invoice1.CustomerCode))
+            {
+                payload.InvoiceList = new List<InvoiceListForPayment>();
+            }
+
+            // Get invoiceUuid which exist payment but not in outstanding invoice list
+            var invoiceUuids = payments.Select(p =>
+            {
+                return p != null && !string.IsNullOrEmpty(p.InvoiceUuid) && payload.InvoiceList.FindByInvoiceUuid(p.InvoiceUuid) == null
+                    ? p.InvoiceUuid
+                    : null;
+            }).Where(x => !string.IsNullOrEmpty(x)).ToList();
+            // load this payment invoice list
+            if (invoiceUuids != null && invoiceUuids.Count > 0)
+            {
+                var newInvoiceList = await LoadInvoiceListByUuidsAsync(payload, invoiceUuids);
+                if (newInvoiceList != null && newInvoiceList.Count > 0)
+                {
+                    foreach (var item in newInvoiceList)
+                        payload.InvoiceList.Add(item);
+                }
+            }
+
+            if (payload.InvoiceList == null || payload.InvoiceList.Count == 0)
+            {
+                payload.Success = false;
+                payload.Messages.AddError($"Payment number {paymentNumber} not found.");
+                return payload.Success;
+            }
+            
+
+            // add exist payment amount and TransUuid tp invoice list
+            foreach (var pay in payments)
+            {
+                if (pay == null) continue;
+                // find invoiceUuid, if not exist in outstanding invoice list, need load this invoice later
+                var ins = payload.InvoiceList.FindByInvoiceUuid(pay.InvoiceUuid);
+                if (ins == null) continue;
+                ins.TransRowNum = pay.RowNum;
+                ins.TransUuid = pay.TransUuid;
+                ins.TransNum = pay.TransNum;
+                ins.Description = pay.Description;
+                ins.Notes = pay.Notes;
+                ins.pay = pay.TotalAmount;
+                ins.paidAmount -= ins.pay;
+                ins.balance += ins.pay;
+            }
+            payload.InvoiceList = payload.InvoiceList
+                .OrderByDescending(x => x.pay)
+                .OrderBy(x => x.invoiceDate)
+                .ToList();
+            return true;
+        }
+
         public async Task<bool> LoadInvoiceListAsync(InvoiceNewPaymentPayload payload, string customerCode)
         {
             var invoicePayload = new InvoicePayload()
@@ -855,6 +941,26 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             payload.InvoiceListCount = invoicePayload.InvoiceListCount;
 
             return invoicePayload.Success;
+        }
+
+        public async Task<IList<InvoiceListForPayment>> LoadInvoiceListByUuidsAsync(InvoiceNewPaymentPayload payload, IList<string> uuids)
+        {
+            var invoicePayload = new InvoicePayload()
+            {
+                MasterAccountNum = payload.MasterAccountNum,
+                ProfileNum = payload.ProfileNum,
+                LoadAll = true
+            };
+
+            var invoiceQuery = new InvoiceQuery();
+            invoiceQuery.InvoiceUuid.SetMultipleFilterValueList(uuids);
+            invoiceQuery.InvoiceUuid.FilterMode = FilterBy.eq;
+            invoiceQuery.DisableDate();
+
+            var srv = new InvoiceList(this.dbFactory, invoiceQuery);
+            await srv.GetInvoiceListAsync(invoicePayload);
+
+            return invoicePayload.InvoiceList.ToObject<IList<InvoiceListForPayment>>();
         }
 
         #endregion

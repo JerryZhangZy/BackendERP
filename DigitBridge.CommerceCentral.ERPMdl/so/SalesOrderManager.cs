@@ -351,10 +351,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// </summary>
         /// <param name="orderDCAssignmentNum"></param>
         /// <returns>Exist or Not</returns>
-        protected async Task<string> ExistDCAssignmentInSalesOrderAsync(long orderDCAssignmentNum)
+        protected async Task<string> GetSalesOrderUuidByOrderDCAssignmentNumAsync(long orderDCAssignmentNum)
         {
             using (var trs = new ScopedTransaction(dbFactory))
-                return await SalesOrderHelper.ExistOrderDCAssignmentNumAsync(orderDCAssignmentNum);
+                return await SalesOrderHelper.GetSalesOrderUuidByOrderDCAssignmentNumAsync(orderDCAssignmentNum);
         }
 
         protected async Task<string> GetWarehouseByDCAssignmentAsync(DCAssignmentData dcAssigmentData)
@@ -375,7 +375,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public async Task<string> CreateSalesOrdersAsync(ChannelOrderData coData, DCAssignmentData dcAssigmentData)
         {
             long orderDCAssignmentNum = dcAssigmentData.OrderDCAssignmentHeader.OrderDCAssignmentNum;
-            var uuid = await ExistDCAssignmentInSalesOrderAsync(orderDCAssignmentNum);
+            var uuid = await GetSalesOrderUuidByOrderDCAssignmentNumAsync(orderDCAssignmentNum);
             if (uuid != null)
             {
                 return uuid;

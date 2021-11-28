@@ -26,7 +26,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public decimal InvoiceBalance { get; set; }
         public decimal PaidAmount { get; set; }
         [JsonIgnore]
-        public bool Success { get; set; } = true;
+        public bool Success { get; set; } = false;
 
     }
 }

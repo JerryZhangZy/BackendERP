@@ -247,7 +247,155 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 
         }
 
-        
+        [Fact]
+        public async Task AddInvoicePaymentsAsync_Test()
+        {
+            var payload = new InvoiceNewPaymentPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = true,
+            };
+            var customerCode = "cumque";
+
+            var service = new InvoicePaymentService(DataBaseFactory);
+            await service.NewPaymentByCustomerCode(payload, customerCode);
+
+            payload.InvoiceTransaction.PaymentUuid = "a725584c-582c-49ae-81e6-8a1434b08a18";
+            payload.InvoiceTransaction.PaymentNumber = 1;
+            payload.InvoiceTransaction.PaidBy = (int)PaidByAr.Check;
+            payload.InvoiceTransaction.BankAccountCode = "BOA";
+            payload.InvoiceTransaction.CheckNum = "202134-585739390";
+            payload.InvoiceTransaction.AuthCode = "AUTH2345";
+            payload.InvoiceTransaction.TotalAmount = 1200;
+            payload.InvoiceTransaction.CustomerCode = "cumque";
+
+            payload.ApplyInvoices = new List<ApplyInvoice>();
+            payload.ApplyInvoices.Add(CreateApplyInvoice(payload.InvoiceList[0], 200));
+            payload.ApplyInvoices.Add(CreateApplyInvoice(payload.InvoiceList[1], 0));
+            payload.ApplyInvoices.Add(CreateApplyInvoice(payload.InvoiceList[2], 500));
+            payload.ApplyInvoices.Add(CreateApplyInvoice(payload.InvoiceList[3], 400));
+            payload.ApplyInvoices.Add(CreateApplyInvoice(payload.InvoiceList[4], 100));
+
+            bool result = true;
+            List<string> salesOrderNums = new List<string>();
+
+            try
+            {
+                using (var b = new Benchmark("UpdateInvoicePaymentsAsync_Test"))
+                {
+                    result = await service.UpdateInvoicePaymentsAsync(payload);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+
+        }
+
+        [Fact]
+        public async Task UpdateInvoicePaymentsAsync_Test()
+        {
+            var payload = new InvoiceNewPaymentPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = true,
+            };
+            var paymentNumber = 1;
+
+            var service = new InvoicePaymentService(DataBaseFactory);
+            var payments = await service.GetByPaymentNumberAsync(payload, paymentNumber);
+
+            payload.InvoiceTransaction.CheckNum = "202134-585739999";
+            payload.InvoiceTransaction.AuthCode = "AUTH2345";
+            payload.InvoiceTransaction.TotalAmount = 1612.59M;
+
+            payload.ApplyInvoices = new List<ApplyInvoice>();
+            payload.ApplyInvoices.Add(CreateApplyInvoice(payload.InvoiceList[0], 200));
+            payload.ApplyInvoices.Add(CreateApplyInvoice(payload.InvoiceList[1], 0));
+            payload.ApplyInvoices.Add(CreateApplyInvoice(payload.InvoiceList[2], 500));
+            payload.ApplyInvoices.Add(CreateApplyInvoice(payload.InvoiceList[3], 400));
+            payload.ApplyInvoices.Add(CreateApplyInvoice(payload.InvoiceList[4], 100));
+
+            var obj = payload.InvoiceList.FindByInvoiceUuid("8ef5829e-a045-4eaf-91f3-ebf84d0e60f5");
+            if (obj != null)
+                payload.ApplyInvoices.Add(CreateApplyInvoice(obj, (decimal)412.59));
+
+            bool result = true;
+            try
+            {
+                using (var b = new Benchmark("UpdateInvoicePaymentsAsync_Test"))
+                {
+                    result = await service.UpdateInvoicePaymentsAsync(payload);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+
+        }
+
+        protected ApplyInvoice CreateApplyInvoice(InvoiceListForPayment ins, decimal amt)
+        {
+            return new ApplyInvoice()
+            {
+                InvoiceUuid = ins.invoiceUuid,
+                InvoiceNumber = ins.invoiceNumber,
+                TransRowNum = ins.TransRowNum,
+                TransUuid = ins.TransUuid,
+                TransNum = ins.TransNum,
+                Description = ins.Description,
+                Notes = ins.Notes,
+                InvoiceDate = ins.invoiceDate,
+                DueDate = ins.dueDate,
+                QuickbookDocNum = ins.qboDocNumber,
+                InvoiceTotalAmount = ins.totalAmount,
+                InvoicePaidAmount = ins.paidAmount,
+                InvoiceBalance = ins.balance,
+                PaidAmount = amt,
+            };
+        }
+
+
+        [Fact]
+        public async Task GetByPaymentNumberAsync_Test()
+        {
+            var payload = new InvoiceNewPaymentPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = true,
+            };
+            var paymentNumber = 1;
+
+            var service = new InvoicePaymentService(DataBaseFactory);
+            bool result = true;
+            try
+            {
+                using (var b = new Benchmark("GetByPaymentNumberAsync_Test"))
+                {
+                    result = await service.GetByPaymentNumberAsync(payload, paymentNumber); 
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+
+        }
+
     }
 }
 
