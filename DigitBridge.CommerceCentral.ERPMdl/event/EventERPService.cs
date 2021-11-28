@@ -360,24 +360,58 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return success;
         }
 
-
         /// <summary>
         /// resend event by event uuid.
         /// </summary>
         /// <param name="payload"></param>
         /// <param name="eventUuid"></param>
         /// <returns></returns>
-        public virtual async Task<bool> ResendEventAsync(string eventUuid)
+        public virtual async Task<bool> ResendEventAsync(string eventUuid, List<string> sentEventUuids)
         {
             if (string.IsNullOrEmpty(eventUuid))
+            {
+                AddError("eventUuid cann't be emtpy.");
                 return false;
+            }
             List();
-            //load data
+
             if (!await GetDataByIdAsync(eventUuid))
                 return false;
-            return await InQueueAsync();
+            if (!await InQueueAsync())
+            {
+                AddError("Send event to queue failed.");
+                return false;
+            }
+
+            sentEventUuids.Add(eventUuid);
+
+            return true;
         }
 
+
+        /// <summary>
+        /// resend event by event uuid array.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <param name="eventUuid"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> ResendEventsAsync(EventERPPayload payload)
+        {
+            if (!payload.HasEventUuids)
+            {
+                AddError("eventuuids cann't be emtpy.");
+                return false;
+            }
+            var sentEventUuids = new List<string>();
+            foreach (var eventUuid in payload.EventUuids)
+            {
+                await ResendEventAsync(eventUuid, sentEventUuids);
+            }
+
+            payload.SentEventUuids = sentEventUuids;
+
+            return true;
+        }
     }
 }
 

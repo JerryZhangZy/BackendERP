@@ -498,9 +498,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             DeleteInventoryLogByLogUuid(logUuid);
         }
 
-        private async Task ClearInventoryLogByLogUuidAsync(string logUuid)
+        public async Task ClearInventoryLogByLogUuidAsync(string logUuid)
         {
-            //await UpdateInventoryInStockAsync(logUuid, -1);
+            await UpdateInventoryInStockAsync(logUuid, -1);
             await DeleteInventoryLogByLogUuidAsync(logUuid);
         }
 
@@ -959,6 +959,7 @@ where inv.InventoryUuid=il.InventoryUuid
                 return false;
             var header = data.OrderShipmentHeader;
             var logUuid = data.OrderShipmentHeader.OrderShipmentUuid;
+
             await ClearInventoryLogByLogUuidAsync(logUuid);
             if (data.OrderShipmentPackage == null || data.OrderShipmentPackage.Count == 0)
             {

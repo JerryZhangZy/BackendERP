@@ -641,11 +641,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     foreach (var detailItem in dto.OrderShipmentPackage)
                     {
                         detailItem.OrderShipmentPackageUuid = Guid.NewGuid().ToString();
+                        detailItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
+
                         if (detailItem.OrderShipmentShippedItem != null && detailItem.OrderShipmentShippedItem.Count > 0)
                         {
                             foreach (var subItem in detailItem.OrderShipmentShippedItem)
                             {
                                 subItem.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
+                                subItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
+                                subItem.OrderShipmentPackageUuid = detailItem.OrderShipmentPackageUuid;
                             }
                         }
                     }
@@ -653,14 +657,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (dto.OrderShipmentCanceledItem != null && dto.OrderShipmentCanceledItem.Count > 0)
                 {
                     foreach (var detailItem in dto.OrderShipmentCanceledItem)
+                    {
                         detailItem.OrderShipmentCanceledItemUuid = Guid.NewGuid().ToString();
+                        detailItem.OrderShipmentUuid = dto.OrderShipmentHeader.OrderShipmentUuid;
+                    }
                 }
-                //todo not exist
-                //if (dto.OrderShipmentShippedItem != null && dto.OrderShipmentShippedItem.Count > 0)
-                //{
-                //    foreach (var detailItem in dto.OrderShipmentShippedItem)
-                //        detailItem.OrderShipmentShippedItemUuid = Guid.NewGuid().ToString();
-                //}
             }
             else if (processingMode == ProcessingMode.Edit)
             {

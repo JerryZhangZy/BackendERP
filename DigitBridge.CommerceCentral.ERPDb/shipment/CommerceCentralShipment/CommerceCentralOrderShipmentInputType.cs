@@ -9,6 +9,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
     public class InputOrderShipmentHeaderType
     {
         public string SalesOrderUuid { get; set; }
+        public string WarehouseCode { get; set; }
 
         [Required]
         public string ShipmentID = "";

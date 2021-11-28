@@ -320,7 +320,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var salesOrderUuid = shipmentData.OrderShipmentHeader.SalesOrderUuid;
             if (salesOrderUuid.IsZero())
             {
-                salesOrderUuid = await salesOrderService.GetSalesOrderUuidByDCAssignmentNumAsync(shipmentData.OrderShipmentHeader.OrderDCAssignmentNum.Value);
+                salesOrderUuid = await salesOrderService.GetSalesOrderUuidByDCAssignmentNumAsync(shipmentData.OrderShipmentHeader.OrderDCAssignmentNum);
                 shipmentData.OrderShipmentHeader.SalesOrderUuid = salesOrderUuid;
             }
             if (salesOrderUuid.IsZero())

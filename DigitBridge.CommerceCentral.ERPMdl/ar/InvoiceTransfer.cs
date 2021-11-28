@@ -116,15 +116,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             //TotalAmount
             //TaxableAmount
             //NonTaxableAmount
-            //TaxRate
+            invoiceHeader.TaxRate = soHeader.TaxRate;
             //TaxAmount
-            //DiscountRate
-            //DiscountAmount
-            //ShippingAmount
+            invoiceHeader.DiscountRate = soHeader.DiscountRate;
+            invoiceHeader.DiscountAmount = soHeader.DiscountAmount;
+            invoiceHeader.ShippingAmount = osHeader.ShippingCost;
             //ShippingTaxAmount
-            //MiscAmount
+            invoiceHeader.MiscAmount = soHeader.MiscAmount;
             //MiscTaxAmount
-            //ChargeAndAllowanceAmount
+            invoiceHeader.ChargeAndAllowanceAmount = soHeader.ChargeAndAllowanceAmount;
             //PaidAmount
             //CreditAmount
             //Balance
