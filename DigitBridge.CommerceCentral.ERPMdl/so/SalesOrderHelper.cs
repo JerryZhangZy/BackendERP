@@ -179,7 +179,7 @@ AND ProfileNum = @profileNum";
         //          orderDCAssignmentUuid.ToSqlParameter("orderDCAssignmentUuid"));
         //    return result > 0;
         //}
-        public static async Task<string> ExistOrderDCAssignmentNumAsync(long orderDCAssignmentNum)
+        public static async Task<string> GetSalesOrderUuidByOrderDCAssignmentNumAsync(long orderDCAssignmentNum)
         {
 
             var sql = $@"

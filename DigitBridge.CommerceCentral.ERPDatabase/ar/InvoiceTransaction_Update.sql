@@ -17,5 +17,5 @@ END
 
 IF COL_LENGTH('InvoiceTransaction', 'PaymentNumber') IS NULL					
 BEGIN					
-    ALTER TABLE InvoiceTransaction ADD [PaymentNumber] VARCHAR(50) NOT NULL DEFAULT ''
+    ALTER TABLE InvoiceTransaction ADD [PaymentNumber] BIGINT NOT NULL DEFAULT 0
 END	 

@@ -105,3 +105,12 @@ CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_OrderNumber] ON [dbo].[InvoiceHeader
 	[OrderNumber] ASC
 ) 
 GO
+
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceHeader]') AND name = N'IX_InvoiceHeader_CustomerCode_InvoiceStatus')
+CREATE NONCLUSTERED INDEX [IX_InvoiceHeader_CustomerCode_InvoiceStatus] ON [dbo].[InvoiceHeader]
+(
+	[ProfileNum] ASC,
+	[CustomerCode] ASC,
+	[InvoiceStatus] ASC
+) 
+GO

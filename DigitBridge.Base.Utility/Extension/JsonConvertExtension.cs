@@ -217,5 +217,7 @@ namespace DigitBridge.Base.Utility
             return new List<object>();
         }
 
+        public static T ToObject<T>(this StringBuilder sb) => sb.ToString().JsonToObject<T>();
+
     }
 }
