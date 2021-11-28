@@ -43,7 +43,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         public async Task AckReceiveInvoicesAsync_Simple_Test()
         {
             var client = new CommerceCentralAckReceiveInvoiceClient(_baseUrl, _code);
-            var InvoiceUuids = new List<string>() { "15082ed6-b62f-4faf-9491-dc182d7bd4a9", "61F6B440-17B2-4A33-BD4F-27CD7C5C3F5D" };
+            var InvoiceUuids = new List<string>() { "6adf4237-8c32-40b0-9edf-c462b91acf5f" };
             var success = await client.AckReceiveInvoicesAsync(MasterAccountNum, ProfileNum, InvoiceUuids);
             Assert.True(client.ResopneData != null);
         }
