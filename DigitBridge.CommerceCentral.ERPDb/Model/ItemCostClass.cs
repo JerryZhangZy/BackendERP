@@ -63,7 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             TaxRate = item.TaxRate.ToRate();
             TaxAmount = item.TaxAmount.ToAmount();
             UnitCost = item.UnitCost.ToAmount();
-            AvgCost = item.Price.ToAmount();
+            AvgCost = 0;
             SalesCost = item.Price.ToAmount();
             Cost = (AvgCost.IsZero()) ? UnitCost : AvgCost;
 
