@@ -807,16 +807,18 @@ WHERE RowNum=@1
         /// </summary>
         /// <param name="salesOrderUuid"></param>
         /// <returns></returns>
-        public async Task<bool> UpdateShippedQtyAsync(string salesOrderUuid)
+        public async Task<bool> UpdateShippedQtyAsync(string salesOrderUuid, bool isReturnBack = false)
         {
             if (salesOrderUuid.IsZero())
             {
                 return false;
             }
 
+            var op = isReturnBack ? "-" : "+";
+
             var sql = $@"
 UPDATE soItem 
-SET soItem.ShipQty=shippedItem.ShippedQty
+SET soItem.ShipQty=soItem.ShipQty {op} shippedItem.ShippedQty
 FROM SalesOrderItems soItem 
 INNER JOIN OrderShipmentShippedItem shippedItem on  shippedItem.SalesOrderItemsUuid=soItem.SalesOrderItemsUuid 
 WHERE soItem.SalesOrderUuid=@0  
