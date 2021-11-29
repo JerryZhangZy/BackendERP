@@ -590,7 +590,6 @@ MiscInvoiceStatus = (CASE
 END)
 FROM MiscInvoiceHeader ins
 INNER JOIN MiscInvoiceTransaction trs ON (trs.MiscInvoiceUuid = ins.MiscInvoiceUuid AND trs.TransUuid = @0)
-WHERE ins.MiscInvoiceStatus != @4 AND ins.MiscInvoiceStatus != @5
 ";
             var result = await dbFactory.Db.ExecuteAsync(
                 sql,
