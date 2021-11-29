@@ -4,13 +4,13 @@ select * from SalesOrderItems where SalesOrderUuid = '716bcd22-3779-45db-a443-1b
 
 select * 
 --delete
-from OrderShipmentHeader where OrderShipmentUuid = '6c77ced1-9154-4050-8ed4-4934cebec8ef'
+from OrderShipmentHeader where OrderShipmentUuid = '1e6c53c3-005a-433c-b066-9b2604c69aef'
 select * 
 --delete
-from OrderShipmentPackage where OrderShipmentUuid = '6c77ced1-9154-4050-8ed4-4934cebec8ef'
+from OrderShipmentPackage where OrderShipmentUuid = '1e6c53c3-005a-433c-b066-9b2604c69aef'
 select *
 --delete
-from OrderShipmentShippedItem  where OrderShipmentUuid = '6c77ced1-9154-4050-8ed4-4934cebec8ef'
+from OrderShipmentShippedItem  where OrderShipmentUuid = '1e6c53c3-005a-433c-b066-9b2604c69aef'
 
 select * from InvoiceHeader where InvoiceUuid = '8e5aa85d-09bd-44d8-a8b7-acbb44930fc6'
 select * from InvoiceHeaderInfo where InvoiceUuid = '8e5aa85d-09bd-44d8-a8b7-acbb44930fc6'

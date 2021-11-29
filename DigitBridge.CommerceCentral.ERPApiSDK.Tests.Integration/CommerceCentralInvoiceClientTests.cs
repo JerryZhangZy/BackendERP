@@ -18,8 +18,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         //private string _baseUrl = "http://localhost:7074";
         private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net";
         private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
-        protected const int MasterAccountNum = 10001;
-        protected const int ProfileNum = 10001;
+        protected const int MasterAccountNum = 10002;
+        protected const int ProfileNum = 10003;
 
         public CommerceCentralInvoiceClientTests(TestFixture<StartupTest> fixture)
         {

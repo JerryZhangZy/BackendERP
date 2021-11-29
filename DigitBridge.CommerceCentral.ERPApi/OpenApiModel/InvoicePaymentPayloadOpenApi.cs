@@ -26,21 +26,29 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request and Response payload object for Add API
     /// </summary>
     [Serializable()]
-    public class InvoicePaymentPayloadAdd
+    public class InvoicePaymentPayloadUpdate
     {
         /// <summary>
         /// (Request Data) InvoiceTransaction object to add.
         /// (Response Data) InvoiceTransaction object which has been added.
         /// </summary>
-        [OpenApiPropertyDescription("(Request and Response) InvoiceTransaction object to add.")]
+        [OpenApiPropertyDescription("(Request and Response) InvoiceTransaction data for all payment template.")]
         public InvoiceTransactionDataDto InvoiceTransaction { get; set; }
 
-        public static InvoicePaymentPayloadAdd GetSampleData()
+        /// <summary>
+        /// (Request Data) invoice paid amount to add.
+        /// (Response Data) invoice paid amount which has been added.
+        /// </summary>
+        [OpenApiPropertyDescription("(Request) Invoice payment apply amount for each invoice.")]
+        public IList<ApplyInvoice> ApplyInvoices { get; set; } = new List<ApplyInvoice>();
+
+        public static InvoicePaymentPayloadUpdate GetSampleData()
         {
-            var data = new InvoicePaymentPayloadAdd();
+            var data = new InvoicePaymentPayloadUpdate();
             data.InvoiceTransaction = new InvoiceTransactionDataDto().GetFakerData();
             data.InvoiceTransaction.InvoiceTransaction.TransType = 1;
             data.InvoiceTransaction.InvoiceReturnItems = null;
+            data.ApplyInvoices = new List<ApplyInvoice>();
             return data;
         }
     } 
@@ -49,7 +57,7 @@ namespace DigitBridge.CommerceCentral.ERPApi
     /// Request and Response payload object for Patch API
     /// </summary>
     [Serializable()]
-    public class InvoicePaymentPayloadUpdate
+    public class InvoicePaymentPayloadNew
     {
         /// <summary>
         /// (Request Data) InvoiceTransaction object to update.
@@ -57,6 +65,12 @@ namespace DigitBridge.CommerceCentral.ERPApi
         /// </summary>
         [OpenApiPropertyDescription("(Request and Response) InvoiceTransaction object to update.")]
         public InvoiceTransactionDataDto InvoiceTransaction { get; set; }
+
+        /// <summary>
+        /// (Response Data) List result of outstanding invoices to pay.
+        /// </summary>
+        [OpenApiPropertyDescription("(Response Data) List result of outstanding invoices to pay.")]
+        public IList<InvoiceListForPayment> InvoiceList { get; set; }
     }
 
 

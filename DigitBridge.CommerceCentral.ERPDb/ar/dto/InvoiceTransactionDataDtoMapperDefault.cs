@@ -68,7 +68,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
 			if (dto.HasInvoiceUuid) data.InvoiceUuid = dto.InvoiceUuid;
 			if (dto.HasInvoiceNumber) data.InvoiceNumber = dto.InvoiceNumber;
 			if (dto.HasPaymentUuid) data.PaymentUuid = dto.PaymentUuid;
-			if (dto.HasPaymentNumber) data.PaymentNumber = dto.PaymentNumber;
+			if (dto.HasPaymentNumber) data.PaymentNumber = dto.PaymentNumber.ToLong();
 			if (dto.HasTransType) data.TransType = dto.TransType.ToInt();
 			if (dto.HasTransStatus) data.TransStatus = dto.TransStatus.ToInt();
 			if (dto.HasTransDate) data.TransDate = dto.TransDate.ToDateTime();

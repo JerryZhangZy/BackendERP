@@ -32,9 +32,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         /// (Response Data) List result which load filter and paging.
         /// </summary>
         [OpenApiPropertyDescription("(Response Data) List result which load filter and paging.")]
-        [JsonConverter(typeof(StringBuilderConverter))]
-        public StringBuilder InvoiceList { get; set; }
-        [JsonIgnore] public virtual bool HasInvoiceList => InvoiceList != null && InvoiceList.Length > 0;
+        public IList<InvoiceListForPayment> InvoiceList { get; set; }
+        [JsonIgnore] public virtual bool HasInvoiceList => InvoiceList != null && InvoiceList.Count > 0;
         public bool ShouldSerializeInvoiceList() => HasInvoiceList;
         #endregion
 
@@ -53,6 +52,8 @@ namespace DigitBridge.CommerceCentral.ERPDb
         #region payment
 
         public InvoiceTransactionDto InvoiceTransaction { get; set; }
+        [JsonIgnore]
+        public virtual bool HasInvoiceTransaction => InvoiceTransaction != null;
 
         #endregion
     }

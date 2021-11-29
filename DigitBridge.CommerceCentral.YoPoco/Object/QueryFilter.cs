@@ -325,7 +325,10 @@ namespace DigitBridge.CommerceCentral.YoPoco
             }
         }
 
-        protected virtual string GetMultipleFilterSQL()
+        /// <summary>
+        /// this function is Deprecated
+        /// </summary>
+        protected virtual string GetMultipleFilterSQL_Deprecated()
         {
             if (!HasMultipleFilterValue) return GetSingleFilterSQL();
             var bk_filterValue = _filterValue;
@@ -359,6 +362,14 @@ namespace DigitBridge.CommerceCentral.YoPoco
             {
                 return string.Empty;
             }
+        }
+        protected virtual string GetMultipleFilterSQL()
+        {
+            if (!HasMultipleFilterValue) return GetSingleFilterSQL();
+
+            var prop = GetFilterSQL(PropertyName);
+            var inString = MultipleFilterValueList.JoinToSqlInStatementString();
+            return $"{prop} IN {inString}";
         }
 
         protected virtual string GetSingleFilterSQL()

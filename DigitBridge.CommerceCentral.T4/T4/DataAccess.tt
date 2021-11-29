@@ -83,11 +83,11 @@
 //SettingForApTransaction
 //SettingForEventProcessERP
 #>
-<#@ include file="SettingForShipment.ttinclude" #>
+<#@ include file="SettingForInvoiceTransaction.ttinclude" #>
 <#
     var dtoSuf = "";
-    var GenerateNewName = string.Empty;
-    //var GenerateNewName = "_NEW";
+    //var GenerateNewName = string.Empty;
+    var GenerateNewName = "_NEW";
     
     var overridesetting = false;
     //rewrite setting config
