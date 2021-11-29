@@ -113,16 +113,14 @@ AND VendorCode= @vendorCode
             );
             return result;
         }
-        public static int GetTranSeqNum(string vendorCode, int profileNum)
+        public static int GetTranSeqNum( int profileNum)
         {
             var sql = $@"
 SELECT isnull(max(TransNum),0)+1 FROM PoTransaction tbl
 WHERE ProfileNum = @profileNum
-AND VendorCode= @vendorCode
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
-                profileNum.ToSqlParameter("profileNum"),
-                vendorCode.ToSqlParameter("vendorCode")
+                profileNum.ToSqlParameter("profileNum")
             );
             return result;
         }

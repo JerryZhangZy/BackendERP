@@ -71,7 +71,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 {
                     using (var tx = new ScopedTransaction(dbFactory))
                     {
-                        sum.TransNum = PoTransactionHelper.GetTranSeqNum(sum.VendorCode, sum.ProfileNum.ToInt());
+                        sum.TransNum = PoTransactionHelper.GetTranSeqNum( sum.ProfileNum.ToInt());
                     }
                 }
                 //for Add mode, always reset uuid
