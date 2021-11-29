@@ -198,9 +198,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var setting = new ERPSetting();
             var sum = data.PoTransaction;
             //TODO need get inventory object and load inventory cost
-            //var prod = data.GetCache<ProductBasic>(ProductId);
-            //var inv = data.GetCache<Inventory>(InventoryId);
-            //var invCost = new ItemCostClass(inv);
+
             var invCost = new ItemCostClass();
 
             // format number var
