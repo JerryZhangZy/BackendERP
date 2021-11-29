@@ -72,7 +72,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// For example: before save shipment, rollback instock in inventory table according to shipment table.
         /// Mostly, inside this function should call SQL script update other table depend on current database table records.
         /// </summary>
-        public override async Task BeforeSaveAsync() 
+        public override async Task BeforeSaveAsync()
         {
             try
             {
@@ -93,7 +93,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// For example: before save shipment, rollback instock in inventory table according to shipment table.
         /// Mostly, inside this function should call SQL script update other table depend on current database table records.
         /// </summary>
-        public override void BeforeSave() 
+        public override void BeforeSave()
         {
             try
             {
@@ -115,7 +115,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Mostly, inside this function should call SQL script update other table depend on current database table records.
         /// So that, if update not success, database records will not change, this update still use then same data. 
         /// </summary>
-        public override async Task AfterSaveAsync() 
+        public override async Task AfterSaveAsync()
         {
             try
             {
@@ -137,7 +137,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// Mostly, inside this function should call SQL script update other table depend on current database table records.
         /// So that, if update not success, database records will not change, this update still use then same data. 
         /// </summary>
-        public override void AfterSave() 
+        public override void AfterSave()
         {
             try
             {
@@ -802,6 +802,32 @@ WHERE RowNum=@1
                 return await SalesOrderHelper.GetSalesOrderNumberByUuidAsync(salesOrderUuid);
         }
 
+        /// <summary>
+        /// Update s/o item shipqty from shipment item.
+        /// </summary>
+        /// <param name="salesOrderUuid"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateShippedQtyAsync(string salesOrderUuid, bool isReturnBack = false)
+        {
+            if (salesOrderUuid.IsZero())
+            {
+                return false;
+            }
+
+            var op = isReturnBack ? "-" : "+";
+
+            var sql = $@"
+UPDATE soItem 
+SET soItem.ShipQty=soItem.ShipQty {op} shippedItem.ShippedQty
+FROM SalesOrderItems soItem 
+INNER JOIN OrderShipmentShippedItem shippedItem on  shippedItem.SalesOrderItemsUuid=soItem.SalesOrderItemsUuid 
+WHERE soItem.SalesOrderUuid=@0  
+";
+            return await dbFactory.Db.ExecuteAsync(
+                sql,
+                salesOrderUuid.ToSqlParameter("@0")
+            ) > 0;
+        }
     }
 }
 

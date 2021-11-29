@@ -22,6 +22,7 @@ using DigitBridge.CommerceCentral.XUnit.Common;
 using DigitBridge.CommerceCentral.ERPDb;
 using Bogus;
 using DigitBridge.Base.Common;
+using DigitBridge.CommerceCentral.ERPDb.Tests.Integration;
 
 namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
 {
@@ -353,7 +354,7 @@ WHERE itm.cnt > 0
             {
                 throw;
             }
- 
+
         }
 
         [Fact()]
@@ -382,7 +383,64 @@ WHERE itm.cnt > 0
 
         }
 
+        [Fact()]
+        //[Fact(Skip = SkipReason)]
+        public async Task UpdateShippedQtyAsync_Test()
+        {
+            //var salesOrderUuid = SalesOrderDataTests.GetSalesOrderUuid(DataBaseFactory);
+            var salesOrderUuid = await MakeRealtionForSalesOrderAndSalesOrder();
 
+            var service = new SalesOrderService(DataBaseFactory);
+            var success = await service.UpdateShippedQtyAsync(salesOrderUuid);
+            Assert.True(success, service.Messages.ObjectToString());
+
+        }
+
+        protected async Task<string> MakeRealtionForSalesOrderAndSalesOrder()
+        {
+            var service = new OrderShipmentService(DataBaseFactory);
+            service.Edit();
+
+            var salesOrderData = await GetSalesOrderData();
+            var shipmentData = await GetShipmentData();
+
+            int index = 0;
+
+            foreach (var shipPackage in shipmentData.OrderShipmentPackage)
+            {
+                foreach (var shippedItem in shipPackage.OrderShipmentShippedItem)
+                {
+                    if (index >= salesOrderData.SalesOrderItems.Count) continue;
+                    shippedItem.SalesOrderItemsUuid = salesOrderData.SalesOrderItems[index].SalesOrderItemsUuid;
+                    index++;
+                }
+            }
+            shipmentData.OrderShipmentHeader.SalesOrderUuid = salesOrderData.SalesOrderHeader.SalesOrderUuid;
+
+            service.AttachData(shipmentData);
+
+            var success = await service.SaveDataAsync();
+            Assert.True(success, service.Messages.ObjectToString());
+
+            return salesOrderData.SalesOrderHeader.SalesOrderUuid;
+        }
+
+        protected async Task<SalesOrderData> GetSalesOrderData()
+        {
+            var salesOrderUuid = SalesOrderDataTests.GetSalesOrderUuid(DataBaseFactory);
+            var service = new SalesOrderService(DataBaseFactory);
+            var success = await service.GetDataByIdAsync(salesOrderUuid);
+            Assert.True(success, service.Messages.ObjectToString());
+            return service.Data;
+        }
+        protected async Task<OrderShipmentData> GetShipmentData()
+        {
+            var shipmentUuid = OrderShipmentDataTests.GetOrderShipmentUuid(DataBaseFactory);
+            var service = new OrderShipmentService(DataBaseFactory);
+            var success = await service.GetDataByIdAsync(shipmentUuid);
+            Assert.True(success, service.Messages.ObjectToString());
+            return service.Data;
+        }
     }
 }
 
