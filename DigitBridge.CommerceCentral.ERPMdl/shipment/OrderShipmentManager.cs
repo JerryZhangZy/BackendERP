@@ -327,6 +327,25 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 result.Messages.AddError("SalesOrderUuid cannot be empty.");
                 result.Success = false;
             }
+
+            if (wmsShipment.ShipmentHeader.WarehouseCode.IsZero())
+            {
+                result.Messages.AddError("WarehouseCode cannot be empty.");
+                result.Success = false;
+            }
+
+            if (wmsShipment.CanceledItems?.Where(i => i.SalesOrderItemsUuid.IsZero()).Count() > 0)
+            {
+                result.Messages.AddError("SalesOrderItemsUuid of CanceledItem cannot be empty.");
+                result.Success = false;
+            }
+
+            if (wmsShipment.PackageItems?.SelectMany(i => i.ShippedItems.Where(j => j.SalesOrderItemsUuid.IsZero())).Count() > 0)
+            {
+                result.Messages.AddError("SalesOrderItemsUuid of ShippedItem cannot be empty.");
+                result.Success = false;
+            }
+
             return result.Success;
         }
 
@@ -367,10 +386,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 erpShipment.OrderShipmentHeader.SalesOrderUuid =
                     await salesOrderService.GetSalesOrderUuidByDCAssignmentNumAsync(erpShipment.OrderShipmentHeader.OrderDCAssignmentNum.Value);
 
-            // load OrderNumber from salesOrder Uuid
+            //// load OrderNumber from salesOrder Uuid
+            //if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
+            //    erpShipment.OrderShipmentHeader.OrderNumber =
+            //        await salesOrderService.GetSalesOrderNumberByUuidAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid);
+
             if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
-                erpShipment.OrderShipmentHeader.OrderNumber =
-                    await salesOrderService.GetSalesOrderNumberByUuidAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid);
+            {
+                return false;
+            }
 
             // load sales order data           
             if (!(await salesOrderService.ListAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid)))
@@ -379,6 +403,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
             var salesOrderData = salesOrderService.Data;
+
+            if (salesOrderData.SalesOrderHeaderInfo?.WarehouseCode != erpShipment.OrderShipmentHeader?.WarehouseCode)
+            {
+                result.Messages.AddError("WarehouseCode error.");
+                return false;
+            }
+
             salesOrderService.DetachData(null);
 
             // create mapper, and transfer shipment payload ro ero shipment Dto

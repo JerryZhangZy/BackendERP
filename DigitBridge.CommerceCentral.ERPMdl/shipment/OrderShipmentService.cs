@@ -58,6 +58,17 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        private SalesOrderService _salesOrderService;
+        public SalesOrderService salesOrderService
+        {
+            get
+            {
+                if (_salesOrderService is null)
+                    _salesOrderService = new SalesOrderService(dbFactory);
+                return _salesOrderService;
+            }
+        }
+
         #endregion
 
 
@@ -88,11 +99,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (this.Data?.OrderShipmentHeader != null)
                 {
                     inventoryLogService.UpdateByShipment(this.Data);
-
-                    // Update shipped qty in S/O and openSoQty in Inventory
-                    //await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
-                    //await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
-
+                    var salesOrderUuid = this.Data.OrderShipmentHeader.SalesOrderUuid;
+                    await salesOrderService.UpdateShippedQtyAsync(salesOrderUuid, true);
+                    inventoryService.UpdateOpenSoQtyFromSalesOrderItem(salesOrderUuid, true);
                 }
             }
             catch (Exception)
@@ -135,8 +144,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (this.Data?.OrderShipmentHeader != null)
                 {
                     // Update shipped qty in S/O and openSoQty in Inventory
-                    //await PurchaseOrderService.UpdateReceivedQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
-                    //await InventoryService.UpdateOpenPoQtyFromPoTransactionItemAsync(this.Data.PoTransaction.TransUuid, true);
+                    var salesOrderUuid = this.Data.OrderShipmentHeader.SalesOrderUuid;
+                    await salesOrderService.UpdateShippedQtyAsync(salesOrderUuid, false);
+                    inventoryService.UpdateOpenSoQtyFromSalesOrderItem(salesOrderUuid, false);
                 }
             }
             catch (Exception)
@@ -536,9 +546,9 @@ FROM OrderShipmentShippedItem spi
 INNER JOIN OrderShipmentPackage spk ON (spk.OrderShipmentPackageUuid = spi.OrderShipmentPackageUuid)
 WHERE spi.OrderShipmentUuid=@0 
 ";
-                await dbFactory.Db.ExecuteAsync(sql1,
-                    orderShipmentUuid.ToSqlParameter("@0")
-                );
+            await dbFactory.Db.ExecuteAsync(sql1,
+                orderShipmentUuid.ToSqlParameter("@0")
+            );
 
 
             var sql2 = $@"
@@ -559,12 +569,12 @@ WHERE spc.OrderShipmentUuid=@0
         /// Get ShipmentUuid by OrderDCAssignmentNum or sSalesOrderUuid
         /// </summary>
         public async Task<string> GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(string salesOrderUuid, string orderSourceCode)
-            {
-                if (string.IsNullOrEmpty(orderSourceCode) && string.IsNullOrEmpty(salesOrderUuid)) return string.Empty;
-                //Get SalesOrderData by uuid
-                using (var trs = new ScopedTransaction(dbFactory))
-                    return await OrderShipmentHelper.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(salesOrderUuid, orderSourceCode);
-            }
+        {
+            if (string.IsNullOrEmpty(orderSourceCode) && string.IsNullOrEmpty(salesOrderUuid)) return string.Empty;
+            //Get SalesOrderData by uuid
+            using (var trs = new ScopedTransaction(dbFactory))
+                return await OrderShipmentHelper.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(salesOrderUuid, orderSourceCode);
+        }
 
     }
 }
