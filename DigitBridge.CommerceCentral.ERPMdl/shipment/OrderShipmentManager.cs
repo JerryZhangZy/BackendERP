@@ -380,10 +380,15 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 erpShipment.OrderShipmentHeader.SalesOrderUuid =
                     await salesOrderService.GetSalesOrderUuidByDCAssignmentNumAsync(erpShipment.OrderShipmentHeader.OrderDCAssignmentNum.Value);
 
-            // load OrderNumber from salesOrder Uuid
+            //// load OrderNumber from salesOrder Uuid
+            //if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
+            //    erpShipment.OrderShipmentHeader.OrderNumber =
+            //        await salesOrderService.GetSalesOrderNumberByUuidAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid);
+
             if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
-                erpShipment.OrderShipmentHeader.OrderNumber =
-                    await salesOrderService.GetSalesOrderNumberByUuidAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid);
+            {
+                return false;
+            }
 
             // load sales order data           
             if (!(await salesOrderService.ListAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid)))
