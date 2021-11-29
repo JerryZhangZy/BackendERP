@@ -36,7 +36,7 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
         public const int MasterAccountNum = 10001;
         public const int ProfileNum = 10001;
         public static OrderShipmentData GetFakerData_SkuInDB(IDataBaseFactory dbFactory, Inventory[] inventories = null)
-        { 
+        {
             var data = GetFakerData();
 
             if (inventories == null)
@@ -70,15 +70,29 @@ namespace DigitBridge.CommerceCentral.ERPDb.Tests.Integration
                 {
                     var subItem = item.OrderShipmentShippedItem[i];
                     subItem.MasterAccountNum = MasterAccountNum;
-                    subItem.ProfileNum = ProfileNum; 
+                    subItem.ProfileNum = ProfileNum;
                     var inventory = inventories[i % data.OrderShipmentShippedItem.Count];
                     subItem.SKU = inventory.SKU;
                 }
-            } 
+            }
 
             return data;
         }
 
+
+        public static string GetOrderShipmentUuid(IDataBaseFactory dbFactory)
+        {
+            var orderShipmentUuid = dbFactory.GetValue<OrderShipmentHeader, string>(@"
+SELECT TOP 1 ins.OrderShipmentUuid 
+FROM OrderShipmentHeader ins 
+INNER JOIN (
+    SELECT it.OrderShipmentUuid, COUNT(1) AS cnt FROM OrderShipmentPackage it GROUP BY it.OrderShipmentUuid
+) itm ON (itm.OrderShipmentUuid = ins.OrderShipmentUuid)
+WHERE itm.cnt > 0
+");
+
+            return orderShipmentUuid;
+        }
     }
 }
 
