@@ -64,12 +64,27 @@ WHERE itm.cnt > 0
 ");
 
             var data = new SalesOrderData(DataBaseFactory);
-            var rowNum=await data.GetRowNumAsync(data2.OrderNumber, data2.MasterAccountNum, data2.ProfileNum);
+            var rowNum = await data.GetRowNumAsync(data2.OrderNumber, data2.MasterAccountNum, data2.ProfileNum);
             await data.GetAsync(rowNum.ToLong());
 
             var result = data.SalesOrderHeader.OrderNumber.Equals(data2.OrderNumber);
 
             Assert.True(result, "This is a generated tester, please report any tester bug to team leader.");
+        }
+
+
+        public static string GetSalesOrderUuid(IDataBaseFactory dbFactory)
+        {
+            var salesOrderUuid = dbFactory.GetValue<SalesOrderHeader, string>(@"
+SELECT TOP 1 ins.SalesOrderUuid 
+FROM SalesOrderHeader ins 
+INNER JOIN (
+    SELECT it.SalesOrderUuid, COUNT(1) AS cnt FROM SalesOrderItems it GROUP BY it.SalesOrderUuid
+) itm ON (itm.SalesOrderUuid = ins.SalesOrderUuid)
+WHERE itm.cnt > 0
+");
+
+            return salesOrderUuid;
         }
     }
 }

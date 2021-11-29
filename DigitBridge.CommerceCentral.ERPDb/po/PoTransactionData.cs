@@ -122,14 +122,14 @@ AND PoNum = @2
 SELECT TOP 1 * FROM PoTransaction
 WHERE MasterAccountNum = @0
 AND ProfileNum = @1
-AND TransNum = @2
+AND TransUuid = @2
 
 ";
             var paras = new List<SqlParameter>()
             {
                 new SqlParameter("@0",masterAccountNum),
                 new SqlParameter("@1",profileNum),
-                new SqlParameter("@2",number.ToInt()),
+                new SqlParameter("@2",number),
             };
 
 
