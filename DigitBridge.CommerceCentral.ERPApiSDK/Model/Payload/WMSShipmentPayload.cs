@@ -22,7 +22,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public string ShipmentID = "";
         public string SalesOrderUuid { get; set; }
         public long OrderDCAssignmentNum { get; set; }
-
+        public string WarehouseCode { get; set; }
         [Required]
         public long CentralOrderNum { get; set; }
         //public int DistributionCenterNum { get; set; }

@@ -328,6 +328,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 result.Success = false;
             }
 
+            if (wmsShipment.ShipmentHeader.WarehouseCode.IsZero())
+            {
+                result.Messages.AddError("WarehouseCode cannot be empty.");
+                result.Success = false;
+            }
+
             if (wmsShipment.CanceledItems?.Where(i => i.SalesOrderItemsUuid.IsZero()).Count() > 0)
             {
                 result.Messages.AddError("SalesOrderItemsUuid of CanceledItem cannot be empty.");
