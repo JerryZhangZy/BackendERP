@@ -158,3 +158,11 @@ CREATE UNIQUE NONCLUSTERED INDEX [UK_OrderHeader] ON [dbo].[OrderHeader]
 GO
 
 
+CREATE NONCLUSTERED INDEX [UK_OrderHeader_OriginalOrderDateUtc] ON [dbo].[OrderHeader]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[OriginalOrderDateUtc] ASC
+) 
+GO
+

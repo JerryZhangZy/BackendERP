@@ -85,7 +85,12 @@ GO
 
 
 
-
+--IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'IX_SalesOrderHeaderInfo_CentralOrderNum')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_CentralOrderNum] ON [dbo].[SalesOrderHeaderInfo]
+(
+	[CentralOrderNum] ASC
+)  
+GO
 
 --IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'IX_SalesOrderHeader_OrderSourceCode')
 CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_DistributionCenterNum_CentralOrderNum] ON [dbo].[SalesOrderHeaderInfo]

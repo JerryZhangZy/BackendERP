@@ -48,3 +48,10 @@ CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_ShipToName_ShipToState_ShipTo
 	[ShipToPostalCode] ASC
 ) 
 GO
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[SalesOrderHeader]') AND name = N'IX_SalesOrderHeaderInfo_CentralOrderNum')
+CREATE NONCLUSTERED INDEX [IX_SalesOrderHeaderInfo_CentralOrderNum] ON [dbo].[SalesOrderHeaderInfo]
+(
+	[CentralOrderNum] ASC
+)  
+GO
