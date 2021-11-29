@@ -36,6 +36,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
             AddFilter(_MasterAccountNum);
             AddFilter(_ProfileNum);
             InitQueryFilter();
+            SetAvailableOrderByList();
         }
 
         public virtual void InitQueryFilter() {}
@@ -352,6 +353,29 @@ namespace DigitBridge.CommerceCentral.YoPoco
         #endregion
 
         #region order by 
+        [XmlIgnore, JsonIgnore, IgnoreDataMember]
+        protected IList<KeyValuePair<string, string>> AvailableOrderByList { get; set; } = new List<KeyValuePair<string, string>>();
+        [XmlIgnore, JsonIgnore, IgnoreDataMember]
+        public virtual bool HasAvailableOrderByList => (AvailableOrderByList != null && AvailableOrderByList.Count > 0);
+
+        protected virtual void SetAvailableOrderByList()
+        {
+            AvailableOrderByList.Clear();
+            AvailableOrderByList.Add(new KeyValuePair<string, string>("Default", "RowNum Desc"));
+        }
+        public virtual void AddAvailableOrderByList(params KeyValuePair<string, string>[] obj)
+        {
+            foreach (var o in obj)
+                AvailableOrderByList.Add(o);
+        }
+        protected virtual string CheckAvailableOrderByList(string key)
+        {
+            var av = AvailableOrderByList.FirstOrDefault(x => x.Key.EqualsIgnoreSpace(key));
+            return !EqualityComparer<KeyValuePair<string, string>>.Default.Equals(av, default(KeyValuePair<string, string>)) 
+                ? av.Value
+                : string.Empty;
+        }
+
         protected IList<string> _orderByList = new List<string>();
         [XmlIgnore, JsonIgnore, IgnoreDataMember]
         public IList<string> OrderByList
@@ -366,7 +390,19 @@ namespace DigitBridge.CommerceCentral.YoPoco
 
         [XmlIgnore, JsonIgnore, IgnoreDataMember]
         public virtual bool HasOrderBy => (OrderByList.Count > 0);
-        public virtual void SetOrderBy(IList<string> orderByList) => _orderByList = orderByList;
+        public virtual void SetOrderBy(IList<string> orderByList)
+        {
+            var validList = new List<string>();
+            foreach (var key in orderByList)
+            {
+                var val = CheckAvailableOrderByList(key);
+                if (string.IsNullOrEmpty(val)) continue;
+                var valList = val.Split(",").ToList();
+                validList = validList.Concat(valList).ToList();
+            }
+            if (validList.Count > 0)
+                _orderByList = validList;
+        }
         public virtual void ClearOrderBy() => OrderByList.Clear();
 
         public virtual void AddOrderBy(params string[] orderBy)
@@ -413,7 +449,11 @@ namespace DigitBridge.CommerceCentral.YoPoco
                 if (string.IsNullOrWhiteSpace(item))
                     continue;
                 var sep = (isFirst) ? string.Empty : ", ";
-                sb.Append($"{sep}{pre}{item.Trim()}");
+                // if sortBy already include prefix.xxx, don't add new prefix
+                if (item.Contains('.')) 
+                    sb.Append($"{sep}{item.Trim()}");
+                else
+                    sb.Append($"{sep}{pre}{item.Trim()}");
                 isFirst = false;
             }
             return (sb.Length > 1)

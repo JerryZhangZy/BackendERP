@@ -125,5 +125,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             _OrderDateTo.FilterValue = DateTime.UtcNow.Date;
         }
 
+        protected override void SetAvailableOrderByList()
+        {
+            base.SetAvailableOrderByList();
+            AddAvailableOrderByList(
+                new KeyValuePair<string, string>("OrderDate", "OrderDate DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("ShipDate", "ShipDate DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("CustomerCode", "CustomerCode, RowNum DESC"),
+                new KeyValuePair<string, string>("OrderNumber", "OrderNumber DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("CentralOrderNum", $"{PREFIX_INFO}.CentralOrderNum DESC, RowNum DESC"),
+                new KeyValuePair<string, string>("CustomerPoNum", $"{PREFIX_INFO}.CustomerPoNum, RowNum DESC"),
+                new KeyValuePair<string, string>("RefNum", $"{PREFIX_INFO}.RefNum, RowNum DESC"),
+                new KeyValuePair<string, string>("WarehouseCode", $"{PREFIX_INFO}.WarehouseCode, RowNum DESC")
+            );
+        }
     }
 }

@@ -128,7 +128,7 @@ namespace DigitBridge.CommerceCentral.YoPoco
         protected virtual void AddDefaultOrderBy()
         {
             if (!QueryObject.HasOrderBy)
-                QueryObject.AddOrderBy("RowNum");
+                QueryObject.AddOrderBy("RowNum DESC");
         }
 
 
