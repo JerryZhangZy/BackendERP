@@ -79,34 +79,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             //Set default for invoice
             var invoiceData = data.InvoiceData;
-            sum.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
-            
-            sum.Currency = invoiceData.InvoiceHeader.Currency; 
-            //sum.DiscountAmount = invoiceData.InvoiceHeader.DiscountAmount;
-            //sum.DiscountRate = invoiceData.InvoiceHeader.DiscountRate;
-            //sum.TaxableAmount = invoiceData.InvoiceHeader.TaxableAmount;
-            //sum.NonTaxableAmount = invoiceData.InvoiceHeader.NonTaxableAmount;
-            //sum.ShippingAmount = invoiceData.InvoiceHeader.ShippingAmount;
-            //sum.ShippingTaxAmount = invoiceData.InvoiceHeader.ShippingTaxAmount;
-            //sum.MiscAmount = invoiceData.InvoiceHeader.MiscAmount;
-            //sum.MiscTaxAmount = invoiceData.InvoiceHeader.MiscTaxAmount;
-            //sum.ChargeAndAllowanceAmount = invoiceData.InvoiceHeader.ChargeAndAllowanceAmount;
-
-            //sum.SalesAmount = invoiceData.InvoiceHeader.SalesAmount; 
-
-            //sum.BankAccountCode = invoiceData.InvoiceHeader 
-            //var customerData = GetCustomerData(data, invoiceData.InvoiceHeader.CustomerCode);
-            //if (customerData != null && customerData.Customer != null)
-            //{
-            //    //sum.BankAccountCode
-            //    //sum.BankAccountUuid
-            //    //sum.CreditAccount= 
-            //    //sum.PaidBy=
-            //} 
-
-            //EnterBy
-            //UpdateBy 
-
+            if (invoiceData != null)
+            {
+                if (string.IsNullOrEmpty(sum.InvoiceUuid)) sum.InvoiceUuid = invoiceData.InvoiceHeader.InvoiceUuid;
+                if (string.IsNullOrEmpty(sum.Currency)) sum.Currency = invoiceData.InvoiceHeader.Currency;
+            }
             return true;
         }
 

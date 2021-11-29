@@ -365,6 +365,55 @@ namespace DigitBridge.CommerceCentral.ERPMdl.Tests.Integration
             };
         }
 
+        [Fact]
+        public async Task AddInvoiceCreditPaymentsAsync_Test()
+        {
+            var payload = new InvoiceNewPaymentPayload()
+            {
+                MasterAccountNum = 10001,
+                ProfileNum = 10001,
+                LoadAll = true,
+            };
+            var customerCode = "cumque";
+
+            var service = new InvoicePaymentService(DataBaseFactory);
+            await service.NewPaymentByCustomerCode(payload, customerCode);
+
+            payload.InvoiceTransaction.PaymentUuid = "";
+            payload.InvoiceTransaction.PaymentNumber = 0;
+            payload.InvoiceTransaction.PaidBy = (int)PaidByAr.PrePayment;
+            //payload.InvoiceTransaction.PaidBy = (int)PaidByAr.CreditMemo;
+            payload.InvoiceTransaction.BankAccountCode = "BOA";
+            payload.InvoiceTransaction.CheckNum = "2021112004033257762";
+            payload.InvoiceTransaction.AuthCode = "f0530be1-bde3-47ca-8a65-9e30e307b32b";
+            //payload.InvoiceTransaction.CheckNum = "2021091400034807678";
+            //payload.InvoiceTransaction.AuthCode = "cfb3e181-7c20-4829-b83b-e44ec000c8ed";
+            payload.InvoiceTransaction.TotalAmount = 110;
+            payload.InvoiceTransaction.CustomerCode = "cumque";
+
+            payload.ApplyInvoices = new List<ApplyInvoice>();
+            payload.ApplyInvoices.Add(CreateApplyInvoice(payload.InvoiceList[0], 110));
+
+            bool result = true;
+            List<string> salesOrderNums = new List<string>();
+
+            try
+            {
+                using (var b = new Benchmark("UpdateInvoicePaymentsAsync_Test"))
+                {
+                    result = await service.UpdateInvoicePaymentsAsync(payload);
+                }
+
+                Assert.True(true, "This is a generated tester, please report any tester bug to team leader.");
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+
+        }
+
 
         [Fact]
         public async Task GetByPaymentNumberAsync_Test()

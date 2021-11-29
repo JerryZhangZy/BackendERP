@@ -6,12 +6,14 @@ namespace DigitBridge.Base.Common
 {
     public enum TransStatus : int
     {
-        Draft = 0,
-        Overdue = 1,
-        Pending = 2,
-        Payable = 3,
-        Paid = 4,
-        Trash = 5,
-        UnPaid = 6
+        Paid = 0,
     }
+
+    public enum TransType : int
+    {
+        Payment = 1,
+        Return = 2,
+        CreditPayment = 3,
+    }
+
 }
