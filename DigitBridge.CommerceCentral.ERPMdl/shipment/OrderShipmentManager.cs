@@ -403,6 +403,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
             }
             var salesOrderData = salesOrderService.Data;
+
+            if (salesOrderData.SalesOrderHeaderInfo?.WarehouseCode != erpShipment.OrderShipmentHeader?.WarehouseCode)
+            {
+                result.Messages.AddError("WarehouseCode error.");
+                return false;
+            }
+
             salesOrderService.DetachData(null);
 
             // create mapper, and transfer shipment payload ro ero shipment Dto
