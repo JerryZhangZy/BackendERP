@@ -327,6 +327,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 result.Messages.AddError("SalesOrderUuid cannot be empty.");
                 result.Success = false;
             }
+
+            if (wmsShipment.CanceledItems?.Where(i => i.SalesOrderItemsUuid.IsZero()).Count() > 0)
+            {
+                result.Messages.AddError("SalesOrderItemsUuid of CanceledItem cannot be empty.");
+                result.Success = false;
+            }
+
+            if (wmsShipment.PackageItems?.SelectMany(i => i.ShippedItems.Where(j => j.SalesOrderItemsUuid.IsZero())).Count() > 0)
+            {
+                result.Messages.AddError("SalesOrderItemsUuid of ShippedItem cannot be empty.");
+                result.Success = false;
+            }
+
             return result.Success;
         }
 
