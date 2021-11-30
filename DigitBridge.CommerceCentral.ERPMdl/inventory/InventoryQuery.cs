@@ -138,6 +138,19 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public override void InitQueryFilter()
         {
         }
-
+        //public override void SetAvailableOrderByList(IList<string> orderByList)
+        //{
+        //    base.SetAvailableOrderByList();
+        //    AddAvailableOrderByList(
+        //        new KeyValuePair<string, string>("SKU", "sku"),
+        //        new KeyValuePair<string, string>("Brand", "Brand"),
+        //        new KeyValuePair<string, string>("StyleCode", "StyleCode"),
+        //        new KeyValuePair<string, string>("ColorPatternCode", "ColorPatternCode"),
+        //        new KeyValuePair<string, string>("ClassCode", "ClassCode"),
+        //        new KeyValuePair<string, string>("DepartmentCode", "DepartmentCode"),
+        //        new KeyValuePair<string, string>("CategoryCode", "CategoryCode"),
+        //        new KeyValuePair<string, string>("GroupCode", "GroupCode")
+        //        );
+        //}
     }
 }
