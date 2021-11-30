@@ -181,7 +181,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.InvoiceHeader.DatabaseNum,
                 ProcessUuid = this.Data.InvoiceHeader.InvoiceUuid,
                 ProcessNumber = this.Data.InvoiceHeader.InvoiceNumber,
-                ChannelNum = this.Data.InvoiceHeaderInfo.ChannelAccountNum,
+                ChannelNum = this.Data.InvoiceHeaderInfo.ChannelNum,
                 ChannelAccountNum = this.Data.InvoiceHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty
