@@ -755,7 +755,7 @@ ON inv.inventoryuuid=soi.inventoryuuid
         {
             string op = isReturnBack ? "-" : "+";
             string command = $@"
-UPDATE inv SET opensoqty=inv.opensoqty{op}(COALESCE(soi.orderqty,0)-COALESCE(soi.shipqty,0)-COALESCE(soi.cancelledqty,0))
+UPDATE inv SET opensoqty=inv.OpenPoQty{op}(COALESCE(soi.orderqty,0)-COALESCE(soi.shipqty,0)-COALESCE(soi.cancelledqty,0))
 FROM inventory inv INNER JOIN
     (SELECT SUM(orderqty) as orderqty, 
             SUM(shipqty) as shipqty, 
@@ -772,7 +772,7 @@ ON inv.inventoryuuid=soi.inventoryuuid
         {
             string op = isReturnBack ? "-" : "+";
             string command = $@"
-UPDATE inv SET OpenPoQty=inv.opensoqty{op}COALESCE(poi.qty,0)
+UPDATE inv SET OpenPoQty=OpenPoQty{op}COALESCE(poi.qty,0)
 FROM inventory inv 
 INNER JOIN
     (SELECT SUM(COALESCE(poi1.PoQty,0) - COALESCE(poi1.ReceivedQty,0) - COALESCE(poi1.CancelledQty,0)) as qty, 
@@ -780,6 +780,25 @@ INNER JOIN
     FROM PoItems poi1
     INNER JOIN PoTransactionItems pot ON (pot.PoItemUuid = poi1.PoItemUuid)
     WHERE pot.TransUuid='{transUuid}'  
+    GROUP BY poi1.InventoryUuid
+) poi
+ON inv.inventoryuuid=poi.inventoryuuid
+";
+            await dbFactory.Db.ExecuteAsync(command.ToString());
+        }
+
+
+        public async Task UpdateOpenPoQtyFromPoUuidAsync(string poUuid, bool isReturnBack = false)
+        {
+            string op = isReturnBack ? "-" : "+";
+            string command = $@"
+UPDATE inv SET OpenPoQty=OpenPoQty{op}COALESCE(poi.qty,0)
+FROM inventory inv 
+INNER JOIN
+    (SELECT SUM(COALESCE(poi1.PoQty,0) - COALESCE(poi1.ReceivedQty,0) - COALESCE(poi1.CancelledQty,0)) as qty, 
+        poi1.inventoryuuid 
+    FROM PoItems poi1
+    WHERE poi1.PoUuid='{poUuid}'  
     GROUP BY poi1.InventoryUuid
 ) poi
 ON inv.inventoryuuid=poi.inventoryuuid

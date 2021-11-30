@@ -512,7 +512,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var success = poData.GetByNumber(masterAccountNum, profileNum, poNum);
             if (!success)
             {
-                AddError($"PurchaseOrderData no found");
+
+                AddError($"Data not found for {poNum}.");
                 return false;
             }
 

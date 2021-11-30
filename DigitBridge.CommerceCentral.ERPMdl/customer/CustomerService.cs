@@ -445,6 +445,12 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 rowNum =await CustomerServiceHelper.GetRowNumByCustomerCodeAsync(customerCode,payload.MasterAccountNum,payload.ProfileNum);
             }
+            if (rowNum == 0)
+            {
+                AddError($"Data not found for {customerCode}.");
+                return false;
+            }
+
             return await GetDataAsync(rowNum);
         }
 
