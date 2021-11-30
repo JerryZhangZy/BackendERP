@@ -476,7 +476,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             if (transactions.Count == 0)
             {
-                AddWarning($@"{vendorCode} there is no purchase record");
+                AddError($"Data not found for {vendorCode}.");
+               
                 return false;
             }
             payload.PoTransactions = new List<PoTransactionDataDto>();

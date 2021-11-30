@@ -467,6 +467,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 this.Data.EventProcessERP.ProcessStatus = result.ProcessStatus;
                 this.Data.EventProcessERP.ProcessDate = DateTime.UtcNow;
                 this.Data.EventProcessERP.ProcessData = (result.ProcessData == null) ? string.Empty : result.ProcessData.ToString();
+                this.Data.EventProcessERP.EventMessage = (result.EventMessage == null) ? string.Empty : result.EventMessage.ToString();
                 await this.SaveDataAsync();
             }
             return success;

@@ -514,6 +514,13 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 rowNum = await VendorServiceHelper.GetRowNumByVendorCodeAsync(vendorCode, payload.MasterAccountNum, payload.ProfileNum);
             }
+            if (rowNum == 0)
+            {
+                AddError($"Data not found for {vendorCode}.");
+                return false;
+            }
+
+
             return await GetDataAsync(rowNum);
         }
 

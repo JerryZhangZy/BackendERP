@@ -383,26 +383,27 @@ WHERE itm.cnt > 0
 
         }
 
+        #region UpdateShippedQtyFromShippedItemAsync 
+
         [Fact()]
         //[Fact(Skip = SkipReason)]
-        public async Task UpdateShippedQtyAsync_Test()
+        public async Task UpdateShippedQtyFromShippedItemAsync_Test()
         {
-            //var salesOrderUuid = SalesOrderDataTests.GetSalesOrderUuid(DataBaseFactory);
-            var salesOrderUuid = await MakeRealtionForSalesOrderAndSalesOrder();
+            var orderShipmentUuid = await MakeRealtionForShipmentAndSalesOrder();
 
             var service = new SalesOrderService(DataBaseFactory);
-            var success = await service.UpdateShippedQtyAsync(salesOrderUuid);
+            var success = await service.UpdateShippedQtyFromShippedItemAsync(orderShipmentUuid);
             Assert.True(success, service.Messages.ObjectToString());
 
         }
 
-        protected async Task<string> MakeRealtionForSalesOrderAndSalesOrder()
+        protected async Task<string> MakeRealtionForShipmentAndSalesOrder()
         {
             var service = new OrderShipmentService(DataBaseFactory);
             service.Edit();
 
-            var salesOrderData = await GetSalesOrderData();
-            var shipmentData = await GetShipmentData();
+            var salesOrderData = SalesOrderDataTests.GetSalesOrderFromDB(DataBaseFactory);
+            var shipmentData = OrderShipmentDataTests.GetOrderShipmentDataFromDB(DataBaseFactory);
 
             int index = 0;
 
@@ -422,25 +423,9 @@ WHERE itm.cnt > 0
             var success = await service.SaveDataAsync();
             Assert.True(success, service.Messages.ObjectToString());
 
-            return salesOrderData.SalesOrderHeader.SalesOrderUuid;
-        }
-
-        protected async Task<SalesOrderData> GetSalesOrderData()
-        {
-            var salesOrderUuid = SalesOrderDataTests.GetSalesOrderUuid(DataBaseFactory);
-            var service = new SalesOrderService(DataBaseFactory);
-            var success = await service.GetDataByIdAsync(salesOrderUuid);
-            Assert.True(success, service.Messages.ObjectToString());
-            return service.Data;
-        }
-        protected async Task<OrderShipmentData> GetShipmentData()
-        {
-            var shipmentUuid = OrderShipmentDataTests.GetOrderShipmentUuid(DataBaseFactory);
-            var service = new OrderShipmentService(DataBaseFactory);
-            var success = await service.GetDataByIdAsync(shipmentUuid);
-            Assert.True(success, service.Messages.ObjectToString());
-            return service.Data;
-        }
+            return shipmentData.OrderShipmentHeader.OrderShipmentUuid;
+        }  
+        #endregion
     }
 }
 

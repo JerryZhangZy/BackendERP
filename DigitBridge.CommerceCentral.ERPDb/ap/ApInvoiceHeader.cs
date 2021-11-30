@@ -17,7 +17,11 @@ namespace DigitBridge.CommerceCentral.ERPDb
 {
     public partial class ApInvoiceHeader
     {
-
+        public override IList<string> IgnoreUpdateColumns() => new List<string>()
+            {
+                "PaidAmount",
+                "CreditAmount"
+            };
     }
 }
 

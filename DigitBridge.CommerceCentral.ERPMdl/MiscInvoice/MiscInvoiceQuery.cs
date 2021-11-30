@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using DigitBridge.Base.Common;
 using DigitBridge.Base.Utility;
@@ -97,6 +98,38 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         {
             _MiscInvoiceDateFrom.FilterValue = DateTime.UtcNow.Date.AddDays(-30);
             _MiscInvoiceDateTo.FilterValue = DateTime.UtcNow.Date;
+        }
+
+        public override string GetOrderBySql(string prefix = null)
+        {
+            string[] descOrderFields = new string[3]
+            {
+                "miscinvoicedate",
+                "miscinvoicetime",
+                "miscinvoicenumber"
+            };
+            if (OrderByList.Count <= 0)
+                return string.Empty;
+
+            var sb = new StringBuilder();
+            var isFirst = true;
+            var pre = !string.IsNullOrEmpty(prefix)
+                    ? $"{prefix.Trim()}."
+                    : !string.IsNullOrEmpty(_PREFIX)
+                        ? $"{_PREFIX}."
+                        : string.Empty;
+            foreach (string item in _orderByList)
+            {
+                var orderType = descOrderFields.Contains(item.Trim().ToLower()) ? " DESC" : "";
+                if (string.IsNullOrWhiteSpace(item))
+                    continue;
+                var sep = (isFirst) ? string.Empty : ", ";
+                sb.Append($"{sep}{pre}{item.Trim()}{orderType}");
+                isFirst = false;
+            }
+            return (sb.Length > 1)
+                ? $" ORDER BY {sb} "
+                : string.Empty;
         }
 
         public void InitForNewPaymet(string customerCode)

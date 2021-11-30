@@ -443,6 +443,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 rowNum = await InventoryUpdateHelper.GetRowNumByNumberAsync(batchNumber, payload.MasterAccountNum, payload.ProfileNum);
             }
+            if (rowNum == 0)
+            {
+                AddError($"Data not found for {batchNumber}.");
+                return false;
+            }
             return await GetDataAsync(rowNum);
         }
 

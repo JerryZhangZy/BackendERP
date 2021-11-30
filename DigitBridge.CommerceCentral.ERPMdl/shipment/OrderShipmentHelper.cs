@@ -175,37 +175,33 @@ AND MainTrackingNumber= @mainTrackingNumber
         }
 
 
-        public static bool ExistChannelAccountNumAndShipmentID(int channelAccountNum, string shipmentID, int masterAccountNum, int profileNum)
+        public static bool ExistShipmentID(string shipmentID, int masterAccountNum, int profileNum)
         {
             var sql = $@"
 SELECT COUNT(1) FROM OrderShipmentHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND ChannelAccountNum= @channelAccountNum
 AND ShipmentID= @shipmentID
 ";
             var result = SqlQuery.ExecuteScalar<int>(sql,
                  masterAccountNum.ToSqlParameter("masterAccountNum"),
                  profileNum.ToSqlParameter("profileNum"),
-                 channelAccountNum.ToSqlParameter("channelAccountNum"),
                  shipmentID.ToSqlParameter("shipmentID")
                  );
             return result > 0;
         }
 
-        public static async Task<bool> ExistChannelAccountNumAndShipmentIDAsync(int channelAccountNum, string shipmentID, int masterAccountNum, int profileNum)
+        public static async Task<bool> ExistShipmentIDAsync(string shipmentID, int masterAccountNum, int profileNum)
         {
             var sql = $@"
 SELECT COUNT(1) FROM OrderShipmentHeader tbl
 WHERE MasterAccountNum = @masterAccountNum
 AND ProfileNum = @profileNum
-AND ChannelAccountNum= @channelAccountNum
 AND ShipmentID= @shipmentID
 ";
             var result = await SqlQuery.ExecuteScalarAsync<int>(sql,
                  masterAccountNum.ToSqlParameter("masterAccountNum"),
                  profileNum.ToSqlParameter("profileNum"),
-                 channelAccountNum.ToSqlParameter("channelAccountNum"),
                  shipmentID.ToSqlParameter("shipmentID")
                  );
             return result > 0;

@@ -16,8 +16,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
 
-        //private string _baseUrl = "http://localhost:7074";
-        private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net";
+        private string _baseUrl = "http://localhost:7074";
+        //private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net";
         private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
         protected const int MasterAccountNum = 10001;
         protected const int ProfileNum = 10001;
@@ -47,8 +47,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             var processResult = new ProcessResult()
             {
                 ProcessStatus = Base.Common.EventProcessProcessStatusEnum.Success,
-                ProcessData = JObject.Parse("{\"message\": \"This is a test message from AckProcessInvoicesAsync_Simple_Test\"}"),
-                ProcessUuid = "15082ed6-b62f-4faf-9491-dc182d7bd4a9"
+                ProcessData = JObject.Parse("{\"ProcessData\": \"This is a test message from AckProcessInvoicesAsync_Simple_Test\"}"),
+                EventMessage = JObject.Parse("{\"EventMessage\": \"This is a test message from AckProcessInvoicesAsync_Simple_Test\"}"),
+                ProcessUuid = "bc361a5c-9961-4daa-bf02-239d44178306"
             };
             processResults.Add(processResult);
             var success = await client.AckProcessInvoicesAsync(MasterAccountNum, ProfileNum, processResults);
@@ -69,7 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
                 {
                     ProcessStatus = Base.Common.EventProcessProcessStatusEnum.Success,
                     ProcessData = JObject.Parse("{\"message\": \"This is a test message from AckProcessInvoicesAsync_Full_Test\"}"),
-                    ProcessUuid=uuid,
+                    ProcessUuid = uuid,
                 };
                 processResults.Add(processResult);
             }

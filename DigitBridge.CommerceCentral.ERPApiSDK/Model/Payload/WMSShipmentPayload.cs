@@ -140,9 +140,9 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         public string InvoiceUuid { get; set; }
 
         /// <summary>
-        /// the main tracking number of the request wms shipment.
+        /// The unique number of the request wms shipment.
         /// </summary>
-        public string MainTrackingNumber { get; set; }
+        public string ShipmentID { get; set; }
     }
 }
 

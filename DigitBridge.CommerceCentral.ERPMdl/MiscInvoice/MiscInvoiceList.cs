@@ -113,7 +113,14 @@ SELECT
                 payload.MiscInvoiceListCount = await CountAsync();
                 result = await ExcuteJsonAsync(sb);
                 if (result)
+                {
+                    if (payload.MiscInvoiceListCount == 0)
+                    {
+                        payload.Success = false;
+                        AddError("Invoices not found");
+                    }
                     payload.MiscInvoiceList = sb;
+                }
             }
             catch (Exception ex)
             {

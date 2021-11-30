@@ -200,7 +200,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.SalesOrderHeader.DatabaseNum,
                 ProcessUuid = this.Data.SalesOrderHeader.SalesOrderUuid,
                 ProcessNumber = this.Data.SalesOrderHeader.OrderNumber,
-                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelNum,
                 ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty
@@ -256,7 +256,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.SalesOrderHeader.DatabaseNum,
                 ProcessUuid = this.Data.SalesOrderHeader.SalesOrderUuid,
                 ProcessNumber = this.Data.SalesOrderHeader.OrderNumber,
-                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelNum,
                 ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty
@@ -280,7 +280,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.SalesOrderHeader.DatabaseNum,
                 ProcessUuid = this.Data.SalesOrderHeader.SalesOrderUuid,
                 ProcessNumber = this.Data.SalesOrderHeader.OrderNumber,
-                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelNum,
                 ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty
@@ -797,11 +797,11 @@ WHERE RowNum=@1
         /// <summary>
         /// Update s/o item shipqty from shipment item.
         /// </summary>
-        /// <param name="salesOrderUuid"></param>
+        /// <param name="shipmentUuid"></param>
         /// <returns></returns>
-        public async Task<bool> UpdateShippedQtyAsync(string salesOrderUuid, bool isReturnBack = false)
+        public async Task<bool> UpdateShippedQtyFromShippedItemAsync(string shipmentUuid, bool isReturnBack = false)
         {
-            if (salesOrderUuid.IsZero())
+            if (shipmentUuid.IsZero())
             {
                 return false;
             }
@@ -813,11 +813,11 @@ UPDATE soItem
 SET soItem.ShipQty=soItem.ShipQty {op} shippedItem.ShippedQty
 FROM SalesOrderItems soItem 
 INNER JOIN OrderShipmentShippedItem shippedItem on  shippedItem.SalesOrderItemsUuid=soItem.SalesOrderItemsUuid 
-WHERE soItem.SalesOrderUuid=@0  
+WHERE shippedItem.OrderShipmentUuid=@0  
 ";
             return await dbFactory.Db.ExecuteAsync(
                 sql,
-                salesOrderUuid.ToSqlParameter("@0")
+                shipmentUuid.ToSqlParameter("@0")
             ) > 0;
         }
     }
