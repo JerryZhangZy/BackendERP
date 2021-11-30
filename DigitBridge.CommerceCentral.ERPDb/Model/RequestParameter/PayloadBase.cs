@@ -175,5 +175,49 @@ namespace DigitBridge.CommerceCentral.ERPDb
                 LoadAll = this.LoadAll
             };
         }
+
+        /// <summary>
+        /// Set payload succes = false and error message
+        /// and return false
+        /// </summary>
+        public virtual bool ReturnError(string message)
+        {
+            Success = false;
+            Messages.AddError(message);
+            return Success;
+        }
+
+        /// <summary>
+        /// Set payload succes = false and error message list
+        /// and return false
+        /// </summary>
+        public virtual bool ReturnError(IList<MessageClass> messages)
+        {
+            Success = false;
+            Messages.Add(messages);
+            return Success;
+        }
+
+        /// <summary>
+        /// Set payload succes = true but with warning message
+        /// return true
+        /// </summary>
+        public virtual bool ReturnWarning(string message)
+        {
+            Success = true;
+            Messages.AddWarning(message);
+            return Success;
+        }
+
+        /// <summary>
+        /// Set payload succes = true but with info message
+        /// return true
+        /// </summary>
+        public virtual bool ReturnInfo(string message)
+        {
+            Success = true;
+            Messages.AddInfo(message);
+            return Success;
+        }
     }
 }
