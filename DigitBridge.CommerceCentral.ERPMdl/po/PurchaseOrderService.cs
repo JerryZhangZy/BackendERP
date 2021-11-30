@@ -171,7 +171,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.PoHeader.DatabaseNum,
                 ProcessUuid = this.Data.PoHeader.PoUuid,
                 ProcessNumber = this.Data.PoHeader.PoNum,
-                ChannelNum = this.Data.PoHeaderInfo.ChannelAccountNum,
+                ChannelNum = this.Data.PoHeaderInfo.ChannelNum,
                 ChannelAccountNum = this.Data.PoHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty

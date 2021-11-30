@@ -73,7 +73,7 @@ WHERE itm.cnt > 0
         }
 
 
-        public static string GetSalesOrderUuid(IDataBaseFactory dbFactory)
+        public static SalesOrderData GetSalesOrderFromDB(IDataBaseFactory dbFactory)
         {
             var salesOrderUuid = dbFactory.GetValue<SalesOrderHeader, string>(@"
 SELECT TOP 1 ins.SalesOrderUuid 
@@ -83,8 +83,10 @@ INNER JOIN (
 ) itm ON (itm.SalesOrderUuid = ins.SalesOrderUuid)
 WHERE itm.cnt > 0
 ");
-
-            return salesOrderUuid;
+            var data = new SalesOrderData(dbFactory);
+            var success = data.GetById(salesOrderUuid);
+            Assert.True(success, "Data not found.");
+            return data;
         }
     }
 }

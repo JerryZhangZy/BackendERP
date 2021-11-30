@@ -269,10 +269,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var resultList = new List<OrderShipmentCreateResultPayload>();
             if (wmsShipments is null || wmsShipments.Count == 0)
             {
-                AddError("shipment data is required.");
                 resultList.Add(new OrderShipmentCreateResultPayload()
                 {
-                    Messages = new List<MessageClass>().Add(this.Messages),
+                    Messages = this.AddError("shipment data is required."),
                 });
                 return resultList;
             }
@@ -286,11 +285,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     Success = true,
                     MasterAccountNum = payload.MasterAccountNum,
                     ProfileNum = payload.ProfileNum,
-                    MainTrackingNumber = shipment?.ShipmentHeader?.MainTrackingNumber,
+                    ShipmentID = shipment?.ShipmentHeader?.ShipmentID,
                 };
 
                 // first validate shipment data, allow to create new shipment
-                if (ValidateShipment(shipment, result))
+                if (await ValidateShipment(shipment, result))
                 {
                     await CreateShipmentAsync(shipment, result);
                 }
@@ -302,7 +301,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Validate current shipment data 
         /// </summary>
-        protected bool ValidateShipment(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
+        protected async Task<bool> ValidateShipment(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
         {
             //if (payload is null)
             //{
@@ -346,8 +345,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 result.Success = false;
             }
 
+            if (wmsShipment.ShipmentHeader.ShipmentID.IsZero())
+            {
+                result.Messages.AddError("ShipmentID cannot be empty.");
+                result.Success = false;
+            }
+            else if (await orderShipmentService.ExistShipmentIDAsync(result.MasterAccountNum, result.ProfileNum, wmsShipment.ShipmentHeader.ShipmentID))
+            {
+                result.Messages.AddError($"Shipment has been transfered. ShipmentID:{wmsShipment.ShipmentHeader.ShipmentID}");
+                result.Success = false;
+            }
+
             return result.Success;
         }
+
 
         /// <summary>
         /// Create and save one shipment, but set processStatus to -1 (pending)

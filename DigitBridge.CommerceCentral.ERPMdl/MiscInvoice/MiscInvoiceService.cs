@@ -568,7 +568,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.MiscInvoiceHeader.DatabaseNum,
                 ProcessUuid = this.Data.MiscInvoiceHeader.MiscInvoiceUuid,
                 ProcessNumber = this.Data.MiscInvoiceHeader.MiscInvoiceNumber,
-                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                //ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelNum,
                 //ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty

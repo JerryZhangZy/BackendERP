@@ -63,6 +63,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
         public string ProcessUuid { get; set; }
         public int ProcessStatus { get; set; }
         public JObject ProcessData { get; set; }
+        public JObject EventMessage { get; set; }
     }
 
     /// <summary>

@@ -136,7 +136,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
+            var result = SaveData();
             if (result)
                 AddActivityLogForCurrentData();
             return result;
@@ -154,16 +154,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             if (!(await ValidateAsync(dto)))
                 return false;
-            
+
             // load data from dto
             FromDto(dto);
-           // Data.AddIgnoreSave(InventoryData.ProductBasicTable);
+            // Data.AddIgnoreSave(InventoryData.ProductBasicTable);
 
             // validate data for Add processing
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
+            var result = await SaveDataAsync();
             if (result)
                 await AddActivityLogForCurrentDataAsync();
             return result;
@@ -191,7 +191,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             if (!Validate())
                 return false;
 
-            var result= SaveData();
+            var result = SaveData();
             if (result)
                 AddActivityLogForCurrentData();
             return result;
@@ -233,7 +233,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
             #region
 
-            var result= (await dbFactory.Db.ExecuteAsync($@"UPDATE ProductExt   set CentralProductNum=(SELECT   pba.CentralProductNum 
+            var result = (await dbFactory.Db.ExecuteAsync($@"UPDATE ProductExt   set CentralProductNum=(SELECT   pba.CentralProductNum 
 FROM ProductExt pex 
 INNER JOIN ProductBasic pba ON (pba.ProductUuid = pex.ProductUuid)
 WHERE
@@ -267,8 +267,8 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
                 return false;
             // set Add mode and clear data
             Add();
-            
-            
+
+
             if (!(await ValidateAsync(dto)))
                 return false;
 
@@ -283,7 +283,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
+            var result = await SaveDataAsync();
             if (result)
                 await AddActivityLogForCurrentDataAsync();
             return result;
@@ -338,7 +338,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!Validate())
                 return false;
 
-            var result= SaveData();
+            var result = SaveData();
             if (result)
                 AddActivityLogForCurrentData();
             return result;
@@ -390,7 +390,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
+            var result = await SaveDataAsync();
             if (result)
                 await AddActivityLogForCurrentDataAsync();
             return result;
@@ -433,7 +433,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!Validate())
                 return false;
 
-            var result= SaveData();
+            var result = SaveData();
             if (result)
                 AddActivityLogForCurrentData();
             return result;
@@ -476,7 +476,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             if (!(await ValidateAsync()))
                 return false;
 
-            var result= await SaveDataAsync();
+            var result = await SaveDataAsync();
             if (result)
                 await AddActivityLogForCurrentDataAsync();
             return result;
@@ -495,7 +495,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             {
                 rowNum = await InventoryServiceHelper.GetRowNumBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
             }
-      
+
             var success = await GetDataAsync(rowNum);
 
             if (!(await ValidateAsync()))
@@ -508,7 +508,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
                 return result;
             }
             return false;
-            
+
         }
 
         public InventoryPayload GetInventoryBySkuArray(InventoryPayload payload)
@@ -563,23 +563,23 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             return await GetDataBySkuAsync(sku, payload.MasterAccountNum, payload.ProfileNum);
         }
 
-        public List<Inventory> GetInventoriesBySkus(IList<string> skus,string warehouseCode)
+        public List<Inventory> GetInventoriesBySkus(IList<string> skus, string warehouseCode)
         {
-            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND (EXISTS (SELECT * FROM @1 _SKU WHERE _SKU.item = COALESCE([SKU],'')))", 
+            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND (EXISTS (SELECT * FROM @1 _SKU WHERE _SKU.item = COALESCE([SKU],'')))",
                 warehouseCode.ToSqlParameter("WarehouseCode"), skus.ToParameter<string>("SKU")).ToList();
         }
-        public Inventory GetInventoryBySku(string sku,string warehouseCode)
+        public Inventory GetInventoryBySku(string sku, string warehouseCode)
         {
-            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND SKU=@1", 
+            return dbFactory.Find<Inventory>("WHERE WarehouseCode=@0 AND SKU=@1",
                 warehouseCode.ToSqlParameter("WarehouseCode"), sku.ToSqlParameter("SKU")).FirstOrDefault();
         }
-        
-        public Inventory GetInventoryBySkuWithWarehouseUuid(string sku,string warehouseUuid)
+
+        public Inventory GetInventoryBySkuWithWarehouseUuid(string sku, string warehouseUuid)
         {
-            return dbFactory.Find<Inventory>("WHERE WarehouseUuid=@0 AND SKU=@1", 
+            return dbFactory.Find<Inventory>("WHERE WarehouseUuid=@0 AND SKU=@1",
                 warehouseUuid.ToSqlParameter("WarehouseUuid"), sku.ToSqlParameter("SKU")).FirstOrDefault();
         }
-        
+
         public Inventory GetInventoryByInventoryUuid(string inventoryUuid)
         {
             return dbFactory.Find<Inventory>("WHERE InventoryUuid=@0", inventoryUuid.ToSqlParameter("InventoryUuid")).FirstOrDefault();
@@ -651,7 +651,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
         {
             //if (data == null || data.PoTransaction == null||!data.FirstAPReceiveStatus)
             //    return false;
-            if (data == null || data.PoTransaction == null )
+            if (data == null || data.PoTransaction == null)
                 return false;
 
             var header = data.PoTransaction;
@@ -662,20 +662,20 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             foreach (var items in data.PoTransactionItems)
             {
                 var inventory = GetInventoryByInventoryUuid(items.InventoryUuid);
-                if(inventory==null)
+                if (inventory == null)
                     continue;
                 var itemCost = new ItemCostClass(inventory);
-               
+
                 var cost = itemCost.CalculateAvgCost(new ItemCostClass(items));
                 await UpdateAvgCostAsync(cost);
             }
 
             return true;
         }
-        
+
         public bool UpdatAvgCostByPoReceive(PoTransactionData data)
         {
-            if (data == null || data.PoTransaction == null||!data.FirstAPReceiveStatus)
+            if (data == null || data.PoTransaction == null || !data.FirstAPReceiveStatus)
                 return false;
             var header = data.PoTransaction;
             if (data.PoTransactionItems == null || data.PoTransactionItems.Count == 0)
@@ -685,7 +685,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             foreach (var items in data.PoTransactionItems)
             {
                 var inventory = GetInventoryByInventoryUuid(items.InventoryUuid);
-                if(inventory==null)
+                if (inventory == null)
                     continue;
                 var itemCost = new ItemCostClass(inventory);
                 var cost = itemCost.CalculateAvgCost(new ItemCostClass(items));
@@ -694,25 +694,44 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
 
             return true;
         }
-        
-        private void UpdateAvgCost(string inventoryUuid,decimal avgCost,decimal baseCost)
+
+        private void UpdateAvgCost(string inventoryUuid, decimal avgCost, decimal baseCost)
         {
-            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", avgCost.ToSqlParameter("AvgCost"),baseCost.ToSqlParameter("BaseCost"),inventoryUuid.ToSqlParameter("inventoryUuid"));
+            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", avgCost.ToSqlParameter("AvgCost"), baseCost.ToSqlParameter("BaseCost"), inventoryUuid.ToSqlParameter("inventoryUuid"));
         }
 
-        private async Task UpdateAvgCostAsync(string inventoryUuid,decimal avgCost,decimal baseCost)
+        private async Task UpdateAvgCostAsync(string inventoryUuid, decimal avgCost, decimal baseCost)
         {
-            await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", avgCost.ToSqlParameter("AvgCost"),baseCost.ToSqlParameter("BaseCost"),inventoryUuid.ToSqlParameter("inventoryUuid"));
+            await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", avgCost.ToSqlParameter("AvgCost"), baseCost.ToSqlParameter("BaseCost"), inventoryUuid.ToSqlParameter("inventoryUuid"));
         }
-        
+
         private void UpdateAvgCost(ItemCostClass cost)
         {
-            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
+            dbFactory.Db.Execute("UPDATE Inventory SET AvgCost=@0 AND BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"), cost.BaseCost.ToSqlParameter("BaseCost"), cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
         }
 
         private async Task UpdateAvgCostAsync(ItemCostClass cost)
         {
-            await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 , BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"),cost.BaseCost.ToSqlParameter("BaseCost"),cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
+            await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 , BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"), cost.BaseCost.ToSqlParameter("BaseCost"), cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
+        }
+
+        public async Task UpdateOpenSoQtyByOrderShipmentUuidAsync(string orderShipmentUuid, bool isReturnBack = false)
+        {
+            string op = isReturnBack ? "-" : "+";
+            string command = $@"
+UPDATE inv SET opensoqty=inv.opensoqty{op}(COALESCE(soi.orderqty,0)-COALESCE(soi.shipqty,0)-COALESCE(soi.cancelledqty,0))
+FROM inventory inv INNER JOIN
+    (SELECT SUM(soItem.orderqty) as orderqty, 
+            SUM(soItem.shipqty) as shipqty, 
+            SUM(soItem.cancelledqty) as cancelledqty, 
+            soItem.inventoryuuid 
+     FROM salesorderitems soItem
+     JOIN OrderShipmentShippedItem shippedItem on shippedItem.SalesOrderItemsUuid=soItem.SalesOrderItemsUuid
+     WHERE shippedItem.OrderShipmentUuid='{orderShipmentUuid}'  
+     GROUP BY soItem.InventoryUuid) soi
+ON inv.inventoryuuid=soi.inventoryuuid
+";
+            await dbFactory.Db.ExecuteAsync(command.ToString());
         }
 
         public void UpdateOpenSoQtyFromSalesOrderItem(string salesOrderUuid, bool isReturnBack = false)

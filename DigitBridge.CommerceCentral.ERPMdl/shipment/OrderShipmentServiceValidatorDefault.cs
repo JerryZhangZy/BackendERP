@@ -220,11 +220,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"CanceledQty error.");
             }
 
-            if (header.ShipmentID.IsZero())
-            {
-                isValid = false;
-                AddError($"ShipmentID cannot be empty.");
-            }
+            //if (header.ShipmentID.IsZero())
+            //{
+            //    isValid = false;
+            //    AddError($"ShipmentID cannot be empty.");
+            //}
             //if (header.ChannelAccountNum.IsZero())
             //{
             //    isValid = false;
@@ -271,10 +271,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    var exist = OrderShipmentHelper.ExistChannelAccountNumAndShipmentID(header.ChannelAccountNum, header.ShipmentID, header.MasterAccountNum, header.ProfileNum);
+                    var exist = OrderShipmentHelper.ExistShipmentID(header.ShipmentID, header.MasterAccountNum, header.ProfileNum);
                     if (exist)
                     {
-                        AddError($"Data existed for ChannelAccountNum:{header.ChannelAccountNum} and ShipmentID:{header.ShipmentID}");
+                        AddError($"Data existed for ShipmentID:{header.ShipmentID}");
                         return false;
                     }
 
@@ -396,11 +396,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError($"CanceledQty error.");
             }
 
-            if (header.ShipmentID.IsZero())
-            {
-                isValid = false;
-                AddError($"ShipmentID cannot be empty.");
-            }
+            //if (header.ShipmentID.IsZero())
+            //{
+            //    isValid = false;
+            //    AddError($"ShipmentID cannot be empty.");
+            //}
 
             //if (header.ChannelAccountNum.IsZero())
             //{
@@ -449,10 +449,10 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             {
                 using (var tx = new ScopedTransaction(dbFactory))
                 {
-                    var exist = await OrderShipmentHelper.ExistChannelAccountNumAndShipmentIDAsync(header.ChannelAccountNum, header.ShipmentID, header.MasterAccountNum, header.ProfileNum);
+                    var exist = await OrderShipmentHelper.ExistShipmentIDAsync(header.ShipmentID, header.MasterAccountNum, header.ProfileNum);
                     if (exist)
                     {
-                        AddError($"Data existed for ChannelAccountNum:{header.ChannelAccountNum} and ShipmentID:{header.ShipmentID}");
+                        AddError($"Data existed for ShipmentID:{header.ShipmentID}");
                         return false;
                     }
 

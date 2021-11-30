@@ -20,6 +20,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK
         /// </summary>
         public EventProcessProcessStatusEnum ProcessStatus { get; set; }
         public JObject ProcessData { get; set; }
+
+        public JObject EventMessage { get; set; }
     }
 
     /// <summary>

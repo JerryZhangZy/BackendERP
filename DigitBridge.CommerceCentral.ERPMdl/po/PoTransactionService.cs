@@ -155,7 +155,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         //    DatabaseNum = this.Data.PoTransaction.DatabaseNum,
         //    ProcessUuid = this.Data.PoTransaction.InvoiceUuid,
         //    ProcessNumber = this.Data.PoTransaction.InvoiceNumber,
-        //    ChannelNum = this.Data.PoTransaction.ChannelAccountNum,
+        //    ChannelNum = this.Data.PoTransaction.ChannelNum,
         //    ChannelAccountNum = this.Data.PoTransaction.ChannelAccountNum,
 
         //    LogMessage = string.Empty
