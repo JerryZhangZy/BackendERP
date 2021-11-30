@@ -151,7 +151,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public IList<MessageClass> AddDebug(string message, string code = null) =>
             Messages.Add(message, MessageLevel.Debug, code);
 
-        public IList<MessageClass> ClearMessage() => _messages = new List<MessageClass>();
         #endregion Messages
 
         #region import export 
@@ -280,20 +279,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // loop for shipment list to create each shipment
             foreach (var shipment in wmsShipments)
             {
-                ClearMessage();
                 // for each shipment, create result object to hold shipment creating result
                 var result = new OrderShipmentCreateResultPayload()
                 {
+                    Success = true,
                     MasterAccountNum = payload.MasterAccountNum,
                     ProfileNum = payload.ProfileNum,
-                    MainTrackingNumber = shipment?.ShipmentHeader?.MainTrackingNumber,
+                    ShipmentID = shipment?.ShipmentHeader?.ShipmentID,
                 };
 
                 // first validate shipment data, allow to create new shipment
-                var success = await ValidateShipment(payload, shipment);
-                result.Success = success && await CreateShipmentAsync(shipment, result);
-                result.Messages = this.Messages;
-
+                if (await ValidateShipment(shipment, result))
+                {
+                    await CreateShipmentAsync(shipment, result);
+                }
                 resultList.Add(result);
             }
             return resultList;
@@ -302,64 +301,64 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Validate current shipment data 
         /// </summary>
-        protected async Task<bool> ValidateShipment(OrderShipmentPayload payload, InputOrderShipmentType wmsShipment)
+        protected async Task<bool> ValidateShipment(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
         {
             //if (payload is null)
             //{
             //    AddError("Request is invalid.");
             //    return response;
             //}
-            var success = true;
+            result.Success = true;
             if (wmsShipment is null)
             {
-                AddError("Shipment data cannot be empty.");
-                success = false;
+                result.Messages.AddError("Shipment data cannot be empty.");
+                result.Success = false;
             }
 
             if (wmsShipment.ShipmentHeader is null)
             {
-                AddError("ShipmentHeader data cannot be empty.");
-                success = false;
+                result.Messages.AddError("ShipmentHeader data cannot be empty.");
+                result.Success = false;
             }
 
             if (wmsShipment.ShipmentHeader.SalesOrderUuid.IsZero())
             {
-                AddError("SalesOrderUuid cannot be empty.");
-                success = false;
+                result.Messages.AddError("SalesOrderUuid cannot be empty.");
+                result.Success = false;
             }
 
             if (wmsShipment.ShipmentHeader.WarehouseCode.IsZero())
             {
-                AddError("WarehouseCode cannot be empty.");
-                success = false;
+                result.Messages.AddError("WarehouseCode cannot be empty.");
+                result.Success = false;
             }
 
             if (wmsShipment.CanceledItems?.Where(i => i.SalesOrderItemsUuid.IsZero()).Count() > 0)
             {
-                AddError("SalesOrderItemsUuid of CanceledItem cannot be empty.");
-                success = false;
+                result.Messages.AddError("SalesOrderItemsUuid of CanceledItem cannot be empty.");
+                result.Success = false;
             }
 
             if (wmsShipment.PackageItems?.SelectMany(i => i.ShippedItems.Where(j => j.SalesOrderItemsUuid.IsZero())).Count() > 0)
             {
-                AddError("SalesOrderItemsUuid of ShippedItem cannot be empty.");
-                success = false;
+                result.Messages.AddError("SalesOrderItemsUuid of ShippedItem cannot be empty.");
+                result.Success = false;
             }
-
 
             if (wmsShipment.ShipmentHeader.ShipmentID.IsZero())
             {
-                AddError("ShipmentID cannot be empty.");
-                success = false;
+                result.Messages.AddError("ShipmentID cannot be empty.");
+                result.Success = false;
             }
-            else if (await orderShipmentService.ExistShipmentIDAsync(payload.MasterAccountNum, payload.ProfileNum, wmsShipment.ShipmentHeader.ShipmentID))
+            else if (await orderShipmentService.ExistShipmentIDAsync(result.MasterAccountNum, result.ProfileNum, wmsShipment.ShipmentHeader.ShipmentID))
             {
-                AddError("ShipmentID has been transfered.");
-                success = false;
+                AddError($"Shipment has been transfered. ShipmentID:{wmsShipment.ShipmentHeader.ShipmentID}");
+                result.Success = false;
             }
 
-            return success;
+            return result.Success;
         }
+
 
         /// <summary>
         /// Create and save one shipment, but set processStatus to -1 (pending)
