@@ -19,3 +19,12 @@ BEGIN
     ALTER TABLE OrderHeader ADD [TotalDueSellerAmount] MONEY NOT NULL DEFAULT 0
 END					
 
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderHeader]') AND name = N'IX_OrderHeader_OriginalOrderDateUtc')
+CREATE NONCLUSTERED INDEX [IX_OrderHeader_OriginalOrderDateUtc] ON [dbo].[OrderHeader]
+(
+	[MasterAccountNum] ASC,
+	[ProfileNum] ASC,
+	[OriginalOrderDateUtc] ASC
+) 
+GO

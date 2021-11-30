@@ -32,6 +32,16 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
         }
 
+        private InvoicePaymentService _anotherInvoicePaymentService;
+        public InvoicePaymentService AnotherInvoicePaymentService
+        {
+            get
+            {
+                if (_anotherInvoicePaymentService == null) _anotherInvoicePaymentService = new InvoicePaymentService(dbFactory);
+                return _anotherInvoicePaymentService;
+            }
+        }
+
         #endregion
 
         public InvoicePaymentService(IDataBaseFactory dbFactory) : base(dbFactory)
@@ -61,6 +71,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (this.Data?.InvoiceTransaction != null)
                 {
                     await InvoiceService.UpdateInvoiceBalanceAsync(this.Data.InvoiceTransaction.TransUuid, true);
+                    await DeleteCreditPaymentAsync(this.Data);
+                    await DeleteMiscPaymentAsync(this.Data);
                 }
             }
             catch (Exception)
@@ -104,6 +116,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 if (this.Data?.InvoiceTransaction != null)
                 {
                     await InvoiceService.UpdateInvoiceBalanceAsync(this.Data.InvoiceTransaction.TransUuid);
+                    await AddCreditPaymentAsync(this.Data);
+                    await AddMiscPaymentAsync(this.Data);
                 }
             }
             catch (Exception)
@@ -306,8 +320,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
                 applyInvoice.TransUuid = transaction.InvoiceTransaction.TransUuid;
                 applyInvoice.TransRowNum = transaction.InvoiceTransaction.RowNum;
-
-                await AddMiscPaymentAsync();
             }
 
             payload.Success = successCount > 0;
@@ -365,8 +377,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
 
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
-
-                await AddMiscPaymentAsync();
             }
 
             return payload.Success;
@@ -403,8 +413,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 }
 
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
-
-                AddMiscPayment();
             }
 
             return payload.Success;
@@ -508,11 +516,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             foreach (var applyInvoice in payload.ApplyInvoices)
             {
                 var paymentDataDto = GetPaymentDataDto(payload, applyInvoice);
-                if (await base.UpdateAsync(paymentDataDto))
-                {
-                    await UpdateMiscPaymentAsync();
-                }
-                else
+                if (!(await base.UpdateAsync(paymentDataDto)))
                 {
                     payload.Success = false;
                     applyInvoice.Success = false;
@@ -567,9 +571,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     applyInvoice.Success = false;
                     continue;
                 }
-
-                UpdateMiscPayment();
-
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
                 applyInvoice.TransRowNum = Data.InvoiceTransaction.RowNum;
             }
@@ -712,9 +713,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
                 applyInvoice.PaidAmount = Data.InvoiceTransaction.TotalAmount;
                 applyInvoice.Success = true;
-
-                if (!await UpdateMiscPaymentAsync())
-                    AddWarning($"{applyInvoice.InvoiceNumber} is not applied.");
             }
 
             return succes;
@@ -781,9 +779,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 applyInvoice.TransUuid = Data.InvoiceTransaction.TransUuid;
                 applyInvoice.PaidAmount = Data.InvoiceTransaction.TotalAmount;
                 applyInvoice.Success = true;
-
-                if (!await UpdateMiscPaymentAsync())
-                    AddError($"{applyInvoice.InvoiceNumber} is not applied.");
             }
 
             return succes;
@@ -1119,97 +1114,275 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             // add payment and pay invoice.
-            if (!await base.AddAsync())
-            {
-                return false;
-            }
-
-            return await AddMiscPaymentAsync();
+            return !await base.AddAsync();
         }
 
         #endregion
 
-        #region Save misc payment
+        #region Save misc invoice payment
 
-        protected async Task<bool> AddMiscPaymentAsync()
+        /// <summary>
+        /// Get RowNum of Misc payment by regular payment transUuid
+        /// If PaidBy = CreditMemo and TransUuid = AuthCode of credit payment
+        /// </summary>
+        public async Task<long> GetRowNumForMiscPaymentAsync(string transUuid)
         {
-            var paymentData = Data.InvoiceTransaction;
+            if (string.IsNullOrEmpty(transUuid))
+                return 0;
 
-            if (paymentData.PaidBy != (int)PaidByAr.PrePayment)
-                return true;
+            var sql = $@"
+SELECT trs.RowNum
+FROM MiscInvoiceTransaction trs
+WHERE Exists (SELECT RowNum FROM InvoiceTransaction WHERE TransUuid = @0 AND PaidBy=@1)
+AND trs.AuthCode = @2 
+";
+            return await dbFactory.Db.ExecuteScalarAsync<long>(
+                sql,
+                transUuid.ToSqlParameter("@0"),
+                ((int)PaidByAr.PrePayment).ToSqlParameter("@1"),
+                transUuid.ToSqlParameter("@2")
+            );
+        }
 
-            //Add mis payment and withdraw from misinvoice
-            if (!await MiscPaymentService.AddMiscPayment(paymentData.AuthCode, paymentData.TransUuid, paymentData.InvoiceNumber, paymentData.TotalAmount))
-            {
-                this.Messages.Add(MiscPaymentService.Messages);
+        protected async Task<bool> DeleteMiscPaymentAsync(InvoiceTransactionData data)
+        {
+            if (data == null || data.InvoiceTransaction == null)
                 return false;
-            }
-            return true;
+
+            var rowNum = await GetRowNumForMiscPaymentAsync(data.InvoiceTransaction.TransUuid);
+            if (rowNum <= 0)
+                return false;
+
+            var miscService = MiscPaymentService;
+            return await miscService.DeleteAsync(rowNum);
         }
 
-        //TODO need MiscPaymentService provide sync method
-        protected bool AddMiscPayment()
+        protected async Task<bool> AddMiscPaymentAsync(InvoiceTransactionData data)
         {
-            throw new Exception("Please Add sync AddMiscPayment to MiscPaymentService");
+            if (data == null || data.InvoiceTransaction == null)
+                return false;
+            if (data.InvoiceTransaction.PaidBy != (int)PaidByAr.PrePayment)
+                return false;
 
-            //var paymentData = Data.InvoiceTransaction;
+            var pay = data.InvoiceTransaction;
 
-            //if (paymentData.PaidBy != (int)PaidByAr.CreditMemo)
-            //    return true;
+            var rowNum = await GetRowNumForMiscPaymentAsync(data.InvoiceTransaction.TransUuid);
 
-            ////Add mis payment and withdraw from misinvoice
-            //if (!await MiscPaymentService.AddMiscPayment(paymentData.AuthCode, paymentData.TransUuid, paymentData.InvoiceNumber, paymentData.TotalAmount))
-            //{
-            //    this.Messages.Add(MiscPaymentService.Messages);
-            //    return false;
-            //}
-            //return true;
-        }
-
-
-        protected async Task<bool> UpdateMiscPaymentAsync()
-        {
-            var success = true;
-            //original paydby is creditmemo then delete mispayment.
-            if (lastPaidByBeforeUpdate == (int)PaidByAr.PrePayment)
+            var miscService = MiscPaymentService;
+            if (rowNum <= 0 || !(await miscService.EditAsync(rowNum)))
             {
-                success = await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, Data.InvoiceTransaction.OriginalPaidAmount);
+                miscService.Add();
+                miscService.NewData();
             }
-
-            //new paydby is creditmemo then add miscpayment
-            if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.PrePayment)
-            {
-                success = success && await AddMiscPaymentAsync();
-            }
-
-            return success;
+            miscService.Data.MiscInvoiceTransaction = await GenerateMiscPayment(miscService.Data.MiscInvoiceTransaction, pay);
+            return await miscService.SaveDataAsync();
         }
 
-        //TODO need MiscPaymentService provide sync method
-        protected bool UpdateMiscPayment()
+        protected async Task<MiscInvoiceTransaction> GenerateMiscPayment(MiscInvoiceTransaction trs, InvoiceTransaction pay)
         {
-            throw new Exception("Please Add sync UpdateMiscPayment to MiscPaymentService");
-            //var success = true;
-            ////original paydby is creditmemo then delete mispayment.
-            //if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
-            //{
-            //    success = await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, Data.InvoiceTransaction.OriginalPaidAmount);
-            //}
+            trs.DatabaseNum = pay.DatabaseNum;
+            trs.MasterAccountNum = pay.MasterAccountNum;
+            trs.ProfileNum = pay.ProfileNum;
 
-            ////new paydby is creditmemo then add miscpayment
-            //if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
-            //{
-            //    success = success && await AddMiscPaymentAsync();
-            //}
+            trs.MiscInvoiceUuid = pay.AuthCode;
+            trs.MiscInvoiceNumber = pay.CheckNum;
+            trs.CheckNum = pay.InvoiceNumber;
+            trs.AuthCode = pay.TransUuid;
+            trs.TransType = (int)TransType.Payment;
+            trs.TotalAmount = pay.TotalAmount;
 
-            //return success;
+            trs.TransUuid = Guid.NewGuid().ToString();
+            trs.TransNum = await MiscPaymentService.GetNextTransNumAsync(trs.MiscInvoiceUuid);
+            trs.TransStatus = 0;
+            trs.TransDate = pay.TransDate;
+            trs.TransTime = pay.TransTime;
+            trs.Description = pay.Description;
+            trs.Notes = pay.Notes;
+            trs.PaidBy = pay.PaidBy;
+            trs.BankAccountUuid = pay.BankAccountUuid;
+            trs.BankAccountCode = pay.BankAccountCode;
+            trs.Currency = pay.Currency;
+            trs.CreditAccount = pay.CreditAccount;
+            trs.DebitAccount = pay.DebitAccount;
+            //trs.TransSourceCode = 
+            return trs;
         }
+
+        //protected async Task<bool> AddMiscPaymentAsync()
+        //{
+        //    var paymentData = Data.InvoiceTransaction;
+
+        //    if (paymentData.PaidBy != (int)PaidByAr.PrePayment)
+        //        return true;
+
+        //    //Add mis payment and withdraw from misinvoice
+        //    if (!await MiscPaymentService.AddMiscPayment(paymentData.AuthCode, paymentData.TransUuid, paymentData.InvoiceNumber, paymentData.TotalAmount))
+        //    {
+        //        this.Messages.Add(MiscPaymentService.Messages);
+        //        return false;
+        //    }
+        //    return true;
+        //}
+
+        ////TODO need MiscPaymentService provide sync method
+        //protected bool AddMiscPayment()
+        //{
+        //    throw new Exception("Please Add sync AddMiscPayment to MiscPaymentService");
+
+        //    //var paymentData = Data.InvoiceTransaction;
+
+        //    //if (paymentData.PaidBy != (int)PaidByAr.CreditMemo)
+        //    //    return true;
+
+        //    ////Add mis payment and withdraw from misinvoice
+        //    //if (!await MiscPaymentService.AddMiscPayment(paymentData.AuthCode, paymentData.TransUuid, paymentData.InvoiceNumber, paymentData.TotalAmount))
+        //    //{
+        //    //    this.Messages.Add(MiscPaymentService.Messages);
+        //    //    return false;
+        //    //}
+        //    //return true;
+        //}
+
+
+        //protected async Task<bool> UpdateMiscPaymentAsync()
+        //{
+        //    var success = true;
+        //    //original paydby is creditmemo then delete mispayment.
+        //    if (lastPaidByBeforeUpdate == (int)PaidByAr.PrePayment)
+        //    {
+        //        success = await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, Data.InvoiceTransaction.OriginalPaidAmount);
+        //    }
+
+        //    //new paydby is creditmemo then add miscpayment
+        //    if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.PrePayment)
+        //    {
+        //        success = success && await AddMiscPaymentAsync();
+        //    }
+
+        //    return success;
+        //}
+
+        ////TODO need MiscPaymentService provide sync method
+        //protected bool UpdateMiscPayment()
+        //{
+        //    throw new Exception("Please Add sync UpdateMiscPayment to MiscPaymentService");
+        //    //var success = true;
+        //    ////original paydby is creditmemo then delete mispayment.
+        //    //if (lastPaidByBeforeUpdate == (int)PaidByAr.CreditMemo)
+        //    //{
+        //    //    success = await MiscPaymentService.DeleteMiscPayment(lastAuthCodeBeforeUpdate, lastTransUuidBeforeUpdate, Data.InvoiceTransaction.OriginalPaidAmount);
+        //    //}
+
+        //    ////new paydby is creditmemo then add miscpayment
+        //    //if (Data.InvoiceTransaction.PaidBy == (int)PaidByAr.CreditMemo)
+        //    //{
+        //    //    success = success && await AddMiscPaymentAsync();
+        //    //}
+
+        //    //return success;
+        //}
+        #endregion 
+
+        #region Save credit invoice payment
+
+        /// <summary>
+        /// Get RowNum of credit payment by regular payment transUuid
+        /// If PaidBy = CreditMemo and TransUuid = AuthCode of credit payment
+        /// </summary>
+        public async Task<long> GetRowNumForCreditPaymentAsync(string transUuid)
+        {
+            if (string.IsNullOrEmpty(transUuid)) 
+                return 0;
+
+            var sql = $@"
+SELECT trs.RowNum
+FROM InvoiceTransaction trs
+WHERE Exists (SELECT RowNum FROM InvoiceTransaction WHERE TransUuid = @0 AND PaidBy=@1)
+AND trs.AuthCode = @2 
+";
+            return await dbFactory.Db.ExecuteScalarAsync<long>(
+                sql,
+                transUuid.ToSqlParameter("@0"),
+                ((int)PaidByAr.CreditMemo).ToSqlParameter("@1"),
+                transUuid.ToSqlParameter("@2")
+            );
+        }
+
+        protected async Task<bool> DeleteCreditPaymentAsync(InvoiceTransactionData data)
+        {
+            if (data == null || data.InvoiceTransaction == null)
+                return false;
+
+            var rowNum = await GetRowNumForCreditPaymentAsync(data.InvoiceTransaction.TransUuid);
+            if (rowNum <= 0) 
+                return false;
+
+            var creditService = AnotherInvoicePaymentService;
+            return await creditService.DeleteAsync(rowNum);
+        }
+
+        protected async Task<bool> AddCreditPaymentAsync(InvoiceTransactionData data)
+        {
+            if (data == null || data.InvoiceTransaction == null)
+                return false;
+            if (data.InvoiceTransaction.PaidBy != (int)PaidByAr.CreditMemo)
+                return false;
+
+            var pay = data.InvoiceTransaction;
+
+            var rowNum = await GetRowNumForCreditPaymentAsync(data.InvoiceTransaction.TransUuid);
+
+            var creditService = AnotherInvoicePaymentService;
+            if (rowNum <= 0 || !(await creditService.EditAsync(rowNum)))
+            {
+                creditService.Add();
+                creditService.NewData();
+            }
+            creditService.Data.InvoiceTransaction = await GenerateCreditPayment(creditService.Data.InvoiceTransaction, pay);
+
+            await creditService.LoadInvoiceAsync(creditService.Data.InvoiceTransaction.InvoiceNumber, creditService.Data.InvoiceTransaction.ProfileNum, creditService.Data.InvoiceTransaction.MasterAccountNum);
+            return await creditService.SaveDataAsync();
+        }
+
+        protected async Task<InvoiceTransaction> GenerateCreditPayment(InvoiceTransaction trs, InvoiceTransaction pay)
+        {
+            trs.DatabaseNum = pay.DatabaseNum;
+            trs.MasterAccountNum = pay.MasterAccountNum;
+            trs.ProfileNum = pay.ProfileNum;
+
+            trs.InvoiceUuid = pay.AuthCode;
+            trs.InvoiceNumber = pay.CheckNum;
+            trs.CheckNum = pay.InvoiceNumber;
+            trs.AuthCode = pay.TransUuid;
+            trs.TransType = (int)TransType.CreditPayment;
+            trs.TotalAmount = -pay.TotalAmount;
+
+            trs.TransUuid = Guid.NewGuid().ToString();
+            trs.TransNum = await GetNextTransNumAsync(trs.InvoiceUuid);
+            trs.PaymentUuid = string.Empty;
+            trs.PaymentNumber = 0;
+            trs.TransStatus = 0;
+            trs.TransDate = pay.TransDate;
+            trs.TransTime = pay.TransTime;
+            trs.Description = pay.Description;
+            trs.Notes = pay.Notes;
+            trs.PaidBy = pay.PaidBy;
+            trs.BankAccountUuid = pay.BankAccountUuid;
+            trs.BankAccountCode = pay.BankAccountCode;
+            trs.Currency = pay.Currency;
+            trs.ExchangeRate = pay.ExchangeRate;
+            trs.CreditAccount = pay.CreditAccount;
+            trs.DebitAccount = pay.DebitAccount;
+            //trs.TransSourceCode = 
+            return trs;
+        }
+
         #endregion 
 
         public async Task<long> GetNextPaymentNumberAsync(int masterAccountNum, int profileNum)
         {
             var sql = $@"
-SELECT MAX(PaymentNumber) 
+SELECT COALESCE(MAX(PaymentNumber), 0) 
 FROM InvoiceTransaction
 WHERE MasterAccountNum=@0 AND ProfileNum=@1
 ";
@@ -1223,7 +1396,7 @@ WHERE MasterAccountNum=@0 AND ProfileNum=@1
         public async Task<int> GetNextTransNumAsync(string invoiceUuid)
         {
             var sql = $@"
-SELECT MAX(TransNum) 
+SELECT COALESCE(MAX(TransNum), 0)
 FROM InvoiceTransaction
 WHERE InvoiceUuid=@0
 ";

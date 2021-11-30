@@ -569,6 +569,37 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 LogMessage = string.Empty
             });
         }
+
+        public async Task<bool> UpdateInvoiceBalanceAsync(string transUuid, bool isRollBack = false)
+        {
+            var op = isRollBack ? "-" : "+";
+            var opp = isRollBack ? "+" : "-";
+
+            var sql = $@"
+UPDATE ins 
+SET 
+PaidAmount = (CASE 
+    WHEN COALESCE(trs.TransType,0) = 1 THEN COALESCE(ins.PaidAmount,0){op}COALESCE(trs.TotalAmount,0)
+    ELSE ins.PaidAmount
+END), 
+Balance = COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0),
+MiscInvoiceStatus = (CASE 
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) <= 0 AND (COALESCE(ins.MiscInvoiceStatus,0)!=@2) THEN @2
+    WHEN (COALESCE(ins.Balance,0){opp}COALESCE(trs.TotalAmount,0)) > 0 AND (COALESCE(ins.MiscInvoiceStatus,0)!=@1) THEN @1
+    ELSE COALESCE(ins.MiscInvoiceStatus,0)
+END)
+FROM MiscInvoiceHeader ins
+INNER JOIN MiscInvoiceTransaction trs ON (trs.MiscInvoiceUuid = ins.MiscInvoiceUuid AND trs.TransUuid = @0)
+";
+            var result = await dbFactory.Db.ExecuteAsync(
+                sql,
+                transUuid.ToSqlParameter("@0"),
+                ((int)InvoiceStatusEnum.Outstanding).ToSqlParameter("@1"),
+                ((int)InvoiceStatusEnum.Paid).ToSqlParameter("@2")
+            );
+            return result > 0;
+        }
+
     }
 }
 
