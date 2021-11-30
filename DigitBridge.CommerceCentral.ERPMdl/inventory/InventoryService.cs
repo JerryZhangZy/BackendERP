@@ -769,6 +769,25 @@ ON inv.inventoryuuid=poi.inventoryuuid
         }
 
 
+        public async Task UpdateOpenPoQtyFromPoUuidAsync(string poUuid, bool isReturnBack = false)
+        {
+            string op = isReturnBack ? "-" : "+";
+            string command = $@"
+UPDATE inv SET OpenPoQty=OpenPoQty{op}COALESCE(poi.qty,0)
+FROM inventory inv 
+INNER JOIN
+    (SELECT SUM(COALESCE(poi1.PoQty,0) - COALESCE(poi1.ReceivedQty,0) - COALESCE(poi1.CancelledQty,0)) as qty, 
+        poi1.inventoryuuid 
+    FROM PoItems poi1
+    WHERE poi1.PoUuid='{poUuid}'  
+    GROUP BY poi1.InventoryUuid
+) poi
+ON inv.inventoryuuid=poi.inventoryuuid
+";
+            await dbFactory.Db.ExecuteAsync(command.ToString());
+        }
+
+
         public virtual async Task<IList<InventoryFindClass>> FindNotExistSkuWarehouseAsync(IList<InventoryFindClass> list, int masterAccountNum, int profileNum)
         {
             if (list == null || list.Count == 0)
