@@ -352,7 +352,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
             else if (await orderShipmentService.ExistShipmentIDAsync(result.MasterAccountNum, result.ProfileNum, wmsShipment.ShipmentHeader.ShipmentID))
             {
-                AddError($"Shipment has been transfered. ShipmentID:{wmsShipment.ShipmentHeader.ShipmentID}");
+                result.Messages.AddError($"Shipment has been transfered. ShipmentID:{wmsShipment.ShipmentHeader.ShipmentID}");
                 result.Success = false;
             }
 
