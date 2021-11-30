@@ -3,11 +3,11 @@
 	[RowNum] BIGINT IDENTITY(1,1) NOT NULL, --(Readonly) Record Number. Required, <br> Display: false, Editable: false.
     [TransItemUuid] VARCHAR(50) NOT NULL DEFAULT (CAST(newid() AS NVARCHAR(50))), --Global Unique Guid for Invoice Return Item Line
 
-    [TransUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice Transaction
+    [TransUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Invoice Transaction
     [Seq] INT NOT NULL DEFAULT 0, --Invoice Item Line sort sequence
 
-    [PoUuid] VARCHAR(50) NOT NULL, --Global Unique Guid for Invoice
-	[PoNum] VARCHAR(50) NOT NULL, --Unique in this database. <br> ProfileNum + PoNum is DigitBridgePoNum, which is global unique. <br> Title: PoNum, Display: true, Editable: true
+    [PoUuid] VARCHAR(50) NOT NULL DEFAULT '', --Global Unique Guid for Invoice
+	[PoNum] VARCHAR(50) NOT NULL DEFAULT '', --Unique in this database. <br> ProfileNum + PoNum is DigitBridgePoNum, which is global unique. <br> Title: PoNum, Display: true, Editable: true
     [PoItemUuid] VARCHAR(50)  NOT NULL DEFAULT '', --Global Unique Guid for Invoice
 
     [ItemType] INT NOT NULL DEFAULT 0, --Invoice item type
@@ -17,16 +17,16 @@
 
     [ProductUuid] VARCHAR(50) NOT NULL DEFAULT '',--(Readonly) Product uuid. load from ProductBasic data. <br> Display: false, Editable: false
     [InventoryUuid] VARCHAR(50) NOT NULL DEFAULT '',--(Readonly) Inventory uuid. <br> Display: false, Editable: false
-	[SKU] Varchar(100) NOT NULL,--Product SKU 
-	[WarehouseUuid] VARCHAR(50) NOT NULL, --Warehouse Guid
+	[SKU] Varchar(100) NOT NULL DEFAULT '',--Product SKU 
+	[WarehouseUuid] VARCHAR(50) NOT NULL DEFAULT '', --Warehouse Guid
 	[WarehouseCode] VARCHAR(50) NOT NULL DEFAULT '', --Readable warehouse code, load from inventory data. <br> Title: Warehouse Code, Display: true, Editable: true
 
-	[LotNum] Varchar(100) NOT NULL,--Product SKU Lot Number 
-	[LotDescription] NVarchar(200) NOT NULL,--Invoice item description 
+	[LotNum] Varchar(100) NOT NULL DEFAULT '',--Product SKU Lot Number 
+	[LotDescription] NVarchar(200) NOT NULL DEFAULT '',--Invoice item description 
 	[LotInDate] DATE NULL, --Lot receive Date
 	[LotExpDate] DATE NULL, --Lot Expiration date
-	[Description] NVarchar(200) NOT NULL,--Invoice item description 
-	[Notes] NVarchar(500) NOT NULL,--Invoice item notes 
+	[Description] NVarchar(200) NOT NULL DEFAULT '',--Invoice item description 
+	[Notes] NVarchar(500) NOT NULL DEFAULT '',--Invoice item notes 
 
 	[Currency] VARCHAR(10)  NOT NULL DEFAULT '',--(Ignore) po transaction price in currency. <br> Title: Currency, Display: false, Editable: false
 	[UOM] Varchar(50)  NOT NULL DEFAULT '',--Product SKU Qty unit of measure 

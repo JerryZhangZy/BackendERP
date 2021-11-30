@@ -53,7 +53,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.BeforeSaveAsync();
                 if (this.Data?.MiscInvoiceTransaction != null)
                 {
-                    //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid, true);
+                    await MiscInvoiceService.UpdateInvoiceBalanceAsync(this.Data.MiscInvoiceTransaction.TransUuid, true);
                 }
             }
             catch (Exception)
@@ -96,7 +96,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 await base.AfterSaveAsync();
                 if (this.Data?.MiscInvoiceTransaction != null)
                 {
-                    //await inventoryService.UpdateOpenSoQtyFromSalesOrderItemAsync(this.Data.SalesOrderHeader.SalesOrderUuid);
+                    await MiscInvoiceService.UpdateInvoiceBalanceAsync(this.Data.MiscInvoiceTransaction.TransUuid);
                 }
             }
             catch (Exception)
@@ -350,6 +350,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             return expectedAmount > miscInvoiceBalance ? miscInvoiceBalance : expectedAmount;
 
         }
+
+        public async Task<int> GetNextTransNumAsync(string miscInvoiceUuid)
+        {
+            var sql = $@"
+SELECT COALESCE(MAX(TransNum), 0)
+FROM MiscInvoiceTransaction
+WHERE MiscInvoiceUuid=@0
+";
+            return await dbFactory.Db.ExecuteScalarAsync<int>(
+                sql,
+                miscInvoiceUuid.ToSqlParameter("@0")
+            ) + 1;
+        }
+
     }
 }
 

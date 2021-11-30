@@ -65,6 +65,7 @@ namespace DigitBridge.CommerceCentral.ERPDb
             header.CentralOrderNum = inputShipmentHeader.CentralOrderNum;
             //publicntistributionCenterNum;
             header.ChannelOrderID = inputShipmentHeader.ChannelOrderID;
+            header.WarehouseCode = inputShipmentHeader.WarehouseCode;
             //header = inputShipmentHeader.WarehouseID ;
             header.ShipmentType = (int)inputShipmentHeader.ShipmentType;
             header.ShipmentReferenceID = inputShipmentHeader.ShipmentReferenceID;

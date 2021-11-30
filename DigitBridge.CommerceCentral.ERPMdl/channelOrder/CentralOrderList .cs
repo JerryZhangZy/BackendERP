@@ -139,8 +139,8 @@ SELECT
 {Helper.CentralOrderUuid()},
 {Helper.RowNum()},
 {Helper.TotalDueSellerAmount()},
-{ordHelper.OrderNumber()},
-{insHelper.InvoiceNumber()}
+COALESCE(o.OrderNumber, '') AS OrderNumber,
+COALESCE(s.InvoiceNumber, '') AS InvoiceNumber 
 ";
             return this.SQL_Select;
         }
@@ -149,10 +149,20 @@ SELECT
         {
             this.SQL_From = $@"
 FROM {Helper.TableName} {Helper.TableAllies}
-LEFT JOIN {ordiHelper.TableName} {ordiHelper.TableAllies} ON {Helper.TableAllies}.CentralOrderNum = {ordiHelper.TableAllies}.CentralOrderNum
-LEFT JOIN {ordHelper.TableName} {ordHelper.TableAllies} ON {ordiHelper.TableAllies}.SalesOrderUuid = {ordHelper.TableAllies}.SalesOrderUuid
-LEFT JOIN {insiHelper.TableName} {insiHelper.TableAllies} ON {Helper.TableAllies}.CentralOrderNum = {insiHelper.TableAllies}.CentralOrderNum
-LEFT JOIN {insHelper.TableName} {insHelper.TableAllies} ON {insiHelper.TableAllies}.InvoiceUuid = {insHelper.TableAllies}.InvoiceUuid
+OUTER APPLY (
+    SELECT TOP 1 {ordHelper.OrderNumber()}
+    FROM {ordHelper.TableName} {ordHelper.TableAllies}
+    INNER JOIN {ordiHelper.TableName} {ordiHelper.TableAllies} 
+    ON ( {ordiHelper.TableAllies}.SalesOrderUuid = {ordHelper.TableAllies}.SalesOrderUuid AND 
+        {Helper.TableAllies}.CentralOrderNum = {ordiHelper.TableAllies}.CentralOrderNum)
+) o
+OUTER APPLY (
+    SELECT TOP 1 {insHelper.InvoiceNumber()}
+    FROM {insHelper.TableName} {insHelper.TableAllies}
+    INNER JOIN {insiHelper.TableName} {insiHelper.TableAllies}
+    ON ({insiHelper.TableAllies}.InvoiceUuid = {insHelper.TableAllies}.InvoiceUuid AND 
+        {Helper.TableAllies}.CentralOrderNum = {insiHelper.TableAllies}.CentralOrderNum)
+) s
 ";
             return this.SQL_From;
         }
