@@ -272,22 +272,30 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 AddError("no data sync");
                 return false;
             }
-
             var inventorySyncItems = inventorySyncUpdatePayload.InventorySyncItems;
+            var masterAccountNum = inventorySyncUpdatePayload.MasterAccountNum;
+            var profileNum = inventorySyncUpdatePayload.ProfileNum;
 
             foreach (var item in inventorySyncItems)
-                updateSkuArrays.Add(new StringArray() { Item0 = item.SKU, Item1 = item.WarehouseCode,Item2=item.Qty.ToString() });
+                updateSkuArrays.Add(
+                    new StringArray() 
+                    { 
+                        Item0 = item.SKU, 
+                        Item1 = item.WarehouseCode,
+                        Item2 = item.Qty.ToString() 
+                    }
+                );
 
             var inventoryList = new List<StringArray>();
             var productList = new List<StringArray>();
             using (var trx = new ScopedTransaction(dbFactory))
             {
-                productList = await InventoryServiceHelper.GetProductBySkuAsync(updateSkuArrays, inventorySyncUpdatePayload.MasterAccountNum, inventorySyncUpdatePayload.ProfileNum);
+                productList = await InventoryServiceHelper.GetProductBySkuAsync(updateSkuArrays, masterAccountNum, profileNum);
 
             }
             using (var trx = new ScopedTransaction(dbFactory))
             {
-                inventoryList = await InventoryServiceHelper.GetInventoryInfoBySkuWithWarehouseCodesAsync(updateSkuArrays, inventorySyncUpdatePayload.MasterAccountNum, inventorySyncUpdatePayload.ProfileNum);
+                inventoryList = await InventoryServiceHelper.GetInventoryInfoBySkuWithWarehouseCodesAsync(updateSkuArrays, masterAccountNum, profileNum);
             }
 
             #region check product sku is exists

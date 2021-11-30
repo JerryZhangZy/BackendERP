@@ -1062,6 +1062,92 @@ ON inv.inventoryuuid=poi.inventoryuuid
             return rtn;
         }
 
+        public virtual async Task<InventoryData> GetInventoryDataByWarehouseAsync(string sku, string warehouseCode, int masterAccountNum, int profileNum, bool addNew = true)
+        {
+            if (string.IsNullOrEmpty(sku) || string.IsNullOrEmpty(warehouseCode))
+                return null;
+
+            var whs = new List<string>() { warehouseCode };
+            this.NewData();
+            var succes = await this.GetBySkuWarhouseAsync(sku, whs, masterAccountNum, profileNum);
+
+            var data = this.Data;
+            this.DetachData(null);
+
+            // if SKU or Warehouse not exist add new sku and warehouse
+            if (!succes && addNew)
+            {
+                if (await this.AddNewProductOrInventoryAsync(new ProductBasic()
+                {
+                    DatabaseNum = dbFactory.DatabaseNum,
+                    MasterAccountNum = masterAccountNum,
+                    ProfileNum = profileNum,
+                    SKU = sku,
+                }))
+                {
+                    data = this.Data;
+                    this.DetachData(null);
+                    succes = true;
+                }
+            }
+            if (!succes)
+            {
+                AddError($"Sku {sku} or warehouse {warehouseCode} not found.");
+                return null;
+            }
+            return data;
+        }
+
+        /// <summary>
+        /// Get Sku and some warehouse inventory data
+        /// This only get specified warehouse from inventory
+        /// </summary>
+        public virtual async Task<bool> GetBySkuWarhouseAsync(string sku, IList<string> warehouseCode, int masterAccountNum, int profileNum)
+        {
+            if (string.IsNullOrEmpty(sku) || warehouseCode == null || warehouseCode.Count == 0)
+                return false;
+            if (this.Data == null)
+                this.NewData();
+            var succes = await Data.GetBySkuWarhouseAsync(sku, warehouseCode, masterAccountNum, profileNum);
+            succes = (succes && Data.ProductBasic != null && Data.Inventory != null && Data.Inventory.Count > 0);
+            return succes;
+        }
+
+        /// <summary>
+        /// Get only ProductBasic data by Sku
+        /// </summary>
+        public virtual async Task<ProductBasic> GetProductBasicBySkuAsync(string sku, int masterAccountNum, int profileNum)
+        {
+            if (string.IsNullOrEmpty(sku))
+                return null;
+            if (this.Data == null)
+                this.NewData();
+            return await Data.GetProductBasicBySkuAsync(sku, masterAccountNum, profileNum);
+        }
+
+        /// <summary>
+        /// Get Inventory list for specified warehouse only
+        /// </summary>
+        public virtual async Task<IList<Inventory>> GetInventoryByIdWarehouseAsync(string productUuid, IList<string> warehouseCode)
+        {
+            if (string.IsNullOrEmpty(productUuid) || warehouseCode == null || warehouseCode.Count == 0)
+                return null;
+            if (this.Data == null)
+                this.NewData();
+            return await Data.GetInventoryByIdWarehouseAsync(productUuid, warehouseCode);
+        }
+
+        /// <summary>
+        /// Get Inventory list for specified warehouse only
+        /// </summary>
+        public virtual async Task<IList<Inventory>> GetInventoryBySkuWarehouseAsync(string sku, IList<string> warehouseCode, int masterAccountNum, int profileNum)
+        {
+            if (string.IsNullOrEmpty(sku) || warehouseCode == null || warehouseCode.Count == 0)
+                return null;
+            if (this.Data == null)
+                this.NewData();
+            return await Data.GetInventoryBySkuWarehouseAsync(sku, warehouseCode, masterAccountNum, profileNum);
+        }
     }
 }
 
