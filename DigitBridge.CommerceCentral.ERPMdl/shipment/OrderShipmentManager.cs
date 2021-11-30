@@ -392,18 +392,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
 
         protected async Task<bool> LoadSalesOrderToShipmentAsync(OrderShipmentDataDto erpShipment, OrderShipmentCreateResultPayload result)
         {
-            // if shipment payload not include SalesOrderUuid, try to load SalesOrderUuid by OrderDCAssignmentNum
-            if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
-                erpShipment.OrderShipmentHeader.SalesOrderUuid =
-                    await salesOrderService.GetSalesOrderUuidByDCAssignmentNumAsync(erpShipment.OrderShipmentHeader.OrderDCAssignmentNum.Value);
-
-            //// load OrderNumber from salesOrder Uuid
-            //if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
-            //    erpShipment.OrderShipmentHeader.OrderNumber =
-            //        await salesOrderService.GetSalesOrderNumberByUuidAsync(erpShipment.OrderShipmentHeader.SalesOrderUuid);
-
             if (string.IsNullOrEmpty(erpShipment.OrderShipmentHeader.SalesOrderUuid))
             {
+                result.Messages.AddError("SalesOrderUuid cannot be empty.");
                 return false;
             }
 
