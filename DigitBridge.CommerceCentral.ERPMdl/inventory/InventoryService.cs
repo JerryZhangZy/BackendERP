@@ -715,7 +715,7 @@ where MasterAccountNum=@0 and ProfileNum=@1 and  ProductUuid = @2",
             await dbFactory.Db.ExecuteAsync("UPDATE Inventory SET AvgCost=@0 , BaseCost=@1 WHERE InventoryUuid = @2", cost.AvgCost.ToSqlParameter("AvgCost"), cost.BaseCost.ToSqlParameter("BaseCost"), cost.InventoryUuid.ToSqlParameter("inventoryUuid"));
         }
 
-        public async Task UpdateOpenSoQtyFromShippedItemAsync(string orderShipmentUuid, bool isReturnBack = false)
+        public async Task UpdateOpenSoQtyByOrderShipmentUuidAsync(string orderShipmentUuid, bool isReturnBack = false)
         {
             string op = isReturnBack ? "-" : "+";
             string command = $@"

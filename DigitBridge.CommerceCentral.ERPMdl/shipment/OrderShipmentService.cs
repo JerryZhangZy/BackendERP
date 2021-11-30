@@ -101,7 +101,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     inventoryLogService.UpdateByShipment(this.Data);
                     var shipmentUuid = this.Data.OrderShipmentHeader.OrderShipmentUuid;
                     await salesOrderService.UpdateShippedQtyFromShippedItemAsync(shipmentUuid, true);
-                    await inventoryService.UpdateOpenSoQtyFromShippedItemAsync(shipmentUuid, true);
+                    await inventoryService.UpdateOpenSoQtyByOrderShipmentUuidAsync(shipmentUuid, true);
                 }
             }
             catch (Exception)
@@ -146,7 +146,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                     // Update shipped qty in S/O and openSoQty in Inventory
                     var shipmentUuid = this.Data.OrderShipmentHeader.OrderShipmentUuid;
                     await salesOrderService.UpdateShippedQtyFromShippedItemAsync(shipmentUuid, false);
-                    await inventoryService.UpdateOpenSoQtyFromShippedItemAsync(shipmentUuid, false);
+                    await inventoryService.UpdateOpenSoQtyByOrderShipmentUuidAsync(shipmentUuid, false);
                 }
             }
             catch (Exception)
