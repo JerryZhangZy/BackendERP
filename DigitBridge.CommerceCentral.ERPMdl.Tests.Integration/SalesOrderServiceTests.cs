@@ -391,7 +391,7 @@ WHERE itm.cnt > 0
             var salesOrderUuid = await MakeRealtionForSalesOrderAndSalesOrder();
 
             var service = new SalesOrderService(DataBaseFactory);
-            var success = await service.UpdateShippedQtyAsync(salesOrderUuid);
+            var success = await service.UpdateShippedQtyFromShippedItemAsync(salesOrderUuid);
             Assert.True(success, service.Messages.ObjectToString());
 
         }
