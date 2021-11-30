@@ -200,7 +200,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 DatabaseNum = this.Data.SalesOrderHeader.DatabaseNum,
                 ProcessUuid = this.Data.SalesOrderHeader.SalesOrderUuid,
                 ProcessNumber = this.Data.SalesOrderHeader.OrderNumber,
-                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
+                ChannelNum = this.Data.SalesOrderHeaderInfo.ChannelNum,
                 ChannelAccountNum = this.Data.SalesOrderHeaderInfo.ChannelAccountNum,
 
                 LogMessage = string.Empty
