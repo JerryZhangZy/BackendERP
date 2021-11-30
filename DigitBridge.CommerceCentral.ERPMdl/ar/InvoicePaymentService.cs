@@ -832,11 +832,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // load exist payment list
             var payments = await GetByPaymentNumberAsync(paymentNumber, payload.MasterAccountNum, payload.ProfileNum);
             if (payments == null || payments.Count == 0)
-            {
-                payload.Messages.AddError($"Payment number {paymentNumber} not found.");
-                payload.Success = false;
-                return false;
-            }
+                return payload.ReturnError($"Payment number {paymentNumber} not found.");
 
             // use first invoiceTransaction for payment info
             var pay1 = payments[0];
@@ -883,12 +879,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             }
 
             if (payload.InvoiceList == null || payload.InvoiceList.Count == 0)
-            {
-                payload.Success = false;
-                payload.Messages.AddError($"Payment number {paymentNumber} not found.");
-                return payload.Success;
-            }
-            
+                return payload.ReturnError($"Payment number {paymentNumber} not found.");
 
             // add exist payment amount and TransUuid tp invoice list
             foreach (var pay in payments)

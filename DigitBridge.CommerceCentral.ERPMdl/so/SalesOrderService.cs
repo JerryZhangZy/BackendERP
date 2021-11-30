@@ -403,14 +403,6 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 return false;
 
             return SaveData();
-
-            //await UpdateInventoryOpenSoQtyAsync(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, true);
-            //var result = SaveData();
-            //if (result)
-            //    await AddActivityLogForCurrentDataAsync();
-            //await UpdateInventoryOpenSoQtyAsync(payload.SalesOrder.SalesOrderHeader.SalesOrderUuid, false);
-
-            //return result;
         }
 
         /// <summary>
