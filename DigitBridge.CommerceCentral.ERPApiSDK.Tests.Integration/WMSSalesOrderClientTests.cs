@@ -16,8 +16,8 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
         protected TestFixture<StartupTest> Fixture { get; }
         public IConfiguration Configuration { get; }
 
-        //private string _baseUrl = "http://localhost:7074";
-        private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net";
+        private string _baseUrl = "http://localhost:7074";
+        //private string _baseUrl = "https://digitbridge-erp-integration-api-dev.azurewebsites.net";
         private string _code = "aa4QcFoSH4ADcXEROimDtbPa4h0mY/dsNFuK1GfHPAhqx5xMJRAaHw==";
         protected int MasterAccountNum = 10001;
         protected int ProfileNum = 10001;
@@ -52,13 +52,13 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
             ProfileNum = 10003;
             var payload = new WMSSalesOrderRequestPayload()
             {
-                //LoadAll = true,
-                Top = 10,
-                Filter = new SalesOrderOpenListFilter()
-                {
-                    //UpdateDateUtc = DateTime.UtcNow.Date.AddDays(-1),
-                    WarehouseCode = "VBT001-1-3-4"
-                },
+                LoadAll = true,
+                //Top = 10,
+                //Filter = new SalesOrderOpenListFilter()
+                //{
+                //    //UpdateDateUtc = DateTime.UtcNow.Date.AddDays(-1),
+                //    WarehouseCode = "VBT001-1-3-4"
+                //},
             };
 
             var success = await client.GetSalesOrdersOpenListAsync(MasterAccountNum, ProfileNum, payload);
@@ -70,7 +70,7 @@ namespace DigitBridge.CommerceCentral.ERPApiSDK.Tests.Integration
 
             Assert.True(client.ResopneData.SalesOrderOpenList != null, $"Count:{client.ResopneData.SalesOrderOpenListCount}, SalesOrderOpenList:no data.");
 
-            success = client.ResopneData.SalesOrderOpenList.Count(i => i.WarehouseCode == payload.Filter.WarehouseCode) == client.ResopneData.SalesOrderOpenListCount;
+            //success = client.ResopneData.SalesOrderOpenList.Count(i => i.WarehouseCode == payload.Filter.WarehouseCode) == client.ResopneData.SalesOrderOpenListCount;
 
             Assert.True(success, "Filter by WarehouseCode reuslt is not correct.");
 
