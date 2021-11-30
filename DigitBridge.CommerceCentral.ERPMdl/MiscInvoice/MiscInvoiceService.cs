@@ -526,6 +526,11 @@ namespace DigitBridge.CommerceCentral.ERPMdl
                 this.DetachData(this.Data);
             }
             payload.MiscInvoices = result;
+            if (result.Count == 0)
+            {
+                payload.Success = false;
+                AddError("Invoices not found");
+            }
         }
 
         public virtual async Task<bool> CheckNumberExistAsync(int masterAccountNum, int profileNum, string miscInvoiceNumber)
