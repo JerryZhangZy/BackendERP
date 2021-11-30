@@ -64,7 +64,7 @@ drop INDEX [UI_OrderShipmentHeader_MainTrackingNumber] ON [dbo].[OrderShipmentHe
 GO
 
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[OrderShipmentHeader]') AND name = N'IX_OrderShipmentHeader_ShipmentID')
-CREATE unique INDEX [IX_OrderShipmentHeader_ShipmentID] ON [dbo].[OrderShipmentHeader]
+CREATE NONCLUSTERED INDEX [IX_OrderShipmentHeader_ShipmentID] ON [dbo].[OrderShipmentHeader]
 (
 	[ProfileNum] ASC,
 	[ShipmentID] ASC

@@ -576,6 +576,14 @@ WHERE spc.OrderShipmentUuid=@0
                 return await OrderShipmentHelper.GetOrderShipmentUuidBySalesOrderUuidOrDCAssignmentNumAsync(salesOrderUuid, orderSourceCode);
         }
 
+        public async Task<bool> ExistShipmentIDAsync(int masterAccountNum, int profileNum, string shipmentID)
+        {
+            using (var tx = new ScopedTransaction(dbFactory))
+            {
+                return await OrderShipmentHelper.ExistShipmentIDAsync(shipmentID, masterAccountNum, profileNum);
+            }
+        }
+
     }
 }
 

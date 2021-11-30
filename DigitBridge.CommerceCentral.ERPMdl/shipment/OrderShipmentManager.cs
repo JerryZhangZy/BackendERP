@@ -151,6 +151,7 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         public IList<MessageClass> AddDebug(string message, string code = null) =>
             Messages.Add(message, MessageLevel.Debug, code);
 
+        public IList<MessageClass> ClearMessage() => _messages = new List<MessageClass>();
         #endregion Messages
 
         #region import export 
@@ -269,10 +270,9 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             var resultList = new List<OrderShipmentCreateResultPayload>();
             if (wmsShipments is null || wmsShipments.Count == 0)
             {
-                AddError("shipment data is required.");
                 resultList.Add(new OrderShipmentCreateResultPayload()
                 {
-                    Messages = new List<MessageClass>().Add(this.Messages),
+                    Messages = this.AddError("shipment data is required."),
                 });
                 return resultList;
             }
@@ -280,20 +280,20 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             // loop for shipment list to create each shipment
             foreach (var shipment in wmsShipments)
             {
+                ClearMessage();
                 // for each shipment, create result object to hold shipment creating result
                 var result = new OrderShipmentCreateResultPayload()
                 {
-                    Success = true,
                     MasterAccountNum = payload.MasterAccountNum,
                     ProfileNum = payload.ProfileNum,
                     MainTrackingNumber = shipment?.ShipmentHeader?.MainTrackingNumber,
                 };
 
                 // first validate shipment data, allow to create new shipment
-                if (ValidateShipment(shipment, result))
-                {
-                    await CreateShipmentAsync(shipment, result);
-                }
+                var success = await ValidateShipment(payload, shipment);
+                result.Success = success && await CreateShipmentAsync(shipment, result);
+                result.Messages = this.Messages;
+
                 resultList.Add(result);
             }
             return resultList;
@@ -302,51 +302,63 @@ namespace DigitBridge.CommerceCentral.ERPMdl
         /// <summary>
         /// Validate current shipment data 
         /// </summary>
-        protected bool ValidateShipment(InputOrderShipmentType wmsShipment, OrderShipmentCreateResultPayload result)
+        protected async Task<bool> ValidateShipment(OrderShipmentPayload payload, InputOrderShipmentType wmsShipment)
         {
             //if (payload is null)
             //{
             //    AddError("Request is invalid.");
             //    return response;
             //}
-            result.Success = true;
+            var success = true;
             if (wmsShipment is null)
             {
-                result.Messages.AddError("Shipment data cannot be empty.");
-                result.Success = false;
+                AddError("Shipment data cannot be empty.");
+                success = false;
             }
 
             if (wmsShipment.ShipmentHeader is null)
             {
-                result.Messages.AddError("ShipmentHeader data cannot be empty.");
-                result.Success = false;
+                AddError("ShipmentHeader data cannot be empty.");
+                success = false;
             }
 
             if (wmsShipment.ShipmentHeader.SalesOrderUuid.IsZero())
             {
-                result.Messages.AddError("SalesOrderUuid cannot be empty.");
-                result.Success = false;
+                AddError("SalesOrderUuid cannot be empty.");
+                success = false;
             }
 
             if (wmsShipment.ShipmentHeader.WarehouseCode.IsZero())
             {
-                result.Messages.AddError("WarehouseCode cannot be empty.");
-                result.Success = false;
+                AddError("WarehouseCode cannot be empty.");
+                success = false;
             }
 
             if (wmsShipment.CanceledItems?.Where(i => i.SalesOrderItemsUuid.IsZero()).Count() > 0)
             {
-                result.Messages.AddError("SalesOrderItemsUuid of CanceledItem cannot be empty.");
-                result.Success = false;
+                AddError("SalesOrderItemsUuid of CanceledItem cannot be empty.");
+                success = false;
             }
 
             if (wmsShipment.PackageItems?.SelectMany(i => i.ShippedItems.Where(j => j.SalesOrderItemsUuid.IsZero())).Count() > 0)
             {
-                result.Messages.AddError("SalesOrderItemsUuid of ShippedItem cannot be empty.");
-                result.Success = false;
+                AddError("SalesOrderItemsUuid of ShippedItem cannot be empty.");
+                success = false;
             }
 
-            return result.Success;
+
+            if (wmsShipment.ShipmentHeader.ShipmentID.IsZero())
+            {
+                AddError("ShipmentID cannot be empty.");
+                success = false;
+            }
+            else if (await orderShipmentService.ExistShipmentIDAsync(payload.MasterAccountNum, payload.ProfileNum, wmsShipment.ShipmentHeader.ShipmentID))
+            {
+                AddError("ShipmentID has been transfered.");
+                success = false;
+            }
+
+            return success;
         }
 
         /// <summary>
