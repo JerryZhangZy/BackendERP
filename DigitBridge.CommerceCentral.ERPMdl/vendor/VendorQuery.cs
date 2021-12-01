@@ -87,8 +87,8 @@ namespace DigitBridge.CommerceCentral.ERPMdl
             AddAvailableOrderByList(
                 new KeyValuePair<string, string>("VendorCode", "VendorCode"),
                 new KeyValuePair<string, string>("VendorName", "VendorName"),
-                new KeyValuePair<string, string>("ClassCode", "ClassCode "),
-                new KeyValuePair<string, string>("DepartmentCode", "DepartmentCode ")
+                new KeyValuePair<string, string>("ClassCode", "ClassCode"),
+                new KeyValuePair<string, string>("DepartmentCode", "DepartmentCode")
                 );
         }
 
